@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+	{% if perms.news.add_news %}
+		<div style="float:right">
+			<a href="/news/add/">Add News Item</a>
+		</div>
+	{% endif %}
+		<h2 class="title">News Updates</h2>
+		<table class="results" width="100%">
+		{% for item in news %}
+			<tr>
+				<td>{{ item.postdate }}</td>
+				<td><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></td>
+				<td>
+				{% comment %}{% if item.author %}{% ifequal user.username item.author.username %}{% endcomment %}
+					<a href="/news/edit/{{ item.id }}/">edit</a>
+					<a href="/news/delete/{{ item.id }}/">delete</a>
+				{% comment %}{% endifequal %}{% endif %}{% endcomment %}
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+{% endblock %}

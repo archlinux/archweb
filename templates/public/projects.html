@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+	<h2 class="title">Arch Related Projects</h2>
+	<br /><br />
+	<p>There are a few Arch-based projects or communities that have sprung up
+	over the years.  Here's a list of the ones we know about.</p>
+	<table cellspacing="20">
+		<tr>
+			<td><a href="http://user-contributions.org/home/index.php">user-contributions.org</a></td>
+			<td>A website belongs to members wanting to give a little something to the free software community</td>
+		</tr><tr>
+			<td><a href="http://www.archlinux.org/~simo/archstats/">ArchStats</a></td>
+			<td>An opt-in system that tracks which packages each user has installed, hardware specs, etc</td>
+		</tr><tr>
+			<td><a href="http://archie.dotsrc.org/">Archie Live CD</a></td>
+			<td>A live CD (and live CD build scripts) based on Arch</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.archlinuxppc.org/">ArchPPC</a></td>
+			<td>Arch packages optimized for PPC</td>
+		</tr><tr>
+			<td><a href="http://user-contributions.org/projects/hwd/hwd.html">Hardware Detection</a></td>
+			<td>Hardware detection scripts for Arch <span style="font-size:x-small">(deprecated in favor of udev's auto-detection)</span></td>
+		</tr><tr>
+			<td><a href="http://arch-egis.berlios.de/">AEGIS</a></td>
+			<td>Arch Environmental/Geographical Information Systems (AEGIS) Project</td>
+		</tr>
+    </table>
+    <br />
+    If you have an Arch related project you would like linked, please open a <a href="http://bugs.archlinux.org/">Bug Ticket</a> with the category "web site", and a relevant description.
+</div>
+<br /><br />
+{% endblock %}
+

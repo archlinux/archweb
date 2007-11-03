@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+	{% if news %}
+		<h2 class="title">Edit News</h2>
+	{% else %}
+		<h2 class="title">Add News</h2>
+	{% endif %}
+		<form method="post" action=".">
+		<table>
+			<tr>
+				<td>Title:</td>
+				<td>{{ form.title }}</td>
+			</tr><tr>
+				<td style="vertical-align:top">Content:</td>
+				<td>{{ form.content }}</td>
+			</tr><tr>
+				<td colspan="2" align="right">
+					<input type="submit" value=" Save " />
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="greybox">
+	<div style="float:right;font-size:x-small">
+		<a href="http://daringfireball.net/projects/markdown/syntax/">Wiki Syntax</a>
+	</div>
+	<h2 class="title">Editing: {{ page.title }}</h2>
+	<form action="." method="post">
+		<input name="title" value="{{ page.title }}" />
+		<br /><br />
+		<textarea name="content" cols="100" rows="32">{{ page.content }}</textarea>
+		<br /><br />
+		<input type="submit" value="Save" />
+	</form>
+	<!--
+	<form action="/wiki/delete/" method="post">
+		<input type="hidden" name="title" value="{{ page.title }}" />
+		<input type="submit" value="Delete" />
+	</form>
+	-->
+</div>
+{% endblock %}

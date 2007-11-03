@@ -1,0 +1,30 @@
+<html>
+<head>
+    <style type='text/css'>
+body { 
+    background: #333;
+    color: #ddd;
+}
+
+a {
+    color: #fff;
+}
+
+div.body {
+    padding: 25px;
+    margin: 15px;
+    background: #444;
+}
+
+div.controls {
+    padding: 20px;
+}
+    </style>
+<title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+<h1>This is the base template. Extend it with the "extends" template tag.</h1>
+{% endblock %}
+</body>
+</html>

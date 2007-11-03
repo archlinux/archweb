@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="box">
+		<h3>Viewing Files: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h3>
+		{% for file in files %}
+			{{ file.path }}<br />
+		{% endfor %}
+	</div>
+{% endblock %}
+

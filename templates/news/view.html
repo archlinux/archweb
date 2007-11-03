@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="box">
+		<div style="float: right; font-size: small">
+			{{ news.author.get_full_name }}<br />
+			{{ news.postdate }}
+		</div>
+		<h3>{{ news.title }}</h3>
+		<hr /><br />
+		{{ news.content|linebreaks }}
+	</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+		<h3 class="title">ToDo List: {{ list.name }}</h2>
+		<table class="results" width="100%">
+			<tr>
+				<th>ID</th>
+				<th>Repo</th>
+				<th>Name</th>
+				<th>Maintainer</th>
+				<th>Status</th>
+			</tr>
+		{% for pkg in pkgs %}
+			<tr>
+				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
+				<td>{{ pkg.pkg.repo.name  }}</td>
+				<td>{{ pkg.pkg.pkgname  }}</td>
+				<td>{{ pkg.pkg.maintainer.get_full_name  }}</td>
+				<td>
+				{% if pkg.complete %}
+					<a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
+				{% else %}
+					<a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:red">Incomplete</span></a>
+				{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+{% endblock %}

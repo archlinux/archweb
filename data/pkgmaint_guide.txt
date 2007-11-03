@@ -1,0 +1,164 @@
+=============================================================================
+            THE QUICK AND DIRTY ON HOW TO BE A PACKAGE MAINTAINER
+=============================================================================
+                                             questions to jvinet@zeroflux.org
+
+1. Follow Package Guidelines
+
+   Package guidelines can be found in the Arch Linux documentation.
+   Please follow them closely.
+
+2. How To Use CVS
+
+   The example commands below assume the module 'extra'.
+
+   2.1  Make sure your CVSROOT environment variable is set properly.  If the
+        CVS repository is on the same box:
+          # export CVSROOT=/home/cvs-extra
+
+        If you want to access the repository from the different box via SSH:
+          # export CVS_RSH=ssh
+          # export CVSROOT=:ext:user@cvs.archlinux.org:/home/cvs-extra
+
+   2.2  Checkout the repository.  This will download the entire repository to
+        your local machine:
+          # cvs co extra
+
+   2.3  Updating the repository.  This syncs your local repository with the
+        master.  You should do this often, especially if other people could be
+        working on the same repository.
+          # cd extra
+          # cvs -q update -d
+
+   2.4  Adding files/directories to the repository.  When you want to add a new
+        package you should create a directory under the respective category and
+        place the new PKGBUILD in it.  For example, to add fvwm to the repo:
+          # cd extra/x11
+          # mkdir fvwm
+          # cd fvwm
+          # cp /var/abs/PKGBUILD.proto ./PKGBUILD
+          <edit, test, build, etc>
+          # cd ..
+          # cvs add fvwm
+          # cvs add fvwm/PKGBUILD
+
+   2.5  Committing changes. Files are not written to the master repository until
+        you commit.  Never forget to commit!
+          # cd extra
+          # cvs commit
+ 
+        This will find all modified files, then throw you into vi where you can
+        add a log message describing your changes.  Save and exit from vi when
+        you're done and cvs will update the files in the master repository.
+
+   2.6  Removing files.  If you need to remove a file (eg, an old patch that
+        isn't needed anymore), you can do the following:
+          # cd extra/x11/fvwm
+          # rm old.patch
+          # cvs remove old.patch
+          # cvs commit -m "removed old.patch" old.patch
+        also remove the CURRENT/STABLE tags from the file so it does not appear
+        in ABS any more:
+          # cvs tag -d CURRENT old.patch
+ 
+        Don't forget to commit afterwards!  Remember that no changes are made
+        to the master until you commit.
+
+   2.7  Removing directories cannot be done easily.  If you really need to
+        remove a directory, email the sysadmin (Judd) and I'll help you out.
+
+   2.8  Tagging files.  Every file in CVS has tags associated with it, which
+        allows us to select certain versions of scripts.  The db generation
+        scripts will only look at files that are tagged as CURRENT, so you need
+        to tag all files after you commit them:
+          # cd extra/x11/fvwm
+          # cvs tag -c -F -R CURRENT
+
+        NOTE: When tagging, you should be sure to ONLY tag the updated files,
+        not the entire repository.  Otherwise, if parts of your checkout are
+        out-of-date, you may actually be tagging an OLDER version of a file,
+        reversing someone else's tag procedure.
+
+3. The Process
+
+   3.1  Checkout/update your local repository from cvs.archlinux.org
+   3.2  Make any changes you need to
+   3.3  Put your new packages in your local staging directory on archlinux.org.
+        Suggested syntax is: 
+          scp name-ver-rel.pkg.tar.gz you@archlinux.org:staging/extra/add
+   3.4  Commit your changes (section 2.5)
+   3.5  Update the CURRENT tags to new revisions (section 2.8)
+   3.6  Log in to archlinux.org and run the /arch/db-extra script, which
+        will re-generate the sync db and place it in /home/ftp/extra, then
+        move the new/updated packages from your staging directory to the
+        FTP tree.
+   3.7  Remove any older versions of packages from /home/ftp/extra to
+        save diskspace, they should be noted when the db generation script
+        finishes.
+
+   Make sure you do things in this order, mixing them up can break things
+   temporarily.  For example, if you remove older versions from the ftp
+   tree before you update the database or update the database before 
+   uploading new packages, arch users trying to download the package at 
+   that time will get "file not found" errors.
+
+4. Staging Directories
+
+   As mentioned in Section 3, packages need to be uploaded to the proper
+   staging directory before running a db generation script.  The staging
+   area (located in your home dir) looks like so:
+
+    staging
+    |-- arch
+    |   |-- add
+    |   `-- del
+    |-- extra
+    |   |-- add
+    |   `-- del
+    |-- testing
+    |   |-- add
+    |   `-- del
+    `-- unstable
+        |-- add
+        `-- del
+
+   As you can see, each repository has two staging directories: "add" and
+   "del".  When you want to add or update a package, you'll place it in the
+   "add" directory for the repository you're working in.  Then run the db-gen
+   script.
+   
+   When you want to remove a package, you will move the package OUT OF the FTP
+   directory (eg, /home/ftp/extra/os/i686/) and INTO the "del" directory for
+   the repository you're working in.  Once moved, you can run the db-gen
+   script -- it will see that the file has left the FTP tree and will remove
+   it from the package database.
+
+5. Miscellaneous Stuff
+
+   5.1  If you are creating a daemon you need to include an rc.d startup
+        script for it.  Look at /var/abs/daemons/esd for a simple example.
+   5.2  Please include a line that says '# $Id: pkgmaint_guide.txt,v 1.3 2006/10/05 20:52:01 judd Exp $' at the top of each
+        PKGBUILD.  This will be parsed by cvs during a commit, and replaced
+        with user/timestamp data.
+   5.3  Please do some rudimentary checks of the package before making it
+        'live'.  Try installing it and see if there are any file conflicts.
+        Check for dependencies by running 'ldd' against the binaries and
+        looking through the .so files it requires.  For example,
+        'ldd /usr/bin/gvim' returns a big list of libs, one of which is
+        libgtk-x11-2.0.so.0, so gtk2 should be one of the dependencies for
+        gvim.  Also, namcap is available in the extra repository.  Running it 
+        against a package will print dependancy warnings as well as possible
+        configuration problems.  Namcap is not the final word, if ldd or
+        runtime show otherwise, believe them instead.
+   5.4  When creating a package description for a package, do not include
+        the package name in a self-referencing way, as it is redundant.
+        For example, "Nedit is a text editor for X11" could be simplified to
+        "A text editor for X11".  Also try to keep the descriptions to ~80
+        characters or less.
+   5.5  When entering cvs log messages for new/upgraded packages, please use
+        these tags so they can be easily parsed for changelog generation:
+          if the package is upgrade use: 'upgpkg: pkgname newpkgver'
+          if the package is new use:     'newpkg: pkgname newpkgver'
+
+
+$Id: pkgmaint_guide.txt,v 1.3 2006/10/05 20:52:01 judd Exp $

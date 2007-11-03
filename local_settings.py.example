@@ -1,0 +1,33 @@
+# Django settings for archlinux project.
+
+## Debug settings
+DEBUG = False
+
+## Notification admins
+ADMINS = (
+    ('Joe Admin', 'joeadmin@example.com'),
+)
+
+## Database settings
+DATABASE_ENGINE     = 'mysql'
+DATABASE_NAME       = 'archlinux'
+DATABASE_USER       = 'archlinux'
+DATABASE_PASSWORD   = 'archlinux'
+DATABASE_HOST       = ''
+DATABASE_PORT       = ''
+
+### Eanbles/disables caching
+ENABLE_CACHE = False
+
+## location for saving dev pictures
+MEDIA_ROOT = '/var/www/archlinux/htdocs/img/devs/'
+
+### web url for serving image files
+MEDIA_URL = 'http://www.archlinux.org/img/devs/'
+
+# do not put a / at the end
+DEPLOY_PATH = '/var/www/archlinux/archlinux'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '00000000000000000000000000000000000000000000000'
+

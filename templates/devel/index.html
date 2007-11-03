@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+	{% if todos %}
+	<div class="greybox">
+		<h3 class="title">Package ToDo Lists</h3>
+		<table class="results" width="100%">
+			<tr>
+				<th>Name</th>
+				<th>Creation Date</th>
+				<th>Description</th>
+			</tr>
+		{% for todo in todos %}
+			<tr>
+				<td style="white-space:nowrap"><a href="/todo/{{ todo.id }}/">{{ todo.name }}</a></td>
+				<td>{{ todo.date_added }}</td>
+				<td>{{ todo.description }}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	<br /><br />
+	{% endif %}
+
+	<div class="greybox">
+		<h3 class="title">Flagged Package Stats</h3>
+		<table class="results" width="100%">
+			<tr>
+				<th>Maintainer</th>
+				<th># Package</th>
+				<th># Flagged</th>
+			</tr>
+		{% for maint in stats %}
+			<tr>
+				<td><a href="/packages/?maint={{ maint.0.id }}">{{ maint.0.get_full_name }}</a></td>
+				<td><strong>{{ maint.1 }}</strong> packages</td>
+				<td><strong>{{ maint.2 }}</strong> packages</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	<br /><br />
+
+	<div class="box">
+		<h3 class="title">Package Maintenance</h3>
+		<br />
+		<table width="100%">
+			<tr>
+				<td style="vertical-align: top">
+				{% if maint %}
+					<a href="/packages/?maint={{ maint.id }}">My Packages</a><br />
+				{% endif %}
+					<a href="/packages/?maint=0">Orphan Packages</a><br />
+					<br />
+					<a href="/devel/guide/">Package Maintainer's Guide</a><br />
+				</td><td style="vertical-align: top">
+				{% if pkgs %}
+					<h4>My Flagged Packages:</h4>
+					<ul class="small">
+						<li><form method="post" action="/devel/notify/">
+							<input name="notify" type="checkbox" value="yes"{% if maint.get_profile.notify %} checked{% endif %} /> Notify me when packages are flagged
+							&nbsp; &nbsp;
+							<input type="submit" value="Update" />
+						</form></li>
+					</ul>
+					<ul class="small">
+					{% for pkg in pkgs %}
+						<li><a href="/packages/{{ pkg.id }}/">{{ pkg.repo.name }}::{{ pkg.pkgname }} {{ pkg.pkgver }}</a></li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+				</td>	
+			</tr>
+		</table>
+{% endblock %}

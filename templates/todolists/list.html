@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+	{% if perms.todolists.add_todolist %}
+		<div style="float:right">
+			<a href="/todo/add/">Add Todo List</a>
+		</div>
+	{% endif %}
+		<h2 class="title">Package ToDo lists</h2>
+		<table class="results" width="100%">
+			<tr>
+				<th>Name</th>
+				<th>Creation Date</th>
+				<th>Creator</th>
+				<th>Description</th>
+				<th>Status</th>
+			</tr>
+		{% for list in lists %}
+			<tr>
+				<td style="white-space:nowrap"><a href="/todo/{{ list.id }}/">{{ list.name }}</a></td>
+				<td>{{ list.date_added }}</td>
+				<td>{{ list.creator.get_full_name }}</td>
+				<td>{{ list.description }}</td>
+				<td>{% if list.complete %}<span style="color:blue">Complete</span>{% else %}<span style="color:red">Incomplete</span>{% endif %}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+{% endblock %}

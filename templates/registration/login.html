@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="greybox">
+<h2 class="title">Developer Login</h2>
+{% if form.has_errors %}
+<p class="error">Your username and password didn't match. Please try again.</p>
+{% endif %}
+<br /><br />
+
+<form method="post" action=".">
+<input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
+<table>
+	<tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
+	<tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
+	<tr><td colspan="2" align="right"><input type="submit" value="Login" /></td></tr>
+</table>
+</form>
+</div>
+
+{% endblock %}
+

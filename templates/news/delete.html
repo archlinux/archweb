@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+		<h2>Confirm Delete</h2>
+		<hr />
+		<form method="post" action=".">
+		<table>
+			<tr>
+				<td>Are You Sure?</td>
+				<td>&nbsp; &nbsp; <input name="delete" type="submit" value=" Yes " /></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+{% endblock %}

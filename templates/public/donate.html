@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+	<h2 class="title">Donate to Arch Linux</h2>
+	<p>
+	Arch Linux survives because of the tireless efforts of many people in
+	the community and the core development circle.  None of us are paid for our
+	work, and we don't have the personal funds to sustain server costs ourselves.
+	</p><p>
+	There are many ways to help Arch Linux.  If technical development,
+	documentation, or support aren't your strong points, you could certainly
+	help us by dropping a few bucks our way.
+	</p><p>
+	Many thanks!
+	</p>
+	<div style="text-align:center">
+		<!-- paypal code -->
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_xclick">
+		<input type="hidden" name="business" value="jvinet@zeroflux.org">
+		<input type="hidden" name="item_name" value="Arch Linux">
+		<input type="hidden" name="image_url" value="/logos/arch-paypal.jpg">
+		<input type="hidden" name="no_shipping" value="1">
+		<input type="hidden" name="cn" value="Suggestions/Comments">
+		<input type="hidden" name="no_note" value="1">
+		<input type="image" src="https://www.paypal.com/images/x-click-butcc-donate.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!" style="background: transparent; border: none">
+		</form>
+	</div>
+	<br /><br />
+	<h2 class="title">Past Donors</h2>
+	<table width="100%">
+		<tr>
+			<td style="font-size:x-small;vertical-align:top">
+			{% for donor in slice1 %}
+			  {{ donor.name }}<br />
+			{% endfor %}
+			</td>
+			<td style="font-size:x-small;vertical-align:top">
+			{% for donor in slice2 %}
+			  {{ donor.name }}<br />
+			{% endfor %}
+			</td>
+			<td style="font-size:x-small;vertical-align:top">
+			{% for donor in slice3 %}
+			  {{ donor.name }}<br />
+			{% endfor %}
+			</td>
+			<td style="font-size:x-small;vertical-align:top">
+			{% for donor in slice4 %}
+			  {{ donor.name }}<br />
+			{% endfor %}
+			</td>
+		</tr>
+	</table>
+</div>
+<br /><br />
+{% endblock %}
+

@@ -1,0 +1,14 @@
+# License
+ See LICENSE file.
+
+# Authors
+ See AUTHORS file.
+
+# Installation
+
+## Dependencies
+ - python
+ - mysql-python
+ - Django >= 0.95
+
+

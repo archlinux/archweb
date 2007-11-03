@@ -1,0 +1,22 @@
+/**********************************
+
+Use: Core Styles
+Author: Nick Rigby
+
+***********************************/
+
+body {
+	padding: 0 10px;
+	font: normal 62.5% "Lucida Grande", Helvetica, Verdana, Arial;
+	}
+	
+p { margin: 10px 0; }
+	
+.sr {
+	position: absolute;
+	left: -9999em;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	}

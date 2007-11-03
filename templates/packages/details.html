@@ -1,0 +1,77 @@
+{% load package_extras %}
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="box">
+		<h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
+		<div style="float:right" class="listing">
+			<ul class="small">
+				<li><a href="http://cvs.archlinux.org/cgi-bin/viewcvs.cgi/{{ pkg.category.category }}/{{ pkg.pkgname }}/?cvsroot={{ pkg.repo.name }}&amp;only_with_tag=CURRENT">View CVS Entries</a></li>
+				<li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li>
+				<li>
+			{% if pkg.needupdate %}
+				<span style="font-size:x-small"><em>This package has been flagged out-of-date</em></span>
+				{% if not user.is_anonymous %}{% if pkg.maintainer %}{% ifequal user.username pkg.maintainer.username %}
+					<br />&nbsp; &nbsp; <a href="/packages/unflag/{{ pkg.id }}/">Click here to unflag</a>
+				{% endifequal %}{% endif %}{% endif %}
+			{% else %}
+				<a href="/packages/flag/{{ pkg.id }}/" onclick="return !window.open('/packages/flag/{{ pkg.id }}/','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">Flag Package Out-of-Date</a>
+				<a href="/packages/flaghelp" onclick="return !window.open('/packages/flaghelp','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');"><span style="font-size:x-small">(?)</span></a>
+			{% endif %}
+				</li>
+				{% if not user.is_anonymous %}
+				<li>&nbsp;</li>
+				<li>
+				<form name="devaction" method="post" action="/packages/update/">
+					<input type="hidden" name="pkgid" value="{{ pkg.id }}" />
+					<input type="submit" style="background:	#e1e3e6;" name="adopt" value="Adopt Package" />
+					<input type="submit" style="background: #e1e3e6;" name="disown" value="Disown Package" />
+				</form>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+		<table class="listing">
+			<tr>
+				<th>Repository:</th>
+				<td>{{ pkg.repo.name }}</td>
+			</tr><tr>
+				<th>Category:</th>
+				<td>{{ pkg.category.category }}</td>
+			</tr><tr>
+				<th>Description:</th>
+				<td>{{ pkg.pkgdesc }}</td>
+			</tr><tr>
+				<th>URL:</th>
+				<td><a href="{{ pkg.url }}">{{ pkg.url }}</a></td>
+			</tr><tr>
+				<th>Maintainer:</th>
+				<td>{% if pkg.maintainer %}{{ pkg.maintainer.get_full_name }}{% else %}None{% endif %}</td>
+			</tr><tr>
+				<th>LastUpdated:</th>
+                <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+			</tr>
+		</table>
+		<br />
+		<table width="100%">
+			<tr>
+				<td valign="top">
+					<div class="listing">
+						<h4>Dependencies:</h4>
+						<ul style="font-size:small;list-style:none">
+						{{ pkg.depends_urlize }}
+						</ul>
+					</div>
+				</td><td colspan="2" valign="top">
+					<div class="listing">
+						<h4>Sources:</h4>
+						<ul style="font-size:small;list-style:none">
+						{{ pkg.sources_urlize }}
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+{% endblock %}
+

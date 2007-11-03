@@ -1,0 +1,57 @@
+/**********************************
+
+Use: cmxform template
+Author: Nick Rigby
+
+***********************************/
+
+form.cmxform fieldset { margin-bottom: 10px; }
+	
+form.cmxform legend {
+	padding: 0 2px;
+	font-weight: bold;
+	_margin: 0 -7px; /* IE Win */
+	}
+	
+form.cmxform label {
+	display: inline-block;
+	line-height: 1.8;
+	vertical-align: top;
+	}
+	
+form.cmxform fieldset ol {
+	margin: 0;
+	padding: 0;
+	}
+	
+form.cmxform fieldset li {
+	list-style: none;
+	padding: 5px;
+	margin: 0;
+	}
+	
+form.cmxform fieldset fieldset {
+	border: none;
+	margin: 3px 0 0;
+	}
+	
+form.cmxform fieldset fieldset legend {
+	padding: 0 0 5px;
+	font-weight: normal;
+	}
+	
+form.cmxform fieldset fieldset label {
+	display: block;
+	width: auto;
+	}
+
+form.cmxform em {
+	font-weight: bold;
+	font-style: normal;
+	color: #f00;
+	}
+
+form.cmxform label { width: 120px; } /* Width of labels */
+form.cmxform fieldset fieldset label { margin-left: 123px; } /* Width plus 3 (html space) */
+
+/*\*//*/ form.cmxform legend { display: inline-block; } /* IE Mac legend fix */
