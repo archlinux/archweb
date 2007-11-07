@@ -1,0 +1,16 @@
+Contributing 
+======================
+
+Coding Style
+------------
+
+1.  All code should be indented with spaces. This is effectively the following VIM modeline:
+  /* vim: set ai ts=4 sw=4 et: */
+
+2.  Recommend removing trailing whitespace. Here is an example for .vimrc
+    autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
+
+
+
+
+vim: set ai ts=4 sw=4 et:
