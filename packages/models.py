@@ -28,6 +28,7 @@ class Repo(models.Model):
 	name = models.CharField(maxlength=255)
 	class Meta:
 		db_table = 'repos'
+        ordering = ['name']
 	def last_update(self):
 		try:
 			latest = Package.objects.filter(repo__name__exact=self.name).order_by('-last_update')[0]
