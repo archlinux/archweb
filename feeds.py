@@ -29,5 +29,5 @@ class NewsFeed(Feed):
         return item.postdate
 
     def item_author_name(self, item):
-        return item.author.get_full_name
+        return item.author.get_full_name()
 
