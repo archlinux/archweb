@@ -12,7 +12,7 @@
 				<th>Status</th>
 			</tr>
 		{% for pkg in pkgs %}
-			<tr>
+            <tr class="{% cycle pkgr1,pkgr2 %}">
 				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
 				<td>{{ pkg.pkg.repo.name  }}</td>
 				<td>{{ pkg.pkg.pkgname  }}</td>
