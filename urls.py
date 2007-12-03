@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 from archlinux.news.models import News
 from archlinux.feeds import PackageFeed, NewsFeed
+from django.views.decorators.cache import cache_page
 
 feeds = {
 	'packages': PackageFeed,
@@ -8,7 +9,7 @@ feeds = {
 }
 
 urlpatterns = patterns('',
-	(r'^media/(.*)$',      'django.views.static.serve', {'document_root': '/home/jvinet/shared/work/archlinux/media'}),
+	#(r'^media/(.*)$',      'django.views.static.serve', {'document_root': '/home/jvinet/shared/work/archlinux/media'}),
 
 # Dynamic Stuff
 	(r'^packages/flag/(\d+)/$',          'archlinux.packages.views.flag'),
