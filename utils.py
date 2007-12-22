@@ -5,8 +5,8 @@ from django.http import HttpResponseRedirect
 from string import *
 import sgmllib
 
-#from archlinux.packages.models import Maintainer
-#from archlinux.settings import BADPRIVS_URL
+#from archweb_dev.packages.models import Maintainer
+#from archweb_dev.settings import BADPRIVS_URL
 #def is_maintainer(view_func, badprivs_url=BADPRIVS_URL):
 #	"""
 #	Decorator for views that checks that the logged-in user has a corresponding

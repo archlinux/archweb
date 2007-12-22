@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import re
-from archlinux.utils import Stripper
+from archweb_dev.utils import Stripper
 
 class News(models.Model):
 	id = models.AutoField(primary_key=True)

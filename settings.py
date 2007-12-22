@@ -1,4 +1,4 @@
-# Django settings for archlinux project.
+# Django settings for archweb_dev project.
 
 ## Import local settings
 from local_settings import *
@@ -60,7 +60,7 @@ MIDDLEWARE_CLASSES += (
     "django.middleware.doc.XViewMiddleware",
 )
 
-ROOT_URLCONF = 'archlinux.urls'
+ROOT_URLCONF = 'archweb_dev.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
@@ -78,12 +78,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'archlinux.common',
-    'archlinux.news',
-    'archlinux.packages',
-    'archlinux.public',
-    'archlinux.todolists',
-    'archlinux.devel',
-    'archlinux.wiki'
+    'archweb_dev.common',
+    'archweb_dev.news',
+    'archweb_dev.packages',
+    'archweb_dev.public',
+    'archweb_dev.todolists',
+    'archweb_dev.devel',
+    'archweb_dev.wiki'
 )
 

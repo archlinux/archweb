@@ -5,9 +5,9 @@ from django.template import Context, loader
 from django.core import validators
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from archlinux.utils import validate, render_template
+from archweb_dev.utils import validate, render_template
 from datetime import datetime
-from archlinux.packages.models import Package, PackageFile, Repo, Category
+from archweb_dev.packages.models import Package, PackageFile, Repo, Category
 
 def update(request):
 	if request.POST.has_key('adopt'):

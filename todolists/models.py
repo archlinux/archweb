@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from archlinux.packages.models import Package
+from archweb_dev.packages.models import Package
 
 class TodolistManager(models.Manager):
 	def get_incomplete(self):

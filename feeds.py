@@ -1,6 +1,6 @@
 from django.contrib.syndication.feeds import Feed
-from archlinux.packages.models import Package
-from archlinux.news.models import News
+from archweb_dev.packages.models import Package
+from archweb_dev.news.models import News
 #from datetime import datetime
 
 class PackageFeed(Feed):

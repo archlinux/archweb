@@ -2,12 +2,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import validators
-from archlinux.utils import render_template
-from archlinux.packages.models import Package
-from archlinux.todolists.models import Todolist, TodolistPkg
-from archlinux.settings import DATA_DIR
-from archlinux.utils import validate
-from archlinux.common.models import UserProfile
+from archweb_dev.utils import render_template
+from archweb_dev.packages.models import Package
+from archweb_dev.todolists.models import Todolist, TodolistPkg
+from archweb_dev.settings import DATA_DIR
+from archweb_dev.utils import validate
+from archweb_dev.common.models import UserProfile
 
 @login_required
 def index(request):

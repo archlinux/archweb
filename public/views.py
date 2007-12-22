@@ -1,10 +1,10 @@
 from django.http import HttpResponse
-from archlinux.utils import render_template
+from archweb_dev.utils import render_template
 from django.contrib.auth.models import User
-from archlinux.packages.models import Package, Repo
-from archlinux.news.models import News
-from archlinux.settings import DATA_DIR
-from archlinux.common.models import Donator, Mirror
+from archweb_dev.packages.models import Package, Repo
+from archweb_dev.news.models import News
+from archweb_dev.settings import DATA_DIR
+from archweb_dev.common.models import Donator, Mirror
 
 def index(request):
 	# get the most recent 10 news items
