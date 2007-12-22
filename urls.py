@@ -61,6 +61,7 @@ urlpatterns = patterns('',
 	(r'^moreforums/$',     'archweb_dev.public.views.moreforums'),
 	(r'^press/$',          'archweb_dev.public.views.press'),
 	(r'^projects/$',       'archweb_dev.public.views.projects'),
+	(r'^robots.txt$',      'archweb_dev.public.views.robots'),
 
 # Authentication / Admin
 	(r'^denied/$',          'archweb_dev.public.views.denied'),

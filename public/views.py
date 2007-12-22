@@ -52,5 +52,8 @@ def press(request):
 def projects(request):
 	return render_template('public/projects.html', request)
 
+def robots(request):
+    return HttpResponse("User-agent: *\nDisallow: /\n", mimetype="text/plain")
+
 def denied(request):
 	return render_template('public/denied.html', request)
