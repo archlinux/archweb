@@ -1,3 +1,4 @@
+import os
 # Django settings for archweb_dev project.
 
 ## Import local settings
@@ -17,6 +18,7 @@ if ENABLE_CACHE == True:
     CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Full path to the data directory
+DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '%s/data' % DEPLOY_PATH
 
 # Local time zone for this installation. All choices can be found here:
