@@ -40,6 +40,9 @@ ADMIN_MEDIA_PREFIX = '/admin-media/'
 # URL to send users when they don't have sufficient privileges
 BADPRIVS_URL = '/denied/'
 
+# login url
+LOGIN_URL = '/login/'
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
