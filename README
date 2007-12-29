@@ -4,11 +4,19 @@
 # Authors
  See AUTHORS file.
 
-# Installation
-
-## Dependencies
+# Dependencies
  - python
  - mysql-python
- - Django >= 0.95
+ - Django = 0.96
 
+# Installation
+For a simple testing installation:
 
+ 1. Install dependencies.
+ 2. Configure database
+ 3. Populate database with test data
+ 4. Use the following commands to start a service instance
+   export PYTHONPATH=`pwd`:${PYTHONPATH} 
+   export DJANGO_SETTINGS_MODULE=archweb_dev.settings 
+   python manage.py runserver
+   
