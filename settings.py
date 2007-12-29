@@ -75,7 +75,7 @@ TEMPLATE_DIRS = (
 
 # Set django's User stuff to use our profile model
 # format is app.model
-AUTH_PROFILE_MODULE = 'common.UserProfile'
+AUTH_PROFILE_MODULE = 'public.UserProfile'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -83,7 +83,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'archweb_dev.common',
     'archweb_dev.news',
     'archweb_dev.packages',
     'archweb_dev.public',
