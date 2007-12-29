@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import validators
-from archweb_dev.utils import render_response
+from archweb_dev.lib.utils import render_response
 from archweb_dev.packages.models import Package
 from archweb_dev.todolists.models import Todolist, TodolistPkg
 from archweb_dev.settings import DATA_DIR
