@@ -11,9 +11,9 @@
 				<li>
 			{% if pkg.needupdate %}
 				<span style="font-size:x-small"><em>This package has been flagged out-of-date</em></span>
-				{% if not user.is_anonymous %}{% if pkg.maintainer %}{% ifequal user.username pkg.maintainer.username %}
-					<br />&nbsp; &nbsp; <a href="/packages/unflag/{{ pkg.id }}/">Click here to unflag</a>
-				{% endifequal %}{% endif %}{% endif %}
+				{% if not user.is_anonymous %}
+                <br />&nbsp; &nbsp; <a href="/packages/unflag/{{ pkg.id }}/">Click here to unflag</a>
+				{% endif %}
 			{% else %}
 				<a href="/packages/flag/{{ pkg.id }}/" onclick="return !window.open('/packages/flag/{{ pkg.id }}/','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">Flag Package Out-of-Date</a>
 				<a href="/packages/flaghelp" onclick="return !window.open('/packages/flaghelp','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');"><span style="font-size:x-small">(?)</span></a>
