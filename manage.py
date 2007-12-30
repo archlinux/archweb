@@ -9,3 +9,6 @@ except ImportError:
 
 if __name__ == "__main__":
     execute_manager(settings)
+
+# vim: set ts=4 sw=4 et:
+

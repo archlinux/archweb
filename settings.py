@@ -91,3 +91,5 @@ INSTALLED_APPS = (
     'archweb_dev.wiki'
 )
 
+# vim: set ts=4 sw=4 et:
+

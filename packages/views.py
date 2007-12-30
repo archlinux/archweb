@@ -170,3 +170,6 @@ def unflag(request, pkgid):
     pkg.needupdate = 0
     pkg.save()
     return HttpResponseRedirect('/packages/%d/' % (pkg.id))
+
+# vim: set ts=4 sw=4 et:
+

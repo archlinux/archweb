@@ -80,3 +80,6 @@ def edit(request, newsid):
 
     form = forms.FormWrapper(manipulator, data, errors)
     return render_response(request, 'news/add.html', {'form': form, 'news':news})
+
+# vim: set ts=4 sw=4 et:
+

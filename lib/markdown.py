@@ -1868,6 +1868,7 @@ Apr. 2004: Manfred's version at http://www.dwerg.net/projects/markdown/
 """
 
 
+# vim: set ts=4 sw=4 et:
 
 
 

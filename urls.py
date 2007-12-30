@@ -77,3 +77,4 @@ if settings.DEBUG == True:
             {'document_root': settings.DEPLOY_PATH+'/media'}))
 
 # vim: set ts=4 sw=4 et:
+

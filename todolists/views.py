@@ -61,3 +61,6 @@ def add(request):
                         pass
         return HttpResponseRedirect('/todo/')
     return render_response(request, 'todolists/add.html')
+
+# vim: set ts=4 sw=4 et:
+

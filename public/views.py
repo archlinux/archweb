@@ -57,3 +57,6 @@ def robots(request):
 
 def denied(request):
     return render_response(request, 'public/denied.html')
+
+# vim: set ts=4 sw=4 et:
+

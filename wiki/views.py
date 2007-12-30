@@ -59,3 +59,6 @@ def delete(request):
             return HttpResponseRedirect("/wiki/")
         page.delete()
     return HttpResponseRedirect("/wiki/")
+
+# vim: set ts=4 sw=4 et:
+

@@ -66,3 +66,6 @@ def guide(request):
     return render_response(request, 'devel/pkgmaint_guide.txt', {'errors':errors,'email':request.user.email})
     return HttpResponse(file(DATA_DIR + '/pkgmaint_guide.txt').read(),
             mimetype='text/plain')
+
+# vim: set ts=4 sw=4 et:
+

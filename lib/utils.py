@@ -32,3 +32,5 @@ def render_response(req, *args, **kwargs):
     kwargs['context_instance'] = RequestContext(req)
     return render_to_response(*args, **kwargs)
 
+# vim: set ts=4 sw=4 et:
+

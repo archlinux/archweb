@@ -31,3 +31,5 @@ class NewsFeed(Feed):
     def item_author_name(self, item):
         return item.author.get_full_name()
 
+# vim: set ts=4 sw=4 et:
+

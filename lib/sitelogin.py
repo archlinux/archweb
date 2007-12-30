@@ -11,3 +11,5 @@ class SiteLogin:
             else:
                 return HttpResponseRedirect('%s?next=%s' % (self.login_path, request.path))
 
+# vim: set ts=4 sw=4 et:
+

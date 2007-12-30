@@ -48,3 +48,5 @@ class UserProfile(models.Model):
         verbose_name = 'Additional Profile Data'
         verbose_name_plural = 'Additional Profile Data'
 
+# vim: set ts=4 sw=4 et:
+
