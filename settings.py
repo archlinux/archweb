@@ -85,7 +85,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'archweb_dev.news',
     'archweb_dev.packages',
-    'archweb_dev.public',
     'archweb_dev.todolists',
     'archweb_dev.devel',
     'archweb_dev.wiki'
