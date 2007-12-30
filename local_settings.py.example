@@ -28,3 +28,5 @@ MEDIA_URL = 'http://www.archlinux.org/img/devs/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
+# vim: set ts=4 sw=4 et:
+
