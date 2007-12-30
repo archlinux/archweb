@@ -10,7 +10,7 @@
 		<h2 class="title">News Updates</h2>
 		<table class="results" width="100%">
 		{% for item in news %}
-			<tr>
+            <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td>{{ item.postdate }}</td>
 				<td><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></td>
 				<td>

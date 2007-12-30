@@ -17,7 +17,7 @@
 				<th>Status</th>
 			</tr>
 		{% for list in lists %}
-			<tr>
+            <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td style="white-space:nowrap"><a href="/todo/{{ list.id }}/">{{ list.name }}</a></td>
 				<td>{{ list.date_added }}</td>
 				<td>{{ list.creator.get_full_name }}</td>
