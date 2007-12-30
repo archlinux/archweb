@@ -75,20 +75,20 @@ def siteindex(request):
     news  = News.objects.order_by('-postdate', '-id')[:10]
     pkgs  = Package.objects.exclude(repo__name__exact='Testing').order_by('-last_update')[:15]
     repos = Repo.objects.order_by('name')
-    return render_response(request, 'public/index.html', {'news_updates':news,'pkg_updates':pkgs,'repos':repos})
+    return render_response(request, 'devel/siteindex.html', {'news_updates':news,'pkg_updates':pkgs,'repos':repos})
 
 def about(request):
-    return render_response(request, 'public/about.html')
+    return render_response(request, 'devel/about.html')
 
 def art(request):
-    return render_response(request, 'public/art.html')
+    return render_response(request, 'devel/art.html')
 
 def cvs(request):
-    return render_response(request, 'public/cvs.html')
+    return render_response(request, 'devel/cvs.html')
 
 def developers(request):
     devs = User.objects.order_by('username')
-    return render_response(request, 'public/developers.html', {'devs':devs})
+    return render_response(request, 'devel/developers.html', {'devs':devs})
 
 def donate(request):
     donor_count = Donator.objects.count()
@@ -97,30 +97,30 @@ def donate(request):
     slice2 = Donator.objects.all()[(splitval):(splitval*2)]
     slice3 = Donator.objects.all()[(splitval*2):(donor_count-splitval)]
     slice4 = Donator.objects.all()[(donor_count-splitval):donor_count]
-    return render_response(request, 'public/donate.html',
+    return render_response(request, 'devel/donate.html',
         {'slice1':slice1,'slice2':slice2,'slice3':slice3,'slice4':slice4})
 
 def download(request):
     mirrors = Mirror.objects.order_by('country', 'domain')
-    return render_response(request, 'public/download.html', {'mirrors':mirrors})
+    return render_response(request, 'devel/download.html', {'mirrors':mirrors})
 
 def irc(request):
-    return render_response(request, 'public/irc.html')
+    return render_response(request, 'devel/irc.html')
 
 def moreforums(request):
-    return render_response(request, 'public/moreforums.html')
+    return render_response(request, 'devel/moreforums.html')
 
 def press(request):
-    return render_response(request, 'public/press.html')
+    return render_response(request, 'devel/press.html')
 
 def projects(request):
-    return render_response(request, 'public/projects.html')
+    return render_response(request, 'devel/projects.html')
 
 def robots(request):
     return HttpResponse("User-agent: *\nDisallow: /\n", mimetype="text/plain")
 
 def denied(request):
-    return render_response(request, 'public/denied.html')
+    return render_response(request, 'devel/denied.html')
 
 # vim: set ts=4 sw=4 et:
 
