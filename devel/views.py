@@ -31,8 +31,20 @@ def index(request):
     else:
         pkgs = None
 
+    repo_stats = []
+    for repo in Repo.objects.all():
+        repo_stats.append({ 
+            'name': repo.name,
+            'count': Package.objects.filter(repo__exact = repo).count(),
+            'flagged': Package.objects.filter(repo__exact = repo).filter(needupdate=True).count()
+        })
+
     return render_response(request, 'devel/index.html',
-        {'stats':stats, 'pkgs':pkgs, 'todos':todos, 'maint':thismaint})
+        {'stats':stats, 
+         'pkgs':pkgs, 
+         'todos':todos, 
+         'maint':thismaint,
+         'repos': repo_stats})
 
 @login_required
 #@is_maintainer

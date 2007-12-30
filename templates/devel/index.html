@@ -21,9 +21,28 @@
 	</div>
 	<br /><br />
 	{% endif %}
+	
+    <div class="greybox">
+		<h3 class="title">Repository Package Stats</h3>
+		<table class="results" width="100%">
+			<tr>
+				<th>Repository</th>
+				<th># Package</th>
+				<th># Flagged</th>
+			</tr>
+		{% for repo in repos %}
+			<tr>
+				<td><a href="/packages/?repo={{ repo.name }}">{{ repo.name }}</a></td>
+				<td><strong>{{ repo.count }}</strong> packages</td>
+				<td><strong>{{ repo.flagged }}</strong> packages</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	<br /><br />
 
 	<div class="greybox">
-		<h3 class="title">Flagged Package Stats</h3>
+		<h3 class="title">Maintainer Package Stats</h3>
 		<table class="results" width="100%">
 			<tr>
 				<th>Maintainer</th>
