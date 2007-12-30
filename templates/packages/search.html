@@ -83,7 +83,7 @@
 				<th><a href="{% buildsortqs "last_update" %}">Last Updated</a></th>
 			</tr>
 		{% for pkg in results %}
-        <tr class="{% cycle pkgr1,pkgr2 %}">
+        <tr class="{% cycle pkgr2,pkgr1 %}">
 				{% if not user.is_anonymous %}
 				<td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
 				{% endif %}
