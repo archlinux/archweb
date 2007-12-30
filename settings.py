@@ -75,7 +75,7 @@ TEMPLATE_DIRS = (
 
 # Set django's User stuff to use our profile model
 # format is app.model
-AUTH_PROFILE_MODULE = 'public.UserProfile'
+AUTH_PROFILE_MODULE = 'devel.UserProfile'
 
 INSTALLED_APPS = (
     'django.contrib.auth',

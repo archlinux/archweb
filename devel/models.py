@@ -10,6 +10,8 @@ class Mirror(models.Model):
     admin_email = models.CharField(maxlength=255, null=True, blank=True)
     def __str__(self):
         return self.domain
+    class Meta:
+        db_table = 'common_mirror'
     class Admin:
         list_display = ('domain', 'country')
         list_filter = ('country',)
@@ -22,6 +24,8 @@ class Donator(models.Model):
     name = models.CharField(maxlength=255)
     def __str__(self):
         return self.name
+    class Meta:
+        db_table = 'common_donator'
     class Admin:
         ordering = ['name']
         search_fields = ('name')

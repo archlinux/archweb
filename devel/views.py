@@ -6,8 +6,8 @@ from archweb_dev.lib.utils import render_response
 from archweb_dev.packages.models import Package
 from archweb_dev.todolists.models import Todolist, TodolistPkg
 from archweb_dev.settings import DATA_DIR
-from archweb_dev.utils import validate
-from archweb_dev.public.models import UserProfile
+from archweb_dev.lib.utils import validate
+from archweb_dev.devel.models import UserProfile
 
 @login_required
 def index(request):

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from archweb_dev.packages.models import Package, Repo
 from archweb_dev.news.models import News
 from archweb_dev.settings import DATA_DIR
-from archweb_dev.public.models import Donator, Mirror
+from archweb_dev.devel.models import Donator, Mirror
 
 def index(request):
     # get the most recent 10 news items
