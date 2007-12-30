@@ -89,12 +89,6 @@ def siteindex(request):
     repos = Repo.objects.order_by('name')
     return render_response(request, 'devel/siteindex.html', {'news_updates':news,'pkg_updates':pkgs,'repos':repos})
 
-def about(request):
-    return render_response(request, 'devel/about.html')
-
-def art(request):
-    return render_response(request, 'devel/art.html')
-
 def cvs(request):
     return render_response(request, 'devel/cvs.html')
 
@@ -115,15 +109,6 @@ def donate(request):
 def download(request):
     mirrors = Mirror.objects.order_by('country', 'domain')
     return render_response(request, 'devel/download.html', {'mirrors':mirrors})
-
-def irc(request):
-    return render_response(request, 'devel/irc.html')
-
-def moreforums(request):
-    return render_response(request, 'devel/moreforums.html')
-
-def press(request):
-    return render_response(request, 'devel/press.html')
 
 def projects(request):
     return render_response(request, 'devel/projects.html')
