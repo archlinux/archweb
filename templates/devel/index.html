@@ -11,7 +11,7 @@
 				<th>Description</th>
 			</tr>
 		{% for todo in todos %}
-			<tr>
+            <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td style="white-space:nowrap"><a href="/todo/{{ todo.id }}/">{{ todo.name }}</a></td>
 				<td>{{ todo.date_added }}</td>
 				<td>{{ todo.description }}</td>
