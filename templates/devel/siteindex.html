@@ -1,27 +1,19 @@
 {% extends "base.html" %}
 
 {% block content_left %}
-	<h2 class="title">Latest News</h2>
-	<div>
-	{% for news in news_updates %}
+	<div class="box-smalltext">
+	    <h3>Latest News</h2>
+	    {% for news in news_updates %}
+		<span style="float:right;">{{ news.postdate }}</span>
+		<a href="{{ news.get_absolute_url }}">{{ news.title }}</a>
 		<br />
-		<span style="float:right; font-size:x-small">{{ news.postdate }}</span>
-		<h4 class="news"><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h4>
-		<p class="news">{{ news.content|striptags|truncatewords:60 }}</p>
+	    {% endfor %}
 		<br />
-	{% endfor %}
-		<span style="float:right;font-size:x-small"><a href="/news/">More News...</a></span>
-		<br /><br />
+		<span style="float:left;font-size:x-small"><a href="/news/">More News...</a></span>
+		<br />
 	</div>
-{% endblock %}
-
-{% block content_right %}
-	<div id="search">
-		<form method="get" action="/packages/search/">
-			<p>Package Search:&nbsp;&nbsp;<input type="text" name="q" size="20" maxlength="200" /></p>
-		</form>
-	</div>
-	<div id="updates">
+    <br />
+	<div class="box-smalltext">
 		<table width="100%">
 			<tr>
 				<td colspan="2"><h3>Recent Updates</h3></td>
@@ -33,11 +25,83 @@
 			</tr>
 		{% endfor %}
 			<tr>
-				<td colspan="2" style="text-align:right;font-size:x-small"><br /><a href="/packages/search?sort=-last_update">More...</a></td>
+				<td colspan="2" style="text-align:left;font-size:x-small"><br /><a href="/packages/search?sort=-last_update">More Updates...</a></td>
 			</tr>
 		</table>
 	</div>
 	<br />
+	<div class="greybox">
+		<h3>Install ISO Releases</h3>
+		<table id="releases">
+			<tr>
+				<td>2007.08-2</td>
+				<td><b>Don't Panic</b></td>
+				<td style="text-align:right">2007-10-07</td>
+			</tr><tr>
+				<td>2007.08.1</td>
+				<td><b>Don't Panic</b></td>
+				<td style="text-align:right">2007-09-10</td>
+			</tr><tr>
+				<td>2007.08</td>
+				<td><b>Don't Panic</b></td>
+				<td style="text-align:right">2007-08-05</td>
+			</tr><tr>
+				<td>2007.05</td>
+				<td><b>Duke</b></td>
+				<td style="text-align:right">2007-05-17</td>
+			</tr><tr>
+				<td>0.8</td>
+				<td><b>Voodoo</b></td>
+				<td style="text-align:right">2007-03-31</td>
+			</tr><tr>
+				<td>0.7.2</td>
+				<td><b>Gimmick</b></td>
+				<td style="text-align:right">2006-05-23</td>
+			</tr><tr>
+				<td>0.7.1</td>
+				<td><b>Noodle</b></td>
+				<td style="text-align:right">2006-01-05</td>
+			</tr><tr>
+				<td>0.7</td>
+				<td><b>Wombat</b></td>
+				<td style="text-align:right">2005-01-24</td>
+			</tr><tr>
+				<td>0.6</td>
+				<td><b>Widget</b></td>
+				<td style="text-align:right">2004-03-01</td>
+			</tr><tr>
+				<td>0.5</td>
+				<td><b>Nova</b></td>
+				<td style="text-align:right">2003-07-21</td>
+			</tr><tr>
+				<td>0.4</td>
+				<td><b>Dragon</b></td>
+				<td style="text-align:right">2002-12-18</td>
+			</tr><tr>
+				<td>0.3</td>
+				<td><b>Firefly</b></td>
+				<td style="text-align:right">2002-08-07</td>
+			</tr><tr>
+				<td>0.2</td>
+				<td><b>Vega</b></td>
+				<td style="text-align:right">2002-04-17</td>
+			</tr><tr>
+				<td>0.1</td>
+				<td><b>Homer</b></td>
+				<td style="text-align:right">2002-03-11</td>
+			</tr>
+		</table>
+	</div>
+	<br />
+{% endblock %}
+
+{% block content_right %}
+	<div id="search">
+		<form method="get" action="/packages/search/">
+			<p><b>Package Search:</b>&nbsp;&nbsp;<input type="text" name="q" size="20" maxlength="200" /></p>
+		</form>
+	</div>
+    <br />
 	<div class="greybox">
 		<h3>Package Repositories</h3>
 		<table id="repolinks">
@@ -50,95 +114,16 @@
 		</table>
 	</div>
 	<br />
-	<div class="greybox">
-		<h3>Releases</h3>
-		<table id="releases">
-			<tr>
-				<td><a href="/packages/?repo=Core">2007.08-2</a></td>
-				<td><a href="/packages/?repo=Core">Don't Panic</a></td>
-				<td style="text-align:right">2007-10-07</td>
-			</tr><tr>
-				<td><a href="/packages/?repo=Current">2007.08.1</a></td>
-				<td><a href="/packages/?repo=Current">Don't Panic</a></td>
-				<td style="text-align:right">2007-09-10</td>
-			</tr><tr>
-				<td><a href="/packages/?repo=Current">2007.08</a></td>
-				<td><a href="/packages/?repo=Current">Don't Panic</a></td>
-				<td style="text-align:right">2007-08-05</td>
-			</tr><tr>
-				<td><a href="/packages/?repo=Current">2007.05</a></td>
-				<td><a href="/packages/?repo=Current">Duke</a></td>
-				<td style="text-align:right">2007-05-17</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.8.txt">0.8</a></td>
-				<td><a href="/static/pkglists/list-0.8.txt">Voodoo</a></td>
-				<td style="text-align:right">2007-03-31</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.7.2.txt">0.7.2</a></td>
-				<td><a href="/static/pkglists/list-0.7.2.txt">Gimmick</a></td>
-				<td style="text-align:right">2006-05-23</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.7.1.txt">0.7.1</a></td>
-				<td><a href="/static/pkglists/list-0.7.1.txt">Noodle</a></td>
-				<td style="text-align:right">2006-01-05</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.7.txt">0.7</a></td>
-				<td><a href="/static/pkglists/list-0.7.txt">Wombat</a></td>
-				<td style="text-align:right">2005-01-24</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.6.txt">0.6</a></td>
-				<td><a href="/static/pkglists/list-0.6.txt">Widget</a></td>
-				<td style="text-align:right">2004-03-01</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.5.txt">0.5</a></td>
-				<td><a href="/static/pkglists/list-0.5.txt">Nova</a></td>
-				<td style="text-align:right">2003-07-21</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.4.txt">0.4</a></td>
-				<td><a href="/static/pkglists/list-0.4.txt">Dragon</a></td>
-				<td style="text-align:right">2002-12-18</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.3.txt">0.3</a></td>
-				<td><a href="/static/pkglists/list-0.3.txt">Firefly</a></td>
-				<td style="text-align:right">2002-08-07</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.2.txt">0.2</a></td>
-				<td><a href="/static/pkglists/list-0.2.txt">Vega</a></td>
-				<td style="text-align:right">2002-04-17</td>
-			</tr><tr>
-				<td><a href="/static/pkglists/list-0.1.txt">0.1</a></td>
-				<td><a href="/static/pkglists/list-0.1.txt">Homer</a></td>
-				<td style="text-align:right">2002-03-11</td>
-			</tr>
-		</table>
-	</div>
+	<h3>Dev Links:</h3>
+	<ul class="links">
+		<li><a href="/devel/">Dev Dashboard</a></li>
+		<li><a href="/developers/">Developer List</a></li>
+	</ul>
 	<br />
-	<h3>Documentation:</h3>
+	<h3>Main Site Links:</h3>
 	<ul class="links">
-		<li><a href="/static/docs/arch-install-guide.txt">Installation Guide</a></li>
-		<li><a href="http://wiki.archlinux.org">Wiki</a></li>
-	</ul>
-	<h3>Support Arch:</h3>
-	<ul class="links">
-		<li><a href="/donate/">Donate</a></li>
-		<li><a href="http://www.cafepress.com/archlinux/">Arch Schwag</a></li>
-		<li><a href="/art/">Logos &amp; Artwork</a></li>
-	</ul>
-	<h3>Community Links:</h3>
-	<ul class="links">
-		<li><a href="http://www.archlinux.org/mailman/listinfo/">Mailing Lists</a></li>
-		<li><a href="/irc/">IRC Channels</a></li>
-		<li><a href="http://planet.archlinux.org">Planet Arch</a></li>
-		<li><a href="/static/newsletters/">Newsletters</a></li>
-		<li><a href="/projects/">Arch-Based Projects</a></li>
-		<li><a href="/moreforums/">Non-English Forums</a></li>
-		<li><a href="/press/">Press</a></li>
-	</ul>
-	<h3>Development:</h3>
-	<ul class="links">
-		<li><a href="/developers/">Developers</a></li>
 		<li><a href="http://bugs.archlinux.org">Bug Tracker</a></li>
-		<li><a href="/cvs/">CVS</a></li>
+		<li><a href="http://archlinux.org/cvs/">CVS</a></li>
         <li><a href="http://projects.archlinux.org">Projects</a></li>
 	</ul>
 {% endblock %}
