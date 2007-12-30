@@ -1,36 +1,6 @@
 {% extends "base.html" %}
 
-{% block head %}
-<link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
-<link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="/feeds/packages/" />
-{% endblock %}
-
 {% block content_left %}
-	<div id="about" class="box">
-		<h2>Welcome to Arch!</h2>
-		<p>
-			You've reached the website for <strong>Arch Linux</strong>, a lightweight
-			and flexible linux distribution that tries to Keep It Simple.
-		</p><p>
-			Currently we have official packages optimized for the i686 and x86-64
-			architectures.  We complement our official package sets with a
-			<a href="http://aur.archlinux.org">community-operated package repository</a>
-			that grows in size and quality each and every day.
-		</p><p>
-			Our strong community is diverse and helpful, and we pride ourselves on
-			the range of skillsets and uses for Arch that stem from it.  Please
-			check out our <a href="http://bbs.archlinux.org">forums</a> and
-			<a href="http://www.archlinux.org/mailman/listinfo/">mailing lists</a>
-			to get your feet wet.  Also glance through our <a href="http://wiki.archlinux.org">wiki</a>
-			if you want to learn more about Arch.
-		</p><p style="text-align: right">
-			<a href="/about/"><span style="font-size:x-small">Learn more...</span></a>
-		</p>
-	</div>
-	<br /><br />
-	<div style="float:right;position:relative;bottom:-25px">
-		<a href="/feeds/news/"><img src="/media/rss.png" alt="RSS Feed" /></a>
-	</div>
 	<h2 class="title">Latest News</h2>
 	<div>
 	{% for news in news_updates %}
@@ -54,8 +24,7 @@
 	<div id="updates">
 		<table width="100%">
 			<tr>
-				<td><h3>Recent Updates</h3></td>
-				<td style="vertical-align:top;text-align:right"><a href="/feeds/packages/"><img src="/media/rss.png" alt="RSS Feed" /></a></td>
+				<td colspan="2"><h3>Recent Updates</h3></td>
 			</tr>
 		{% for pkg in pkg_updates %}
 			<tr>

@@ -1,13 +1,7 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
 from archweb_dev.news.models import News
-from archweb_dev.feeds import PackageFeed, NewsFeed
 from django.views.decorators.cache import cache_page
-
-feeds = {
-    'packages': PackageFeed,
-    'news':     NewsFeed
-}
 
 urlpatterns = patterns('',
 # Dynamic Stuff
@@ -44,9 +38,6 @@ urlpatterns = patterns('',
     (r'^wiki/delete/$',                     'archweb_dev.wiki.views.delete'),
     (r'^wiki/index/$',                      'archweb_dev.wiki.views.index'),
     (r'^wiki/$',                            'archweb_dev.wiki.views.main'),
-
-# Feeds
-    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
 
 # (mostly) Static Pages
     (r'^$',                'archweb_dev.devel.views.siteindex'),
