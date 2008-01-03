@@ -11,6 +11,8 @@ from archweb_dev.devel.models import UserProfile
 from archweb_dev.news.models import News
 from archweb_dev.settings import DATA_DIR
 from archweb_dev.devel.models import Donator, Mirror
+from django.http import HttpResponse
+from django.template import Context, loader
 
 
 @login_required
@@ -79,8 +81,11 @@ def change_profile(request):
 
 @login_required
 def guide(request):
-    return render_response(request, 'devel/pkgmaint_guide.txt', 
-                           mimetype='text/plain')
+    t = loader.get_template('devel/pkgmaint_guide.txt')
+    c = Context()
+    return HttpResponse(t.render(c), mimetype="text/plain")
+    #return render_response(request, 'devel/pkgmaint_guide.txt',
+    #                       mimetype='text/plain')
 
 def siteindex(request):
     # get the most recent 10 news items
