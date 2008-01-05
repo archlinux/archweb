@@ -1,31 +1,38 @@
-# Django settings for archlinux project.
+### Django settings for archlinux project.
 
 ## Debug settings
 DEBUG = False
 
 ## Notification admins
 ADMINS = (
-    ('Joe Admin', 'joeadmin@example.com'),
+   # ('Joe Admin', 'joeadmin@example.com'),
 )
 
-## Database settings
-DATABASE_ENGINE     = 'mysql'
-DATABASE_NAME       = 'archlinux'
-DATABASE_USER       = 'archlinux'
-DATABASE_PASSWORD   = 'archlinux'
-DATABASE_HOST       = ''
-DATABASE_PORT       = ''
+## Sqlite Database settings
+#DATABASE_ENGINE     = 'sqlite3'
+#DATABASE_NAME       = 'archlinux.db'
 
-### Eanbles/disables caching
-ENABLE_CACHE = False
+## MySQL Database settings
+#DATABASE_ENGINE     = 'mysql'
+#DATABASE_NAME       = 'archlinux'
+#DATABASE_USER       = 'archlinux'
+#DATABASE_PASSWORD   = 'archlinux'
+#DATABASE_HOST       = ''
+#DATABASE_PORT       = ''
+
+## Enable/disable caching
+CACHE = False
+
+## Define a cache backend
+CACHE_BACKEND = 'file:///tmp/ALdjangocache?timeout=900'
 
 ## location for saving dev pictures
 MEDIA_ROOT = '/var/www/archlinux/htdocs/img/devs/'
 
-### web url for serving image files
+## web url for serving image files
 MEDIA_URL = 'http://www.archlinux.org/img/devs/'
 
-# Make this unique, and don't share it with anybody.
+## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
 # vim: set ts=4 sw=4 et:
