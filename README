@@ -15,10 +15,10 @@ For a simple testing installation:
  1. Install dependencies.
    pacman -S django python-pysqlite sqlite3
 
- 2. Extract test database
+ 2. Fetch adn Extract test database
    For simple testing, sqlite is a good option. We have provided an 
    example test database.
-   gzip -cd ./testing/database/archweb_sqlite.db.gz > archweb.db
+   wget http://dev.archlinux.org/~eliott/archweb_sqlite.db.gz -O - | zcat > archweb.db
 
  3. Copy local_settings.py.example to local_settings.py and modify
    Make sure to uncomment the sqlite section.
