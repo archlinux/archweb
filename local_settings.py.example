@@ -10,7 +10,7 @@ ADMINS = (
 
 ## Sqlite Database settings
 #DATABASE_ENGINE     = 'sqlite3'
-#DATABASE_NAME       = 'archlinux.db'
+#DATABASE_NAME       = 'archweb.db'
 
 ## MySQL Database settings
 #DATABASE_ENGINE     = 'mysql'

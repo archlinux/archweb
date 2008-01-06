@@ -14,16 +14,14 @@ For a simple testing installation:
 
  1. Install dependencies.
    pacman -S django python-pysqlite sqlite3
-   or
-   pacman -S django mysql mysql-python
 
- 2. Configure database
-   For simple testing, sqlite is a good option.
-   If using mysql, create a database, and a user with permission to 
-   that database.
+ 2. Extract test database
+   For simple testing, sqlite is a good option. We have provided an 
+   example test database.
+   gzip -cd ./testing/database/archweb_sqlite.db.gz > archweb.db
 
- 3. Populate database with test data
-   Run ./scripts/testing/load_data.bash
+ 3. Copy local_settings.py.example to local_settings.py and modify
+   Make sure to uncomment the sqlite section.
 
  4. Use the following commands to start a service instance
    export PYTHONPATH=`pwd`:${PYTHONPATH} 
