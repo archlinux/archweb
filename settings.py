@@ -10,13 +10,6 @@ TEMPLATE_DEBUG = DEBUG
 # Set managers to admins
 MANAGERS = ADMINS
 
-## Cache backend settings
-if CACHE == True:
-    CACHE_BACKEND = 'file:///tmp/ALdjangocache?timeout=900'
-    CACHE_MIDDLEWARE_SECONDS = 900
-    CACHE_MIDDLEWARE_KEY_PREFIX = 'arch'
-    CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
-
 # Full path to the data directory
 DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__))
 DATA_DIR = '%s/data' % DEPLOY_PATH
