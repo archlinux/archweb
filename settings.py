@@ -11,7 +11,7 @@ TEMPLATE_DEBUG = DEBUG
 MANAGERS = ADMINS
 
 ## Cache backend settings
-if ENABLE_CACHE == True:
+if CACHE == True:
     CACHE_BACKEND = 'file:///tmp/ALdjangocache?timeout=900'
     CACHE_MIDDLEWARE_SECONDS = 900
     CACHE_MIDDLEWARE_KEY_PREFIX = 'arch'
@@ -57,7 +57,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 # A bit of hackery to insert caching at the right spot
-if ENABLE_CACHE == True:
+if CACHE == True:
     MIDDLEWARE_CLASSES += ('django.middleware.cache.CacheMiddleware',)
 
 MIDDLEWARE_CLASSES += (
