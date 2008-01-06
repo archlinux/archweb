@@ -1,4 +1,5 @@
 *.pyc
 *.swp
 local_settings.py
+archweb.db
 
