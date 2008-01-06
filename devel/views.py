@@ -5,11 +5,9 @@ from django.core import validators
 from archweb_dev.lib.utils import render_response
 from archweb_dev.packages.models import Package, Repo
 from archweb_dev.todolists.models import Todolist, TodolistPkg
-from archweb_dev.settings import DATA_DIR
 from archweb_dev.lib.utils import validate
 from archweb_dev.devel.models import UserProfile
 from archweb_dev.news.models import News
-from archweb_dev.settings import DATA_DIR
 from archweb_dev.devel.models import Donator, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader

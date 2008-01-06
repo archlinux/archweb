@@ -12,7 +12,6 @@ MANAGERS = ADMINS
 
 # Full path to the data directory
 DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = '%s/data' % DEPLOY_PATH
 
 # Local time zone for this installation. All choices can be found here:
 # http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
