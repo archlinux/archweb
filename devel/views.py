@@ -96,7 +96,7 @@ def cvs(request):
     return render_response(request, 'devel/cvs.html')
 
 def developers(request):
-    devs = User.objects.order_by('username')
+    devs = User.objects.filter(is_active=True).order_by('username')
     return render_response(request, 'devel/developers.html', {'devs':devs})
 
 def donate(request):
