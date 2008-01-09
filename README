@@ -27,4 +27,12 @@ For a simple testing installation:
    export PYTHONPATH=`pwd`:${PYTHONPATH} 
    export DJANGO_SETTINGS_MODULE=archweb_dev.settings 
    python manage.py runserver
-   
+
+ 5. The test database has a few test accounts in it.
+   To login, use the following credentails.
+   User: admin
+   Pass: pass
+
+   You can then reset the password on any of the test users by
+   going into the django admin interface and doing so.
+
