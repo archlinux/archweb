@@ -28,10 +28,10 @@ CACHE_MIDDLEWARE_KEY_PREFIX = 'arch'
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 ## location for saving dev pictures
-MEDIA_ROOT = '/var/www/archlinux/htdocs/img/devs/'
+MEDIA_ROOT = '/var/www/archlinux/htdocs/img/'
 
 ## web url for serving image files
-MEDIA_URL = 'http://www.archlinux.org/img/devs/'
+MEDIA_URL = 'http://www.archlinux.org/img/'
 
 ## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
