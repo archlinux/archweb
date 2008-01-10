@@ -1,70 +1,62 @@
 * { margin: 0; padding: 0; }
-* ul { padding: 20px; }
+* ul { padding: 10px 20px; }
 body {
-	background: url("/media/title_back.png") repeat-x top left #fbf8f1;
+  min-width: 600px;
+	background: url("/media/titlebar.png") repeat-x top left #fff;
 	padding: 0 30px;
 	color: #46494d;
-	font-family: Bitstream Vera Sans, Lucida Grande, Arial, sans-serif;
+  font-size: 14px;
+	font-family: "DejaVu Sans", "Bitstream Vera Sans", "Lucida Grande", Arial, sans-serif;
 }
 /*
  * Divs
  */
 #head_container {
-	height: 175px;
+	height: 220px;
 }
-#main_nav ul {
-	list-style: none;
-	padding-right: 10px;
-	padding-top: 48px;
+#main_nav {
+  position: absolute;
+  top: 123px;
+  right: 30px;
+  width: 600px;
+  background: #333;
 }
-#main_nav ul li {
+#dev_nav {
+  position: absolute;
+  top: 149px;
+  right: 30px;
+  width: 600px;
+  background: #1793d1;
+}
+#main_nav ul, #dev_nav ul {
+	list-style: none; 
+	margin: 0;
+  padding: 0;
+}
+#main_nav ul li, #dev_nav ul li {
 	display: block;
 	float: right;
-	width: 67px;
-	height: 20px;
-	padding-top: 2px;
-	margin-left: 3px;
-	background: url("/media/tab.png") repeat-x bottom left #fbf8f1;
+  margin: 0 3px;
+  padding: 0;
 	text-align: center;
 	font-size: 13px;
+  line-height: 26px;
 }
-#main_nav ul li[class~=selected] {
-	background: #fbf8f1;
+#main_nav ul li.selected {
+	background: #1793d1;
 }
-#main_nav ul li a {
-	text-decoration: none;
-    display: block;
+#dev_nav ul li.selected {
+	background: #333;
 }
-#dev_nav ul li a {
-	text-decoration: none;
-    display: block;
-}
-#dev_nav ul {
-	list-style: none;
-	padding-right: 10px;
-	padding-top: 5px;
-}
-#dev_nav ul li {
-	display: block;
-	float: right;
-	width: 87px;
-	height: 20px;
-	padding-top: 2px;
-	margin-left: 3px;
-	background: url("/media/tab.png") repeat-x bottom left #fbf8f1;
-	border: 1px solid #cccccc;
-	text-align: center;
-	font-size: 13px;
-}
-#dev_nav ul li[class~=selected] {
-	background: #fbf8f1;
-}
-#dev_nav ul li a {
+#main_nav ul li a, #dev_nav ul li a {
+  display: block;
+  padding: 0 8px;
+  color: #fff;
+  font-weight: bold;
 	text-decoration: none;
 }
-#title {
-	height: 140px;
-	float: left;
+#main_nav ul li a:hover {
+	background: #1793d1;
 }
 .box-smalltext {
 	font-size: small;
@@ -75,15 +67,28 @@ body {
 	padding: 10px;
 }
 #ads {
-	float: right;
+  z-index: 0;
+  position: absolute;
+  top: 40px;
+  right: 10px;
 }
 #logo {
-	float: left;
-	width: 140px;
-	height: 140px;
+  z-index: 1;
+	position: absolute;
+  top: 10px;
+  left: 25px;
+	width: 350px;
 }
-#titleimg {
-	float: left;
+#logo h1#archtitle {
+  text-indent: -9999px;
+  margin: 0;
+  padding: 0;
+}
+#logo h1#archtitle a {
+  display: block;
+  background: transparent url("/media/titlelogo.png") top left no-repeat;
+  width: 350px;
+  height: 103px;
 }
 #devlist {
 	width: 80%;
@@ -109,13 +114,12 @@ body {
 	margin: 0 360px 0 0;
 }
 .left p {
-	text-align: justify;
 	padding-bottom: 10px;
 }
 .box {
 	padding: 10px;
-	background: #e1e3e6;
-	border: 1px solid #8faecd;
+	background: #f0f0f0;
+	border: 1px solid #d9d9d9;
 }
 .greybox {
 	padding: 10px;
@@ -124,7 +128,6 @@ body {
 }
 div.listing {
 	padding-right: 10px;
-	border-left: 1px solid #387cbf;
 }
 .error {
 	color: #dd0000;
@@ -132,8 +135,10 @@ div.listing {
 }
 .foot {
 	clear: both;
+  padding: 2em 0;
 	text-align: center;
-	font-size: 0.8em;
+	font-size: 0.75em;
+  line-height: 1.5em;
 }
 #search {
 	float: right;
@@ -170,11 +175,13 @@ h4.title {
 	border-bottom: 1px solid #46494d;
 }
 h4.news {
-	border-bottom: 1px dotted #8faecd;
+	border-bottom: 1px dotted #0771a6;
+  margin-bottom: .25em;
+  padding-bottom: .2em;
 }
 div.listing h4 {
-	background: #d1d3d6;
-	border-top: 1px double #387cbf;
+  color: #fff;
+	background: #0771a6;
 	padding: 3px;
 }
 /*
@@ -184,26 +191,19 @@ p {
 	padding-bottom: 20px;
 }
 p.news {
-	text-align: left;
 	font-size: small;
 }
 a {
-	color: #35526f;
-	font-weight: bold;
-	text-decoration: underline;
-}
-.news a {
+	color: #0771a6;
 	text-decoration: none;
+}
+a:hover {
+  color: #333;
+  text-decoration: underline;
 }
 #about {
 	position: relative;
 	top: -9px;
-}
-#about a {
-	text-decoration: none;
-}
-.community a {
-	text-decoration: none;
 }
 ol {
 	padding-left: 45px;
@@ -270,6 +270,9 @@ table#art {
 	vertical-align: top;
 	padding-right: 15px;
 }
+.devpic img {
+  padding-top: 25px;
+}
 table.deventry {
 	padding-bottom: 25px;
 }
@@ -279,7 +282,6 @@ table.deventry {
 	white-space: nowrap;
 }
 .deventry td {
-	border-bottom: 1px solid black;
 	width: 100%;
 }
 table.results {
@@ -305,8 +307,6 @@ table.results {
 	font-size: 0.8em;
 }
 .listing th {
-	background: #d1d3d6;
-	border-left: 1px solid #387cbf;
 	font-size: small;
 	vertical-align: top;
 	text-align: left;
@@ -317,13 +317,13 @@ table.results {
 	padding: 2px;
 }
 blockquote.code {
-	background: #c1c3f6;
-	border: 1px solid #8faecd;
+	background: #d0d0d0;
+	border: 1px solid #bbb;
 	margin-left: auto;
 	margin-right: auto;
 	white-space: nowrap;
 	padding: 5px;
-	font-family: Courier, Courier New, Monospace;
+	font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", Courier, "Courier New", Monospace;
 }
 /*
  * Wiki Styles
@@ -363,7 +363,7 @@ div.wikifoot_r {
 	margin-right: auto;
 	white-space: nowrap;
 	padding: 5px;
-	font-family: Courier, Courier New, Monospace;
+	font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", Courier, "Courier New", Monospace;
 }
 .wikibody blockquote {
 	padding-left: 30px;
