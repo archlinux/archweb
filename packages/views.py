@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from archweb_dev.lib.utils import validate, render_response
 from datetime import datetime
 from archweb_dev.packages.models import Package, PackageFile, Repo, Category
+from django.core.exceptions import ObjectDoesNotExist
+
 
 def update(request):
     if request.POST.has_key('adopt'):
@@ -43,7 +45,18 @@ def details(request, pkgid=0, name='', repo=''):
         pkgid = p[0].id
 
     pkg = get_object_or_404(Package, id=pkgid)
-    return render_response(request, 'packages/details.html', {'pkg':pkg})
+    origin_repo = None
+    if pkg.repo.name == 'Testing':
+        try:
+            origin_repo = Package.objects.filter(
+                pkgname__exact = pkg.pkgname).exclude(
+                    repo__name__exact = pkg.repo.name).get().repo.name
+        except ObjectDoesNotExist:
+            origin_repo = None
+    return render_response(
+        request, 
+        'packages/details.html', 
+        {'pkg': pkg, 'origin_repo': origin_repo})
 
 def search(request, query=''):
     if request.GET.has_key('q'):

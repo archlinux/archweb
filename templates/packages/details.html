@@ -6,7 +6,11 @@
 		<h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
 		<div style="float:right" class="listing">
 			<ul class="small">
+                {% if origin_repo %}
+                <li><a href="http://cvs.archlinux.org/cgi-bin/viewcvs.cgi/{{ pkg.category.category }}/{{ pkg.pkgname }}/?cvsroot={{ origin_repo }}&amp;only_with_tag=TESTING">View CVS Entries</a></li>
+                {% else %}
 				<li><a href="http://cvs.archlinux.org/cgi-bin/viewcvs.cgi/{{ pkg.category.category }}/{{ pkg.pkgname }}/?cvsroot={{ pkg.repo.name }}&amp;only_with_tag=CURRENT">View CVS Entries</a></li>
+                {% endif %}
 				<li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li>
 				<li>
 			{% if pkg.needupdate %}
