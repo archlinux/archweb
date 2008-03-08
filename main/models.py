@@ -75,6 +75,35 @@ class Mirror(models.Model):
         search_fields = ('domain')
         pass
 
+class Press(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(maxlength=255)
+    url = models.CharField(maxlength=255)
+    def __str__(self):
+        return self.name
+    class Meta:
+        db_table = 'press'
+    class Admin:
+        ordering = ['name']
+        search_fields = ('name')
+        pass
+
+class AltForums(models.Model):
+    id = models.AutoField(primary_key=True)
+    language = models.CharField(maxlength=255)
+    url = models.CharField(maxlength=255)
+    name = models.CharField(maxlength=255)
+    def __str__(self):
+        return self.name
+    class Meta:
+        db_table = 'alt_forums'
+    class Admin:
+        list_display = ('language', 'name')
+        list_filter = ('language',)
+        ordering = ['name']
+        search_fields = ('name')
+        pass
+
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(maxlength=255)
