@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core import validators
 from archweb_dev.main.utils import render_response, validate
 from archweb_dev.main.models import Package, Repo, Todolist, TodolistPkg
-from archweb_dev.main.models import UserProfile, News, Donor, Mirror
+from archweb_dev.main.models import UserProfile, News, Donor, Mirror, Arch
 from django.http import HttpResponse
 from django.template import Context, loader
 
@@ -26,6 +26,13 @@ def index(request):
         pkgs = Package.objects.filter(maintainer=thismaint.id).filter(needupdate=True).order_by('repo', 'pkgname')
     else:
         pkgs = None
+    arch_stats = []
+    for arch in Arch.objects.all():
+        arch_stats.append({ 
+            'name': arch.name,
+            'count': Package.objects.filter(arch__exact = arch).count(),
+            'flagged': Package.objects.filter(arch__exact = arch).filter(needupdate=True).count()
+        })
 
     repo_stats = []
     for repo in Repo.objects.all():
@@ -35,12 +42,10 @@ def index(request):
             'flagged': Package.objects.filter(repo__exact = repo).filter(needupdate=True).count()
         })
 
-    return render_response(request, 'devel/index.html',
-        {'stats':stats, 
-         'pkgs':pkgs, 
-         'todos':todos, 
-         'maint':thismaint,
-         'repos': repo_stats})
+    return render_response(
+        request, 'devel/index.html',
+        {'stats': stats, 'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
+         'repos': repo_stats, 'archs': arch_stats})
 
 @login_required
 #@is_maintainer
@@ -86,7 +91,9 @@ def siteindex(request):
     news  = News.objects.order_by('-postdate', '-id')[:10]
     pkgs  = Package.objects.exclude(repo__name__exact='Testing').order_by('-last_update')[:15]
     repos = Repo.objects.order_by('name')
-    return render_response(request, 'devel/siteindex.html', {'news_updates':news,'pkg_updates':pkgs,'repos':repos})
+    return render_response(
+        request, 'devel/siteindex.html', 
+        {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})
 
 def cvs(request):
     return render_response(request, 'devel/cvs.html')

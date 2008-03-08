@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime
 from archweb_dev.main.utils import validate, render_response
-from archweb_dev.main.models import Package, PackageFile, Repo, Category
+from archweb_dev.main.models import Arch, Repo
+from archweb_dev.main.models import Package, PackageFile, PackageDepends
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -45,18 +46,7 @@ def details(request, pkgid=0, name='', repo=''):
         pkgid = p[0].id
 
     pkg = get_object_or_404(Package, id=pkgid)
-    origin_repo = None
-    if pkg.repo.name == 'Testing':
-        try:
-            origin_repo = Package.objects.filter(
-                pkgname__exact = pkg.pkgname).exclude(
-                    repo__name__exact = pkg.repo.name).get().repo.name
-        except ObjectDoesNotExist:
-            origin_repo = None
-    return render_response(
-        request, 
-        'packages/details.html', 
-        {'pkg': pkg, 'origin_repo': origin_repo})
+    return render_response(request, 'packages/details.html', {'pkg': pkg})
 
 def search(request, query=''):
     if request.GET.has_key('q'):
@@ -65,7 +55,7 @@ def search(request, query=''):
 
     # fetch the form vars
     repo       = request.GET.get('repo', 'all')
-    category   = request.GET.get('category', 'all')
+    arch       = request.GET.get('arch', 'all')
     lastupdate = request.GET.get('lastupdate', '')
     limit      = int(request.GET.get('limit', '50'))
     skip       = int(request.GET.get('skip', '0'))
@@ -74,10 +64,10 @@ def search(request, query=''):
 
     # build the form lists
     repos = Repo.objects.order_by('name')
-    cats  = Category.objects.order_by('category')
+    archs  = Arch.objects.order_by('name')
     # copy GET data over and add the lists
     c = request.GET.copy()
-    c['repos'], c['categories']  = repos, cats
+    c['repos'], c['archs']  = repos, archs
     c['limit'], c['skip'] = limit, skip
     c['lastupdate'] = lastupdate
     c['sort'] = sort
@@ -100,18 +90,16 @@ def search(request, query=''):
     else:
         results = Package.objects.all()
     if repo != 'all':     results = results.filter(repo__name__exact=repo)
-    if category != 'all': results = results.filter(category__category__exact=category)
+    if arch != 'all':     results = results.filter(arch__name__exact=arch)
     if maint != 'all':    results = results.filter(maintainer=maint)
     if lastupdate:        results = results.filter(last_update__gte=datetime(int(lastupdate[0:4]),int(lastupdate[5:7]),int(lastupdate[8:10])))
-    # select_related() shouldn't be needed -- we're working around a Django bug
-    #results = results.select_related().order_by('repos.name', 'category', 'pkgname')
 
     # sort results
     if sort == '':
-        results = results.order_by('repo', 'category', 'pkgname')
+        results = results.order_by('repo', 'arch', 'pkgname')
     else:
         # duplicate sort fields shouldn't hurt anything
-        results = results.order_by(sort, 'repo', 'category', 'pkgname')
+        results = results.order_by(sort, 'repo', 'arch', 'pkgname')
 
     qs = request.GET.copy()
     # build pagination urls

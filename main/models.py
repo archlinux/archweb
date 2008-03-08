@@ -137,6 +137,8 @@ class Arch(models.Model):
     class Meta:
         db_table = 'arch'
         ordering = ['name']
+    def __str__(self):
+        return self.name
 
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
@@ -154,8 +156,8 @@ class Repo(models.Model):
 
 class Package(models.Model):
     id = models.AutoField(primary_key=True)
-    repo = models.ForeignKey(Repo)
-    arch = models.ForeignKey(Arch)
+    repo = models.ForeignKey('Repo')
+    arch = models.ForeignKey('Arch')
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(maxlength=255)
@@ -163,7 +165,7 @@ class Package(models.Model):
     pkgrel = models.CharField(maxlength=255)
     pkgdesc = models.CharField(maxlength=255)
     url = models.URLField()
-    depends = models.ForeignKey(PackageDepends)
+    depends = models.ForeignKey('PackageDepends')
     last_update = models.DateTimeField(null=True, blank=True)
     objects = PackageManager()
     class Meta:
@@ -173,6 +175,16 @@ class Package(models.Model):
     def get_absolute_url(self):
         return '/packages/%i/' % self.id
 
+    def required_by_urlize(self):
+        urls = []
+        requiredby = PackageDepends.objects.filter(depname=self.pkgname)
+        for req in requiredby.package_set.all():
+            urls.append(
+                '<li><a href="/packages/%d">%s</a></li>' % \
+                (req.id,req.pkgname))
+        return ''.join(urls)
+
+
     def depends_urlize(self):
         urls = []
         for dep in self.packagedepends_set.all():
@@ -181,7 +193,7 @@ class Package(models.Model):
             except IndexError:
                 # couldn't find a package in the DB
                 # it might be a virtual depend
-                urls.append('<li>%s</li>' % dep.depname)
+                urls.append('<li>%s (v)</li>' % dep.depname)
                 continue
             urls.append(
                 '<li><a href="/packages/%d">%s</a></li>' % (p.id,dep.depname))
@@ -189,14 +201,14 @@ class Package(models.Model):
 
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
-    pkg = models.ForeignKey(Package)
+    pkg = models.ForeignKey('Package')
     path = models.CharField(maxlength=255)
     class Meta:
         db_table = 'packages_files'
 
 class PackageDepends(models.Model):
     id = models.AutoField(primary_key=True)
-    pkg = models.ForeignKey(Package)
+    pkg = models.ForeignKey('Package')
     depname = models.CharField(db_index=True, maxlength=255)
     depvcmp = models.CharField(maxlength=255)
     class Meta:
@@ -214,8 +226,8 @@ class Todolist(models.Model):
 
 class TodolistPkg(models.Model):
     id = models.AutoField(primary_key=True)
-    list = models.ForeignKey(Todolist)
-    pkg = models.ForeignKey(Package)
+    list = models.ForeignKey('Todolist')
+    pkg = models.ForeignKey('Package')
     complete = models.BooleanField(default=False)
     class Meta:
         db_table = 'todolists_pkgs'

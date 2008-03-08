@@ -21,7 +21,7 @@
 		{% for pkg in pkg_updates %}
 			<tr>
 				<td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</a></td>
-				<td style="text-align:right">{{ pkg.category.category }}</td>
+				<td style="text-align:right">{{ pkg.arch.name }}</td>
 			</tr>
 		{% endfor %}
 			<tr>

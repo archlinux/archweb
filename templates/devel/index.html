@@ -23,11 +23,29 @@
 	{% endif %}
 	
     <div class="greybox">
-		<h3 class="title">Repository Package Stats</h3>
+		<h3 class="title">Stats by Architecture</h3>
+		<table class="results" width="100%">
+			<tr>
+				<th width="50%">Arch</th>
+				<th># Packages</th>
+				<th># Flagged</th>
+			</tr>
+		{% for arch in archs %}
+            <tr class="{% cycle pkgr2,pkgr1 %}">
+				<td><a href="/packages/?arch={{ arch.name }}">{{ arch.name }}</a></td>
+				<td><strong>{{ repo.count }}</strong> packages</td>
+				<td><strong>{{ repo.flagged }}</strong> packages</td>
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	<br /><br />
+    <div class="greybox">
+		<h3 class="title">Stats by Repository</h3>
 		<table class="results" width="100%">
 			<tr>
 				<th width="50%">Repository</th>
-				<th># Package</th>
+				<th># Packages</th>
 				<th># Flagged</th>
 			</tr>
 		{% for repo in repos %}
@@ -42,11 +60,11 @@
 	<br /><br />
 
 	<div class="greybox">
-		<h3 class="title">Maintainer Package Stats</h3>
+		<h3 class="title">Stats by Maintainer</h3>
 		<table class="results" width="100%">
 			<tr>
 				<th width="50%">Maintainer</th>
-				<th># Package</th>
+				<th># Packages</th>
 				<th># Flagged</th>
 			</tr>
 		{% for maint in stats %}

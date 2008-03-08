@@ -17,24 +17,24 @@
 		<form method="get" action="/packages/search/">
 		<table width="100%">
 			<tr>
+				<td><span class="smalltext">Arch</span></td>
 				<td><span class="smalltext">Repository</span></td>
-				<td><span class="smalltext">Category</span></td>
 				<td><span class="smalltext">Keywords</span></td>
 				<td><span class="smalltext">Last Update</span></td>
 				<td><span class="smalltext">Per Page</span></td>
 			</tr><tr>
 				<td>
+					<select name="arch">
+						<option value="all">All</option>
+					{% for a in archs %}
+						<option value="{{ a.arch }}"{% ifequal arch a.name %} selected{% endifequal %}>{{ a.name }}</option>
+					{% endfor %}
+					</select>
+				</td><td>
 					<select name="repo">
 						<option value="all">All</option>
 					{% for r in repos %}
 						<option value="{{ r.name }}"{% ifequal repo r.name %} selected{% endifequal %}>{{ r.name|capfirst }}</option>
-					{% endfor %}
-					</select>
-				</td><td>
-					<select name="category">
-						<option value="all">All</option>
-					{% for c in categories %}
-						<option value="{{ c.category }}"{% ifequal category c.category %} selected{% endifequal %}>{{ c.category|capfirst }}</option>
 					{% endfor %}
 					</select>
 				</td><td>
@@ -75,8 +75,8 @@
 				<form method="post" action="/packages/update/">
 				<th>&nbsp;</th>
 				{% endif %}
+				<th><a href="{% buildsortqs "arch" %}">Arch</a></th>
 				<th><a href="{% buildsortqs "repo" %}">Repo</a></th>
-				<th><a href="{% buildsortqs "category" %}">Category</a></th>
 				<th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
 				<th>Version</th>
 				<th>Description</th>
@@ -87,8 +87,8 @@
 				{% if not user.is_anonymous %}
 				<td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
 				{% endif %}
+				<td>{{ pkg.arch.name }}</td>
 				<td>{{ pkg.repo.name }}</td>
-				<td>{{ pkg.category.category }}</td>
 				<td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
 			{% if pkg.needupdate %}
 				<td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>

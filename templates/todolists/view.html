@@ -6,6 +6,7 @@
 		<table class="results" width="100%">
 			<tr>
 				<th>ID</th>
+				<th>Arch</th>
 				<th>Repo</th>
 				<th>Name</th>
 				<th>Maintainer</th>
@@ -14,6 +15,7 @@
 		{% for pkg in pkgs %}
             <tr class="{% cycle pkgr1,pkgr2 %}">
 				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
+				<td>{{ pkg.pkg.arch.name  }}</td>
 				<td>{{ pkg.pkg.repo.name  }}</td>
 				<td>{{ pkg.pkg.pkgname  }}</td>
 				<td>{{ pkg.pkg.maintainer.get_full_name  }}</td>

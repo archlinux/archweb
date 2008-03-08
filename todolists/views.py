@@ -49,7 +49,7 @@ def add(request):
         todo.save()
         # now link in packages
         for p in request.POST.get('packages').split("\n"):
-            for pkg in Package.objects.filter(pkgname=p.strip()):
+            for pkg in Package.objects.filter(pkgname=p.strip()).order_by('arch'):
                 todopkg = TodolistPkg(
                     list = todo,
                     pkg  = pkg)

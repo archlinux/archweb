@@ -6,11 +6,6 @@
 		<h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
 		<div style="float:right" class="listing">
 			<ul class="small">
-                {% if origin_repo %}
-                <li><a href="http://cvs.archlinux.org/cgi-bin/viewcvs.cgi/{{ pkg.category.category }}/{{ pkg.pkgname }}/?cvsroot={{ origin_repo }}&amp;only_with_tag=TESTING">View CVS Entries</a></li>
-                {% else %}
-				<li><a href="http://cvs.archlinux.org/cgi-bin/viewcvs.cgi/{{ pkg.category.category }}/{{ pkg.pkgname }}/?cvsroot={{ pkg.repo.name }}&amp;only_with_tag=CURRENT">View CVS Entries</a></li>
-                {% endif %}
 				<li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li>
 				<li>
 			{% if pkg.needupdate %}
@@ -37,11 +32,11 @@
 		</div>
 		<table class="listing">
 			<tr>
+				<th>Architecture:</th>
+				<td>{{ pkg.arch.name }}</td>
+			</tr><tr>
 				<th>Repository:</th>
 				<td>{{ pkg.repo.name }}</td>
-			</tr><tr>
-				<th>Category:</th>
-				<td>{{ pkg.category.category }}</td>
 			</tr><tr>
 				<th>Description:</th>
 				<td>{{ pkg.pkgdesc }}</td>
@@ -66,11 +61,14 @@
 						{{ pkg.depends_urlize }}
 						</ul>
 					</div>
-				</td><td colspan="2" valign="top">
+				</td>
+			</tr>
+			<tr>
+				<td valign="top">
 					<div class="listing">
-						<h4>Sources:</h4>
+						<h4>Required By:</h4>
 						<ul style="font-size:small;list-style:none">
-						{{ pkg.sources_urlize }}
+						{{ pkg.required_by_urlize }}
 						</ul>
 					</div>
 				</td>
