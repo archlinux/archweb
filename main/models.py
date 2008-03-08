@@ -135,7 +135,7 @@ class News(models.Model):
 
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255)
+    name = models.CharField(unique=True,maxlength=255)
     class Meta:
         db_table = 'archs'
         ordering = ['name']
