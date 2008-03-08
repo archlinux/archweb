@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core import validators
 from archweb_dev.main.utils import render_response, validate
 from archweb_dev.main.models import Package, Repo, Todolist, TodolistPkg
-from archweb_dev.main.models import UserProfile, News, Donator, Mirror
+from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader
 
@@ -96,12 +96,12 @@ def developers(request):
     return render_response(request, 'devel/developers.html', {'devs':devs})
 
 def donate(request):
-    donor_count = Donator.objects.count()
+    donor_count = Donor.objects.count()
     splitval = donor_count / 4
-    slice1 = Donator.objects.all()[:splitval]
-    slice2 = Donator.objects.all()[(splitval):(splitval*2)]
-    slice3 = Donator.objects.all()[(splitval*2):(donor_count-splitval)]
-    slice4 = Donator.objects.all()[(donor_count-splitval):donor_count]
+    slice1 = Donor.objects.all()[:splitval]
+    slice2 = Donor.objects.all()[(splitval):(splitval*2)]
+    slice3 = Donor.objects.all()[(splitval*2):(donor_count-splitval)]
+    slice4 = Donor.objects.all()[(donor_count-splitval):donor_count]
     return render_response(request, 'devel/donate.html',
         {'slice1':slice1,'slice2':slice2,'slice3':slice3,'slice4':slice4})
 

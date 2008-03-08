@@ -75,7 +75,7 @@ class Mirror(models.Model):
         search_fields = ('domain')
         pass
 
-class Donator(models.Model):
+class Donor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(maxlength=255)
     def __str__(self):
@@ -102,13 +102,6 @@ class News(models.Model):
     def get_absolute_url(self):
         return '/news/%i/' % self.id
 
-class Category(models.Model):
-    id = models.AutoField(primary_key=True)
-    category = models.CharField(maxlength=255)
-    class Meta:
-        db_table = 'categories'
-        verbose_name_plural = 'categories'
-
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(maxlength=255)
@@ -127,7 +120,6 @@ class Package(models.Model):
     id = models.AutoField(primary_key=True)
     repo = models.ForeignKey(Repo)
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
-    category = models.ForeignKey(Category)
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(maxlength=255)
     pkgver = models.CharField(maxlength=255)
