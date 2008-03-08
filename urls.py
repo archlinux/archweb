@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from archweb_dev.news.models import News
+from archweb_dev.main.models import News
 from django.views.decorators.cache import cache_page
 
 urlpatterns = patterns('',
