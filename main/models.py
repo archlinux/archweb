@@ -67,7 +67,7 @@ class Mirror(models.Model):
     def __str__(self):
         return self.domain
     class Meta:
-        db_table = 'common_mirror'
+        db_table = 'mirror'
     class Admin:
         list_display = ('domain', 'country')
         list_filter = ('country',)
@@ -83,12 +83,13 @@ class Press(models.Model):
         return self.name
     class Meta:
         db_table = 'press'
+        verbose_name_plural = 'press'
     class Admin:
         ordering = ['name']
         search_fields = ('name')
         pass
 
-class AltForums(models.Model):
+class AltForum(models.Model):
     id = models.AutoField(primary_key=True)
     language = models.CharField(maxlength=255)
     url = models.CharField(maxlength=255)
@@ -96,7 +97,8 @@ class AltForums(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'alt_forums'
+        db_table = 'alt_forum'
+        verbose_name = 'AltForum'
     class Admin:
         list_display = ('language', 'name')
         list_filter = ('language',)
@@ -110,7 +112,7 @@ class Donor(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'common_donator'
+        db_table = 'donor'
     class Admin:
         ordering = ['name']
         search_fields = ('name')
@@ -165,7 +167,6 @@ class Package(models.Model):
     pkgrel = models.CharField(maxlength=255)
     pkgdesc = models.CharField(maxlength=255)
     url = models.URLField()
-    depends = models.ForeignKey('PackageDepends')
     last_update = models.DateTimeField(null=True, blank=True)
     objects = PackageManager()
     class Meta:
