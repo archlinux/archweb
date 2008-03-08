@@ -102,6 +102,13 @@ class News(models.Model):
     def get_absolute_url(self):
         return '/news/%i/' % self.id
 
+class Arch(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(maxlength=255)
+    class Meta:
+        db_table = 'arch'
+        ordering = ['name']
+
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(maxlength=255)
@@ -119,6 +126,7 @@ class Repo(models.Model):
 class Package(models.Model):
     id = models.AutoField(primary_key=True)
     repo = models.ForeignKey(Repo)
+    arch = models.ForeignKey(Arch)
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(maxlength=255)
@@ -168,6 +176,14 @@ class PackageFile(models.Model):
     path = models.CharField(maxlength=255)
     class Meta:
         db_table = 'packages_files'
+
+class PackageDepends(models.Model):
+    id = models.AutoField(primary_key=True)
+    pkg = models.ForeignKey(Package)
+    depname = models.CharField(db_index=True, maxlength=255)
+    depvcmp = models.CharField(maxlength=255)
+    class Meta:
+        db_table = 'packages_depends'
 
 class Todolist(models.Model):
     id = models.AutoField(primary_key=True)
