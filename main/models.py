@@ -163,8 +163,7 @@ class Package(models.Model):
     pkgrel = models.CharField(maxlength=255)
     pkgdesc = models.CharField(maxlength=255)
     url = models.URLField()
-    sources = models.TextField()
-    depends = models.TextField()
+    depends = models.ForeignKey(PackageDepends)
     last_update = models.DateTimeField(null=True, blank=True)
     objects = PackageManager()
     class Meta:
@@ -175,29 +174,18 @@ class Package(models.Model):
         return '/packages/%i/' % self.id
 
     def depends_urlize(self):
-        urls = ''
-        for dep in self.depends.split(' '):
-            # shave off any version qualifiers
-            nameonly = re.match(r"([a-z0-9-]+)", dep).group(1)
+        urls = []
+        for dep in self.packagedepends_set.all():
             try:
-                p = Package.objects.filter(pkgname=nameonly)[0]
+                p = Package.objects.filter(pkgname=dep.depname)
             except IndexError:
-                # couldn't find a package in the DB -- it might be a virtual depend
-                urls = urls + '<li>' + dep + '</li>'
+                # couldn't find a package in the DB
+                # it might be a virtual depend
+                urls.append('<li>%s</li>' % dep.depname)
                 continue
-            url = '<li><a href="/packages/' + str(p.id) + '">' + dep + '</a></li>'
-            urls = urls + url
-        return urls
-
-    def sources_urlize(self):
-        urls = ''
-        for source in self.sources.split(' '):
-            if re.search('://', source):
-                url = '<li><a href="' + source + '">' + source + '</a></li>'
-            else:
-                url = '<li>' + source + '</li>'
-            urls = urls + url
-        return urls
+            urls.append(
+                '<li><a href="/packages/%d">%s</a></li>' % (p.id,dep.depname))
+        return ''.join(urls)
 
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
