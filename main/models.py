@@ -67,7 +67,7 @@ class Mirror(models.Model):
     def __str__(self):
         return self.domain
     class Meta:
-        db_table = 'mirror'
+        db_table = 'mirrors'
     class Admin:
         list_display = ('domain', 'country')
         list_filter = ('country',)
@@ -97,7 +97,7 @@ class AltForum(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'alt_forum'
+        db_table = 'alt_forums'
         verbose_name = 'AltForum'
     class Admin:
         list_display = ('language', 'name')
@@ -112,7 +112,7 @@ class Donor(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        db_table = 'donor'
+        db_table = 'donors'
     class Admin:
         ordering = ['name']
         search_fields = ('name')
@@ -137,7 +137,7 @@ class Arch(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(maxlength=255)
     class Meta:
-        db_table = 'arch'
+        db_table = 'archs'
         ordering = ['name']
     def __str__(self):
         return self.name
