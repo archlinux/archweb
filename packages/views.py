@@ -5,9 +5,9 @@ from django.template import Context, loader
 from django.core import validators
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from archweb_dev.lib.utils import validate, render_response
 from datetime import datetime
-from archweb_dev.packages.models import Package, PackageFile, Repo, Category
+from archweb_dev.main.utils import validate, render_response
+from archweb_dev.main.models import Package, PackageFile, Repo, Category
 from django.core.exceptions import ObjectDoesNotExist
 
 

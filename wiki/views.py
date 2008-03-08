@@ -3,8 +3,8 @@
 #
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from archweb_dev.lib.utils import render_response
-from archweb_dev.wiki.models import Wikipage
+from archweb_dev.main.utils import render_response
+from archweb_dev.main.models import Wikipage
 
 @login_required
 def index(request):

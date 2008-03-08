@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django import forms
-from archweb_dev.lib.utils import render_response
-from archweb_dev.news.models import News
+from archweb_dev.main.utils import render_response
+from archweb_dev.main.models import News
 from datetime import date
 
 def view(request, newsid):

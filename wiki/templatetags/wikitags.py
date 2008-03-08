@@ -1,6 +1,6 @@
 from django.template import Library
 from django.conf import settings
-from archweb_dev.lib import markdown
+from archweb_dev.main import markdown
 import re
 
 register = Library()

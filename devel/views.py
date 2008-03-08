@@ -2,13 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import validators
-from archweb_dev.lib.utils import render_response
-from archweb_dev.packages.models import Package, Repo
-from archweb_dev.todolists.models import Todolist, TodolistPkg
-from archweb_dev.lib.utils import validate
-from archweb_dev.devel.models import UserProfile
-from archweb_dev.news.models import News
-from archweb_dev.devel.models import Donator, Mirror
+from archweb_dev.main.utils import render_response, validate
+from archweb_dev.main.models import Package, Repo, Todolist, TodolistPkg
+from archweb_dev.main.models import UserProfile, News, Donator, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader
 

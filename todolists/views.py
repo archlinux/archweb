@@ -2,9 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from archweb_dev.lib.utils import render_response
-from archweb_dev.todolists.models import Todolist, TodolistPkg
-from archweb_dev.packages.models import Package
+from archweb_dev.main.utils import render_response
+from archweb_dev.main.models import Todolist, TodolistPkg, Package
 
 # FIXME: ugly hackery. http://code.djangoproject.com/ticket/3450
 import django.db
