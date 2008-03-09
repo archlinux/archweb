@@ -33,8 +33,8 @@
 		{% for arch in archs %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><a href="/packages/?arch={{ arch.name }}">{{ arch.name }}</a></td>
-				<td><strong>{{ repo.count }}</strong> packages</td>
-				<td><strong>{{ repo.flagged }}</strong> packages</td>
+				<td><strong>{{ arch.count }}</strong> packages</td>
+				<td><strong>{{ arch.flagged }}</strong> packages</td>
 			</tr>
 		{% endfor %}
 		</table>
