@@ -179,25 +179,27 @@ class Package(models.Model):
     def required_by_urlize(self):
         urls = []
         requiredby = PackageDepends.objects.filter(depname=self.pkgname)
-        for req in requiredby.package_set.all():
+        for req in requiredby:
             urls.append(
-                '<li><a href="/packages/%d">%s</a></li>' % \
-                (req.id,req.pkgname))
+                '<li><a href="/packages/%d/">%s</a></li>' % \
+                (req.pkg.id,req.pkg.pkgname))
         return ''.join(urls)
-
 
     def depends_urlize(self):
         urls = []
         for dep in self.packagedepends_set.all():
             try:
-                p = Package.objects.filter(pkgname=dep.depname)
+                p = Package.objects.get(
+                    pkgname=dep.depname,
+                    arch=self.arch)
             except IndexError:
                 # couldn't find a package in the DB
                 # it might be a virtual depend
                 urls.append('<li>%s (v)</li>' % dep.depname)
                 continue
             urls.append(
-                '<li><a href="/packages/%d">%s</a></li>' % (p.id,dep.depname))
+                '<li><a href="/packages/%d/">%s</a>%s</li>' % \
+                (p.id,dep.depname,dep.depvcmp))
         return ''.join(urls)
 
 class PackageFile(models.Model):
