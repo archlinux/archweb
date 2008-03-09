@@ -108,7 +108,7 @@
 		{% for repo in repos %}
 			<tr>
 				<th><a href="/packages/?repo={{ repo.name }}">{{ repo.name }}</a></th>
-				<td>{{ repo.last_update }}</td>
+				<td>{{ repo.last_update|date:"Y-m-d H:i" }}</td>
 			</tr>
 		{% endfor %}
 		</table>
