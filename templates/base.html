@@ -26,8 +26,6 @@
                 </ul>
                 {% endblock %}
             </div>
-                {% block ads %}
-                    {% if not user.is_anonymous %}
             <div id="dev_nav">
                 <ul>
                     <li><a href="/accounts/logout/">Logout</a></li>
@@ -38,23 +36,6 @@
                     <li><a href="/devel/">Dashboard</a></li>
                  </ul>
             </div>
-                    {% else %}
-            <div id="ads">
-                <script type="text/javascript"><!--
-                    google_ad_client = "pub-3170555743375154";
-                    google_ad_width = 468;
-                    google_ad_height = 60;
-                    google_ad_format = "468x60_as";
-                    google_color_border = "ffffff";
-                    google_color_bg = "ffffff";
-                    google_color_link = "0771A6";
-                    google_color_url = "99AACC";
-                    google_color_text = "000000";
-                //--></script>
-                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-            </div>
-                    {% endif %}
-            {% endblock %}
         </div>
         <div id="content">
             {% block content %}
