@@ -23,29 +23,36 @@ def index(request):
     stats = Package.objects.get_flag_stats()
     if thismaint:
         # get list of flagged packages for this maintainer
-        pkgs = Package.objects.filter(maintainer=thismaint.id).filter(needupdate=True).order_by('repo', 'pkgname')
+        pkgs = Package.objects.filter(
+            maintainer=thismaint.id).filter(
+                needupdate=True).order_by('repo', 'pkgname')
     else:
         pkgs = None
+
     arch_stats = []
-    for arch in Arch.objects.all():
+    for arch_name in Package.ARCHES:
+        arch = Package.ARCHES[arch_name]
         arch_stats.append({ 
-            'name': arch.name,
+            'name': arch_name,
             'count': Package.objects.filter(arch__exact = arch).count(),
-            'flagged': Package.objects.filter(arch__exact = arch).filter(needupdate=True).count()
+            'flagged': Package.objects.filter(
+                arch__exact = arch).filter(needupdate=True).count()
         })
 
     repo_stats = []
-    for repo in Package.REPOS:
+    for repo_name in Package.REPOS:
+        repo = Package.REPOS[repo_name]
         repo_stats.append({ 
-            'name': repo,
-            'count': Package.objects.filter(repo = Package.REPOS[repo]).count(),
-            'flagged': Package.objects.filter(Package.REPOS[repo]).filter(needupdate=True).count()
+            'name': repo_name,
+            'count': Package.objects.filter(repo__exact = repo).count(),
+            'flagged': Package.objects.filter(
+                repo__exact = repo).filter(needupdate=True).count()
         })
 
     return render_response(
         request, 'devel/index.html',
         {'stats': stats, 'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
-         'repos': repo_stats, 'archs': arch_stats})
+         'repos': repo_stats, 'arches': arch_stats})
 
 @login_required
 #@is_maintainer

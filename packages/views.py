@@ -60,6 +60,7 @@ def search(request, query=''):
     skip       = int(request.GET.get('skip', '0'))
     sort       = request.GET.get('sort', '')
     maint      = request.GET.get('maint', 'all')
+    flagged_only = request.GET.get('flagged_only', 'n')
 
     # build the form lists
     repos = Package.REPOS
@@ -94,6 +95,8 @@ def search(request, query=''):
         results = results.filter(arch=Package.ARCHES[arch])
     if maint != 'all':
         results = results.filter(maintainer=maint)
+    if flagged_only != 'n':
+        results = results.filter(needupdate=1)
     if lastupdate:
         results = results.filter(
             last_update__gte=datetime(

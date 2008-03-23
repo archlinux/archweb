@@ -30,11 +30,11 @@
 				<th># Packages</th>
 				<th># Flagged</th>
 			</tr>
-		{% for arch in archs %}
+		{% for arch in arches %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><a href="/packages/?arch={{ arch.name }}">{{ arch.name }}</a></td>
-				<td><strong>{{ arch.count }}</strong> packages</td>
-				<td><strong>{{ arch.flagged }}</strong> packages</td>
+				<td><strong>{{ arch.name }}</strong></td>
+				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.count }}</strong> packages</a></td>
+				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.flagged }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -50,9 +50,9 @@
 			</tr>
 		{% for repo in repos %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><a href="/packages/?repo={{ repo.name }}">{{ repo.name }}</a></td>
-				<td><strong>{{ repo.count }}</strong> packages</td>
-				<td><strong>{{ repo.flagged }}</strong> packages</td>
+				<td><strong>{{ repo.name }}</strong></td>
+				<td><a href="/packages/?repo={{ repo.name }}"><strong>{{ repo.count }}</strong> packages</a></td>
+				<td><a href="/packages/?repo={{ repo.name }}&flagged_only=y"><strong>{{ repo.flagged }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -69,9 +69,9 @@
 			</tr>
 		{% for maint in stats %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><a href="/packages/?maint={{ maint.0.id }}">{{ maint.0.get_full_name }}</a></td>
-				<td><strong>{{ maint.1 }}</strong> packages</td>
-				<td><strong>{{ maint.2 }}</strong> packages</td>
+				<td><strong>{{ maint.0.get_full_name }}</strong></td>
+				<td><a href="/packages/?maint={{ maint.0.id }}"><strong>{{ maint.1 }}</strong> packages</a></td>
+				<td><a href="/packages/?maint={{ maint.0.id }}&flagged_only=y"><strong>{{ maint.2 }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
