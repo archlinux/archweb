@@ -176,9 +176,6 @@ def flag(request, pkgid):
 @login_required
 def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
-    if pkg.maintainer_id == 0 or \
-        pkg.maintainer.username != request.user.username:
-        return render_response(request, 'error_page.html', {'errmsg': 'You do not own this package.'})
     pkg.needupdate = 0
     pkg.save()
     return HttpResponseRedirect('/packages/%d/' % (pkg.id))
