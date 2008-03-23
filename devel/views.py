@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import validators
 from archweb_dev.main.utils import render_response, validate
-from archweb_dev.main.models import Package, Repo, Todolist, TodolistPkg
-from archweb_dev.main.models import UserProfile, News, Donor, Mirror, Arch
+from archweb_dev.main.models import Package, Todolist, TodolistPkg
+from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader
 
@@ -35,11 +35,11 @@ def index(request):
         })
 
     repo_stats = []
-    for repo in Repo.objects.all():
+    for repo in Package.REPOS:
         repo_stats.append({ 
-            'name': repo.name,
-            'count': Package.objects.filter(repo__exact = repo).count(),
-            'flagged': Package.objects.filter(repo__exact = repo).filter(needupdate=True).count()
+            'name': repo,
+            'count': Package.objects.filter(repo = Package.REPOS[repo]).count(),
+            'flagged': Package.objects.filter(Package.REPOS[repo]).filter(needupdate=True).count()
         })
 
     return render_response(
@@ -89,8 +89,8 @@ def guide(request):
 def siteindex(request):
     # get the most recent 10 news items
     news  = News.objects.order_by('-postdate', '-id')[:10]
-    pkgs  = Package.objects.exclude(repo__name__exact='Testing').order_by('-last_update')[:15]
-    repos = Repo.objects.order_by('name')
+    pkgs  = Package.objects.exclude(repo = Package.REPOS.testing).order_by('-last_update')[:15]
+    repos = Package.REPOS
     return render_response(
         request, 'devel/siteindex.html', 
         {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})

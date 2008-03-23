@@ -33,10 +33,10 @@
 		<table class="listing">
 			<tr>
 				<th>Architecture:</th>
-				<td>{{ pkg.arch.name }}</td>
+				<td>{{ pkg.get_arch_display }}</td>
 			</tr><tr>
 				<th>Repository:</th>
-				<td>{{ pkg.repo.name }}</td>
+				<td>{{ pkg.get_repo_display|capfirst }}</td>
 			</tr><tr>
 				<th>Description:</th>
 				<td>{{ pkg.pkgdesc }}</td>
@@ -54,7 +54,7 @@
 		<br />
 		<table width="100%">
 			<tr>
-				<td valign="top">
+				<td valign="top" width="50%">
 					<div class="listing">
 						<h4>Dependencies:</h4>
 						<ul style="font-size:small;list-style:none">
@@ -62,8 +62,6 @@
 						</ul>
 					</div>
 				</td>
-			</tr>
-			<tr>
 				<td valign="top">
 					<div class="listing">
 						<h4>Required By:</h4>

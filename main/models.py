@@ -2,7 +2,34 @@ from django.db import models
 from django.contrib.auth.models import User
 import re
 
+###########################
+### Model help classes  ###
+###########################
+class Container(dict):
+    def __init__(self, dict_entries=None, **entries):
+        if dict_entries:
+            self.update(dict_entries)
+        if entries:
+            self.update(entries)
 
+    def __iter__(self):
+        rev_items = [(v, k) for k, v in self.items()]
+        rev_items.sort()
+        items = [k for v, k in rev_items]
+        return items.__iter__()
+
+    def itertransp(self):
+        rev_items = [(v, k) for k, v in self.items()]
+        rev_items.sort()
+        return rev_items.__iter__()
+
+    def __getattr__(self,name):
+        return self[name]
+
+    def __setattr__(self,name,val):
+        self[name] = val
+
+    
 ###########################
 ### User Profile Class ####
 ###########################
@@ -133,33 +160,19 @@ class News(models.Model):
     def get_absolute_url(self):
         return '/news/%i/' % self.id
 
-class Arch(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(unique=True,maxlength=255)
-    class Meta:
-        db_table = 'archs'
-        ordering = ['name']
-    def __str__(self):
-        return self.name
-
-class Repo(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255)
-    class Meta:
-        db_table = 'repos'
-        ordering = ['name']
-    def last_update(self):
-        try:
-            latest = Package.objects.filter(
-                repo__name__exact=self.name).order_by('-last_update')[0]
-            return latest.last_update
-        except IndexError:
-            return "N/A"
-
 class Package(models.Model):
+    ## note: purposefully inlining arch and repo.
+    ## they don't change very often (rarely), and it should help compact
+    ## the general model
+    # architectures
+    ARCHES = Container(i686=1, x86_64=2)
+    # repositories
+    REPOS = Container(core=1, extra=2, testing=3, unstable=4)
+
     id = models.AutoField(primary_key=True)
-    repo = models.ForeignKey('Repo')
-    arch = models.ForeignKey('Arch')
+    ## note: the arch and repo elements might need to be indexed. not sure.
+    repo = models.IntegerField(choices=REPOS.itertransp())
+    arch = models.IntegerField(choices=ARCHES.itertransp())
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(maxlength=255)
@@ -178,7 +191,8 @@ class Package(models.Model):
 
     def required_by_urlize(self):
         urls = []
-        requiredby = PackageDepends.objects.filter(depname=self.pkgname)
+        requiredby = PackageDepend.objects.filter(
+            depname=self.pkgname).order_by('depname')
         for req in requiredby:
             urls.append(
                 '<li><a href="/packages/%d/">%s</a></li>' % \
@@ -187,15 +201,16 @@ class Package(models.Model):
 
     def depends_urlize(self):
         urls = []
-        for dep in self.packagedepends_set.all():
+        for dep in self.packagedepend_set.order_by('depname'):
             try:
+                # we only need depend on same-arch-packages
                 p = Package.objects.get(
                     pkgname=dep.depname,
                     arch=self.arch)
-            except IndexError:
+            except Package.DoesNotExist, IndexError:
                 # couldn't find a package in the DB
                 # it might be a virtual depend
-                urls.append('<li>%s (v)</li>' % dep.depname)
+                urls.append('<li>%s</li>' % dep.depname)
                 continue
             urls.append(
                 '<li><a href="/packages/%d/">%s</a>%s</li>' % \
@@ -207,15 +222,15 @@ class PackageFile(models.Model):
     pkg = models.ForeignKey('Package')
     path = models.CharField(maxlength=255)
     class Meta:
-        db_table = 'packages_files'
+        db_table = 'package_files'
 
-class PackageDepends(models.Model):
+class PackageDepend(models.Model):
     id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
     depname = models.CharField(db_index=True, maxlength=255)
     depvcmp = models.CharField(maxlength=255)
     class Meta:
-        db_table = 'packages_depends'
+        db_table = 'package_depends'
 
 class Todolist(models.Model):
     id = models.AutoField(primary_key=True)

@@ -26,15 +26,15 @@
 				<td>
 					<select name="arch">
 						<option value="all">All</option>
-					{% for a in archs %}
-						<option value="{{ a.arch }}"{% ifequal arch a.name %} selected{% endifequal %}>{{ a.name }}</option>
+					{% for a in arches %}
+						<option value="{{ a }}"{% ifequal arch a %} selected{% endifequal %}>{{ a }}</option>
 					{% endfor %}
 					</select>
 				</td><td>
 					<select name="repo">
 						<option value="all">All</option>
 					{% for r in repos %}
-						<option value="{{ r.name }}"{% ifequal repo r.name %} selected{% endifequal %}>{{ r.name|capfirst }}</option>
+						<option value="{{ r }}"{% ifequal repo r %} selected{% endifequal %}>{{ r|capfirst }}</option>
 					{% endfor %}
 					</select>
 				</td><td>
@@ -87,8 +87,8 @@
 				{% if not user.is_anonymous %}
 				<td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
 				{% endif %}
-				<td>{{ pkg.arch.name }}</td>
-				<td>{{ pkg.repo.name }}</td>
+				<td>{{ pkg.get_arch_display }}</td>
+				<td>{{ pkg.get_repo_display|capfirst }}</td>
 				<td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
 			{% if pkg.needupdate %}
 				<td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>

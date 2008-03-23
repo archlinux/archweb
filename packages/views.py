@@ -7,8 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime
 from archweb_dev.main.utils import validate, render_response
-from archweb_dev.main.models import Arch, Repo
-from archweb_dev.main.models import Package, PackageFile, PackageDepends
+from archweb_dev.main.models import Package, PackageFile, PackageDepend
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -38,7 +37,7 @@ def update(request):
 def details(request, pkgid=0, name='', repo=''):
     if pkgid == 0:
         p = Package.objects.filter(pkgname=name)
-        if repo: p = p.filter(repo__name__exact=repo)
+        if repo: p = p.filter(repo=Package.REPOS[repo])
         # if more then one result, send to the search view
         if len(p) > 1: return search(request, name)
         if len(p) < 1: return render_response(request, 'error_page.html',
@@ -63,11 +62,11 @@ def search(request, query=''):
     maint      = request.GET.get('maint', 'all')
 
     # build the form lists
-    repos = Repo.objects.order_by('name')
-    archs  = Arch.objects.order_by('name')
+    repos = Package.REPOS
+    arches  = Package.ARCHES
     # copy GET data over and add the lists
     c = request.GET.copy()
-    c['repos'], c['archs']  = repos, archs
+    c['repos'], c['arches']  = repos, arches
     c['limit'], c['skip'] = limit, skip
     c['lastupdate'] = lastupdate
     c['sort'] = sort
@@ -89,10 +88,18 @@ def search(request, query=''):
         results = res1 | res2
     else:
         results = Package.objects.all()
-    if repo != 'all':     results = results.filter(repo__name__exact=repo)
-    if arch != 'all':     results = results.filter(arch__name__exact=arch)
-    if maint != 'all':    results = results.filter(maintainer=maint)
-    if lastupdate:        results = results.filter(last_update__gte=datetime(int(lastupdate[0:4]),int(lastupdate[5:7]),int(lastupdate[8:10])))
+    if repo != 'all' and repo in Package.REPOS:
+        results = results.filter(repo=Package.REPOS[repo])
+    if arch != 'all' and arch in Package.ARCHES:
+        results = results.filter(arch=Package.ARCHES[arch])
+    if maint != 'all':
+        results = results.filter(maintainer=maint)
+    if lastupdate:
+        results = results.filter(
+            last_update__gte=datetime(
+                int(lastupdate[0:4]),
+                int(lastupdate[5:7]),
+                int(lastupdate[8:10])))
 
     # sort results
     if sort == '':
