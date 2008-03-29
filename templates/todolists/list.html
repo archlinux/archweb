@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 	<div class="greybox">
 	{% if perms.todolists.add_todolist %}
@@ -9,6 +8,7 @@
 	{% endif %}
 		<h2 class="title">Package ToDo lists</h2>
 		<table class="results" width="100%">
+        <thead>
 			<tr>
 				<th>Name</th>
 				<th>Creation Date</th>
@@ -16,6 +16,8 @@
 				<th>Description</th>
 				<th>Status</th>
 			</tr>
+        </thead>
+        <tbody>
 		{% for list in lists %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td style="white-space:nowrap"><a href="/todo/{{ list.id }}/">{{ list.name }}</a></td>
@@ -25,6 +27,7 @@
 				<td>{% if list.complete %}<span style="color:blue">Complete</span>{% else %}<span style="color:red">Incomplete</span>{% endif %}</td>
 			</tr>
 		{% endfor %}
+        </tbody>
 		</table>
 	</div>
 {% endblock %}

@@ -1,9 +1,37 @@
 {% extends "base.html" %}
-
+{% block head %}
+<script type="text/javascript" src="/media/jquery-1.2.3.min.js"></script>
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(
+        function(){ 
+            $("#todotable").tablesorter(); 
+        } 
+    );
+</script>
+<style type="text/css">
+table#todotable thead tr .header {
+        background-image: url('/media/bg.gif');
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+}
+table#todotable thead tr .headerSortUp {
+            background-image: url('/media/asc.gif');
+}
+table#todotable thead tr .headerSortDown {
+            background-image: url('/media/desc.gif');
+}
+table#todotable thead tr .headerSortDown, table.todotable thead tr .headerSortUp {
+    background-color: #8dbdd8;
+}
+</style>
+{% endblock %}
 {% block content %}
 	<div class="greybox">
 		<h3 class="title">ToDo List: {{ list.name }}</h2>
-		<table class="results" width="100%">
+		<table id="todotable" class="results" width="100%">
+        <thead>
 			<tr>
 				<th>ID</th>
 				<th>Repo</th>
@@ -11,6 +39,8 @@
 				<th>Maintainer</th>
 				<th>Status</th>
 			</tr>
+        </thead>
+        <tbody>
 		{% for pkg in pkgs %}
             <tr class="{% cycle pkgr1,pkgr2 %}">
 				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
@@ -26,6 +56,7 @@
 				</td>
 			</tr>
 		{% endfor %}
+        </tbody>
 		</table>
 	</div>
 {% endblock %}
