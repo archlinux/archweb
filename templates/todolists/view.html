@@ -5,25 +5,28 @@
 <script type="text/javascript">
     $(document).ready(
         function(){ 
-            $("#todotable").tablesorter(); 
+            $("#todotable").tablesorter({widgets: ['zebra']});
         } 
     );
 </script>
 <style type="text/css">
 table#todotable thead tr .header {
-        background-image: url('/media/bg.gif');
-        background-repeat: no-repeat;
-        background-position: center right;
-        cursor: pointer;
+    background-image: url('/media/bg.gif');
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
 }
 table#todotable thead tr .headerSortUp {
-            background-image: url('/media/asc.gif');
+    background-image: url('/media/asc.gif');
 }
 table#todotable thead tr .headerSortDown {
-            background-image: url('/media/desc.gif');
+    background-image: url('/media/desc.gif');
 }
-table#todotable thead tr .headerSortDown, table.todotable thead tr .headerSortUp {
+table#todotable thead tr .headerSortDown, table#todotable thead tr .headerSortUp {
     background-color: #8dbdd8;
+}
+table#todotable tbody tr.odd {
+    background-color: #eee4cb;
 }
 </style>
 {% endblock %}
@@ -42,7 +45,7 @@ table#todotable thead tr .headerSortDown, table.todotable thead tr .headerSortUp
         </thead>
         <tbody>
 		{% for pkg in pkgs %}
-            <tr class="{% cycle pkgr1,pkgr2 %}">
+            <tr class="{% cycle even,odd %}">
 				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
 				<td>{{ pkg.pkg.repo.name  }}</td>
 				<td>{{ pkg.pkg.pkgname  }}</td>
