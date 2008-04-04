@@ -8,12 +8,14 @@ class PackageManager(models.Manager):
         # first the orphans
         unflagged = self.filter(maintainer=0).count()
         flagged   = self.filter(maintainer=0).filter(needupdate=True).count()
-        results.append((User(id=0,first_name='Orphans'), unflagged, flagged))
+        flagged_notest = self.filter(maintainer=0).filter(needupdate=True).exclude(repo__name__exact='Testing').count()
+        results.append((User(id=0,first_name='Orphans'), unflagged, flagged, flagged_notest))
         # now the rest
         for maint in User.objects.all().order_by('first_name'):
             unflagged = self.filter(maintainer=maint.id).count()
             flagged   = self.filter(maintainer=maint.id).filter(needupdate=True).count()
-            results.append((maint, unflagged, flagged))
+            flagged_notest = self.filter(maintainer=maint.id).filter(needupdate=True).exclude(repo__name__exact='Testing').count()
+            results.append((maint, unflagged, flagged, flagged_notest))
         return results
 
 class Category(models.Model):
