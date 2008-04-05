@@ -324,8 +324,8 @@ def main(argv=None):
         packages_arches[arch] = []
     
     for package in packages:
-        if package.arch == None:
-            logger.warning("Package %s has no arch" % (package.name))
+        if package.arch not in Package.ARCHES:
+            logger.warning("Package %s has missing or invalid arch" % (package.name))
             package.arch = primary_arch
         packages_arches[package.arch].append(package)
 
