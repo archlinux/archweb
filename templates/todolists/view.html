@@ -32,7 +32,7 @@
 {% endblock %}
 {% block content %}
 	<div class="greybox">
-		<h3 class="title">ToDo List: {{ list.name }}</h2>
+		<h2 class="title">ToDo List: {{ list.name }}</h2>
 		<table id="todotable" class="results" width="100%">
             <thead>
                 <tr>
@@ -48,10 +48,10 @@
             {% for pkg in pkgs %}
                 <tr class="{% cycle even,odd %}">
                     <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
-                    <td>{{ pkg.pkg.arch.name  }}</td>
-                    <td>{{ pkg.pkg.repo.name  }}</td>
-                    <td>{{ pkg.pkg.pkgname  }}</td>
-                    <td>{{ pkg.pkg.maintainer.get_full_name  }}</td>
+                    <td>{{ pkg.pkg.get_arch_display }}</td>
+                    <td>{{ pkg.pkg.get_repo_display }}</td>
+                    <td>{{ pkg.pkg.pkgname }}</td>
+                    <td>{{ pkg.pkg.maintainer.get_full_name|default:"Orphan" }}</td>
                     <td>
                     {% if pkg.complete %}
                         <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
