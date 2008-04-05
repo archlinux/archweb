@@ -36,7 +36,10 @@ def index(request):
             'name': arch_name,
             'count': Package.objects.filter(arch__exact = arch).count(),
             'flagged': Package.objects.filter(
-                arch__exact = arch).filter(needupdate=True).count()
+                arch__exact = arch).filter(needupdate=True).count(),
+            'flagnotest': Package.objects.filter(
+                arch__exact = arch).filter(needupdate=True).exclude(
+                    repo=Package.REPOS['testing']).count()
         })
 
     repo_stats = []

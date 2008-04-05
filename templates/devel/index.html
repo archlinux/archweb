@@ -29,12 +29,14 @@
 				<th width="50%">Arch</th>
 				<th># Packages</th>
 				<th># Flagged</th>
+				<th># Flagnotest</th>
 			</tr>
 		{% for arch in arches %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ arch.name }}</strong></td>
 				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.count }}</strong> packages</a></td>
 				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.flagged }}</strong> packages</a></td>
+				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.flagnotest }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -66,12 +68,14 @@
 				<th width="50%">Maintainer</th>
 				<th># Packages</th>
 				<th># Flagged</th>
+				<th># Flagnotest</th>
 			</tr>
 		{% for maint in stats %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ maint.0.get_full_name }}</strong></td>
 				<td><a href="/packages/?maint={{ maint.0.id }}"><strong>{{ maint.1 }}</strong> packages</a></td>
 				<td><a href="/packages/?maint={{ maint.0.id }}&flagged_only=y"><strong>{{ maint.2 }}</strong> packages</a></td>
+				<td><a href="/packages/?maint={{ maint.0.id }}&flagged_only=y"><strong>{{ maint.3 }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
