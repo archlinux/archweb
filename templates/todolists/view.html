@@ -1,33 +1,67 @@
 {% extends "base.html" %}
-
+{% block head %}
+<script type="text/javascript" src="/media/jquery-1.2.3.min.js"></script>
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(
+        function(){
+            $("#todotable").tablesorter({widgets: ['zebra']});
+        }
+    );
+</script>
+<style type="text/css">
+    table#todotable thead tr .header {
+        background-image: url('/media/bg.gif');
+        background-repeat: no-repeat;
+        background-position: center right;
+        cursor: pointer;
+    }
+    table#todotable thead tr .headerSortUp {
+        background-image: url('/media/asc.gif');
+    }
+    table#todotable thead tr .headerSortDown {
+        background-image: url('/media/desc.gif');
+    }
+    table#todotable thead tr .headerSortDown, table.todotable thead tr .headerSortUp {
+        background-color: #8dbdd8;
+    }
+    table#todotable tbody tr.odd {
+        background-color: #eee4cb;
+    }
+</style>
+{% endblock %}
 {% block content %}
 	<div class="greybox">
 		<h3 class="title">ToDo List: {{ list.name }}</h2>
-		<table class="results" width="100%">
-			<tr>
-				<th>ID</th>
-				<th>Arch</th>
-				<th>Repo</th>
-				<th>Name</th>
-				<th>Maintainer</th>
-				<th>Status</th>
-			</tr>
-		{% for pkg in pkgs %}
-            <tr class="{% cycle pkgr1,pkgr2 %}">
-				<td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
-				<td>{{ pkg.pkg.arch.name  }}</td>
-				<td>{{ pkg.pkg.repo.name  }}</td>
-				<td>{{ pkg.pkg.pkgname  }}</td>
-				<td>{{ pkg.pkg.maintainer.get_full_name  }}</td>
-				<td>
-				{% if pkg.complete %}
-					<a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
-				{% else %}
-					<a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:red">Incomplete</span></a>
-				{% endif %}
-				</td>
-			</tr>
-		{% endfor %}
+		<table id="todotable" class="results" width="100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Arch</th>
+                    <th>Repo</th>
+                    <th>Name</th>
+                    <th>Maintainer</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for pkg in pkgs %}
+                <tr class="{% cycle even,odd %}">
+                    <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
+                    <td>{{ pkg.pkg.arch.name  }}</td>
+                    <td>{{ pkg.pkg.repo.name  }}</td>
+                    <td>{{ pkg.pkg.pkgname  }}</td>
+                    <td>{{ pkg.pkg.maintainer.get_full_name  }}</td>
+                    <td>
+                    {% if pkg.complete %}
+                        <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
+                    {% else %}
+                        <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:red">Incomplete</span></a>
+                    {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
 		</table>
 	</div>
 {% endblock %}
