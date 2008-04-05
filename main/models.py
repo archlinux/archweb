@@ -173,7 +173,7 @@ class Package(models.Model):
     ## they don't change very often (rarely), and it should help compact
     ## the general model
     # architectures
-    ARCHES = Container(i686=1, x86_64=2)
+    ARCHES = Container(any_arch=1, i686=2, x86_64=3)
     # repositories
     REPOS = Container(core=1, extra=2, testing=3, unstable=4)
 
@@ -256,7 +256,7 @@ class TodolistPkg(models.Model):
     pkg = models.ForeignKey('Package')
     complete = models.BooleanField(default=False)
     class Meta:
-        db_table = 'todolists_pkgs'
+        db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
 
 class Wikipage(models.Model):
