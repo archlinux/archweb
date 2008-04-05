@@ -146,7 +146,7 @@ def db_update(archname, pkgs):
       pkgs -- A list of Pkg objects.
     
     """
-    logger.debug('Starting database updates.')
+    logger.info('Updating Arch: %s' % archname)
     repository = Package.REPOS[pkgs[0].repo.lower()]
     architecture = Package.ARCHES[archname.lower()]
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
@@ -160,7 +160,7 @@ def db_update(archname, pkgs):
     # packages in syncdb and not in database (add to database)
     in_sync_not_db = syncset - dbset
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
-        logger.info("Adding package %s to database", p.name)
+        logger.debug("Adding package %s", p.name)
         ## note: maintainer is being set to orphan for now
         ## maybe later we can add logic to match pkgbuild maintainers 
         ## to db maintainer ids
@@ -216,6 +216,7 @@ def db_update(archname, pkgs):
             for y in p.depends:
                 dpname,dpvcmp = re.match(r"([a-z0-9-]+)(.*)", y).groups()
                 pkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
+    logger.info('Finished updating Arch: %s' % archname)
 
 
 def parse_inf(iofile):
@@ -255,11 +256,11 @@ def parse_repo(repopath):
      repopath -- The path of a repository db file.
 
     """
-    logger.debug("Starting repo parsing")
+    logger.info("Starting repo parsing")
     if not os.path.exists(repopath):
         logger.error("Could not read file %s", repopath)
     
-    logger.debug("Reading repo tarfile")
+    logger.info("Reading repo tarfile")
     filename = os.path.split(repopath)[1]
     rindex = filename.rindex('.db.tar.gz')
     reponame = filename[:rindex]
@@ -289,7 +290,7 @@ def parse_repo(repopath):
                 tpkg.write(repodb.extractfile(tarinfo).read())
                 tpkg.write('\n') # just in case 
     repodb.close()
-    logger.debug("Finished repo parsing")
+    logger.info("Finished repo parsing")
     return pkgs
 
 
@@ -311,9 +312,28 @@ def main(argv=None):
     if argv[1] not in Package.ARCHES:
         usage()
         return 0
+    else:
+        primary_arch = argv[1]
+
     repo_file = os.path.normpath(argv[2])
     packages = parse_repo(repo_file)
-    db_update(argv[1], packages)
+    
+    # sort packages by arch -- to handle noarch stuff
+    packages_arches = {}
+    for arch in Package.ARCHES:
+        packages_arches[arch] = []
+    
+    for package in packages:
+        if package.arch == None:
+            logger.warning("Package %s has no arch" % (package.name))
+            package.arch = primary_arch
+        packages_arches[package.arch].append(package)
+
+    logger.info('Starting database updates.')
+    for (arch, pkgs) in packages_arches.iteritems():
+        if len(pkgs) > 0:
+            db_update(arch,pkgs)
+    logger.info('Finished database updates.')
     return 0
 
 
@@ -322,6 +342,6 @@ def main(argv=None):
 ###
 
 if __name__ == '__main__':
-    logger.level = WARNING
+    logger.level = INFO
     sys.exit(main())
 
