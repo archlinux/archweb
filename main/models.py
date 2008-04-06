@@ -200,9 +200,11 @@ class Package(models.Model):
 
     def required_by_urlize(self):
         urls = []
-        requiredby = PackageDepend.objects.filter(depname=self.pkgname).order_by('depname')
+        requiredby = PackageDepend.objects.filter(
+            depname=self.pkgname).order_by('depname')
         for req in requiredby:
-            urls.append('<li><a href="/packages/%d/">%s</a></li>' % (req.pkg.id,req.pkg.pkgname))
+            urls.append('<li><a href="/packages/%d/">%s</a></li>' % \
+                (req.pkg.id,req.pkg.pkgname))
         return ''.join(urls)
 
     def depends_urlize(self):
@@ -220,7 +222,7 @@ class Package(models.Model):
                 continue
             urls.append(
                 '<li><a href="/packages/%d/">%s</a>%s</li>' % \
-                (p.id,dep.depname,dep.depvcmp))
+                     (p.id,dep.depname,dep.depvcmp))
         return ''.join(urls)
 
 class PackageFile(models.Model):
