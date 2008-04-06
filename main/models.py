@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 import re
 
@@ -173,7 +174,7 @@ class Package(models.Model):
     ## they don't change very often (rarely), and it should help compact
     ## the general model
     # architectures
-    ARCHES = Container(any_arch=1, i686=2, x86_64=3)
+    ARCHES = Container(any=1, i686=2, x86_64=3)
     # repositories
     REPOS = Container(core=1, extra=2, testing=3, unstable=4)
 
@@ -199,12 +200,9 @@ class Package(models.Model):
 
     def required_by_urlize(self):
         urls = []
-        requiredby = PackageDepend.objects.filter(
-            depname=self.pkgname).order_by('depname')
+        requiredby = PackageDepend.objects.filter(depname=self.pkgname).order_by('depname')
         for req in requiredby:
-            urls.append(
-                '<li><a href="/packages/%d/">%s</a></li>' % \
-                (req.pkg.id,req.pkg.pkgname))
+            urls.append('<li><a href="/packages/%d/">%s</a></li>' % (req.pkg.id,req.pkg.pkgname))
         return ''.join(urls)
 
     def depends_urlize(self):
@@ -213,8 +211,8 @@ class Package(models.Model):
             try:
                 # we only need depend on same-arch-packages
                 p = Package.objects.get(
-                    pkgname=dep.depname,
-                    arch=self.arch)
+                    Q(arch=Package.ARCHES['any']) | Q(arch=self.arch),
+                    pkgname=dep.depname)
             except Package.DoesNotExist, IndexError:
                 # couldn't find a package in the DB
                 # it might be a virtual depend
