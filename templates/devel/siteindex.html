@@ -101,25 +101,12 @@
 			<p><b>Package Search:</b>&nbsp;&nbsp;<input type="text" name="q" size="20" maxlength="200" /></p>
 		</form>
 	</div>
-    <br />
-	<div class="greybox">
-		<h3>Package Repositories</h3>
-		<table id="repolinks">
-		{% for repo in repos %}
-			<tr>
-				<th><a href="/packages/?repo={{ repo }}">{{ repo }}</a></th>
-				<td>{{ repo }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
-	<br />
-	<h3>Dev Links:</h3>
-	<ul class="links">
-		<li><a href="/devel/">Dev Dashboard</a></li>
-		<li><a href="/developers/">Developer List</a></li>
-	</ul>
-	<br />
+    <br clear="all" />
+    <h3>Dev Links:</h3>
+    <ul class="links">
+        <li><a href="/devel/">Dev Dashboard</a></li>
+        <li><a href="/developers/">Developer List</a></li>
+    </ul>
 	<h3>Main Site Links:</h3>
 	<ul class="links">
 		<li><a href="http://bugs.archlinux.org">Bug Tracker</a></li>
