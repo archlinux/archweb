@@ -55,6 +55,7 @@ if CACHE == True:
 MIDDLEWARE_CLASSES += (
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
+    "main.middleware.RequireLoginMiddleware",
 )
 
 ROOT_URLCONF = 'archweb_dev.urls'

@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.template import Context, loader
 from django.core import validators
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime
 from archweb_dev.main.utils import validate, render_response
@@ -174,7 +173,6 @@ def flag(request, pkgid):
                     fail_silently=True)
     return render_response(request, 'packages/flag.html', context)
 
-@login_required
 def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
     pkg.needupdate = 0

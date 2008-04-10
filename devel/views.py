@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import validators
 from archweb_dev.main.utils import render_response, validate
@@ -9,8 +8,6 @@ from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader
 
-
-@login_required
 def index(request):
     try:
         thismaint = User.objects.get(username=request.user.username)
@@ -54,7 +51,6 @@ def index(request):
         {'stats': stats, 'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
          'repos': repo_stats, 'arches': arch_stats})
 
-@login_required
 #@is_maintainer
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
@@ -66,7 +62,6 @@ def change_notify(request):
     maint.get_profile().save()
     return HttpResponseRedirect('/devel/')
 
-@login_required
 def change_profile(request):
     errors = {}
     if request.POST:
@@ -85,7 +80,6 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     return render_response(request, 'devel/profile.html', {'errors':errors,'email':request.user.email})
 
-@login_required
 def guide(request):
     t = loader.get_template('devel/pkgmaint_guide.txt')
     c = Context()

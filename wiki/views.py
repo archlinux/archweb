@@ -2,11 +2,9 @@
 # Based on code from http://e-scribe.com/news/210
 #
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Wikipage
 
-@login_required
 def index(request):
     """Return a list of all wiki pages"""
     pages = Wikipage.objects.all().order_by('title')
@@ -16,7 +14,6 @@ def main(request):
     """Return the Index wiki page"""
     return HttpResponseRedirect("/wiki/WikiIndex/")
 
-@login_required
 def page(request, title):
     """Display page, or redirect to root if page doesn't exist yet"""
     try:
@@ -25,7 +22,6 @@ def page(request, title):
     except Wikipage.DoesNotExist:
         return HttpResponseRedirect("/wiki/edit/%s/" % title)
 
-@login_required
 def edit(request, title):
     """Process submitted page edits (POST) or display editing form (GET)"""
     if request.POST:
@@ -48,7 +44,6 @@ def edit(request, title):
             page.body = "<!-- Enter content here -->"
         return render_response(request, 'wiki/edit.html', {'page':page})
 
-@login_required
 def delete(request):
     """Delete a page"""
     if request.POST:
