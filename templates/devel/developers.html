@@ -6,7 +6,7 @@
 	<br /><br />
 	<div id="devlist">
 	{% for dev in devs %}
-		<a href="#{{ dev.first_name}}">{{ dev.first_name }}</a>  &nbsp; 
+		<a href="#{{ dev.first_name}}{{ dev.last_name.0|upper }}">{{ dev.first_name }}{{ dev.last_name.0|upper }}</a>  &nbsp; 
 	{% endfor %}
 	</div><br /><br />
 
@@ -16,7 +16,7 @@
 			<td class="devpic">
 				<img src="{{ dev.get_profile.get_picture_url }}" height="175" width="175" style="border:1px solid black">
 			</td><td>
-				<a name="{{ dev.first_name }}" />
+				<a name="{{ dev.first_name }}{{ dev.last_name.0|upper }}" />
 				<table class="deventry" cellspacing="5">
 					<tr>
 						<th>Name:</th>
