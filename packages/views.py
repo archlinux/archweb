@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from archweb_dev.main.utils import validate, render_response
 from archweb_dev.main.models import Package, PackageFile, PackageDepend
+from archweb_dev.main.models import Arch, Repo
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -37,7 +38,7 @@ def update(request):
 def details(request, pkgid=0, name='', repo=''):
     if pkgid == 0:
         p = Package.objects.filter(pkgname=name)
-        if repo: p = p.filter(repo=Package.REPOS[repo])
+        if repo: p = p.filter(repo__name__iexact=repo)
         # if more then one result, send to the search view
         if len(p) > 1: return search(request, name)
         if len(p) < 1: return render_response(request, 'error_page.html',
@@ -63,8 +64,8 @@ def search(request, query=''):
     flagged_only = request.GET.get('flagged_only', 'n')
 
     # build the form lists
-    repos = Package.REPOS
-    arches  = Package.ARCHES
+    repos = Repo.objects.all()
+    arches  = Arch.objects.all()
     # copy GET data over and add the lists
     c = request.GET.copy()
     c['repos'], c['arches']  = repos, arches
@@ -89,10 +90,10 @@ def search(request, query=''):
         results = res1 | res2
     else:
         results = Package.objects.all()
-    if repo != 'all' and repo in Package.REPOS:
-        results = results.filter(repo=Package.REPOS[repo])
-    if arch != 'all' and arch in Package.ARCHES:
-        results = results.filter(arch=Package.ARCHES[arch])
+    if repo != 'all' and repo in [x.name for x in repos]:
+        results = results.filter(repo__name__iexact=repo)
+    if arch != 'all' and arch in [x.name for x in arches]:
+        results = results.filter(arch__name__iexact=arch)
     if maint != 'all':
         results = results.filter(maintainer=maint)
     if flagged_only != 'n':

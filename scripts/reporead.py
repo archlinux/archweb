@@ -48,7 +48,7 @@ setup_environ(settings)
 from pprint import pprint as pp
 from cStringIO import StringIO
 from logging import CRITICAL,ERROR,WARNING,INFO,DEBUG
-from main.models import Package, PackageFile, PackageDepend
+from main.models import Arch, Package, PackageFile, PackageDepend, Repo
 
 ###
 ### Initialization
@@ -148,8 +148,8 @@ def db_update(archname, pkgs):
     
     """
     logger.info('Updating Arch: %s' % archname)
-    repository = Package.REPOS[pkgs[0].repo.lower()]
-    architecture = Package.ARCHES[archname.lower()]
+    repository = Repo.objects.get(name__iexact=pkgs[0].repo)
+    architecture = Arch.objects.get(name__iexact=archname)
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
     now = datetime.now()
 
@@ -310,7 +310,8 @@ def main(argv=None):
         usage()
         return 0
     # check if arch is valid
-    if argv[1] not in Package.ARCHES:
+    available_arches = Arch.objects.all()
+    if argv[1] not in [x.name for x in available_arches]:
         usage()
         return 0
     else:
@@ -321,11 +322,11 @@ def main(argv=None):
     
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
-    for arch in Package.ARCHES:
-        packages_arches[arch] = []
+    for arch in available_arches:
+        packages_arches[arch.name] = []
     
     for package in packages:
-        if package.arch not in Package.ARCHES:
+        if package.arch not in [x.name for x in available_arches]:
             logger.warning("Package %s has missing or invalid arch" % (package.name))
             package.arch = primary_arch
         packages_arches[package.arch].append(package)

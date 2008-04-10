@@ -4,34 +4,6 @@ from django.contrib.auth.models import User
 import re
 
 ###########################
-### Model help classes  ###
-###########################
-class Container(dict):
-    def __init__(self, dict_entries=None, **entries):
-        if dict_entries:
-            self.update(dict_entries)
-        if entries:
-            self.update(entries)
-
-    def __iter__(self):
-        rev_items = [(v, k) for k, v in self.items()]
-        rev_items.sort()
-        items = [k for v, k in rev_items]
-        return items.__iter__()
-
-    def itertransp(self):
-        rev_items = [(v, k) for k, v in self.items()]
-        rev_items.sort()
-        return rev_items.__iter__()
-
-    def __getattr__(self,name):
-        return self[name]
-
-    def __setattr__(self,name,val):
-        self[name] = val
-
-    
-###########################
 ### User Profile Class ####
 ###########################
 class UserProfile(models.Model):
@@ -49,7 +21,11 @@ class UserProfile(models.Model):
     roles = models.CharField(maxlength=255, null=True, blank=True)
     favorite_distros = models.CharField(maxlength=255, null=True, blank=True)
     picture = models.FileField(upload_to='devs', default='devs/silhouette.png')
-    user = models.ForeignKey(User, related_name='userprofile_user',  edit_inline=models.STACKED, num_in_admin=1, min_num_in_admin=1, max_num_in_admin=1, num_extra_on_change=0, unique=True)
+    user = models.ForeignKey(
+        User, related_name='userprofile_user',  
+        edit_inline=models.STACKED, num_in_admin=1, 
+        min_num_in_admin=1, max_num_in_admin=1, 
+        num_extra_on_change=0, unique=True)
     class Meta:
         db_table = 'user_profiles'
         verbose_name = 'Additional Profile Data'
@@ -63,7 +39,8 @@ class TodolistManager(models.Manager):
     def get_incomplete(self):
         results = []
         for l in self.all().order_by('-date_added'):
-            if TodolistPkg.objects.filter(list=l.id).filter(complete=False).count() > 0:
+            if TodolistPkg.objects.filter(list=l.id).filter(
+                complete=False).count() > 0:
                 results.append(l)
         return results
 
@@ -72,21 +49,18 @@ class PackageManager(models.Manager):
         results = []
         # first the orphans
         noflag = self.filter(maintainer=0).count()
-        flagged = self.filter(maintainer=0).filter(needupdate=True).count()
-        flagnotest = self.filter(maintainer=0).filter(
-                        needupdate=True).exclude(
-                            repo=Package.REPOS['testing']).count()
+        flagged = self.filter(maintainer=0).filter(
+                    needupdate=True).exclude(
+                        repo__name__iexact='testing').count()
         results.append(
-            (User(id=0,first_name='Orphans'), noflag, flagged, flagnotest))
+            (User(id=0,first_name='Orphans'), noflag, flagged))
         # now the rest
         for maint in User.objects.all().order_by('first_name'):
             noflag = self.filter(maintainer=maint.id).count()
             flagged = self.filter(maintainer=maint.id).filter(
-                    needupdate=True).count()
-            flagnotest = self.filter(maintainer=maint.id).filter(
                     needupdate=True).exclude(
-                        repo=Package.REPOS['testing']).count()
-            results.append((maint, noflag, flagged, flagnotest))
+                        repo__name__iexact='testing').count()
+            results.append((maint, noflag, flagged))
         return results
 
 
@@ -160,6 +134,8 @@ class News(models.Model):
     postdate = models.DateField(auto_now_add=True)
     title = models.CharField(maxlength=255)
     content = models.TextField()
+    def __str__(self):
+        return self.title
     class Meta:
         db_table = 'news'
         verbose_name_plural = 'news'
@@ -169,19 +145,34 @@ class News(models.Model):
     def get_absolute_url(self):
         return '/news/%i/' % self.id
 
-class Package(models.Model):
-    ## note: purposefully inlining arch and repo.
-    ## they don't change very often (rarely), and it should help compact
-    ## the general model
-    # architectures
-    ARCHES = Container(any=1, i686=2, x86_64=3)
-    # repositories
-    REPOS = Container(core=1, extra=2, testing=3, unstable=4)
-
+class Arch(models.Model):
     id = models.AutoField(primary_key=True)
-    ## note: the arch and repo elements might need to be indexed. not sure.
-    repo = models.IntegerField(choices=REPOS.itertransp())
-    arch = models.IntegerField(choices=ARCHES.itertransp())
+    name = models.CharField(maxlength=255,unique=True)
+    def __str__(self):
+        return self.name
+    class Meta:
+        db_table = 'arches'
+        ordering = ['name']
+        verbose_name_plural = 'arches'
+    class Admin:
+        pass
+
+class Repo(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(maxlength=255,unique=True)
+    def __str__(self):
+        return self.name
+    class Meta:
+        db_table = 'repos'
+        ordering = ['name']
+        verbose_name_plural = 'repos'
+    class Admin:
+        pass
+
+class Package(models.Model):
+    id = models.AutoField(primary_key=True)
+    repo = models.ForeignKey(Repo)
+    arch = models.ForeignKey(Arch)
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(maxlength=255)
@@ -194,6 +185,9 @@ class Package(models.Model):
     class Meta:
         db_table = 'packages'
         get_latest_by = 'last_update'
+
+    def __str__(self):
+        return self.pkgname
 
     def get_absolute_url(self):
         return '/packages/%i/' % self.id
@@ -213,7 +207,7 @@ class Package(models.Model):
             try:
                 # we only need depend on same-arch-packages
                 p = Package.objects.get(
-                    Q(arch=Package.ARCHES['any']) | Q(arch=self.arch),
+                    Q(arch__name__iexact='any') | Q(arch=self.arch),
                     pkgname=dep.depname)
             except Package.DoesNotExist, IndexError:
                 # couldn't find a package in the DB
@@ -247,6 +241,8 @@ class Todolist(models.Model):
     description = models.TextField()
     date_added = models.DateField(auto_now_add=True)
     objects = TodolistManager()
+    def __str__(self):
+        return self.name
     class Meta:
         db_table = 'todolists'
 
@@ -270,7 +266,7 @@ class Wikipage(models.Model):
     def editurl(self):
         return "/wiki/edit/" + self.title + "/"
 
-    def __repr__(self):
+    def __str__(self):
         return self.title
 
 # vim: set ts=4 sw=4 et:

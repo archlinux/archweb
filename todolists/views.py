@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
+from archweb_dev.main.models import Arch, Repo
 
 # FIXME: ugly hackery. http://code.djangoproject.com/ticket/3450
 import django.db

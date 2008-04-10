@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core import validators
 from archweb_dev.main.utils import render_response, validate
 from archweb_dev.main.models import Package, Todolist, TodolistPkg
+from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 from django.http import HttpResponse
 from django.template import Context, loader
@@ -30,26 +31,22 @@ def index(request):
         pkgs = None
 
     arch_stats = []
-    for arch_name in Package.ARCHES:
-        arch = Package.ARCHES[arch_name]
+    for xarch in Arch.objects.all():
         arch_stats.append({ 
-            'name': arch_name,
-            'count': Package.objects.filter(arch__exact = arch).count(),
-            'flagged': Package.objects.filter(
-                arch__exact = arch).filter(needupdate=True).count(),
-            'flagnotest': Package.objects.filter(
-                arch__exact = arch).filter(needupdate=True).exclude(
-                    repo=Package.REPOS['testing']).count()
+            'name': xarch.name,
+            'count': Package.objects.filter(arch=xarch).count(),
+            'flagged': Package.objects.filter(arch=xarch).filter(
+                needupdate=True).exclude(
+                    repo__name__iexact='testing').count()
         })
 
     repo_stats = []
-    for repo_name in Package.REPOS:
-        repo = Package.REPOS[repo_name]
+    for xrepo in Repo.objects.all():
         repo_stats.append({ 
-            'name': repo_name,
-            'count': Package.objects.filter(repo__exact = repo).count(),
+            'name': xrepo.name,
+            'count': Package.objects.filter(repo=xrepo).count(),
             'flagged': Package.objects.filter(
-                repo__exact = repo).filter(needupdate=True).count()
+                repo=xrepo).filter(needupdate=True).count()
         })
 
     return render_response(
@@ -99,8 +96,8 @@ def guide(request):
 def siteindex(request):
     # get the most recent 10 news items
     news  = News.objects.order_by('-postdate', '-id')[:10]
-    pkgs  = Package.objects.exclude(repo = Package.REPOS.testing).order_by('-last_update')[:15]
-    repos = Package.REPOS
+    pkgs  = Package.objects.exclude(repo__name__iexact='testing').order_by('-last_update')[:15]
+    repos = Repo.objects.all()
     return render_response(
         request, 'devel/siteindex.html', 
         {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})
