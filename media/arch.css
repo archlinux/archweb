@@ -269,9 +269,7 @@ table#art {
 .devpic {
 	vertical-align: top;
 	padding-right: 15px;
-}
-.devpic img {
-  padding-top: 25px;
+    padding-top: 10px;
 }
 table.deventry {
 	padding-bottom: 25px;
