@@ -194,8 +194,9 @@ class Package(models.Model):
 
     def required_by_urlize(self):
         urls = []
-        requiredby = PackageDepend.objects.filter(
-            depname=self.pkgname).order_by('depname')
+        requiredby = PackageDepend.objects.filter(depname=self.pkgname).filter(
+            Q(pkg__arch=self.arch) | Q(pkg__arch__name__iexact='any')
+            ).order_by('depname')
         for req in requiredby:
             urls.append('<li><a href="/packages/%d/">%s</a></li>' % \
                 (req.pkg.id,req.pkg.pkgname))
