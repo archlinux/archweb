@@ -87,8 +87,8 @@
 				{% if not user.is_anonymous %}
 				<td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
 				{% endif %}
-				<td>{{ pkg.get_arch_display }}</td>
-				<td>{{ pkg.get_repo_display|capfirst }}</td>
+				<td>{{ pkg.arch.name }}</td>
+				<td>{{ pkg.repo.name|capfirst }}</td>
 				<td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
 			{% if pkg.needupdate %}
 				<td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>

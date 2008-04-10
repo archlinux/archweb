@@ -48,8 +48,8 @@
             {% for pkg in pkgs %}
                 <tr class="{% cycle even,odd %}">
                     <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
-                    <td>{{ pkg.pkg.get_arch_display }}</td>
-                    <td>{{ pkg.pkg.get_repo_display }}</td>
+                    <td>{{ pkg.pkg.arch.name }}</td>
+                    <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                     <td>{{ pkg.pkg.pkgname }}</td>
                     <td>{{ pkg.pkg.maintainer.get_full_name|default:"Orphan" }}</td>
                     <td>

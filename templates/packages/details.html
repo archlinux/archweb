@@ -33,10 +33,10 @@
 		<table class="listing">
 			<tr>
 				<th>Architecture:</th>
-				<td>{{ pkg.get_arch_display }}</td>
+				<td>{{ pkg.arch.name }}</td>
 			</tr><tr>
 				<th>Repository:</th>
-				<td>{{ pkg.get_repo_display|capfirst }}</td>
+				<td>{{ pkg.repo.name|capfirst }}</td>
 			</tr><tr>
 				<th>Description:</th>
 				<td>{{ pkg.pkgdesc }}</td>
