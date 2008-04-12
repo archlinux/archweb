@@ -192,18 +192,31 @@ class Package(models.Model):
     def get_absolute_url(self):
         return '/packages/%i/' % self.id
 
-    def required_by_urlize(self):
-        urls = []
+    def get_requiredby(self):
+        """
+        Returns a list of tuples(2). 
+
+        Each tuple in the list is as follows: (packageid, packagename)
+        """
+        reqs = []
         requiredby = PackageDepend.objects.filter(depname=self.pkgname).filter(
             Q(pkg__arch=self.arch) | Q(pkg__arch__name__iexact='any')
             ).order_by('depname')
         for req in requiredby:
-            urls.append('<li><a href="/packages/%d/">%s</a></li>' % \
-                (req.pkg.id,req.pkg.pkgname))
-        return ''.join(urls)
+            reqs.append((req.pkg.id,req.pkg.pkgname))
+        return reqs
 
-    def depends_urlize(self):
-        urls = []
+    def get_depends(self):
+        """
+        Returns a list of tuples(3). 
+
+        Each tuple in the list is one of:
+         - (packageid, dependname, depend compare string) if a matching 
+           package is found.
+         - (None, dependname, None) if no matching package is found, eg 
+           it is a virtual dep.
+        """
+        deps = []
         for dep in self.packagedepend_set.order_by('depname'):
             try:
                 # we only need depend on same-arch-packages
@@ -212,13 +225,11 @@ class Package(models.Model):
                     pkgname=dep.depname)
             except Package.DoesNotExist, IndexError:
                 # couldn't find a package in the DB
-                # it might be a virtual depend
-                urls.append('<li>%s</li>' % dep.depname)
+                # it should be a virtual depend (or a removed package)
+                deps.append((None, dep.depname, None))
                 continue
-            urls.append(
-                '<li><a href="/packages/%d/">%s</a>%s</li>' % \
-                     (p.id,dep.depname,dep.depvcmp))
-        return ''.join(urls)
+            deps.append((p.id,dep.depname,dep.depvcmp))
+        return deps
 
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
