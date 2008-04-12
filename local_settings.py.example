@@ -20,13 +20,6 @@ ADMINS = (
 #DATABASE_HOST       = ''
 #DATABASE_PORT       = ''
 
-## Define cache middleware settings
-CACHE = False
-CACHE_BACKEND = 'file:///tmp/ALdjangocache?timeout=900'
-CACHE_MIDDLEWARE_SECONDS = 900
-CACHE_MIDDLEWARE_KEY_PREFIX = 'arch'
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
-
 ## location for saving dev pictures
 MEDIA_ROOT = '/var/www/archlinux/htdocs/img/'
 
