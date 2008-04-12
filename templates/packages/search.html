@@ -1,47 +1,47 @@
 {% load validation %}
 {% load package_extras %}
 {% extends "base.html" %}
-
+{% block title %}Arch Linux - Package Search{% endblock %}
 {% block head %}
 <script type="text/JavaScript" src="/media/calendar.js"></script>
 <link href="/media/calendar.css" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content %}
-	<div class="greybox">
-		<h4 style="text-align: right">Search Criteria</h4>
-	{% if errors %}
-		{% print_errors errors %}
-	{% endif %}
-		<hr />
-		<form method="get" action="/packages/search/">
-		<table width="100%">
-			<tr>
-				<td><span class="smalltext">Arch</span></td>
-				<td><span class="smalltext">Repository</span></td>
-				<td><span class="smalltext">Keywords</span></td>
-				<td><span class="smalltext">Last Update</span></td>
-				<td><span class="smalltext">Per Page</span></td>
-			</tr><tr>
-				<td>
-					<select name="arch">
-						<option value="all">All</option>
-					{% for a in arches %}
-						<option value="{{ a }}"{% ifequal arch a %} selected{% endifequal %}>{{ a }}</option>
-					{% endfor %}
-					</select>
-				</td><td>
-					<select name="repo">
-						<option value="all">All</option>
-					{% for r in repos %}
-						<option value="{{ r }}"{% ifequal repo r %} selected{% endifequal %}>{{ r|capfirst }}</option>
-					{% endfor %}
-					</select>
-				</td><td>
-					<input type="text" name="q" value="{{ query|escape }}" size="30" maxlength="200" />
-				</td><td>
-					<input type="text" name="lastupdate" value="{{ lastupdate|escape }}" size="10" maxlength="10" id="f_lastupdate" /> <button type="reset" id="f_trigger">...</button>
-					<script type="text/javascript">
+    <div class="greybox">
+        <h4 style="text-align: right">Search Criteria</h4>
+    {% if errors %}
+        {% print_errors errors %}
+    {% endif %}
+        <hr />
+        <form method="get" action="/packages/search/">
+        <table width="100%">
+            <tr>
+                <td><span class="smalltext">Arch</span></td>
+                <td><span class="smalltext">Repository</span></td>
+                <td><span class="smalltext">Keywords</span></td>
+                <td><span class="smalltext">Last Update</span></td>
+                <td><span class="smalltext">Per Page</span></td>
+            </tr><tr>
+                <td>
+                    <select name="arch">
+                        <option value="all">All</option>
+                    {% for a in arches %}
+                        <option value="{{ a.name }}"{% ifequal arch a.name %} selected{% endifequal %}>{{ a.name }}</option>
+                    {% endfor %}
+                    </select>
+                </td><td>
+                    <select name="repo">
+                        <option value="all">All</option>
+                    {% for r in repos %}
+                        <option value="{{ r.name }}"{% ifequal repo r.name %} selected{% endifequal %}>{{ r.name|capfirst }}</option>
+                    {% endfor %}
+                    </select>
+                </td><td>
+                    <input type="text" name="q" value="{{ query|escape }}" size="30" maxlength="200" />
+                </td><td>
+                    <input type="text" name="lastupdate" value="{{ lastupdate|escape }}" size="10" maxlength="10" id="f_lastupdate" /> <button type="reset" id="f_trigger">...</button>
+                    <script type="text/javascript">
     Calendar.setup({
         inputField     :    "f_lastupdate",  // id of the input field
         ifFormat       :    "%Y-%m-%d",      // format of the input field
@@ -50,71 +50,65 @@
         singleClick    :    true,            // double-click mode
         step           :    1                // show all years in drop-down boxes (instead of every other year as default)
     });
-					</script>
-				</td><td>
-					<select name="limit">
-						<option value="50"{% ifequal limit 50 %} selected{% endifequal %}>50</option>
-						<option value="100"{% ifequal limit 100 %} selected{% endifequal %}>100</option>
-						<option value="250"{% ifequal limit 250 %} selected{% endifequal %}>250</option>
-						<option value="0"{% ifequal limit 0 %} selected{% endifequal %}>All</option>
-					</select>
-				</td><td>
-					<input type="submit" value=" Search " />
-				</td>
-			</tr>
-		</table>
-		</form>
-	</div>
-	<br /><br />
+                    </script>
+                </td><td>
+                    <select name="limit">
+                        <option value="50"{% ifequal limit 50 %} selected{% endifequal %}>50</option>
+                        <option value="100"{% ifequal limit 100 %} selected{% endifequal %}>100</option>
+                        <option value="250"{% ifequal limit 250 %} selected{% endifequal %}>250</option>
+                        <option value="0"{% ifequal limit 0 %} selected{% endifequal %}>All</option>
+                    </select>
+                </td><td>
+                    <input type="submit" value=" Search " />
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+    <br /><br />
 
-	{% if results %}
-	<div class="greybox">
-		<table class="results" width="100%">
-			<tr>
-				{% if not user.is_anonymous %}
-				<form method="post" action="/packages/update/">
-				<th>&nbsp;</th>
-				{% endif %}
-				<th><a href="{% buildsortqs "arch" %}">Arch</a></th>
-				<th><a href="{% buildsortqs "repo" %}">Repo</a></th>
-				<th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
-				<th>Version</th>
-				<th>Description</th>
-				<th><a href="{% buildsortqs "last_update" %}">Last Updated</a></th>
-			</tr>
-		{% for pkg in results %}
+    {% if results %}
+    <div class="greybox">
+        <table class="results" width="100%">
+            <tr>
+                <form method="post" action="/packages/update/">
+                <th>&nbsp;</th>
+                <th><a href="{% buildsortqs "arch" %}">Arch</a></th>
+                <th><a href="{% buildsortqs "repo" %}">Repo</a></th>
+                <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
+                <th>Version</th>
+                <th>Description</th>
+                <th><a href="{% buildsortqs "last_update" %}">Last Updated</a></th>
+            </tr>
+        {% for pkg in results %}
         <tr class="{% cycle pkgr2,pkgr1 %}">
-				{% if not user.is_anonymous %}
-				<td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
-				{% endif %}
-				<td>{{ pkg.arch.name }}</td>
-				<td>{{ pkg.repo.name|capfirst }}</td>
-				<td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
-			{% if pkg.needupdate %}
-				<td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
-			{% else %}
-				<td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
-			{% endif %}
-				<td>{{ pkg.pkgdesc }}</td>
-				<td>{{ pkg.last_update|date:"Y-m-d" }}</td>
-			</tr>
-		{% endfor %}
-			<tr>
-				<td colspan="2" style="font-size:x-small">{% if prevpage %}<br /><a href="{{ prevpage }}">&lt;&lt;&lt; Prev</a>{% endif %}</td>
-				<td colspan="2">&nbsp;</td>
-				<td colspan="2" style="font-size:x-small;text-align:right">{% if nextpage %}<br /><a href="{{ nextpage }}">Next &gt;&gt;&gt;</a>{% endif %}</td>
-			</tr>
-			{% if not user.is_anonymous %}
-			<tr>
-				<td colspan="3">&nbsp;</td>
-				<td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
-				<td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
-				<td colspan="1">&nbsp;</td>
-			</tr>
-			</form>
-			{% endif %}
-		</table>
-	</div>
-	{% endif %}
+                <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
+                <td>{{ pkg.arch.name }}</td>
+                <td>{{ pkg.repo.name|capfirst }}</td>
+                <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
+            {% if pkg.needupdate %}
+                <td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
+            {% else %}
+                <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+            {% endif %}
+                <td>{{ pkg.pkgdesc }}</td>
+                <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td colspan="2" style="font-size:x-small">{% if prevpage %}<br /><a href="{{ prevpage }}">&lt;&lt;&lt; Prev</a>{% endif %}</td>
+                <td colspan="2">&nbsp;</td>
+                <td colspan="2" style="font-size:x-small;text-align:right">{% if nextpage %}<br /><a href="{{ nextpage }}">Next &gt;&gt;&gt;</a>{% endif %}</td>
+            </tr>
+            <tr>
+                <td colspan="3">&nbsp;</td>
+                <td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
+                <td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
+                <td colspan="1">&nbsp;</td>
+            </tr>
+            </form>
+        </table>
+    </div>
+    {% endif %}
 {% endblock %}
 
