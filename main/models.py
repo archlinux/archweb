@@ -222,17 +222,18 @@ class Package(models.Model):
         """
         deps = []
         for dep in self.packagedepend_set.order_by('depname'):
-            try:
-                # we only need depend on same-arch-packages
-                p = Package.objects.get(
-                    Q(arch__name__iexact='any') | Q(arch=self.arch),
-                    pkgname=dep.depname)
-            except Package.DoesNotExist, IndexError:
+            # we only need depend on same-arch-packages
+            pkgs = Package.objects.filter(
+                Q(arch__name__iexact='any') | Q(arch=self.arch),
+                pkgname=dep.depname)
+            if len(pkgs) == 0:
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)
                 deps.append((None, dep.depname, None))
                 continue
-            deps.append((p.id,dep.depname,dep.depvcmp))
+            else:
+                for p in pkgs:
+                    deps.append((p.id,dep.depname,dep.depvcmp))
         return deps
 
 class PackageFile(models.Model):
