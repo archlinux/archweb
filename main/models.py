@@ -204,7 +204,7 @@ class Package(models.Model):
             ).order_by('depname')
         for req in requiredby:
             reqs.append((req.pkg.id,req.pkg.pkgname))
-        ## sort the resultant array. Django has problems in the orm with
+        ## sort the resultant list. Django has problems in the orm with
         ## trying to shoehorn the sorting into the reverse foreign key 
         ## reference in the query above. :(
         reqs.sort(lambda a,b: cmp(a[1],b[1]))
