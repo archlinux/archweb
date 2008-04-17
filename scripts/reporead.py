@@ -159,10 +159,12 @@ def db_update(archname, pkgs):
 
     # go go set theory!
     # thank you python for having a set class <3
+    logger.debug("Creating sets")
     dbset = set([pkg.pkgname for pkg in dbpkgs])
     syncset = set([pkg.name for pkg in pkgs])
     
     # packages in syncdb and not in database (add to database)
+    logger.debug("Set theory: Packages in syncdb not in database")
     in_sync_not_db = syncset - dbset
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.debug("Adding package %s", p.name)
@@ -190,6 +192,7 @@ def db_update(archname, pkgs):
                 logger.debug('Added %s as dep for pkg %s' % (dpname,p.name))
 
     # packages in database and not in syncdb (remove from database)
+    logger.debug("Set theory: Packages in database not in syncdb")
     in_db_not_sync = dbset - syncset
     for p in in_db_not_sync:
         logger.info("Removing package %s from database", p)
@@ -197,8 +200,10 @@ def db_update(archname, pkgs):
             pkgname=p, arch=architecture, repo=repository).delete()
 
     # packages in both database and in syncdb (update in database)
+    logger.debug("Set theory: Packages in database and syncdb")
     pkg_in_both = syncset & dbset
     for p in [x for x in pkgs if x.name in pkg_in_both]:
+        logger.debug("Looking for package updates")
         dbp = dbpkgs.get(pkgname=p.name)
         if ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
             continue
@@ -331,7 +336,7 @@ def main(argv=None):
     
     for package in packages:
         if package.arch not in [x.name for x in available_arches]:
-            logger.warning("Package %s has missing or invalid arch" % (package.name))
+            logger.warning("Package %s arch = %s" % (package.name,package.arch))
             package.arch = primary_arch
         packages_arches[package.arch].append(package)
 
