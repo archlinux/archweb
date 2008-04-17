@@ -25,6 +25,7 @@ TIME_ZONE = 'US/Eastern'
 # http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
 # http://blogs.law.harvard.edu/tech/stories/storyReader$15
 LANGUAGE_CODE = 'en-us'
+DEFAULT_CHARSET = 'utf-8'
 
 SITE_ID = 1
 
