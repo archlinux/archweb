@@ -179,7 +179,7 @@ class Package(models.Model):
     pkgver = models.CharField(maxlength=255)
     pkgrel = models.CharField(maxlength=255)
     pkgdesc = models.CharField(maxlength=255)
-    url = models.URLField()
+    url = models.CharField(maxlength=255)
     last_update = models.DateTimeField(null=True, blank=True)
     objects = PackageManager()
     class Meta:
