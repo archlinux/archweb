@@ -1,0 +1,30 @@
+[
+    {
+        "pk": "1", 
+        "model": "main.repo", 
+        "fields": {
+            "name": "Core"
+        }
+    }, 
+    {
+        "pk": "2", 
+        "model": "main.repo", 
+        "fields": {
+            "name": "Extra"
+        }
+    }, 
+    {
+        "pk": "3", 
+        "model": "main.repo", 
+        "fields": {
+            "name": "Testing"
+        }
+    }, 
+    {
+        "pk": "4", 
+        "model": "main.repo", 
+        "fields": {
+            "name": "Unstable"
+        }
+    } 
+]
