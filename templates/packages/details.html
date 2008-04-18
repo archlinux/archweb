@@ -70,7 +70,7 @@
                         <h4>Required By:</h4>
                         <ul style="font-size:small;list-style:none">
                         {% for req in pkg.get_requiredby %}
-                            <li><a href="/packages/{{ req.0 }}/">{{ req.1 }}</a></li>
+                            <li><a href="/packages/{{ req.id }}/">{{ req.pkgname }}{% ifequal req.repo.name "Testing" %}(testing){% endifequal %}{% ifequal req.repo.name "Unstable" %}(unstable){% endifequal %}</a></li>
                         {% endfor %}
                         </ul>
                     </div>
