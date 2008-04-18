@@ -235,11 +235,11 @@ class Package(models.Model):
             if len(pkgs) == 0:
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)
-                deps.append((None, dep.depname, None))
+                deps.append({'dep': dep, 'pkg': None})
                 continue
             else:
-                for p in pkgs:
-                    deps.append((p.id,dep.depname,dep.depvcmp))
+                for pkg in pkgs:
+                    deps.append({'dep': dep, 'pkg': pkg})
         return deps
 
 class PackageFile(models.Model):

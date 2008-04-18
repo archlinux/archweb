@@ -21,7 +21,10 @@ class ModelTest(TestCase):
         Test the Package object's get_depends() method
         """
         p = Package.objects.get(pkgname='abs',arch__name__iexact='i686')
-        expected = [(7L, 'bash', ''), (None, 'rsync', None)]
+        dep1 = {'dep': PackageDepend.objects.get(id=1),
+                'pkg': Package.objects.get(id=7)}
+        dep2 = {'dep': PackageDepend.objects.get(id=2), 'pkg': None}
+        expected = [dep1, dep2]
         results = p.get_depends()
         self.failUnlessEqual(results, expected)
         del p

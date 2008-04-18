@@ -55,11 +55,11 @@
                     <div class="listing">
                         <h4>Dependencies:</h4>
                         <ul style="font-size:small;list-style:none">
-                        {% for dep in pkg.get_depends %}
-                          {% ifequal dep.0 None %}
-                            <li>{{ dep.1 }}</li>
+                        {% for depend in pkg.get_depends %}
+                          {% ifequal depend.pkg None %}
+                            <li>{{ depend.dep.depname }} (virtual)</li>
                           {% else %}
-                            <li><a href="/packages/{{ dep.0 }}/">{{ dep.1 }}</a>{{ dep.2 }}</li>
+                            <li><a href="/packages/{{ depend.pkg.id }}/">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp }}</li>
                           {% endifequal %}
                         {% endfor %}
                         </ul>
