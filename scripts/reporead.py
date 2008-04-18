@@ -184,7 +184,7 @@ def db_update(archname, pkgs):
             for y in p.depends:
                 # make sure we aren't adding self depends..
                 # yes *sigh* i have seen them in pkgbuilds
-                dpname,dpvcmp = re.match(r"([a-z0-9-]+)(.*)", y).groups()
+                dpname,dpvcmp = re.match(r"([a-z0-9_-]+)(.*)", y).groups()
                 if dpname == p.name:
                     logger.warning('Package %s has a depend on itself' % p.name)
                     continue
