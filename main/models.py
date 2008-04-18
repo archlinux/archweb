@@ -8,9 +8,18 @@ import re
 ###########################
 class UserProfile(models.Model):
     id = models.AutoField(primary_key=True) # not technically needed
-    notify = models.BooleanField("Send notifications", default=True, help_text="When enabled, user will recieve 'flag out of date' notifications")
-    alias = models.CharField(core=True, maxlength=50, help_text="Required field")
-    public_email = models.CharField(core=True, maxlength=50, help_text="Required field")
+    notify = models.BooleanField(
+        "Send notifications",
+        default=True,
+        help_text="When enabled, send user 'flag out of date' notifications")
+    alias = models.CharField(
+        core=True,
+        maxlength=50,
+        help_text="Required field")
+    public_email = models.CharField(
+        core=True,
+        maxlength=50,
+        help_text="Required field")
     other_contact = models.CharField(maxlength=100, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     yob = models.IntegerField(null=True, blank=True)
