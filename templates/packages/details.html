@@ -7,6 +7,7 @@
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
         <div style="float:right" class="listing">
             <ul class="small">
+                <li><a href="http://repos.archlinux.org/viewvc.cgi/{{ pkg.pkgname }}/repos/{{ pkg.repo.name|lower }}-{{ pkg.arch.name|lower }}/">View SVN Entries</a></li>
                 <!-- <li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li> -->
                 <li>
             {% if pkg.needupdate %}
