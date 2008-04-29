@@ -135,44 +135,6 @@ def files(request, pkgid):
     files = PackageFile.objects.filter(pkg=pkgid)
     return render_response(request, 'packages/files.html', {'pkg':pkg,'files':files})
 
-def flaghelp(request):
-    return render_response(request, 'packages/flaghelp.html')
-
-def flag(request, pkgid):
-    pkg = get_object_or_404(Package, id=pkgid)
-    context = {'pkg': pkg}
-    if request.POST.has_key('confirmemail'):
-        email = request.POST['confirmemail']
-        if request.POST.has_key('usermessage'):
-            message = request.POST['usermessage']
-        else:
-            message = None
-        # validate
-        errors = {}
-        validate(errors, 'Email Address', email, validators.isValidEmail, False, request)
-        if errors:
-            context['errors'] = errors
-            return render_response(request, 'packages/flag.html', context)
-
-        context['confirmemail'] = email
-        pkg.needupdate = 1
-        pkg.save()
-        if pkg.maintainer_id > 0:
-            # send notification email to the maintainer
-            t = loader.get_template('packages/outofdate.txt')
-            c = Context({
-                'email':   request.POST['confirmemail'],
-                'message': message,
-                'pkgname': pkg.pkgname,
-                'weburl':  'http://www.archlinux.org/packages/' + str(pkg.id) + '/'
-            })
-            send_mail('arch: Package [%s] marked out-of-date' % pkg.pkgname, 
-                    t.render(c), 
-                    'Arch Website Notification <nobody@archlinux.org>',
-                    [pkg.maintainer.email],
-                    fail_silently=True)
-    return render_response(request, 'packages/flag.html', context)
-
 def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
     pkg.needupdate = 0

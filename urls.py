@@ -5,8 +5,6 @@ from django.views.decorators.cache import cache_page
 
 urlpatterns = patterns('',
 # Dynamic Stuff
-    (r'^packages/flag/(\d+)/$',          'archweb_dev.packages.views.flag'),
-    (r'^packages/flaghelp/$',            'archweb_dev.packages.views.flaghelp'),
     (r'^packages/unflag/(\d+)/$',        'archweb_dev.packages.views.unflag'),
     (r'^packages/files/(\d+)/$',         'archweb_dev.packages.views.files'),
     (r'^packages/search/$',              'archweb_dev.packages.views.search'),

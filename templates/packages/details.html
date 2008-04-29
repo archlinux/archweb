@@ -9,15 +9,12 @@
             <ul class="small">
                 <li><a href="http://repos.archlinux.org/viewvc.cgi/{{ pkg.pkgname }}/repos/{{ pkg.repo.name|lower }}-{{ pkg.arch.name|lower }}/">View SVN Entries</a></li>
                 <!-- <li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li> -->
-                <li>
             {% if pkg.needupdate %}
+                <li>
                 <span style="font-size:x-small"><em>This package has been flagged out-of-date</em></span>
                 <br />&nbsp; &nbsp; <a href="/packages/unflag/{{ pkg.id }}/">Click here to unflag</a>
-            {% else %}
-                <a href="/packages/flag/{{ pkg.id }}/" onclick="return !window.open('/packages/flag/{{ pkg.id }}/','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">Flag Package Out-of-Date</a>
-                <a href="/packages/flaghelp" onclick="return !window.open('/packages/flaghelp','FlagHelp','height=250,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');"><span style="font-size:x-small">(?)</span></a>
-            {% endif %}
                 </li>
+            {% endif %}
                 <li>&nbsp;</li>
                 <li>
                 <form name="devaction" method="post" action="/packages/update/">
