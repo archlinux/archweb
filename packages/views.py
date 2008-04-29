@@ -115,7 +115,7 @@ def search(request, query=''):
 
     qs = request.GET.copy()
     # build pagination urls
-    if results.count() > (skip + limit):
+    if results.count() > (skip + limit) and limit > 0:
         qs['skip'] = skip + limit
         c['nextpage'] = '?' + qs.urlencode()
     if skip > 0:
