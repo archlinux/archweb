@@ -102,7 +102,7 @@
 					</ul>
 					<ul class="small">
 					{% for pkg in pkgs %}
-						<li><a href="/packages/{{ pkg.id }}/">{{ pkg.repo.name }}::{{ pkg.pkgname }} {{ pkg.pkgver }}</a></li>
+						<li><a href="/packages/{{ pkg.id }}/">{{ pkg.repo.name }}::{{ pkg.pkgname }} &nbsp; &nbsp; {{ pkg.pkgver }} &nbsp; &nbsp; {{ pkg.arch.name }}</a></li>
 					{% endfor %}
 					</ul>
 				{% endif %}

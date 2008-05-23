@@ -77,6 +77,9 @@ class Pkg(object):
         
         selfdict['name'] = val['name'][0]
         del val['name']
+        if 'desc' not in val:
+            logger.warning("Package %s has no description" % selfdict['name'])
+            val['desc'] = ''
         if 'url' not in val:
             val['url'] = ''
         for x in val.keys():
