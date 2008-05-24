@@ -104,6 +104,7 @@ class Press(models.Model):
         db_table = 'press'
         verbose_name_plural = 'press'
     class Admin:
+        list_display = ('name', 'url')
         ordering = ['name']
         search_fields = ('name')
         pass
