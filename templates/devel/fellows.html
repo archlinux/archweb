@@ -7,56 +7,56 @@
     what it is today. Thanks!
 	<br /><br />
 	<div id="devlist">
-	{% for dev in devs %}
-		<a href="#{{ dev.first_name}}{{ dev.last_name.0|upper }}">{{ dev.first_name }}{{ dev.last_name.0|upper }}</a>  &nbsp; 
+	{% for fellow in fellows %}
+		<a href="#{{ fellow.first_name}}{{ fellow.last_name.0|upper }}">{{ fellow.first_name }}{{ fellow.last_name.0|upper }}</a>  &nbsp; 
 	{% endfor %}
 	</div><br /><br />
 
 	<table class="center" cellpadding="20">
-	{% for dev in devs %}
+	{% for fellow in fellows %}
 		<tr>
 			<td class="devpic">
-				<img src="{{ dev.get_profile.get_picture_url }}" height="175" width="175" style="border:1px solid black">
+				<img src="{{ fellow.get_profile.get_picture_url }}" height="175" width="175" style="border:1px solid black">
 			</td><td>
-				<a name="{{ dev.first_name }}{{ dev.last_name.0|upper }}" />
+				<a name="{{ fellow.first_name }}{{ fellow.last_name.0|upper }}" />
 				<table class="deventry" cellspacing="5">
 					<tr>
 						<th>Name:</th>
-						<td>{{ dev.get_full_name }}</td>
+						<td>{{ fellow.get_full_name }}</td>
 					</tr><tr>
 						<th>Alias:</th>
-						<td>{{ dev.get_profile.alias }}</td>
+						<td>{{ fellow.get_profile.alias }}</td>
 					</tr><tr>
 						<th>Email:</th>
-						<td>{{ dev.get_profile.public_email }}</td>
+						<td>{{ fellow.get_profile.public_email }}</td>
 					</tr><tr>
 						<th>Other Contact:</th>
-						<td>{{ dev.get_profile.other_contact }}</td>
+						<td>{{ fellow.get_profile.other_contact }}</td>
 					</tr><tr>
 						<th>Roles:</th>
-						<td>{{ dev.get_profile.roles }}<br />
+						<td>{{ fellow.get_profile.roles }}<br />
 						</td>
 					</tr><tr>
 						<th>Website:</th>
-						<td>{{ dev.get_profile.website }}</td>
+						<td>{{ fellow.get_profile.website }}</td>
 					</tr><tr>
 						<th>Occupation:</th>
-						<td>{{ dev.get_profile.occupation }}</td>
+						<td>{{ fellow.get_profile.occupation }}</td>
 					</tr><tr>
 						<th>YOB:</th>
-                        <td>{% if dev.get_profile.yob %}{{ dev.get_profile.yob }}{% else %}&nbsp;{% endif %}</td>
+                        <td>{% if fellow.get_profile.yob %}{{ fellow.get_profile.yob }}{% else %}&nbsp;{% endif %}</td>
 					</tr><tr>
 						<th>Location:</th>
-						<td>{{ dev.get_profile.location }}</td>
+						<td>{{ fellow.get_profile.location }}</td>
 					</tr><tr>
 						<th>Languages:</th>
-						<td>{{ dev.get_profile.languages }}</td>
+						<td>{{ fellow.get_profile.languages }}</td>
 					</tr><tr>
 						<th>Interests:</th>
-						<td>{{ dev.get_profile.interests }}</td>
+						<td>{{ fellow.get_profile.interests }}</td>
 					</tr><tr>
 						<th>Favorite Distros:</th>
-						<td>{{ dev.get_profile.favorite_distros }}</td>
+						<td>{{ fellow.get_profile.favorite_distros }}</td>
 					</tr>
 				</table>
 			</td>
