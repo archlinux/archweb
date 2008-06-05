@@ -103,6 +103,10 @@ def developers(request):
     devs = User.objects.filter(is_active=True).order_by('username')
     return render_response(request, 'devel/developers.html', {'devs':devs})
 
+def fellows(request):
+    fellows = User.objects.filter(is_active=False).order_by('username')
+    return render_response(request, 'devel/fellows.html', {'fellows':fellows})
+
 def donate(request):
     donor_count = Donor.objects.count()
     splitval = donor_count / 4
