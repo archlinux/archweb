@@ -195,6 +195,7 @@ class Package(models.Model):
     class Meta:
         db_table = 'packages'
         get_latest_by = 'last_update'
+        ordering = ('-last_update',)
 
     def __str__(self):
         return self.pkgname

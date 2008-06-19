@@ -106,7 +106,7 @@ def search(request, query=''):
 
     # sort results
     if sort == '':
-        results = results.order_by('repo', 'arch', 'pkgname')
+        results = results.order_by('repo', 'arch', '-last_update', 'pkgname')
     else:
         # duplicate sort fields shouldn't hurt anything
         results = results.order_by(sort, 'repo', 'arch', 'pkgname')
