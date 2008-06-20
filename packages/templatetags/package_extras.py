@@ -8,7 +8,10 @@ class BuildQueryStringNode(template.Node):
     def render(self, context):
         qs = context['querystring'].copy()
         if qs.has_key('sort') and qs['sort'] == self.sortfield:
-            qs['sort'] = '-' + self.sortfield
+            if self.sortfield.startswith('-'):
+                qs['sort'] = self.sortfield[1:]
+            else:
+                qs['sort'] = '-' + self.sortfield
         else:
             qs['sort'] = self.sortfield
         return '?' + qs.urlencode()

@@ -78,7 +78,7 @@
                 <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
-                <th><a href="{% buildsortqs "last_update" %}">Last Updated</a></th>
+                <th><a href="{% buildsortqs "-last_update" %}">Last Updated</a></th>
             </tr>
         {% for pkg in results %}
         <tr class="{% cycle pkgr2,pkgr1 %}">
