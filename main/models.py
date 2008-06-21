@@ -194,11 +194,33 @@ class Package(models.Model):
     objects = PackageManager()
     class Meta:
         db_table = 'packages'
-        get_latest_by = 'last_update'
-        ordering = ('-last_update',)
+        #get_latest_by = 'last_update'
+        #ordering = ('-last_update',)
+
+    class Admin:
+        list_display = ('pkgname', '_reponame', '_archname', '_maintainername',
+                'last_update')
+        list_filter = ('repo', 'arch', 'maintainer')
+        ordering = ['pkgname']
+        search_fields = ('pkgname', 'maintainer__username')
+        pass
 
     def __str__(self):
         return self.pkgname
+
+    # According to http://code.djangoproject.com/ticket/2583 we have "bad data"
+    # The problem is the queries constructed by the admin  to retrieve foreign
+    # keys are empty. This allows us to display items in the list but kills
+    # sorting
+    def _reponame(self):
+        return self.repo.name
+    _reponame.short_description='Repo'
+    def _archname(self):
+        return self.arch.name
+    _archname.short_description='Arch'
+    def _maintainername(self):
+        return self.maintainer.username
+    _maintainername.short_description = 'Maintainer'
 
     def get_absolute_url(self):
         return '/packages/%i/' % self.id
