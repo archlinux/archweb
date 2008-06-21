@@ -80,13 +80,6 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     return render_response(request, 'devel/profile.html', {'errors':errors,'email':request.user.email})
 
-def guide(request):
-    t = loader.get_template('devel/pkgmaint_guide.txt')
-    c = Context()
-    return HttpResponse(t.render(c), mimetype="text/plain")
-    #return render_response(request, 'devel/pkgmaint_guide.txt',
-    #                       mimetype='text/plain')
-
 def siteindex(request):
     # get the most recent 10 news items
     news  = News.objects.order_by('-postdate', '-id')[:10]

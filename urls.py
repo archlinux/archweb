@@ -29,7 +29,6 @@ urlpatterns = patterns('',
     (r'^devel/$',          'archweb_dev.devel.views.index'),
     (r'^devel/notify/$',   'archweb_dev.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),
-    (r'^devel/guide/$',    'archweb_dev.devel.views.guide'),
 
     (r'^wiki/([A-Z]+[A-z0-9 :/-]+)/$',      'archweb_dev.wiki.views.page'),
     (r'^wiki/edit/([A-Z]+[A-z0-9 :/-]+)/$', 'archweb_dev.wiki.views.edit'),
