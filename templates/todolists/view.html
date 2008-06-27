@@ -36,10 +36,9 @@
 		<table id="todotable" class="results" width="100%">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>Name</th>
                     <th>Arch</th>
                     <th>Repo</th>
-                    <th>Name</th>
                     <th>Maintainer</th>
                     <th>Status</th>
                 </tr>
@@ -47,10 +46,9 @@
             <tbody>
             {% for pkg in pkgs %}
                 <tr class="{% cycle even,odd %}">
-                    <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.id }}</a></td>
+                    <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.pkgname }}</a></td>
                     <td>{{ pkg.pkg.arch.name }}</td>
                     <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                    <td>{{ pkg.pkg.pkgname }}</td>
                     <td>{{ pkg.pkg.maintainer.get_full_name|default:"Orphan" }}</td>
                     <td>
                     {% if pkg.complete %}
