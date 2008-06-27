@@ -1,6 +1,7 @@
 import django.newforms as forms
 
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
@@ -11,6 +12,25 @@ from archweb_dev.main.models import Arch, Repo
 # FIXME: ugly hackery. http://code.djangoproject.com/ticket/3450
 import django.db
 IntegrityError = django.db.backend.Database.IntegrityError
+
+class TodoListForm(forms.Form):
+    name = forms.CharField(max_length=255,
+            widget=forms.TextInput(attrs={'size': '30'}))
+    description = forms.CharField(required=False,
+            widget=forms.Textarea(attrs={'rows': '4', 'cols': '60'}))
+    packages = forms.CharField(required=False,
+            help_text='(one per line)',
+            widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
+
+    def clean_packages(self):
+        packages = []
+        for p in self.clean_data['packages'].split("\n"):
+            for pkg in Package.objects.filter(
+                    pkgname=p.strip()).order_by('arch').distinct():
+                packages .append(pkg)
+
+        return packages
+
 
 def flag(request, listid, pkgid):
     list = get_object_or_404(Todolist, id=listid)
@@ -37,31 +57,28 @@ def list(request):
 @permission_required('todolists.add_todolist')
 def add(request):
     if request.POST:
-        try:
-            m = User.objects.get(username=request.user.username)
-        except User.DoesNotExist:
-            return render_response(request, 'error_page.html',
-                {'errmsg': 'Cannot find a maintainer record for you!'})
         # create the list
-        todo = Todolist(
-            creator     = m,
-            name        = request.POST.get('name'),
-            description = request.POST.get('description'))
-        todo.save()
-        # now link in packages
-        for p in request.POST.get('packages').split("\n"):
-            for pkg in Package.objects.filter(
-                    pkgname=p.strip()).order_by('arch'):
-                todopkg = TodolistPkg(
-                    list = todo,
-                    pkg  = pkg)
-                try:
-                    todopkg.save()
-                except IntegrityError, (num, desc):
-                    if num != 1062: # duplicate entry aka dupe package on list
-                        raise
-        return HttpResponseRedirect('/todo/')
-    return render_response(request, 'todolists/add.html')
+        form = TodoListForm(request.POST)
+        if form.is_valid():
+            todo = Todolist(
+                creator     = request.user,
+                name        = form.clean_data['name'],
+                description = form.clean_data['description'])
+            todo.save()
+            # now link in packages
+            for pkg in form.clean_data['packages']:
+                todopkg = TodolistPkg(list = todo, pkg = pkg)
+                todopkg.save()
+            return HttpResponseRedirect('/todo/')
+    else:
+        form = TodoListForm()
+
+    page_dict = {
+            'title': 'Add To-do List',
+            'form': form,
+            'submit_text': 'Create List'
+            }
+    return render_response(request, 'general_form.html', page_dict)
 
 # vim: set ts=4 sw=4 et:
 

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+        <h2 class="title">{{title}}</h2>
+		<form method="post" action=".">
+		<table>
+            {% for field in form %}
+                <tr>
+                    <td style="vertical-align:top">
+                        <span {% if field.required %}style="fontweight: bold"{% endif%}>{{field.label}}:</span>
+                        <br /><span style="font-size:x-small">{{field.help_text}}</span></td>
+                    <td>{{field}}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+				<td colspan="2" style="text-align:right">
+                    <input type="submit" value=" {{submit_text}} " />
+				</td>
+			</tr>
+		</table>
+		</form>
+	</div>
+{% endblock %}
