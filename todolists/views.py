@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
@@ -32,7 +32,7 @@ def list(request):
             list=l.id,complete=False).count() == 0
     return render_response(request, 'todolists/list.html', {'lists':lists})
 
-@user_passes_test(lambda u: u.has_perm('todolists.add_todolist'))
+@permission_required('todolists.add_todolist')
 def add(request):
     if request.POST:
         try:

@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django import forms
 from archweb_dev.main.utils import render_response
@@ -15,7 +15,7 @@ def list(request):
     news = News.objects.order_by('-postdate', '-id')
     return render_response(request, 'news/list.html', {'news':news})
 
-@user_passes_test(lambda u: u.has_perm('news.add_news'))
+@permission_required('news.add_news')
 def add(request):
     try:
         m = User.objects.get(username=request.user.username)
@@ -40,7 +40,7 @@ def add(request):
     form = forms.FormWrapper(manipulator, data, errors)
     return render_response(request, 'news/add.html', {'form': form})
 
-@user_passes_test(lambda u: u.has_perm('news.delete_news'))
+@permission_required('news.delete_news')
 def delete(request, newsid):
     news = get_object_or_404(News, id=newsid)
     #if news.author.id != request.user.id:
@@ -50,7 +50,7 @@ def delete(request, newsid):
         return HttpResponseRedirect('/news/')
     return render_response(request, 'news/delete.html')
 
-@user_passes_test(lambda u: u.has_perm('news.change_news'))
+@permission_required('news.change_news')
 def edit(request, newsid):
     try:
         m = User.objects.get(username=request.user.username)
