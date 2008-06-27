@@ -1,3 +1,5 @@
+import django.newforms as forms
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
@@ -56,8 +58,8 @@ def add(request):
                 try:
                     todopkg.save()
                 except IntegrityError, (num, desc):
-                    if num == 1062: # duplicate entry aka dupe package on list
-                        pass
+                    if num != 1062: # duplicate entry aka dupe package on list
+                        raise
         return HttpResponseRedirect('/todo/')
     return render_response(request, 'todolists/add.html')
 
