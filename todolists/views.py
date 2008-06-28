@@ -23,12 +23,11 @@ class TodoListForm(forms.Form):
             widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
 
     def clean_packages(self):
-        packages = []
-        for p in self.clean_data['packages'].split("\n"):
-            for pkg in Package.objects.filter(
-                    pkgname=p.strip()).order_by('arch').distinct():
-                packages .append(pkg)
-
+        package_names = [s.strip() for s in 
+                self.clean_data['packages'].split("\n")]
+        package_names = set(package_names)
+        packages = Package.objects.filter(
+                pkgname__in=package_names).order_by('arch')
         return packages
 
 
