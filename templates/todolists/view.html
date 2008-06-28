@@ -32,11 +32,14 @@
 {% endblock %}
 {% block content %}
 	<div class="greybox">
-        {% if perms.todolists.change_todolist %}
             <div style="float:right">
-                <a href="/todo/edit/{{list.id}}?">Edit Todo List</a>
+                {% if perms.todolist.delete_todolist %}
+                    <a href="/todo/delete/{{list.id}}/">Delete Todo List</a> | 
+                {% endif %}
+                {% if perms.todolists.change_todolist %}
+                    <a href="/todo/edit/{{list.id}}/">Edit Todo List</a>
+                {% endif %}
             </div>
-        {% endif %}
 		<h2 class="title">ToDo List: {{ list.name }}</h2>
 		<table id="todotable" class="results" width="100%">
             <thead>

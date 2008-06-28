@@ -224,11 +224,11 @@ hr {
 	border: none;
 	border-top: 1px solid #46494d;
 }
-.greybox input, button, textarea, select {
+.greybox input, .greybox button, .greybox textarea, .greybox select {
 	background: #e1e3e6;
 	border: 1px solid #8faecd;
 }
-.box input, button {
+.box input, .box button {
 	padding: 2px;
 	background: #c1c3f6;
 	font-size: x-small;

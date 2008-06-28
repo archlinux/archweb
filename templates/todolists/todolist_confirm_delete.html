@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="greybox">
+		<h2 class="title">Confirm Delete</h2>
+        <p>
+        Are you sure you want to delete this todo list?
+        </p>
+        <div class="box">
+            <h3>{{object.name}}</h3>
+            <p>
+            {{object.description}}
+            </p>
+        </div>
+        <br />
+        <form method="POST">
+            <input type="submit" value="Yes" />
+            <button type="reset" value="No"
+                onclick="document.location='/todos/{{object.id}}/';">No</button>
+        </form>
+
+        
+	</div>
+{% endblock %}

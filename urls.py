@@ -1,7 +1,9 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from archweb_dev.main.models import News
 from django.views.decorators.cache import cache_page
+from django.views.generic.create_update import delete_object
+from django.contrib.auth.decorators import permission_required
+from archweb_dev.main.models import News, Todolist
 
 urlpatterns = patterns('',
 # Dynamic Stuff
@@ -19,6 +21,12 @@ urlpatterns = patterns('',
     (r'^todo/add/$',                'archweb_dev.todolists.views.add'),
     (r'^todo/edit/(?P<list_id>\d+)/$',  'archweb_dev.todolists.views.edit'),
     (r'^todo/flag/(\d+)/(\d+)/$',   'archweb_dev.todolists.views.flag'),
+    (r'^todo/delete/(?P<object_id>\d+)/$', permission_required(
+        'delete_todo_list')(delete_object), {
+            'model': Todolist,
+            'template_name': 'todolists/todolist_confirm_delete.html',
+            'post_delete_redirect': '/todo/'
+        }),
     (r'^todo/$',                    'archweb_dev.todolists.views.list'),
 
     (r'^news/(\d+)/$',         'archweb_dev.news.views.view'),
