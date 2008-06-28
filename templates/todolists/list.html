@@ -2,11 +2,11 @@
 
 {% block content %}
 	<div class="greybox">
-	{% if perms.todolists.add_todolist %}
-		<div style="float:right">
-			<a href="/todo/add/">Add Todo List</a>
-		</div>
-	{% endif %}
+        {% if perms.todolists.add_todolist %}
+            <div style="float:right">
+                <a href="/todo/add/">Add Todo List</a>
+            </div>
+        {% endif %}
 		<h2 class="title">Package ToDo lists</h2>
 		<table class="results" width="100%">
             <thead>
