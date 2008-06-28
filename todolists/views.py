@@ -41,11 +41,10 @@ def flag(request, listid, pkgid):
 
 def view(request, listid):
     list = get_object_or_404(Todolist, id=listid)
-    pkgs = TodolistPkg.objects.filter(list=list.id).order_by('pkg')
     return render_response(
         request, 
         'todolists/view.html', 
-        {'list':list,'pkgs':pkgs})
+        {'list':list})
 
 def list(request):
     lists = Todolist.objects.order_by('-date_added')
@@ -57,18 +56,14 @@ def list(request):
 @permission_required('todolists.add_todolist')
 def add(request):
     if request.POST:
-        # create the list
         form = TodoListForm(request.POST)
         if form.is_valid():
-            todo = Todolist(
+            todo = Todolist.objects.create(
                 creator     = request.user,
                 name        = form.clean_data['name'],
                 description = form.clean_data['description'])
-            todo.save()
-            # now link in packages
             for pkg in form.clean_data['packages']:
-                todopkg = TodolistPkg(list = todo, pkg = pkg)
-                todopkg.save()
+                TodolistPkg.objects.create(list = todo, pkg = pkg)
             return HttpResponseRedirect('/todo/')
     else:
         form = TodoListForm()

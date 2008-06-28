@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for pkg in pkgs %}
+            {% for pkg in list.packages %}
                 <tr class="{% cycle even,odd %}">
                     <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.pkgname }}</a></td>
                     <td>{{ pkg.pkg.arch.name }}</td>

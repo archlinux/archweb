@@ -290,6 +290,15 @@ class Todolist(models.Model):
     objects = TodolistManager()
     def __str__(self):
         return self.name
+
+    @property
+    def packages(self):
+        return TodolistPkg.objects.filter(list=self.id).order_by('pkg')
+
+    @property
+    def package_names(self):
+        return '\n'.join([p.pkg.pkgname for p in self.packages])
+
     class Meta:
         db_table = 'todolists'
 
