@@ -297,7 +297,7 @@ class Todolist(models.Model):
 
     @property
     def package_names(self):
-        return '\n'.join([p.pkg.pkgname for p in self.packages])
+        return '\n'.join(set([p.pkg.pkgname for p in self.packages]))
 
     class Meta:
         db_table = 'todolists'
