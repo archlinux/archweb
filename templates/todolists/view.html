@@ -32,6 +32,11 @@
 {% endblock %}
 {% block content %}
 	<div class="greybox">
+        {% if perms.todolists.change_todolist %}
+            <div style="float:right">
+                <a href="/todo/edit/{{list.id}}?">Edit Todo List</a>
+            </div>
+        {% endif %}
 		<h2 class="title">ToDo List: {{ list.name }}</h2>
 		<table id="todotable" class="results" width="100%">
             <thead>

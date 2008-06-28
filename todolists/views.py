@@ -75,5 +75,37 @@ def add(request):
             }
     return render_response(request, 'general_form.html', page_dict)
 
+@permission_required('todolists.change_todolist')
+def edit(request, list_id):
+    todo_list = get_object_or_404(Todolist, id=list_id)
+    if request.POST:
+        form = TodoListForm(request.POST)
+        if form.is_valid():
+            todo_list.name = form.clean_data['name']
+            todo_list.description = form.clean_data['description']
+            todo_list.save()
+
+            packages = [p.pkg for p in todo_list.packages]
+
+            for pkg in form.clean_data['packages']:
+                if pkg not in packages:
+                    TodolistPkg.objects.create(list = todo_list, pkg = pkg)
+
+            return HttpResponseRedirect('/todo/%d/' % todo_list.id)
+    else:
+        form = TodoListForm(initial={
+            'name': todo_list.name,
+            'description': todo_list.description,
+            'packages': todo_list.package_names,
+            })
+    page_dict = {
+            'title': 'Edit To-do List "%s"' % todo_list.name,
+            'form': form,
+            'submit_text': 'Save List'
+            }
+    return render_response(request, 'general_form.html', page_dict)
+
+
+
 # vim: set ts=4 sw=4 et:
 
