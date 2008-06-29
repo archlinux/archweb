@@ -86,6 +86,12 @@ def edit(request, list_id):
 
             packages = [p.pkg for p in todo_list.packages]
 
+            # first delete any packages not in the new list
+            for p in todo_list.packages:
+                if p.pkg not in form.clean_data['packages']:
+                    p.delete()
+
+            # now add any packages not in the old list
             for pkg in form.clean_data['packages']:
                 if pkg not in packages:
                     TodolistPkg.objects.create(list = todo_list, pkg = pkg)
