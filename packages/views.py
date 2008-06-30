@@ -18,9 +18,10 @@ def update(request):
     if request.POST.has_key('disown'):
         mode = 'disown'
         message = 'Disown was successful'
-    try:
-        maint = User.objects.get(username=request.user.username)
-    except User.DoesNotExist:
+
+    if request.user.is_authenticated():
+        maint = request.user
+    else:
         return render_response(request, 'error_page.html', {'errmsg':'No maintainer record found!  Are you a maintainer?'})
     ids = request.POST.getlist('pkgid')
     for id in ids:
