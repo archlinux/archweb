@@ -47,6 +47,7 @@ def details(request, pkgid=0, name='', repo=''):
     pkg = get_object_or_404(Package, id=pkgid)
     return render_response(request, 'packages/details.html', {'pkg': pkg})
 
+# @TODO: replace search form with a newform
 def search(request, query=''):
     if request.GET.has_key('q'):
         # take the q GET var over the one passed on the URL
@@ -65,9 +66,11 @@ def search(request, query=''):
     # build the form lists
     repos = Repo.objects.all()
     arches  = Arch.objects.all()
+    users = User.objects.all()
     # copy GET data over and add the lists
     c = request.GET.copy()
     c['repos'], c['arches']  = repos, arches
+    c['users'] = users
     c['limit'], c['skip'] = limit, skip
     c['lastupdate'] = lastupdate
     c['sort'] = sort

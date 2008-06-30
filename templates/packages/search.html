@@ -20,6 +20,7 @@
                 <td><span class="smalltext">Arch</span></td>
                 <td><span class="smalltext">Repository</span></td>
                 <td><span class="smalltext">Keywords</span></td>
+                <td><span class="smalltext">Maintainer</span></td>
                 <td><span class="smalltext">Last Update</span></td>
                 <td><span class="smalltext">Per Page</span></td>
             </tr><tr>
@@ -39,6 +40,14 @@
                     </select>
                 </td><td>
                     <input type="text" name="q" value="{{ query|escape }}" size="30" maxlength="200" />
+                </td><td>
+                    <select name="maint">
+                        <option value="all">All</option>
+                        {% for u in users %}
+                        <option value="{{u.id}}" {% ifequal maint u.id
+                        %}selected=selected {%
+                        %endifequal%}>{{u.username}}</option>
+                        {% endfor %}
                 </td><td>
                     <input type="text" name="lastupdate" value="{{ lastupdate|escape }}" size="10" maxlength="10" id="f_lastupdate" /> <button type="reset" id="f_trigger">...</button>
                     <script type="text/javascript">
@@ -78,6 +87,7 @@
                 <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
+                <th><a href="{% buildsortqs "maintainer" %}">Maintainer</a></th>
                 <th><a href="{% buildsortqs "-last_update" %}">Last Updated</a></th>
             </tr>
         {% for pkg in results %}
@@ -92,6 +102,7 @@
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
             {% endif %}
                 <td>{{ pkg.pkgdesc }}</td>
+                <td>{{ pkg.maintainer|default:"Orphan" }}</td>
                 <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
             </tr>
         {% endfor %}
