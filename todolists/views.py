@@ -63,9 +63,11 @@ def add(request):
                 creator     = request.user,
                 name        = form.clean_data['name'],
                 description = form.clean_data['description'])
+
             for pkg in form.clean_data['packages']:
-                todo = TodolistPkg.objects.create(list = todo, pkg = pkg)
-                send_todolist_email(todo)
+                tpkg = TodolistPkg.objects.create(list = todo, pkg = pkg)
+                send_todolist_email(tpkg)
+
             return HttpResponseRedirect('/todo/')
     else:
         form = TodoListForm()
@@ -97,9 +99,9 @@ def edit(request, list_id):
             # now add any packages not in the old list
             for pkg in form.clean_data['packages']:
                 if pkg not in packages:
-                    todo = TodolistPkg.objects.create(
+                    tpkg = TodolistPkg.objects.create(
                             list = todo_list, pkg = pkg)
-                    send_todolist_email(todo)
+                    send_todolist_email(tpkg)
 
             return HttpResponseRedirect('/todo/%d/' % todo_list.id)
     else:
@@ -121,6 +123,9 @@ def send_todolist_email(todo):
     package has been added to a to-do list'''
     if todo.pkg.maintainer_id == 0:
         return
+    print todo
+    print todo.list_id
+    print todo.list.name
     page_dict = {
             'pkg': todo.pkg,
             'todolist': todo.list,
