@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.template import Context, loader
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
 from archweb_dev.main.models import Arch, Repo
@@ -62,7 +63,8 @@ def add(request):
                 name        = form.clean_data['name'],
                 description = form.clean_data['description'])
             for pkg in form.clean_data['packages']:
-                TodolistPkg.objects.create(list = todo, pkg = pkg)
+                todo = TodolistPkg.objects.create(list = todo, pkg = pkg)
+                send_todolist_email(todo)
             return HttpResponseRedirect('/todo/')
     else:
         form = TodoListForm()
@@ -94,7 +96,9 @@ def edit(request, list_id):
             # now add any packages not in the old list
             for pkg in form.clean_data['packages']:
                 if pkg not in packages:
-                    TodolistPkg.objects.create(list = todo_list, pkg = pkg)
+                    todo = TodolistPkg.objects.create(
+                            list = todo_list, pkg = pkg)
+                    send_todolist_email(todo)
 
             return HttpResponseRedirect('/todo/%d/' % todo_list.id)
     else:
@@ -109,6 +113,25 @@ def edit(request, list_id):
             'submit_text': 'Save List'
             }
     return render_response(request, 'general_form.html', page_dict)
+
+
+def send_todolist_email(todo):
+    '''Sends an e-mail to the maintainer of a package notifying them that the
+    package has been added to a to-do list'''
+    if todo.pkg.maintainer_id == 0:
+        return
+    page_dict = {
+            'pkg': todo.pkg,
+            'todolist': todo.list,
+            'weburl': 'http://www.archlinux.org/packages/%s/' % (todo.pkg.id)
+    }
+    t = loader.get_template('todolists/addedtotodolist')
+    c = Context(page_dict)
+    send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname, 
+            t.render(c), 
+            'Arch Website Notification <nobody@archlinux.org>',
+            [pkg.maintainer.email],
+            fail_silently=True)
 
 
 
