@@ -131,7 +131,7 @@ def send_todolist_email(todo):
     send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname, 
             t.render(c), 
             'Arch Website Notification <nobody@archlinux.org>',
-            [pkg.maintainer.email],
+            [todo.pkg.maintainer.email],
             fail_silently=True)
 
 
