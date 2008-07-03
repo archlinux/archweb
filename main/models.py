@@ -21,7 +21,7 @@ class UserProfile(models.Model):
         maxlength=50,
         help_text="Required field")
     other_contact = models.CharField(maxlength=100, null=True, blank=True)
-    website = models.URLField(null=True, blank=True)
+    website = models.CharField(maxlength=200, null=True, blank=True)
     yob = models.IntegerField(null=True, blank=True)
     location = models.CharField(maxlength=50, null=True, blank=True)
     languages = models.CharField(maxlength=50, null=True, blank=True)
