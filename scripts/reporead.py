@@ -322,8 +322,8 @@ def main(argv=None):
         usage()
         return 0
     # check if arch is valid
-    available_arches = Arch.objects.all()
-    if argv[1] not in [x.name for x in available_arches]:
+    available_arches = [x.name for x in Arch.objects.all()]
+    if argv[1] not in available_arches:
         usage()
         return 0
     else:
@@ -335,10 +335,10 @@ def main(argv=None):
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
     for arch in available_arches:
-        packages_arches[arch.name] = []
+        packages_arches[arch] = []
     
     for package in packages:
-        if package.arch not in [x.name for x in available_arches]:
+        if package.arch not in available_arches:
             logger.warning("Package %s arch = %s" % (package.name,package.arch))
             package.arch = primary_arch
         packages_arches[package.arch].append(package)
