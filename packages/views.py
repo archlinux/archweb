@@ -35,18 +35,24 @@ def update(request):
         pkg.save()
     return render_response(request, 'status_page.html', {'message':message})
 
-def details(request, pkgid=0, name='', repo=''):
-    if pkgid == 0:
+def details(request, pkgid=0, name='', repo='', arch=''):
+    if pkgid != 0:
+        pkg = get_object_or_404(Package, id=pkgid)
+    elif all([name, repo, arch]):
+        pkg= get_object_or_404(Package,
+                pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    else:
         p = Package.objects.filter(pkgname=name)
         if repo: p = p.filter(repo__name__iexact=repo)
+        lenp = p.count()
         # if more then one result, send to the search view
-        if len(p) > 1: return search(request, name)
-        if len(p) < 1: return render_response(request, 'error_page.html',
+        if lenp > 1: return search(request, name)
+        if lenp < 1: return render_response(request, 'error_page.html',
             {'errmsg': 'No matching packages.'})
-        pkgid = p[0].id
+        pkg = p[0]
 
-    pkg = get_object_or_404(Package, id=pkgid)
     return render_response(request, 'packages/details.html', {'pkg': pkg})
+
 
 # @TODO: replace search form with a newform
 def search(request, query=''):

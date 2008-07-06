@@ -223,7 +223,8 @@ class Package(models.Model):
     _maintainername.short_description = 'Maintainer'
 
     def get_absolute_url(self):
-        return '/packages/%i/' % self.id
+        return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
+                self.arch.name, self.pkgname)
 
     def get_requiredby(self):
         """

@@ -57,7 +57,7 @@
                           {% ifequal depend.pkg None %}
                             <li>{{ depend.dep.depname }} (virtual)</li>
                           {% else %}
-                            <li><a href="/packages/{{ depend.pkg.id }}/">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp }}</li>
+                            <li><a href="{{ depend.pkg.get_absolute_url }}">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp }}</li>
                           {% endifequal %}
                         {% endfor %}
                         </ul>
@@ -68,7 +68,7 @@
                         <h4>Required By:</h4>
                         <ul style="font-size:small;list-style:none">
                         {% for req in pkg.get_requiredby %}
-                            <li><a href="/packages/{{ req.id }}/">{{ req.pkgname }}{% ifequal req.repo.name "Testing" %} (testing){% endifequal %}{% ifequal req.repo.name "Unstable" %} (unstable){% endifequal %}</a></li>
+                        <li><a href="{{req.get_absolute_url}}">{{ req.pkgname }}{% ifequal req.repo.name "Testing" %} (testing){% endifequal %}{% ifequal req.repo.name "Unstable" %} (unstable){% endifequal %}</a></li>
                         {% endfor %}
                         </ul>
                     </div>
