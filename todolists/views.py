@@ -54,7 +54,7 @@ def list(request):
             list=l.id,complete=False).count() == 0
     return render_response(request, 'todolists/list.html', {'lists':lists})
 
-@permission_required('todolists.add_todolist')
+@permission_required('main.add_todolist')
 def add(request):
     if request.POST:
         form = TodoListForm(request.POST)
@@ -79,7 +79,7 @@ def add(request):
             }
     return render_response(request, 'general_form.html', page_dict)
 
-@permission_required('todolists.change_todolist')
+@permission_required('main.change_todolist')
 def edit(request, list_id):
     todo_list = get_object_or_404(Todolist, id=list_id)
     if request.POST:

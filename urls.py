@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     (r'^todo/edit/(?P<list_id>\d+)/$',  'archweb_dev.todolists.views.edit'),
     (r'^todo/flag/(\d+)/(\d+)/$',   'archweb_dev.todolists.views.flag'),
     (r'^todo/delete/(?P<object_id>\d+)/$', permission_required(
-        'delete_todo_list')(delete_object), {
+        'main.delete_todolist')(delete_object), {
             'model': Todolist,
             'template_name': 'todolists/todolist_confirm_delete.html',
             'post_delete_redirect': '/todo/'
