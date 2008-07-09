@@ -198,11 +198,10 @@ class Package(models.Model):
         #ordering = ('-last_update',)
 
     class Admin:
-        list_display = ('pkgname', '_reponame', '_archname', '_maintainername',
-                'last_update')
+        list_display = ('pkgname', '_reponame', '_archname', '_maintainername')
         list_filter = ('repo', 'arch', 'maintainer')
         ordering = ['pkgname']
-        search_fields = ('pkgname', 'maintainer__username')
+        search_fields = ('pkgname',)
         pass
 
     def __str__(self):
