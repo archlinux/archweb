@@ -15,7 +15,7 @@ def list(request):
     news = News.objects.order_by('-postdate', '-id')
     return render_response(request, 'news/list.html', {'news':news})
 
-@permission_required('news.add_news')
+@permission_required('main.add_news')
 def add(request):
     try:
         m = User.objects.get(username=request.user.username)
@@ -40,7 +40,7 @@ def add(request):
     form = forms.FormWrapper(manipulator, data, errors)
     return render_response(request, 'news/add.html', {'form': form})
 
-@permission_required('news.delete_news')
+@permission_required('main.delete_news')
 def delete(request, newsid):
     news = get_object_or_404(News, id=newsid)
     #if news.author.id != request.user.id:
@@ -50,7 +50,7 @@ def delete(request, newsid):
         return HttpResponseRedirect('/news/')
     return render_response(request, 'news/delete.html')
 
-@permission_required('news.change_news')
+@permission_required('main.change_news')
 def edit(request, newsid):
     try:
         m = User.objects.get(username=request.user.username)
