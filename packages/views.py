@@ -19,19 +19,13 @@ def update(request):
         mode = 'disown'
         message = 'Disown was successful'
 
-    if request.user.is_authenticated():
-        maint = request.user
-    else:
-        return render_response(request, 'error_page.html', {'errmsg':'No maintainer record found!  Are you a maintainer?'})
     ids = request.POST.getlist('pkgid')
     for id in ids:
         pkg = Package.objects.get(id=id)
-        if mode == 'adopt' and pkg.maintainer_id == 0:
-            pkg.maintainer = maint
-        elif mode == 'disown' and pkg.maintainer == maint:
+        if mode == 'adopt':
+            pkg.maintainer = request.user
+        elif mode == 'disown':
             pkg.maintainer_id = 0
-        else:
-            message = "You are not the current maintainer"
         pkg.save()
     return render_response(request, 'status_page.html', {'message':message})
 
