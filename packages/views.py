@@ -146,7 +146,7 @@ def unflag(request, pkgid):
     return HttpResponseRedirect('/packages/%d/' % (pkg.id))
 
 def signoffs(request):
-    packages = Package.objects.filter(repo__name="Testing")
+    packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
     return render_response(request, 'packages/signoffs.html',
             {'packages': packages})
 

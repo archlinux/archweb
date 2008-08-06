@@ -1,7 +1,7 @@
 {% load validation %}
 {% load package_extras %}
 {% extends "base.html" %}
-{% block title %}Arch Linux - Package Search{% endblock %}
+{% block title %}Arch Linux - Package Signoffs{% endblock %}
 {% block head %}
 <script type="text/JavaScript" src="/media/calendar.js"></script>
 <link href="/media/calendar.css" rel="stylesheet" type="text/css" />
@@ -16,6 +16,9 @@
                 <th>Package</th>
                 <th>Maintainer</th>
                 <th>Version</th>
+                <th>Last Updated</th>
+                <th>Approved</th>
+                <th>Signoff</th>
             </tr>
         {% for pkg in packages %}
         <tr class="{% cycle pkgr2,pkgr1 %}">
@@ -23,6 +26,9 @@
                 <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
                 <td>{{ pkg.maintainer|default:"Orphan" }}</td>
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+                <td>{{ pkg.last_update }}</td>
+                <td></td>
+                <td></td>
             </tr>
         {% endfor %}
         </table>
