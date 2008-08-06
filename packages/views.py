@@ -145,5 +145,11 @@ def unflag(request, pkgid):
     pkg.save()
     return HttpResponseRedirect('/packages/%d/' % (pkg.id))
 
+def signoffs(request):
+    packages = Package.objects.filter(repo__name="Testing")
+    return render_response(request, 'packages/signoffs.html',
+            {'packages': packages})
+
+
 # vim: set ts=4 sw=4 et:
 

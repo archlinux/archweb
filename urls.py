@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 # Dynamic Stuff
     (r'^packages/unflag/(\d+)/$',        'archweb_dev.packages.views.unflag'),
     (r'^packages/files/(\d+)/$',         'archweb_dev.packages.views.files'),
+    (r'^packages/signoffs/$',              'archweb_dev.packages.views.signoffs'),
     (r'^packages/search/$',              'archweb_dev.packages.views.search'),
     (r'^packages/search/([A-z0-9]+)/$',  'archweb_dev.packages.views.search'),
     (r'^packages/update/$',              'archweb_dev.packages.views.update'),

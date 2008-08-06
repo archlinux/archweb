@@ -1,0 +1,32 @@
+{% load validation %}
+{% load package_extras %}
+{% extends "base.html" %}
+{% block title %}Arch Linux - Package Search{% endblock %}
+{% block head %}
+<script type="text/JavaScript" src="/media/calendar.js"></script>
+<link href="/media/calendar.css" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+    {% if packages %}
+    <div class="greybox">
+        <table class="results" width="100%">
+            <tr>
+                <th>Arch</th>
+                <th>Package</th>
+                <th>Maintainer</th>
+                <th>Version</th>
+            </tr>
+        {% for pkg in packages %}
+        <tr class="{% cycle pkgr2,pkgr1 %}">
+                <td>{{ pkg.arch.name }}</td>
+                <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
+                <td>{{ pkg.maintainer|default:"Orphan" }}</td>
+                <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}
+
