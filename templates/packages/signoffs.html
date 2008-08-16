@@ -8,6 +8,12 @@
 {% endblock %}
 
 {% block content %}
+    {% if message %}
+    <div class="greybox">
+        {{message}}
+    </div>
+    <br />
+    {% endif %}
     {% if packages %}
     <div class="greybox">
         <table class="results" width="100%">
@@ -27,8 +33,17 @@
                 <td>{{ pkg.maintainer|default:"Orphan" }}</td>
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                 <td>{{ pkg.last_update }}</td>
-                <td></td>
-                <td></td>
+                <td class="signoff_{{pkg.approved_for_signoff|yesno}}">{{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
+                <td>
+                    <ul>
+                    {% for signoff in pkg.signoffs %}
+                    <li>{{signoff.packager}}</li>
+                    {% endfor %}
+                    <li>
+                    <a href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/">Signoff</a>
+                    </li>
+                    </ul>
+                </td>
             </tr>
         {% endfor %}
         </table>

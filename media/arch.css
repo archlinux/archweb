@@ -371,6 +371,16 @@ div.wikifoot_r {
 	border: 1px solid black;
 }
 
+td.signoff_yes {
+    font-size: large;
+    color: green;
+    font-weight: bold;
+}
+td.signoff_no {
+    font-size: large;
+    color: red;
+}
+
 /* Used by Django's FormWrappers */
 textarea.vLargeTextField {
 	width: 450px;

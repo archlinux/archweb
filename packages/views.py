@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from archweb_dev.main.utils import validate, render_response
 from archweb_dev.main.models import Package, PackageFile, PackageDepend
-from archweb_dev.main.models import Arch, Repo
+from archweb_dev.main.models import Arch, Repo, Signoff
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -145,10 +145,32 @@ def unflag(request, pkgid):
     pkg.save()
     return HttpResponseRedirect('/packages/%d/' % (pkg.id))
 
-def signoffs(request):
+def signoffs(request, message=None):
     packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
     return render_response(request, 'packages/signoffs.html',
-            {'packages': packages})
+            {'packages': packages, 'message': message})
+
+def signoff_package(request, arch, pkgname):
+    pkg = get_object_or_404(Package,
+            arch__name=arch,
+            pkgname=pkgname,
+            repo__name="Testing")
+
+    signoff, created = Signoff.objects.get_or_create(
+            pkg=pkg,
+            pkgver=pkg.pkgver,
+            pkgrel=pkg.pkgrel,
+            packager=request.user)
+
+    if created:
+        message = "You have successfully signed off for %s on %s" % (
+                pkg.pkgname, pkg.arch)
+    else:
+        message = "You have already signed off for %s on %s" % (
+                pkg.pkgname, pkg.arch)
+
+    return signoffs(request, message)
+
 
 
 # vim: set ts=4 sw=4 et:

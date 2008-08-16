@@ -225,6 +225,17 @@ class Package(models.Model):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)
 
+    @property
+    def signoffs(self):
+        return Signoff.objects.filter(
+            pkg=self,
+            pkgver=self.pkgver,
+            pkgrel=self.pkgrel)
+
+    def approved_for_signoff(self):
+        return self.signoffs.count() >= 2
+
+
     def get_requiredby(self):
         """
         Returns a list of package objects.
@@ -270,12 +281,7 @@ class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
     pkgver = models.CharField(maxlength=255)
     pkgrel = models.CharField(maxlength=255)
-    signed_off = models.ManyToManyField(User)
-
-    def is_approved(self):
-        if signed_off.all().count() > 2:
-            return True
-        return False
+    packager = models.ForeignKey(User)
 
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
