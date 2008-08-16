@@ -266,6 +266,17 @@ class Package(models.Model):
                     deps.append({'dep': dep, 'pkg': pkg})
         return deps
 
+class Signoff(models.Model):
+    pkg = models.ForeignKey(Package)
+    pkgver = models.CharField(maxlength=255)
+    pkgrel = models.CharField(maxlength=255)
+    signed_off = models.ManyToManyField(User)
+
+    def is_approved(self):
+        if signed_off.all().count() > 2:
+            return True
+        return False
+
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
