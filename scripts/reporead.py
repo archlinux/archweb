@@ -216,6 +216,7 @@ def db_update(archname, pkgs):
         pkg.pkgver = p.ver
         pkg.pkgrel = p.rel
         pkg.pkgdesc = p.desc
+        pkg.url = p.url
         pkg.needupdate = False
         pkg.last_update = now
         pkg.save()
