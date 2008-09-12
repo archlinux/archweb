@@ -50,6 +50,11 @@ from cStringIO import StringIO
 from logging import CRITICAL,ERROR,WARNING,INFO,DEBUG
 from main.models import Arch, Package, PackageFile, PackageDepend, Repo
 
+class SomethingFishyException(Exception):
+    '''Raised when the database looks like its going to wipe out a bunch of
+    packages.'''
+    pass
+
 ###
 ### Initialization
 ###
@@ -165,6 +170,16 @@ def db_update(archname, pkgs):
     logger.debug("Creating sets")
     dbset = set([pkg.pkgname for pkg in dbpkgs])
     syncset = set([pkg.name for pkg in pkgs])
+
+    # Try to catch those random orphaning issues that make Eric so unhappy.
+    if len(syncset) < len(dbset) * .5:
+        logger.error(".db.tar.gz has less than 50% the number of packages in the web database")
+        raise SomethingFishyException(
+            'it looks like the syncdb is twice as big as the new'
+            'packages. WTF?')
+
+    if len(syncset) < len(dbset) * .75:
+        logger.warning(".db.tar.gz has 75% the number of packages in the web database.")
     
     # packages in syncdb and not in database (add to database)
     logger.debug("Set theory: Packages in syncdb not in database")
