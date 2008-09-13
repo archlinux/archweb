@@ -170,6 +170,12 @@ def db_update(archname, pkgs):
     logger.debug("Creating sets")
     dbset = set([pkg.pkgname for pkg in dbpkgs])
     syncset = set([pkg.name for pkg in pkgs])
+    logger.info("%d packages in current web DB" % len(dbset))
+    logger.info("%d packages in new updating db" % len(syncset))
+    # packages in syncdb and not in database (add to database)
+    logger.debug("Set theory: Packages in syncdb not in database")
+    in_sync_not_db = syncset - dbset
+    logger.info("%d packages in sync not db" % len(in_sync_not_db))
 
     # Try to catch those random orphaning issues that make Eric so unhappy.
     if len(syncset) < len(dbset) * .5:
@@ -181,9 +187,6 @@ def db_update(archname, pkgs):
     if len(syncset) < len(dbset) * .75:
         logger.warning(".db.tar.gz has 75% the number of packages in the web database.")
     
-    # packages in syncdb and not in database (add to database)
-    logger.debug("Set theory: Packages in syncdb not in database")
-    in_sync_not_db = syncset - dbset
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.debug("Adding package %s", p.name)
         ## note: maintainer is being set to orphan for now
