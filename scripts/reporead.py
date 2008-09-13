@@ -277,6 +277,7 @@ def parse_inf(iofile):
             # here is where i would convert arrays to strings
             # based on count and type, but i dont think it is needed now
         i += 1
+
     return store
 
 
@@ -357,10 +358,13 @@ def main(argv=None):
         packages_arches[arch] = []
     
     for package in packages:
-        if package.arch not in available_arches:
-            logger.warning("Package %s arch = %s" % (package.name,package.arch))
-            package.arch = primary_arch
-        packages_arches[package.arch].append(package)
+        if package.arch in ('any', primary_arch):
+            packages_arches[package.arch].append(package)
+        else:
+            logger.warning("Package %s arch = %s" % (
+                package.name,package.arch))
+            #package.arch = primary_arch
+
 
     logger.info('Starting database updates.')
     for (arch, pkgs) in packages_arches.iteritems():
