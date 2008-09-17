@@ -13,28 +13,23 @@ class UserProfile(models.Model):
         default=True,
         help_text="When enabled, send user 'flag out of date' notifications")
     alias = models.CharField(
-        core=True,
-        maxlength=50,
+        max_length=50,
         help_text="Required field")
     public_email = models.CharField(
-        core=True,
-        maxlength=50,
+        max_length=50,
         help_text="Required field")
-    other_contact = models.CharField(maxlength=100, null=True, blank=True)
-    website = models.CharField(maxlength=200, null=True, blank=True)
+    other_contact = models.CharField(max_length=100, null=True, blank=True)
+    website = models.CharField(max_length=200, null=True, blank=True)
     yob = models.IntegerField(null=True, blank=True)
-    location = models.CharField(maxlength=50, null=True, blank=True)
-    languages = models.CharField(maxlength=50, null=True, blank=True)
-    interests = models.CharField(maxlength=255, null=True, blank=True)
-    occupation = models.CharField(maxlength=50, null=True, blank=True)
-    roles = models.CharField(maxlength=255, null=True, blank=True)
-    favorite_distros = models.CharField(maxlength=255, null=True, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
+    languages = models.CharField(max_length=50, null=True, blank=True)
+    interests = models.CharField(max_length=255, null=True, blank=True)
+    occupation = models.CharField(max_length=50, null=True, blank=True)
+    roles = models.CharField(max_length=255, null=True, blank=True)
+    favorite_distros = models.CharField(max_length=255, null=True, blank=True)
     picture = models.FileField(upload_to='devs', default='devs/silhouette.png')
     user = models.ForeignKey(
-        User, related_name='userprofile_user',  
-        edit_inline=models.STACKED, num_in_admin=1, 
-        min_num_in_admin=1, max_num_in_admin=1, 
-        num_extra_on_change=0, unique=True)
+        User, related_name='userprofile_user', unique=True)
     class Meta:
         db_table = 'user_profiles'
         verbose_name = 'Additional Profile Data'
@@ -78,11 +73,11 @@ class PackageManager(models.Manager):
 #############################
 class Mirror(models.Model):
     id = models.AutoField(primary_key=True)
-    domain = models.CharField(maxlength=255)
-    country = models.CharField(maxlength=255)
-    url = models.CharField(maxlength=255)
-    protocol_list = models.CharField(maxlength=255, null=True, blank=True)
-    admin_email = models.CharField(maxlength=255, null=True, blank=True)
+    domain = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    protocol_list = models.CharField(max_length=255, null=True, blank=True)
+    admin_email = models.CharField(max_length=255, null=True, blank=True)
     def __str__(self):
         return self.domain
     class Meta:
@@ -96,8 +91,8 @@ class Mirror(models.Model):
 
 class Press(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255)
-    url = models.CharField(maxlength=255)
+    name = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
     def __str__(self):
         return self.name
     class Meta:
@@ -111,9 +106,9 @@ class Press(models.Model):
 
 class AltForum(models.Model):
     id = models.AutoField(primary_key=True)
-    language = models.CharField(maxlength=255)
-    url = models.CharField(maxlength=255)
-    name = models.CharField(maxlength=255)
+    language = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     def __str__(self):
         return self.name
     class Meta:
@@ -128,7 +123,7 @@ class AltForum(models.Model):
 
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255)
+    name = models.CharField(max_length=255)
     def __str__(self):
         return self.name
     class Meta:
@@ -142,7 +137,7 @@ class News(models.Model):
     id = models.AutoField(primary_key=True)
     author = models.ForeignKey(User, related_name='news_author')
     postdate = models.DateField(auto_now_add=True)
-    title = models.CharField(maxlength=255)
+    title = models.CharField(max_length=255)
     content = models.TextField()
     def __str__(self):
         return self.title
@@ -157,7 +152,7 @@ class News(models.Model):
 
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255,unique=True)
+    name = models.CharField(max_length=255,unique=True)
     def __str__(self):
         return self.name
     class Meta:
@@ -169,7 +164,7 @@ class Arch(models.Model):
 
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(maxlength=255,unique=True)
+    name = models.CharField(max_length=255,unique=True)
     def __str__(self):
         return self.name
     class Meta:
@@ -185,11 +180,11 @@ class Package(models.Model):
     arch = models.ForeignKey(Arch)
     maintainer = models.ForeignKey(User, related_name='package_maintainer')
     needupdate = models.BooleanField(default=False)
-    pkgname = models.CharField(maxlength=255)
-    pkgver = models.CharField(maxlength=255)
-    pkgrel = models.CharField(maxlength=255)
-    pkgdesc = models.CharField(maxlength=255)
-    url = models.CharField(maxlength=255)
+    pkgname = models.CharField(max_length=255)
+    pkgver = models.CharField(max_length=255)
+    pkgrel = models.CharField(max_length=255)
+    pkgdesc = models.CharField(max_length=255)
+    url = models.CharField(max_length=255)
     last_update = models.DateTimeField(null=True, blank=True)
     objects = PackageManager()
     class Meta:
@@ -279,29 +274,29 @@ class Package(models.Model):
 
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
-    pkgver = models.CharField(maxlength=255)
-    pkgrel = models.CharField(maxlength=255)
+    pkgver = models.CharField(max_length=255)
+    pkgrel = models.CharField(max_length=255)
     packager = models.ForeignKey(User)
 
 class PackageFile(models.Model):
     id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
-    path = models.CharField(maxlength=255)
+    path = models.CharField(max_length=255)
     class Meta:
         db_table = 'package_files'
 
 class PackageDepend(models.Model):
     id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
-    depname = models.CharField(db_index=True, maxlength=255)
-    depvcmp = models.CharField(maxlength=255)
+    depname = models.CharField(db_index=True, max_length=255)
+    depvcmp = models.CharField(max_length=255)
     class Meta:
         db_table = 'package_depends'
 
 class Todolist(models.Model):
     id = models.AutoField(primary_key=True)
     creator = models.ForeignKey(User, related_name='todolist_creator')
-    name = models.CharField(maxlength=255)
+    name = models.CharField(max_length=255)
     description = models.TextField()
     date_added = models.DateField(auto_now_add=True)
     objects = TodolistManager()
@@ -330,7 +325,7 @@ class TodolistPkg(models.Model):
 
 class Wikipage(models.Model):
     """Wiki page storage"""
-    title = models.CharField(maxlength=255)
+    title = models.CharField(max_length=255)
     content = models.TextField()
     last_author = models.ForeignKey(User, related_name='wikipage_last_author')
     class Meta:

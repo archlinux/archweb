@@ -1,24 +1,7 @@
-from django.core import validators
 from django.conf import settings
 from django.core.cache import cache
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-
-def validate(errdict, fieldname, fieldval, validator, blankallowed, request):
-    """
-    A helper function that allows easy access to Django's validators without
-    going through a Manipulator object.  Will return a dict of all triggered
-    errors.
-    """
-    if blankallowed and not fieldval:
-        return
-    alldata = ' '.join(request.POST.values()) + ' '.join(request.GET.values())
-    try:
-        validator(fieldval, alldata)
-    except validators.ValidationError, e:
-        if not errdict.has_key(fieldname): 
-            errdict[fieldname] = []
-        errdict[fieldname].append(e)
 
 def prune_cache(django_page_url):
     if not settings.CACHE:
