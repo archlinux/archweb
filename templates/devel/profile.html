@@ -1,27 +1,16 @@
-{% load validation %}
 {% extends "base.html" %}
 
 {% block content %}
 	<div class="greybox">
 		<h2 class="title">Developer Profile</h2>
-	{% if errors %}
-		{% print_errors errors %}
-	{% endif %}
 		<form method="post" action=".">
 		<table>
 			<tr>
-				<td>Username:</td>
+				<th>Username:</th>
 				<td><strong>{{ user.username }}</strong></td>
-			</tr><tr>
-				<td>Email Address:</td>
-				<td><input type="text" name="email" value="{{ user.email }}" size="30"></td>
-			</tr><tr>
-				<td>New Password:</td>
-				<td><input type="password" name="passwd" size="30"></td>
-			</tr><tr>
-				<td>Confirm Password:</td>
-				<td><input type="password" name="passwd2" size="30"></td>
-			</tr><tr>
+			</tr>
+            {{form}}
+			<tr>
 				<td colspan="2" align="right">
 					<input type="submit" value=" Save ">
 				</td>
