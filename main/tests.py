@@ -1,8 +1,6 @@
 ## test cases
 from django.test import TestCase
-from main.models import Mirror, Press, AltForum, Donor, News
-from main.models import Arch, Repo, Package, PackageFile, PackageDepend
-from main.models import Todolist, TodolistPkg, Wikipage
+from main.models import Package, PackageDepend
 from django.contrib.auth.models import User
 
 class ModelTest(TestCase):

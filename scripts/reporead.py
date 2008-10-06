@@ -33,7 +33,6 @@ REPOVARS = ['arch', 'backup', 'builddate', 'conflicts', 'csize',
 import os
 import re
 import sys
-import gzip
 import tarfile
 import logging
 from datetime import datetime
@@ -45,10 +44,9 @@ os.chdir(archweb_app_path)
 sys.path[0] = archweb_app_path
 import settings
 setup_environ(settings)
-from pprint import pprint as pp
 from cStringIO import StringIO
-from logging import CRITICAL,ERROR,WARNING,INFO,DEBUG
-from main.models import Arch, Package, PackageFile, PackageDepend, Repo
+from logging import WARNING,INFO
+from main.models import Arch, Package, Repo
 
 class SomethingFishyException(Exception):
     '''Raised when the database looks like its going to wipe out a bunch of
