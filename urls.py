@@ -1,9 +1,13 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.views.decorators.cache import cache_page
+from django.contrib import admin
+
 from django.views.generic.create_update import delete_object
 from django.contrib.auth.decorators import permission_required
-from archweb_dev.main.models import News, Todolist
+
+from archweb_dev.main.models import Todolist
+
+admin.autodiscover()
 
 urlpatterns = patterns('',
 # Dynamic Stuff
@@ -53,16 +57,11 @@ urlpatterns = patterns('',
 
 # (mostly) Static Pages
     (r'^$',                'archweb_dev.devel.views.siteindex'),
-    (r'^about/$',          'archweb_dev.devel.views.about'),
-    (r'^art/$',            'archweb_dev.devel.views.art'),
     (r'^cvs/$',            'archweb_dev.devel.views.cvs'),
     (r'^developers/$',     'archweb_dev.devel.views.developers'),
     (r'^fellows/$',        'archweb_dev.devel.views.fellows'),
     (r'^donate/$',         'archweb_dev.devel.views.donate'),
     (r'^download/$',       'archweb_dev.devel.views.download'),
-    (r'^irc/$',            'archweb_dev.devel.views.irc'),
-    (r'^moreforums/$',     'archweb_dev.devel.views.moreforums'),
-    (r'^press/$',          'archweb_dev.devel.views.press'),
     (r'^projects/$',       'archweb_dev.devel.views.projects'),
     (r'^robots.txt$',      'archweb_dev.devel.views.robots'),
 
@@ -72,7 +71,7 @@ urlpatterns = patterns('',
     (r'^accounts/login/$',  'django.contrib.auth.views.login',  {'template_name': 'registration/login.html'}),
     (r'^logout/$',          'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}),
-    (r'^admin/',             include('django.contrib.admin.urls')),
+    (r'^admin/(.*)', admin.site.root),
 )
 
 if settings.DEBUG == True:

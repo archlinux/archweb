@@ -83,12 +83,6 @@ class Mirror(models.Model):
         return self.domain
     class Meta:
         db_table = 'mirrors'
-    class Admin:
-        list_display = ('domain', 'country')
-        list_filter = ('country',)
-        ordering = ['domain']
-        search_fields = ('domain')
-        pass
 
 class Press(models.Model):
     id = models.AutoField(primary_key=True)
@@ -99,11 +93,6 @@ class Press(models.Model):
     class Meta:
         db_table = 'press'
         verbose_name_plural = 'press'
-    class Admin:
-        list_display = ('name', 'url')
-        ordering = ['name']
-        search_fields = ('name')
-        pass
 
 class AltForum(models.Model):
     id = models.AutoField(primary_key=True)
@@ -115,12 +104,6 @@ class AltForum(models.Model):
     class Meta:
         db_table = 'alt_forums'
         verbose_name = 'AltForum'
-    class Admin:
-        list_display = ('language', 'name')
-        list_filter = ('language',)
-        ordering = ['name']
-        search_fields = ('name')
-        pass
 
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
@@ -129,10 +112,6 @@ class Donor(models.Model):
         return self.name
     class Meta:
         db_table = 'donors'
-    class Admin:
-        ordering = ['name']
-        search_fields = ('name')
-        pass
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
@@ -161,8 +140,6 @@ class Arch(models.Model):
         db_table = 'arches'
         ordering = ['name']
         verbose_name_plural = 'arches'
-    class Admin:
-        pass
 
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
@@ -173,8 +150,6 @@ class Repo(models.Model):
         db_table = 'repos'
         ordering = ['name']
         verbose_name_plural = 'repos'
-    class Admin:
-        pass
 
 class Package(models.Model):
     id = models.AutoField(primary_key=True)
@@ -193,13 +168,6 @@ class Package(models.Model):
         db_table = 'packages'
         #get_latest_by = 'last_update'
         #ordering = ('-last_update',)
-
-    class Admin:
-        list_display = ('pkgname', '_reponame', '_archname', '_maintainername')
-        list_filter = ('repo', 'arch', 'maintainer')
-        ordering = ['pkgname']
-        search_fields = ('pkgname',)
-        pass
 
     def __str__(self):
         return self.pkgname
