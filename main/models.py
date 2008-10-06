@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from archweb_dev.main.middleware import get_user
 import re
 
 ###########################
@@ -135,7 +136,8 @@ class Donor(models.Model):
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
-    author = models.ForeignKey(User, related_name='news_author')
+    author = models.ForeignKey(User, related_name='news_author',
+            default=get_user)
     postdate = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=255)
     content = models.TextField()

@@ -1,85 +1,48 @@
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django import forms
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
-from django import forms
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import News
-from datetime import date
+
+from django.views.generic import list_detail, create_update
 
 def view(request, newsid):
-    news = get_object_or_404(News, id=newsid)
-    return render_response(request, 'news/view.html', {'news':news})
+    return list_detail.object_detail(request, News.objects.all(), newsid,
+            template_name="news/view.html",
+            template_object_name='news')
 
+#TODO: May as well use a date-based list here sometime
 def list(request):
-    news = News.objects.order_by('-postdate', '-id')
-    return render_response(request, 'news/list.html', {'news':news})
+    return list_detail.object_list(request, News.objects.all(),
+            template_name="news/list.html",
+            template_object_name="news")
+
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        exclude=('id', 'author', 'postdate')
 
 @permission_required('main.add_news')
 def add(request):
-    try:
-        m = User.objects.get(username=request.user.username)
-    except User.DoesNotExist:
-        return render_response(request, 'error_page.html',
-            {'errmsg': 'Cannot find a maintainer record for you!  No posting allowed.'})
-
-    manipulator = News.AddManipulator()
-    if request.POST:
-        data = request.POST.copy()
-        # add in the author ID
-        data['author'] = m.id
-        errors = manipulator.get_validation_errors(data)
-        if not errors:
-            manipulator.do_html2python(data)
-            manipulator.save(data)
-            return HttpResponseRedirect('/news/')
-    else:
-        errors = {}
-        data   = {}
-
-    form = forms.FormWrapper(manipulator, data, errors)
-    return render_response(request, 'news/add.html', {'form': form})
+    return create_update.create_object(request,
+            form_class=NewsForm,
+            template_name='news/add.html')
 
 @permission_required('main.delete_news')
 def delete(request, newsid):
-    news = get_object_or_404(News, id=newsid)
-    #if news.author.id != request.user.id:
-    #   return render_response(request, 'error_page.html', {'errmsg': 'You do not own this news item'})
-    if request.POST:
-        news.delete()
-        return HttpResponseRedirect('/news/')
-    return render_response(request, 'news/delete.html')
+    return create_update.delete_object(request,
+            News,
+            object_id=newsid,
+            post_delete_redirect='/news/',
+            template_name='news/delete.html',
+            template_object_name='news')
 
 @permission_required('main.change_news')
 def edit(request, newsid):
-    try:
-        m = User.objects.get(username=request.user.username)
-    except User.DoesNotExist:
-        return render_response(request, 'error_page.html',
-            {'errmsg': 'Cannot find a maintainer record for you!  No posting allowed.'})
-    try:
-        manipulator = News.ChangeManipulator(newsid)
-    except News.DoesNotExist:
-        raise Http404
-
-    news = manipulator.original_object
-#   if news.author != m:
-#       return render_response(request, 'error_page.html', {'errmsg': 'You do not own this news item'})
-    if request.POST:
-        data = request.POST.copy()
-        # add in the author ID
-        data['author'] = news.author.id
-        errors = manipulator.get_validation_errors(data)
-        if not errors:
-            manipulator.do_html2python(data)
-            manipulator.save(data)
-            return HttpResponseRedirect('/news/')
-    else:
-        errors = {}
-        data   = news.__dict__
-
-    form = forms.FormWrapper(manipulator, data, errors)
-    return render_response(request, 'news/add.html', {'form': form, 'news':news})
+    return create_update.update_object(request, object_id=newsid,
+            form_class=NewsForm,
+            template_name="news/add.html")
 
 # vim: set ts=4 sw=4 et:
 
