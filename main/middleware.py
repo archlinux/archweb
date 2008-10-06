@@ -31,6 +31,7 @@ from django.conf import settings
 from django.contrib.auth.views import login
 from django.http import HttpResponseRedirect
 import re
+import threading
 
 class RequireLoginMiddleware(object):
     """
@@ -49,4 +50,18 @@ class RequireLoginMiddleware(object):
                 return login(request)
             else:
                 return HttpResponseRedirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+
+
+user_holder = threading.local()
+user_holder.user = None
+
+class AutoUserMiddleware(object):
+    '''Saves the current user so it can be retrieved by the admin'''
+    def process_request(self, request):
+        user_holder.user = request.user
+
+
+def get_user():
+    '''Get the currently logged in request.user'''
+    return user_holder.user
 

@@ -61,6 +61,7 @@ MIDDLEWARE_CLASSES += (
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
     "archweb_dev.main.middleware.RequireLoginMiddleware",
+    "archweb_dev.main.middleware.AutoUserMiddleware",
 )
 
 ROOT_URLCONF = 'archweb_dev.urls'
