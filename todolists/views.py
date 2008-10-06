@@ -1,15 +1,12 @@
-import django.newforms as forms
+from django import forms
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
 from django.template import Context, loader
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
-from archweb_dev.main.models import Arch, Repo
 
 # FIXME: ugly hackery. http://code.djangoproject.com/ticket/3450
 import django.db

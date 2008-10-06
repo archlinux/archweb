@@ -1,8 +1,5 @@
 from django import forms
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
-from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import News
 
 from django.views.generic import list_detail, create_update

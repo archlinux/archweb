@@ -2,10 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.template import Context, loader
-from django.core import validators
 from django.contrib.auth.models import User
 from datetime import datetime
-from archweb_dev.main.utils import validate, render_response
+from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile, PackageDepend
 from archweb_dev.main.models import Arch, Repo, Signoff
 from django.core.exceptions import ObjectDoesNotExist
