@@ -49,12 +49,6 @@ urlpatterns = patterns('',
     (r'^devel/notify/$',   'archweb_dev.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),
 
-    (r'^wiki/([A-Z]+[A-z0-9 :/-]+)/$',      'archweb_dev.wiki.views.page'),
-    (r'^wiki/edit/([A-Z]+[A-z0-9 :/-]+)/$', 'archweb_dev.wiki.views.edit'),
-    (r'^wiki/delete/$',                     'archweb_dev.wiki.views.delete'),
-    (r'^wiki/index/$',                      'archweb_dev.wiki.views.index'),
-    (r'^wiki/$',                            'archweb_dev.wiki.views.main'),
-
 # (mostly) Static Pages
     (r'^$',                'archweb_dev.devel.views.siteindex'),
     (r'^cvs/$',            'archweb_dev.devel.views.cvs'),
