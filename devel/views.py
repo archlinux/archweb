@@ -97,34 +97,6 @@ def siteindex(request):
         request, 'devel/siteindex.html', 
         {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})
 
-def developers(request):
-    devs = User.objects.filter(is_active=True).order_by('username')
-    return render_response(request, 'devel/developers.html', {'devs':devs})
-
-def fellows(request):
-    fellows = User.objects.filter(is_active=False).order_by('username')
-    return render_response(request, 'devel/fellows.html', {'fellows':fellows})
-
-def donate(request):
-    donor_count = Donor.objects.count()
-    splitval = donor_count / 4
-    slice1 = Donor.objects.all()[:splitval]
-    slice2 = Donor.objects.all()[(splitval):(splitval*2)]
-    slice3 = Donor.objects.all()[(splitval*2):(donor_count-splitval)]
-    slice4 = Donor.objects.all()[(donor_count-splitval):donor_count]
-    return render_response(request, 'devel/donate.html',
-        {'slice1':slice1,'slice2':slice2,'slice3':slice3,'slice4':slice4})
-
-def download(request):
-    mirrors = Mirror.objects.order_by('country', 'domain')
-    return render_response(request, 'devel/download.html', {'mirrors':mirrors})
-
-def projects(request):
-    return render_response(request, 'devel/projects.html')
-
-def robots(request):
-    return HttpResponse("User-agent: *\nDisallow: /\n", mimetype="text/plain")
-
 def denied(request):
     return render_response(request, 'devel/denied.html')
 

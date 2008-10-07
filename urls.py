@@ -51,13 +51,6 @@ urlpatterns = patterns('',
 
 # (mostly) Static Pages
     (r'^$',                'archweb_dev.devel.views.siteindex'),
-    (r'^cvs/$',            'archweb_dev.devel.views.cvs'),
-    (r'^developers/$',     'archweb_dev.devel.views.developers'),
-    (r'^fellows/$',        'archweb_dev.devel.views.fellows'),
-    (r'^donate/$',         'archweb_dev.devel.views.donate'),
-    (r'^download/$',       'archweb_dev.devel.views.download'),
-    (r'^projects/$',       'archweb_dev.devel.views.projects'),
-    (r'^robots.txt$',      'archweb_dev.devel.views.robots'),
 
 # Authentication / Admin
     (r'^denied/$',          'archweb_dev.devel.views.denied'),
