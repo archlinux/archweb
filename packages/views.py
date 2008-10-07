@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
-from datetime import datetime
+import datetime
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
 from archweb_dev.main.models import Arch, Repo, Signoff
@@ -114,8 +114,8 @@ def search(request, page=None):
                 packages = packages.filter(q)
             if form.cleaned_data['last_update']:
                 lu = form.cleaned_data['last_update']
-                packages = packages.filter(last_update_gte=
-                        datetime.datetime(lu.year, lu.month, lu.day, 0, 0)
+                packages = packages.filter(last_update__gte=
+                        datetime.datetime(lu.year, lu.month, lu.day, 0, 0))
     else:
         form = PackageSearchForm()
 
@@ -183,7 +183,7 @@ def search(request, page=None):
         results = results.filter(needupdate=1)
     if lastupdate:
         results = results.filter(
-            last_update__gte=datetime(
+            last_update__gte=datetime.datetime(
                 int(lastupdate[0:4]),
                 int(lastupdate[5:7]),
                 int(lastupdate[8:10])))
