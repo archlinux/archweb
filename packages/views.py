@@ -135,7 +135,8 @@ def search(request, page=None):
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
     if 'sort' in request.GET:
-        packages = packages.order_by(request.GET['sort'], 'repo', 'arch', 'pkgname')
+        packages = packages.order_by(
+                request.GET['sort'], 'repo', 'arch', 'pkgname')
     else:
         packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
 

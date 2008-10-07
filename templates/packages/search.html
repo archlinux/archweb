@@ -42,13 +42,13 @@
             <tr>
                 <form method="post" action="/packages/update/">
                 <th>&nbsp;</th>
-                <th><a href="{% buildsortqs "arch" %}">Arch</a></th>
-                <th><a href="{% buildsortqs "repo" %}">Repo</a></th>
-                <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
+                <th><a href="/packages/search/{% buildsortqs "arch" %}">Arch</a></th>
+                <th><a href="/packages/search/{% buildsortqs "repo" %}">Repo</a></th>
+                <th><a href="/packages/search/{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
-                <th><a href="{% buildsortqs "maintainer" %}">Maintainer</a></th>
-                <th><a href="{% buildsortqs "-last_update" %}">Last Updated</a></th>
+                <th><a href="/packages/search/{% buildsortqs "maintainer" %}">Maintainer</a></th>
+                <th><a href="/packages/search/{% buildsortqs "-last_update" %}">Last Updated</a></th>
 
             </tr>
             {% for pkg in package_list %}
