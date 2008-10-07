@@ -61,10 +61,14 @@ urlpatterns = patterns('',
 
 # Authentication / Admin
     (r'^denied/$',          'archweb_dev.devel.views.denied'),
-    (r'^login/$',           'django.contrib.auth.views.login',  {'template_name': 'registration/login.html'}),
-    (r'^accounts/login/$',  'django.contrib.auth.views.login',  {'template_name': 'registration/login.html'}),
-    (r'^logout/$',          'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}),
+    (r'^login/$',           'django.contrib.auth.views.login',  {
+        'template_name': 'registration/login.html'}),
+    (r'^accounts/login/$',  'django.contrib.auth.views.login',  {
+        'template_name': 'registration/login.html'}),
+    (r'^logout/$',          'django.contrib.auth.views.logout', {
+        'template_name': 'registration/logout.html'}),
+    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
+        'template_name': 'registration/logout.html'}),
     (r'^admin/(.*)', admin.site.root),
 )
 

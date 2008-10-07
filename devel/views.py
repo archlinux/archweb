@@ -97,9 +97,6 @@ def siteindex(request):
         request, 'devel/siteindex.html', 
         {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})
 
-def cvs(request):
-    return render_response(request, 'devel/cvs.html')
-
 def developers(request):
     devs = User.objects.filter(is_active=True).order_by('username')
     return render_response(request, 'devel/developers.html', {'devs':devs})
