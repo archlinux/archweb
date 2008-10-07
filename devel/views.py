@@ -7,11 +7,6 @@ from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 
 def index(request):
-    try:
-        thismaint = User.objects.get(username=request.user.username)
-    except User.DoesNotExist:
-        # weird, we don't have a maintainer record for this logged-in user
-        thismaint = None
 
     # get a list of incomplete package todo lists
     todos = Todolist.objects.get_incomplete()
