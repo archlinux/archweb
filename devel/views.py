@@ -84,9 +84,9 @@ def change_profile(request):
     return render_response(request, 'devel/profile.html', {'form': form})
 
 def siteindex(request):
-    # get the most recent 10 news items
     news  = News.objects.order_by('-postdate', '-id')[:10]
-    pkgs  = Package.objects.exclude(repo__name__iexact='testing').order_by('-last_update')[:15]
+    pkgs  = Package.objects.exclude(repo__name__iexact='testing').order_by(
+            '-last_update')[:15]
     repos = Repo.objects.all()
     return render_response(
         request, 'devel/siteindex.html', 
