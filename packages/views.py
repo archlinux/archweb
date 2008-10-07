@@ -134,11 +134,14 @@ def search(request, page=None):
     if len(packages) == 1:
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
-    sort = request.GET.get('sort', '')
-    if sort in request.GET:
-        packages = packages.order_by(sort, 'repo', 'arch', 'pkgname')
+    if 'sort' in request.GET:
+        print 'sorting'
+        packages = packages.order_by(request.GET['sort'], 'repo', 'arch', 'pkgname')
     else:
+        print 'not sorting'
         packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
+
+    print packages
 
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",
