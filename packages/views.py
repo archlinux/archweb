@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
+from django.db.models import Q
 from datetime import datetime
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
@@ -53,7 +54,7 @@ def details(request, pkgid=0, name='', repo='', arch=''):
 class PackageSearchForm(forms.Form):
     repo = forms.ChoiceField(required=False)
     arch = forms.ChoiceField(required=False)
-    keywords = forms.CharField(required=False)
+    q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget())
     limit = forms.ChoiceField(
@@ -107,7 +108,14 @@ def search(request, page=None):
                 packages = packages.filter(
                     maintainer__username=form.cleaned_data['maintainer'])
             limit = form.cleaned_data['limit']
-            
+            if form.cleaned_data['q']:
+                query = form.cleaned_data['q']
+                q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
+                packages = packages.filter(q)
+            if form.cleaned_data['last_update']:
+                lu = form.cleaned_data['last_update']
+                packages = packages.filter(last_update_gte=
+                        datetime.datetime(lu.year, lu.month, lu.day, 0, 0)
     else:
         form = PackageSearchForm()
 
@@ -121,8 +129,6 @@ def search(request, page=None):
             template_object_name="package",
             extra_context=page_dict)
     
-
-
     # OLD IMPLEMENTATION BELOW HERE
     if request.GET.has_key('q'):
         # take the q GET var over the one passed on the URL
