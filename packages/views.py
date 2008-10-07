@@ -32,7 +32,7 @@ def update(request):
         len(ids), mode))
     return HttpResponseRedirect('/packages/search/')
 
-def details(request, pkgid=0, name='', repo='', arch=''):
+def details(request, name='', repo='', arch=''):
     if pkgid != 0:
         pkg = get_object_or_404(Package, id=pkgid)
     elif all([name, repo, arch]):
