@@ -7,7 +7,7 @@ from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 
 def index(request):
-
+    '''the Developer dashboard'''
     thismaint = request.user
 
     # get a list of incomplete package todo lists
