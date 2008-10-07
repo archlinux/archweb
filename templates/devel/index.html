@@ -33,8 +33,8 @@
 		{% for arch in arches %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ arch.name }}</strong></td>
-				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.count }}</strong> packages</a></td>
-				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.flagged }}</strong> packages</a></td>
+				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.packages.count }}</strong> packages</a></td>
+				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -51,8 +51,8 @@
 		{% for repo in repos %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ repo.name }}</strong></td>
-				<td><a href="/packages/?repo={{ repo.name }}"><strong>{{ repo.count }}</strong> packages</a></td>
-				<td><a href="/packages/?repo={{ repo.name }}&flagged_only=y"><strong>{{ repo.flagged }}</strong> packages</a></td>
+				<td><a href="/packages/?repo={{ repo.name }}"><strong>{{ repo.packages.count }}</strong> packages</a></td>
+				<td><a href="/packages/?repo={{ repo.name }}&flagged_only=y"><strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -67,11 +67,11 @@
 				<th># Packages</th>
 				<th># Flagged</th>
 			</tr>
-		{% for maint in stats %}
+		{% for maint in maintainers %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><strong>{{ maint.0.get_full_name }}</strong></td>
-				<td><a href="/packages/?maint={{ maint.0.id }}"><strong>{{ maint.1 }}</strong> packages</a></td>
-				<td><a href="/packages/?maint={{ maint.0.id }}&flagged_only=y"><strong>{{ maint.2 }}</strong> packages</a></td>
+				<td><strong>{{ maint.get_full_name }}</strong></td>
+				<td><a href="/packages/?maint={{ maint.id }}"><strong>{{ maint.maintained_packages.count }}</strong> packages</a></td>
+				<td><a href="/packages/?maint={{ maint.id }}&flagged_only=y"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>

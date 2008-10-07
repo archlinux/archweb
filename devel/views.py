@@ -13,7 +13,6 @@ def index(request):
     # get a list of incomplete package todo lists
     todos = Todolist.objects.get_incomplete()
     # get flagged-package stats for all maintainers
-    stats = Package.objects.get_flag_stats()
     if thismaint:
         # get list of flagged packages for this maintainer
         pkgs = Package.objects.filter(
@@ -22,29 +21,13 @@ def index(request):
     else:
         pkgs = None
 
-    arch_stats = []
-    for xarch in Arch.objects.all():
-        arch_stats.append({ 
-            'name': xarch.name,
-            'count': Package.objects.filter(arch=xarch).count(),
-            'flagged': Package.objects.filter(arch=xarch).filter(
-                needupdate=True).exclude(
-                    repo__name__iexact='testing').count()
-        })
-
-    repo_stats = []
-    for xrepo in Repo.objects.all():
-        repo_stats.append({ 
-            'name': xrepo.name,
-            'count': Package.objects.filter(repo=xrepo).count(),
-            'flagged': Package.objects.filter(
-                repo=xrepo).filter(needupdate=True).count()
-        })
-
     return render_response(
         request, 'devel/index.html',
-        {'stats': stats, 'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
-         'repos': repo_stats, 'arches': arch_stats})
+        {'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
+            'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
+            'maintainers':
+            [User(id=0, first_name="Orphans")] + list(User.objects.all())
+         })
 
 #@is_maintainer
 def change_notify(request):

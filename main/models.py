@@ -49,23 +49,9 @@ class TodolistManager(models.Manager):
         return results
 
 class PackageManager(models.Manager):
-    def get_flag_stats(self):
-        results = []
-        # first the orphans
-        noflag = self.filter(maintainer=0)
-        flagged = noflag.filter(
-                    needupdate=True).exclude(
-                        repo__name__iexact='testing')
-        results.append(
-            (User(id=0,first_name='Orphans'), noflag.count(), flagged.count()))
-        # now the rest
-        for maint in User.objects.all().order_by('first_name'):
-            noflag = self.filter(maintainer=maint.id)
-            flagged = noflag.filter(needupdate=True).exclude(
-                        repo__name__iexact='testing')
-            results.append((maint, noflag.count(), flagged.count()))
-        return results
 
+    def flagged(self):
+        return self.get_query_set().filter(needupdate=True)
 
 #############################
 ### General Model Classes ###
@@ -151,9 +137,9 @@ class Repo(models.Model):
 
 class Package(models.Model):
     id = models.AutoField(primary_key=True)
-    repo = models.ForeignKey(Repo)
-    arch = models.ForeignKey(Arch)
-    maintainer = models.ForeignKey(User, related_name='package_maintainer')
+    repo = models.ForeignKey(Repo, related_name="packages")
+    arch = models.ForeignKey(Arch, related_name="packages")
+    maintainer = models.ForeignKey(User, related_name="maintained_packages")
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(max_length=255)
     pkgver = models.CharField(max_length=255)
