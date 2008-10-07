@@ -18,6 +18,7 @@
                     <td><span class="smalltext">Keywords</span></td>
                     <td><span class="smalltext">Maintainer</span></td>
                     <td><span class="smalltext">Last Update</span></td>
+                    <td><span class="smalltext">Flagged</span></td>
                     <td><span class="smalltext">Per Page</span></td>
                 </tr>
                 <tr>
@@ -26,6 +27,7 @@
                     {% td_input search_form.q %}
                     {% td_input search_form.maintainer%}
                     {% td_input search_form.last_update %}
+                    {% td_input search_form.flagged %}
                     {% td_input search_form.limit %}
                     <td><input type="submit" value="Search" />
                 </tr>
@@ -40,13 +42,14 @@
             <tr>
                 <form method="post" action="/packages/update/">
                 <th>&nbsp;</th>
-                <th>Arch</th>
-                <th>Repo</th>
-                <th>Name</th>
+                <th><a href="{% buildsortqs "arch" %}">Arch</a></th>
+                <th><a href="{% buildsortqs "repo" %}">Repo</a></th>
+                <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
-                <th>Maintainer</th>
-                <th>Last Updated</th>
+                <th><a href="{% buildsortqs "maintainer" %}">Maintainer</a></th>
+                <th><a href="{% buildsortqs "-last_update" %}">Last Updated</a></th>
+
             </tr>
             {% for pkg in package_list %}
                 <tr class="{% cycle pkgr2,pkgr1 %}">
@@ -84,8 +87,8 @@
                         <a href="/packages/search/{{page_obj.next_page_number}}/{{current_query}}">
                             Next &gt;&gt;&gt;
                         </a>
-                        {% else %} &gt;&gt;&gt;
-                            Next
+                        {% else %} 
+                            Next &gt;&gt;&gt;
                         {% endif %}
                     </td>
                 <br />

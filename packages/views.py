@@ -57,20 +57,25 @@ class PackageSearchForm(forms.Form):
     q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget())
+    flagged = forms.ChoiceField(
+            choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
+            required=False)
     limit = forms.ChoiceField(
-            choices=make_choice([50, 100, 250]) + [('', 'All')],
+            choices=make_choice([50, 100, 250]) + [('all', 'All')],
             required=False,
             initial=50)
 
     def clean_limit(self):
         limit = self.cleaned_data['limit']
-        if limit:
+        if limit == 'all':
+            limit = None
+        elif limit:
             try:
                 limit = int(limit)
             except:
                 raise forms.ValidationError("Should be an integer")
         else:
-            limit = None
+            limit = 50
         return limit
 
 
@@ -104,6 +109,10 @@ def search(request, page=None):
                         arch__name=form.cleaned_data['arch'])
             if form.cleaned_data['maintainer'] == 'orphan':
                 packages=packages.filter(maintainer__id = 0)
+            if form.cleaned_data['flagged'] == 'Flagged':
+                packages=packages.filter(needupdate=True)
+            elif form.cleaned_data['flagged'] == 'Not Flagged':
+                packages = packages.filter(needupdate=False)
             elif form.cleaned_data['maintainer']:
                 packages = packages.filter(
                     maintainer__username=form.cleaned_data['maintainer'])
@@ -122,6 +131,15 @@ def search(request, page=None):
     page_dict = {'search_form': form,
             'current_query': current_query
             }
+    if len(packages) == 1:
+        return HttpResponseRedirect(packages[0].get_absolute_url())
+
+    sort = request.GET.get('sort', '')
+    if sort in request.GET:
+        packages = packages.order_by(sort, 'repo', 'arch', 'pkgname')
+    else:
+        packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
+
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",
             page=page,

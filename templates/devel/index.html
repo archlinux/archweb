@@ -34,7 +34,7 @@
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ arch.name }}</strong></td>
 				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?arch={{ arch.name }}&flagged_only=y"><strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
+				<td><a href="/packages/?arch={{ arch.name }}&flagged=Flagged"><strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -52,7 +52,7 @@
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ repo.name }}</strong></td>
 				<td><a href="/packages/?repo={{ repo.name }}"><strong>{{ repo.packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?repo={{ repo.name }}&flagged_only=y"><strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
+				<td><a href="/packages/?repo={{ repo.name }}&flagged=Flagged"><strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -71,7 +71,7 @@
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ maint.get_full_name }}</strong></td>
 				<td><a href="/packages/?maint={{ maint.id }}"><strong>{{ maint.maintained_packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?maint={{ maint.id }}&flagged_only=y"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
+				<td><a href="/packages/?maint={{ maint.id }}&flagged=Flagged"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
