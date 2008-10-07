@@ -15,22 +15,22 @@ from archweb_dev.main.models import Arch, Repo, Signoff
 from archweb_dev.main.utils import make_choice
 
 def update(request):
+    ids = request.POST.getlist('pkgid')
     if request.POST.has_key('adopt'):
         mode = 'adopt'
-        message = 'Adoption was successful'
+        maint_id = request.user.id
     if request.POST.has_key('disown'):
         mode = 'disown'
-        message = 'Disown was successful'
+        maint_id = 0
 
-    ids = request.POST.getlist('pkgid')
     for id in ids:
         pkg = Package.objects.get(id=id)
-        if mode == 'adopt':
-            pkg.maintainer = request.user
-        elif mode == 'disown':
-            pkg.maintainer_id = 0
+        pkg.maintainer_id = maint_id
         pkg.save()
-    return render_response(request, 'status_page.html', {'message':message})
+
+    request.user.message_set.create(message="%d packages %sed" % (
+        len(ids), mode))
+    return HttpResponseRedirect('/packages/search/')
 
 def details(request, pkgid=0, name='', repo='', arch=''):
     if pkgid != 0:

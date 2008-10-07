@@ -40,6 +40,14 @@
             </div>
         </div>
         <div id="content">
+            {% if messages %}
+            <div class="box" style="width: 50%; text-align: center; margin-left: auto; margin-right: auto">
+                {% for message in messages %}
+                <p>{{message}}</p>
+                {% endfor %}
+            </div>
+            <br />
+            {% endif %}
             {% block content %}
             <div class="right">
                 {% block content_right %}
