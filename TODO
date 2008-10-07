@@ -1,8 +1,9 @@
 TODO:
-   - refactor stats by templates in dashboard, maybe a templatetag
-   - drop all references to render_response
-   - move some of the custom widgets and fields to their own module
-   - Look at every file and see if its still needed
-       - eg: calendar css and js
+    - sorting on search page
+    - refactor stats by templates in dashboard, maybe a templatetag
+    - drop all references to render_response
+    - move some of the custom widgets and fields to their own module
+    - Look at every file and see if its still needed
+        - eg: calendar css and js
 
 
