@@ -30,6 +30,10 @@ def do_buildsortqs(parser, token):
 def space2br(value):
     return value.replace(' ', '<br />')
 
+@register.inclusion_tag('forms/td_input.html')
+def td_input(form_element):
+    return {'form_element': form_element}
+
 @register.inclusion_tag('errors.html')
 def print_errors(errors):
     errs = []

@@ -1,6 +1,15 @@
+from django import forms
+from itertools import chain
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.forms.util import flatatt
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+from django.utils.encoding import force_unicode
+from django.utils.html import escape, conditional_escape
+from django.contrib.admin.widgets import AdminDateWidget
 from datetime import datetime
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
@@ -44,8 +53,61 @@ def details(request, pkgid=0, name='', repo='', arch=''):
     return render_response(request, 'packages/details.html', {'pkg': pkg})
 
 
-# @TODO: replace search form with a newform
-def search(request, query=''):
+class EmptySelectWidget(forms.widgets.Select):
+    '''Like any select box but allows you to use a custom string for the
+    'empty' field.'''
+    def __init__(self, empty_string="All", attrs=None, choices=()):
+        self.empty_string = empty_string
+        super(EmptySelectWidget, self).__init__(attrs, choices)
+
+    def render(self, name, value, attrs=None, choices=()):
+        if value is None: value = ''
+        final_attrs = self.build_attrs(attrs, name=name)
+        output = [u'<select%s>' % flatatt(final_attrs)]
+        # Normalize to string.
+        str_value = force_unicode(value)
+        for option_value, option_label in chain(self.choices, choices):
+            if option_value == '':
+                option_label = self.empty_string
+            option_value = force_unicode(option_value)
+            selected_html = (
+                option_value == str_value) and u' selected="selected"' or ''
+            output.append(u'<option value="%s"%s>%s</option>' % (
+                    escape(option_value), selected_html,
+                    conditional_escape(force_unicode(option_label))))
+        output.append(u'</select>')
+        return mark_safe(u'\n'.join(output))
+
+class PackageSearchForm(forms.Form):
+    repo = forms.ModelChoiceField(Repo.objects.all(),
+            widget=EmptySelectWidget, required=False)
+    arch = forms.ModelChoiceField(Arch.objects.all(),
+            widget=EmptySelectWidget, required=False)
+    keywords = forms.CharField(required=False)
+    maintainer = forms.ModelChoiceField(User.objects.all(),
+            widget=EmptySelectWidget, required=False)
+    last_update = forms.DateField(required=False, widget=AdminDateWidget())
+    limit = forms.ChoiceField(choices=[
+        ('50', '50'),
+        ('100', '100'),
+        ('250', '250'),
+        ('All', 'All')], required=False)
+
+def search(request):
+    if request.GET:
+        form = PackageSearchForm(data=request.GET)
+        if form.is_valid():
+            pass
+    else:
+        form = PackageSearchForm()
+
+    page_dict = {'search_form': form}
+    return render_to_response('packages/search.html',
+            RequestContext(request, page_dict))
+    
+
+
+    # OLD IMPLEMENTATION BELOW HERE
     if request.GET.has_key('q'):
         # take the q GET var over the one passed on the URL
         query = request.GET['q'].strip()

@@ -1,76 +1,35 @@
-{% load package_extras %}
 {% extends "base.html" %}
+{% load package_extras %}
 {% block title %}Arch Linux - Package Search{% endblock %}
 {% block head %}
-<script type="text/JavaScript" src="/media/calendar.js"></script>
-<link href="/media/calendar.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="/media/admin_media/js/core.js"></script>
+{{search_form.media}}
 {% endblock %}
 
 {% block content %}
     <div class="greybox">
         <h4 style="text-align: right">Search Criteria</h4>
-    {% if errors %}
-        {% print_errors errors %}
-    {% endif %}
-        <hr />
-        <form method="get" action="/packages/search/">
-        <table width="100%">
-            <tr>
-                <td><span class="smalltext">Arch</span></td>
-                <td><span class="smalltext">Repository</span></td>
-                <td><span class="smalltext">Keywords</span></td>
-                <td><span class="smalltext">Maintainer</span></td>
-                <td><span class="smalltext">Last Update</span></td>
-                <td><span class="smalltext">Per Page</span></td>
-            </tr><tr>
-                <td>
-                    <select name="arch">
-                        <option value="all">All</option>
-                    {% for a in arches %}
-                        <option value="{{ a.name }}"{% ifequal arch a.name %} selected{% endifequal %}>{{ a.name }}</option>
-                    {% endfor %}
-                    </select>
-                </td><td>
-                    <select name="repo">
-                        <option value="all">All</option>
-                    {% for r in repos %}
-                        <option value="{{ r.name }}"{% ifequal repo r.name %} selected{% endifequal %}>{{ r.name|capfirst }}</option>
-                    {% endfor %}
-                    </select>
-                </td><td>
-                    <input type="text" name="q" value="{{ query|escape }}" size="30" maxlength="200" />
-                </td><td>
-                    <select name="maint">
-                        <option value="all">All</option>
-                        {% for u in users %}
-                        <option value="{{u.id}}" {% ifequal maint u.id
-                        %}selected=selected {%
-                        %endifequal%}>{{u.username}}</option>
-                        {% endfor %}
-                </td><td>
-                    <input type="text" name="lastupdate" value="{{ lastupdate|escape }}" size="10" maxlength="10" id="f_lastupdate" /> <button type="reset" id="f_trigger">...</button>
-                    <script type="text/javascript">
-    Calendar.setup({
-        inputField     :    "f_lastupdate",  // id of the input field
-        ifFormat       :    "%Y-%m-%d",      // format of the input field
-        showsTime      :    false,           // will display a time selector
-        button         :    "f_trigger",     // trigger for the calendar (button ID)
-        singleClick    :    true,            // double-click mode
-        step           :    1                // show all years in drop-down boxes (instead of every other year as default)
-    });
-                    </script>
-                </td><td>
-                    <select name="limit">
-                        <option value="50"{% ifequal limit 50 %} selected{% endifequal %}>50</option>
-                        <option value="100"{% ifequal limit 100 %} selected{% endifequal %}>100</option>
-                        <option value="250"{% ifequal limit 250 %} selected{% endifequal %}>250</option>
-                        <option value="0"{% ifequal limit 0 %} selected{% endifequal %}>All</option>
-                    </select>
-                </td><td>
-                    <input type="submit" value=" Search " />
-                </td>
-            </tr>
-        </table>
+        <form method="get">
+            <table width="100%">
+                <tr>
+                    <td><span class="smalltext">Arch</span></td>
+                    <td><span class="smalltext">Repository</span></td>
+                    <td><span class="smalltext">Keywords</span></td>
+                    <td><span class="smalltext">Maintainer</span></td>
+                    <td><span class="smalltext">Last Update</span></td>
+                    <td><span class="smalltext">Per Page</span></td>
+                </tr>
+                <tr>
+                    {% td_input search_form.arch %}
+                    {% td_input search_form.repo %}
+                    {% td_input search_form.keywords %}
+                    {% td_input search_form.maintainer%}
+                    {% td_input search_form.last_update %}
+                    {% td_input search_form.limit %}
+                    <td><input type="submit" value="Search" />
+                </tr>
+            </table>
         </form>
     </div>
     <br /><br />
