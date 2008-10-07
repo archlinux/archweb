@@ -52,19 +52,18 @@ class PackageManager(models.Manager):
     def get_flag_stats(self):
         results = []
         # first the orphans
-        noflag = self.filter(maintainer=0).count()
-        flagged = self.filter(maintainer=0).filter(
+        noflag = self.filter(maintainer=0)
+        flagged = noflag.filter(
                     needupdate=True).exclude(
-                        repo__name__iexact='testing').count()
+                        repo__name__iexact='testing')
         results.append(
-            (User(id=0,first_name='Orphans'), noflag, flagged))
+            (User(id=0,first_name='Orphans'), noflag.count(), flagged.count()))
         # now the rest
         for maint in User.objects.all().order_by('first_name'):
-            noflag = self.filter(maintainer=maint.id).count()
-            flagged = self.filter(maintainer=maint.id).filter(
-                    needupdate=True).exclude(
-                        repo__name__iexact='testing').count()
-            results.append((maint, noflag, flagged))
+            noflag = self.filter(maintainer=maint.id)
+            flagged = noflag.filter(needupdate=True).exclude(
+                        repo__name__iexact='testing')
+            results.append((maint, noflag.count(), flagged.count()))
         return results
 
 
