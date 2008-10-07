@@ -10,7 +10,7 @@
 {% block content %}
     <div class="greybox">
         <h4 style="text-align: right">Search Criteria</h4>
-        <form method="get">
+        <form method="get" action="/packages/search/">
             <table width="100%">
                 <tr>
                     <td><span class="smalltext">Arch</span></td>
@@ -34,48 +34,69 @@
     </div>
     <br /><br />
 
-    {% if results %}
+    {% if package_list %}
     <div class="greybox">
         <table class="results" width="100%">
             <tr>
                 <form method="post" action="/packages/update/">
                 <th>&nbsp;</th>
-                <th><a href="{% buildsortqs "arch" %}">Arch</a></th>
-                <th><a href="{% buildsortqs "repo" %}">Repo</a></th>
-                <th><a href="{% buildsortqs "pkgname" %}">Name</a></th>
+                <th>Arch</th>
+                <th>Repo</th>
+                <th>Name</th>
                 <th>Version</th>
                 <th>Description</th>
-                <th><a href="{% buildsortqs "maintainer" %}">Maintainer</a></th>
-                <th><a href="{% buildsortqs "-last_update" %}">Last Updated</a></th>
+                <th>Maintainer</th>
+                <th>Last Updated</th>
             </tr>
-        {% for pkg in results %}
-        <tr class="{% cycle pkgr2,pkgr1 %}">
-                <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
-                <td>{{ pkg.arch.name }}</td>
-                <td>{{ pkg.repo.name|capfirst }}</td>
-                <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
-            {% if pkg.needupdate %}
-                <td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
-            {% else %}
-                <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+            {% for pkg in package_list %}
+                <tr class="{% cycle pkgr2,pkgr1 %}">
+                    <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
+                    <td>{{ pkg.arch.name }}</td>
+                    <td>{{ pkg.repo.name|capfirst }}</td>
+                    <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
+                {% if pkg.needupdate %}
+                    <td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
+                {% else %}
+                    <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+                {% endif %}
+                    <td>{{ pkg.pkgdesc }}</td>
+                    <td>{{ pkg.maintainer|default:"Orphan" }}</td>
+                    <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+                </tr>
+            {% endfor %}
+            {% if paginator %}
+                <tr>
+                    <td colspan="6">
+                        {{paginator.count}} packages found.
+                        Page {{page_obj.number}} of {{paginator.num_pages}}.
+                    </td>
+                    <td>
+                        {% if page_obj.has_previous %}
+                        <a href="/packages/search/{{page_obj.previous_page_number}}/{{current_query}}">
+                            &lt;&lt;&lt; Previous
+                        </a>
+                        {% else %}
+                            &lt;&lt;&lt; Previous
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if page_obj.has_next %}
+                        <a href="/packages/search/{{page_obj.next_page_number}}/{{current_query}}">
+                            Next &gt;&gt;&gt;
+                        </a>
+                        {% else %} &gt;&gt;&gt;
+                            Next
+                        {% endif %}
+                    </td>
+                <br />
+                </tr>
             {% endif %}
-                <td>{{ pkg.pkgdesc }}</td>
-                <td>{{ pkg.maintainer|default:"Orphan" }}</td>
-                <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
-            </tr>
-        {% endfor %}
-            <tr>
-                <td colspan="2" style="font-size:x-small">{% if prevpage %}<br /><a href="{{ prevpage }}">&lt;&lt;&lt; Prev</a>{% endif %}</td>
-                <td colspan="2">&nbsp;</td>
-                <td colspan="2" style="font-size:x-small;text-align:right">{% if nextpage %}<br /><a href="{{ nextpage }}">Next &gt;&gt;&gt;</a>{% endif %}</td>
-            </tr>
             <tr>
                 <td colspan="3">&nbsp;</td>
                 <td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
                 <td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
                 <td colspan="1">&nbsp;</td>
             </tr>
-            </form>
         </table>
     </div>
     {% endif %}

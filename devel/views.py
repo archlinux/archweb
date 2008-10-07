@@ -1,10 +1,10 @@
 from django import forms
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
-from archweb_dev.main.models import UserProfile, News, Donor, Mirror
+from archweb_dev.main.models import UserProfile, News
 
 def index(request):
     '''the Developer dashboard'''

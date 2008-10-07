@@ -1,16 +1,12 @@
+import urllib
 from django import forms
-from itertools import chain
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.forms.util import flatatt
 from django.contrib.auth.models import User
-from django.utils.safestring import mark_safe
-from django.utils.encoding import force_unicode
-from django.utils.html import escape, conditional_escape
 from django.contrib.admin.widgets import AdminDateWidget
-from django.views.generic import list_detail, create_update
+from django.views.generic import list_detail
 from datetime import datetime
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
@@ -61,8 +57,21 @@ class PackageSearchForm(forms.Form):
     maintainer = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget())
     limit = forms.ChoiceField(
-            choices=make_choice(['50', '100', '250', 'All']),
-            required=False)
+            choices=make_choice([50, 100, 250]) + [('', 'All')],
+            required=False,
+            initial=50)
+
+    def clean_limit(self):
+        limit = self.cleaned_data['limit']
+        if limit:
+            try:
+                limit = int(limit)
+            except:
+                raise forms.ValidationError("Should be an integer")
+        else:
+            limit = None
+        return limit
+
 
     def __init__(self, *args, **kwargs):
         super(PackageSearchForm, self).__init__(*args, **kwargs)
@@ -73,20 +82,44 @@ class PackageSearchForm(forms.Form):
                 'arch'].widget.choices = [('', 'All')] + make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['maintainer'].choices = self.fields[
-                'maintainer'].widget.choices = [('', 'All')] + make_choice(
+                'maintainer'].widget.choices = [
+                        ('', 'All'), ('orphan', 'Orphan')] + make_choice(
                         [m.username for m in User.objects.all()])
 
-def search(request):
+def search(request, page=None):
+    current_query = '?'
+    limit=50
+    packages = Package.objects.all()
+
     if request.GET:
+        current_query += urllib.urlencode(request.GET)
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
-            pass
+            if form.cleaned_data['repo']:
+                packages = packages.filter(
+                        repo__name=form.cleaned_data['repo'])
+            if form.cleaned_data['arch']:
+                packages = packages.filter(
+                        arch__name=form.cleaned_data['arch'])
+            if form.cleaned_data['maintainer'] == 'orphan':
+                packages=packages.filter(maintainer__id = 0)
+            elif form.cleaned_data['maintainer']:
+                packages = packages.filter(
+                    maintainer__username=form.cleaned_data['maintainer'])
+            limit = form.cleaned_data['limit']
+            
     else:
         form = PackageSearchForm()
 
-    page_dict = {'search_form': form}
-    return render_to_response('packages/search.html',
-            RequestContext(request, page_dict))
+    page_dict = {'search_form': form,
+            'current_query': current_query
+            }
+    return list_detail.object_list(request, packages,
+            template_name="packages/search.html",
+            page=page,
+            paginate_by=limit,
+            template_object_name="package",
+            extra_context=page_dict)
     
 
 
