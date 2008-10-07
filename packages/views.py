@@ -109,14 +109,13 @@ def search(request, page=None):
                         arch__name=form.cleaned_data['arch'])
             if form.cleaned_data['maintainer'] == 'orphan':
                 packages=packages.filter(maintainer__id = 0)
+            elif form.cleaned_data['maintainer']:
+                packages = packages.filter(
+                    maintainer__username=form.cleaned_data['maintainer'])
             if form.cleaned_data['flagged'] == 'Flagged':
                 packages=packages.filter(needupdate=True)
             elif form.cleaned_data['flagged'] == 'Not Flagged':
                 packages = packages.filter(needupdate=False)
-            elif form.cleaned_data['maintainer']:
-                packages = packages.filter(
-                    maintainer__username=form.cleaned_data['maintainer'])
-            limit = form.cleaned_data['limit']
             if form.cleaned_data['q']:
                 query = form.cleaned_data['q']
                 q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
@@ -125,6 +124,7 @@ def search(request, page=None):
                 lu = form.cleaned_data['last_update']
                 packages = packages.filter(last_update__gte=
                         datetime.datetime(lu.year, lu.month, lu.day, 0, 0))
+            limit = form.cleaned_data['limit']
     else:
         form = PackageSearchForm()
 
@@ -135,13 +135,10 @@ def search(request, page=None):
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
     if 'sort' in request.GET:
-        print 'sorting'
         packages = packages.order_by(request.GET['sort'], 'repo', 'arch', 'pkgname')
     else:
-        print 'not sorting'
         packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
 
-    print packages
 
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",
@@ -149,91 +146,6 @@ def search(request, page=None):
             paginate_by=limit,
             template_object_name="package",
             extra_context=page_dict)
-    
-    # OLD IMPLEMENTATION BELOW HERE
-    if request.GET.has_key('q'):
-        # take the q GET var over the one passed on the URL
-        query = request.GET['q'].strip()
-
-    # fetch the form vars
-    repo       = request.GET.get('repo', 'all')
-    arch       = request.GET.get('arch', 'all')
-    lastupdate = request.GET.get('lastupdate', '')
-    limit      = int(request.GET.get('limit', '50'))
-    skip       = int(request.GET.get('skip', '0'))
-    sort       = request.GET.get('sort', '')
-    maint      = request.GET.get('maint', 'all')
-    flagged_only = request.GET.get('flagged_only', 'n')
-
-    # build the form lists
-    repos = Repo.objects.all()
-    arches  = Arch.objects.all()
-    users = User.objects.all()
-    # copy GET data over and add the lists
-    c = request.GET.copy()
-    c['repos'], c['arches']  = repos, arches
-    c['users'] = users
-    c['limit'], c['skip'] = limit, skip
-    c['lastupdate'] = lastupdate
-    c['sort'] = sort
-    # 'q' gets renamed to 'query', so it's not in GET
-    c['query'] = query
-
-    # validate
-    errors = {}
-    validate(errors, 'Last Update', lastupdate, validators.isValidANSIDate, True, request)
-    validate(errors, 'Page Limit', str(limit), validators.isOnlyDigits, True, request)
-    validate(errors, 'Page Skip', str(skip), validators.isOnlyDigits, True, request)
-    if errors:
-        c['errors'] = errors
-        return render_response(request, 'packages/search.html', c)
-
-    if query:
-        res1 = Package.objects.filter(pkgname__icontains=query)
-        res2 = Package.objects.filter(pkgdesc__icontains=query)
-        results = res1 | res2
-    else:
-        results = Package.objects.all()
-    if repo != 'all' and repo in [x.name for x in repos]:
-        results = results.filter(repo__name__iexact=repo)
-    if arch != 'all' and arch in [x.name for x in arches]:
-        results = results.filter(arch__name__iexact=arch)
-    if maint != 'all':
-        results = results.filter(maintainer=maint)
-    if flagged_only != 'n':
-        results = results.filter(needupdate=1)
-    if lastupdate:
-        results = results.filter(
-            last_update__gte=datetime.datetime(
-                int(lastupdate[0:4]),
-                int(lastupdate[5:7]),
-                int(lastupdate[8:10])))
-
-    # sort results
-    if sort == '':
-        results = results.order_by('repo', 'arch', '-last_update', 'pkgname')
-    else:
-        # duplicate sort fields shouldn't hurt anything
-        results = results.order_by(sort, 'repo', 'arch', 'pkgname')
-
-    qs = request.GET.copy()
-    # build pagination urls
-    if results.count() > (skip + limit) and limit > 0:
-        qs['skip'] = skip + limit
-        c['nextpage'] = '?' + qs.urlencode()
-    if skip > 0:
-        qs['skip'] = max(0, skip - limit)
-        c['prevpage'] = '?' + qs.urlencode()
-    # pass the querystring to the template so we can build sort queries
-    c['querystring'] = request.GET
-
-    # if only there's only one result, pass right to the package details view
-    if results.count() == 1: return details(request, results[0].id)
-    # limit result set
-    if limit > 0: results = results[skip:(skip+limit)]
-
-    c['results'] = results
-    return render_response(request, 'packages/search.html', c)
 
 def files(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
