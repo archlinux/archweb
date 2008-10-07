@@ -10,7 +10,6 @@ from archweb_dev.main.models import Todolist
 admin.autodiscover()
 
 urlpatterns = patterns('',
-# Dynamic Stuff
     (r'^packages/unflag/(\d+)/$',        'archweb_dev.packages.views.unflag'),
     (r'^packages/files/(\d+)/$',         'archweb_dev.packages.views.files'),
     (r'^packages/signoffs/$',              'archweb_dev.packages.views.signoffs'),
@@ -48,8 +47,6 @@ urlpatterns = patterns('',
     (r'^devel/$',          'archweb_dev.devel.views.index'),
     (r'^devel/notify/$',   'archweb_dev.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),
-
-# (mostly) Static Pages
     (r'^$',                'archweb_dev.devel.views.siteindex'),
 
 # Authentication / Admin
