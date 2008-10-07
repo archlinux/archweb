@@ -15,5 +15,8 @@ def render_response(req, *args, **kwargs):
     kwargs['context_instance'] = RequestContext(req)
     return render_to_response(*args, **kwargs)
 
+#utility to make a pair of django choices
+make_choice = lambda l: [(str(m), str(m)) for m in l]
+
 # vim: set ts=4 sw=4 et:
 

@@ -10,11 +10,12 @@ from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
 from django.utils.html import escape, conditional_escape
 from django.contrib.admin.widgets import AdminDateWidget
+from django.views.generic import list_detail, create_update
 from datetime import datetime
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
 from archweb_dev.main.models import Arch, Repo, Signoff
-
+from archweb_dev.main.utils import make_choice
 
 def update(request):
     if request.POST.has_key('adopt'):
@@ -53,45 +54,27 @@ def details(request, pkgid=0, name='', repo='', arch=''):
     return render_response(request, 'packages/details.html', {'pkg': pkg})
 
 
-class EmptySelectWidget(forms.widgets.Select):
-    '''Like any select box but allows you to use a custom string for the
-    'empty' field.'''
-    def __init__(self, empty_string="All", attrs=None, choices=()):
-        self.empty_string = empty_string
-        super(EmptySelectWidget, self).__init__(attrs, choices)
-
-    def render(self, name, value, attrs=None, choices=()):
-        if value is None: value = ''
-        final_attrs = self.build_attrs(attrs, name=name)
-        output = [u'<select%s>' % flatatt(final_attrs)]
-        # Normalize to string.
-        str_value = force_unicode(value)
-        for option_value, option_label in chain(self.choices, choices):
-            if option_value == '':
-                option_label = self.empty_string
-            option_value = force_unicode(option_value)
-            selected_html = (
-                option_value == str_value) and u' selected="selected"' or ''
-            output.append(u'<option value="%s"%s>%s</option>' % (
-                    escape(option_value), selected_html,
-                    conditional_escape(force_unicode(option_label))))
-        output.append(u'</select>')
-        return mark_safe(u'\n'.join(output))
-
 class PackageSearchForm(forms.Form):
-    repo = forms.ModelChoiceField(Repo.objects.all(),
-            widget=EmptySelectWidget, required=False)
-    arch = forms.ModelChoiceField(Arch.objects.all(),
-            widget=EmptySelectWidget, required=False)
+    repo = forms.ChoiceField(required=False)
+    arch = forms.ChoiceField(required=False)
     keywords = forms.CharField(required=False)
-    maintainer = forms.ModelChoiceField(User.objects.all(),
-            widget=EmptySelectWidget, required=False)
+    maintainer = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget())
-    limit = forms.ChoiceField(choices=[
-        ('50', '50'),
-        ('100', '100'),
-        ('250', '250'),
-        ('All', 'All')], required=False)
+    limit = forms.ChoiceField(
+            choices=make_choice(['50', '100', '250', 'All']),
+            required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PackageSearchForm, self).__init__(*args, **kwargs)
+        self.fields['repo'].choices = self.fields[
+                'repo'].widget.choices = [('', 'All')] + make_choice(
+                        [repo.name for repo in Repo.objects.all()])
+        self.fields['arch'].choices = self.fields[
+                'arch'].widget.choices = [('', 'All')] + make_choice(
+                        [arch.name for arch in Arch.objects.all()])
+        self.fields['maintainer'].choices = self.fields[
+                'maintainer'].widget.choices = [('', 'All')] + make_choice(
+                        [m.username for m in User.objects.all()])
 
 def search(request):
     if request.GET:
