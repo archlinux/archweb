@@ -8,6 +8,8 @@ from archweb_dev.main.models import UserProfile, News, Donor, Mirror
 
 def index(request):
 
+    thismaint = request.user
+
     # get a list of incomplete package todo lists
     todos = Todolist.objects.get_incomplete()
     # get flagged-package stats for all maintainers
