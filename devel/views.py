@@ -1,7 +1,6 @@
 from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News
@@ -13,14 +12,15 @@ def index(request):
         maintainer=request.user).filter(
             needupdate=True).order_by('repo', 'pkgname')
 
-    return render_response(
-        request, 'devel/index.html',
-        {'pkgs': pkgs, 'todos': todos, 'maint': request.user, 
+    return render_to_response(
+        'devel/index.html',
+        RequestContext(request, {'pkgs': pkgs, 'todos': todos,
+            'maint': request.user, 
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
             'maintainers':
             [User(id=0, username="orphan", first_name="Orphans")] + list(
                 User.objects.all())
-         })
+         }))
 
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
@@ -58,7 +58,8 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
-    return render_response(request, 'devel/profile.html', {'form': form})
+    return render_to_response('devel/profile.html',
+            RequestContext(request, {'form': form}))
 
 def siteindex(request):
     news  = News.objects.order_by('-postdate', '-id')[:10]

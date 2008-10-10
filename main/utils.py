@@ -11,10 +11,6 @@ def prune_cache(django_page_url):
     cache_postfix = '.d41d8cd98f00b204e9800998ecf8427e'
     cache.delete('%s%s%s' % (cache_prefix,django_page_url,cache_postfix))
 
-def render_response(req, *args, **kwargs):
-    kwargs['context_instance'] = RequestContext(req)
-    return render_to_response(*args, **kwargs)
-
 #utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]
 

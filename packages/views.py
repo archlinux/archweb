@@ -9,7 +9,6 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
 import datetime
-from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Package, PackageFile
 from archweb_dev.main.models import Arch, Repo, Signoff
 from archweb_dev.main.utils import make_choice
@@ -144,7 +143,7 @@ def search(request, page=None):
 def files(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
     files = PackageFile.objects.filter(pkg=pkgid)
-    return render_response(request, 'packages/files.html', {'pkg':pkg,'files':files})
+    return render_to_response('packages/files.html', RequestContext(request, {'pkg':pkg,'files':files}))
 
 def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
@@ -154,8 +153,8 @@ def unflag(request, pkgid):
 
 def signoffs(request):
     packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
-    return render_response(request, 'packages/signoffs.html',
-            {'packages': packages})
+    return render_to_response('packages/signoffs.html',
+            RequestContext(request, {'packages': packages}))
 
 def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,

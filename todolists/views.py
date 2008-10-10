@@ -1,12 +1,12 @@
 from django import forms
 
 from django.http import HttpResponseRedirect
+from django.template import RequestContext
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
-from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
 
 class TodoListForm(forms.Form):
@@ -36,17 +36,16 @@ def flag(request, listid, pkgid):
 
 def view(request, listid):
     list = get_object_or_404(Todolist, id=listid)
-    return render_response(
-        request, 
-        'todolists/view.html', 
-        {'list':list})
+    return render_to_response('todolists/view.html', 
+        RequestContext(request, {'list':list}))
 
 def list(request):
     lists = Todolist.objects.order_by('-date_added')
     for l in lists:
         l.complete = TodolistPkg.objects.filter(
             list=l.id,complete=False).count() == 0
-    return render_response(request, 'todolists/list.html', {'lists':lists})
+        return render_to_response('todolists/list.html',
+                RequestContext(request, {'lists':lists}))
 
 @permission_required('main.add_todolist')
 def add(request):
@@ -71,7 +70,8 @@ def add(request):
             'form': form,
             'submit_text': 'Create List'
             }
-    return render_response(request, 'general_form.html', page_dict)
+    return render_to_response('general_form.html',
+            RequestContext(request, page_dict))
 
 @permission_required('main.change_todolist')
 def edit(request, list_id):
@@ -109,7 +109,7 @@ def edit(request, list_id):
             'form': form,
             'submit_text': 'Save List'
             }
-    return render_response(request, 'general_form.html', page_dict)
+    return render_to_response('general_form.html', RequestContext(request, page_dict))
 
 @permission_required('main.delete_todolist')
 def delete_todolist(request, object_id):
