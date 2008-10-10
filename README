@@ -7,7 +7,7 @@
 # Dependencies
  - python
  - mysql-python or python-pysqlite
- - Django = 0.96
+ - Django = 1.0
 
 # Installation
 For a simple testing installation:
@@ -26,4 +26,10 @@ For a simple testing installation:
     
  5. Use the following commands to start a service instance
     $ python manage.py runserver
+
+ 6. To optionally populate the database with real data:
+    $ wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
+    $ scripts/reporead.py i686 ./core.db.tar.gz
+
+    (alter architecture and repo to get x86_64 and extra packages if needed)
 

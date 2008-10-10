@@ -10,7 +10,7 @@ Coding Style
 2.  Recommend removing trailing whitespace. Here is an example for .vimrc
     autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
 
-
+3. Wrap lines at 80 characters MAXIMUM
 
 
 vim: set ai ts=4 sw=4 et:
