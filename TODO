@@ -1,5 +1,4 @@
 TODO:
-    - sorting on search page
     - refactor stats by templates in dashboard, maybe a templatetag
     - drop all references to render_response
     - move some of the custom widgets and fields to their own module
