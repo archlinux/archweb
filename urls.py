@@ -47,7 +47,6 @@ urlpatterns = patterns('',
     (r'^$',                'archweb_dev.devel.views.siteindex'),
 
 # Authentication / Admin
-    (r'^denied/$',          'archweb_dev.devel.views.denied'),
     (r'^login/$',           'django.contrib.auth.views.login',  {
         'template_name': 'registration/login.html'}),
     (r'^accounts/login/$',  'django.contrib.auth.views.login',  {

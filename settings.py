@@ -34,9 +34,6 @@ SITE_ID = 1
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/admin_media/'
 
-# URL to send users when they don't have sufficient privileges
-BADPRIVS_URL = '/denied/'
-
 # login url
 LOGIN_URL = '/login/'
 

@@ -65,12 +65,9 @@ def siteindex(request):
     pkgs  = Package.objects.exclude(repo__name__iexact='testing').order_by(
             '-last_update')[:15]
     repos = Repo.objects.all()
-    return render_response(
-        request, 'devel/siteindex.html', 
-        {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos})
-
-def denied(request):
-    return render_response(request, 'devel/denied.html')
+    return render_to_response('devel/siteindex.html', 
+            RequestContext(request,
+                {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos}))
 
 # vim: set ts=4 sw=4 et:
 
