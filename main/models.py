@@ -41,15 +41,9 @@ class UserProfile(models.Model):
 #######################
 class TodolistManager(models.Manager):
     def get_incomplete(self):
-        results = []
-        for l in self.all().order_by('-date_added'):
-            if TodolistPkg.objects.filter(list=l.id).filter(
-                complete=False).count() > 0:
-                results.append(l)
-        return results
+        return self.filter(todolistpkg__complete=False).distinct()
 
 class PackageManager(models.Manager):
-
     def flagged(self):
         return self.get_query_set().filter(needupdate=True)
 
@@ -270,20 +264,6 @@ class TodolistPkg(models.Model):
     class Meta:
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
-
-class Wikipage(models.Model):
-    """Wiki page storage"""
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    last_author = models.ForeignKey(User, related_name='wikipage_last_author')
-    class Meta:
-        db_table = 'wikipages'
-
-    def editurl(self):
-        return "/wiki/edit/" + self.title + "/"
-
-    def __str__(self):
-        return self.title
 
 # vim: set ts=4 sw=4 et:
 
