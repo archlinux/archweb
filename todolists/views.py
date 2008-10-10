@@ -4,13 +4,10 @@ from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import permission_required
+from django.views.generic.create_update import delete_object
 from django.template import Context, loader
 from archweb_dev.main.utils import render_response
 from archweb_dev.main.models import Todolist, TodolistPkg, Package
-
-# FIXME: ugly hackery. http://code.djangoproject.com/ticket/3450
-import django.db
-IntegrityError = django.db.backend.Database.IntegrityError
 
 class TodoListForm(forms.Form):
     name = forms.CharField(max_length=255,
@@ -23,7 +20,7 @@ class TodoListForm(forms.Form):
 
     def clean_packages(self):
         package_names = [s.strip() for s in 
-                self.clean_data['packages'].split("\n")]
+                self.cleaned_data['packages'].split("\n")]
         package_names = set(package_names)
         packages = Package.objects.filter(
                 pkgname__in=package_names).exclude(repo__name="Testing").order_by('arch')
@@ -58,10 +55,10 @@ def add(request):
         if form.is_valid():
             todo = Todolist.objects.create(
                 creator     = request.user,
-                name        = form.clean_data['name'],
-                description = form.clean_data['description'])
+                name        = form.cleaned_data['name'],
+                description = form.cleaned_data['description'])
 
-            for pkg in form.clean_data['packages']:
+            for pkg in form.cleaned_data['packages']:
                 tpkg = TodolistPkg.objects.create(list = todo, pkg = pkg)
                 send_todolist_email(tpkg)
 
@@ -82,19 +79,19 @@ def edit(request, list_id):
     if request.POST:
         form = TodoListForm(request.POST)
         if form.is_valid():
-            todo_list.name = form.clean_data['name']
-            todo_list.description = form.clean_data['description']
+            todo_list.name = form.cleaned_data['name']
+            todo_list.description = form.cleaned_data['description']
             todo_list.save()
 
             packages = [p.pkg for p in todo_list.packages]
 
             # first delete any packages not in the new list
             for p in todo_list.packages:
-                if p.pkg not in form.clean_data['packages']:
+                if p.pkg not in form.cleaned_data['packages']:
                     p.delete()
 
             # now add any packages not in the old list
-            for pkg in form.clean_data['packages']:
+            for pkg in form.cleaned_data['packages']:
                 if pkg not in packages:
                     tpkg = TodolistPkg.objects.create(
                             list = todo_list, pkg = pkg)
@@ -114,6 +111,11 @@ def edit(request, list_id):
             }
     return render_response(request, 'general_form.html', page_dict)
 
+@permission_required('main.delete_todolist')
+def delete_todolist(request, object_id):
+    return delete_object(request, object_id=object_id, model=Todolist,
+            template_name="todolists/todolist_confirm_delete.html",
+            post_delete_redirect='/todo/')
 
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
