@@ -189,16 +189,10 @@ class Package(models.Model):
         """
         Returns a list of package objects.
         """
-        reqs = []
-        requiredby = PackageDepend.objects.filter(depname=self.pkgname).filter(
-            Q(pkg__arch=self.arch) | Q(pkg__arch__name__iexact='any'))
-        for req in requiredby:
-            reqs.append(req.pkg)
-        ## sort the resultant list. Django has problems in the orm with
-        ## trying to shoehorn the sorting into the reverse foreign key 
-        ## reference in the query above. :(
-        reqs.sort(lambda a,b: cmp(a.pkgname,b.pkgname))
-        return reqs
+        requiredby = Package.objects.filter(
+                packagedepend__depname=self.pkgname,
+                arch__name__in=(self.arch.name, 'Any'))
+        return requiredby.order_by('pkgname')
 
     def get_depends(self):
         """
