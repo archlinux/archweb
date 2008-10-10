@@ -30,25 +30,18 @@ def update(request):
 
     request.user.message_set.create(message="%d packages %sed" % (
         len(ids), mode))
-    return HttpResponseRedirect('/packages/search/')
+    return HttpResponseRedirect('/packages/')
 
 def details(request, name='', repo='', arch=''):
-    if pkgid != 0:
-        pkg = get_object_or_404(Package, id=pkgid)
-    elif all([name, repo, arch]):
+    if all([name, repo, arch]):
         pkg= get_object_or_404(Package,
                 pkgname=name, repo__name__iexact=repo, arch__name=arch)
+        return render_to_response('packages/details.html', RequestContext(
+            request, {'pkg': pkg}))
     else:
-        p = Package.objects.filter(pkgname=name)
-        if repo: p = p.filter(repo__name__iexact=repo)
-        lenp = p.count()
-        # if more then one result, send to the search view
-        if lenp > 1: return search(request, name)
-        if lenp < 1: return render_response(request, 'error_page.html',
-            {'errmsg': 'No matching packages.'})
-        pkg = p[0]
+        return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
+            arch.lower(), repo.title(), name))
 
-    return render_response(request, 'packages/details.html', {'pkg': pkg})
 
 
 class PackageSearchForm(forms.Form):
@@ -157,12 +150,12 @@ def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
     pkg.needupdate = 0
     pkg.save()
-    return HttpResponseRedirect('/packages/%d/' % (pkg.id))
+    return HttpResponseRedirect(pkg.get_absolute_url())
 
-def signoffs(request, message=None):
+def signoffs(request):
     packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
     return render_response(request, 'packages/signoffs.html',
-            {'packages': packages, 'message': message})
+            {'packages': packages})
 
 def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,
@@ -177,13 +170,15 @@ def signoff_package(request, arch, pkgname):
             packager=request.user)
 
     if created:
-        message = "You have successfully signed off for %s on %s" % (
-                pkg.pkgname, pkg.arch)
+        request.user.message_set.create(
+                message="You have successfully signed off for %s on %s" % (
+                pkg.pkgname, pkg.arch))
     else:
-        message = "You have already signed off for %s on %s" % (
-                pkg.pkgname, pkg.arch)
+        request.user.message_set.create(
+                message="You have already signed off for %s on %s" % (
+                pkg.pkgname, pkg.arch))
 
-    return signoffs(request, message)
+    return signoffs(request)
 
 
 
