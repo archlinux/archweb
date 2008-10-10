@@ -70,8 +70,8 @@
 		{% for maint in maintainers %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ maint.get_full_name }}</strong></td>
-				<td><a href="/packages/?maint={{ maint.id }}"><strong>{{ maint.maintained_packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?maint={{ maint.id }}&flagged=Flagged"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
+				<td><a href="/packages/?maintainer={{ maint.username }}"><strong>{{ maint.maintained_packages.count }}</strong> packages</a></td>
+				<td><a href="/packages/?maintainer={{ maint.username }}&flagged=Flagged"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -84,10 +84,6 @@
 		<table width="100%">
 			<tr>
 				<td style="vertical-align: top">
-				{% if maint %}
-					<a href="/packages/?maint={{ maint.id }}">My Packages</a><br />
-				{% endif %}
-					<a href="/packages/?maint=0">Orphan Packages</a><br />
 					<br />
 					<a
                         href="http://wiki.archlinux.org/index.php/DeveloperWiki:HOWTO_Be_A_Packager">Package Maintainer's Guide</a><br />

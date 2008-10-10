@@ -8,28 +8,20 @@ from archweb_dev.main.models import UserProfile, News
 
 def index(request):
     '''the Developer dashboard'''
-    thismaint = request.user
-
-    # get a list of incomplete package todo lists
     todos = Todolist.objects.get_incomplete()
-    # get flagged-package stats for all maintainers
-    if thismaint:
-        # get list of flagged packages for this maintainer
-        pkgs = Package.objects.filter(
-            maintainer=thismaint.id).filter(
-                needupdate=True).order_by('repo', 'pkgname')
-    else:
-        pkgs = None
+    pkgs = Package.objects.filter(
+        maintainer=request.user).filter(
+            needupdate=True).order_by('repo', 'pkgname')
 
     return render_response(
         request, 'devel/index.html',
-        {'pkgs': pkgs, 'todos': todos, 'maint': thismaint, 
+        {'pkgs': pkgs, 'todos': todos, 'maint': request.user, 
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
             'maintainers':
-            [User(id=0, first_name="Orphans")] + list(User.objects.all())
+            [User(id=0, username="orphan", first_name="Orphans")] + list(
+                User.objects.all())
          })
 
-#@is_maintainer
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
     notify = request.POST.get('notify', 'no')
