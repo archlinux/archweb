@@ -10,7 +10,7 @@
 {% block content %}
     <div class="greybox">
         <h4 style="text-align: right">Search Criteria</h4>
-        <form method="get" action="/packages/search/">
+        <form method="get" action="/packages/">
             <table width="100%">
                 <tr>
                     <td><span class="smalltext">Arch</span></td>
@@ -42,13 +42,13 @@
             <tr>
                 <form method="post" action="/packages/update/">
                 <th>&nbsp;</th>
-                <th><a href="/packages/search/{% buildsortqs "arch" %}">Arch</a></th>
-                <th><a href="/packages/search/{% buildsortqs "repo" %}">Repo</a></th>
-                <th><a href="/packages/search/{% buildsortqs "pkgname" %}">Name</a></th>
+                <th><a href="/packages/{% buildsortqs "arch" %}">Arch</a></th>
+                <th><a href="/packages/{% buildsortqs "repo" %}">Repo</a></th>
+                <th><a href="/packages/{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
-                <th><a href="/packages/search/{% buildsortqs "maintainer" %}">Maintainer</a></th>
-                <th><a href="/packages/search/{% buildsortqs "-last_update" %}">Last Updated</a></th>
+                <th><a href="/packages/{% buildsortqs "maintainer" %}">Maintainer</a></th>
+                <th><a href="/packages/{% buildsortqs "-last_update" %}">Last Updated</a></th>
 
             </tr>
             {% for pkg in package_list %}
@@ -75,7 +75,7 @@
                     </td>
                     <td>
                         {% if page_obj.has_previous %}
-                        <a href="/packages/search/{{page_obj.previous_page_number}}/{{current_query}}">
+                        <a href="/packages/{{page_obj.previous_page_number}}/{{current_query}}">
                             &lt;&lt;&lt; Previous
                         </a>
                         {% else %}
@@ -84,7 +84,7 @@
                     </td>
                     <td>
                         {% if page_obj.has_next %}
-                        <a href="/packages/search/{{page_obj.next_page_number}}/{{current_query}}">
+                        <a href="/packages/{{page_obj.next_page_number}}/{{current_query}}">
                             Next &gt;&gt;&gt;
                         </a>
                         {% else %} 

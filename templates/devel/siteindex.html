@@ -25,7 +25,7 @@
 			</tr>
 		{% endfor %}
 			<tr>
-				<td colspan="2" style="text-align:left;font-size:x-small"><br /><a href="/packages/search?sort=-last_update">More Updates...</a></td>
+				<td colspan="2" style="text-align:left;font-size:x-small"><br /><a href="/packages/?sort=-last_update">More Updates...</a></td>
 			</tr>
 		</table>
 	</div>
@@ -34,7 +34,7 @@
 
 {% block content_right %}
 	<div id="search">
-		<form method="get" action="/packages/search/">
+		<form method="get" action="/packages/">
 			<p><b>Package Search:</b>&nbsp;&nbsp;<input type="text" name="q" size="20" maxlength="200" /></p>
 		</form>
 	</div>
