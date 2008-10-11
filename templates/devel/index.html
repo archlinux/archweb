@@ -78,32 +78,31 @@
 	</div>
 	<br /><br />
 
-	<div class="box">
-		<h3 class="title">Package Maintenance</h3>
+	<div class="greybox">
+		<h3 class="title">My Flagged Packages</h3>
+        <form method="post" action="/devel/notify/">
+            <input name="notify" type="checkbox" value="yes"
+            {% if user.get_profile.notify %} checked="checked"{% endif %} />
+            Notify me when packages are flagged&nbsp;&nbsp;
+            <input type="submit" value="Update" />
+        </form>
 		<br />
-		<table width="100%">
+		<table class="results" width="100%">
 			<tr>
-				<td style="vertical-align: top">
-					<br />
-					<a
-                        href="http://wiki.archlinux.org/index.php/DeveloperWiki:HOWTO_Be_A_Packager">Package Maintainer's Guide</a><br />
-				</td><td style="vertical-align: top">
-				{% if pkgs %}
-					<h4>My Flagged Packages:</h4>
-					<ul class="small">
-						<li><form method="post" action="/devel/notify/">
-							<input name="notify" type="checkbox" value="yes"{% if maint.get_profile.notify %} checked{% endif %} /> Notify me when packages are flagged
-							&nbsp; &nbsp;
-							<input type="submit" value="Update" />
-						</form></li>
-					</ul>
-					<ul class="small">
-					{% for pkg in pkgs %}
-						<li><a href="/packages/{{ pkg.id }}/">{{ pkg.repo.name }}::{{ pkg.pkgname }} &nbsp; &nbsp; {{ pkg.pkgver }} &nbsp; &nbsp; {{ pkg.arch.name }}</a></li>
-					{% endfor %}
-					</ul>
-				{% endif %}
-				</td>	
+				<th style="width: 50%">Name</th>
+				<th>Repo</th>
+				<th>Version</th>
+				<th>Arch</th>
 			</tr>
+                {% for pkg in user.maintained_packages.flagged %}
+                <tr class="{% cycle pkgr2,pkgr1 %}">
+                    <td>
+                        <a href="/packages/{{ pkg.id }}/">{{ pkg.pkgname }}</a>
+                    </td>
+                    <td>{{ pkg.pkgver }}</td>
+                    <td>{{ pkg.repo.name }}</td>
+                    <td>{{ pkg.arch.name }}</td>
+                </tr>
+                {% endfor %}
 		</table>
 {% endblock %}

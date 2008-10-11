@@ -40,7 +40,7 @@ class UserProfile(models.Model):
 ### Manager Classes ###
 #######################
 class TodolistManager(models.Manager):
-    def get_incomplete(self):
+    def incomplete(self):
         return self.filter(todolistpkg__complete=False).distinct()
 
 class PackageManager(models.Manager):
@@ -237,7 +237,7 @@ class PackageDepend(models.Model):
 
 class Todolist(models.Model):
     id = models.AutoField(primary_key=True)
-    creator = models.ForeignKey(User, related_name='todolist_creator')
+    creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
     description = models.TextField()
     date_added = models.DateField(auto_now_add=True)

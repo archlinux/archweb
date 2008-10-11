@@ -1,26 +1,24 @@
 from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News
 
 def index(request):
     '''the Developer dashboard'''
-    todos = Todolist.objects.get_incomplete()
-    pkgs = Package.objects.filter(
-        maintainer=request.user).filter(
-            needupdate=True).order_by('repo', 'pkgname')
-
-    return render_to_response(
-        'devel/index.html',
-        RequestContext(request, {'pkgs': pkgs, 'todos': todos,
-            'maint': request.user, 
+    page_dict = {
+            'todos': Todolist.objects.incomplete(),
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
-            'maintainers':
-            [User(id=0, username="orphan", first_name="Orphans")] + list(
-                User.objects.all())
-         }))
+            'maintainers': [
+                User(id=0, username="orphan", first_name="Orphans")
+                ] + list(User.objects.all())
+         }
+
+    return render_to_response('devel/index.html',
+        RequestContext(request, page_dict))
 
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
