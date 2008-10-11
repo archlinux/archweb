@@ -55,6 +55,8 @@ class RequireLoginMiddleware(object):
 user_holder = threading.local()
 user_holder.user = None
 
+# END REQUIRE LOGIN MIDDLEWARE
+
 class AutoUserMiddleware(object):
     '''Saves the current user so it can be retrieved by the admin'''
     def process_request(self, request):
