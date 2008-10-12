@@ -1,26 +1,4 @@
 {% extends "base.html" %}
-{% block head %}
-<style type="text/css">
-    table#todotable thead tr .header {
-        background-image: url('/media/bg.gif');
-        background-repeat: no-repeat;
-        background-position: center right;
-        cursor: pointer;
-    }
-    table#todotable thead tr .headerSortUp {
-        background-image: url('/media/asc.gif');
-    }
-    table#todotable thead tr .headerSortDown {
-        background-image: url('/media/desc.gif');
-    }
-    table#todotable thead tr .headerSortDown, table.todotable thead tr .headerSortUp {
-        background-color: #8dbdd8;
-    }
-    table#todotable tbody tr.odd {
-        background-color: #eee4cb;
-    }
-</style>
-{% endblock %}
 {% block content %}
 	<div class="greybox">
             <div style="float:right">
