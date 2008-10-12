@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="box">
-	<h2 class="title">Wiki Index</h2>
-{% for page in pages %}
-	<h3><a href='{{ page.title }}/'>{{ page.title }}</a></h3>
-{% endfor %}
-</div>
-{% endblock %}
