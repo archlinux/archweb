@@ -168,14 +168,10 @@ def signoff_package(request, arch, pkgname):
             pkgrel=pkg.pkgrel,
             packager=request.user)
 
-    if created:
-        request.user.message_set.create(
-                message="You have successfully signed off for %s on %s" % (
-                pkg.pkgname, pkg.arch))
-    else:
-        request.user.message_set.create(
-                message="You have already signed off for %s on %s" % (
-                pkg.pkgname, pkg.arch))
+    message = "You have successfully" if created else "You have already"
+    request.user.message_set.create(
+            message="%s signed off for %s on %s" % (
+            message, pkg.pkgname, pkg.arch))
 
     return signoffs(request)
 
