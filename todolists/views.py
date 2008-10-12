@@ -122,9 +122,7 @@ def send_todolist_email(todo):
     package has been added to a to-do list'''
     if todo.pkg.maintainer_id == 0:
         return
-    print todo
-    print todo.list_id
-    print todo.list.name
+
     page_dict = {
             'pkg': todo.pkg,
             'todolist': todo.list,
