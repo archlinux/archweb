@@ -1,14 +1,5 @@
 {% extends "base.html" %}
 {% block head %}
-<script type="text/javascript" src="/media/jquery-1.2.3.min.js"></script>
-<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(
-        function(){
-            $("#todotable").tablesorter({widgets: ['zebra']});
-        }
-    );
-</script>
 <style type="text/css">
     table#todotable thead tr .header {
         background-image: url('/media/bg.gif');
