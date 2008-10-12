@@ -41,8 +41,6 @@ def details(request, name='', repo='', arch=''):
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
 
-
-
 class PackageSearchForm(forms.Form):
     repo = forms.ChoiceField(required=False)
     arch = forms.ChoiceField(required=False)
