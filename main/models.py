@@ -198,6 +198,10 @@ class Package(models.Model):
          - (None, dependname, None) if no matching package is found, eg 
            it is a virtual dep.
         """
+        # object level cache. Doesn't last long, but helps for items rendered
+        # twice in the same template.
+        if 'deps_cache' in dir(self):
+            return self.deps_cache
         deps = []
         for dep in self.packagedepend_set.order_by('depname'):
             # we only need depend on same-arch-packages
@@ -208,10 +212,16 @@ class Package(models.Model):
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)
                 deps.append({'dep': dep, 'pkg': None})
-                continue
+            elif len(pkgs) == 1:
+                deps.append({'dep': dep, 'pkg': pkgs[0]})
             else:
-                for pkg in pkgs:
-                    deps.append({'dep': dep, 'pkg': pkg})
+                tpkgs = pkgs.filter(repo__name='Testing')
+                if len(tpkgs) == 1:
+                    deps.append({'dep': dep, 'pkg': tpkgs[0]})
+                else:
+                    for pkg in pkgs:
+                        deps.append({'dep': dep, 'pkg': pkg})
+        self.deps_cache = deps
         return deps
 
 class Signoff(models.Model):
