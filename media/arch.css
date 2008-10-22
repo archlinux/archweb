@@ -390,7 +390,7 @@ textarea.vLargeTextField {
 	background-color: #eee4cb;
 }
 
-/* override some calendar attributes copied from */
+/* override some calendar attributes copied from admin */
 /* CALENDARS & CLOCKS */
 .calendarbox, .clockbox { margin:5px auto; font-size:11px; width:16em; text-align:center; background:white; position:relative; }
 .clockbox { width:9em; }
