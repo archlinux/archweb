@@ -28,15 +28,17 @@
                 {% endblock %}
             </div>
             <div id="dev_nav">
-                <ul>
-                    <li><a href="/accounts/logout/">Logout</a></li>
-                    <li><a href="/devel/profile/">Profile</a></li>
-                    <li><a href="http://www.archlinux.org/mailman/private/arch-dev/">Archives</a></li>
-                    <li><a href="/todo/">Todos</a></li>
-                    <li><a href="/packages/signoffs/">Signoffs</a></li>
-                    <li><a href="/news/">News</a></li>
-                    <li><a href="/devel/">Dashboard</a></li>
-                 </ul>
+                {% if user.is_authenticated %}
+                    <ul>
+                        <li><a href="/accounts/logout/">Logout</a></li>
+                        <li><a href="/devel/profile/">Profile</a></li>
+                        <li><a href="http://www.archlinux.org/mailman/private/arch-dev/">Archives</a></li>
+                        <li><a href="/todo/">Todos</a></li>
+                        <li><a href="/packages/signoffs/">Signoffs</a></li>
+                        <li><a href="/news/">News</a></li>
+                        <li><a href="/devel/">Dashboard</a></li>
+                     </ul>
+                {% endif %}
             </div>
         </div>
         <div id="content">
