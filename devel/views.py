@@ -14,7 +14,7 @@ def index(request):
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
             'maintainers': [
                 User(id=0, username="orphan", first_name="Orphans")
-                ] + list(User.objects.all())
+                ] + list(User.objects.filter(is_active=True))
          }
 
     return render_to_response('devel/index.html',
