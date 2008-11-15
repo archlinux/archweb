@@ -144,6 +144,7 @@ class Package(models.Model):
     objects = PackageManager()
     class Meta:
         db_table = 'packages'
+        ordering = ('pkgname',)
         #get_latest_by = 'last_update'
         #ordering = ('-last_update',)
 
