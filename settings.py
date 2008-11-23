@@ -3,7 +3,6 @@ import os
 
 # setup some var defaults
 DEBUG = True
-CACHE = False
 
 ## Import local settings
 from local_settings import *
@@ -48,13 +47,6 @@ MIDDLEWARE_CLASSES = (
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     'django.middleware.http.ConditionalGetMiddleware',
-)
-
-# A bit of hackery to insert caching at the right spot
-if CACHE == True:
-    MIDDLEWARE_CLASSES += ('django.middleware.cache.CacheMiddleware',)
-
-MIDDLEWARE_CLASSES += (
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
     "archweb_dev.main.middleware.RequireLoginMiddleware",
