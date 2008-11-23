@@ -45,7 +45,7 @@ sys.path[0] = archweb_app_path
 import settings
 setup_environ(settings)
 from cStringIO import StringIO
-from logging import WARNING,INFO
+from logging import WARNING,INFO,DEBUG
 from main.models import Arch, Package, Repo
 
 class SomethingFishyException(Exception):
@@ -161,6 +161,10 @@ def db_update(archname, pkgs):
     repository = Repo.objects.get(name__iexact=pkgs[0].repo)
     architecture = Arch.objects.get(name__iexact=archname)
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
+    # It makes sense to fully evaluate our DB query now because we will
+    # be using 99% of the objects in our "in both sets" loop. Force eval
+    # by calling len() on the QuerySet.
+    dblist = list(dbpkgs)
     now = datetime.now()
 
     # go go set theory!
@@ -291,7 +295,7 @@ def parse_repo(repopath):
     if not os.path.exists(repopath):
         logger.error("Could not read file %s", repopath)
     
-    logger.info("Reading repo tarfile")
+    logger.info("Reading repo tarfile %s", repopath)
     filename = os.path.split(repopath)[1]
     rindex = filename.rindex('.db.tar.gz')
     reponame = filename[:rindex]
