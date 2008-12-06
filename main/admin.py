@@ -1,5 +1,8 @@
 from django.contrib import admin
-from archweb_dev.main.models import (AltForum, Arch, Donor, Mirror, Package, Press, Repo)
+from archweb_dev.main.models import (AltForum, Arch, Donor, Mirror,
+        Package, Press, Repo, UserProfile)
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 
 class AltForumAdmin(admin.ModelAdmin):
     list_display = ('language', 'name')
@@ -28,7 +31,15 @@ class PressAdmin(admin.ModelAdmin):
     ordering = ['name']
     search_fields = ('name',)
 
+admin.site.unregister(User)
+class UserProfileInline(admin.StackedInline):
+    model = UserProfile
 
+class UserProfileAdmin(UserAdmin):
+    inlines = [UserProfileInline]
+
+
+admin.site.register(User, UserProfileAdmin)
 admin.site.register(AltForum, AltForumAdmin)
 admin.site.register(Donor, DonorAdmin)
 admin.site.register(Mirror, MirrorAdmin)
