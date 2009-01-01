@@ -141,6 +141,7 @@ class Package(models.Model):
     pkgdesc = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
     last_update = models.DateTimeField(null=True, blank=True)
+    license = models.CharField(max_length=255)
     objects = PackageManager()
     class Meta:
         db_table = 'packages'

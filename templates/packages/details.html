@@ -39,6 +39,9 @@
                 <th>Upstream URL:</th>
                 <td><a href="{{ pkg.url }}">{{ pkg.url }}</a></td>
             </tr><tr>
+                <th>License:</th>
+                <td>{{ pkg.license }}</td>
+            </tr><tr>
                 <th>Maintainer:</th>
                 <td>{% if pkg.maintainer %}{{ pkg.maintainer.get_full_name }}{% else %}None{% endif %}</td>
             </tr><tr>
