@@ -97,7 +97,7 @@
                 {% for pkg in user.maintained_packages.flagged %}
                 <tr class="{% cycle pkgr2,pkgr1 %}">
                     <td>
-                        <a href="/packages/{{ pkg.id }}/">{{ pkg.pkgname }}</a>
+                        <a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a>
                     </td>
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.pkgver }}</td>
