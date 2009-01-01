@@ -85,6 +85,8 @@ class Pkg(object):
             val['desc'] = ''
         if 'url' not in val:
             val['url'] = ''
+        if 'license' not in val:
+            val['license'] = []
         for x in val.keys():
             if x in squash:
                 if len(val[x]) == 0:
@@ -198,7 +200,7 @@ def db_update(archname, pkgs):
             repo = repository, arch=architecture, maintainer_id = 0,
             needupdate = False, url = p.url, last_update = now,
             pkgname = p.name, pkgver = p.ver, pkgrel = p.rel, 
-            pkgdesc = p.desc)
+            pkgdesc = p.desc, license = p.license)
         pkg.save()
         # files are not in the repo.db.tar.gz
         #for x in p.files:
@@ -236,6 +238,7 @@ def db_update(archname, pkgs):
         pkg.pkgver = p.ver
         pkg.pkgrel = p.rel
         pkg.pkgdesc = p.desc
+        pkg.license = p.license
         pkg.url = p.url
         pkg.needupdate = False
         pkg.last_update = now
