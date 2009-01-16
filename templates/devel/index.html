@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head %}
+<script type="text/javascript" src="/media/jquery-1.3.min.js"></script>
+{% endblock %}
+
 {% block content %}
 	{% if todos %}
 	<div class="greybox">
@@ -23,8 +27,8 @@
 	{% endif %}
 	
     <div class="greybox">
-		<h3 class="title">Stats by Architecture</h3>
-		<table class="results" width="100%">
+		<h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Architecture</h3>
+        <table class="results" width="100%" style="display: none">
 			<tr>
 				<th width="50%">Arch</th>
 				<th># Packages</th>
@@ -41,8 +45,8 @@
 	</div>
 	<br /><br />
     <div class="greybox">
-		<h3 class="title">Stats by Repository</h3>
-		<table class="results" width="100%">
+		<h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Repository</h3>
+        <table class="results" width="100%" style="display: none">
 			<tr>
 				<th width="50%">Repository</th>
 				<th># Packages</th>
@@ -60,8 +64,8 @@
 	<br /><br />
 
 	<div class="greybox">
-		<h3 class="title">Stats by Maintainer</h3>
-		<table class="results" width="100%">
+        <h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Maintainer</h3>
+        <table class="results" width="100%" style="display: none">
 			<tr>
 				<th width="50%">Maintainer</th>
 				<th># Packages</th>
