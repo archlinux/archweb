@@ -51,16 +51,40 @@ class PackageManager(models.Manager):
 ### General Model Classes ###
 #############################
 class Mirror(models.Model):
-    id = models.AutoField(primary_key=True)
-    domain = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
-    protocol_list = models.CharField(max_length=255, null=True, blank=True)
-    admin_email = models.CharField(max_length=255, null=True, blank=True)
-    def __str__(self):
-        return self.domain
+    admin_email = models.EmailField(max_length=255, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+    public = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
+    isos = models.BooleanField(default=True)
+    def __unicode__(self):
+        return self.name
+
+class MirrorProtocol(models.Model):
+    protocol = models.CharField(max_length=10, unique=True)
+    def __unicode__(self):
+        return self.protocol
     class Meta:
-        db_table = 'mirrors'
+        verbose_name = 'Mirror Protocol'
+
+class MirrorUrl(models.Model):
+    url = models.CharField(max_length=255)
+    protocol = models.ForeignKey(MirrorProtocol, related_name="urls")
+    mirror = models.ForeignKey(Mirror, related_name="urls")
+    def __unicode__(self):
+        return self.url
+    class Meta:
+        verbose_name = 'Mirror URL'
+
+class MirrorRsync(models.Model):
+    hostname = models.CharField(max_length=255)
+    ip = models.IPAddressField()
+    mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
+    def __unicode__(self):
+        return "%s (%s)" % (self.ip, self.hostname)
+    class Meta:
+        verbose_name = 'Mirror Rsync IP'
 
 class Press(models.Model):
     id = models.AutoField(primary_key=True)
