@@ -1,9 +1,10 @@
+from django import forms
 from django.contrib import admin
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 from archweb_dev.main.models import (AltForum, Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
         Package, Press, Repo, UserProfile)
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
 
 class AltForumAdmin(admin.ModelAdmin):
     list_display = ('language', 'name')
@@ -15,8 +16,19 @@ class DonorAdmin(admin.ModelAdmin):
     ordering = ['name']
     search_fields = ('name',)
 
+class MirrorUrlForm(forms.ModelForm):
+    class Meta:
+        model = MirrorUrl
+    def clean_url(self):
+        # ensure we always save the URL with a trailing slash
+        url = self.cleaned_data["url"].strip()
+        if url[-1] == '/':
+            return url
+        return url + '/'
+
 class MirrorUrlInlineAdmin(admin.TabularInline):
     model = MirrorUrl
+    form = MirrorUrlForm
     extra = 3
 
 class MirrorRsyncInlineAdmin(admin.TabularInline):
