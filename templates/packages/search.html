@@ -39,6 +39,32 @@
     {% if package_list %}
     <div class="greybox">
         <table class="results" width="100%">
+            {% if paginator %}
+                <tr>
+                    <td colspan="6">
+                        {{paginator.count}} packages found.
+                        Page {{page_obj.number}} of {{paginator.num_pages}}.
+                    </td>
+                    <td>
+                        {% if page_obj.has_previous %}
+                        <a href="/packages/{{page_obj.previous_page_number}}/{{current_query}}">
+                            &lt;&lt;&lt; Previous
+                        </a>
+                        {% else %}
+                            &lt;&lt;&lt; Previous
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if page_obj.has_next %}
+                        <a href="/packages/{{page_obj.next_page_number}}/{{current_query}}">
+                            Next &gt;&gt;&gt;
+                        </a>
+                        {% else %} 
+                            Next &gt;&gt;&gt;
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
             <tr>
                 <form method="post" action="/packages/update/">
                 <th>&nbsp;</th>
@@ -91,7 +117,6 @@
                             Next &gt;&gt;&gt;
                         {% endif %}
                     </td>
-                <br />
                 </tr>
             {% endif %}
             <tr>
