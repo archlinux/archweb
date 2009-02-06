@@ -90,7 +90,7 @@ class Press(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     class Meta:
         db_table = 'press'
@@ -101,7 +101,7 @@ class AltForum(models.Model):
     language = models.CharField(max_length=255)
     url = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     class Meta:
         db_table = 'alt_forums'
@@ -110,7 +110,7 @@ class AltForum(models.Model):
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     class Meta:
         db_table = 'donors'
@@ -122,7 +122,7 @@ class News(models.Model):
     postdate = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=255)
     content = models.TextField()
-    def __str__(self):
+    def __unicode__(self):
         return self.title
     class Meta:
         db_table = 'news'
@@ -136,7 +136,7 @@ class News(models.Model):
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,unique=True)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     class Meta:
         db_table = 'arches'
@@ -146,7 +146,7 @@ class Arch(models.Model):
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,unique=True)
-    def __str__(self):
+    def __unicode__(self):
         return self.name
     class Meta:
         db_table = 'repos'
@@ -173,7 +173,7 @@ class Package(models.Model):
         #get_latest_by = 'last_update'
         #ordering = ('-last_update',)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.pkgname
 
     # According to http://code.djangoproject.com/ticket/2583 we have "bad data"
@@ -278,7 +278,7 @@ class Todolist(models.Model):
     description = models.TextField()
     date_added = models.DateField(auto_now_add=True)
     objects = TodolistManager()
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
     @property
