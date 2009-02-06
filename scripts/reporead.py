@@ -184,9 +184,9 @@ def db_update(archname, pkgs):
     # Try to catch those random orphaning issues that make Eric so unhappy.
     if len(syncset) < len(dbset) * .5:
         logger.error(".db.tar.gz has less than 50% the number of packages in the web database")
-        raise SomethingFishyException(
-            'it looks like the syncdb is twice as big as the new'
-            'packages. WTF?')
+        if repository.name != 'Testing':
+            raise SomethingFishyException(
+                'It looks like the syncdb is half the size of the web db. WTF?')
 
     if len(syncset) < len(dbset) * .75:
         logger.warning(".db.tar.gz has 75% the number of packages in the web database.")
@@ -197,7 +197,7 @@ def db_update(archname, pkgs):
         ## maybe later we can add logic to match pkgbuild maintainers 
         ## to db maintainer ids
         pkg = Package(
-            repo = repository, arch=architecture, maintainer_id = 0,
+            repo = repository, arch = architecture, maintainer_id = 0,
             needupdate = False, url = p.url, last_update = now,
             pkgname = p.name, pkgver = p.ver, pkgrel = p.rel, 
             pkgdesc = p.desc, license = p.license)

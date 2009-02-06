@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.db import backend, connection, transaction
 """ Daily cleanup file
     This purges the session data that is old from the session table.
