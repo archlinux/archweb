@@ -52,7 +52,7 @@ class PackageManager(models.Manager):
 #############################
 class Mirror(models.Model):
     name = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
+    country = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     notes = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
