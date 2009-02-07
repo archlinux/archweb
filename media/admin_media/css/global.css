@@ -4,6 +4,7 @@ body { margin:0; padding:0; font-size:12px; font-family:"Lucida Grande","DejaVu 
 a:link, a:visited { color: #5b80b2; text-decoration:none; }
 a:hover { color: #036; }
 a img { border:none; }
+a.section:link, a.section:visited { color: white; text-decoration:none; }
 
 /* GLOBAL DEFAULTS */
 p, ol, ul, dl { margin:.2em 0 .8em 0; }
@@ -86,10 +87,10 @@ textarea { vertical-align:top !important; }
 input[type=text], input[type=password], textarea, select, .vTextField { border:1px solid #ccc; }
 
 /*  FORM BUTTONS  */
-input[type=submit], input[type=button], .submit-row input { background:white url(../img/admin/nav-bg.gif) bottom repeat-x; padding:3px; color:black; border:1px solid #bbb; border-color:#ddd #aaa #aaa #ddd; }
-input[type=submit]:active, input[type=button]:active { background-image:url(../img/admin/nav-bg-reverse.gif); background-position:top; }
-input[type=submit].default, .submit-row input.default { border:2px solid #5b80b2; background:#7CA0C7 url(../img/admin/default-bg.gif) bottom repeat-x; font-weight:bold; color:white; }
-input[type=submit].default:active { background-image:url(../img/admin/default-bg-reverse.gif); background-position:top; }
+.button, input[type=submit], input[type=button], .submit-row input { background:white url(../img/admin/nav-bg.gif) bottom repeat-x; padding:3px; color:black; border:1px solid #bbb; border-color:#ddd #aaa #aaa #ddd; }
+.button:active, input[type=submit]:active, input[type=button]:active { background-image:url(../img/admin/nav-bg-reverse.gif); background-position:top; }
+.button.default, input[type=submit].default, .submit-row input.default { border:2px solid #5b80b2; background:#7CA0C7 url(../img/admin/default-bg.gif) bottom repeat-x; font-weight:bold; color:white; float:right; }
+.button.default:active, input[type=submit].default:active { background-image:url(../img/admin/default-bg-reverse.gif); background-position:top; }
 
 /* MODULES */
 .module { border:1px solid #ccc; margin-bottom:5px; background:white; }
@@ -97,7 +98,7 @@ input[type=submit].default:active { background-image:url(../img/admin/default-bg
 .module blockquote { margin-left:12px; }
 .module ul, .module ol { margin-left:1.5em; }
 .module h3 { margin-top:.6em; }
-.module h2, .module caption { margin:0; padding:2px 5px 3px 5px; font-size:11px; text-align:left; font-weight:bold; background:#7CA0C7 url(../img/admin/default-bg.gif) top left repeat-x; color:white; }
+.module h2, .module caption, .inline-group h2 { margin:0; padding:2px 5px 3px 5px; font-size:11px; text-align:left; font-weight:bold; background:#7CA0C7 url(../img/admin/default-bg.gif) top left repeat-x; color:white; }
 .module table { border-collapse: collapse; }
 
 /* MESSAGES & ERRORS */
@@ -108,8 +109,8 @@ ul.errorlist { margin:0 !important; padding:0 !important; }
 .errorlist li { font-size:12px !important; display:block; padding:4px 5px 4px 25px; margin:0 0 3px 0; border:1px solid red; color:white; background:red url(../img/admin/icon_alert.gif) 5px .3em no-repeat; }
 td ul.errorlist { margin:0 !important; padding:0 !important; }
 td ul.errorlist li { margin:0 !important; }
-.error { background:#ffc; }
-.error input, .error select { border:1px solid red; }
+.errors { background:#ffc; }
+.errors input, .errors select { border:1px solid red; }
 div.system-message { background: #ffc; margin: 10px; padding: 6px 8px; font-size: .8em; }
 div.system-message p.system-message-title { padding:4px 5px 4px 25px; margin:0; color:red; background:#ffc url(../img/admin/icon_error.gif) 5px .3em no-repeat; }
 .description { font-size:12px; padding:5px 0 0 12px; }
