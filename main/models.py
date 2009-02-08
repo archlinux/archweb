@@ -79,7 +79,7 @@ class MirrorUrl(models.Model):
 
 class MirrorRsync(models.Model):
     hostname = models.CharField(max_length=255)
-    ip = models.IPAddressField()
+    ip = models.CharField(max_length=24)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
     def __unicode__(self):
         return "%s (%s)" % (self.ip, self.hostname)
