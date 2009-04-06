@@ -165,8 +165,12 @@ def db_update(archname, pkgs):
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
     # It makes sense to fully evaluate our DB query now because we will
     # be using 99% of the objects in our "in both sets" loop. Force eval
-    # by calling len() on the QuerySet.
-    dblist = list(dbpkgs)
+    # by calling list() on the QuerySet.
+    list(dbpkgs)
+    # This makes our inner loop where we find packages by name *way* more
+    # efficient by not having to go to the database for each package to
+    # SELECT them by name.
+    dbdict = dict([(pkg.pkgname, pkg) for pkg in dbpkgs])
     now = datetime.now()
 
     # go go set theory!
@@ -229,7 +233,7 @@ def db_update(archname, pkgs):
     pkg_in_both = syncset & dbset
     for p in [x for x in pkgs if x.name in pkg_in_both]:
         logger.debug("Looking for package updates")
-        dbp = dbpkgs.get(pkgname=p.name)
+        dbp = dbdict[p.name]
         if ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
             continue
         logger.info("Updating package %s in database", p.name)
