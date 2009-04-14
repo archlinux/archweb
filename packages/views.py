@@ -151,8 +151,17 @@ def unflag(request, pkgid):
 
 def signoffs(request):
     packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
+    package_list = []
+    other_packages = Package.objects.exclude(repo__name="Testing")
+    for package in packages:
+        other_package = other_packages.filter(pkgname=package.pkgname)
+        if len(other_package):
+            repo = other_package[0].repo.name
+        else:
+            repo = "Unknown"
+        package_list.append((package, repo))
     return render_to_response('packages/signoffs.html',
-            RequestContext(request, {'packages': packages}))
+            RequestContext(request, {'packages': package_list}))
 
 def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,

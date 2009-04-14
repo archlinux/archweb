@@ -10,15 +10,17 @@
                 <th>Package</th>
                 <th>Version</th>
                 <th>Last Updated</th>
+                <th>Target Repo</th>
                 <th>Approved</th>
                 <th>Signoff</th>
             </tr>
-        {% for pkg in packages %}
+        {% for pkg,target in packages %}
         <tr class="{% cycle pkgr2,pkgr1 %}">
                 <td>{{ pkg.arch.name }}</td>
                 <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                 <td>{{ pkg.last_update }}</td>
+                <td>{{ target }}</td>
                 <td class="signoff_{{pkg.approved_for_signoff|yesno}}">{{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
                 <td>
                     <ul>
