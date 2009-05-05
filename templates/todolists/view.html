@@ -23,7 +23,7 @@
             <tbody>
             {% for pkg in list.packages %}
                 <tr class="{% cycle even,odd %}">
-                    <td><a href="/packages/{{ pkg.pkg.id }}/">{{ pkg.pkg.pkgname }}</a></td>
+                    <td><a href="{{ pkg.pkg.get_absolute_url }}">{{ pkg.pkg.pkgname }}</a></td>
                     <td>{{ pkg.pkg.arch.name }}</td>
                     <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                     <td>{{ pkg.pkg.maintainer.get_full_name|default:"Orphan" }}</td>
