@@ -1,5 +1,6 @@
 *.pyc
 *.swp
+*.swo
 local_settings.py
 archweb.db
 testing/
