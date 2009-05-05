@@ -15,6 +15,7 @@ from archweb_dev.main.utils import make_choice
 
 def update(request):
     ids = request.POST.getlist('pkgid')
+    mode = None
     if request.POST.has_key('adopt'):
         mode = 'adopt'
         maint_id = request.user.id
@@ -22,13 +23,16 @@ def update(request):
         mode = 'disown'
         maint_id = 0
 
-    for id in ids:
-        pkg = Package.objects.get(id=id)
-        pkg.maintainer_id = maint_id
-        pkg.save()
+    if mode:
+        for id in ids:
+            pkg = Package.objects.get(id=id)
+            pkg.maintainer_id = maint_id
+            pkg.save()
 
-    request.user.message_set.create(message="%d packages %sed" % (
-        len(ids), mode))
+        request.user.message_set.create(message="%d packages %sed" % (
+            len(ids), mode))
+    else:
+        request.user.message_set.create(message="update called without adopt/disown")
     return HttpResponseRedirect('/packages/')
 
 def details(request, name='', repo='', arch=''):
