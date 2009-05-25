@@ -8,6 +8,6 @@
 		</div>
 		<h3>{{ news.title }}</h3>
 		<hr /><br />
-		{{ news.content|linebreaks }}
+		{{ news.content|safe|linebreaks }}
 	</div>
 {% endblock %}
