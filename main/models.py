@@ -30,7 +30,7 @@ class UserProfile(models.Model):
     picture = models.FileField(upload_to='devs', default='devs/silhouette.png')
     user = models.ForeignKey(
         User, related_name='userprofile_user', unique=True)
-    allowed_repos = models.ManyToManyField('Repo')
+    allowed_repos = models.ManyToManyField('Repo', blank=True)
     class Meta:
         db_table = 'user_profiles'
         verbose_name = 'Additional Profile Data'
