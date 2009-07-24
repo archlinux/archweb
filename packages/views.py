@@ -24,13 +24,24 @@ def update(request):
         maint_id = 0
 
     if mode:
-        for id in ids:
-            pkg = Package.objects.get(id=id)
+        pkgs = Package.objects.filter(
+                id__in=ids,
+                repo__in=request.user.userprofile_user.all(
+                    )[0].allowed_repos.all())
+        disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
+                repo__in=request.user.userprofile_user.all(
+                    )[0].allowed_repos.all())
+        for pkg in pkgs:
             pkg.maintainer_id = maint_id
             pkg.save()
 
         request.user.message_set.create(message="%d packages %sed" % (
-            len(ids), mode))
+            len(pkgs), mode))
+        if disallowed_pkgs:
+            request.user.message_set.create(
+                    message="You do not have permmission to adopt: %s" % (
+                        ' '.join([p.pkgname for p in disallowed_pkgs])
+                        ))
     else:
         request.user.message_set.create(message="update called without adopt/disown")
     return HttpResponseRedirect('/packages/')
