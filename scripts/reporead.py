@@ -151,6 +151,30 @@ def dictize(cursor,row):
     return result
 
 
+def populate_pkg(dbpkg, repopkg):
+    dbpkg.pkgver = repopkg.ver
+    dbpkg.pkgrel = repopkg.rel
+    dbpkg.pkgdesc = repopkg.desc
+    dbpkg.license = repopkg.license
+    dbpkg.url = repopkg.url
+    dbpkg.needupdate = False
+    dbpkg.last_update = now
+    dbpkg.save()
+    # files are not in the repo.db.tar.gz
+    #for x in repopkg.files:
+    #    dbpkg.packagefile_set.create(path=x)
+    if 'depends' in repopkg.__dict__:
+        for y in repopkg.depends:
+            # make sure we aren't adding self depends..
+            # yes *sigh* i have seen them in pkgbuilds
+            dpname,dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
+            if dpname == repopkg.name:
+                logger.warning('Package %s has a depend on itself' % repopkg.name)
+                continue
+            dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
+            logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
+
+
 def db_update(archname, pkgs):
     """
     Parses a list and updates the Arch dev database accordingly.
@@ -201,24 +225,9 @@ def db_update(archname, pkgs):
         ## maybe later we can add logic to match pkgbuild maintainers 
         ## to db maintainer ids
         pkg = Package(
-            repo = repository, arch = architecture, maintainer_id = 0,
-            needupdate = False, url = p.url, last_update = now,
-            pkgname = p.name, pkgver = p.ver, pkgrel = p.rel, 
-            pkgdesc = p.desc, license = p.license)
-        pkg.save()
-        # files are not in the repo.db.tar.gz
-        #for x in p.files:
-        #    pkg.packagefile_set.create(path=x)
-        if 'depends' in p.__dict__:
-            for y in p.depends:
-                # make sure we aren't adding self depends..
-                # yes *sigh* i have seen them in pkgbuilds
-                dpname,dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
-                if dpname == p.name:
-                    logger.warning('Package %s has a depend on itself' % p.name)
-                    continue
-                pkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
-                logger.debug('Added %s as dep for pkg %s' % (dpname,p.name))
+            pkgname = p.name, arch = architecture, repo = repository,
+            maintainer_id = 0)
+        populate_pkg(pkg, p)
 
     # packages in database and not in syncdb (remove from database)
     logger.debug("Set theory: Packages in database not in syncdb")
@@ -239,24 +248,8 @@ def db_update(archname, pkgs):
         logger.info("Updating package %s in database", p.name)
         pkg = Package.objects.get(
             pkgname=p.name,arch=architecture, repo=repository)
-        pkg.pkgver = p.ver
-        pkg.pkgrel = p.rel
-        pkg.pkgdesc = p.desc
-        pkg.license = p.license
-        pkg.url = p.url
-        pkg.needupdate = False
-        pkg.last_update = now
-        pkg.save()
-       
-        # files are not in the repo.db.tar.gz
-        #pkg.packagefile_set.all().delete()
-        #for x in p.files:
-        #    pkg.packagefile_set.create(path=x)
-        pkg.packagedepend_set.all().delete()
-        if 'depends' in p.__dict__:
-            for y in p.depends:
-                dpname,dpvcmp = re.match(r"([a-z0-9-]+)(.*)", y).groups()
-                pkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
+        populate_pkg(pkg, p)
+
     logger.info('Finished updating Arch: %s' % archname)
 
 
