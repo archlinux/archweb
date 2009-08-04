@@ -151,14 +151,15 @@ def dictize(cursor,row):
     return result
 
 
-def populate_pkg(dbpkg, repopkg):
+def populate_pkg(dbpkg, repopkg, timestamp=None):
+    if not timestamp: timestamp = datetime.now()
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
     dbpkg.pkgdesc = repopkg.desc
     dbpkg.license = repopkg.license
     dbpkg.url = repopkg.url
     dbpkg.needupdate = False
-    dbpkg.last_update = now
+    dbpkg.last_update = timestamp
     dbpkg.save()
     # files are not in the repo.db.tar.gz
     #for x in repopkg.files:
@@ -227,7 +228,7 @@ def db_update(archname, pkgs):
         pkg = Package(
             pkgname = p.name, arch = architecture, repo = repository,
             maintainer_id = 0)
-        populate_pkg(pkg, p)
+        populate_pkg(pkg, p, timestamp=now)
 
     # packages in database and not in syncdb (remove from database)
     logger.debug("Set theory: Packages in database not in syncdb")
@@ -248,7 +249,7 @@ def db_update(archname, pkgs):
         logger.info("Updating package %s in database", p.name)
         pkg = Package.objects.get(
             pkgname=p.name,arch=architecture, repo=repository)
-        populate_pkg(pkg, p)
+        populate_pkg(pkg, p, timestamp=now)
 
     logger.info('Finished updating Arch: %s' % archname)
 
