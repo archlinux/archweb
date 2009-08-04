@@ -55,7 +55,7 @@ urlpatterns = patterns('',
         'template_name': 'registration/logout.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
         'template_name': 'registration/logout.html'}),
-    (r'^admin/(.*)', admin.site.root),
+    (r'^admin/(.*)', admin.site.urls),
 )
 
 if settings.DEBUG == True:
