@@ -46,6 +46,8 @@ urlpatterns = patterns('',
     (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),
     (r'^$',                'archweb_dev.devel.views.siteindex'),
 
+    (r'^devel/newuser/$', 'archweb_dev.devel.views.new_user_form'),
+
 # Authentication / Admin
     (r'^login/$',           'django.contrib.auth.views.login',  {
         'template_name': 'registration/login.html'}),
@@ -55,7 +57,7 @@ urlpatterns = patterns('',
         'template_name': 'registration/logout.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
         'template_name': 'registration/logout.html'}),
-    (r'^admin/(.*)', admin.site.urls),
+    (r'^admin/(.*)', admin.site.root),
 )
 
 if settings.DEBUG == True:

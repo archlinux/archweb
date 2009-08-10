@@ -3,6 +3,7 @@
 {% block content %}
 	<div class="greybox">
         <h2 class="title">{{title}}</h2>
+        {% if description %}{{description}}{% endif %}
 		<form method="post" action=".">
 		<table>
             {% for field in form %}

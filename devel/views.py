@@ -6,6 +6,10 @@ from django.template import RequestContext
 from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News
+import random
+from string import letters, digits
+pwletters = letters + digits
+
 
 def index(request):
     '''the Developer dashboard'''
@@ -68,5 +72,52 @@ def siteindex(request):
             RequestContext(request,
                 {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos}))
 
-# vim: set ts=4 sw=4 et:
+class NewUserForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ('picture', 'user')
+    username = forms.CharField(max_length=30)
+    email = forms.EmailField()
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
 
+    def save(self):
+        profile = forms.ModelForm.save(self, False)
+        pw = ''.join([random.choice(pwletters) for i in xrange(8)])
+        user = User.objects.create(username=self.cleaned_data['username'],
+                email=self.cleaned_data['email'], password=pw)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+        profile.user = user
+        profile.save()
+
+        send_mail("Your new archweb account",
+                """You can now log into:
+http://dev.archlinux.org/
+with these login details:
+Username: %s
+Password: %s""" % (user.username, pw),
+                'Arch Website Notification <nobody@archlinux.org>',
+                [user.email],
+                fail_silently=False)
+
+def new_user_form(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect('/login/')
+
+    if request.POST:
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/admin/')
+    else:
+        form = NewUserForm()
+    return render_to_response('general_form.html', RequestContext(
+        request, {'description': '''A new user will be created with the
+            following properties in their profile. A random password will be
+            generated and the user will be e-mailed with their account details
+            n plaintext.''',
+            'form': form, 'title': 'Create User', 'submit_text': 'Create User'}))
+
+# vim: set ts=4 sw=4 et:
