@@ -164,7 +164,7 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
     # files are not in the repo.db.tar.gz
     #for x in repopkg.files:
     #    dbpkg.packagefile_set.create(path=x)
-    pkg.packagedepend_set.all().delete()
+    dbpkg.packagedepend_set.all().delete()
     if 'depends' in repopkg.__dict__:
         for y in repopkg.depends:
             # make sure we aren't adding self depends..
