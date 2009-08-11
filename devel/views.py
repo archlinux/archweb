@@ -85,7 +85,7 @@ class NewUserForm(forms.ModelForm):
     def save(self):
         profile = forms.ModelForm.save(self, False)
         pw = ''.join([random.choice(pwletters) for i in xrange(8)])
-        user = User.objects.create(username=self.cleaned_data['username'],
+        user = User.objects.create_user(username=self.cleaned_data['username'],
                 email=self.cleaned_data['email'], password=pw)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
@@ -94,8 +94,8 @@ class NewUserForm(forms.ModelForm):
         profile.save()
 
         send_mail("Your new archweb account",
-                """You can now log into:
-http://dev.archlinux.org/
+               """You can now log into:
+https://dev.archlinux.org/
 with these login details:
 Username: %s
 Password: %s""" % (user.username, pw),
@@ -111,7 +111,7 @@ def new_user_form(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/admin/')
+            return HttpResponseRedirect('/admin/auth/user/%d/' %form.instance.user.id)
     else:
         form = NewUserForm()
     return render_to_response('general_form.html', RequestContext(
