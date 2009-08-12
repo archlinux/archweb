@@ -53,7 +53,7 @@ class MirrorRsyncInlineAdmin(admin.TabularInline):
     extra = 2
 
 class MirrorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'active', 'public', 'isos', 'notes')
+    list_display = ('name', 'country', 'active', 'public', 'isos', 'notes', 'admin_email', 'supported_protocols')
     list_filter = ('country', 'active', 'public')
     ordering = ['country', 'name']
     search_fields = ('name',)

@@ -62,6 +62,10 @@ class Mirror(models.Model):
     def __unicode__(self):
         return self.name
 
+    def supported_protocols(self):
+        protocols = MirrorProtocol.objects.filter(urls__mirror=self).distinct()
+        return ", ".join([p.protocol for p in protocols])
+
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
     def __unicode__(self):
