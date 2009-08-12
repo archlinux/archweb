@@ -8,8 +8,8 @@ from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News
 import random
-from string import letters, digits
-pwletters = letters + digits
+from string import ascii_letters, digits
+pwletters = ascii_letters + digits
 
 
 def index(request):
@@ -94,7 +94,7 @@ class NewUserForm(forms.ModelForm):
         profile.save()
 
         send_mail("Your new archweb account",
-               """You can now log into:
+                """You can now log into:
 https://dev.archlinux.org/
 with these login details:
 Username: %s
