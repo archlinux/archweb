@@ -53,7 +53,7 @@ class MirrorRsyncInlineAdmin(admin.TabularInline):
     extra = 2
 
 class MirrorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'active', 'public', 'isos', 'notes')
+    list_display = ('name', 'country', 'active', 'public', 'isos', 'notes', 'admin_email', 'supported_protocols')
     list_filter = ('country', 'active', 'public')
     ordering = ['country', 'name']
     search_fields = ('name',)
@@ -79,6 +79,8 @@ class UserProfileInline(admin.StackedInline):
 
 class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline]
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
 
 
 admin.site.register(User, UserProfileAdmin)
