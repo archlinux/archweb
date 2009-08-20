@@ -306,5 +306,13 @@ class TodolistPkg(models.Model):
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
 
+class ExternalProject(models.Model):
+    url = models.URLField()
+    name = models.CharField(max_length=64)
+    description = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.name
+
 # vim: set ts=4 sw=4 et:
 

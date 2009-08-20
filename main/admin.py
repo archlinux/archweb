@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from archweb_dev.main.models import (AltForum, Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
-        Package, Press, Repo, UserProfile)
+        Package, Press, Repo, UserProfile, ExternalProject)
 
 class AltForumAdmin(admin.ModelAdmin):
     list_display = ('language', 'name')
@@ -94,5 +94,6 @@ admin.site.register(Package, PackageAdmin)
 admin.site.register(Press, PressAdmin)
 admin.site.register(Arch)
 admin.site.register(Repo)
+admin.site.register(ExternalProject)
 
 # vim: set ts=4 sw=4 et:
