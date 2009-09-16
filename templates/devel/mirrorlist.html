@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="greybox">
+	<table class="results" width="100%">
+		<tr>
+			<th>Name</th>
+			<th>Country</th>
+			<th>Admin Email</th>
+			<th>Public</th>
+			<th>Active</th>
+			<th>ISOs</th>
+			<th>Protocols</th>
+			<th>Rsync IPs</th>
+			<th>Notes</th>
+		</tr>
+		{% for mirror in mirror_list %}
+		<tr>
+			<td>{{mirror.name}}</td>
+			<td>{{mirror.country}}</td>
+			<td>{{mirror.admin_email}}</td>
+			<td>{{mirror.public|yesno}}</td>
+			<td>{{mirror.active|yesno}}</td>
+			<td>{{mirror.isos|yesno}}</td>
+			<td>{{mirror.supported_protocols}}</td>
+			<td>{{mirror.rsync_ips.count}}</td>
+			<td>{{mirror.notes}}</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

@@ -41,6 +41,8 @@ urlpatterns = patterns('',
     (r'^news/delete/(\d+)/$',  'archweb_dev.news.views.delete'),
     (r'^news/$',               'archweb_dev.news.views.list'),
 
+    (r'^mirrors/$',        'archweb_dev.devel.views.mirrorlist'),
+
     (r'^devel/$',          'archweb_dev.devel.views.index'),
     (r'^devel/notify/$',   'archweb_dev.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),

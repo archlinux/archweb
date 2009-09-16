@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from archweb_dev.main.models import Package, Todolist
 from archweb_dev.main.models import Arch, Repo
 from archweb_dev.main.models import UserProfile, News
+from archweb_dev.main.models import Mirror
 import random
 from string import ascii_letters, digits
 pwletters = ascii_letters + digits
@@ -72,6 +73,11 @@ def siteindex(request):
     return render_to_response('devel/siteindex.html', 
             RequestContext(request,
                 {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos}))
+
+def mirrorlist(request):
+    mirrors = Mirror.objects.all()
+    return render_to_response('devel/mirrorlist.html',
+            RequestContext(request, {'mirror_list': mirrors}))
 
 class NewUserForm(forms.ModelForm):
     class Meta:
