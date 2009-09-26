@@ -20,7 +20,7 @@ Example:
 ###
 
 # multi value blocks
-REPOVARS = ['arch', 'backup', 'builddate', 'conflicts', 'csize', 
+REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
             'deltas', 'depends', 'desc', 'filename', 'files', 'force', 
             'groups', 'installdate', 'isize', 'license', 'md5sum', 
             'name', 'optdepends', 'packager', 'provides', 'reason', 
@@ -79,6 +79,7 @@ class Pkg(object):
                   'packager', 'size', 'url']
         
         selfdict['name'] = val['name'][0]
+        selfdict['base'] = None
         del val['name']
         if 'desc' not in val:
             logger.warning("Package %s has no description" % selfdict['name'])
@@ -96,6 +97,8 @@ class Pkg(object):
                 # fields
                 if len(selfdict[x]) > 255:
                     selfdict[x] = selfdict[x][:254]
+            elif x == 'base':
+                selfdict[x] = val[x][0]
             elif x == 'force':
                 selfdict[x] = True
             elif x == 'version':
@@ -153,6 +156,7 @@ def dictize(cursor,row):
 
 def populate_pkg(dbpkg, repopkg, timestamp=None):
     if not timestamp: timestamp = datetime.now()
+    dbpkg.pkgbase = repopkg.base
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
     dbpkg.pkgdesc = repopkg.desc
@@ -222,7 +226,7 @@ def db_update(archname, pkgs):
         logger.warning(".db.tar.gz has 75% the number of packages in the web database.")
     
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
-        logger.debug("Adding package %s", p.name)
+        logger.info("Adding package %s", p.name)
         ## note: maintainer is being set to orphan for now
         ## maybe later we can add logic to match pkgbuild maintainers 
         ## to db maintainer ids

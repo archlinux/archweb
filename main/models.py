@@ -165,6 +165,7 @@ class Package(models.Model):
     maintainer = models.ForeignKey(User, related_name="maintained_packages")
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(max_length=255)
+    pkgbase = models.CharField(max_length=255, null=True, blank=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     pkgdesc = models.CharField(max_length=255)
