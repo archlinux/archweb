@@ -22,9 +22,9 @@ urlpatterns = patterns('',
 
     (r'^packages/(?P<name>[A-z0-9\-+.]+)/$',
         'archweb_dev.packages.views.details'),
-    (r'^packages/(?P<repo>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'archweb_dev.packages.views.details'),
-    (r'^packages/(?P<repo>[A-z0-9]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'archweb_dev.packages.views.details'),
 
     (r'^todo/(\d+)/$',              'archweb_dev.todolists.views.view'),
