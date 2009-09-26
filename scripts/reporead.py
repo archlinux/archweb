@@ -39,11 +39,14 @@ from datetime import datetime
 from django.core.management import setup_environ
 # mung the sys path to get to django root dir, no matter
 # where we are called from
+# TODO this is so fricking ugly
 archweb_app_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 os.chdir(archweb_app_path)
 sys.path[0] = archweb_app_path
 import settings
 setup_environ(settings)
+# the transaction import must be below where we set up our db stuff...
+from django.db import transaction
 from cStringIO import StringIO
 from logging import WARNING,INFO,DEBUG
 from main.models import Arch, Package, Repo
@@ -335,6 +338,7 @@ def parse_repo(repopath):
     return pkgs
 
 
+@transaction.commit_on_success
 def main(argv=None):
     """
     Parses repo.db.tar.gz file and returns exit status.
