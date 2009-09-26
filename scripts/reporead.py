@@ -92,7 +92,7 @@ class Pkg(object):
             if x in squash:
                 if len(val[x]) == 0:
                     logger.warning("Package %s has no %s" % (selfdict['name'],x))
-                selfdict[x] = ''.join(val[x])
+                selfdict[x] = ', '.join(val[x])
                 # make sure we don't have elements larger than the db char
                 # fields
                 if len(selfdict[x]) > 255:
