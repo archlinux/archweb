@@ -219,14 +219,15 @@ def db_update(archname, pkgs):
     logger.info("%d packages in sync not db" % len(in_sync_not_db))
 
     # Try to catch those random orphaning issues that make Eric so unhappy.
-    if len(syncset) < len(dbset) * .5:
-        logger.error(".db.tar.gz has less than 50% the number of packages in the web database")
-        if repository.name != 'Testing':
-            raise SomethingFishyException(
-                'It looks like the syncdb is half the size of the web db. WTF?')
+    dbpercent = 100.0 * len(syncset) / len(dbset)
+    logger.info("DB package ratio: %.1f%%" % dbpercent)
+    if dbpercent < 50.0 and repository.name.lower().find('testing') == -1:
+        logger.error(".db.tar.gz has %.1f%% the number of packages in the web database" % dbpercent)
+        raise SomethingFishyException(
+            'It looks like the syncdb is less than half the size of the web db. WTF?')
 
-    if len(syncset) < len(dbset) * .75:
-        logger.warning(".db.tar.gz has 75% the number of packages in the web database.")
+    if dbpercent < 75.0:
+        logger.warning(".db.tar.gz has %.1f%% the number of packages in the web database." % dbpercent)
     
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.info("Adding package %s", p.name)
