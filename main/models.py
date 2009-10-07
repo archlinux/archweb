@@ -308,7 +308,7 @@ class TodolistPkg(models.Model):
         unique_together = (('list','pkg'),)
 
 class ExternalProject(models.Model):
-    url = models.URLField()
+    url = models.URLField(verify_exists=False)
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=128)
 
