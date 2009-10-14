@@ -219,7 +219,12 @@ def db_update(archname, pkgs):
     logger.info("%d packages in sync not db" % len(in_sync_not_db))
 
     # Try to catch those random orphaning issues that make Eric so unhappy.
-    dbpercent = 100.0 * len(syncset) / len(dbset)
+    if len(dbset) > 20:
+        dbpercent = 100.0 * len(syncset) / len(dbset)
+    else:
+        # we don't have 20 packages in this repo/arch, so this check could
+        # produce a lot of false positives (or a div by zero). fake it
+        dbpercent = 100.0
     logger.info("DB package ratio: %.1f%%" % dbpercent)
     if dbpercent < 50.0 and repository.name.lower().find('testing') == -1:
         logger.error(".db.tar.gz has %.1f%% the number of packages in the web database" % dbpercent)
