@@ -257,17 +257,17 @@ class Package(models.Model):
         return deps
 
     def get_svn_link(self):
-        linkbase = "http://repos.archlinux.org/viewvc.cgi/%s/repos/%s-%s/%s"
+        linkbase = "http://repos.archlinux.org/wsvn/%s/%s/repos/%s-%s/"
         if self.pkgbase:
             dirname = self.pkgbase
         else:
             dirname = self.pkgname
         repo = self.repo.name.lower()
         if repo.startswith('community'):
-            rootopt = '?root=community'
+            root = 'community'
         else:
-            rootopt = '?root=packages'
-        return linkbase % (dirname, repo, self.arch.name, rootopt)
+            root = 'packages'
+        return linkbase % (root, dirname, repo, self.arch.name)
 
 
 class Signoff(models.Model):
