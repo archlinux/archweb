@@ -50,9 +50,8 @@ def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
         pkg= get_object_or_404(Package,
                 pkgname=name, repo__name__iexact=repo, arch__name=arch)
-        rootopt = '?root=community' if repo == 'community' else ''
         return render_to_response('packages/details.html', RequestContext(
-            request, {'pkg': pkg, 'rootopt': rootopt}))
+            request, {'pkg': pkg, }))
     else:
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))

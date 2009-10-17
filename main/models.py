@@ -256,6 +256,20 @@ class Package(models.Model):
         self.deps_cache = deps
         return deps
 
+    def get_svn_link(self):
+        linkbase = "http://repos.archlinux.org/viewvc.cgi/%s/repos/%s-%s/%s"
+        if self.pkgbase:
+            dirname = self.pkgbase
+        else:
+            dirname = self.pkgname
+        repo = self.repo.name.lower()
+        if repo.startswith('community'):
+            rootopt = '?root=community'
+        else:
+            rootopt = '?root=packages'
+        return linkbase % (dirname, repo, self.arch.name, rootopt)
+
+
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
     pkgver = models.CharField(max_length=255)
