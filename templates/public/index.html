@@ -69,6 +69,18 @@
         </table>
     </div>
     <br />
+    {% if user.is_authenticated %}
+      <h3>Dev Links:</h3>
+      <ul class="links">
+          <li><a href="/devel/">Dev Dashboard</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/packages/signoffs/">Signoffs</a></li>
+          <li><a href="/todo/">Todos</a></li>
+          <li><a href="http://www.archlinux.org/mailman/private/arch-dev/">Archives</a></li>
+          <li><a href="http://wiki.archlinux.org/index.php/DeveloperWiki:HOWTO_Be_A_Packager">Package Maintainer's Guide</a></li>
+          <li><a href="/devel/profile/">Profile</a></li>
+      </ul>
+    {% endif %}
     <h3>Documentation:</h3>
     <ul class="links">
         <li><a href="http://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide">Installation Guide</a></li>

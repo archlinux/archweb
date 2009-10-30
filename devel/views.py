@@ -65,15 +65,6 @@ def change_profile(request):
     return render_to_response('devel/profile.html',
             RequestContext(request, {'form': form}))
 
-def siteindex(request):
-    news  = News.objects.order_by('-postdate', '-id')[:10]
-    pkgs  = Package.objects.exclude(repo__name__iexact='testing').order_by(
-            '-last_update')[:15]
-    repos = Repo.objects.all()
-    return render_to_response('devel/siteindex.html', 
-            RequestContext(request,
-                {'news_updates': news, 'pkg_updates': pkgs, 'repos': repos}))
-
 def mirrorlist(request):
     mirrors = Mirror.objects.all()
     return render_to_response('devel/mirrorlist.html',

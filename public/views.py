@@ -3,17 +3,19 @@ from archweb.main.models import AltForum, Arch, Donor, MirrorUrl, News
 from archweb.main.models import Package, Repo, ExternalProject
 from django.db.models import Q
 from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.views.generic import list_detail
 
+
 def index(request):
-    # get the most recent 10 news items
-    news  = News.objects.order_by('-postdate', '-id')[:10]
-    pkgs  = Package.objects.order_by('-last_update')[:15]
-    repos = Repo.objects.order_by('name')
-    arches = Arch.objects.exclude(name__iexact='any').order_by('name')
-    return render_to_response('public/index.html', 
-        {'news_updates':news,'pkg_updates':pkgs,
-         'repos':repos, 'arches': arches, 'path':request.path})
+    context = {
+        'news': News.objects.order_by('-postdate', '-id')[:10],
+        'pkgs': Package.objects.exclude(repo__name__iexact='testing').order_by(
+                '-last_update')[:15],
+        'repos': Repo.objects.all()
+    }
+    return render_to_response('public/index.html', RequestContext(request, 
+                                                                  context))
 
 def about(request):
     return render_to_response('public/about.html')

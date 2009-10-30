@@ -46,7 +46,6 @@ urlpatterns = patterns('',
     (r'^devel/$',          'archweb.devel.views.index'),
     (r'^devel/notify/$',   'archweb.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb.devel.views.change_profile'),
-    (r'^$',                'archweb.devel.views.siteindex'),
 
     (r'^devel/newuser/$', 'archweb.devel.views.new_user_form'),
 
