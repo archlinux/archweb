@@ -14,17 +14,21 @@ def index(request):
                 '-last_update')[:15],
         'repos': Repo.objects.all()
     }
-    return render_to_response('public/index.html', RequestContext(request, 
-                                                                  context))
+    return render_to_response('public/index.html', context,
+                              context_instance=RequestContext(request))
+
 def projects(request):
-    projects = ExternalProject.objects.all()
-    return render_to_response('public/projects.html', {'projects': projects})
+    return list_detail.object_list(request, 
+            ExternalProject.objects.all(),
+            template_name="public/projects.html",
+            template_object_name="project")
 
 def developers(request):
     devs = User.objects.filter(is_active=True).exclude(userprofile_user__roles="Trusted User").order_by('username')
     tus = User.objects.filter(is_active=True, userprofile_user__roles="Trusted User").order_by('username')
-    return render_to_response('public/developers.html',
-            {'developers': devs, 'tus': tus})
+    return render_to_response('public/developers.html', 
+                              {'developers': devs, 'tus': tus},
+                              context_instance=RequestContext(request))
 
 def fellows(request):
     return list_detail.object_list(request, 
@@ -40,12 +44,14 @@ def donate(request):
     donor_count = Donor.objects.count()
     donors = Donor.objects.order_by('name')
     splitval = donor_count / 4
-    slice1 = donors[:splitval]
-    slice2 = donors[(splitval):(splitval*2)]
-    slice3 = donors[(splitval*2):(donor_count-splitval)]
-    slice4 = donors[(donor_count-splitval):donor_count]
-    return render_to_response('public/donate.html', 
-        {'slice1':slice1,'slice2':slice2,'slice3':slice3,'slice4':slice4})
+    context = {
+        'slice1': donors[:splitval],
+        'slice2': donors[(splitval):(splitval*2)],
+        'slice3': donors[(splitval*2):(donor_count-splitval)],
+        'slice4': donors[(donor_count-splitval):donor_count],
+    }
+    return render_to_response('public/donate.html', context,
+                              context_instance=RequestContext(request))
 
 def download(request):
     qset = MirrorUrl.objects.filter(

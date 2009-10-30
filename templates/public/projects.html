@@ -7,7 +7,7 @@
     <p>There are a few Arch-based projects or communities that have sprung up
     over the years.  Here's a list of the ones we know about.</p>
     <table cellspacing="20">
-        {% for project in projects %}
+        {% for project in project_list %}
         <tr>
             <td><a href="{{project.url}}">{{project.name}}</a></td>
             <td>{{project.description}}</td>
