@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
-from archweb_dev.main.models import News
+from archweb.main.models import News
 
 from django.views.generic import list_detail, create_update
 

@@ -9,9 +9,9 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
 import datetime
-from archweb_dev.main.models import Package, PackageFile
-from archweb_dev.main.models import Arch, Repo, Signoff
-from archweb_dev.main.utils import make_choice
+from archweb.main.models import Package, PackageFile
+from archweb.main.models import Arch, Repo, Signoff
+from archweb.main.utils import make_choice
 
 def update(request):
     ids = request.POST.getlist('pkgid')

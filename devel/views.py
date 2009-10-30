@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
-from archweb_dev.main.models import Package, Todolist
-from archweb_dev.main.models import Arch, Repo
-from archweb_dev.main.models import UserProfile, News
-from archweb_dev.main.models import Mirror
+from archweb.main.models import Package, Todolist
+from archweb.main.models import Arch, Repo
+from archweb.main.models import UserProfile, News
+from archweb.main.models import Mirror
 import random
 from string import ascii_letters, digits
 pwletters = ascii_letters + digits

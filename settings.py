@@ -1,5 +1,5 @@
 import os
-# Django settings for archweb_dev project.
+# Django settings for archweb project.
 
 # setup some var defaults
 DEBUG = True
@@ -49,11 +49,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
-    "archweb_dev.main.middleware.RequireLoginMiddleware",
-    "archweb_dev.main.middleware.AutoUserMiddleware",
+    "archweb.main.middleware.RequireLoginMiddleware",
+    "archweb.main.middleware.AutoUserMiddleware",
 )
 
-ROOT_URLCONF = 'archweb_dev.urls'
+ROOT_URLCONF = 'archweb.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
@@ -71,11 +71,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'archweb_dev.main', # contains shared models and libs
-    'archweb_dev.news',
-    'archweb_dev.packages',
-    'archweb_dev.todolists',
-    'archweb_dev.devel',
+    'archweb.main', # contains shared models and libs
+    'archweb.news',
+    'archweb.packages',
+    'archweb.todolists',
+    'archweb.devel',
 )
 
 # vim: set ts=4 sw=4 et:

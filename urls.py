@@ -5,50 +5,50 @@ from django.contrib import admin
 from django.views.generic.create_update import delete_object
 from django.contrib.auth.decorators import permission_required
 
-from archweb_dev.main.models import Todolist
+from archweb.main.models import Todolist
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^packages/unflag/(\d+)/$',        'archweb_dev.packages.views.unflag'),
-    (r'^packages/files/(\d+)/$',         'archweb_dev.packages.views.files'),
-    (r'^packages/signoffs/$',              'archweb_dev.packages.views.signoffs'),
+    (r'^packages/unflag/(\d+)/$',        'archweb.packages.views.unflag'),
+    (r'^packages/files/(\d+)/$',         'archweb.packages.views.files'),
+    (r'^packages/signoffs/$',              'archweb.packages.views.signoffs'),
     (r'^packages/signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
-        'archweb_dev.packages.views.signoff_package'),
-    (r'^packages/update/$',              'archweb_dev.packages.views.update'),
+        'archweb.packages.views.signoff_package'),
+    (r'^packages/update/$',              'archweb.packages.views.update'),
 
-    (r'^packages/$',                     'archweb_dev.packages.views.search'),
-    (r'^packages/(?P<page>\d+)/$',        'archweb_dev.packages.views.search'),
+    (r'^packages/$',                     'archweb.packages.views.search'),
+    (r'^packages/(?P<page>\d+)/$',        'archweb.packages.views.search'),
 
     (r'^packages/(?P<name>[A-z0-9\-+.]+)/$',
-        'archweb_dev.packages.views.details'),
+        'archweb.packages.views.details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'archweb_dev.packages.views.details'),
+        'archweb.packages.views.details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'archweb_dev.packages.views.details'),
+        'archweb.packages.views.details'),
 
-    (r'^todo/(\d+)/$',              'archweb_dev.todolists.views.view'),
-    (r'^todo/add/$',                'archweb_dev.todolists.views.add'),
-    (r'^todo/edit/(?P<list_id>\d+)/$',  'archweb_dev.todolists.views.edit'),
-    (r'^todo/flag/(\d+)/(\d+)/$',   'archweb_dev.todolists.views.flag'),
+    (r'^todo/(\d+)/$',              'archweb.todolists.views.view'),
+    (r'^todo/add/$',                'archweb.todolists.views.add'),
+    (r'^todo/edit/(?P<list_id>\d+)/$',  'archweb.todolists.views.edit'),
+    (r'^todo/flag/(\d+)/(\d+)/$',   'archweb.todolists.views.flag'),
     (r'^todo/delete/(?P<object_id>\d+)/$',
-        'archweb_dev.todolists.views.delete_todolist'),
-    (r'^todo/$',                    'archweb_dev.todolists.views.list'),
+        'archweb.todolists.views.delete_todolist'),
+    (r'^todo/$',                    'archweb.todolists.views.list'),
 
-    (r'^news/(\d+)/$',         'archweb_dev.news.views.view'),
-    (r'^news/add/$',           'archweb_dev.news.views.add'),
-    (r'^news/edit/(\d+)/$',    'archweb_dev.news.views.edit'),
-    (r'^news/delete/(\d+)/$',  'archweb_dev.news.views.delete'),
-    (r'^news/$',               'archweb_dev.news.views.list'),
+    (r'^news/(\d+)/$',         'archweb.news.views.view'),
+    (r'^news/add/$',           'archweb.news.views.add'),
+    (r'^news/edit/(\d+)/$',    'archweb.news.views.edit'),
+    (r'^news/delete/(\d+)/$',  'archweb.news.views.delete'),
+    (r'^news/$',               'archweb.news.views.list'),
 
-    (r'^mirrors/$',        'archweb_dev.devel.views.mirrorlist'),
+    (r'^mirrors/$',        'archweb.devel.views.mirrorlist'),
 
-    (r'^devel/$',          'archweb_dev.devel.views.index'),
-    (r'^devel/notify/$',   'archweb_dev.devel.views.change_notify'),
-    (r'^devel/profile/$',  'archweb_dev.devel.views.change_profile'),
-    (r'^$',                'archweb_dev.devel.views.siteindex'),
+    (r'^devel/$',          'archweb.devel.views.index'),
+    (r'^devel/notify/$',   'archweb.devel.views.change_notify'),
+    (r'^devel/profile/$',  'archweb.devel.views.change_profile'),
+    (r'^$',                'archweb.devel.views.siteindex'),
 
-    (r'^devel/newuser/$', 'archweb_dev.devel.views.new_user_form'),
+    (r'^devel/newuser/$', 'archweb.devel.views.new_user_form'),
 
 # Authentication / Admin
     (r'^login/$',           'django.contrib.auth.views.login',  {

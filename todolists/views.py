@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
-from archweb_dev.main.models import Todolist, TodolistPkg, Package
+from archweb.main.models import Todolist, TodolistPkg, Package
 
 class TodoListForm(forms.Form):
     name = forms.CharField(max_length=255,
