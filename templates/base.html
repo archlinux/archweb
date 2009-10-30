@@ -17,12 +17,12 @@
             <div id="main_nav">
                 {% block topmenu %}
                 <ul>
-                    <li><a href="http://aur.archlinux.org/">AUR</a></li>
-                    <li><a href="http://bugs.archlinux.org/">Bugs</a></li>
-                    <li><a href="http://wiki.archlinux.org/">Wiki</a></li>
-                    <li><a href="http://bbs.archlinux.org/">Forums</a></li>
-                    <li><a href="http://www.archlinux.org/">Arch Home</a></li>
-                    <li{% ifequal path '/' %} class="selected"{% endifequal %}><a href="/">Dev Home</a></li>
+                    <li{% ifequal path '/download/' %} class="selected"{% endifequal %}><a href="/download/">Download</a></li>
+                    <li><a href="http://aur.archlinux.org">AUR</a></li>
+                    <li><a href="http://bugs.archlinux.org">Bugs</a></li>
+                    <li><a href="http://wiki.archlinux.org">Wiki</a></li>
+                    <li><a href="http://bbs.archlinux.org">Forums</a></li>
+                    <li{% ifequal path '/' %} class="selected"{% endifequal %}><a href="/">Home</a></li>
                 </ul>
                 {% endblock %}
             </div>
