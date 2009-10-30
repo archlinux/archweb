@@ -8,11 +8,17 @@ from django.contrib.auth.decorators import permission_required
 
 from archweb.main.models import Todolist
 from archweb.feeds import PackageFeed, NewsFeed
+from archweb.sitemaps import NewsSitemap, PackagesSitemap
 
 
 feeds = {
     'packages': PackageFeed,
     'news':     NewsFeed
+}
+
+sitemaps = {
+    'news':     NewsSitemap,
+    'packages': PackagesSitemap,
 }
 
 admin.autodiscover()
@@ -60,6 +66,8 @@ urlpatterns = patterns('',
 # Feeds and sitemaps
     (r'^feeds/(?P<url>.*)/$',
         'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
+    (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap',
+        {'sitemaps': sitemaps}),
 
 # Authentication / Admin
     (r'^login/$',           'django.contrib.auth.views.login',  {
