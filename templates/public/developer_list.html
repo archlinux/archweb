@@ -1,0 +1,60 @@
+    <br /><br />
+    <div id="devlist">
+    {% for dev in dev_list %}
+        <a href="#{{ dev.first_name}}{{ dev.last_name.0|capfirst}}">{{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a>  &nbsp; 
+    {% endfor %}
+    </div><br /><br />
+
+    <table class="center" cellpadding="20">
+    {% for dev in dev_list %}
+        <tr>
+            <td class="devpic">
+                <img src="{{ dev.get_profile.picture.url }}" height="175" width="175" style="border:1px solid black">
+            </td><td>
+                <a name="{{ dev.first_name }}{{ dev.last_name.0|capfirst}}" />
+                {% autoescape off %}
+                <table class="deventry" cellspacing="5">
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ dev.get_full_name }}</td>
+                    </tr><tr>
+                        <th>Alias:</th>
+                        <td>{{ dev.get_profile.alias }}</td>
+                    </tr><tr>
+                        <th>Email:</th>
+                        <td>{{ dev.get_profile.public_email }}</td>
+                    </tr><tr>
+                        <th>Other Contact:</th>
+                        <td>{{ dev.get_profile.other_contact }}</td>
+                    </tr><tr>
+                        <th>Roles:</th>
+                        <td>{{ dev.get_profile.roles }}<br />
+                        </td>
+                    </tr><tr>
+                        <th>Website:</th>
+                        <td>{{ dev.get_profile.website }}</td>
+                    </tr><tr>
+                        <th>Occupation:</th>
+                        <td>{{ dev.get_profile.occupation }}</td>
+                    </tr><tr>
+                        <th>YOB:</th>
+                        <td>{% if dev.get_profile.yob %}{{ dev.get_profile.yob }}{% else %}&nbsp;{% endif %}</td>
+                    </tr><tr>
+                        <th>Location:</th>
+                        <td>{{ dev.get_profile.location }}</td>
+                    </tr><tr>
+                        <th>Languages:</th>
+                        <td>{{ dev.get_profile.languages }}</td>
+                    </tr><tr>
+                        <th>Interests:</th>
+                        <td>{{ dev.get_profile.interests }}</td>
+                    </tr><tr>
+                        <th>Favorite Distros:</th>
+                        <td>{{ dev.get_profile.favorite_distros }}</td>
+                    </tr>
+                </table>
+                {% endautoescape %}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>

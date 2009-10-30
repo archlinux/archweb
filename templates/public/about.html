@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - About{% endblock %}
+{% block content %}
+<div class="box">
+    <h2 class="title">About Arch Linux</h2>
+	<p>
+Arch Linux is an independently developed, i686/x86-64 general purpose GNU/Linux
+distribution versatile enough to suit any role. Development focuses on
+simplicity, minimalism, and code elegance. Arch is installed as a
+minimal base system, configured by the user upon which their own ideal
+environment is assembled by installing only what is required or desired
+for their unique purposes. GUI configuration utilities are not officially
+provided, and most system configuration is performed from the shell by editing
+simple text files.  Arch strives to stay bleeding edge, and typically offers
+the latest stable versions of most software.
+</p>
+<p>
+Arch Linux uses its own Pacman package manager, which couples simple binary
+packages with an easy-to-use package build system. This allows users to
+easily manage and customize packages ranging from official Arch software to the
+user's own personal packages to packages from 3rd party sources. The repository
+system also allows users to easily build and maintain their own custom build
+scripts, packages, and repositories, encouraging community growth and
+contribution. 
+</p>
+<p>
+The minimal Arch base package set resides in the streamlined [core] repository.
+In addition, the official [extra], [community], and [testing] repositories
+provide several thousand high-quality, packages to meet your software demands.
+Arch also offers an [unsupported] section in the Arch Linux User Repository
+(AUR), which contains over 9,000 build scripts, for compiling installable
+packages from source using the Arch Linux makepkg application.
+</p>
+<p>
+Arch Linux uses a "rolling release" system which allows one-time installation
+and perpetual software upgrades. It is not generally necessary to reinstall
+or upgrade your Arch Linux system from one "version" to the next. 
+By issuing one command, an Arch system is kept up-to-date and on the bleeding
+edge.  
+</p>
+<p>
+Arch strives to keep its packages as close to the original upstream software as
+possible. Patches are applied only when necessary to ensure an application
+compiles and runs correctly with the other packages installed on an up-to-date
+Arch system.
+</p>
+<p>
+To summarize: Arch Linux is a versatile, and simple distribution designed to
+fit the needs of the competent Linux&#0174; user. It is both powerful and easy
+to manage, making it an ideal distro for servers and workstations.  Take it in
+any direction you like. If you share this vision of what a GNU/Linux
+distribution should be, then you are welcomed and encouraged to use it freely,
+get involved, and contribute to the community. Welcome to Arch!
+</p>
+</div>
+<br /><br />
+{% endblock %}
+

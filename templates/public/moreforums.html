@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - International Communities{% endblock %}
+{% block content %}
+<div class="box">
+    <h2 class="title">International Communities</h2>
+    <br /><br />
+    <p>
+    <a href="http://www.archlinux.org/">www.archlinux.org</a> is the home of
+    the official Arch Linux website, forums, and wiki. However, several
+    unofficial community-run sites are available for international users who
+    would rather communicate in their own language. You can find a list of
+    these communities below.
+    </p>
+    <p>
+    Please note that the official <a href="http://wiki.archlinux.org/">Wiki</a>
+    also supports internationalized content. In addition, we have <a
+        href="http://bbs.archlinux.org/viewforum.php?id=30">a forum</a> where
+    you can post in your native language. These tools can be used in addition
+    to, in parallel with, or as a part of the international communities listed
+    below.
+    </p>
+    <table cellspacing="20">
+        {% for forum in forum_list %}
+        <tr>
+            <td width="200">{{ forum.language }}</td>
+            <td><a href="{{ forum.url }}">{{ forum.name }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br />
+    If you host a community you would like linked on this page, please open a
+    <a href="http://bugs.archlinux.org/">Bug Ticket</a> with the category "web
+    site", and a relevant description.
+</div>
+<br /><br />
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Projects{% endblock %}
+{% block content %}
+<div class="box">
+    <h2 class="title">Arch Related Projects</h2>
+    <br /><br />
+    <p>There are a few Arch-based projects or communities that have sprung up
+    over the years.  Here's a list of the ones we know about.</p>
+    <table cellspacing="20">
+        {% for project in projects %}
+        <tr>
+            <td><a href="{{project.url}}">{{project.name}}</a></td>
+            <td>{{project.description}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <div class="smalltext">
+        If you have an Arch related project you would like linked, please open
+        a <a href="http://bugs.archlinux.org/">Bug Ticket</a> with the category
+        "web site", and a relevant description.<br /> Also please let us know if you
+        think any of the projects above is defunct so we can keep it new and
+        exciting.
+    </div>
+</div>
+<br /><br />
+{% endblock %}
+

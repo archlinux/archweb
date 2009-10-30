@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - SVN{% endblock %}
+{% block content %}
+<div class="box">
+    <h2 class="title">SVN Repositories</h2>
+    <p>
+    The PKGBUILD files can be fetched via the ABS utility. To learn more
+    about ABS, see <a href="http://wiki.archlinux.org/index.php/ABS">the ABS wiki page</a>.
+    </p>
+    <p>
+    You can view the history of all the PKGBUILD files from the Repository
+    <a href="http://repos.archlinux.org/">WebSVN</a> interface.
+    </p>
+    <p>
+    You can also get individual PKGBUILDs directly from SVN. This can be
+    especially useful if you need to compile an older version of a package.
+    <strong>DO NOT CHECK OUT THE ENTIRE SVN REPO</strong>. Your address may be
+    blocked.  Use the following commands to check out a specific package:
+    </p>
+    <pre>
+        svn checkout --depth=empty svn://svn.archlinux.org/packages
+        cd packages
+        svn update &lt;your-package-name&gt;
+    </pre>
+    For the community repository, use the following commands instead:
+    <pre>
+        svn checkout --depth=empty svn://svn.archlinux.org/community
+        cd community
+        svn update &lt;your-package-name&gt;
+    </pre>
+    <p>
+    Visit <a href="http://wiki.archlinux.org/index.php?title=Getting_PKGBUILDS_From_SVN">the wiki</a> for more tips on checking out and updating svn PKGBUILDs.
+    </p>
+
+</div>
+<br /><br />
+{% endblock %}
+
