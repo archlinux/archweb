@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 
 from django.views.generic.create_update import delete_object
+from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import permission_required
 
 from archweb.main.models import Todolist
@@ -62,14 +63,14 @@ urlpatterns = patterns('',
 
 # (mostly) Static Pages
     (r'^$', 'archweb.public.views.index'),
-    (r'^about/$', 'archweb.public.views.about'),
-    (r'^art/$', 'archweb.public.views.art'),
-    (r'^svn/$', 'archweb.public.views.svn'),
+    (r'^about/$', direct_to_template, {'template': 'public/about.html'}),
+    (r'^art/$', direct_to_template, {'template': 'public/art.html'}),
+    (r'^svn/$', direct_to_template, {'template': 'public/svn.html'}),
     (r'^developers/$', 'archweb.public.views.developers'),
     (r'^fellows/$', 'archweb.public.views.fellows'),
     (r'^donate/$', 'archweb.public.views.donate'),
     (r'^download/$', 'archweb.public.views.download'),
-    (r'^irc/$', 'archweb.public.views.irc'),
+    (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}),
     (r'^moreforums/$', 'archweb.public.views.moreforums'),
     (r'^projects/$', 'archweb.public.views.projects'),
     ('^jsi18n/$', 'django.views.i18n.null_javascript_catalog',

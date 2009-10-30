@@ -16,16 +16,6 @@ def index(request):
     }
     return render_to_response('public/index.html', RequestContext(request, 
                                                                   context))
-
-def about(request):
-    return render_to_response('public/about.html')
-
-def art(request):
-    return render_to_response('public/art.html')
-
-def svn(request):
-    return render_to_response('public/svn.html')
-
 def projects(request):
     projects = ExternalProject.objects.all()
     return render_to_response('public/projects.html', {'projects': projects})
@@ -67,9 +57,6 @@ def download(request):
             template_name="public/download.html",
             template_object_name="mirror_url",
             extra_context={"path": request.path})
-
-def irc(request):
-    return render_to_response('public/irc.html')
 
 def moreforums(request):
     return list_detail.object_list(request, 
