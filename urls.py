@@ -60,6 +60,21 @@ urlpatterns = patterns('',
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
         'template_name': 'registration/logout.html'}),
     (r'^admin/(.*)', admin.site.root),
+
+# (mostly) Static Pages
+    (r'^$', 'archweb.public.views.index'),
+    (r'^about/$', 'archweb.public.views.about'),
+    (r'^art/$', 'archweb.public.views.art'),
+    (r'^svn/$', 'archweb.public.views.svn'),
+    (r'^developers/$', 'archweb.public.views.developers'),
+    (r'^fellows/$', 'archweb.public.views.fellows'),
+    (r'^donate/$', 'archweb.public.views.donate'),
+    (r'^download/$', 'archweb.public.views.download'),
+    (r'^irc/$', 'archweb.public.views.irc'),
+    (r'^moreforums/$', 'archweb.public.views.moreforums'),
+    (r'^projects/$', 'archweb.public.views.projects'),
+    ('^jsi18n/$', 'django.views.i18n.null_javascript_catalog',
+        {'packages': 'django.conf'}),
 )
 
 if settings.DEBUG == True:

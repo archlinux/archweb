@@ -75,6 +75,7 @@ INSTALLED_APPS = (
     'archweb.packages',
     'archweb.todolists',
     'archweb.devel',
+    'archweb.public',
 )
 
 # vim: set ts=4 sw=4 et:
