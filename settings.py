@@ -49,7 +49,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
-    "archweb.main.middleware.RequireLoginMiddleware",
     "archweb.main.middleware.AutoUserMiddleware",
 )
 

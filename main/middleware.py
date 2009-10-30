@@ -33,29 +33,10 @@ from django.http import HttpResponseRedirect
 import re
 import threading
 
-class RequireLoginMiddleware(object):
-    """
-    Require Login middleware. If enabled, each Django-powered page will
-    require authentication.
-    
-    If an anonymous user requests a page, he/she is redirected to the login
-    page set by LOGIN_URL.
-    """
-    def __init__(self):
-        self.exceptionre = re.compile("(^/media/)|(^/robots.txt)|(^/login/)")
-    
-    def process_request(self, request):
-        if request.user.is_anonymous() and not self.exceptionre.search(request.path):
-            if request.POST:
-                return login(request)
-            else:
-                return HttpResponseRedirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
-
 
 user_holder = threading.local()
 user_holder.user = None
 
-# END REQUIRE LOGIN MIDDLEWARE
 
 class AutoUserMiddleware(object):
     '''Saves the current user so it can be retrieved by the admin'''
