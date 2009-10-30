@@ -44,8 +44,8 @@ def list(request):
     for l in lists:
         l.complete = TodolistPkg.objects.filter(
             list=l.id,complete=False).count() == 0
-        return render_to_response('todolists/list.html',
-                RequestContext(request, {'lists':lists}))
+    return render_to_response('todolists/list.html',
+            RequestContext(request, {'lists':lists}))
 
 @permission_required('main.add_todolist')
 def add(request):
