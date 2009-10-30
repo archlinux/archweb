@@ -7,6 +7,13 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import permission_required
 
 from archweb.main.models import Todolist
+from archweb.feeds import PackageFeed, NewsFeed
+
+
+feeds = {
+    'packages': PackageFeed,
+    'news':     NewsFeed
+}
 
 admin.autodiscover()
 
@@ -49,6 +56,10 @@ urlpatterns = patterns('',
     (r'^devel/profile/$',  'archweb.devel.views.change_profile'),
 
     (r'^devel/newuser/$', 'archweb.devel.views.new_user_form'),
+
+# Feeds and sitemaps
+    (r'^feeds/(?P<url>.*)/$',
+        'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
 
 # Authentication / Admin
     (r'^login/$',           'django.contrib.auth.views.login',  {
