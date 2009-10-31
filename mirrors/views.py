@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
 from archweb.main.models import Arch, Mirror, MirrorUrl
 from archweb.main.utils import make_choice
 
@@ -32,7 +33,8 @@ def choose(request):
     else:
         form = MirrorlistForm()
 
-    return render_to_response('mirrors/index.html', {'mirrorlist_form': form})
+    return render_to_response('mirrors/index.html', {'mirrorlist_form': form},
+                              context_instance=RequestContext(request))
 
 def generate(request, arch='i686', country=None):
     # do a quick sanity check on the architecture
