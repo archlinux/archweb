@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% block title %}Arch Linux - News{% endblock %}
 {% block content %}
 	<div class="greybox">
 	{% if perms.main.add_news %}
@@ -14,10 +14,12 @@
 				<td>{{ item.postdate }}</td>
 				<td><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></td>
 				<td>
-				{% comment %}{% if item.author %}{% ifequal user.username item.author.username %}{% endcomment %}
+        {% if perms.main.change_news %}
 					<a href="/news/edit/{{ item.id }}/">edit</a>
+        {% endif %}
+        {% if perms.main.delete_news %}
 					<a href="/news/delete/{{ item.id }}/">delete</a>
-				{% comment %}{% endifequal %}{% endif %}{% endcomment %}
+        {% endif %}
 				</td>
 			</tr>
 		{% endfor %}
