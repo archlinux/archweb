@@ -31,8 +31,8 @@ def choose(request):
                 kwargs = {'arch' : arch, 'country' : country }))
     else:
         form = MirrorlistForm()
-        return render_to_response('mirrors/index.html',
-                {'mirrorlist_form': form})
+
+    return render_to_response('mirrors/index.html', {'mirrorlist_form': form})
 
 def generate(request, arch='i686', country=None):
     # do a quick sanity check on the architecture
