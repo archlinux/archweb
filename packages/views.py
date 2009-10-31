@@ -100,6 +100,7 @@ class PackageSearchForm(forms.Form):
         self.fields['arch'].choices = self.fields[
                 'arch'].widget.choices = [('', 'All')] + make_choice(
                         [arch.name for arch in Arch.objects.all()])
+        self.fields['q'].widget.attrs.update({"size": "30"})
         self.fields['maintainer'].choices = self.fields[
                 'maintainer'].widget.choices = [
                         ('', 'All'), ('orphan', 'Orphan')] + make_choice(
@@ -111,7 +112,14 @@ def search(request, page=None):
     packages = Package.objects.all()
 
     if request.GET:
-        current_query += urllib.urlencode(request.GET)
+        # urlencode can't handle unicode. One fix for this is to call:
+        # urllib.urlencode(request.GET, doseq), which has a side effect of
+        # converting unicode to ascii, and replacing unknown characters with ?.
+        # Using UTF8 seems to work just as well without data loss.
+        encoded = {}
+        for key in request.GET:
+            encoded[key] = request.GET[key].encode('UTF8')
+        current_query += urllib.urlencode(encoded)
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
             if form.cleaned_data['repo']:
@@ -147,9 +155,13 @@ def search(request, page=None):
     if len(packages) == 1:
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
-    if 'sort' in request.GET:
+    allowed_sort = ["arch", "repo", "pkgname", "maintainer", "last_update"]
+    allowed_sort += ["-" + s for s in allowed_sort]
+    sort = request.GET.get('sort', None)
+    if sort in allowed_sort:
         packages = packages.order_by(
                 request.GET['sort'], 'repo', 'arch', 'pkgname')
+        page_dict['sort'] = sort
     else:
         packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
 
