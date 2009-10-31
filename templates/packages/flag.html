@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Flag Package - {{ pkg.pkgname }}{% endblock %}
+{% block content %}
+    {% if confirmed %}
+        Thank you. Maintainers have been notified.
+    {% else %}
+    <span style="font-family: verdana, arial, helvetica">
+    If you notice that one of Arch's packages is out of date (ie, there is a
+    newer <b>stable</b> release available), then please notify us using the
+    form below.
+    <br><br>
+    The message box portion of the flag utility is optional, and meant for short messages only.  If you need more than 200 characters for your message, then file a bug report, email the maintainer directly, or send an email to the arch-general mailing list with your additional text.
+    <br><br>
+    <b>Note:</b> Please do <i>not</i> use this facility if the package is
+    broken!  Use the <a target="_blank"
+        href='http://bugs.archlinux.org'>bug tracker</a> instead.
+    </span>
+    <br /><br />
+    <p>
+    Please confirm your flag request for {{pkg.pkgname}}:
+    </p>
+        <form method="post" action=".">
+            <table>
+                {{form}}
+            </table>
+            <input type="submit" value=" Confirm " />
+            <br />
+        </form>
+    {% endif %}
+{% endblock %}
+

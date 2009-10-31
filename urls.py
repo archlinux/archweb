@@ -24,6 +24,8 @@ sitemaps = {
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^packages/flag/(\d+)/$', 'archweb.packages.views.flag'),
+    (r'^packages/flaghelp/$', 'archweb.packages.views.flaghelp'),
     (r'^packages/unflag/(\d+)/$',        'archweb.packages.views.unflag'),
     (r'^packages/files/(\d+)/$',         'archweb.packages.views.files'),
     (r'^packages/signoffs/$',              'archweb.packages.views.signoffs'),
@@ -31,6 +33,10 @@ urlpatterns = patterns('',
         'archweb.packages.views.signoff_package'),
     (r'^packages/update/$',              'archweb.packages.views.update'),
 
+    # Preference is for the packages/ url below, but search is kept
+    # because other projects link to it
+    (r'^packages/search/$',          'archweb.packages.views.search'),
+    (r'^packages/search/(?P<page>\d+)/$', 'archweb.packages.views.search'),
     (r'^packages/$',                     'archweb.packages.views.search'),
     (r'^packages/(?P<page>\d+)/$',        'archweb.packages.views.search'),
 
@@ -40,6 +46,8 @@ urlpatterns = patterns('',
         'archweb.packages.views.details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'archweb.packages.views.details'),
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/maintainer/$',
+        'archweb.packages.views.getmaintainer'),
 
     (r'^todo/(\d+)/$',              'archweb.todolists.views.view'),
     (r'^todo/add/$',                'archweb.todolists.views.add'),

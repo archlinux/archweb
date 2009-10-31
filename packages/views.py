@@ -56,6 +56,14 @@ def details(request, name='', repo='', arch=''):
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
 
+def getmaintainer(request, name, repo, arch):
+    "Returns the maintainer as a plaintext."
+
+    pkg= get_object_or_404(Package, 
+        pkgname=name, repo__name__iexact=repo, arch__name=arch)
+
+    return HttpResponse(str(pkg.maintainer if pkg.maintainer_id else 'None'))
+ 
 class PackageSearchForm(forms.Form):
     repo = forms.ChoiceField(required=False)
     arch = forms.ChoiceField(required=False)
@@ -196,6 +204,63 @@ def signoff_package(request, arch, pkgname):
             message, pkg.pkgname, pkg.arch))
 
     return signoffs(request)
+
+def flaghelp(request):
+    return render_to_response('packages/flaghelp.html')
+
+class FlagForm(forms.Form):
+    email = forms.EmailField(label='* E-mail Address')
+    usermessage = forms.CharField(label='Message To Dev',
+            widget=forms.Textarea, required=False)
+    # The field below is used to filter out bots that blindly fill out all input elements
+    website = forms.CharField(label='',
+            widget=forms.TextInput(attrs={'style': 'display:none;'}),
+            required=False)
+
+def flag(request, pkgid):
+    pkg = get_object_or_404(Package, id=pkgid)
+    context = {'pkg': pkg}
+    if pkg.needupdate == 1:
+        # already flagged. do nothing.
+        return render_to_response('packages/flagged.html', context)
+
+    if request.POST:
+        form = FlagForm(request.POST)
+        if form.is_valid() and form.cleaned_data['website'] == '':
+            # flag all architectures
+            pkgs = Package.objects.filter(
+                    pkgname=pkg.pkgname, repo=pkg.repo)
+            for package in pkgs:
+                package.needupdate = 1
+                package.save()
+            
+            if pkg.maintainer_id == 0:
+                toemail = 'arch-notifications@archlinux.org'
+                subject = 'Orphan %s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
+            else:
+                toemail = pkg.maintainer.email
+                subject = '%s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
+
+            # send notification email to the maintainer
+            t = loader.get_template('packages/outofdate.txt')
+            c = Context({
+                'email': form.cleaned_data['email'],
+                'message': form.cleaned_data['usermessage'],
+                'pkg': pkg,
+                'weburl': 'http://www.archlinux.org'+ pkg.get_absolute_url()
+            })
+            send_mail(subject,
+                    t.render(c), 
+                    'Arch Website Notification <nobody@archlinux.org>',
+                    [toemail],
+                    fail_silently=True)
+            context['confirmed'] = True
+    else:
+        form = FlagForm()
+
+    context['form'] = form
+
+    return render_to_response('packages/flag.html', context)
 
 
 
