@@ -57,6 +57,12 @@ urlpatterns = patterns('',
 
     (r'^mirrors/$',        'archweb.devel.views.mirrorlist'),
 
+    (r'^mirrorlist/$', 'archweb.mirrors.views.choose'),
+    (r'^mirrorlist/(?P<arch>[\S]+)/(?P<country>[A-z0-9 ]+)/$',
+        'archweb.mirrors.views.generate'),
+    (r'^mirrorlist/(?P<arch>[\S]+)/$',
+        'archweb.mirrors.views.generate'),
+
     (r'^devel/$',          'archweb.devel.views.index'),
     (r'^devel/notify/$',   'archweb.devel.views.change_notify'),
     (r'^devel/profile/$',  'archweb.devel.views.change_profile'),

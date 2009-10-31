@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load package_extras %}
+{% block title %}Arch Linux - Generate Mirrorlist{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2 class="title">Generate Custom Mirrorlist</h2>
+    <form method="post">
+        <table>
+            <tr>
+                <td>Architecture</td>
+                {% td_input mirrorlist_form.arch %}
+            </tr>
+            <tr>
+                <td>Country</td>
+                {% td_input mirrorlist_form.country %}
+            </tr>
+            <tr>
+                <td><input type="submit" value="Generate" /></td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% endblock %}
+

@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.admin',
     'archweb.main', # contains shared models and libs
+    'archweb.mirrors',
     'archweb.news',
     'archweb.packages',
     'archweb.todolists',

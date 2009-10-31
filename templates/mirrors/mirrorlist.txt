@@ -1,0 +1,13 @@
+{% comment %}
+Yes, ugly templates are ugly, but in order to keep line breaks where we want
+them, sacrifices have to be made. If editing this template, it is easiest to
+forget about where line breaks are happening until you are done getting the
+content right, and then go back later to fix it all up.
+{% endcomment %}{% autoescape off %}#
+# Arch Linux repository mirrorlist
+# Generated on {% now "Y-m-d" %}
+#{% for mirror_url in mirror_urls %}{% ifchanged %}
+
+# {{ mirror_url.mirror.country }}{% endifchanged %}
+#Server = {{ mirror_url.url}}$repo/os/{{ arch }}{% endfor %}
+{% endautoescape %}
