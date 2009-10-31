@@ -1,5 +1,6 @@
 from django import forms
 from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -13,6 +14,7 @@ from string import ascii_letters, digits
 pwletters = ascii_letters + digits
 
 
+@login_required
 def index(request):
     '''the Developer dashboard'''
     page_dict = {
@@ -26,6 +28,7 @@ def index(request):
     return render_to_response('devel/index.html',
         RequestContext(request, page_dict))
 
+@login_required
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
     notify = request.POST.get('notify', 'no')
@@ -52,6 +55,7 @@ class ProfileForm(forms.Form):
             raise forms.ValidationError('Passwords do not match')
         return self.cleaned_data
 
+@login_required
 def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
@@ -65,6 +69,7 @@ def change_profile(request):
     return render_to_response('devel/profile.html',
             RequestContext(request, {'form': form}))
 
+@login_required
 def mirrorlist(request):
     mirrors = Mirror.objects.all()
     return render_to_response('devel/mirrorlist.html',
