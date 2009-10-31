@@ -2,15 +2,16 @@
 {% load package_extras %}
 {% block title %}Arch Linux - Package Search{% endblock %}
 {% block head %}
-<script type="text/javascript" src="/media/django-jsi18n.js"></script>
 <script type="text/javascript" src="/media/admin_media/js/core.js"></script>
 {{search_form.media}}
+<script type="text/javascript" src="/jsi18n/"></script>
 {% endblock %}
 
 {% block content %}
     <div class="greybox">
         <h4 style="text-align: right">Search Criteria</h4>
         <form method="get" action="/packages/">
+            <input type="hidden" name="sort" value='{{sort}}' />
             <table width="100%">
                 <tr>
                     <td><span class="smalltext">Arch</span></td>
@@ -119,12 +120,14 @@
                     </td>
                 </tr>
             {% endif %}
-            <tr>
-                <td colspan="3">&nbsp;</td>
-                <td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
-                <td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
-                <td colspan="1">&nbsp;</td>
-            </tr>
+            {% if user.is_authenticated %}
+              <tr>
+                  <td colspan="3">&nbsp;</td>
+                  <td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
+                  <td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
+                  <td colspan="1">&nbsp;</td>
+              </tr>
+            {% endif %}
         </table>
     </div>
     {% endif %}
