@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
@@ -13,6 +14,8 @@ from archweb.main.models import Package, PackageFile
 from archweb.main.models import Arch, Repo, Signoff
 from archweb.main.utils import make_choice
 
+
+@permission_required('main.change_package')
 def update(request):
     ids = request.POST.getlist('pkgid')
     mode = None
@@ -178,12 +181,14 @@ def files(request, pkgid):
     files = PackageFile.objects.filter(pkg=pkgid)
     return render_to_response('packages/files.html', RequestContext(request, {'pkg':pkg,'files':files}))
 
+@permission_required('main.change_package')
 def unflag(request, pkgid):
     pkg = get_object_or_404(Package, id=pkgid)
     pkg.needupdate = 0
     pkg.save()
     return HttpResponseRedirect(pkg.get_absolute_url())
 
+@permission_required('main.change_package')
 def signoffs(request):
     packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
     package_list = []
@@ -198,6 +203,7 @@ def signoffs(request):
     return render_to_response('packages/signoffs.html',
             RequestContext(request, {'packages': package_list}))
 
+@permission_required('main.change_package')
 def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,
             arch__name=arch,
