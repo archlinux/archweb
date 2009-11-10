@@ -68,8 +68,7 @@ def moreforums(request):
     return list_detail.object_list(request, 
             AltForum.objects.order_by('language', 'name'),
             template_name="public/moreforums.html",
-            template_object_name="forum",
-            extra_context={"path": request.path})
+            template_object_name="forum")
 
 # vim: set ts=4 sw=4 et:
 
