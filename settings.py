@@ -1,9 +1,6 @@
 import os
 # Django settings for archweb project.
 
-# setup some var defaults
-DEBUG = True
-
 ## Import local settings
 from local_settings import *
 
