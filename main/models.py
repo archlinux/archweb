@@ -303,7 +303,7 @@ class Todolist(models.Model):
 
     @property
     def packages(self):
-        return TodolistPkg.objects.filter(list=self.id).order_by('pkg')
+        return TodolistPkg.objects.select_related().filter(list=self).order_by('pkg')
 
     @property
     def package_names(self):
