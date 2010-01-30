@@ -107,7 +107,7 @@ class PackageSearchForm(forms.Form):
         self.fields['maintainer'].choices = self.fields[
                 'maintainer'].widget.choices = [
                         ('', 'All'), ('orphan', 'Orphan')] + make_choice(
-                        [m.username for m in User.objects.all()])
+                        [m.username for m in User.objects.order_by('username')])
 
 def search(request, page=None):
     current_query = '?'
