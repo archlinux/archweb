@@ -39,7 +39,7 @@ def choose(request):
 def generate(request, arch='i686', country=None):
     # do a quick sanity check on the architecture
     archobj = get_object_or_404(Arch, name=arch)
-    qset = MirrorUrl.objects.filter(
+    qset = MirrorUrl.objects.select_related().filter(
             Q(protocol__protocol__iexact='HTTP') |
             Q(protocol__protocol__iexact='FTP'),
             mirror__public=True, mirror__active=True, mirror__isos=True

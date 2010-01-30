@@ -71,7 +71,7 @@ def change_profile(request):
 
 @login_required
 def mirrorlist(request):
-    mirrors = Mirror.objects.all()
+    mirrors = Mirror.objects.select_related().all()
     return render_to_response('devel/mirrorlist.html',
             RequestContext(request, {'mirror_list': mirrors}))
 
