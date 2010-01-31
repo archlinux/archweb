@@ -10,8 +10,7 @@ from django.views.generic import list_detail
 def index(request):
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:10],
-        'pkg_updates': Package.objects.exclude(
-            repo__name__iexact='testing').order_by('-last_update')[:15],
+        'pkg_updates': Package.objects.order_by('-last_update')[:15],
         'repos': Repo.objects.all()
     }
     return render_to_response('public/index.html', context,
