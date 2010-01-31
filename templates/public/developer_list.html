@@ -9,7 +9,7 @@
     {% for dev in dev_list %}
         <tr>
             <td class="devpic">
-                <img src="{{ dev.get_profile.picture.url }}" height="175" width="175" style="border:1px solid black">
+                <img src="{{ dev.get_profile.picture.url }}" height="175" width="175" style="border:1px solid black" alt="Image for {{ dev.get_profile.alias }}"/>
             </td><td>
                 <a name="{{ dev.first_name }}{{ dev.last_name.0|capfirst}}" />
                 {% autoescape off %}
