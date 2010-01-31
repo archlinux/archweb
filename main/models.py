@@ -303,10 +303,10 @@ class Todolist(models.Model):
 
     @property
     def packages(self):
-        # TODO: bug here, because we do foreign keys all wrong the join query fucks up when it
-        # can't find a foreign key that is missing values, e.g. maintainer == 0.
-        # Once this is fixed, we can remove the depth argument.
-        return TodolistPkg.objects.select_related(depth=1).filter(list=self).order_by('pkg')
+        # select_related() does not use LEFT OUTER JOIN for nullable ForeignKey
+        # fields. That is why we need to explicitly list the ones we want.
+        return TodolistPkg.objects.select_related(
+            'pkg__repo', 'pkg__arch', 'pkg__maintainer').filter(list=self).order_by('pkg')
 
     @property
     def package_names(self):
