@@ -260,6 +260,15 @@ class Package(models.Model):
             root = 'packages'
         return linkbase % (root, dirname, repo, self.arch.name)
 
+    def get_bugs_link(self):
+        repo = self.repo.name.lower()
+        if repo.startswith('community'):
+            project = 5
+        else:
+            project = 1
+        return "http://bugs.archlinux.org/?project=%d&string=%s" % \
+                (project, self.pkgname)
+
 
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
