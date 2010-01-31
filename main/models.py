@@ -205,7 +205,7 @@ class Package(models.Model):
         """
         Returns a list of package objects.
         """
-        requiredby = Package.objects.filter(
+        requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
                 arch__name__in=(self.arch.name, 'Any'))
         return requiredby.order_by('pkgname')
