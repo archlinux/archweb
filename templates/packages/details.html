@@ -60,10 +60,12 @@
         <table width="100%">
             <tr>
                 <td valign="top" width="50%">
+                    {% with pkg.get_depends as deps %}
                     <div class="listing">
-                        <h4>Dependencies ({{pkg.get_depends|length}}):</h4>
+                        <h4>Dependencies ({{deps|length}}):</h4>
+                        {% if deps %}
                         <ul style="font-size:small;list-style:none">
-                        {% for depend in pkg.get_depends %}
+                        {% for depend in deps %}
                           {% ifequal depend.pkg None %}
                             <li>{{ depend.dep.depname }} (virtual)</li>
                           {% else %}
@@ -71,17 +73,23 @@
                           {% endifequal %}
                         {% endfor %}
                         </ul>
+                        {% endif %}
                     </div>
+                    {% endwith %}
                 </td>
                 <td valign="top">
+                    {% with pkg.get_requiredby as rqdby %}
                     <div class="listing">
-                        <h4>Required By ({{pkg.get_requiredby|length}}):</h4>
+                        <h4>Required By ({{rqdby|length}}):</h4>
+                        {% if rqdby %}
                         <ul style="font-size:small;list-style:none">
-                        {% for req in pkg.get_requiredby %}
+                        {% for req in rqdby %}
                         <li><a href="{{req.get_absolute_url}}">{{ req.pkgname }}{% ifequal req.repo.name "Testing" %} (testing){% endifequal %}{% ifequal req.repo.name "Unstable" %} (unstable){% endifequal %}</a></li>
                         {% endfor %}
                         </ul>
+                        {% endif %}
                     </div>
+                    {% endwith %}
                 </td>
             </tr>
         </table>
