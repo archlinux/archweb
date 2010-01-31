@@ -49,13 +49,13 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
-    "archweb.main.middleware.AutoUserMiddleware",
+    "main.middleware.AutoUserMiddleware",
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-ROOT_URLCONF = 'archweb.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
@@ -74,13 +74,13 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.admin',
-    'archweb.main', # contains shared models and libs
-    'archweb.mirrors',
-    'archweb.news',
-    'archweb.packages',
-    'archweb.todolists',
-    'archweb.devel',
-    'archweb.public',
+    'main', # contains shared models and libs
+    'mirrors',
+    'news',
+    'packages',
+    'todolists',
+    'devel',
+    'public',
 )
 
 # vim: set ts=4 sw=4 et:
