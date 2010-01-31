@@ -1,12 +1,11 @@
 import datetime
 from django.contrib.syndication.feeds import Feed
 from archweb.main.models import Package, News
-#from datetime import datetime
 
 class PackageFeed(Feed):
-    title       = 'Recent Package Updates'
+    title       = 'Arch Linux Recent Package Updates'
     link       = '/packages/'
-    description = 'Recent Package Updates'
+    description = 'Recently updated packages in the Arch Linux package repositories.'
 
     def items(self):
         return Package.objects.select_related('arch', 'repo').order_by('-last_update')[:24]
@@ -18,9 +17,9 @@ class PackageFeed(Feed):
         return (item.repo.name,item.arch.name)
 
 class NewsFeed(Feed):
-    title       = 'Recent News Updates'
+    title       = 'Arch Linux Recent News Updates'
     link       = '/news/'
-    description = 'Recent News Updates'
+    description = 'The latest and greatest news from the Arch Linux distribution.'
 
     def items(self):
         return News.objects.select_related('author').order_by('-postdate', '-id')[:10]
