@@ -6,7 +6,8 @@
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
         <div style="float:right" class="listing">
             <ul class="small">
-                <li><a href="{{ pkg.get_svn_link }}">View SVN Entries</a></li>
+                <li><a href="{{ pkg.get_arch_svn_link }}">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
+                <li><a href="{{ pkg.get_trunk_svn_link }}">SVN Entries (trunk)</a></li>
                 <li><a href="{{ pkg.get_bugs_link }}">Bug Reports</a></li>
                 <!-- <li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li> -->
                 <li>

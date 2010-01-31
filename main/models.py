@@ -247,8 +247,8 @@ class Package(models.Model):
         self.deps_cache = deps
         return deps
 
-    def get_svn_link(self):
-        linkbase = "http://repos.archlinux.org/wsvn/%s/%s/repos/%s-%s/"
+    def get_svn_link(self, svnpath):
+        linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
         if self.pkgbase:
             dirname = self.pkgbase
         else:
@@ -258,7 +258,14 @@ class Package(models.Model):
             root = 'community'
         else:
             root = 'packages'
-        return linkbase % (root, dirname, repo, self.arch.name)
+        return linkbase % (root, dirname, svnpath)
+
+    def get_arch_svn_link(self):
+        repo = self.repo.name.lower()
+        return self.get_svn_link("repos/%s-%s" % (repo, self.arch.name))
+
+    def get_trunk_svn_link(self):
+        return self.get_svn_link("trunk")
 
     def get_bugs_link(self):
         repo = self.repo.name.lower()
