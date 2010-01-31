@@ -124,7 +124,7 @@ def delete_todolist(request, object_id):
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
     package has been added to a to-do list'''
-    if todo.pkg.maintainer_id == 0:
+    if not todo.pkg.maintainer:
         return
 
     page_dict = {

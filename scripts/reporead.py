@@ -236,12 +236,7 @@ def db_update(archname, pkgs):
     
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.info("Adding package %s", p.name)
-        ## note: maintainer is being set to orphan for now
-        ## maybe later we can add logic to match pkgbuild maintainers 
-        ## to db maintainer ids
-        pkg = Package(
-            pkgname = p.name, arch = architecture, repo = repository,
-            maintainer_id = 0)
+        pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
         populate_pkg(pkg, p, timestamp=now)
 
     # packages in database and not in syncdb (remove from database)

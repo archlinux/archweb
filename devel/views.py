@@ -21,7 +21,7 @@ def index(request):
             'todos': Todolist.objects.incomplete(),
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
             'maintainers': [
-                User(id=0, username="orphan", first_name="Orphans")
+                User(id=None, username="orphan", first_name="Orphans")
                 ] + list(User.objects.filter(is_active=True).order_by('last_name'))
          }
 

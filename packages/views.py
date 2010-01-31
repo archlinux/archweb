@@ -21,10 +21,10 @@ def update(request):
     mode = None
     if request.POST.has_key('adopt'):
         mode = 'adopt'
-        maint_id = request.user.id
+        maint = request.user
     if request.POST.has_key('disown'):
         mode = 'disown'
-        maint_id = 0
+        maint = None
 
     if mode:
         pkgs = Package.objects.filter(
@@ -35,7 +35,7 @@ def update(request):
                 repo__in=request.user.userprofile_user.all(
                     )[0].allowed_repos.all())
         for pkg in pkgs:
-            pkg.maintainer_id = maint_id
+            pkg.maintainer = maint
             pkg.save()
 
         request.user.message_set.create(message="%d packages %sed" % (
@@ -65,8 +65,8 @@ def getmaintainer(request, name, repo, arch):
     pkg= get_object_or_404(Package, 
         pkgname=name, repo__name__iexact=repo, arch__name=arch)
 
-    return HttpResponse(str(pkg.maintainer if pkg.maintainer_id else 'None'))
- 
+    return HttpResponse(str(pkg.maintainer))
+
 class PackageSearchForm(forms.Form):
     repo = forms.ChoiceField(required=False)
     arch = forms.ChoiceField(required=False)
@@ -132,7 +132,7 @@ def search(request, page=None):
                 packages = packages.filter(
                         arch__name=form.cleaned_data['arch'])
             if form.cleaned_data['maintainer'] == 'orphan':
-                packages=packages.filter(maintainer__id = 0)
+                packages=packages.filter(maintainer=None)
             elif form.cleaned_data['maintainer']:
                 packages = packages.filter(
                     maintainer__username=form.cleaned_data['maintainer'])
@@ -251,8 +251,8 @@ def flag(request, pkgid):
             for package in pkgs:
                 package.needupdate = 1
                 package.save()
-            
-            if pkg.maintainer_id == 0:
+
+            if not pkg.maintainer:
                 toemail = 'arch-notifications@archlinux.org'
                 subject = 'Orphan %s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
             else:

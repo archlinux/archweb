@@ -162,7 +162,7 @@ class Package(models.Model):
     id = models.AutoField(primary_key=True)
     repo = models.ForeignKey(Repo, related_name="packages")
     arch = models.ForeignKey(Arch, related_name="packages")
-    maintainer = models.ForeignKey(User, related_name="maintained_packages")
+    maintainer = models.ForeignKey(User, related_name="maintained_packages", null=True, blank=True)
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(max_length=255)
     pkgbase = models.CharField(max_length=255, null=True, blank=True)
