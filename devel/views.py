@@ -32,11 +32,9 @@ def index(request):
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
     notify = request.POST.get('notify', 'no')
-    try:
-        maint.get_profile().notify = notify == 'yes'
-    except UserProfile.DoesNotExist:
-        UserProfile(user_id=maint.id ,notify=notify == 'yes').save()
-    maint.get_profile().save()
+    pf = maint.get_profile()
+    pf.notify = (notify == 'yes')
+    pf.save()
     return HttpResponseRedirect('/devel/')
 
 class ProfileForm(forms.Form):

@@ -1,7 +1,8 @@
 import urllib
 from django import forms
+from django.core.mail import send_mail
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import loader, Context, RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
@@ -250,6 +251,7 @@ def flag(request, pkgid):
     if request.POST:
         form = FlagForm(request.POST)
         if form.is_valid() and form.cleaned_data['website'] == '':
+            send_email = True
             # flag all architectures
             pkgs = Package.objects.filter(
                     pkgname=pkg.pkgname, repo=pkg.repo)
@@ -260,23 +262,28 @@ def flag(request, pkgid):
             if not pkg.maintainer:
                 toemail = 'arch-notifications@archlinux.org'
                 subject = 'Orphan %s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
-            else:
+            elif pkg.maintainer.get_profile().notify == True:
                 toemail = pkg.maintainer.email
                 subject = '%s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
+            else:
+                # no need to send any email, packager didn't want notification
+                send_email = False
 
-            # send notification email to the maintainer
-            t = loader.get_template('packages/outofdate.txt')
-            c = Context({
-                'email': form.cleaned_data['email'],
-                'message': form.cleaned_data['usermessage'],
-                'pkg': pkg,
-                'weburl': 'http://www.archlinux.org'+ pkg.get_absolute_url()
-            })
-            send_mail(subject,
-                    t.render(c), 
-                    'Arch Website Notification <nobody@archlinux.org>',
-                    [toemail],
-                    fail_silently=True)
+            if send_email:
+                # send notification email to the maintainer
+                t = loader.get_template('packages/outofdate.txt')
+                c = Context({
+                    'email': form.cleaned_data['email'],
+                    'message': form.cleaned_data['usermessage'],
+                    'pkg': pkg,
+                    'weburl': 'http://www.archlinux.org'+ pkg.get_absolute_url()
+                })
+                send_mail(subject,
+                        t.render(c),
+                        'Arch Website Notification <nobody@archlinux.org>',
+                        [toemail],
+                        fail_silently=True)
+
             context['confirmed'] = True
     else:
         form = FlagForm()
@@ -284,8 +291,6 @@ def flag(request, pkgid):
     context['form'] = form
 
     return render_to_response('packages/flag.html', context)
-
-
 
 # vim: set ts=4 sw=4 et:
 
