@@ -39,10 +39,11 @@
 
     {% if package_list %}
     <div class="greybox">
+        <form method="post" action="/packages/update/">
         <table class="results" width="100%">
             {% if paginator %}
                 <tr>
-                    <td colspan="6">
+                    <td colspan="{% if user.is_authenticated %}6{% else %}5{% endif %}">
                         {{paginator.count}} packages found.
                         Page {{page_obj.number}} of {{paginator.num_pages}}.
                     </td>
@@ -67,8 +68,9 @@
                 </tr>
             {% endif %}
             <tr>
-                <form method="post" action="/packages/update/">
+                {% if user.is_authenticated %}
                 <th>&nbsp;</th>
+                {% endif %}
                 <th><a href="/packages/{% buildsortqs "arch" %}">Arch</a></th>
                 <th><a href="/packages/{% buildsortqs "repo" %}">Repo</a></th>
                 <th><a href="/packages/{% buildsortqs "pkgname" %}">Name</a></th>
@@ -80,7 +82,9 @@
             </tr>
             {% for pkg in package_list %}
                 <tr class="{% cycle pkgr2,pkgr1 %}">
+                    {% if user.is_authenticated %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
+                    {% endif %}
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.repo.name|capfirst }}</td>
                     <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
@@ -96,7 +100,7 @@
             {% endfor %}
             {% if paginator %}
                 <tr>
-                    <td colspan="6">
+                    <td colspan="{% if user.is_authenticated %}6{% else %}5{% endif %}">
                         {{paginator.count}} packages found.
                         Page {{page_obj.number}} of {{paginator.num_pages}}.
                     </td>
@@ -120,15 +124,14 @@
                     </td>
                 </tr>
             {% endif %}
-            {% if user.is_authenticated %}
-              <tr>
-                  <td colspan="3">&nbsp;</td>
-                  <td colspan="2" style="text-align:center"><input type="submit" name="adopt" value="Adopt Packages"></td>
-                  <td colspan="1" style="text-align:center"><input type="submit" name="disown" value="Disown Packages"></td>
-                  <td colspan="1">&nbsp;</td>
-              </tr>
-            {% endif %}
         </table>
+        {% if user.is_authenticated %}
+        <div id="adoptbox">
+            <input type="submit" name="adopt" value="Adopt Packages">
+            <input type="submit" name="disown" value="Disown Packages">
+        </div>
+        {% endif %}
+        </form>
     </div>
     {% endif %}
 {% endblock %}

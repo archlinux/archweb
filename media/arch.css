@@ -159,6 +159,9 @@ div.listing {
 	background: #f6efe0;
 	border: 1px solid #eee4cb;
 }
+#adoptbox {
+    text-align:center;
+}
 .smalltext {
 	text-align: right;
 	font-size: x-small;
