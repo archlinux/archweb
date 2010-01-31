@@ -164,7 +164,7 @@ class Package(models.Model):
     arch = models.ForeignKey(Arch, related_name="packages")
     maintainer = models.ForeignKey(User, related_name="maintained_packages", null=True, blank=True)
     needupdate = models.BooleanField(default=False)
-    pkgname = models.CharField(max_length=255)
+    pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255, null=True, blank=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
@@ -209,7 +209,6 @@ class Package(models.Model):
 
     def approved_for_signoff(self):
         return self.signoffs.count() >= 2
-
 
     def get_requiredby(self):
         """
