@@ -41,10 +41,10 @@
                 <td>{{ pkg.repo.name|capfirst }}</td>
             </tr><tr>
                 <th>Description:</th>
-                <td>{{ pkg.pkgdesc }}</td>
+                <td>{% if pkg.pkgdesc %}{{ pkg.pkgdesc }}{% endif %}</td>
             </tr><tr>
                 <th>Upstream URL:</th>
-                <td><a href="{{ pkg.url }}">{{ pkg.url }}</a></td>
+                <td>{% if pkg.url %}<a href="{{ pkg.url }}">{{ pkg.url }}</a>{% endif %}</td>
             </tr><tr>
                 <th>License:</th>
                 <td>{{ pkg.license }}</td>
