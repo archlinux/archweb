@@ -182,20 +182,6 @@ class Package(models.Model):
     def __unicode__(self):
         return self.pkgname
 
-    # According to http://code.djangoproject.com/ticket/2583 we have "bad data"
-    # The problem is the queries constructed by the admin  to retrieve foreign
-    # keys are empty. This allows us to display items in the list but kills
-    # sorting
-    def _reponame(self):
-        return self.repo.name
-    _reponame.short_description='Repo'
-    def _archname(self):
-        return self.arch.name
-    _archname.short_description='Arch'
-    def _maintainername(self):
-        return self.maintainer.username
-    _maintainername.short_description = 'Maintainer'
-
     def get_absolute_url(self):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)

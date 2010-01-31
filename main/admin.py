@@ -63,7 +63,7 @@ class MirrorAdmin(admin.ModelAdmin):
     ]
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('pkgname', '_reponame', '_archname', '_maintainername')
+    list_display = ('pkgname', 'repo', 'arch', 'maintainer')
     list_filter = ('repo', 'arch', 'maintainer')
     ordering = ['pkgname']
     search_fields = ('pkgname',)
