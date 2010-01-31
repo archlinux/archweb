@@ -9,7 +9,7 @@ class PackageFeed(Feed):
     description = 'Recent Package Updates'
 
     def items(self):
-        return Package.objects.order_by('-last_update')[:24]
+        return Package.objects.select_related('arch', 'repo').order_by('-last_update')[:24]
 
     def item_pubdate(self, item):
         return item.last_update
@@ -23,7 +23,7 @@ class NewsFeed(Feed):
     description = 'Recent News Updates'
 
     def items(self):
-        return News.objects.order_by('-postdate', '-id')[:10]
+        return News.objects.select_related('author').order_by('-postdate', '-id')[:10]
 
     def item_pubdate(self, item):
         d = item.postdate

@@ -190,13 +190,18 @@ def unflag(request, pkgid):
 
 @permission_required('main.change_package')
 def signoffs(request):
-    packages = Package.objects.filter(repo__name="Testing").order_by("pkgname")
+    packages = Package.objects.select_related('arch', 'repo', 'signoffs').filter(repo__name__endswith="Testing").order_by("pkgname")
     package_list = []
-    other_packages = Package.objects.exclude(repo__name="Testing")
+
+    q_pkgname = Package.objects.filter(repo__name__endswith="Testing").values('pkgname').distinct().query
+    package_repos = Package.objects.values('pkgname', 'repo__name').exclude(repo__name__endswith="Testing").filter(pkgname__in=q_pkgname)
+    pkgtorepo = dict()
+    for pr in package_repos:
+        pkgtorepo[pr['pkgname']] = pr['repo__name']
+
     for package in packages:
-        other_package = other_packages.filter(pkgname=package.pkgname)
-        if len(other_package):
-            repo = other_package[0].repo.name
+        if package.pkgname in pkgtorepo:
+            repo = pkgtorepo[package.pkgname]
         else:
             repo = "Unknown"
         package_list.append((package, repo))

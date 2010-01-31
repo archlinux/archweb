@@ -202,13 +202,18 @@ class Package(models.Model):
 
     @property
     def signoffs(self):
-        return Signoff.objects.filter(
+        if 'signoffs_cache' in dir(self):
+            if len(self.signoffs_cache) > 0:
+                print self.signoffs_cache
+            return self.signoffs_cache
+        self.signoffs_cache = list(Signoff.objects.filter(
             pkg=self,
             pkgver=self.pkgver,
-            pkgrel=self.pkgrel)
+            pkgrel=self.pkgrel))
+        return self.signoffs_cache
 
     def approved_for_signoff(self):
-        return self.signoffs.count() >= 2
+        return len(self.signoffs) >= 2
 
     def get_requiredby(self):
         """
@@ -234,9 +239,10 @@ class Package(models.Model):
         if 'deps_cache' in dir(self):
             return self.deps_cache
         deps = []
+        # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('depname'):
             # we only need depend on same-arch-packages
-            pkgs = Package.objects.filter(
+            pkgs = Package.objects.select_related('arch', 'repo').filter(
                 Q(arch__name__iexact='any') | Q(arch=self.arch),
                 pkgname=dep.depname)
             if len(pkgs) == 0:

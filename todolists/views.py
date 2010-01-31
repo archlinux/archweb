@@ -44,7 +44,7 @@ def view(request, listid):
 
 @login_required
 def list(request):
-    lists = Todolist.objects.order_by('-date_added')
+    lists = Todolist.objects.select_related('creator').order_by('-date_added')
     for l in lists:
         l.complete = TodolistPkg.objects.filter(
             list=l.id,complete=False).count() == 0
