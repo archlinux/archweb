@@ -81,6 +81,7 @@ INSTALLED_APPS = (
     'todolists',
     'devel',
     'public',
+    'south', # database migration support
 )
 
 # vim: set ts=4 sw=4 et:
