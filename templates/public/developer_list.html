@@ -1,7 +1,7 @@
     <br /><br />
     <div id="devlist">
     {% for dev in dev_list %}
-        <a href="#{{ dev.first_name}}{{ dev.last_name.0|capfirst}}">{{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a>  &nbsp; 
+        <a href="#{{ dev.username }}">{{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a>  &nbsp;
     {% endfor %}
     </div><br /><br />
 
@@ -11,7 +11,7 @@
             <td class="devpic">
                 <img src="{{ dev.get_profile.picture.url }}" height="175" width="175" style="border:1px solid black" alt="Image for {{ dev.get_profile.alias }}"/>
             </td><td>
-                <a name="{{ dev.first_name }}{{ dev.last_name.0|capfirst}}" />
+                <a name="{{ dev.username }}" />
                 {% autoescape off %}
                 <table class="deventry" cellspacing="5">
                     <tr>
