@@ -7,54 +7,54 @@
 
     <table class="center" cellpadding="20">
     {% for dev in dev_list %}
+    {% with dev.get_profile as prof %}
         <tr>
             <td class="devpic">
-                <img src="{{ dev.get_profile.picture.url }}" height="175" width="175" style="border:1px solid black" alt="Image for {{ dev.get_profile.alias }}"/>
+                <img src="{{ prof.picture.url }}" height="175" width="175" style="border:1px solid black" alt="Image for {{ prof.alias }}"/>
             </td><td>
                 <a name="{{ dev.username }}" />
-                {% autoescape off %}
                 <table class="deventry" cellspacing="5">
                     <tr>
                         <th>Name:</th>
                         <td>{{ dev.get_full_name }}</td>
                     </tr><tr>
                         <th>Alias:</th>
-                        <td>{{ dev.get_profile.alias }}</td>
+                        <td>{{ prof.alias }}</td>
                     </tr><tr>
                         <th>Email:</th>
-                        <td>{{ dev.get_profile.public_email }}</td>
+                        <td>{{ prof.public_email }}</td>
                     </tr><tr>
                         <th>Other Contact:</th>
-                        <td>{{ dev.get_profile.other_contact }}</td>
+                        <td>{{ prof.other_contact }}</td>
                     </tr><tr>
                         <th>Roles:</th>
-                        <td>{{ dev.get_profile.roles }}<br />
+                        <td>{{ prof.roles }}<br />
                         </td>
                     </tr><tr>
                         <th>Website:</th>
-                        <td>{{ dev.get_profile.website }}</td>
+                        <td>{% if prof %}<a href="{{ prof.website }}">{{ prof.website }}</a>{% endif %}</td>
                     </tr><tr>
                         <th>Occupation:</th>
-                        <td>{{ dev.get_profile.occupation }}</td>
+                        <td>{{ prof.occupation }}</td>
                     </tr><tr>
                         <th>YOB:</th>
-                        <td>{% if dev.get_profile.yob %}{{ dev.get_profile.yob }}{% else %}&nbsp;{% endif %}</td>
+                        <td>{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
                     </tr><tr>
                         <th>Location:</th>
-                        <td>{{ dev.get_profile.location }}</td>
+                        <td>{{ prof.location }}</td>
                     </tr><tr>
                         <th>Languages:</th>
-                        <td>{{ dev.get_profile.languages }}</td>
+                        <td>{{ prof.languages }}</td>
                     </tr><tr>
                         <th>Interests:</th>
-                        <td>{{ dev.get_profile.interests }}</td>
+                        <td>{{ prof.interests }}</td>
                     </tr><tr>
                         <th>Favorite Distros:</th>
-                        <td>{{ dev.get_profile.favorite_distros }}</td>
+                        <td>{{ prof.favorite_distros }}</td>
                     </tr>
                 </table>
-                {% endautoescape %}
             </td>
         </tr>
+    {% endwith %}
     {% endfor %}
     </table>
