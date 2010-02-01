@@ -93,13 +93,15 @@ class Pkg(object):
             val['license'] = []
         for x in val.keys():
             if x in squash:
-                if len(val[x]) == 0:
+                if val[x] == None or len(val[x]) == 0:
                     logger.warning("Package %s has no %s" % (selfdict['name'],x))
-                selfdict[x] = ', '.join(val[x])
-                # make sure we don't have elements larger than the db char
-                # fields
-                if len(selfdict[x]) > 255:
-                    selfdict[x] = selfdict[x][:254]
+                    selfdict[x] = None
+                else:
+                    selfdict[x] = ', '.join(val[x])
+                    # make sure we don't have elements larger than the db char
+                    # fields
+                    if len(selfdict[x]) > 255:
+                        selfdict[x] = selfdict[x][:254]
             elif x == 'base':
                 selfdict[x] = val[x][0]
             elif x == 'force':
@@ -395,3 +397,4 @@ if __name__ == '__main__':
     logger.level = INFO
     sys.exit(main())
 
+# vim: set ts=4 sw=4 et:
