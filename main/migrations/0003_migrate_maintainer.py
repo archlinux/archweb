@@ -8,17 +8,13 @@ class Migration:
     no_dry_run = True
 
     def forwards(self, orm):
-        for pkg in Package.objects.all():
-            if pkg.maintainer_id == 0:
-                pkg.maintainer = None
-            pkg.save()
+        Package.objects.filter(maintainer=0).update(maintainer=None)
 
 
     def backwards(self, orm):
-        for pkg in Package.objects.all():
-            if not pkg.maintainer:
-                pkg.maintainer_id = 0
-            pkg.save()
+        # This will fail if foreign keys are in effect. Let's hope we'll
+        # never have to go backwards. :P
+        Package.objects.filter(maintainer=None).update(maintainer=0)
 
 
     models = {
