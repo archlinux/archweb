@@ -106,8 +106,6 @@ urlpatterns = patterns('',
     (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}),
     (r'^moreforums/$', 'archweb.public.views.moreforums'),
     (r'^projects/$', 'archweb.public.views.projects'),
-    ('^jsi18n/$', 'django.views.i18n.null_javascript_catalog',
-        {'packages': 'django.conf'}),
 )
 
 if settings.DEBUG == True:
