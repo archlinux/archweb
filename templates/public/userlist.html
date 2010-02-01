@@ -2,9 +2,11 @@
 
 {% block content %}
 <div class="box">
-    <h2 class="title">Arch Linux {{dev_type}}</h2>
-    {{description}}
+    <h2 class="title">Arch Linux {{user_type}}</h2>
+	<p>{{description}}</p>
+    {% with users as dev_list %}
     {% include 'public/developer_list.html' %}
+    {% endwith %}
 </div>
 <br /><br />
 {% endblock %}

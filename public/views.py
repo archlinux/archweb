@@ -22,22 +22,25 @@ def projects(request):
             template_name="public/projects.html",
             template_object_name="project")
 
-def developers(request):
-    devs = User.objects.filter(is_active=True).exclude(userprofile_user__roles="Trusted User").order_by('username')
-    tus = User.objects.filter(is_active=True, userprofile_user__roles="Trusted User").order_by('username')
-    return render_to_response('public/developers.html', 
-                              {'developers': devs, 'tus': tus},
-                              context_instance=RequestContext(request))
+def userlist(request, type='Developers'):
+    users = User.objects.order_by('username')
+    if type == 'Developers':
+        users = users.filter(is_active=True).exclude(userprofile_user__roles="Trusted User")
+        msg = "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties."
+    elif type == 'Trusted Users':
+        users = users.filter(is_active=True, userprofile_user__roles="Trusted User")
+        msg = "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository."
+    elif type == 'Fellows':
+        users = users.filter(is_active=False)
+        msg = "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!"
 
-def fellows(request):
-    return list_detail.object_list(request, 
-            User.objects.filter(is_active=False).order_by('username'),
-            template_name="public/fellows.html",
-            template_object_name="dev",
-            extra_context={"dev_type": "Fellows",
-                "description": "Below you can find a list of ex-developers"
-                " (aka Project Fellows). These folks helped make Arch what"
-                " it is today. Thanks!"})
+    context = {
+        'user_type': type,
+        'description': msg,
+        'users': users,
+    }
+    return render_to_response('public/userlist.html', context,
+                              context_instance=RequestContext(request))
 
 def donate(request):
     donor_count = Donor.objects.count()
