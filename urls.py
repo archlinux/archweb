@@ -78,6 +78,7 @@ urlpatterns = patterns('',
     (r'^devel/newuser/$', 'archweb.devel.views.new_user_form'),
 
 # Feeds and sitemaps
+    (r'^feeds/$', 'archweb.public.views.feeds'),
     (r'^feeds/(?P<url>.*)/$',
         'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap',

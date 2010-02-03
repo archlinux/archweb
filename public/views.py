@@ -72,5 +72,12 @@ def moreforums(request):
             template_name="public/moreforums.html",
             template_object_name="forum")
 
+def feeds(request):
+    context = {
+        'arches': Arch.objects.all(),
+        'repos': Repo.objects.all(),
+    }
+    return render_to_response('public/feeds.html', context)
+
 # vim: set ts=4 sw=4 et:
 

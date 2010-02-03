@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - RSS Feeds{% endblock %}
+{% block content %}
+<div class="box">
+    <h2 class="title">RSS Feeds</h2>
+    <br /><br />
+    <p>Several RSS feeds are available for consumption from the Arch website.
+    The majority of these are package related and allow feeds to be customized
+    for the updates you care about.</p>
+    <table cellspacing="20">
+        <tr><td>News items feed</td>
+            <td><a href="/feeds/news/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
+		<tr><td>Packages feed for <em>all</em> architectures, <em>all</em> repositories</td>
+            <td><a href="/feeds/packages/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
+        {% for arch in arches %}
+		<tr><td>Packages feed for architecture {{ arch }}, <em>all</em> repositories</td>
+            <td><a href="/feeds/packages/{{ arch }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
+        {% for repo in repos %}
+        <tr><td>Packages feed for architecture {{ arch }}, repository {{ repo }}</td>
+            <td><a href="/feeds/packages/{{ arch }}/{{ repo }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+</div>
+<br /><br />
+{% endblock %}
+
