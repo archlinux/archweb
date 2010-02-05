@@ -1,6 +1,8 @@
-from django.contrib.auth.models import User
 from archweb.main.models import AltForum, Arch, Donor, MirrorUrl, News
 from archweb.main.models import Package, Repo, ExternalProject
+from . import utils
+
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -8,10 +10,10 @@ from django.views.generic import list_detail
 
 
 def index(request):
+    pkgs = utils.get_recent_updates()
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:10],
-        'pkg_updates': Package.objects.select_related('arch', 'repo').order_by('-last_update')[:15],
-        'repos': Repo.objects.all()
+        'pkg_updates': pkgs,
     }
     return render_to_response('public/index.html', context,
                               context_instance=RequestContext(request))

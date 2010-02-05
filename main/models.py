@@ -276,6 +276,12 @@ class Package(models.Model):
         return "http://bugs.archlinux.org/?project=%d&string=%s" % \
                 (project, self.pkgname)
 
+    def is_same_version(self, other):
+        'is this package similar, name and version-wise, to another'
+        return self.pkgname == other.pkgname \
+                and self.pkgver == other.pkgver \
+                and self.pkgrel == other.pkgrel
+
 
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
