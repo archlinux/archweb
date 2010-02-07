@@ -1,12 +1,14 @@
 from django import forms
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
+from django.utils import simplejson
+
 from main.models import Todolist, TodolistPkg, Package
 
 class TodoListForm(forms.Form):
@@ -19,7 +21,7 @@ class TodoListForm(forms.Form):
             widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
 
     def clean_packages(self):
-        package_names = [s.strip() for s in 
+        package_names = [s.strip() for s in
                 self.cleaned_data['packages'].split("\n")]
         package_names = set(package_names)
         packages = Package.objects.filter(
@@ -34,12 +36,16 @@ def flag(request, listid, pkgid):
     pkg  = get_object_or_404(TodolistPkg, id=pkgid)
     pkg.complete = not pkg.complete
     pkg.save()
+    if request.is_ajax():
+        return HttpResponse(
+            simplejson.dumps({'complete': pkg.complete}),
+            mimetype='application/json')
     return HttpResponseRedirect('/todo/%s/' % (listid))
 
 @login_required
 def view(request, listid):
     list = get_object_or_404(Todolist, id=listid)
-    return render_to_response('todolists/view.html', 
+    return render_to_response('todolists/view.html',
         RequestContext(request, {'list':list}))
 
 @login_required
@@ -134,8 +140,8 @@ def send_todolist_email(todo):
     }
     t = loader.get_template('todolists/addedtotodolist')
     c = Context(page_dict)
-    send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname, 
-            t.render(c), 
+    send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname,
+            t.render(c),
             'Arch Website Notification <nobody@archlinux.org>',
             [todo.pkg.maintainer.email],
             fail_silently=True)
@@ -143,4 +149,3 @@ def send_todolist_email(todo):
 
 
 # vim: set ts=4 sw=4 et:
-

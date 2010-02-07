@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block content %}
 	<div class="greybox">
             <div style="float:right">
@@ -44,4 +45,24 @@
             {{list.description|linebreaks}}
         </div>
 	</div>
+
+    <script type="text/javascript" src="/media/jquery-1.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            // Allow flagging of ToDo items using AJAX
+            $('a[href*=todo/flag]').click(function() {
+                var link = this;
+
+                $.getJSON(link.href, function(data) {
+                    if (data.complete) {
+                        $(link).text('Complete').css('color', 'blue');
+                    } else {
+                        $(link).text('Incomplete').css('color', 'red');
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
 {% endblock %}
