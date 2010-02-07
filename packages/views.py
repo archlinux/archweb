@@ -3,7 +3,7 @@ from django import forms
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
@@ -15,6 +15,18 @@ from archweb.main.models import Package, PackageFile
 from archweb.main.models import Arch, Repo, Signoff
 from archweb.main.utils import make_choice
 
+def opensearch(request):
+    if request.is_secure():
+        d = "https://%s" % request.META['HTTP_HOST']
+    else:
+        d = "http://%s" % request.META['HTTP_HOST']
+    response = HttpResponse(mimetype='application/opensearchdescription+xml')
+    t = loader.get_template('packages/opensearch.xml')
+    c = Context({
+        'domain': d,
+    })
+    response.write(t.render(c))
+    return response
 
 @permission_required('main.change_package')
 def update(request):

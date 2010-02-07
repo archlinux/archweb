@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+	<ShortName>Arch Linux Packages</ShortName>
+	<Description>Search the Arch Linux package repositories.</Description>
+	<Tags>linux archlinux package software</Tags>
+	<Image height="16" width="16" type="image/x-icon">{{domain}}/media/favicon.ico</Image>
+	<Language>en-us</Language>
+	<InputEncoding>UTF-8</InputEncoding>
+	<OutputEncoding>UTF-8</OutputEncoding>
+	<Query role="example" searchTerms="initscripts"/>
+	<Url type="text/html" template="{{domain}}/packages/?q={searchTerms}"/>
+	<Url rel="self" type="application/opensearchdescription+xml" template="{{domain}}/opensearch/packages/"/>
+</OpenSearchDescription>

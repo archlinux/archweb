@@ -108,6 +108,7 @@ urlpatterns = patterns('',
     (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}),
     (r'^moreforums/$', 'archweb.public.views.moreforums'),
     (r'^projects/$', 'archweb.public.views.projects'),
+    (r'^opensearch/packages/$', 'archweb.packages.views.opensearch'),
 )
 
 if settings.DEBUG == True:
