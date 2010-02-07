@@ -7,18 +7,33 @@
     <p>Several RSS feeds are available for consumption from the Arch website.
     The majority of these are package related and allow feeds to be customized
     for the updates you care about.</p>
-    <table cellspacing="20">
-        <tr><td>News items feed</td>
-            <td><a href="/feeds/news/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
-		<tr><td>Packages feed for <em>all</em> architectures, <em>all</em> repositories</td>
-            <td><a href="/feeds/packages/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
+    <p>Grab the <a href="/feeds/news/">news item feed <img src="/media/rss.png" alt="RSS Feed" /></a>
+    to keep up-to-date with the latest news from the Arch Linux development staff.</p>
+    <p>If you are interested in
+    <a href="/feeds/packages/">all package updates <img src="/media/rss.png" alt="RSS Feed" /></a>,
+    then grab this feed. Note that when a package is updated for multiple
+    architectures, you will see each individual update show up here.
+    Alternatively, you can select a packages feed from the below table that is
+    more tailored to your specific needs. If you are only interested in one
+    architecture, there are a variety of feeds you can choose from. Note that
+    feeds for a specific architecture, such as 'i686', will also include all
+    package updates for 'any' (architecture-independent) packages.</p>
+    <table id="feedlist" class="center">
+        <tr>
+            <th>Architecture</th>
+            <th>All Repos</th>
+            {% for repo in repos %}
+            <th>{{ repo }}</th>
+            {% endfor %}
+        </tr>
         {% for arch in arches %}
-		<tr><td>Packages feed for architecture {{ arch }}, <em>all</em> repositories</td>
-            <td><a href="/feeds/packages/{{ arch }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
-        {% for repo in repos %}
-        <tr><td>Packages feed for architecture {{ arch }}, repository {{ repo }}</td>
-            <td><a href="/feeds/packages/{{ arch }}/{{ repo }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td></tr>
-        {% endfor %}
+        <tr>
+            <td><strong>{{ arch }}</strong></td>
+            <td><a href="/feeds/packages/{{ arch }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td>
+            {% for repo in repos %}
+            <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td>
+            {% endfor %}
+        </tr>
         {% endfor %}
     </table>
 </div>

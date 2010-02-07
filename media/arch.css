@@ -278,6 +278,15 @@ table#art {
 	margin-left: auto;
 	margin-right: auto;
 }
+table#feedlist {
+	text-align: center;
+	border-collapse: collapse;
+	border: 1px solid #46494d;
+}
+table#feedlist th, table#feedlist td {
+	padding: 5px;
+	border: 1px dotted #0771a6;
+}
 .devpic {
 	vertical-align: top;
 	padding-right: 15px;
