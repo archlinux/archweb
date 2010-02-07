@@ -3,7 +3,7 @@
 	<div class="greybox">
             <div style="float:right">
                 {% if perms.main.delete_todolist %}
-                    <a href="/todo/delete/{{list.id}}/">Delete Todo List</a> | 
+                    <a href="/todo/delete/{{list.id}}/">Delete Todo List</a> |
                 {% endif %}
                 {% if perms.main.change_todolist %}
                     <a href="/todo/edit/{{list.id}}/">Edit Todo List</a>
@@ -22,7 +22,7 @@
             </thead>
             <tbody>
             {% for pkg in list.packages %}
-                <tr class="{% cycle even,odd %}">
+                <tr class="{% cycle pkgr2,pkgr1 %}">
                     <td><a href="{{ pkg.pkg.get_absolute_url }}">{{ pkg.pkg.pkgname }}</a></td>
                     <td>{{ pkg.pkg.arch.name }}</td>
                     <td>{{ pkg.pkg.repo.name|capfirst }}</td>
