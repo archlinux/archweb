@@ -8,13 +8,13 @@ class Migration:
     no_dry_run = True
 
     def forwards(self, orm):
-        Package.objects.filter(maintainer=0).update(maintainer=None)
+        orm.Package.objects.filter(maintainer=0).update(maintainer=None)
 
 
     def backwards(self, orm):
         # This will fail if foreign keys are in effect. Let's hope we'll
         # never have to go backwards. :P
-        Package.objects.filter(maintainer=None).update(maintainer=0)
+        orm.Package.objects.filter(maintainer=None).update(maintainer=0)
 
 
     models = {
