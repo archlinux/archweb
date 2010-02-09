@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
-from archweb.main.middleware import get_user
+from main.middleware import get_user
 
 ###########################
 ### User Profile Class ####
