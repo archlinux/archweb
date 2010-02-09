@@ -109,6 +109,9 @@ urlpatterns = patterns('',
     (r'^moreforums/$', 'archweb.public.views.moreforums'),
     (r'^projects/$', 'archweb.public.views.projects'),
     (r'^opensearch/packages/$', 'archweb.packages.views.opensearch'),
+
+# Some django internals we use
+    (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
 )
 
 if settings.DEBUG == True:
