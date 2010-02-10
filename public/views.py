@@ -1,5 +1,5 @@
-from archweb.main.models import AltForum, Arch, Donor, MirrorUrl, News
-from archweb.main.models import Package, Repo, ExternalProject
+from main.models import AltForum, Arch, Donor, MirrorUrl, News
+from main.models import Package, Repo, ExternalProject
 from . import utils
 
 from django.contrib.auth.models import User

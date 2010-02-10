@@ -1,5 +1,5 @@
 from django.contrib.sitemaps import Sitemap
-from archweb.main.models import Package, News
+from main.models import Package, News
 
 class PackagesSitemap(Sitemap):
     changefreq = "monthly"

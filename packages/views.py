@@ -11,9 +11,9 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
 import datetime
-from archweb.main.models import Package, PackageFile
-from archweb.main.models import Arch, Repo, Signoff
-from archweb.main.utils import make_choice
+from main.models import Package, PackageFile
+from main.models import Arch, Repo, Signoff
+from main.utils import make_choice
 
 def opensearch(request):
     if request.is_secure():

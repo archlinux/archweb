@@ -4,8 +4,8 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from archweb.main.models import Arch, Mirror, MirrorUrl
-from archweb.main.utils import make_choice
+from main.models import Arch, Mirror, MirrorUrl
+from main.utils import make_choice
 
 class MirrorlistForm(forms.Form):
     arch = forms.ChoiceField(required=True)

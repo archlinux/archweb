@@ -1,4 +1,4 @@
-from archweb.main.models import Arch, Repo, Package
+from main.models import Arch, Repo, Package
 
 def get_recent_updates():
     # This is a bit of magic. We are going to show 15 on the front page, but we

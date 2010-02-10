@@ -3,7 +3,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from archweb.main.models import (AltForum, Arch, Donor,
+from main.models import (AltForum, Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
         Package, Press, Repo, UserProfile, ExternalProject)
 

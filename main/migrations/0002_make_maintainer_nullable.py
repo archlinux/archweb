@@ -1,7 +1,7 @@
 
 from south.db import db
 from django.db import models
-from archweb.main.models import *
+from main.models import *
 
 class Migration:
     

@@ -2,7 +2,7 @@ import datetime
 
 from django.contrib.syndication.feeds import Feed, FeedDoesNotExist
 from django.db.models import Q
-from archweb.main.models import Arch, Repo, Package, News
+from main.models import Arch, Repo, Package, News
 
 class PackageFeed(Feed):
     def get_object(self, bits):
