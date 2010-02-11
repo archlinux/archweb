@@ -1,23 +1,17 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-reporead.py
+reporead command
 
 Parses a repo.db.tar.gz file and updates the Arch database with the relevant
 changes.
 
-Usage: reporead.py ARCH PATH
+Usage: ./manage.py reporead ARCH PATH
  ARCH:  architecture to update, and can be one of: i686, x86_64
  PATH:  full path to the repo.db.tar.gz file.
 
 Example:
-  reporead.py i686 /tmp/core.db.tar.gz
-
+  ./manage.py reporead i686 /tmp/core.db.tar.gz
 """
-
-###
-### User Variables
-###
 
 # multi value blocks
 REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
@@ -26,9 +20,11 @@ REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
             'name', 'optdepends', 'packager', 'provides', 'reason', 
             'replaces', 'size', 'url', 'version']
 
-###
-### Imports
-###
+
+from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.db import models, transaction
+from django.core import management
 
 import os
 import re
@@ -36,29 +32,17 @@ import sys
 import tarfile
 import logging
 from datetime import datetime
-from django.core.management import setup_environ
-# mung the sys path to get to django root dir, no matter
-# where we are called from
-# TODO this is so fricking ugly
-archweb_app_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-os.chdir(archweb_app_path)
-sys.path[0] = archweb_app_path
-import settings
-setup_environ(settings)
-# the transaction import must be below where we set up our db stuff...
-from django.db import transaction
+from optparse import make_option
+
 from cStringIO import StringIO
 from logging import WARNING,INFO,DEBUG
+
 from main.models import Arch, Package, Repo
 
 class SomethingFishyException(Exception):
     '''Raised when the database looks like its going to wipe out a bunch of
     packages.'''
     pass
-
-###
-### Initialization
-###
 
 logging.basicConfig(
     level=WARNING,
@@ -67,10 +51,17 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+class Command(BaseCommand):
+    option_list = BaseCommand.option_list
 
-###
-### function and class definitions
-###
+    def handle(self, arch=None, file=None, **options):
+        logger.level = INFO
+        if arch == None or file == None:
+            usage()
+            return 0
+        file = os.path.normpath(file)
+        read_repo(arch, file)
+
 
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
@@ -309,32 +300,20 @@ def parse_repo(repopath):
     logger.info("Finished repo parsing")
     return pkgs
 
-
 @transaction.commit_on_success
-def main(argv=None):
+def read_repo(arch, file):
     """
     Parses repo.db.tar.gz file and returns exit status.
-
-    Keyword Arguments:
-     argv -- A list/array simulating a sys.argv (default None)
-             If left empty, sys.argv is used
-
     """
-    if argv == None:
-        argv = sys.argv
-    if len(argv) != 3:
-        usage()
-        return 0
     # check if arch is valid
     available_arches = [x.name for x in Arch.objects.all()]
-    if argv[1] not in available_arches:
+    if arch not in available_arches:
         usage()
         return 0
     else:
-        primary_arch = argv[1]
+        primary_arch = arch
 
-    repo_file = os.path.normpath(argv[2])
-    packages = parse_repo(repo_file)
+    packages = parse_repo(file)
     
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
@@ -356,14 +335,5 @@ def main(argv=None):
             db_update(arch,pkgs)
     logger.info('Finished database updates.')
     return 0
-
-
-###
-### Main eval 
-###
-
-if __name__ == '__main__':
-    logger.level = INFO
-    sys.exit(main())
 
 # vim: set ts=4 sw=4 et:
