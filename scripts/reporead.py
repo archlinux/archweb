@@ -128,37 +128,6 @@ def usage():
     print __doc__.strip()
 
 
-def fetchiter_dict(cursor):
-    """
-    Given a DB API 2.0 cursor object that has been executed, returns a 
-    dictionary that maps each field to a column index
-    """
-    rows = cursor.fetchmany(size=30)
-    while rows:
-        for row in rows:
-            #pp(rows)
-            #for row in rows:
-            yield dictize(cursor,row)
-        rows = cursor.fetchmany(size=30)
-
-
-def fetchone_dict(cursor):
-    """
-    Given a DB API 2.0 cursor object that has been executed, returns a 
-    dictionary that maps each field to a column index
-    """
-    results = {}
-    row = cursor.fetchone()
-    return dictize(cursor,row)
-
-
-def dictize(cursor,row):
-    result = {}
-    for column,desc in enumerate(cursor.description):
-        result[desc[0]] = row[column]
-    return result
-
-
 def populate_pkg(dbpkg, repopkg, timestamp=None):
     if not timestamp: timestamp = datetime.now()
     dbpkg.pkgbase = repopkg.base
