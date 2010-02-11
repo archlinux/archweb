@@ -21,7 +21,7 @@ REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
             'replaces', 'size', 'url', 'version']
 
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.db import models, transaction
 from django.core import management
@@ -35,7 +35,7 @@ from datetime import datetime
 from optparse import make_option
 
 from cStringIO import StringIO
-from logging import WARNING,INFO,DEBUG
+from logging import ERROR, WARNING, INFO, DEBUG
 
 from main.models import Arch, Package, Repo
 
@@ -53,14 +53,29 @@ logger = logging.getLogger()
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list
+    help = "Runs a package repository import for the given arch and file."
+    args = "<arch> <filename>"
 
     def handle(self, arch=None, file=None, **options):
-        logger.level = INFO
-        if arch == None or file == None:
-            usage()
-            return 0
+        if not arch:
+            raise CommandError('Architecture is required.')
+        if not validate_arch(arch):
+            raise CommandError('Specified architecture %s is not currently known.' % arch)
+        if not file:
+            raise CommandError('Package database file is required.')
         file = os.path.normpath(file)
-        read_repo(arch, file)
+        if not os.path.exists(file) or not os.path.isfile(file):
+            raise CommandError('Specified package database file does not exist.')
+
+        v = int(options.get('verbosity', 0))
+        if v == 0:
+            logger.level = ERROR
+        elif v == 1:
+            logger.level = INFO
+        elif v == 2:
+            logger.level = DEBUG
+
+        return read_repo(arch, file)
 
 
 class Pkg(object):
@@ -112,11 +127,6 @@ class Pkg(object):
             return False
         else:
             return None
-
-
-def usage():
-    """Print the usage of this application."""
-    print __doc__.strip()
 
 
 def populate_pkg(dbpkg, repopkg, timestamp=None):
@@ -300,23 +310,21 @@ def parse_repo(repopath):
     logger.info("Finished repo parsing")
     return pkgs
 
+def validate_arch(arch):
+    "Check if arch is valid."
+    available_arches = [x.name for x in Arch.objects.all()]
+    return arch in available_arches
+
 @transaction.commit_on_success
-def read_repo(arch, file):
+def read_repo(primary_arch, file):
     """
     Parses repo.db.tar.gz file and returns exit status.
     """
-    # check if arch is valid
-    available_arches = [x.name for x in Arch.objects.all()]
-    if arch not in available_arches:
-        usage()
-        return 0
-    else:
-        primary_arch = arch
-
     packages = parse_repo(file)
     
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
+    available_arches = [x.name for x in Arch.objects.all()]
     for arch in available_arches:
         packages_arches[arch] = []
     
@@ -328,9 +336,8 @@ def read_repo(arch, file):
                 package.name,package.arch))
             #package.arch = primary_arch
 
-
     logger.info('Starting database updates.')
-    for (arch, pkgs) in packages_arches.iteritems():
+    for (arch, pkgs) in packages_arches.items():
         if len(pkgs) > 0:
             db_update(arch,pkgs)
     logger.info('Finished database updates.')
