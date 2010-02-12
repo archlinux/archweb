@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-{% load package_extras %}
-{% block title %}Pkg: {{ pkg.pkgname }} - Arch Linux Package Details{% endblock %}
+{% block title %}Arch Linux - Package Details - {{ pkg.pkgname }}{% endblock %}
 {% block content %}
     <div class="box">
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
@@ -9,7 +8,7 @@
                 <li><a href="{{ pkg.get_arch_svn_link }}">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
                 <li><a href="{{ pkg.get_trunk_svn_link }}">SVN Entries (trunk)</a></li>
                 <li><a href="{{ pkg.get_bugs_link }}">Bug Reports</a></li>
-                <!-- <li><a href="/packages/files/{{ pkg.id }}/">View File List</a></li> -->
+                <li><a href="files/">View File List</a></li>
                 <li>
             {% if pkg.needupdate %}
                 <span style="font-size:x-small"><em>This package has been flagged out-of-date</em></span>
