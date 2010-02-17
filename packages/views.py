@@ -1,4 +1,3 @@
-import urllib
 from django import forms
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
@@ -10,7 +9,10 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
+from django.utils.http import urlencode
+
 import datetime
+
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.utils import make_choice
@@ -128,14 +130,7 @@ def search(request, page=None):
     packages = Package.objects.select_related('arch', 'repo', 'maintainer')
 
     if request.GET:
-        # urlencode can't handle unicode. One fix for this is to call:
-        # urllib.urlencode(request.GET, doseq), which has a side effect of
-        # converting unicode to ascii, and replacing unknown characters with ?.
-        # Using UTF8 seems to work just as well without data loss.
-        encoded = {}
-        for key in request.GET:
-            encoded[key] = request.GET[key].encode('UTF8')
-        current_query += urllib.urlencode(encoded)
+        current_query += urlencode(request.GET)
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
             if form.cleaned_data['repo']:
