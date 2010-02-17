@@ -258,9 +258,7 @@ def flag(request, pkgid):
             # flag all architectures
             pkgs = Package.objects.filter(
                     pkgname=pkg.pkgname, repo=pkg.repo)
-            for package in pkgs:
-                package.needupdate = 1
-                package.save()
+            pkgs.update(needupdate=True)
 
             if not pkg.maintainer:
                 toemail = 'arch-notifications@archlinux.org'
