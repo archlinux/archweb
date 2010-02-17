@@ -125,7 +125,7 @@ class PackageSearchForm(forms.Form):
 def search(request, page=None):
     current_query = '?'
     limit=50
-    packages = Package.objects.all()
+    packages = Package.objects.select_related('arch', 'repo', 'maintainer')
 
     if request.GET:
         # urlencode can't handle unicode. One fix for this is to call:
@@ -168,12 +168,13 @@ def search(request, page=None):
     page_dict = {'search_form': form,
             'current_query': current_query
             }
-    if len(packages) == 1:
+    if packages.count() == 1:
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
     allowed_sort = ["arch", "repo", "pkgname", "maintainer", "last_update"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)
+    # TODO: sorting by multiple fields makes using a DB index much harder
     if sort in allowed_sort:
         packages = packages.order_by(
                 request.GET['sort'], 'repo', 'arch', 'pkgname')
