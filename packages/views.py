@@ -42,16 +42,11 @@ def update(request):
         maint = None
 
     if mode:
-        pkgs = Package.objects.filter(
-                id__in=ids,
-                repo__in=request.user.userprofile_user.all(
-                    )[0].allowed_repos.all())
+        repos = request.user.userprofile_user.all()[0].allowed_repos.all()
+        pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
-                repo__in=request.user.userprofile_user.all(
-                    )[0].allowed_repos.all())
-        for pkg in pkgs:
-            pkg.maintainer = maint
-            pkg.save()
+                repo__in=repos)
+        pkgs.update(maintainer=maint)
 
         request.user.message_set.create(message="%d packages %sed" % (
             len(pkgs), mode))
