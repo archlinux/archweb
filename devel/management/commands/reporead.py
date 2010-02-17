@@ -176,7 +176,6 @@ def db_update(archname, pkgs):
     # efficient by not having to go to the database for each package to
     # SELECT them by name.
     dbdict = dict([(pkg.pkgname, pkg) for pkg in dbpkgs])
-    now = datetime.now()
 
     # go go set theory!
     # thank you python for having a set class <3
@@ -209,7 +208,7 @@ def db_update(archname, pkgs):
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.info("Adding package %s", p.name)
         pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
-        populate_pkg(pkg, p, timestamp=now)
+        populate_pkg(pkg, p)
 
     # packages in database and not in syncdb (remove from database)
     logger.debug("Set theory: Packages in database not in syncdb")
@@ -230,7 +229,7 @@ def db_update(archname, pkgs):
         logger.info("Updating package %s in database", p.name)
         pkg = Package.objects.get(
             pkgname=p.name,arch=architecture, repo=repository)
-        populate_pkg(pkg, p, timestamp=now)
+        populate_pkg(pkg, p)
 
     logger.info('Finished updating Arch: %s' % archname)
 
