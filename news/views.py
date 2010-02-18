@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
-from main.models import News
-
 from django.views.generic import list_detail, create_update
+
+from main.models import News
 
 def view(request, newsid):
     return list_detail.object_detail(request, News.objects.all(), newsid,
@@ -37,9 +37,9 @@ def delete(request, newsid):
 
 @permission_required('main.change_news')
 def edit(request, newsid):
-    return create_update.update_object(request, object_id=newsid,
+    return create_update.update_object(request,
+            object_id=newsid,
             form_class=NewsForm,
             template_name="news/add.html")
 
 # vim: set ts=4 sw=4 et:
-

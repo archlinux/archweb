@@ -410,4 +410,13 @@ textarea.vLargeTextField {
 .pkgr2 {
 	background-color: #eee4cb;
 }
-
+form#newsform table {
+	width: 100%;
+	max-width: 1024px;
+}
+form#newsform input[type=text] {
+	width: 100%;
+}
+form#newsform textarea {
+	width: 100%;
+}
