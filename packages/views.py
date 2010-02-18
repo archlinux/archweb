@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.generic import list_detail
 from django.db.models import Q
-from django.utils.http import urlencode
 
 import datetime
 
@@ -125,7 +124,7 @@ def search(request, page=None):
     packages = Package.objects.select_related('arch', 'repo', 'maintainer')
 
     if request.GET:
-        current_query += urlencode(request.GET)
+        current_query += request.GET.urlencode()
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
             if form.cleaned_data['repo']:
@@ -171,7 +170,6 @@ def search(request, page=None):
         page_dict['sort'] = sort
     else:
         packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
-
 
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",
