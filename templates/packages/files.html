@@ -3,14 +3,7 @@
 {% block content %}
     <div class="box">
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
-        <div class="listing">
-            <h4>Files:</h4>
-            <ul style="font-size:small;list-style:none">
-            {% for file in files %}
-                <li>{{ file.path }}</li>
-            {% endfor %}
-            </ul>
-        </div>
+        {% include "packages/files-list.html" %}
     </div>
 {% endblock %}
 

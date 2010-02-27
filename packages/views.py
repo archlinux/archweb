@@ -186,7 +186,7 @@ def files(request, name='', repo='', arch=''):
     files = PackageFile.objects.filter(pkg=pkg).order_by('path')
     template = 'packages/files.html'
     if request.is_ajax():
-        template = 'packages/files-ajax.html'
+        template = 'packages/files-list.html'
     return render_to_response(template, RequestContext(request, {'pkg':pkg,'files':files}))
 
 @permission_required('main.change_package')
