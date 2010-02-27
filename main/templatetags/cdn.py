@@ -9,7 +9,7 @@ def jquery(parser, token):
 
 class JQueryNode(template.Node):
     def render(self, context):
-        version = '1.4.1'
+        version = '1.4.2'
         if getattr(settings, 'DEBUG', True):
             jquery = '/media/jquery-%s.min.js' % version
         else:
