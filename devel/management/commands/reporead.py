@@ -52,7 +52,10 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list
+    option_list = BaseCommand.option_list + (
+        make_option('-f', '--force', action='store_true', dest='force', default=False,
+            help='Force a re-import of data for all packages instead of only new ones. Will not touch the \'last updated\' value.'),
+    )
     help = "Runs a package repository import for the given arch and file."
     args = "<arch> <filename>"
 
@@ -75,7 +78,7 @@ class Command(BaseCommand):
         elif v == 2:
             logger.level = DEBUG
 
-        return read_repo(arch, file)
+        return read_repo(arch, file, options)
 
 
 class Pkg(object):
@@ -130,7 +133,6 @@ class Pkg(object):
 
 
 def populate_pkg(dbpkg, repopkg, timestamp=None):
-    if not timestamp: timestamp = datetime.now()
     dbpkg.pkgbase = repopkg.base
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
@@ -142,7 +144,8 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
     dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
 
     dbpkg.needupdate = False
-    dbpkg.last_update = timestamp
+    if timestamp:
+        dbpkg.last_update = timestamp
     dbpkg.save()
     # files are not in the repo.db.tar.gz
     #for x in repopkg.files:
@@ -160,7 +163,7 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
             logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
 
 
-def db_update(archname, pkgs):
+def db_update(archname, pkgs, force):
     """
     Parses a list and updates the Arch dev database accordingly.
 
@@ -212,7 +215,7 @@ def db_update(archname, pkgs):
     for p in [x for x in pkgs if x.name in in_sync_not_db]:
         logger.info("Adding package %s", p.name)
         pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
-        populate_pkg(pkg, p)
+        populate_pkg(pkg, p, timestamp=datetime.now())
 
     # packages in database and not in syncdb (remove from database)
     logger.debug("Set theory: Packages in database not in syncdb")
@@ -228,12 +231,18 @@ def db_update(archname, pkgs):
     for p in [x for x in pkgs if x.name in pkg_in_both]:
         logger.debug("Looking for package updates")
         dbp = dbdict[p.name]
+        timestamp = None
+        # for a force, we don't want to update the timestamp.
+        # for a non-force, we don't want to do anything at all.
         if ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
-            continue
+            if not force:
+                continue
+        else:
+            timestamp = datetime.now()
         logger.info("Updating package %s in database", p.name)
         pkg = Package.objects.get(
             pkgname=p.name,arch=architecture, repo=repository)
-        populate_pkg(pkg, p)
+        populate_pkg(pkg, p, timestamp=timestamp)
 
     logger.info('Finished updating Arch: %s' % archname)
 
@@ -319,7 +328,7 @@ def validate_arch(arch):
     return arch in available_arches
 
 @transaction.commit_on_success
-def read_repo(primary_arch, file):
+def read_repo(primary_arch, file, options):
     """
     Parses repo.db.tar.gz file and returns exit status.
     """
@@ -338,11 +347,11 @@ def read_repo(primary_arch, file):
             logger.warning("Package %s arch = %s" % (
                 package.name,package.arch))
             #package.arch = primary_arch
-
+    f = options.get('force', False)
     logger.info('Starting database updates.')
     for (arch, pkgs) in packages_arches.items():
         if len(pkgs) > 0:
-            db_update(arch,pkgs)
+            db_update(arch, pkgs, f)
     logger.info('Finished database updates.')
     return 0
 
