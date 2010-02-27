@@ -53,6 +53,15 @@
                 <th>Maintainer:</th>
                 <td>{% if pkg.maintainer %}{{ pkg.maintainer.get_full_name }}{% else %}None{% endif %}</td>
             </tr><tr>
+                <th>Package Size:</th>
+                <td>{{ pkg.compressed_size|filesizeformat }}</td>
+            </tr><tr>
+                <th>Installed Size:</th>
+                <td>{{ pkg.installed_size|filesizeformat }}</td>
+            </tr><tr>
+                <th>Build Date:</th>
+                <td>{{ pkg.build_date }} UTC</td>
+            </tr><tr>
                 <th>Last Updated:</th>
                 <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
             </tr>
