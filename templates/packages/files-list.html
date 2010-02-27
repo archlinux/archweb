@@ -1,8 +1,12 @@
 <div class="listing" id="filelist">
 	<h4>Files:</h4>
+	{% if files.count %}
 	<ul style="font-size:small;list-style:none">
 	{% for file in files %}
 		<li>{{ file.path }}</li>
 	{% endfor %}
 	</ul>
+	{% else %}
+	<p style="padding: 10px 20px;">No filelist available.</p>
+	{% endif %}
 </div>
