@@ -137,6 +137,10 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
     dbpkg.pkgdesc = repopkg.desc
     dbpkg.license = repopkg.license
     dbpkg.url = repopkg.url
+    dbpkg.compressed_size = int(repopkg.csize)
+    dbpkg.installed_size = int(repopkg.isize)
+    dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
+
     dbpkg.needupdate = False
     dbpkg.last_update = timestamp
     dbpkg.save()
