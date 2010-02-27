@@ -149,8 +149,8 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
         except:
             pass
 
-    dbpkg.needupdate = False
     if timestamp:
+        dbpkg.needupdate = False
         dbpkg.last_update = timestamp
     dbpkg.save()
     # files are not in the repo.db.tar.gz
