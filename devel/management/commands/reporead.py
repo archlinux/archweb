@@ -15,9 +15,9 @@ Example:
 
 # multi value blocks
 REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
-            'deltas', 'depends', 'desc', 'filename', 'files', 'force', 
-            'groups', 'installdate', 'isize', 'license', 'md5sum', 
-            'name', 'optdepends', 'packager', 'provides', 'reason', 
+            'deltas', 'depends', 'desc', 'filename', 'files', 'force',
+            'groups', 'installdate', 'isize', 'license', 'md5sum',
+            'name', 'optdepends', 'packager', 'provides', 'reason',
             'replaces', 'size', 'url', 'version']
 
 
@@ -87,9 +87,9 @@ class Pkg(object):
     def __init__(self, val):
         selfdict = {}
         squash = ['arch', 'builddate', 'csize', 'desc', 'filename',
-                  'installdate', 'isize', 'license', 'md5sum', 
+                  'installdate', 'isize', 'license', 'md5sum',
                   'packager', 'size', 'url']
-        
+
         selfdict['name'] = val['name'][0]
         selfdict['base'] = None
         del val['name']
@@ -124,7 +124,7 @@ class Pkg(object):
             else:
                 selfdict[x] = val[x]
         self.__dict__ = selfdict
-    
+
     def __getattr__(self,name):
         if name == 'force':
             return False
@@ -175,7 +175,7 @@ def db_update(archname, pkgs, force):
 
     Arguments:
       pkgs -- A list of Pkg objects.
-    
+
     """
     logger.info('Updating Arch: %s' % archname)
     repository = Repo.objects.get(name__iexact=pkgs[0].repo)
@@ -294,7 +294,7 @@ def parse_repo(repopath):
     logger.info("Starting repo parsing")
     if not os.path.exists(repopath):
         logger.error("Could not read file %s", repopath)
-    
+
     logger.info("Reading repo tarfile %s", repopath)
     filename = os.path.split(repopath)[1]
     rindex = filename.rindex('.db.tar.gz')
@@ -323,7 +323,7 @@ def parse_repo(repopath):
         if tarinfo.isreg():
             if os.path.split(tarinfo.name)[1] in ('desc','depends'):
                 tpkg.write(repodb.extractfile(tarinfo).read())
-                tpkg.write('\n') # just in case 
+                tpkg.write('\n') # just in case
     repodb.close()
     logger.info("Finished repo parsing")
     return pkgs
@@ -339,13 +339,13 @@ def read_repo(primary_arch, file, options):
     Parses repo.db.tar.gz file and returns exit status.
     """
     packages = parse_repo(file)
-    
+
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
     available_arches = [x.name for x in Arch.objects.all()]
     for arch in available_arches:
         packages_arches[arch] = []
-    
+
     for package in packages:
         if package.arch in ('any', primary_arch):
             packages_arches[package.arch].append(package)
