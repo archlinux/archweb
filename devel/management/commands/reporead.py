@@ -141,7 +141,10 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
     dbpkg.url = repopkg.url
     dbpkg.compressed_size = int(repopkg.csize)
     dbpkg.installed_size = int(repopkg.isize)
-    dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
+    try:
+        dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
+    except:
+        dbpkg.build_date = datetime.strptime(repopkg.builddate, '%a %b %d %H:%M:%S %Y')
 
     dbpkg.needupdate = False
     if timestamp:
