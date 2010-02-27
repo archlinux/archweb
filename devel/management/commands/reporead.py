@@ -6,7 +6,7 @@ Parses a repo.db.tar.gz file and updates the Arch database with the relevant
 changes.
 
 Usage: ./manage.py reporead ARCH PATH
- ARCH:  architecture to update, and can be one of: i686, x86_64
+ ARCH:  architecture to update; must be available in the database
  PATH:  full path to the repo.db.tar.gz file.
 
 Example:
@@ -153,9 +153,14 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
         dbpkg.needupdate = False
         dbpkg.last_update = timestamp
     dbpkg.save()
-    # files are not in the repo.db.tar.gz
-    #for x in repopkg.files:
-    #    dbpkg.packagefile_set.create(path=x)
+
+    # only delete files if we are reading a DB that contains them
+    if 'files' in repopkg.__dict__:
+        dbpkg.packagefile_set.all().delete()
+        logger.debug("adding %d files for package %s" % (len(repopkg.files), dbpkg.pkgname))
+        for x in repopkg.files:
+            dbpkg.packagefile_set.create(path=x)
+
     dbpkg.packagedepend_set.all().delete()
     if 'depends' in repopkg.__dict__:
         for y in repopkg.depends:
@@ -297,13 +302,18 @@ def parse_repo(repopath):
 
     logger.info("Reading repo tarfile %s", repopath)
     filename = os.path.split(repopath)[1]
-    rindex = filename.rindex('.db.tar.gz')
-    reponame = filename[:rindex]
-    
+    m = re.match(r"^(.*)\.(db|files)\.tar\.(.*)$", filename)
+    if m:
+        reponame = m.group(1)
+    else:
+        logger.error("File does not have the proper extension")
+        raise SomethingFishyException("File does not have the proper extension")
+
     repodb = tarfile.open(repopath,"r:gz")
     ## assuming well formed tar, with dir first then files after
     ## repo-add enforces this
     logger.debug("Starting package parsing")
+    dbfiles = ('desc', 'depends', 'files')
     pkgs = []
     tpkg = None
     while True:
@@ -321,7 +331,8 @@ def parse_repo(repopath):
             # set new tpkg
             tpkg = StringIO()
         if tarinfo.isreg():
-            if os.path.split(tarinfo.name)[1] in ('desc','depends'):
+            fname = os.path.split(tarinfo.name)[1]
+            if fname in dbfiles:
                 tpkg.write(repodb.extractfile(tarinfo).read())
                 tpkg.write('\n') # just in case
     repodb.close()
