@@ -182,7 +182,10 @@ def files(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     files = PackageFile.objects.filter(pkg=pkg).order_by('path')
-    return render_to_response('packages/files.html', RequestContext(request, {'pkg':pkg,'files':files}))
+    template = 'packages/files.html'
+    if request.is_ajax():
+        template = 'packages/files-ajax.html'
+    return render_to_response(template, RequestContext(request, {'pkg':pkg,'files':files}))
 
 @permission_required('main.change_package')
 def unflag(request, pkgid):

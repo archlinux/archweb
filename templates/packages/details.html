@@ -8,7 +8,6 @@
                 <li><a href="{{ pkg.get_arch_svn_link }}">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
                 <li><a href="{{ pkg.get_trunk_svn_link }}">SVN Entries (trunk)</a></li>
                 <li><a href="{{ pkg.get_bugs_link }}">Bug Reports</a></li>
-                <li><a href="files/">View File List</a></li>
                 <li>
             {% if pkg.needupdate %}
                 <span style="font-size:x-small"><em>This package has been flagged out-of-date</em></span>
@@ -102,6 +101,24 @@
                 </td>
             </tr>
         </table>
+        <div class="listing" id="filelist">
+            <h4>Files:</h4>
+            <ul style="font-size:small;list-style:none">
+                <li><a id="filelink" href="files/">View File List</a></li>
+            </ul>
+        </div>
     </div>
+<script type="text/javascript" src="/media/jquery-1.4.1.min.js"></script>
+<script type="text/javascript">
+function ajaxifyFiles() {
+    $('#filelink').click(function(event) {
+        event.preventDefault();
+        $.get(this.href, function(data) {
+            $('#filelist').html(data);
+        });
+    });
+}
+$(document).ready(ajaxifyFiles);
+</script>
 {% endblock %}
 

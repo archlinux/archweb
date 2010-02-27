@@ -1,0 +1,8 @@
+<div class="listing" id="filelist">
+	<h4>Files:</h4>
+	<ul style="font-size:small;list-style:none">
+	{% for file in files %}
+		<li>{{ file.path }}</li>
+	{% endfor %}
+	</ul>
+</div>
