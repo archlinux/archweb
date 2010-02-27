@@ -10,7 +10,7 @@ def get_recent_updates():
         pkgs += list(Package.objects.select_related('arch', 'repo').filter(arch=a).order_by('-last_update')[:50])
     pkgs.sort(reverse=True, key=lambda q: q.last_update)
     for p in pkgs:
-        samepkgs = filter(lambda q: p.is_same_version(q), pkgs)
+        samepkgs = filter(lambda q: p.is_same_version(q) and p.repo == q.repo, pkgs)
         p.allarches = '/'.join(sorted([q.arch.name for q in samepkgs]))
         for q in samepkgs:
             if p != q: pkgs.remove(q)
