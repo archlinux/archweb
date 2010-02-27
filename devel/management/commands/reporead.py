@@ -144,7 +144,10 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
     try:
         dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
     except:
-        dbpkg.build_date = datetime.strptime(repopkg.builddate, '%a %b %d %H:%M:%S %Y')
+        try:
+            dbpkg.build_date = datetime.strptime(repopkg.builddate, '%a %b %d %H:%M:%S %Y')
+        except:
+            pass
 
     dbpkg.needupdate = False
     if timestamp:
