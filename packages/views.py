@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
 from django.db.models import Q
 
@@ -178,6 +179,7 @@ def search(request, page=None):
             template_object_name="package",
             extra_context=page_dict)
 
+@vary_on_headers('X-Requested-With')
 def files(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
