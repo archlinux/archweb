@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - Flag Package - {{ pkg.pkgname }}{% endblock %}
+
 {% block content %}
 <div>
     {% if confirmed %}
@@ -22,7 +23,7 @@
 			{{form}}
 		</table>
 		<input type="submit" value=" Confirm " />
-		<br />
 	</form>
     {% endif %}
+</div>
 {% endblock %}
