@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Pkg: {{ pkg.pkgname }} - Arch Linux Package File List{% endblock %}
+{% block title %}Arch Linux - Package File List - {{ pkg.pkgname }}{% endblock %}
 {% block content %}
     <div class="box">
-        <h3>Viewing Files: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h3>
-        {% for file in files %}
-            {{ file.path }}<br />
-        {% endfor %}
+        <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
+        {% include "packages/files-list.html" %}
     </div>
 {% endblock %}
 

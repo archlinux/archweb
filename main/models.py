@@ -174,6 +174,7 @@ class Package(models.Model):
     installed_size = models.PositiveIntegerField(null=True)
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(null=True, blank=True)
+    files_last_update = models.DateTimeField(null=True, blank=True)
     license = models.CharField(max_length=255)
     objects = PackageManager()
     class Meta:

@@ -6,7 +6,7 @@ Parses a repo.db.tar.gz file and updates the Arch database with the relevant
 changes.
 
 Usage: ./manage.py reporead ARCH PATH
- ARCH:  architecture to update, and can be one of: i686, x86_64
+ ARCH:  architecture to update; must be available in the database
  PATH:  full path to the repo.db.tar.gz file.
 
 Example:
@@ -55,6 +55,8 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-f', '--force', action='store_true', dest='force', default=False,
             help='Force a re-import of data for all packages instead of only new ones. Will not touch the \'last updated\' value.'),
+        make_option('--filesonly', action='store_true', dest='filesonly', default=False,
+            help='Load filelists if they are outdated, but will not add or remove any packages. Will not touch the \'last updated\' value.'),
     )
     help = "Runs a package repository import for the given arch and file."
     args = "<arch> <filename>"
@@ -132,7 +134,7 @@ class Pkg(object):
             return None
 
 
-def populate_pkg(dbpkg, repopkg, timestamp=None):
+def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.pkgbase = repopkg.base
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
@@ -153,9 +155,9 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
         dbpkg.needupdate = False
         dbpkg.last_update = timestamp
     dbpkg.save()
-    # files are not in the repo.db.tar.gz
-    #for x in repopkg.files:
-    #    dbpkg.packagefile_set.create(path=x)
+
+    populate_files(dbpkg, repopkg, force=force)
+
     dbpkg.packagedepend_set.all().delete()
     if 'depends' in repopkg.__dict__:
         for y in repopkg.depends:
@@ -168,8 +170,22 @@ def populate_pkg(dbpkg, repopkg, timestamp=None):
             dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
             logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
 
+def populate_files(dbpkg, repopkg, force=False):
+    if not force:
+        if not dbpkg.files_last_update or not dbpkg.last_update:
+            pass
+        elif dbpkg.files_last_update > dbpkg.last_update:
+            return
+    # only delete files if we are reading a DB that contains them
+    if 'files' in repopkg.__dict__:
+        dbpkg.packagefile_set.all().delete()
+        logger.info("adding %d files for package %s" % (len(repopkg.files), dbpkg.pkgname))
+        for x in repopkg.files:
+            dbpkg.packagefile_set.create(path=x)
+        dbpkg.files_last_update = datetime.now()
+        dbpkg.save()
 
-def db_update(archname, pkgs, force):
+def db_update(archname, pkgs, options):
     """
     Parses a list and updates the Arch dev database accordingly.
 
@@ -178,6 +194,8 @@ def db_update(archname, pkgs, force):
 
     """
     logger.info('Updating Arch: %s' % archname)
+    force = options.get('force', False)
+    filesonly = options.get('filesonly', False)
     repository = Repo.objects.get(name__iexact=pkgs[0].repo)
     architecture = Arch.objects.get(name__iexact=archname)
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
@@ -217,19 +235,22 @@ def db_update(archname, pkgs, force):
 
     if dbpercent < 75.0:
         logger.warning(".db.tar.gz has %.1f%% the number of packages in the web database." % dbpercent)
-    
-    for p in [x for x in pkgs if x.name in in_sync_not_db]:
-        logger.info("Adding package %s", p.name)
-        pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
-        populate_pkg(pkg, p, timestamp=datetime.now())
 
-    # packages in database and not in syncdb (remove from database)
-    logger.debug("Set theory: Packages in database not in syncdb")
-    in_db_not_sync = dbset - syncset
-    for p in in_db_not_sync:
-        logger.info("Removing package %s from database", p)
-        Package.objects.get(
-            pkgname=p, arch=architecture, repo=repository).delete()
+    if not filesonly:
+        # packages in syncdb and not in database (add to database)
+        logger.debug("Set theory: Packages in syncdb not in database")
+        for p in [x for x in pkgs if x.name in in_sync_not_db]:
+            logger.info("Adding package %s", p.name)
+            pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
+            populate_pkg(pkg, p, timestamp=datetime.now())
+
+        # packages in database and not in syncdb (remove from database)
+        logger.debug("Set theory: Packages in database not in syncdb")
+        in_db_not_sync = dbset - syncset
+        for p in in_db_not_sync:
+            logger.info("Removing package %s from database", p)
+            Package.objects.get(
+                pkgname=p, arch=architecture, repo=repository).delete()
 
     # packages in both database and in syncdb (update in database)
     logger.debug("Set theory: Packages in database and syncdb")
@@ -240,15 +261,21 @@ def db_update(archname, pkgs, force):
         timestamp = None
         # for a force, we don't want to update the timestamp.
         # for a non-force, we don't want to do anything at all.
-        if ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
+        if filesonly:
+            pass
+        elif ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
             if not force:
                 continue
         else:
             timestamp = datetime.now()
-        logger.info("Updating package %s in database", p.name)
         pkg = Package.objects.get(
             pkgname=p.name,arch=architecture, repo=repository)
-        populate_pkg(pkg, p, timestamp=timestamp)
+        if filesonly:
+            logger.info("Possibly populating files for package %s in database", p.name)
+            populate_files(pkg, p)
+        else:
+            logger.info("Updating package %s in database", p.name)
+            populate_pkg(pkg, p, force=force, timestamp=timestamp)
 
     logger.info('Finished updating Arch: %s' % archname)
 
@@ -297,13 +324,18 @@ def parse_repo(repopath):
 
     logger.info("Reading repo tarfile %s", repopath)
     filename = os.path.split(repopath)[1]
-    rindex = filename.rindex('.db.tar.gz')
-    reponame = filename[:rindex]
-    
+    m = re.match(r"^(.*)\.(db|files)\.tar\.(.*)$", filename)
+    if m:
+        reponame = m.group(1)
+    else:
+        logger.error("File does not have the proper extension")
+        raise SomethingFishyException("File does not have the proper extension")
+
     repodb = tarfile.open(repopath,"r:gz")
     ## assuming well formed tar, with dir first then files after
     ## repo-add enforces this
     logger.debug("Starting package parsing")
+    dbfiles = ('desc', 'depends', 'files')
     pkgs = []
     tpkg = None
     while True:
@@ -321,7 +353,8 @@ def parse_repo(repopath):
             # set new tpkg
             tpkg = StringIO()
         if tarinfo.isreg():
-            if os.path.split(tarinfo.name)[1] in ('desc','depends'):
+            fname = os.path.split(tarinfo.name)[1]
+            if fname in dbfiles:
                 tpkg.write(repodb.extractfile(tarinfo).read())
                 tpkg.write('\n') # just in case
     repodb.close()
@@ -353,11 +386,10 @@ def read_repo(primary_arch, file, options):
             logger.warning("Package %s arch = %s" % (
                 package.name,package.arch))
             #package.arch = primary_arch
-    f = options.get('force', False)
     logger.info('Starting database updates.')
     for (arch, pkgs) in packages_arches.items():
         if len(pkgs) > 0:
-            db_update(arch, pkgs, f)
+            db_update(arch, pkgs, options)
     logger.info('Finished database updates.')
     return 0
 

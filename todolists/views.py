@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
 from django.utils import simplejson
@@ -31,6 +32,7 @@ class TodoListForm(forms.Form):
 
 
 @login_required
+@vary_on_headers('X-Requested-With')
 def flag(request, listid, pkgid):
     list = get_object_or_404(Todolist, id=listid)
     pkg  = get_object_or_404(TodolistPkg, id=pkgid)
