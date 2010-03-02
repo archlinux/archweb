@@ -35,10 +35,6 @@ class PublicTest(TestCase):
         response = self.client.get('/download/')
         self.assertEqual(response.status_code, 200)
 
-    def test_irc(self):
-        response = self.client.get('/irc/')
-        self.assertEqual(response.status_code, 200)
-
     def test_moreforums(self):
         response = self.client.get('/moreforums/')
         self.assertEqual(response.status_code, 200)
