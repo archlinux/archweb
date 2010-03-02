@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - Package File List - {{ pkg.pkgname }}{% endblock %}
+{% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }} - Package File List{% endblock %}
 {% block content %}
     <div class="box">
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
