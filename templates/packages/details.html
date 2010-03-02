@@ -77,7 +77,7 @@
                           {% ifequal depend.pkg None %}
                             <li>{{ depend.dep.depname }} (virtual)</li>
                           {% else %}
-                            <li><a href="{{ depend.pkg.get_absolute_url }}">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp }}</li>
+                            <li><a href="{{ depend.pkg.get_absolute_url }}">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp }}{% ifequal depend.pkg.repo.name "Testing" %} (testing){% endifequal %}</li>
                           {% endifequal %}
                         {% endfor %}
                         </ul>
@@ -92,7 +92,7 @@
                         {% if rqdby %}
                         <ul style="font-size:small;list-style:none">
                         {% for req in rqdby %}
-                        <li><a href="{{req.get_absolute_url}}">{{ req.pkgname }}{% ifequal req.repo.name "Testing" %} (testing){% endifequal %}{% ifequal req.repo.name "Unstable" %} (unstable){% endifequal %}</a></li>
+                        <li><a href="{{req.get_absolute_url}}">{{ req.pkgname }}</a>{% ifequal req.repo.name "Testing" %} (testing){% endifequal %}</li>
                         {% endfor %}
                         </ul>
                         {% endif %}
