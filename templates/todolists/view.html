@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - Todo - {{ list.name }}{% endblock %}
 
 {% block content %}
 	<div class="greybox">
@@ -10,7 +11,7 @@
                     <a href="/todo/edit/{{list.id}}/">Edit Todo List</a>
                 {% endif %}
             </div>
-		<h2 class="title">ToDo List: {{ list.name }}</h2>
+		<h2 class="title">Todo List: {{ list.name }}</h2>
 		<table id="todotable" class="results" width="100%">
             <thead>
                 <tr>
@@ -49,7 +50,7 @@
     <script type="text/javascript" src="/media/jquery-1.4.1.min.js"></script>
     <script type="text/javascript">
         $(function() {
-            // Allow flagging of ToDo items using AJAX
+            // Allow flagging of Todo items using AJAX
             $('a[href*=todo/flag]').click(function() {
                 var link = this;
 

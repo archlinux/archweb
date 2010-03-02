@@ -78,7 +78,7 @@ def add(request):
         form = TodoListForm()
 
     page_dict = {
-            'title': 'Add To-do List',
+            'title': 'Add Todo List',
             'form': form,
             'submit_text': 'Create List'
             }
@@ -117,7 +117,7 @@ def edit(request, list_id):
             'packages': todo_list.package_names,
             })
     page_dict = {
-            'title': 'Edit To-do List "%s"' % todo_list.name,
+            'title': 'Edit Todo List: %s' % todo_list.name,
             'form': form,
             'submit_text': 'Save List'
             }
@@ -131,7 +131,7 @@ def delete_todolist(request, object_id):
 
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
-    package has been added to a to-do list'''
+    package has been added to a todo list'''
     if not todo.pkg.maintainer:
         return
 
