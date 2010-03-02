@@ -3,15 +3,9 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from main.models import (AltForum, Arch, Donor,
+from main.models import (Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
         Package, Repo, UserProfile, ExternalProject)
-
-class AltForumAdmin(admin.ModelAdmin):
-    list_display = ('language', 'name')
-    list_filter = ('language',)
-    ordering = ['name']
-    search_fields = ('name',)
 
 class DonorAdmin(admin.ModelAdmin):
     ordering = ['name']
@@ -90,7 +84,6 @@ class UserProfileAdmin(UserAdmin):
 
 
 admin.site.register(User, UserProfileAdmin)
-admin.site.register(AltForum, AltForumAdmin)
 admin.site.register(Donor, DonorAdmin)
 
 admin.site.register(Mirror, MirrorAdmin)

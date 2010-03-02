@@ -1,4 +1,4 @@
-from main.models import AltForum, Arch, Donor, MirrorUrl, News
+from main.models import Arch, Donor, MirrorUrl, News
 from main.models import Package, Repo, ExternalProject
 from . import utils
 
@@ -67,12 +67,6 @@ def download(request):
             template_name="public/download.html",
             template_object_name="mirror_url",
             extra_context={"path": request.path})
-
-def moreforums(request):
-    return list_detail.object_list(request, 
-            AltForum.objects.order_by('language', 'name'),
-            template_name="public/moreforums.html",
-            template_object_name="forum")
 
 def feeds(request):
     context = {

@@ -109,7 +109,6 @@ urlpatterns = patterns('',
     (r'^fellows/$',      'public.views.userlist', { 'type':'Fellows' }, 'page-fellows'),
     (r'^donate/$', 'public.views.donate', {}, 'page-donate'),
     (r'^download/$', 'public.views.download', {}, 'page-download'),
-    (r'^moreforums/$', 'public.views.moreforums', {}, 'page-forums'),
     (r'^projects/$', 'public.views.projects', {}, 'page-projects'),
     (r'^opensearch/packages/$', 'packages.views.opensearch', {}, 'opensearch-packages'),
 
