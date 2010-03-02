@@ -1,5 +1,5 @@
 from main.models import Arch, Donor, MirrorUrl, News
-from main.models import Package, Repo, ExternalProject
+from main.models import Package, Repo
 from . import utils
 
 from django.contrib.auth.models import User
@@ -17,12 +17,6 @@ def index(request):
     }
     return render_to_response('public/index.html', context,
                               context_instance=RequestContext(request))
-
-def projects(request):
-    return list_detail.object_list(request, 
-            ExternalProject.objects.all(),
-            template_name="public/projects.html",
-            template_object_name="project")
 
 def userlist(request, type='Developers'):
     users = User.objects.order_by('username')

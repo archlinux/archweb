@@ -35,6 +35,3 @@ class PublicTest(TestCase):
         response = self.client.get('/download/')
         self.assertEqual(response.status_code, 200)
 
-    def test_projects(self):
-        response = self.client.get('/projects/')
-        self.assertEqual(response.status_code, 200)

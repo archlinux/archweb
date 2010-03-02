@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from main.models import (Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
-        Package, Repo, UserProfile, ExternalProject)
+        Package, Repo, UserProfile)
 
 class DonorAdmin(admin.ModelAdmin):
     ordering = ['name']
@@ -92,6 +92,5 @@ admin.site.register(MirrorProtocol)
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Arch)
 admin.site.register(Repo, RepoAdmin)
-admin.site.register(ExternalProject)
 
 # vim: set ts=4 sw=4 et:
