@@ -103,16 +103,6 @@ class MirrorRsync(models.Model):
     class Meta:
         verbose_name = 'Mirror Rsync IP'
 
-class Press(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
-    def __unicode__(self):
-        return self.name
-    class Meta:
-        db_table = 'press'
-        verbose_name_plural = 'press'
-
 class AltForum(models.Model):
     id = models.AutoField(primary_key=True)
     language = models.CharField(max_length=255)

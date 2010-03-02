@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from main.models import (AltForum, Arch, Donor,
         Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
-        Package, Press, Repo, UserProfile, ExternalProject)
+        Package, Repo, UserProfile, ExternalProject)
 
 class AltForumAdmin(admin.ModelAdmin):
     list_display = ('language', 'name')
@@ -79,11 +79,6 @@ class PackageAdmin(admin.ModelAdmin):
     ordering = ['pkgname']
     search_fields = ('pkgname',)
 
-class PressAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url')
-    ordering = ['name']
-    search_fields = ('name',)
-
 admin.site.unregister(User)
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -102,7 +97,6 @@ admin.site.register(Mirror, MirrorAdmin)
 admin.site.register(MirrorProtocol)
 
 admin.site.register(Package, PackageAdmin)
-admin.site.register(Press, PressAdmin)
 admin.site.register(Arch)
 admin.site.register(Repo, RepoAdmin)
 admin.site.register(ExternalProject)
