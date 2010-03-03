@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
 from django.utils import simplejson
@@ -31,6 +32,7 @@ class TodoListForm(forms.Form):
 
 
 @login_required
+@vary_on_headers('X-Requested-With')
 def flag(request, listid, pkgid):
     list = get_object_or_404(Todolist, id=listid)
     pkg  = get_object_or_404(TodolistPkg, id=pkgid)
@@ -76,7 +78,7 @@ def add(request):
         form = TodoListForm()
 
     page_dict = {
-            'title': 'Add To-do List',
+            'title': 'Add Todo List',
             'form': form,
             'submit_text': 'Create List'
             }
@@ -115,7 +117,7 @@ def edit(request, list_id):
             'packages': todo_list.package_names,
             })
     page_dict = {
-            'title': 'Edit To-do List "%s"' % todo_list.name,
+            'title': 'Edit Todo List: %s' % todo_list.name,
             'form': form,
             'submit_text': 'Save List'
             }
@@ -129,7 +131,7 @@ def delete_todolist(request, object_id):
 
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
-    package has been added to a to-do list'''
+    package has been added to a todo list'''
     if not todo.pkg.maintainer:
         return
 
