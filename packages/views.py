@@ -198,11 +198,11 @@ def unflag(request, pkgid):
 
 @permission_required('main.change_package')
 def signoffs(request):
-    packages = Package.objects.select_related('arch', 'repo', 'signoffs').filter(repo__name__endswith="Testing").order_by("pkgname")
+    packages = Package.objects.select_related('arch', 'repo', 'signoffs').filter(repo__testing=True).order_by("pkgname")
     package_list = []
 
-    q_pkgname = Package.objects.filter(repo__name__endswith="Testing").values('pkgname').distinct().query
-    package_repos = Package.objects.values('pkgname', 'repo__name').exclude(repo__name__endswith="Testing").filter(pkgname__in=q_pkgname)
+    q_pkgname = Package.objects.filter(repo__testing=True).values('pkgname').distinct().query
+    package_repos = Package.objects.values('pkgname', 'repo__name').exclude(repo__testing=True).filter(pkgname__in=q_pkgname)
     pkgtorepo = dict()
     for pr in package_repos:
         pkgtorepo[pr['pkgname']] = pr['repo__name']
@@ -221,7 +221,7 @@ def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,
             arch__name=arch,
             pkgname=pkgname,
-            repo__name="Testing")
+            repo__testing=True)
 
     signoff, created = Signoff.objects.get_or_create(
             pkg=pkg,

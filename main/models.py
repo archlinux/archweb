@@ -249,7 +249,7 @@ class Package(models.Model):
             elif len(pkgs) == 1:
                 deps.append({'dep': dep, 'pkg': pkgs[0]})
             else:
-                tpkgs = pkgs.filter(repo__name='Testing')
+                tpkgs = pkgs.filter(repo__testing=True)
                 if len(tpkgs) == 1:
                     deps.append({'dep': dep, 'pkg': tpkgs[0]})
                 else:

@@ -27,7 +27,7 @@ class TodoListForm(forms.Form):
         package_names = set(package_names)
         packages = Package.objects.filter(
                 pkgname__in=package_names).exclude(
-                repo__name__endswith="Testing").order_by('arch')
+                repo__testing=True).order_by('arch')
         return packages
 
 
