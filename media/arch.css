@@ -56,14 +56,6 @@ body {
 #main_nav ul li a:hover {
 	background: #1793d1;
 }
-.box-smalltext {
-	font-size: small;
-	/*position: relative;*/
-	top: 0px;
-	background: #f6efe0;
-	border: 1px solid #eee4cb;
-	padding: 10px;
-}
 #updates {
 	font-size: small;
 	/*position: relative;*/
@@ -75,11 +67,9 @@ body {
 #updates .testing, #updates .community-testing {
     font-style: italic;
 }
-#ads {
-  z-index: 0;
-  position: absolute;
-  top: 40px;
-  right: 10px;
+#about {
+	position: relative;
+	top: -9px;
 }
 #logo {
   z-index: 1;
@@ -213,10 +203,6 @@ a:hover {
   color: #333;
   text-decoration: underline;
 }
-#about {
-	position: relative;
-	top: -9px;
-}
 ol {
 	padding-left: 45px;
 }
@@ -246,35 +232,10 @@ hr {
 	font-size: x-small;
 	border: 1px solid #8faecd;
 }
-button#f_trigger {
-	background: #e1e3e6;
-}
 /*
  * Table stuff
  */
 table.center {
-	margin-left: auto;
-	margin-right: auto;
-}
-table#releases {
-	font-size: small;
-	width: 100%;
-}
-table#releases td {
-	padding-right: 20px;
-}
-table#repolinks {
-	font-size: small;
-	width: 100%;
-}
-table#repolinks td {
-	text-align: right;
-}
-table#repolinks th {
-	text-align: left;
-}
-table#art {
-	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -335,15 +296,6 @@ table.results {
 	font-size: small;
 	padding: 2px;
 }
-blockquote.code {
-	background: #d0d0d0;
-	border: 1px solid #bbb;
-	margin-left: auto;
-	margin-right: auto;
-	white-space: nowrap;
-	padding: 5px;
-	font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", Courier, "Courier New", Monospace;
-}
 
 td.signoff_yes {
     font-size: large;
@@ -355,14 +307,10 @@ td.signoff_no {
     color: red;
 }
 
-/* Used by Django's FormWrappers */
-textarea.vLargeTextField {
-	width: 450px;
-	height: 250px;
-}
 .pkgr2 {
 	background-color: #eee4cb;
 }
+
 form#newsform table {
 	width: 100%;
 	max-width: 1024px;
