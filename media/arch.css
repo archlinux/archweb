@@ -373,3 +373,15 @@ form#newsform input[type=text] {
 form#newsform textarea {
 	width: 100%;
 }
+
+/* donate page styles */
+ul#donorlist {
+	width: 100%;
+}
+ul#donorlist li {
+	float: left;
+	/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+	width: 25%;
+	min-width: 20em;
+}
+

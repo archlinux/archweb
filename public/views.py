@@ -39,14 +39,8 @@ def userlist(request, type='Developers'):
                               context_instance=RequestContext(request))
 
 def donate(request):
-    donor_count = Donor.objects.count()
-    donors = Donor.objects.order_by('name')
-    splitval = donor_count / 4
     context = {
-        'slice1': donors[:splitval],
-        'slice2': donors[(splitval):(splitval*2)],
-        'slice3': donors[(splitval*2):(donor_count-splitval)],
-        'slice4': donors[(donor_count-splitval):donor_count],
+        'donors': Donor.objects.order_by('name'),
     }
     return render_to_response('public/donate.html', context,
                               context_instance=RequestContext(request))

@@ -36,40 +36,23 @@
     <br />
     <h2 class="title">Sponsors and Contributions</h2>
     <p>We'd like to thank <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network">Velocity Network</a> for contributing space in a server rack, bandwidth, and electricity for our main server for the last couple of years.</p>
+    <div style="text-align:center">
     <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network"><img src="/media/vnet_button.png" class="" title="" alt="velocity network - it's about time" /></a>
-    <br />
+    </div>
     <p>We also wish to extend a special Thank You to <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">SevenL Networks</a> for their generous and ongoing contribution of a dedicated Arch Linux server. You too can have a dedicated Arch Linux server hosted by SevenL...head over to their <a href="https://www.sevenl.net/dedicated-server/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - dedicated server hosting">website</a> for more details.</p>
+    <div style="text-align:center">
     <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png" class="" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
-    <br />
+    </div>
     <p>More thanks go to <a href="http://www.airvm.com/VirtualServers" title="AirVM.com">AirVM.com</a> for contributing a VMWare-based Virtual Machine.</p>
+    <div style="text-align:center">
     <a href="http://www.airvm.com/VirtualServers" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg" class="" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
-    <br />
+    </div>
     <h2 class="title">Past Donors</h2>
-    <table width="100%">
-        <tr>
-            <td style="font-size:x-small;vertical-align:top">
-            {% for donor in slice1 %}
-              {{ donor.name }}<br />
-            {% endfor %}
-            </td>
-            <td style="font-size:x-small;vertical-align:top">
-            {% for donor in slice2 %}
-              {{ donor.name }}<br />
-            {% endfor %}
-            </td>
-            <td style="font-size:x-small;vertical-align:top">
-            {% for donor in slice3 %}
-              {{ donor.name }}<br />
-            {% endfor %}
-            </td>
-            <td style="font-size:x-small;vertical-align:top">
-            {% for donor in slice4 %}
-              {{ donor.name }}<br />
-            {% endfor %}
-            </td>
-        </tr>
-    </table>
+    <ul id="donorlist">
+        {% for donor in donors %}
+        <li>{{ donor.name }}</li>{% endfor %}
+    </ul>
+    <div class="clear"/>
 </div>
-<br /><br />
 {% endblock %}
 
