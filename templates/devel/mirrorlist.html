@@ -6,6 +6,7 @@
 	<table class="results" width="100%">
 		<tr>
 			<th>Name</th>
+			<th>Tier</th>
 			<th>Country</th>
 			<th>Admin Email</th>
 			<th>Public</th>
@@ -18,6 +19,7 @@
 		{% for mirror in mirror_list %}
 		<tr>
 			<td>{{mirror.name}}</td>
+			<td>{{mirror.get_tier_display}}</td>
 			<td>{{mirror.country}}</td>
 			<td>{{mirror.admin_email}}</td>
 			<td>{{mirror.public|yesno}}</td>
