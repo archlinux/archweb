@@ -61,14 +61,14 @@ TIER_CHOICES = (
 class Mirror(models.Model):
     name = models.CharField(max_length=255)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
-    upstream = models.ForeignKey('self', null=True, blank=True)
+    upstream = models.ForeignKey('self', null=True)
     country = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     isos = models.BooleanField(default=True)
-    rsync_user = models.CharField(max_length=50, null=True, blank=True)
-    rsync_password = models.CharField(max_length=50, null=True, blank=True)
+    rsync_user = models.CharField(max_length=50, null=True)
+    rsync_password = models.CharField(max_length=50, null=True)
     notes = models.TextField(blank=True)
     def __unicode__(self):
         return self.name
@@ -226,13 +226,9 @@ class Package(models.Model):
 
     def get_depends(self):
         """
-        Returns a list of tuples(3). 
-
-        Each tuple in the list is one of:
-         - (packageid, dependname, depend compare string) if a matching 
-           package is found.
-         - (None, dependname, None) if no matching package is found, eg 
-           it is a virtual dep.
+        Returns a list of dicts. Each dict contains ('pkg' and 'dep').
+        If it represents a found package both vars will be available;
+        else pkg will be None if it is a 'virtual' dependency.
         """
         # object level cache. Doesn't last long, but helps for items rendered
         # twice in the same template.
