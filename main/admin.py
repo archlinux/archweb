@@ -52,9 +52,15 @@ class MirrorRsyncInlineAdmin(admin.TabularInline):
     form = MirrorRsyncForm
     extra = 2
 
+class MirrorAdminForm(forms.ModelForm):
+    class Meta:
+        model = Mirror
+    upstream = forms.ModelChoiceField(queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1), required=False)
+
 class MirrorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'active', 'public', 'isos', 'admin_email', 'supported_protocols')
-    list_filter = ('country', 'active', 'public')
+    form = MirrorAdminForm
+    list_display = ('name', 'tier', 'country', 'active', 'public', 'isos', 'admin_email', 'supported_protocols')
+    list_filter = ('tier', 'country', 'active', 'public')
     ordering = ['country', 'name']
     search_fields = ('name',)
     inlines = [

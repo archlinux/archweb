@@ -51,8 +51,17 @@ class PackageManager(models.Manager):
 #############################
 ### General Model Classes ###
 #############################
+TIER_CHOICES = (
+    (0, 'Tier 0'),
+    (1, 'Tier 1'),
+    (2, 'Tier 2'),
+    (-1, 'Untiered'),
+)
+
 class Mirror(models.Model):
     name = models.CharField(max_length=255)
+    tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
+    upstream = models.ForeignKey('self', null=True, blank=True)
     country = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     notes = models.CharField(max_length=255, blank=True)
