@@ -64,12 +64,12 @@ class Mirror(models.Model):
     upstream = models.ForeignKey('self', null=True, blank=True)
     country = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
-    notes = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     isos = models.BooleanField(default=True)
     rsync_user = models.CharField(max_length=50, null=True, blank=True)
     rsync_password = models.CharField(max_length=50, null=True, blank=True)
+    notes = models.TextField(blank=True)
     def __unicode__(self):
         return self.name
 
