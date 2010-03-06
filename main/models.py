@@ -68,6 +68,8 @@ class Mirror(models.Model):
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     isos = models.BooleanField(default=True)
+    rsync_user = models.CharField(max_length=50, null=True, blank=True)
+    rsync_password = models.CharField(max_length=50, null=True, blank=True)
     def __unicode__(self):
         return self.name
 
