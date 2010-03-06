@@ -222,7 +222,7 @@ class Package(models.Model):
         """
         requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
-                arch__name__in=(self.arch.name, 'Any'))
+                arch__name__in=(self.arch.name, 'any'))
         return requiredby.order_by('pkgname')
 
     def get_depends(self):
@@ -238,23 +238,27 @@ class Package(models.Model):
         deps = []
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('depname'):
-            # we only need depend on same-arch-packages
-            pkgs = Package.objects.select_related('arch', 'repo').filter(
-                Q(arch__name__iexact='any') | Q(arch=self.arch),
-                pkgname=dep.depname)
+            pkgs = Package.objects.select_related('arch', 'repo').filter(pkgname=dep.depname)
+            if self.arch.name != 'any':
+                # make sure we match architectures if possible
+                pkgs = pkgs.filter(arch__name__in=(self.arch.name, 'any'))
             if len(pkgs) == 0:
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)
-                deps.append({'dep': dep, 'pkg': None})
+                pkg = None
             elif len(pkgs) == 1:
-                deps.append({'dep': dep, 'pkg': pkgs[0]})
+                pkg = pkgs[0]
             else:
-                tpkgs = pkgs.filter(repo__testing=True)
-                if len(tpkgs) == 1:
-                    deps.append({'dep': dep, 'pkg': tpkgs[0]})
+                # more than one package, see if we can't shrink it down
+                # grab the first though in case we fail
+                pkg = pkgs[0]
+                if self.repo.testing:
+                    pkgs = pkgs.filter(repo__testing=True)
                 else:
-                    for pkg in pkgs:
-                        deps.append({'dep': dep, 'pkg': pkg})
+                    pkgs = pkgs.filter(repo__testing=False)
+                if len(pkgs) > 0:
+                    pkg = pkgs[0]
+            deps.append({'dep': dep, 'pkg': pkg})
         self.deps_cache = deps
         return deps
 
