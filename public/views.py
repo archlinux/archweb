@@ -21,10 +21,10 @@ def index(request):
 def userlist(request, type='Developers'):
     users = User.objects.order_by('username')
     if type == 'Developers':
-        users = users.filter(is_active=True).exclude(userprofile_user__roles="Trusted User")
+        users = users.filter(is_active=True, groups__name="Developers")
         msg = "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties."
     elif type == 'Trusted Users':
-        users = users.filter(is_active=True, userprofile_user__roles="Trusted User")
+        users = users.filter(is_active=True, groups__name="Trusted Users")
         msg = "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository."
     elif type == 'Fellows':
         users = users.filter(is_active=False)
