@@ -8,17 +8,18 @@ from django.contrib.auth.decorators import permission_required
 
 from main.models import Todolist
 from feeds import PackageFeed, NewsFeed
-from sitemaps import NewsSitemap, PackagesSitemap
+from sitemaps import NewsSitemap, PackagesSitemap, PackageFilesSitemap
 
 
 feeds = {
+    'news':     NewsFeed,
     'packages': PackageFeed,
-    'news':     NewsFeed
 }
 
 sitemaps = {
-    'news':     NewsSitemap,
-    'packages': PackagesSitemap,
+    'news':          NewsSitemap,
+    'packages':      PackagesSitemap,
+    'package-files': PackageFilesSitemap,
 }
 
 admin.autodiscover()
@@ -82,7 +83,9 @@ urlpatterns = patterns('',
     (r'^feeds/$', 'public.views.feeds'),
     (r'^feeds/(?P<url>.*)/$',
         'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
-    (r'^sitemap.xml$', 'django.contrib.sitemaps.views.sitemap',
+    (r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
+        {'sitemaps': sitemaps}),
+    (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap',
         {'sitemaps': sitemaps}),
 
 # Authentication / Admin

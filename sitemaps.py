@@ -3,7 +3,7 @@ from main.models import Package, News
 
 class PackagesSitemap(Sitemap):
     changefreq = "monthly"
-    priority = "0.4"
+    priority = "0.5"
 
     def items(self):
         return Package.objects.select_related('arch', 'repo').all()
@@ -11,6 +11,17 @@ class PackagesSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.last_update
+
+
+class PackageFilesSitemap(PackagesSitemap):
+    priority = "0.3"
+
+    def location(self, obj):
+        return PackagesSitemap.location(self, obj) + 'files/'
+
+    def lastmod(self, obj):
+        return obj.files_last_update
+
 
 class NewsSitemap(Sitemap):
     changefreq = "never"
