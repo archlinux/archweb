@@ -228,7 +228,7 @@ def db_update(archname, pkgs, options):
         # produce a lot of false positives (or a div by zero). fake it
         dbpercent = 100.0
     logger.info("DB package ratio: %.1f%%" % dbpercent)
-    if dbpercent < 50.0 and repository.name.lower().find('testing') == -1:
+    if dbpercent < 50.0 and not repository.testing:
         logger.error(".db.tar.gz has %.1f%% the number of packages in the web database" % dbpercent)
         raise SomethingFishyException(
             'It looks like the syncdb is less than half the size of the web db. WTF?')
