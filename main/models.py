@@ -161,7 +161,8 @@ class Arch(models.Model):
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,unique=True)
-    testing = models.BooleanField(default=False)
+    testing = models.BooleanField(default=False,
+        help_text="Is this repo meant for package testing?")
     def __unicode__(self):
         return self.name
     class Meta:

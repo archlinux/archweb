@@ -68,6 +68,11 @@ class MirrorAdmin(admin.ModelAdmin):
             MirrorRsyncInlineAdmin,
     ]
 
+class RepoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'testing')
+    list_filter = ('testing',)
+    search_fields = ('name',)
+
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('pkgname', 'repo', 'arch', 'maintainer')
     list_filter = ('repo', 'arch', 'maintainer')
@@ -99,7 +104,7 @@ admin.site.register(MirrorProtocol)
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Press, PressAdmin)
 admin.site.register(Arch)
-admin.site.register(Repo)
+admin.site.register(Repo, RepoAdmin)
 admin.site.register(ExternalProject)
 
 # vim: set ts=4 sw=4 et:
