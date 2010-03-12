@@ -63,7 +63,7 @@ urlpatterns = patterns('',
     (r'^news/add/$',           'news.views.add'),
     (r'^news/edit/(\d+)/$',    'news.views.edit'),
     (r'^news/delete/(\d+)/$',  'news.views.delete'),
-    (r'^news/$',               'news.views.list'),
+    (r'^news/$',               'news.views.list', {}, 'news-list'),
 
     (r'^mirrors/$',        'devel.views.mirrorlist'),
 
@@ -80,7 +80,7 @@ urlpatterns = patterns('',
     (r'^devel/newuser/$', 'devel.views.new_user_form'),
 
 # Feeds and sitemaps
-    (r'^feeds/$', 'public.views.feeds'),
+    (r'^feeds/$', 'public.views.feeds', {}, 'feeds-list'),
     (r'^feeds/(?P<url>.*)/$',
         'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
@@ -97,21 +97,21 @@ urlpatterns = patterns('',
         'template_name': 'registration/logout.html'}),
     (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
         'template_name': 'registration/logout.html'}),
-    (r'^admin/(.*)', admin.site.root),
+    (r'^admin/', include(admin.site.urls)),
 
 # (mostly) Static Pages
-    (r'^$', 'public.views.index'),
-    (r'^about/$', direct_to_template, {'template': 'public/about.html'}),
-    (r'^art/$', direct_to_template, {'template': 'public/art.html'}),
-    (r'^svn/$', direct_to_template, {'template': 'public/svn.html'}),
-    (r'^developers/$',   'public.views.userlist', { 'type':'Developers' }),
-    (r'^trustedusers/$', 'public.views.userlist', { 'type':'Trusted Users' }),
-    (r'^fellows/$',      'public.views.userlist', { 'type':'Fellows' }),
-    (r'^donate/$', 'public.views.donate'),
-    (r'^download/$', 'public.views.download'),
-    (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}),
-    (r'^moreforums/$', 'public.views.moreforums'),
-    (r'^projects/$', 'public.views.projects'),
+    (r'^$', 'public.views.index', {}, 'index'),
+    (r'^about/$', direct_to_template, {'template': 'public/about.html'}, 'page-about'),
+    (r'^art/$', direct_to_template, {'template': 'public/art.html'}, 'page-art'),
+    (r'^svn/$', direct_to_template, {'template': 'public/svn.html'}, 'page-svn'),
+    (r'^developers/$',   'public.views.userlist', { 'type':'Developers' }, 'page-devs'),
+    (r'^trustedusers/$', 'public.views.userlist', { 'type':'Trusted Users' }, 'page-tus'),
+    (r'^fellows/$',      'public.views.userlist', { 'type':'Fellows' }, 'page-fellows'),
+    (r'^donate/$', 'public.views.donate', {}, 'page-donate'),
+    (r'^download/$', 'public.views.download', {}, 'page-download'),
+    (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}, 'page-irc'),
+    (r'^moreforums/$', 'public.views.moreforums', {}, 'page-forums'),
+    (r'^projects/$', 'public.views.projects', {}, 'page-projects'),
     (r'^opensearch/packages/$', 'packages.views.opensearch'),
 
 # Some django internals we use
@@ -124,4 +124,3 @@ if settings.DEBUG == True:
             {'document_root': settings.DEPLOY_PATH+'/media'}))
 
 # vim: set ts=4 sw=4 et:
-
