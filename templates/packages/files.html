@@ -3,6 +3,9 @@
 {% block content %}
     <div class="box">
         <h2 class="title">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
+        <p style="padding: 10px 20px;">
+            <a href="{{ pkg.get_absolute_url }}">Back to Package</a>
+        </p>
         {% include "packages/files-list.html" %}
     </div>
 {% endblock %}
