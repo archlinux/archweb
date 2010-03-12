@@ -112,7 +112,7 @@ urlpatterns = patterns('',
     (r'^irc/$', direct_to_template, {'template': 'public/irc.html'}, 'page-irc'),
     (r'^moreforums/$', 'public.views.moreforums', {}, 'page-forums'),
     (r'^projects/$', 'public.views.projects', {}, 'page-projects'),
-    (r'^opensearch/packages/$', 'packages.views.opensearch'),
+    (r'^opensearch/packages/$', 'packages.views.opensearch', {}, 'opensearch-packages'),
 
 # Some django internals we use
     (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
