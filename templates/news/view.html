@@ -1,14 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - {{ news.title }}{% endblock %}
+{% block title %}Arch Linux - News: {{ news.title }}{% endblock %}
 
 {% block content %}
-	<div class="box">
-		<div style="float: right; font-size: small">
-			{{ news.author.get_full_name }}<br />
-			{{ news.postdate }}
-		</div>
-		<h3>{{ news.title }}</h3>
-		<hr /><br />
-		{{ news.content|safe|linebreaks }}
-	</div>
+<div id="news-article" class="box">
+
+    <h2>News: {{ news.title }}</h2>
+
+    {% if perms.main.change_news %}
+    <ul class="admin-actions">
+        <li><a href="/news/edit/{{ news.id }}/" title="Edit this article">Edit News Item</a></li>
+        {% if perms.main.delete_news %}
+        <li><a href="/news/delete/{{ news.id }}/" title="Delete this article">Delete News Item</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    <p class="article-info">{{ news.postdate }} - {{ news.author.get_full_name }}</p>
+
+    {{ news.content|safe|linebreaks }}
+
+</div>
 {% endblock %}

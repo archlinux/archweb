@@ -1,28 +1,49 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - News{% endblock %}
+
 {% block content %}
-	<div class="greybox">
-	{% if perms.main.add_news %}
-		<div style="float:right">
-			<a href="/news/add/">Add News Item</a>
-		</div>
-	{% endif %}
-		<h2 class="title">News Updates</h2>
-		<table class="results" width="100%">
-		{% for item in news_list %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td>{{ item.postdate }}</td>
-				<td><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></td>
-				<td>
-        {% if perms.main.change_news %}
-					<a href="/news/edit/{{ item.id }}/">edit</a>
-        {% endif %}
-        {% if perms.main.delete_news %}
-					<a href="/news/delete/{{ item.id }}/">delete</a>
-        {% endif %}
-				</td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
+<div id="news-article-list" class="box">
+
+    <h2>News Archives</h2>
+
+    {% if perms.main.add_news %}
+    <ul class="admin-actions">
+        <li><a href="/news/add/" title="Add a news item">Add News Item</a></li>
+    </ul>
+    {% endif %}
+
+    <table id="article-list" class="results">
+        <thead>
+            <tr>
+                <th>Published</th>
+                <th>Title</th>
+                <th>Author</th>
+                {% if perms.main.change_news %}
+                <th></th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in news_list %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ item.postdate }}</td>
+                <td class="wrap"><a href="{{ item.get_absolute_url }}"
+                        title="View: {{ item.title }}">{{ item.title }}</a></td>
+                <td>{{ item.author.get_full_name }}</td>
+                {% if perms.main.change_news %}
+                <td>
+                    <a href="/news/edit/{{ item.id }}/"
+                        title="Edit: {{ item.title }}">Edit</a>
+                    {% endif %}
+                    {% if perms.main.delete_news %}
+                    &nbsp;&nbsp;<a href="/news/delete/{{ item.id }}/"
+                        title="Delete: {{ item.title }}">Delete</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
 {% endblock %}
