@@ -1,21 +1,18 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - Edit Profile{% endblock %}
 
 {% block content %}
-	<div class="greybox">
-		<h2 class="title">Developer Profile</h2>
-		<form method="post" action=".">
-		<table>
-			<tr>
-				<th>Username:</th>
-				<td><strong>{{ user.username }}</strong></td>
-			</tr>
-            {{form}}
-			<tr>
-				<td colspan="2" align="right">
-					<input type="submit" value=" Save ">
-				</td>
-			</tr>
-		</table>
-		</form>
-	</div>
+<div id="dev-edit-profile" class="box">
+
+    <h2>Developer Profile</h2>
+
+    <form id="edit-profile-form" method="post" action=".">
+        <fieldset>
+            <legend>Username: <strong>{{ user.username }}</strong></legend>
+            {{ form.as_p }}
+        </fieldset>
+        <p><label></label> <input title="Save changes" type="submit" value="Save" /></p>
+    </form>
+
+</div>
 {% endblock %}
