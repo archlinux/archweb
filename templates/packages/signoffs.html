@@ -2,9 +2,13 @@
 {% block title %}Arch Linux - Package Signoffs{% endblock %}
 
 {% block content %}
-    {% if packages %}
-    <div class="greybox">
-        <table class="results" width="100%">
+{% if packages %}
+<div id="dev-signoffs" class="box">
+
+    <h2>Package Signoffs</h2>
+
+    <table id="signoffs" class="results">
+        <thead>
             <tr>
                 <th>Arch</th>
                 <th>Package</th>
@@ -14,28 +18,33 @@
                 <th>Approved</th>
                 <th>Signoff</th>
             </tr>
-        {% for pkg,target in packages %}
-        <tr class="{% cycle pkgr2,pkgr1 %}">
+        </thead>
+        <tbody>
+            {% for pkg,target in packages %}
+            <tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ pkg.arch.name }}</td>
-                <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
+                <td><a href="{{ pkg.get_absolute_url }}"
+                        title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                 <td>{{ pkg.last_update }}</td>
                 <td>{{ target }}</td>
-                <td class="signoff_{{pkg.approved_for_signoff|yesno}}">{{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
+                <td class="signoff-{{pkg.approved_for_signoff|yesno}}">
+                    {{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
                 <td>
                     <ul>
-                    {% for signoff in pkg.signoffs %}
-                    <li>{{signoff.packager}}</li>
-                    {% endfor %}
-                    <li>
-                    <a href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/">Signoff</a>
-                    </li>
+                        <li><a href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/"
+                            title="Signoff {{pkg.pkgname}} for {{pkg.arch}}">Signoff</a>
+                        </li>
+                        {% for signoff in pkg.signoffs %}
+                        <li class="signed-username" title="Signed off by {{signoff.packager}}">
+                        {{signoff.packager}}</li>
+                        {% endfor %}
                     </ul>
                 </td>
             </tr>
         {% endfor %}
-        </table>
-    </div>
-    {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% endblock %}
-
