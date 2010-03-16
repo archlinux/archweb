@@ -1,0 +1,11 @@
+/*
+ *  ARCH LINUX DJANGO (MAIN SITE)
+ *
+ *  Stylesheet for printing
+ */
+
+/* general styling */
+body { font: normal 100% sans-serif; }
+#content { font-size: 0.812em; }
+#archnavbarmenu, #archdev-navbar, .admin-actions { display: none; }
+
