@@ -8,7 +8,7 @@ The following package:
     Repository:   {{ pkg.repo.name }}
     ({{ weburl }})
 
-has been added to this to-do list:
+has been added to this todo list:
 
 Creator: {{todolist.creator.get_full_name}}
 Name: {{todolist.name}}
