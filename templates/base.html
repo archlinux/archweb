@@ -1,73 +1,90 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-    <head>
-        <title>{% block title %}Arch Linux{% endblock %}</title>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="/media/arch.css" />
-        <link rel="icon" type="image/x-icon" href="/media/favicon.ico" />
-        <link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico" />
-        <link rel="search" type="application/opensearchdescription+xml" href="{% url opensearch-packages %}" title="Arch Linux Packages" />
-        {% block head %}
-        {% endblock %}
-    </head>
-    <body>
-        <div id="head_container">
-            <div id="title">
-              <div id="logo"><h1 id="archtitle"><a href="/" title="Arch Linux (Home)">Arch Linux</a></h1></div>
-            </div>
-            <div id="main_nav">
-                {% block topmenu %}
-                <ul>
-                    <li{% ifnotequal path '/download/' %} class="selected"{% endifnotequal %}><a href="/">Home</a></li>
-                    <li><a href="http://bbs.archlinux.org/">Forums</a></li>
-                    <li><a href="http://wiki.archlinux.org/">Wiki</a></li>
-                    <li><a href="http://bugs.archlinux.org/">Bugs</a></li>
-                    <li><a href="http://aur.archlinux.org/">AUR</a></li>
-                    <li{% ifequal path '/download/' %} class="selected"{% endifequal %}><a href="{% url page-download %}">Download</a></li>
-                </ul>
-                {% endblock %}
-            </div>
-            <div id="dev_nav">
-                {% if user.is_authenticated %}
-                    <ul>
-                        <li><a href="/devel/">Dashboard</a></li>
-                        <li><a href="{% url news-list %}">News</a></li>
-                        <li><a href="/packages/signoffs/">Signoffs</a></li>
-                        <li><a href="/todo/">Todos</a></li>
-                        <li><a href="http://www.archlinux.org/mailman/private/arch-dev/">Archives</a></li>
-                        <li><a href="/mirrors/">Mirrors</a></li>
-                        <li><a href="/devel/profile/">Profile</a></li>
-                        <li><a href="/accounts/logout/">Logout</a></li>
-                     </ul>
-                {% endif %}
-            </div>
+<head>
+    <title>{% block title %}Arch Linux{% endblock %}</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/media/archweb.css" media="screen, projection" />
+    <link rel="stylesheet" type="text/css" href="/media/archweb-print.css" media="print" />
+    <link rel="icon" type="image/x-icon" href="/media/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico" />
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url opensearch-packages %}" title="Arch Linux Packages" />
+    {% block head %}{% endblock %}
+</head>
+<body class="{% if user.is_authenticated %}devmode{% endif %} {% block bodyclass %}{% endblock %}">
+
+    <div id="archnavbar">
+        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+        <div id="archnavbarmenu">
+            <ul id="archnavbarlist">
+                <li id="anb-home" {% ifnotequal path '/download/' %}class="selected"{% endifnotequal %}>
+                <a href="/" title="Arch news, packages, projects and more">Home</a></li>
+                <li id="anb-packages" {% ifequal path '/packages/' %} class="selected"{% endifequal %}>
+                <a href="/packages/" title="Arch Package Database">Packages</a></li>
+                <li id="anb-forums"><a href="http://archweb.cinderwick.ca/forums/" title="Community forums">Forums</a></li>
+                <li id="anb-wiki"><a href="http://archweb.cinderwick.ca/wiki/" title="Community documentation">Wiki</a></li>
+                <li id="anb-bugs"><a href="http://archweb.cinderwick.ca/bugs/" title="Report and track bugs">Bugs</a></li>
+                <li id="anb-aur"><a href="http://aur/" title="Arch Linux User Repository">AUR</a></li>
+                <li id="anb-download" {% ifequal path '/download/' %} class="selected"{% endifequal %}>
+                <a href="{% url page-download %}" title="Get Arch Linux">Download</a></li>
+            </ul>
         </div>
-        <div id="content">
-            {% if messages %}
-            <div class="box" style="width: 50%; text-align: center; margin-left: auto; margin-right: auto">
+    </div><!-- #archnavbar -->
+
+    <div id="content">
+        <div id="archdev-navbar">
+            {% if user.is_authenticated %}
+                <ul>
+                    <li><a href="/devel/" title="Developer Dashboard">Dashboard</a></li>
+                    <li><a href="http://wiki.archlinux.org/index.php/DeveloperWiki"
+                        title="Developer HOWTOs and documentation">DevWiki</a></li>
+                    <li><a href="http://projects.archlinux.org/" title="Git Projects">Projects</a></li>
+                    <li><a href="{% url news-list %}" title="Manage news articles">News</a></li>
+                    <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
+                    <li><a href="/todo/" title="Developer to-do lists">Todos</a></li>
+                    <li><a href="http://www.archlinux.org/mailman/private/arch-dev/"
+                        title="arch-dev mailing list archives">Archives</a></li>
+                    <li><a href="/mirrors/" title="Mirror server statistics">Mirrors</a></li>
+                    <li><a href="/devel/profile/" title="Modify your account profile">Profile</a></li>
+                    <li><a href="/accounts/logout/" title="Logout of the developer interface">Logout</a></li>
+                </ul>
+            {% endif %}
+        </div><!-- #archdev-navbar -->
+
+        {% if messages %}
+            <div id="sys-message" class="box">
                 {% for message in messages %}
-                <p>{{message}}</p>
+                    <p>{{message}}</p>
                 {% endfor %}
             </div>
-            <br />
-            {% endif %}
-            {% block content %}
-            <div class="right">
-                {% block content_right %}
-                {% endblock %}
+        {% endif %}
+
+        {% block content %}
+            <div id="content-left-wrapper">
+                <div id="content-left">
+                    {% block content_left %}{% endblock %}
+                </div><!-- #content_left -->
             </div>
-            <div class="left">
-                {% block content_left %}
-                {% endblock %}
-            </div>
-            {% endblock %}
-        </div>
-        <div class="foot">
-          Copyright &copy; 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org" title="contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org" title="contact Aaron Griffin">Aaron Griffin</a>.<br />
-          The Arch Linux name and logo are recognized trademarks. Some rights
-          reserved.<br />
-          The registered trademark Linux® is used pursuant to a sublicense from LMI, the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.
-        </div>
-    </body>
+
+            <div id="content-right">
+                {% block content_right %}{% endblock %}
+            </div><!-- #content_right -->
+        {% endblock %}
+
+        <div id="footer">
+            <p>Copyright &copy; 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
+                title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
+                title="Contact Aaron Griffin">Aaron Griffin</a>.</p>
+
+            <p>The Arch Linux name and logo are recognized
+            <a href="http://wiki.archlinux.org/index.php/DeveloperWiki:TrademarkPolicy"
+                title="Arch Linux Trademark Policy">trademarks</a>. Some rights reserved.</p>
+
+            <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,
+            the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
+        </div><!-- #footer -->
+
+    </div><!-- #content -->
+
+</body>
 </html>
