@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - RSS Feeds{% endblock %}
+
 {% block content %}
-<div class="box">
-    <h2 class="title">RSS Feeds</h2>
-    <br /><br />
+<div id="rss-feeds" class="box">
+
+    <h2>RSS Feeds</h2>
+
     <p>Several RSS feeds are available for consumption from the Arch website.
-    The majority of these are package related and allow feeds to be customized
+    The majority of these are package-related and allow feeds to be customized
     for the updates you care about.</p>
-    <p>Grab the <a href="/feeds/news/">news item feed <img src="/media/rss.png" alt="RSS Feed" /></a>
+
+    <h3>News and Activity Feeds</h3>
+
+    <p>Grab the <a href="/feeds/news/" class="rss" title="Arch Linux News feed">news item feed</a>
     to keep up-to-date with the latest news from the Arch Linux development staff.</p>
-    <p>If you are interested in
-    <a href="/feeds/packages/">all package updates <img src="/media/rss.png" alt="RSS Feed" /></a>,
+
+    <p>The <a href="http://wiki.archlinux.org/index.php?title=Special:RecentChanges&amp;feed=rss"
+    title="ArchWiki Recent Changes feed" class="rss">Arch Wiki: Recent changes feed</a>
+    is also available to track document changes from the <a href="http://wiki.archlinux.org/"
+    title="Arch Wiki community documentation">Arch Wiki</a>.</p>
+
+    <h3>Package Feeds</h3>
+
+    <p>If you are interested in <a href="/feeds/packages/" class="rss"
+        title="Arch Linux all package update feed">all package updates</a>,
     then grab this feed. Note that when a package is updated for multiple
     architectures, you will see each individual update show up here.
     Alternatively, you can select a packages feed from the below table that is
@@ -18,25 +31,84 @@
     architecture, there are a variety of feeds you can choose from. Note that
     feeds for a specific architecture, such as 'i686', will also include all
     package updates for 'any' (architecture-independent) packages.</p>
-    <table id="feedlist" class="center">
-        <tr>
-            <th>Architecture</th>
-            <th>All Repos</th>
-            {% for repo in repos %}
-            <th>{{ repo }}</th>
-            {% endfor %}
-        </tr>
-        {% for arch in arches %}
-        <tr>
-            <td><strong>{{ arch }}</strong></td>
-            <td><a href="/feeds/packages/{{ arch }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td>
-            {% for repo in repos %}
-            <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/">Feed <img src="/media/rss.png" alt="RSS Feed" /></a></td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-<br /><br />
-{% endblock %}
 
+    <table class="pretty2">
+        <thead>
+            <tr>
+                <th>Architecture</th>
+                <th>All Repos</th>
+                {% for repo in repos %}
+                <th>{{ repo }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for arch in arches %}
+            <tr>
+                <td><strong>{{ arch }}</strong></td>
+                <td><a href="/feeds/packages/{{ arch }}/" class="rss">Feed</a></td>
+                {% for repo in repos %}
+                <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>A <a href="http://aur.archlinux.org/rss.php" class="rss" title="AUR
+        newest packages feed">Newest Packages feed</a> is also available from
+    the <a href="http://aur.archlinux.org/" title="AUR Homepage">Arch User
+        Repository (AUR)</a>.</p>
+
+    <h3>Development Feeds</h3>
+
+    <p>Subscribe to any of the following to track bug tickets and feature
+    requests from the <a href="http://bugs.archlinux.org/" title="Arch Linux
+        Bugs">Arch Linux Bugtracker</a>:</p>
+
+    <table class="pretty2">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Recently Opened Tasks</th>
+                <th>Recently Edited Tasks</th>
+                <th>Recently Closed Tasks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>All Projects</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=99" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=99" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=99" class="rss">Feed</a></td>
+            </tr><tr>
+                <td>Arch Linux</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=1" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=1" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=1" class="rss">Feed</a></td>
+            </tr><tr>
+                <td>Release Engineering</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=6" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=6" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=6" class="rss">Feed</a></td>
+            </tr><tr>
+                <td>Pacman Development</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=3" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=3" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=3" class="rss">Feed</a></td>
+            </tr><tr>
+                <td>Community Packages</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=5" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=5" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=5" class="rss">Feed</a></td>
+            </tr><tr>
+                <td>AUR</td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=2" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=2" class="rss">Feed</a></td>
+                <td><a href="http://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=2" class="rss">Feed</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+ </div>
+{% endblock %}
