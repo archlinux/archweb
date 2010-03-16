@@ -6,107 +6,161 @@
 {% endblock %}
 
 {% block content %}
-	{% if todos %}
-	<div class="greybox">
-		<h3 class="title">Package ToDo Lists</h3>
-		<table class="results" width="100%">
-			<tr>
-				<th>Name</th>
-				<th>Creation Date</th>
-				<th>Description</th>
-			</tr>
-		{% for todo in todos %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td style="white-space:nowrap"><a href="/todo/{{ todo.id }}/">{{ todo.name }}</a></td>
-				<td>{{ todo.date_added }}</td>
-				<td>{{ todo.description }}</td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
-	<br /><br />
-	{% endif %}
-	
-    <div class="greybox">
-		<h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Architecture</h3>
-        <table class="results" width="100%" style="display: none">
-			<tr>
-				<th width="50%">Arch</th>
-				<th># Packages</th>
-				<th># Flagged</th>
-			</tr>
-		{% for arch in arches %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><strong>{{ arch.name }}</strong></td>
-				<td><a href="/packages/?arch={{ arch.name }}"><strong>{{ arch.packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?arch={{ arch.name }}&flagged=Flagged"><strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
-	<br /><br />
-    <div class="greybox">
-		<h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Repository</h3>
-        <table class="results" width="100%" style="display: none">
-			<tr>
-				<th width="50%">Repository</th>
-				<th># Packages</th>
-				<th># Flagged</th>
-			</tr>
-		{% for repo in repos %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><strong>{{ repo.name }}</strong></td>
-				<td><a href="/packages/?repo={{ repo.name }}"><strong>{{ repo.packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?repo={{ repo.name }}&flagged=Flagged"><strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
-	<br /><br />
+<div id="dev-dashboard" class="box">
 
-	<div class="greybox">
-        <div>Counts are by 'pkgbase' and not raw number of packages.</div>
-        <h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Maintainer</h3>
-        <table class="results" width="100%" style="display: none">
-			<tr>
-				<th width="50%">Maintainer</th>
-				<th># Packages</th>
-			</tr>
-		{% for maint in maintainers %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
-				<td><strong>{{ maint.get_full_name }}</strong></td>
-				<td><a href="/packages/?maintainer={{ maint.username }}"><strong>{{ maint.package_relations.count }}</strong> packages</a></td>
-			</tr>
-		{% endfor %}
-		</table>
-	</div>
-	<br /><br />
+    <h2>Developer Dashboard</h2>
 
-	<div class="greybox">
-		<h3 class="title">My Flagged Packages</h3>
-        <form method="post" action="/devel/notify/">
-            <input name="notify" type="checkbox" value="yes"
-            {% if user.get_profile.notify %} checked="checked"{% endif %} />
-            Notify me when packages are flagged&nbsp;&nbsp;
-            <input type="submit" value="Update" />
-        </form>
-		<br />
-		<table class="results" width="100%">
-			<tr>
-				<th style="width: 50%">Name</th>
-				<th>Repo</th>
-				<th>Version</th>
-				<th>Arch</th>
-			</tr>
-                {% for pkg in flagged %}
-                <tr class="{% cycle pkgr2,pkgr1 %}">
-                    <td>
-                        <a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a>
-                    </td>
+    {% if todos %}
+        <h3>Package Todo Lists</h3>
+
+        <table id="dash-todo" class="results dash-stats">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Creation Date</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                    <tr class="{% cycle 'odd' 'even' %}">
+                        <td class="key"><a href="/todo/{{ todo.id }}/"
+                                title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
+                        <td>{{ todo.date_added }}</td>
+                        <td>{{ todo.description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <h3>My Flagged Packages</h3>
+
+    <table id="dash-myflagged" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Name</th>
+                <th>Repo</th>
+                <th>Version</th>
+                <th>Arch</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pkg in flagged %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td><a href="{{ pkg.get_absolute_url }}"
+                            title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.pkgver }}</td>
                     <td>{{ pkg.arch.name }}</td>
                 </tr>
-                {% endfor %}
-		</table>
+            {% empty %}
+                <tr><td colspan="4"><em>No flagged packages to display</em></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form id="dash-pkg-notify" method="post" action="/devel/notify/">
+        <fieldset>
+            <p><input id="notify" name="notify" type="checkbox" value="yes"
+            {% if user.get_profile.notify %} checked="checked"{% endif %} />
+            <label for="notify">Notify me when packages are flagged out-of-date</label>
+            <input title="Update notification status" type="submit" value="Update" /></p>
+        </fieldset>
+    </form>
+
+</div><!-- #dev-dashboard -->
+
+<div id="dash-by-arch" class="dash-stats box">
+
+    <h3 class="dash-stats" style="cursor: pointer"
+        title="Click to toggle stats by architecture" onclick="$(this).next().toggle();">
+        Stats by Architecture <span class="dash-click">(click to toggle)</span></h3>
+
+    <table id="stats-by-arch" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Arch</th>
+                <th># Packages</th>
+                <th># Flagged</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for arch in arches %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ arch.name }}</td>
+                    <td><a href="/packages/?arch={{ arch.name }}"
+                            title="View all packages for the {{ arch.name }} architecture">
+                            <strong>{{ arch.packages.count }}</strong> packages</a></td>
+                    <td><a href="/packages/?arch={{ arch.name }}&amp;flagged=Flagged"
+                            title="View all flagged packages for the {{ arch.name }} architecture">
+                            <strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div><!-- #dash-by-arch -->
+
+<div id="dash-by-repo" class="dash-stats box">
+
+    <h3 class="dashboard dash-stats" style="cursor: pointer"
+        title="Click to toggle stats by repository" onclick="$(this).next().toggle();">
+        Stats by Repository <span class="dash-click">(click to toggle)</span></h3>
+
+    <table id="stats-by-repo" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Repository</th>
+                <th># Packages</th>
+                <th># Flagged</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repo in repos %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ repo.name }}</td>
+                    <td><a href="/packages/?repo={{ repo.name }}"
+                            title="View all packages in the {{ repo.name }} repository">
+                            <strong>{{ repo.packages.count }}</strong> packages</a></td>
+                    <td><a href="/packages/?repo={{ repo.name }}&amp;flagged=Flagged"
+                            title="View all flagged packages in the {{ repo.name }} repository">
+                            <strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div><!-- dash-by-arch -->
+
+<div id="dash-by-maintainer" class="dash-stats box">
+
+    <h3 class="dashboard dash-stats" style="cursor: pointer"
+        title="Click to toggle stats by maintainer" onclick="$(this).next().toggle();">
+        Stats by Maintainer <span class="dash-click">(click to toggle)</span></h3>
+
+    <table id="stats-by-maintainer" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Maintainer</th>
+                <th># Base Packages</th>
+                <th># Flagged</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for maint in maintainers %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ maint.get_full_name }}</td>
+                    <td><a href="/packages/?maintainer={{ maint.username }}"
+                            title="View all packages maintained by {{ maint.get_full_name }}">
+                            <strong>{{ maint.package_relations.count }}</strong> base packages</a></td>
+                    <td><a href="/packages/?maintainer={{ maint.username }}&amp;flagged=Flagged"
+                            title="View all flagged packages maintained by {{ maint.get_full_name }}">
+                            Flagged packages</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div><!-- #dash-by-maintainer -->
 {% endblock %}
