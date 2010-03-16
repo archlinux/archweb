@@ -1,13 +1,16 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - {{ user_type }}{% endblock %}
 
 {% block content %}
-<div class="box">
-    <h2 class="title">Arch Linux {{user_type}}</h2>
-	<p>{{description}}</p>
+<div id="dev-tu-profiles" class="box">
+
+    <h2>Arch Linux {{user_type}}</h2>
+
+    <p>{{description}}</p>
+
     {% with users as dev_list %}
     {% include 'public/developer_list.html' %}
     {% endwith %}
-</div>
-<br /><br />
-{% endblock %}
 
+</div>
+{% endblock %}
