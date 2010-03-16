@@ -72,6 +72,10 @@ class Mirror(models.Model):
     rsync_user = models.CharField(max_length=50, blank=True, default='')
     rsync_password = models.CharField(max_length=50, blank=True, default='')
     notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ('country', 'name')
+
     def __unicode__(self):
         return self.name
 
@@ -106,10 +110,13 @@ class MirrorRsync(models.Model):
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
+
     def __unicode__(self):
         return self.name
+
     class Meta:
         db_table = 'donors'
+        ordering = ['name']
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
