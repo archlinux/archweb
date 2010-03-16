@@ -1,23 +1,22 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - Developer Login{% endblock %}
 
 {% block content %}
+<div id="dev-login" class="box">
 
-<div class="greybox">
-<h2 class="title">Developer Login</h2>
-{% if form.has_errors %}
-<p class="error">Your username and password didn't match. Please try again.</p>
-{% endif %}
-<br /><br />
+    <h2>Developer Login</h2>
 
-<form method="post" action=".">
-<input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
-<table>
-	<tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
-	<tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
-	<tr><td colspan="2" align="right"><input type="submit" value="Login" /></td></tr>
-</table>
-</form>
+    {% if form.has_errors %}
+    <p class="login-error">Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+    <form id="dev-login-form" method="post" action=".">
+        <fieldset>
+            <legend>Enter login credentials</legend>
+            {{ form.as_p }}
+            <p><label></label> <input type="submit" value="Login" /></p>
+        </fieldset>
+    </form>
+
 </div>
-
 {% endblock %}
-
