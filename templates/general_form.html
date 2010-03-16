@@ -1,25 +1,23 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - {{title}}{% endblock %}
 
 {% block content %}
-	<div class="greybox">
-        <h2 class="title">{{title}}</h2>
-        {% if description %}{{description}}{% endif %}
-		<form method="post" action=".">
-		<table>
+<div id="generic-form" class="box">
+
+    <h2>{{title}}</h2>
+
+    {% if description %}{{description}}{% endif %}
+
+    <form class="general-form" method="post" action=".">
+        <fieldset>
             {% for field in form %}
-                <tr>
-                    <td style="vertical-align:top">
-                        <span {% if field.required %}style="fontweight: bold"{% endif%}>{{field.label}}:</span>
-                        <br /><span style="font-size:x-small">{{field.help_text}}</span></td>
-                    <td>{{field}}</td>
-                </tr>
+                <p><label>{{field.label}}{% if field.help_text %}:</label><br />
+                <span class="form-help">{{field.help_text}}</span> {% else %}:</label> {% endif %}
+                {{field}} {% if field.required %}<span class="form-req-field">*</span>{% endif%}</p>
             {% endfor %}
-            <tr>
-				<td colspan="2" style="text-align:right">
-                    <input type="submit" value=" {{submit_text}} " />
-				</td>
-			</tr>
-		</table>
-		</form>
-	</div>
+        </fieldset>
+        <p><label></label> <input type="submit" value="{{submit_text}}" /></p>
+    </form>
+
+</div>
 {% endblock %}
