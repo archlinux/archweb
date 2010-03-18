@@ -13,7 +13,7 @@
 @import url('http://cinderwick.ca/archnavbar/archnavbar.css');
 
 /* simple reset */
-* { margin: 0; padding: 0; border: 0; line-height: 1.4; }
+* { margin: 0; padding: 0; line-height: 1.4; }
 
 /* general styling */
 body { min-width: 650px; background: #eef; color: #444; font: normal 100% sans-serif; text-align: center; }
@@ -26,6 +26,7 @@ blockquote { margin: 1.5em 2em; }
 input { vertical-align: middle; }
 .clear { clear: both; }
 hr { border: none; border-top: 1px solid #888; }
+img { border: 0; }
 
 /* scale fonts down to a sane default (16 * .812 = 13px) */
 #content { font-size: 0.812em; }
@@ -74,11 +75,9 @@ table.pretty2 td { padding: 0.35em; border: 1px dotted #bbb; }
 
 /* forms and input styling */
 form p { margin: 0.5em 0; }
+fieldset { border: 0; }
 label { width: 12em; vertical-align: top; display: inline-block; font-weight: bold; }
-input, textarea, select { background: #ffc; border: 1px solid #cca; }
 input[type=text], input[type=password], textarea { padding: 0.10em; }
-input[type=submit], input[type=button] { background: #6af; color: #fff; border: 1px solid #37c; font-weight: bold; margin: 0; padding: 0.10em 0.25em; }
-input[type=submit]:hover, input[type=button]:hover { background: #38d; border-color: #04a; }
 form.general-form label, form.general-form .form-help { width: 10em; vertical-align: top; display: inline-block; }
 form.general-form input[type=text], form.general-form textarea { width: 45%; }
 
