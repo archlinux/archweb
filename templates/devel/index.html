@@ -65,18 +65,17 @@
 	<br /><br />
 
 	<div class="greybox">
+        <div>Counts are by 'pkgbase' and not raw number of packages.</div>
         <h3 class="title" style="cursor: pointer" onclick="$(this).next().toggle();">Stats by Maintainer</h3>
         <table class="results" width="100%" style="display: none">
 			<tr>
 				<th width="50%">Maintainer</th>
 				<th># Packages</th>
-				<th># Flagged</th>
 			</tr>
 		{% for maint in maintainers %}
             <tr class="{% cycle pkgr2,pkgr1 %}">
 				<td><strong>{{ maint.get_full_name }}</strong></td>
-				<td><a href="/packages/?maintainer={{ maint.username }}"><strong>{{ maint.maintained_packages.count }}</strong> packages</a></td>
-				<td><a href="/packages/?maintainer={{ maint.username }}&flagged=Flagged"><strong>{{ maint.maintained_packages.flagged.count }}</strong> packages</a></td>
+				<td><a href="/packages/?maintainer={{ maint.username }}"><strong>{{ maint.package_relations.count }}</strong> packages</a></td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -99,7 +98,7 @@
 				<th>Version</th>
 				<th>Arch</th>
 			</tr>
-                {% for pkg in user.maintained_packages.flagged %}
+                {% for pkg in flagged %}
                 <tr class="{% cycle pkgr2,pkgr1 %}">
                     <td>
                         <a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a>

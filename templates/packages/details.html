@@ -49,7 +49,14 @@
                 <td>{{ pkg.license }}</td>
             </tr><tr>
                 <th>Maintainer:</th>
-                <td>{% if pkg.maintainer %}{{ pkg.maintainer.get_full_name }}{% else %}None{% endif %}</td>
+                {% with pkg.maintainers as maints %}
+                <td>{% if maints %}
+                    {% for m in maints %}
+                    {{ m.get_full_name }}<br/>
+                    {% endfor %}
+                    {% else %}Orphan{% endif %}
+                </td>
+                {% endwith %}
             </tr><tr>
                 <th>Package Size:</th>
                 <td>{{ pkg.compressed_size|filesizeformat }}</td>

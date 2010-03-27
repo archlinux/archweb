@@ -74,8 +74,8 @@ class RepoAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('pkgname', 'repo', 'arch', 'maintainer')
-    list_filter = ('repo', 'arch', 'maintainer')
+    list_display = ('pkgname', 'repo', 'arch', 'last_update')
+    list_filter = ('repo', 'arch')
     ordering = ['pkgname']
     search_fields = ('pkgname',)
 

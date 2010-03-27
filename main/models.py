@@ -1,7 +1,9 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+
 from main.middleware import get_user
+from packages.models import PackageRelation
 
 ###########################
 ### User Profile Class ####
@@ -203,6 +205,18 @@ class Package(models.Model):
                 self.arch.name, self.pkgname)
 
     @property
+    def pkgbase_safe(self):
+        if self.pkgbase:
+            return self.pkgbase
+        return self.pkgname
+
+    @property
+    def maintainers(self):
+        return User.objects.filter(
+                package_relations__pkgbase=self.pkgbase_safe,
+                package_relations__type=PackageRelation.MAINTAINER)
+
+    @property
     def signoffs(self):
         if 'signoffs_cache' in dir(self):
             if len(self.signoffs_cache) > 0:
@@ -265,16 +279,12 @@ class Package(models.Model):
 
     def get_svn_link(self, svnpath):
         linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
-        if self.pkgbase:
-            dirname = self.pkgbase
-        else:
-            dirname = self.pkgname
         repo = self.repo.name.lower()
         if repo.startswith('community'):
             root = 'community'
         else:
             root = 'packages'
-        return linkbase % (root, dirname, svnpath)
+        return linkbase % (root, self.pkgbase_safe, svnpath)
 
     def get_arch_svn_link(self):
         repo = self.repo.name.lower()
@@ -362,4 +372,3 @@ class ExternalProject(models.Model):
         return self.name
 
 # vim: set ts=4 sw=4 et:
-

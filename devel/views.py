@@ -5,10 +5,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
+from django.db.models import Q
+
 from main.models import Package, Todolist
 from main.models import Arch, Repo
 from main.models import UserProfile, News
 from main.models import Mirror
+from packages.models import PackageRelation
+
 import random
 from string import ascii_letters, digits
 pwletters = ascii_letters + digits
@@ -17,12 +21,15 @@ pwletters = ascii_letters + digits
 @login_required
 def index(request):
     '''the Developer dashboard'''
+    inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
+    packages = Package.objects.select_related('arch', 'repo').filter(needupdate=True)
+    packages = packages.filter(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
+
     page_dict = {
             'todos': Todolist.objects.incomplete(),
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
-            'maintainers': [
-                User(id=None, username="orphan", first_name="Orphans")
-                ] + list(User.objects.filter(is_active=True).order_by('last_name'))
+            'maintainers': User.objects.filter(is_active=True).order_by('last_name'),
+            'flagged' : packages,
          }
 
     return render_to_response('devel/index.html',

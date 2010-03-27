@@ -16,6 +16,7 @@ import datetime
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.utils import make_choice
+from packages.models import PackageRelation
 
 def opensearch(request):
     if request.is_secure():
@@ -36,23 +37,31 @@ def update(request):
     mode = None
     if request.POST.has_key('adopt'):
         mode = 'adopt'
-        maint = request.user
     if request.POST.has_key('disown'):
         mode = 'disown'
-        maint = None
 
     if mode:
         repos = request.user.userprofile_user.all()[0].allowed_repos.all()
         pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
                 repo__in=repos)
-        pkgs.update(maintainer=maint)
+        for pkg in pkgs:
+            maints = pkg.maintainers
+            if mode == 'adopt' and request.user not in maints:
+                pr = PackageRelation(pkgbase=pkg.pkgbase_safe,
+                        user=request.user,
+                        type=PackageRelation.MAINTAINER)
+                pr.save()
+            elif mode == 'disown' and request.user in maints:
+                rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase_safe,
+                        user=request.user)
+                rels.delete()
 
         request.user.message_set.create(message="%d packages %sed" % (
             len(pkgs), mode))
         if disallowed_pkgs:
             request.user.message_set.create(
-                    message="You do not have permmission to adopt: %s" % (
+                    message="You do not have permission to adopt: %s" % (
                         ' '.join([p.pkgname for p in disallowed_pkgs])
                         ))
     else:
@@ -70,12 +79,13 @@ def details(request, name='', repo='', arch=''):
             arch.lower(), repo.title(), name))
 
 def getmaintainer(request, name, repo, arch):
-    "Returns the maintainer as a plaintext."
+    "Returns the maintainers as plaintext."
 
-    pkg= get_object_or_404(Package, 
+    pkg = get_object_or_404(Package,
         pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    names = [m.username for m in pkg.maintainers]
 
-    return HttpResponse(str(pkg.maintainer))
+    return HttpResponse(str('\n'.join(names)), mimetype='text/plain')
 
 class PackageSearchForm(forms.Form):
     repo = forms.ChoiceField(required=False)
@@ -122,7 +132,7 @@ class PackageSearchForm(forms.Form):
 def search(request, page=None):
     current_query = '?'
     limit=50
-    packages = Package.objects.select_related('arch', 'repo', 'maintainer')
+    packages = Package.objects.select_related('arch', 'repo')
 
     if request.GET:
         current_query += request.GET.urlencode()
@@ -131,18 +141,23 @@ def search(request, page=None):
             if form.cleaned_data['repo']:
                 packages = packages.filter(
                         repo__name=form.cleaned_data['repo'])
+
             if form.cleaned_data['arch']:
                 packages = packages.filter(
                         arch__name=form.cleaned_data['arch'])
+
             if form.cleaned_data['maintainer'] == 'orphan':
-                packages=packages.filter(maintainer=None)
+                inner_q = PackageRelation.objects.all().values('pkgbase')
+                packages = packages.exclude(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
             elif form.cleaned_data['maintainer']:
-                packages = packages.filter(
-                    maintainer__username=form.cleaned_data['maintainer'])
+                inner_q = PackageRelation.objects.filter(user__username=form.cleaned_data['maintainer']).values('pkgbase')
+                packages = packages.filter(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
+
             if form.cleaned_data['flagged'] == 'Flagged':
                 packages=packages.filter(needupdate=True)
             elif form.cleaned_data['flagged'] == 'Not Flagged':
                 packages = packages.filter(needupdate=False)
+
             if form.cleaned_data['q']:
                 query = form.cleaned_data['q']
                 q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
@@ -161,7 +176,7 @@ def search(request, page=None):
     if packages.count() == 1:
         return HttpResponseRedirect(packages[0].get_absolute_url())
 
-    allowed_sort = ["arch", "repo", "pkgname", "maintainer", "last_update"]
+    allowed_sort = ["arch", "repo", "pkgname", "last_update"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)
     # TODO: sorting by multiple fields makes using a DB index much harder
@@ -258,23 +273,25 @@ def flag(request, pkgid):
     if request.POST:
         form = FlagForm(request.POST)
         if form.is_valid() and form.cleaned_data['website'] == '':
-            send_email = True
             # flag all architectures
             pkgs = Package.objects.filter(
                     pkgname=pkg.pkgname, repo=pkg.repo)
             pkgs.update(needupdate=True)
 
-            if not pkg.maintainer:
-                toemail = 'arch-notifications@archlinux.org'
-                subject = 'Orphan %s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
-            elif pkg.maintainer.get_profile().notify == True:
-                toemail = pkg.maintainer.email
-                subject = '%s package [%s] marked out-of-date' % (pkg.repo.name, pkg.pkgname)
+            maints = pkg.maintainers
+            if not maints:
+                toemail = ['arch-notifications@archlinux.org']
+                subject = 'Orphan %s package [%s] marked out-of-date' % \
+                        (pkg.repo.name, pkg.pkgname)
             else:
-                # no need to send any email, packager didn't want notification
-                send_email = False
+                toemail = []
+                subject = '%s package [%s] marked out-of-date' % \
+                        (pkg.repo.name, pkg.pkgname)
+                for maint in maints:
+                    if maint.get_profile().notify == True:
+                        toemail.append(maint.email)
 
-            if send_email:
+            if toemail:
                 # send notification email to the maintainer
                 t = loader.get_template('packages/outofdate.txt')
                 c = Context({
@@ -286,7 +303,7 @@ def flag(request, pkgid):
                 send_mail(subject,
                         t.render(c),
                         'Arch Website Notification <nobody@archlinux.org>',
-                        [toemail],
+                        toemail,
                         fail_silently=True)
 
             context['confirmed'] = True

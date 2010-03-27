@@ -44,7 +44,7 @@
         <table class="results" width="100%">
             {% if paginator %}
                 <tr>
-                    <td colspan="{% if user.is_authenticated %}6{% else %}5{% endif %}">
+                    <td colspan="{% if user.is_authenticated %}5{% else %}4{% endif %}">
                         {{paginator.count}} packages found.
                         Page {{page_obj.number}} of {{paginator.num_pages}}.
                     </td>
@@ -77,7 +77,6 @@
                 <th><a href="/packages/{% buildsortqs "pkgname" %}">Name</a></th>
                 <th>Version</th>
                 <th>Description</th>
-                <th><a href="/packages/{% buildsortqs "maintainer" %}">Maintainer</a></th>
                 <th><a href="/packages/{% buildsortqs "-last_update" %}">Last Updated</a></th>
 
             </tr>
@@ -95,13 +94,12 @@
                     <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                 {% endif %}
                     <td>{{ pkg.pkgdesc }}</td>
-                    <td>{{ pkg.maintainer|default:"Orphan" }}</td>
                     <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
                 </tr>
             {% endfor %}
             {% if paginator %}
                 <tr>
-                    <td colspan="{% if user.is_authenticated %}6{% else %}5{% endif %}">
+                    <td colspan="{% if user.is_authenticated %}5{% else %}4{% endif %}">
                         {{paginator.count}} packages found.
                         Page {{page_obj.number}} of {{paginator.num_pages}}.
                     </td>
