@@ -178,7 +178,7 @@ class Package(models.Model):
     arch = models.ForeignKey(Arch, related_name="packages")
     needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(max_length=255, db_index=True)
-    pkgbase = models.CharField(max_length=255, null=True, blank=True)
+    pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     pkgdesc = models.CharField(max_length=255)
