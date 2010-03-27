@@ -204,15 +204,9 @@ class Package(models.Model):
                 self.arch.name, self.pkgname)
 
     @property
-    def pkgbase_safe(self):
-        if self.pkgbase:
-            return self.pkgbase
-        return self.pkgname
-
-    @property
     def maintainers(self):
         return User.objects.filter(
-                package_relations__pkgbase=self.pkgbase_safe,
+                package_relations__pkgbase=self.pkgbase,
                 package_relations__type=PackageRelation.MAINTAINER)
 
     @property
@@ -283,7 +277,7 @@ class Package(models.Model):
             root = 'community'
         else:
             root = 'packages'
-        return linkbase % (root, self.pkgbase_safe, svnpath)
+        return linkbase % (root, self.pkgbase, svnpath)
 
     def get_arch_svn_link(self):
         repo = self.repo.name.lower()

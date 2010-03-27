@@ -23,7 +23,7 @@ def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
     packages = Package.objects.select_related('arch', 'repo').filter(needupdate=True)
-    packages = packages.filter(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
+    packages = packages.filter(pkgbase__in=inner_q)
 
     page_dict = {
             'todos': Todolist.objects.incomplete(),

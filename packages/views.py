@@ -48,12 +48,12 @@ def update(request):
         for pkg in pkgs:
             maints = pkg.maintainers
             if mode == 'adopt' and request.user not in maints:
-                pr = PackageRelation(pkgbase=pkg.pkgbase_safe,
+                pr = PackageRelation(pkgbase=pkg.pkgbase,
                         user=request.user,
                         type=PackageRelation.MAINTAINER)
                 pr.save()
             elif mode == 'disown' and request.user in maints:
-                rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase_safe,
+                rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
                         user=request.user)
                 rels.delete()
 
@@ -148,10 +148,10 @@ def search(request, page=None):
 
             if form.cleaned_data['maintainer'] == 'orphan':
                 inner_q = PackageRelation.objects.all().values('pkgbase')
-                packages = packages.exclude(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
+                packages = packages.exclude(pkgbase__in=inner_q)
             elif form.cleaned_data['maintainer']:
                 inner_q = PackageRelation.objects.filter(user__username=form.cleaned_data['maintainer']).values('pkgbase')
-                packages = packages.filter(Q(pkgname__in=inner_q) | Q(pkgbase__in=inner_q))
+                packages = packages.filter(pkgbase__in=inner_q)
 
             if form.cleaned_data['flagged'] == 'Flagged':
                 packages=packages.filter(needupdate=True)
