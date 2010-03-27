@@ -135,7 +135,10 @@ class Pkg(object):
 
 
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
-    dbpkg.pkgbase = repopkg.base
+    if repopkg.base:
+        dbpkg.pkgbase = repopkg.base
+    else:
+        dbpkg.pkgbase = repopkg.name
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
     dbpkg.pkgdesc = repopkg.desc
