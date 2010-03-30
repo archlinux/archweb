@@ -132,7 +132,8 @@ def delete_todolist(request, object_id):
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
     package has been added to a todo list'''
-    if not todo.pkg.maintainer:
+    maints = todo.pkg.maintainers
+    if not maints:
         return
 
     page_dict = {
@@ -145,9 +146,8 @@ def send_todolist_email(todo):
     send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname,
             t.render(c),
             'Arch Website Notification <nobody@archlinux.org>',
-            [todo.pkg.maintainer.email],
+            [m.email for m in maints],
             fail_silently=True)
-
 
 
 # vim: set ts=4 sw=4 et:
