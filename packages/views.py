@@ -273,9 +273,9 @@ def flag(request, pkgid):
     if request.POST:
         form = FlagForm(request.POST)
         if form.is_valid() and form.cleaned_data['website'] == '':
-            # flag all architectures
+            # find all packages from (hopefully) the same PKGBUILD
             pkgs = Package.objects.filter(
-                    pkgname=pkg.pkgname, repo=pkg.repo)
+                    pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
             pkgs.update(needupdate=True)
 
             maints = pkg.maintainers
