@@ -6,7 +6,9 @@
         <p style="padding: 10px 20px;">
             <a href="{{ pkg.get_absolute_url }}">Back to Package</a>
         </p>
+        <div class="listing" id="filelist">
         {% include "packages/files-list.html" %}
+        </div>
     </div>
 {% endblock %}
 
