@@ -139,7 +139,7 @@ def send_todolist_email(todo):
     page_dict = {
             'pkg': todo.pkg,
             'todolist': todo.list,
-            'weburl': 'http://www.archlinux.org/packages/%s/' % (todo.pkg.id)
+            'weburl': 'http://www.archlinux.org'+ pkg.get_absolute_url()
     }
     t = loader.get_template('todolists/addedtotodolist')
     c = Context(page_dict)
