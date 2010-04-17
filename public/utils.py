@@ -8,12 +8,19 @@ def get_recent_updates():
     for a in Arch.objects.all():
         # grab a few extra so we can hopefully catch everything we need
         pkgs += list(Package.objects.select_related('arch', 'repo').filter(arch=a).order_by('-last_update')[:50])
-    pkgs.sort(reverse=True, key=lambda q: q.last_update)
-    for p in pkgs:
+    pkgs.sort(key=lambda q: q.last_update)
+    updates = []
+    ctr = 0
+    while ctr < 15 and len(pkgs) > 0:
+        # not particularly happy with this logic, but it works.
+        p = pkgs.pop()
         samepkgs = filter(lambda q: p.is_same_version(q) and p.repo == q.repo, pkgs)
-        p.allarches = '/'.join(sorted([q.arch.name for q in samepkgs]))
+        samepkgs.append(p)
+        samepkgs.sort(key=lambda q: q.arch.name)
+        updates.append(samepkgs)
         for q in samepkgs:
             if p != q: pkgs.remove(q)
-    return pkgs[:15]
+        ctr += 1
+    return updates
 
 # vim: set ts=4 sw=4 et:

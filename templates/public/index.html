@@ -57,11 +57,15 @@
                 <td><h3>Recent Updates</h3></td>
                 <td style="vertical-align:top;text-align:right"><a href="/feeds/packages/"><img src="/media/rss.png" alt="RSS Feed" /></a></td>
             </tr>
-        {% for pkg in pkg_updates %}
+        {% for update in pkg_updates %}
+        {% with update|first as fpkg %}
             <tr>
-                <td><a href="{{ pkg.get_absolute_url }}" class="{{ pkg.repo.name|lower }}">{{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</a></td>
-                <td style="text-align:right">{{ pkg.allarches }}</td>
+                <td><span class="{{ fpkg.repo.name|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
+                <td style="text-align:right">
+                    {% for pkg in update %}<a href="{{ pkg.get_absolute_url }}">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
+            </td>
             </tr>
+        {% endwith %}
         {% endfor %}
             <tr>
                 <td style="font-size:x-small;white-space:nowrap;"><br /><a href="{% url feeds-list %}">More Feeds...</a></td>
