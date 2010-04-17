@@ -188,7 +188,7 @@ def populate_files(dbpkg, repopkg, force=False):
         dbpkg.files_last_update = datetime.now()
         dbpkg.save()
 
-def db_update(archname, pkgs, options):
+def db_update(archname, reponame, pkgs, options):
     """
     Parses a list and updates the Arch dev database accordingly.
 
@@ -199,7 +199,7 @@ def db_update(archname, pkgs, options):
     logger.info('Updating Arch: %s' % archname)
     force = options.get('force', False)
     filesonly = options.get('filesonly', False)
-    repository = Repo.objects.get(name__iexact=pkgs[0].repo)
+    repository = Repo.objects.get(name__iexact=reponame)
     architecture = Arch.objects.get(name__iexact=archname)
     dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
     # It makes sense to fully evaluate our DB query now because we will
@@ -362,7 +362,7 @@ def parse_repo(repopath):
                 tpkg.write('\n') # just in case
     repodb.close()
     logger.info("Finished repo parsing")
-    return pkgs
+    return (reponame, pkgs)
 
 def validate_arch(arch):
     "Check if arch is valid."
@@ -374,25 +374,23 @@ def read_repo(primary_arch, file, options):
     """
     Parses repo.db.tar.gz file and returns exit status.
     """
-    packages = parse_repo(file)
+    repo, packages = parse_repo(file)
 
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
-    available_arches = [x.name for x in Arch.objects.all()]
-    for arch in available_arches:
-        packages_arches[arch] = []
+    packages_arches['any'] = []
+    packages_arches[primary_arch] = []
 
     for package in packages:
         if package.arch in ('any', primary_arch):
             packages_arches[package.arch].append(package)
         else:
+            # we don't include mis-arched packages
             logger.warning("Package %s arch = %s" % (
                 package.name,package.arch))
-            #package.arch = primary_arch
     logger.info('Starting database updates.')
     for (arch, pkgs) in packages_arches.items():
-        if len(pkgs) > 0:
-            db_update(arch, pkgs, options)
+        db_update(arch, repo, pkgs, options)
     logger.info('Finished database updates.')
     return 0
 
