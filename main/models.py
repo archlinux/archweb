@@ -338,7 +338,7 @@ class Todolist(models.Model):
         # select_related() does not use LEFT OUTER JOIN for nullable ForeignKey
         # fields. That is why we need to explicitly list the ones we want.
         return TodolistPkg.objects.select_related(
-            'pkg__repo', 'pkg__arch', 'pkg__maintainer').filter(list=self).order_by('pkg')
+            'pkg__repo', 'pkg__arch').filter(list=self).order_by('pkg')
 
     @property
     def package_names(self):
