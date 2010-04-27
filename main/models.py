@@ -209,7 +209,7 @@ class Package(models.Model):
         """
         requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
-                arch__name__in=(self.arch.name, 'any'))
+                arch__name__in=(self.arch.name, 'any')).distinct()
         return requiredby.order_by('pkgname')
 
     def get_depends(self):
