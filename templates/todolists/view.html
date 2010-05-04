@@ -28,7 +28,7 @@
                     <td><a href="{{ pkg.pkg.get_absolute_url }}">{{ pkg.pkg.pkgname }}</a></td>
                     <td>{{ pkg.pkg.arch.name }}</td>
                     <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                    <td>{{ pkg.pkg.maintainer.get_full_name|default:"Orphan" }}</td>
+                    <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
                     <td>
                     {% if pkg.complete %}
                         <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
