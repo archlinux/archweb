@@ -45,19 +45,15 @@ def change_notify(request):
     return HttpResponseRedirect('/devel/')
 
 class ProfileForm(forms.Form):
-    email = forms.EmailField('E-mail Address')
-    passwd1 = forms.CharField('New Password', required=False,
+    email = forms.EmailField(label='E-mail Address')
+    passwd1 = forms.CharField(label='New Password', required=False,
             widget=forms.PasswordInput)
-    passwd2 = forms.CharField('Confirm Password', required=False,
+    passwd2 = forms.CharField(label='Confirm Password', required=False,
             widget=forms.PasswordInput)
 
     def clean(self):
-        if ('passwd1' not in self.cleaned_data and
-                'passwd2' not in self.cleaned_data):
-            return self.cleaned_data
-            
         if self.cleaned_data['passwd1'] != self.cleaned_data['passwd2']:
-            raise forms.ValidationError('Passwords do not match')
+            raise forms.ValidationError('Passwords do not match.')
         return self.cleaned_data
 
 @login_required
@@ -66,7 +62,8 @@ def change_profile(request):
         form = ProfileForm(request.POST)
         if form.is_valid():
             request.user.email = form.cleaned_data['email']
-            request.user.set_password(form.cleaned_data['passwd1'])
+            if form.cleaned_data['passwd1']:
+                request.user.set_password(form.cleaned_data['passwd1'])
             request.user.save()
             return HttpResponseRedirect('/devel/')
     else:
