@@ -38,10 +38,10 @@
             </tr><tr>
                 <th>Repository:</th>
                 <td>{{ pkg.repo.name|capfirst }}</td>
-            </tr>{% if pkg.pkgname != pkg.pkgbase %}<tr>
+            </tr>{% ifnotequal pkg.pkgname pkg.pkgbase %}<tr>
                 <th>Base Package Name:</th>
                 <td>{{ pkg.pkgbase }}</td>
-            </tr>{% endif %}<tr>
+            </tr>{% endifnotequal %}<tr>
                 <th>Description:</th>
                 <td>{% if pkg.pkgdesc %}{{ pkg.pkgdesc }}{% endif %}</td>
             </tr><tr>
