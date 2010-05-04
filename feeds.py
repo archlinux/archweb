@@ -5,6 +5,8 @@ from django.db.models import Q
 from main.models import Arch, Repo, Package, News
 
 class PackageFeed(Feed):
+    link = '/packages/'
+
     def get_object(self, bits):
         # just cut the BS early
         if len(bits) > 2:
@@ -33,9 +35,6 @@ class PackageFeed(Feed):
         elif 'arch' in obj:
             s += ' (%s)' % (obj['arch'].name)
         return s
-
-    def link(self, obj):
-        return '/packages/'
 
     def description(self, obj):
         s = 'Recently updated packages in the Arch Linux package repositories'
