@@ -57,7 +57,7 @@ def download(request):
             mirror__public=True, mirror__active=True, mirror__isos=True
     )
     return list_detail.object_list(request, 
-            qset.order_by('mirror__country', 'mirror__name'),
+            qset.order_by('mirror__country', 'mirror__name', 'protocol'),
             template_name="public/download.html",
             template_object_name="mirror_url",
             extra_context={"path": request.path})
