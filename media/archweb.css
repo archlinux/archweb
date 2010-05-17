@@ -10,7 +10,7 @@
  */
 
 /* import the global navbar stylesheet */
-@import url('http://cinderwick.ca/archnavbar/archnavbar.css');
+@import url('archnavbar/archnavbar.css');
 
 /* simple reset */
 * { margin: 0; padding: 0; line-height: 1.4; }
