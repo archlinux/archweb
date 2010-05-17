@@ -146,10 +146,13 @@ form#newsform input[type=text], form#newsform textarea  { width: 75%; }
 
 
 /* donate: donor list */
-div#donor-list ul { margin: 0.5em 0; padding: 0; list-style: none; }
-div#donor-list li { margin: 0; padding: 0; font-size: 0.8em; }
-div#donor-list br { clear: left; }
-div.donor-slice { float: left; width: 16em; }
+div#donor-list ul { width: 100%; }
+div#donor-list li {
+	float: left;
+	/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+	width: 25%;
+	min-width: 20em;
+}
 
 /* download page */
 #arch-downloads h3 { border-bottom: 1px dotted #aaa; }

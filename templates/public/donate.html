@@ -1,58 +1,86 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - Donors{% endblock %}
+{% block title %}Arch Linux - Donate{% endblock %}
+
 {% block content %}
-<div class="box">
-    <h2 class="title">Donate to Arch Linux</h2>
-    <p>
-    Arch Linux survives because of the tireless efforts of many people in
-    the community and the core development circle.  None of us are paid for our
-    work, and we don't have the personal funds to sustain server costs ourselves.
-    </p><p>
-    There are many ways to help Arch Linux.  If technical development,
+<div id="donations" class="box">
+
+    <h2>Donate to Arch Linux</h2>
+
+    <p>Arch Linux survives because of the tireless efforts of many people in
+    the community and the core development circle.  None of us are paid for
+    our work, and we don't have the personal funds to sustain server costs
+    ourselves.</p>
+
+    <p>There are many ways to help support Arch Linux.  If technical development,
     documentation, or support aren't your strong points, you could certainly
-    help us by dropping a few bucks our way.
-    </p><p>
-    Many thanks!
-    </p>
-    <div style="text-align:center">
+    help us by dropping a few bucks our way.</p>
+
+    <p>Many thanks!</p>
+
+    <h3>Monetary donations</h3>
+
+    <p>Financial contributions are accepted via <a title="Click to donate now"
+        href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=aaronmgriffin@gmail.com&currency_code=USD">PayPal</a>.
+    Funds are used for server hardware upgrades, conventions, schwag giveaways and more.</p>
+
+    <div id="paypal-button">
         <!-- paypal code -->
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-        <input type="hidden" name="cmd" value="_xclick"/>
-        <input type="hidden" name="business" value="aaronmgriffin@gmail.com"/>
-        <input type="hidden" name="currency_code" value="USD"/>
-        <input type="hidden" name="tax" value="0"/>
-        <input type="hidden" name="lc" value="US"/>
-        <input type="hidden" name="bn" value="PP-DonationsBF"/>
-        <input type="hidden" name="item_name" value="Arch Linux Donation"/>
-        <input type="hidden" name="image_url" value="/logos/arch-paypal.jpg"/>
-        <input type="hidden" name="no_shipping" value="1"/>
-        <input type="hidden" name="cn" value="Suggestions/Comments"/>
-        <input type="hidden" name="no_note" value="1"/>
-        <input type="image" src="/media/donate.gif" border="0" name="submit"
-        alt="Make payments with PayPal - it's fast, free and secure!"
-        style="background: transparent; border: none"/>
+        <form id="paypal-form" name="_xclick" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <p><input type="hidden" name="cmd" value="_xclick"/></p>
+            <p><input type="hidden" name="business" value="aaronmgriffin@gmail.com"/></p>
+            <p><input type="hidden" name="currency_code" value="USD"/></p>
+            <p><input type="hidden" name="tax" value="0"/></p>
+            <p><input type="hidden" name="lc" value="US"/></p>
+            <p><input type="hidden" name="bn" value="PP-DonationsBF"/></p>
+            <p><input type="hidden" name="item_name" value="Arch Linux Donation"/></p>
+            <p><input type="hidden" name="no_shipping" value="1"/></p>
+            <p><input type="hidden" name="cn" value="Suggestions/Comments"/></p>
+            <p><input type="hidden" name="no_note" value="1"/></p>
+            <p><input type="image" src="/media/donate.gif" name="submit"
+            title="Make a PayPal donation to the Arch Linux project"
+            alt="Make a PayPal donation to the Arch Linux project"
+            style="background:transparent;border:none;" /></p>
         </form>
     </div>
-    <br />
-    <h2 class="title">Sponsors and Contributions</h2>
-    <p>We'd like to thank <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network">Velocity Network</a> for contributing space in a server rack, bandwidth, and electricity for our main server for the last couple of years.</p>
-    <div style="text-align:center">
-    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network"><img src="/media/vnet_button.png" class="" title="" alt="velocity network - it's about time" /></a>
+
+    <h3>Commercial sponsors and contributions</h3>
+
+    <p>We'd like to thank <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux"
+        title="velocity network">Velocity Network</a> for contributing space
+    in a server rack, bandwidth, and electricity for our main server.</p>
+
+    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux"
+        title="velocity network"><img src="/media/vnet_button.png" class="sponsor-btn-vnet"
+        title="" alt="velocity network - it's about time" /></a>
+
+    <p>We also wish to extend a special Thank You to <a
+        href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl"
+        title="SevenL Networks - Dedicated Arch Linux servers">SevenL Networks</a>
+    for their generous and ongoing contribution of a dedicated Arch Linux
+    server . You too can have a dedicated Arch Linux server hosted by SevenL...
+    head over to their website for more details.</p>
+
+    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl"
+        title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png"
+        class="sponsor-btn-sevenl" title="A big Thank You to SevenL Networks for their generous contribution"
+        alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
+
+    <p>More thanks go to <a href="http://www.airvm.com/VirtualServers"
+        title="AirVM.com">AirVM.com</a> for contributing a VMWare-based Virtual Machine.</p>
+
+    <a href="http://www.airvm.com/VirtualServers"
+        title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg"
+        class="sponsor-btn-airvm" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
+
+    <h3>Past donors</h3>
+
+    <div id="donor-list">
+        <ul>
+            {% for donor in donors %}
+            <li>{{ donor.name }}</li>{% endfor %}
+        </ul>
     </div>
-    <p>We also wish to extend a special Thank You to <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">SevenL Networks</a> for their generous and ongoing contribution of a dedicated Arch Linux server. You too can have a dedicated Arch Linux server hosted by SevenL...head over to their <a href="https://www.sevenl.net/dedicated-server/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - dedicated server hosting">website</a> for more details.</p>
-    <div style="text-align:center">
-    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png" class="" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
-    </div>
-    <p>More thanks go to <a href="http://www.airvm.com/VirtualServers" title="AirVM.com">AirVM.com</a> for contributing a VMWare-based Virtual Machine.</p>
-    <div style="text-align:center">
-    <a href="http://www.airvm.com/VirtualServers" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg" class="" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
-    </div>
-    <h2 class="title">Past Donors</h2>
-    <ul id="donorlist">
-        {% for donor in donors %}
-        <li>{{ donor.name }}</li>{% endfor %}
-    </ul>
-    <div class="clear"/>
+    <div class="clear"></div>
+    <p>A huge thanks to you all for your contributions!</p>
 </div>
 {% endblock %}
-
