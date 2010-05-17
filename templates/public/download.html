@@ -1,113 +1,157 @@
 {% extends "base.html" %}
+{% block title %}Arch Linux - Downloads{% endblock %}
 
 {% block content %}
-<div class="box">
-    <h2 class="title">Release Info</h2>
-    <div style="text-align:center">
-        <p>All available images can be burned to a CD, mounted as an ISO file,
-        or be directly written to a USB stick using a utility like `dd`. These
-        are intended for new installations only; an existing Arch Linux system
-        can always be updated with `pacman -Syu`.</p>
+<div id="arch-downloads" class="box">
 
-        <b>Current Release:</b> 2010.05 <br />
-        <b>Included Kernel:</b> 2.6.33.4 <br />
-        <b>Resources:</b>
-            <a href="http://bugs.archlinux.org/index.php?project=6">Bug Tracker</a>
-            -
-            <a href="http://www.archlinux.org/mailman/listinfo/arch-releng">Mailing List</a>
-            <br />
-            <br />
-        <b>Links and Instructions:</b><br />
-        <a href="http://www.archlinux.org/iso/2010.05/README">
-            Readme and Instructions
-        </a>
-        <br />
-        <a href="http://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide">
-            Arch Linux Install Guide
-        </a>
-    </div>
-    <h2 class="title">BitTorrent Download (recommended)</h2>
-    <div style="text-align:center">
-        <p>If you can spare the bytes, please leave the client open after your
-        download is finished, so you can seed it back to others. A web-seed
-        capable client is recommended for fastest download speeds.</p>
+    <h2>Arch Linux Downloads</h2>
 
-        <h3>Netinstall ISOs</h3>
-        <p>
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-netinstall-i686.iso.torrent">i686</a>
-        <br />
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-netinstall-x86_64.iso.torrent">x86_64</a>
-        <br />
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-netinstall-dual.iso.torrent">Dual Arch</a>
-        </p>
+    {% with "2010.05" as version %}
+    <h3>Release Info</h3>
 
-        <h3>Core ISOs</h3>
-        <p>
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-core-i686.iso.torrent">i686</a>
-        <br />
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-core-x86_64.iso.torrent">x86_64</a>
-        <br />
-        <a href="http://www.archlinux.org/iso/2010.05/archlinux-2010.05-core-dual.iso.torrent">Dual Arch</a>
-        </p>
+    <p>All available images can be burned to a CD, mounted as an ISO file,
+    or be directly written to a USB stick using a utility like `dd`. These
+    are intended for new installations only; an existing Arch Linux system
+    can always be updated with `pacman -Syu`.</p>
 
-    </div>
-    <h2 class="title">Buy A CD</h2>
-    <div style="text-align:center">
-        These suppliers donate a small percentage of each CD purchased to
-        the Arch Linux project:
-        <table class="center" cellspacing="10">
-            <tr><td>
-        <a href="http://www.osdisc.com/cgi-bin/distro/index.cgi?distro=archlinux">
-            Purchase CD from OSDisc</a>
-            </td></tr>
-            <tr><td>
-        <a href="http://www.shoplinuxonline.com/index.php?main_page=index&amp;cPath=1_46&amp;zenid=ecd15b48affe8976130bc575c1276ee4">
-            Purchase CD from Shop Linux Online</a>
-            </td></tr>
-        </table>
-        You can also purchase Arch on CD from these suppliers:
-        <table class="center" cellspacing="10">
+    <ul>
+        <li><strong>Current Release:</strong> {{ version }}</li>
+        <li><strong>Included Kernel:</strong> 2.6.33.4</li>
+        <li><strong>Resources:</strong>
+            <ul>
+                <li><a href="http://bugs.archlinux.org/index.php?project=6" 
+                    title="Arch Linux Bugtracker:Release Engineering">Bug Tracker</a></li>
+                <li><a href="http://www.archlinux.org/mailman/listinfo/arch-releng" 
+                    title="Arch Linux Release Engineering mailing list">Mailing List</a></li>
+            </ul>
+        </li>
+    </ul>
+
+    <p><strong>Links and Instructions:</strong></p>
+
+    <ul id="download-help">
+        <li><a href="http://www.archlinux.org/iso/{{ version }}/README"
+            title="Official download instructions">Readme and Instructions</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide" 
+            title="Official Installation Guide">Arch Linux Install Guide</a></li>
+    </ul>
+
+    <h3>BitTorrent Download (recommended)</h3>
+
+    <p>If you can spare the bytes, please leave the client open after your
+    download is finished, so you can seed it back to others.
+    <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
+
+    <table id="download-torrents" class="pretty1">
+        <thead>
+            <tr>
+                <th>Format</th>
+                <th class="cpu-arch">i686 CPU</th>
+                <th class="cpu-arch">x86-64 CPU</th>
+                <th class="cpu-arch">Dual Architecture</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
             <tr>
                 <td>
-        <a href="http://www.linuxcd.org/view_distro.php?id_distro=48">Purchase CD from LinuxCD</a>
-            </td></tr>
-        </table>
-    </div>
+                    Netinstall Image
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-i686.iso.torrent" 
+                        title="Download for i686 architecture">Download</a>
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-x86_64.iso.torrent" 
+                    title="Download for x86-64 architecture">Download</a>
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-dual.iso.torrent" 
+                    title="Download for both architectures">Download</a>
+                </td><td class="wrap">
+                    Downloads and installs packages versions via FTP for absolute freshness.
+                </td>
+            </tr><tr>
+                <td>
+                    Core Image
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-core-i686.iso.torrent" 
+                    title="Download for i686 architecture">Download</a>
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-core-x86_64.iso.torrent" 
+                    title="Download for x86-64 architecture">Download</a>
+                </td><td class="cpu-arch">
+                    <a href="http://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-core-dual.iso.torrent" 
+                    title="Download for both architectures">Download</a>
+                </td><td class="wrap">
+                    Core packages are included on the media. Good for basic off-line installation.
+                </td>
+        </tbody>
+    </table>
+    {% endwith %}
 
-    
-    <h2 class="title">HTTP/FTP Download</h2>
-    <div style="text-align:center">
-        <p>In addition to the BitTorrent links above, ISO images can also be
-        downloaded via HTTP or FTP from the mirror sites listed below. Please
-        ensure the download image matches the checksum from the md5sums.txt or
-        sha1sums.txt file in the same directory as the image.</p>
-        <h3>Checksums</h3>
-        <p>
-            <a href="http://www.archlinux.org/iso/2010.05/sha1sums.txt">SHA1</a>
-            <br />
-            <a href="http://www.archlinux.org/iso/2010.05/md5sums.txt">MD5</a>
-        </p>
+    <h3>Get Arch Linux on CD</h3>
 
-        <table class="center">
-            <tr><td colspan="2"><h3>Mirror Sites</h3>
-            {% for mirror_url in mirror_url_list %}
-                {% ifchanged mirror_url.mirror.country %}
-                </td></tr>
-                <tr><td colspan="2" style="text-align: left"><br /><h4>{{mirror_url.mirror.country}}</h4>
-                {% endifchanged %}
-                {% ifchanged mirror_url.mirror.name %}
-                    </td></tr>
-                    <tr><td style="text-align: left">{{mirror_url.mirror.name}}</td><td style="text-align: right">
-                {% endifchanged %}
-                (<a href="{{mirror_url.url}}iso/">{{mirror_url.protocol.protocol}}</a>)
-            {% endfor %}
+    <p>The following suppliers donate a portion of their proceeds to the
+    Arch Linux project:</p>
+
+    <ul id="cd-vendors-donate">
+        <li><a href="http://www.osdisc.com/cgi-bin/distro/index.cgi?distro=archlinux" 
+            title="Purchase a CD from OSDisc">Purchase a CD from OSDisc</a></li>
+        <li><a href="http://www.shoplinuxonline.com/index.php?main_page=index&amp;cPath=1_46&amp;zenid=ecd15b48affe8976130bc575c1276ee4"
+            title="Purchase a CD from Shop Linux Online">Purchase a CD from Shop Linux Online</a></li>
+    </ul>
+
+    <p>Arch Linux CDs are also available for purchase from these suppliers:</p>
+
+    <ul id="cd-vendors">
+        <li><a href="http://www.linuxcd.org/view_distro.php?id_distro=48" 
+            title="Purchase a CD from LinuxCD">Purchase a CD from LinuxCD</a></li>
+    </ul>
+
+
+    <h3>HTTP/FTP Direct Downloads</h3>
+
+    <p>In addition to the BitTorrent links above, install images can also be
+    downloaded via HTTP or FTP from the mirror sites listed below. Please
+    ensure the download image matches the checksum from the md5sums.txt or
+    sha1sums.txt file in the same directory as the image.</p>
+
+    <h4>Checksums</h4>
+
+    <p>File integrity checksums for the latest releases can be found below:</p>
+
+    <ul>
+        <li><a href="http://www.archlinux.org/iso/{{version}}/sha1sums.txt" 
+            title="Get the latest SHA1 checksums">SHA1 checksums</a></li>
+        <li><a href="http://www.archlinux.org/iso/{{version}}/md5sums.txt" 
+            title="Get the latest MD5 checksums">MD5 checksums</a></li>
+    </ul>
+
+    <table id="download-mirrors">
+        <thead>
+            <tr>
+                <th><h4>Server Location</h4></th>
+                <th><h4>Download</h4></th>
+            </tr>
+        </thead> 
+        <tbody>
+            <tr><td colspan="2">
+                    {% for mirror_url in mirror_url_list %}
+                    {% ifchanged mirror_url.mirror.country %}
             </td></tr>
-        </table>
-    <p>If you want to become an Official Arch Linux Mirror please follow
-    the instructions listed <a href="http://wiki.archlinux.org/index.php/DeveloperWiki:NewMirrors">here</a>.
-    </p>
-    </div>
+            <tr><td class="mirror-country" colspan="2"><strong>{{mirror_url.mirror.country}}</strong>
+                    {% endifchanged %}
+                    {% ifchanged mirror_url.mirror.name %}
+            </td></tr>
+            <tr><td class="mirror-server">{{mirror_url.mirror.name}}</td><td>
+                    {% endifchanged %}
+                    <a href="{{mirror_url.url}}iso/" 
+                        title="Download from {{mirror_url.url}}iso/">{{mirror_url.protocol.protocol|upper}}</a>
+                    {% endfor %}
+            </td></tr>
+        </tbody>
+    </table>
+
+    <p>If you want to become an Official Arch Linux Mirror please follow the
+    instructions listed <a href="http://wiki.archlinux.org/index.php/DeveloperWiki:NewMirrors">here</a>.</p>
+
 </div>
-<br /><br />
 {% endblock %}
-
