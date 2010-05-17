@@ -30,7 +30,3 @@ def do_buildsortqs(parser, token):
                 "%r tag's argument should be in quotes" % tagname)
     return BuildQueryStringNode(sortfield[1:-1])
 
-@register.inclusion_tag('forms/td_input.html')
-def td_input(form_element):
-    return {'form_element': form_element}
-
