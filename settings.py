@@ -34,6 +34,7 @@ ADMIN_MEDIA_PREFIX = '/media/admin_media/'
 
 # login url
 LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
