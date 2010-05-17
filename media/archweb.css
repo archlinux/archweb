@@ -72,7 +72,6 @@ table.pretty2 { width: auto; margin-top: 0.25em; margin-bottom: 0.5em; border-co
 table.pretty2 th { padding: 0.35em; background: #eee; border: 1px solid #bbb; }
 table.pretty2 td { padding: 0.35em; border: 1px dotted #bbb; }
 
-
 /* forms and input styling */
 form p { margin: 0.5em 0; }
 fieldset { border: 0; }
@@ -109,7 +108,7 @@ div#archdev-navbar li a { padding: 0 0.5em; color: #07b; }
 
 /* home: pkgsearch box */
 #pkgsearch { padding: 1em 0.75em; background: #3ad; color: #fff; border: 1px solid #08b; } 
-#pkgsearch p { margin: 0; padding: 0; font-weight: bold; font-size: 0.9em; text-align: right; }
+#pkgsearch p { margin: 0; padding: 0; font-weight: bold; text-align: right; }
 #pkgsearch input { vertical-align: bottom; width: 12em; padding: 0.15em; font-size: 1em; background: #fff; border: 1px solid #09c; }
 
 /* home: recent pkg updates */
@@ -117,6 +116,7 @@ div#archdev-navbar li a { padding: 0 0.5em; color: #07b; }
 #pkg-updates .more { font-weight: normal; }
 #pkg-updates .rss-icon { float: right; margin: -2em 0 0 0; }
 #pkg-updates table { margin: 0; }
+#pkg-updates td.pkg-name { white-space: normal; }
 #pkg-updates td.pkg-arch { text-align: right; }
 #pkg-updates a.testing, #pkg-updates a.community-testing { font-style: italic; }
 
@@ -143,15 +143,10 @@ div#news-article .article-info { margin: 0; color: #999; }
 form#newsform { width: 60em; }
 form#newsform input[type=text], form#newsform textarea  { width: 75%; }
 
-
 /* donate: donor list */
 div#donor-list ul { width: 100%; }
-div#donor-list li {
-	float: left;
-	/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
-	width: 25%;
-	min-width: 20em;
-}
+/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+div#donor-list li { float: left; width: 25%; min-width: 20em; }
 
 /* download page */
 #arch-downloads h3 { border-bottom: 1px dotted #aaa; }
@@ -213,35 +208,6 @@ form#flag-pkg-form textarea, form#flag-pkg-form input[type=text] { width: 45%; }
 div#arch-bio-toc { width: 75%; margin: 0 auto; text-align: center; }
 table.arch-bio-entry td.pic { vertical-align: top; padding-right: 15px; padding-top: 10px; }
 table.arch-bio-entry td.pic img { padding: 4px; border: 1px solid #ccc; }
-/* ************************************** TEMPORARY *****************************/
-
-td.pic-dale img,
-td.pic-dan img,
-td.pic-dgriffiths img,
-td.pic-francois img,
-td.pic-geoffroy img,
-td.pic-james img,
-td.pic-jgc img,
-td.pic-kevin img,
-td.pic-pierre img,
-td.pic-romashka img,
-td.pic-ronald img,
-td.pic-thomas img,
-td.pic-vesa img { display: none; }
-td.pic-dale,
-td.pic-dan,
-td.pic-dgriffiths,
-td.pic-francois,
-td.pic-geoffroy,
-td.pic-james,
-td.pic-jgc,
-td.pic-kevin,
-td.pic-pierre,
-td.pic-romashka,
-td.pic-ronald,
-td.pic-thomas,
-td.pic-vesa { background: url(http://cinderwick.ca/archnavbar/arch-bio-nopic.png) no-repeat; vertical-align: top; padding-right: 15px; padding-top: 10px; }
-/* ************************************** END TEMPORARY *****************************/
 table.arch-bio-entry table.bio { margin-bottom: 2em; }
 table.arch-bio-entry table.bio th { text-align: left; padding-right: 0.5em; vertical-align: top; white-space: nowrap; }
 table.arch-bio-entry table.bio td { width: 100%; padding-bottom: 0.25em; }
@@ -276,9 +242,6 @@ ul.admin-actions li { display: inline; padding-left: 1.5em; }
 #dev-signoffs .signoff-yes { color: green; font-weight: bold; }
 #dev-signoffs .signoff-no { color: red; }
 #dev-signoffs .signed-username { color: #888; margin-left: 0.5em; }
-
-/* Used by Django's FormWrappers */
-textarea.vLargeTextField { width: 450px; height: 250px; }
 
 /* highlight current website in the navbar */
 #archnavbar ul li.selected a { color: white !important; }
