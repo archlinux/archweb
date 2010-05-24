@@ -99,7 +99,7 @@ class NewUserForm(forms.ModelForm):
 
         send_mail("Your new archweb account",
                 """You can now log into:
-https://dev.archlinux.org/
+https://www.archlinux.org/
 with these login details:
 Username: %s
 Password: %s""" % (user.username, pw),
