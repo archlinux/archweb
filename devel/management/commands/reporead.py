@@ -266,14 +266,12 @@ def db_update(archname, reponame, pkgs, options):
                 continue
         else:
             timestamp = datetime.now()
-        pkg = Package.objects.get(
-            pkgname=p.name,arch=architecture, repo=repository)
         if filesonly:
-            logger.info("Possibly populating files for package %s in database", p.name)
-            populate_files(pkg, p)
+            logger.debug("Checking files for package %s in database", p.name)
+            populate_files(dbp, p)
         else:
             logger.info("Updating package %s in database", p.name)
-            populate_pkg(pkg, p, force=force, timestamp=timestamp)
+            populate_pkg(dbp, p, force=force, timestamp=timestamp)
 
     logger.info('Finished updating Arch: %s' % archname)
 
