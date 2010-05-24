@@ -160,14 +160,14 @@ class Package(models.Model):
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
-    pkgdesc = models.CharField(max_length=255)
-    url = models.CharField(max_length=255)
+    pkgdesc = models.CharField(max_length=255, null=True)
+    url = models.CharField(max_length=255, null=True)
     compressed_size = models.PositiveIntegerField(null=True)
     installed_size = models.PositiveIntegerField(null=True)
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
-    license = models.CharField(max_length=255)
+    license = models.CharField(max_length=255, null=True)
     objects = PackageManager()
     class Meta:
         db_table = 'packages'
