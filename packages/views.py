@@ -302,7 +302,7 @@ def flag(request, name='', repo='', arch=''):
                     'email': form.cleaned_data['email'],
                     'message': form.cleaned_data['usermessage'],
                     'pkg': pkg,
-                    'weburl': 'http://www.archlinux.org'+ pkg.get_absolute_url()
+                    'weburl': pkg.get_full_url(),
                 })
                 send_mail(subject,
                         t.render(c),

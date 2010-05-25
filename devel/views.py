@@ -2,6 +2,7 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
@@ -96,13 +97,14 @@ class NewUserForm(forms.ModelForm):
         user.save()
         profile.user = user
         profile.save()
+        domain = Site.objects.get_current().domain
 
         send_mail("Your new archweb account",
                 """You can now log into:
-https://www.archlinux.org/
+https://%s/login/
 with these login details:
 Username: %s
-Password: %s""" % (user.username, pw),
+Password: %s""" % (domain, user.username, pw),
                 'Arch Website Notification <nobody@archlinux.org>',
                 [user.email],
                 fail_silently=False)

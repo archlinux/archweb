@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 from main.middleware import get_user
 from packages.models import PackageRelation
@@ -176,6 +177,7 @@ class Package(models.Model):
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     license = models.CharField(max_length=255, null=True)
+
     objects = PackageManager()
     class Meta:
         db_table = 'packages'
@@ -189,6 +191,11 @@ class Package(models.Model):
     def get_absolute_url(self):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)
+
+    def get_full_url(self, proto='http'):
+        '''get a URL suitable for things like email including the domain'''
+        domain = Site.objects.get_current().domain
+        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
     @property
     def maintainers(self):
