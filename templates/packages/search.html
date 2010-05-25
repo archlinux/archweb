@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load package_extras %}
-{% block title %}Arch Linux - Package Search{% endblock %}
+{% block title %}Arch Linux - Package Database{% endblock %}
+
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/media/admin_media/css/widgets.css" />
 <script type="text/javascript" src="/jsi18n/"></script>
@@ -9,129 +10,145 @@
 {% endblock %}
 
 {% block content %}
-    <div class="greybox">
-        <h4 style="text-align: right">Search Criteria</h4>
-        <form method="get" action="/packages/">
-            <input type="hidden" name="sort" value='{{sort}}' />
-            <table width="100%">
-                <tr>
-                    <td><span class="smalltext">Arch</span></td>
-                    <td><span class="smalltext">Repository</span></td>
-                    <td><span class="smalltext">Keywords</span></td>
-                    <td><span class="smalltext">Maintainer</span></td>
-                    <td><span class="smalltext">Last Update</span></td>
-                    <td><span class="smalltext">Flagged</span></td>
-                    <td><span class="smalltext">Per Page</span></td>
-                </tr>
-                <tr>
-                    {% td_input search_form.arch %}
-                    {% td_input search_form.repo %}
-                    {% td_input search_form.q %}
-                    {% td_input search_form.maintainer%}
-                    {% td_input search_form.last_update %}
-                    {% td_input search_form.flagged %}
-                    {% td_input search_form.limit %}
-                    <td><input type="submit" value="Search" /></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-    <br /><br />
+<div id="pkglist-search" class="box">
 
-    {% if package_list %}
-    <div class="greybox">
-        <form method="post" action="/packages/update/">
-        <table class="results" width="100%">
-            {% if paginator %}
-                <tr>
-                    <td colspan="{% if user.is_authenticated %}5{% else %}4{% endif %}">
-                        {{paginator.count}} packages found.
-                        Page {{page_obj.number}} of {{paginator.num_pages}}.
-                    </td>
-                    <td>
-                        {% if page_obj.has_previous %}
-                        <a href="/packages/{{page_obj.previous_page_number}}/{{current_query}}">
-                            &lt;&lt;&lt; Previous
-                        </a>
-                        {% else %}
-                            &lt;&lt;&lt; Previous
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if page_obj.has_next %}
-                        <a href="/packages/{{page_obj.next_page_number}}/{{current_query}}">
-                            Next &gt;&gt;&gt;
-                        </a>
-                        {% else %} 
-                            Next &gt;&gt;&gt;
-                        {% endif %}
-                    </td>
-                </tr>
+    <h2>Package Database</h2>
+
+    <h3>Package Search</h3>
+
+	<form id="pkg-search" method="get" action="/packages/">
+		<p><input type="hidden" name="sort" value='{{sort}}' /></p>
+		<fieldset>
+			<legend>Enter search criteria</legend>
+			<div><label title="Limit results a specific CPU architecture">
+					Arch</label>{{ search_form.arch }}</div>
+			<div><label title="Limit results to a specific respository">
+					Repository</label>{{ search_form.repo }}</div>
+			<div><label title="Enter keywords as desired">
+					Keywords</label>{{ search_form.q }}</div>
+			<div><label title="Limit results to a specific maintainer">
+					Maintainer</label>{{ search_form.maintainer}}</div>
+			<div><label title="Limit results to a date after the date entered">
+					Last Update</label>{{ search_form.last_update }}</div>
+			<div><label title="Limit results based on out-of-date status">
+					Flagged</label>{{ search_form.flagged }}</div>
+			<div><label title="Select the number of results to display per page">
+					Per Page</label>{{ search_form.limit }}</div>
+			<div ><label>&nbsp;</label><input title="Search for packages using this criteria"
+				type="submit" value="Search" /></div>
+		</fieldset>
+	</form>
+
+</div><!-- #pkglist-search -->
+
+{% if package_list %}
+<div id="pkglist-results" class="box">
+
+    {% if paginator %}
+    <div id="pkglist-stats-top">
+
+        <p>{{paginator.count}} packages found.
+        Page {{page_obj.number}} of {{paginator.num_pages}}.</p>
+
+        <p class="pkglist-nav">
+            {% if page_obj.has_previous %}
+            <a class="prev" href="/packages/{{page_obj.previous_page_number}}/{{current_query}}"
+                title="Go to previous page">&lt; Prev</a>
+            {% else %}
+            <span class="prev">&lt; Prev</span>
             {% endif %}
-            <tr>
-                {% if user.is_authenticated %}
-                <th>&nbsp;</th>
-                {% endif %}
-                <th><a href="/packages/{% buildsortqs "arch" %}">Arch</a></th>
-                <th><a href="/packages/{% buildsortqs "repo" %}">Repo</a></th>
-                <th><a href="/packages/{% buildsortqs "pkgname" %}">Name</a></th>
-                <th>Version</th>
-                <th>Description</th>
-                <th><a href="/packages/{% buildsortqs "-last_update" %}">Last Updated</a></th>
+            {% if page_obj.has_next %}
+            <a class="next" href="/packages/{{page_obj.next_page_number}}/{{current_query}}"
+                title="Go to next page">Next &gt;</a>
+            {% else %}
+            <span class="next">Next &gt;</span>
+            {% endif %}
+        </p>
 
-            </tr>
+    </div>
+    {% endif %}
+
+    <form id="pkglist-results-form" method="post" action="/packages/update/">
+
+        <table class="results">
+            <thead>
+                <tr>
+                    {% if user.is_authenticated %}
+                    <th>&nbsp;</th>
+                    {% endif %}
+                    <th><a href="/packages/{% buildsortqs "arch" %}"
+                            title="Sort packages by architecture">Arch</a></th>
+                    <th><a href="/packages/{% buildsortqs "repo" %}"
+                            title="Sort packages by repository">Repo</a></th>
+                    <th><a href="/packages/{% buildsortqs "pkgname" %}"
+                            title="Sort packages by package name">Name</a></th>
+                    <th>Version</th>
+                    <th>Description</th>
+                    <th><a href="/packages/{% buildsortqs "-last_update" %}"
+                            title="Sort packages by last update">Last Updated</a></th>
+                </tr>
+            </thead>
+            <tbody>
             {% for pkg in package_list %}
-                <tr class="{% cycle pkgr2,pkgr1 %}">
+                <tr class="{% cycle 'odd' 'even' %}">
                     {% if user.is_authenticated %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
                     {% endif %}
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.repo.name|capfirst }}</td>
-                    <td><a href="{{ pkg.get_absolute_url }}">{{ pkg.pkgname }}</a></td>
-                {% if pkg.needupdate %}
-                    <td><span style="color:red">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
-                {% else %}
+                    <td><a href="{{ pkg.get_absolute_url }}"
+                            title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
+                    {% if pkg.needupdate %}
+                    <td><span style="flagged">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
+                    {% else %}
                     <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
-                {% endif %}
-                    <td>{{ pkg.pkgdesc }}</td>
+                    {% endif %}
+                    <td class="wrap">{{ pkg.pkgdesc }}</td>
                     <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
                 </tr>
             {% endfor %}
-            {% if paginator %}
-                <tr>
-                    <td colspan="{% if user.is_authenticated %}5{% else %}4{% endif %}">
-                        {{paginator.count}} packages found.
-                        Page {{page_obj.number}} of {{paginator.num_pages}}.
-                    </td>
-                    <td>
-                        {% if page_obj.has_previous %}
-                        <a href="/packages/{{page_obj.previous_page_number}}/{{current_query}}">
-                            &lt;&lt;&lt; Previous
-                        </a>
-                        {% else %}
-                            &lt;&lt;&lt; Previous
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if page_obj.has_next %}
-                        <a href="/packages/{{page_obj.next_page_number}}/{{current_query}}">
-                            Next &gt;&gt;&gt;
-                        </a>
-                        {% else %} 
-                            Next &gt;&gt;&gt;
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endif %}
+            </tbody>
         </table>
-        {% if user.is_authenticated %}
-        <div id="adoptbox">
-            <input type="submit" name="adopt" value="Adopt Packages">
-            <input type="submit" name="disown" value="Disown Packages">
+
+        {% if paginator %}
+        <div id="pkglist-stats-bottom">
+
+            <p>{{paginator.count}} packages found. Page {{page_obj.number}} of {{paginator.num_pages}}.</p>
+
+                <p class="pkglist-nav">
+                    {% if page_obj.has_previous %}
+                    <a class="prev" href="/packages/{{page_obj.previous_page_number}}/{{current_query}}"
+                        title="Go to previous page">&lt; Prev</a>
+                    {% else %}
+                    <span class="prev">&lt; Prev</span>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                    <a class="next" href="/packages/{{page_obj.next_page_number}}/{{current_query}}"
+                        title="Go to next page">Next &gt;</a>
+                    {% else %}
+                    <span class="next">Next &gt;</span>
+                    {% endif %}
+                </p>
+
         </div>
         {% endif %}
-        </form>
-    </div>
-    {% endif %}
-{% endblock %}
 
+        {% if user.is_authenticated %}
+        <p><input title="Adopt selected packages" type="submit" id="adopt-btn"
+        name="adopt" value="Adopt Packages" />
+        <input title="Orphan selected packages" type="submit" id="disown-btn"
+        name="disown" value="Disown Packages" /></p>
+        {% endif %}
+
+    </form>
+
+</div><!-- #pkglist-results -->
+
+<div id="pkglist-about" class="box">
+    <p>You are browsing the Arch Linux package database. From here you can find
+    detailed information about packages located in the official supported repositories.
+    For unsupported packages, browse the <a href="http://aur.archlinux.org/"
+        title="AUR package database">Arch User Repository (AUR).</a></p>
+</div>
+{% endif %}
+{% endblock %}

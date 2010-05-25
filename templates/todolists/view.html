@@ -1,68 +1,74 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - Todo - {{ list.name }}{% endblock %}
+{% block title %}Arch Linux - Todo: {{ list.name }}{% endblock %}
 
 {% block content %}
-	<div class="greybox">
-            <div style="float:right">
-                {% if perms.main.delete_todolist %}
-                    <a href="/todo/delete/{{list.id}}/">Delete Todo List</a> |
-                {% endif %}
-                {% if perms.main.change_todolist %}
-                    <a href="/todo/edit/{{list.id}}/">Edit Todo List</a>
-                {% endif %}
-            </div>
-		<h2 class="title">Todo List: {{ list.name }}</h2>
-		<table id="todotable" class="results" width="100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Arch</th>
-                    <th>Repo</th>
-                    <th>Maintainer</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
+<div id="dev-todo-details" class="box">
+
+    <h2>Todo List: {{ list.name }}</h2>
+
+    <ul class="admin-actions">
+        {% if perms.main.delete_todolist %}
+        <li><a href="/todo/delete/{{list.id}}/"
+            title="Delete this todo list">Delete Todo List</a></li>
+        {% endif %}
+        {% if perms.main.change_todolist %}
+        <li><a href="/todo/edit/{{list.id}}/"
+            title="Edit this todo list">Edit Todo List</a></li>
+        {% endif %}
+    </ul>
+
+    <p>{{list.description|linebreaks}}</p>
+
+    <table id="dev-todo-pkglist" class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Arch</th>
+                <th>Repo</th>
+                <th>Maintainer</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for pkg in list.packages %}
-                <tr class="{% cycle pkgr2,pkgr1 %}">
-                    <td><a href="{{ pkg.pkg.get_absolute_url }}">{{ pkg.pkg.pkgname }}</a></td>
-                    <td>{{ pkg.pkg.arch.name }}</td>
-                    <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                    <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
-                    <td>
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td><a href="{{ pkg.pkg.get_absolute_url }}"
+                        title="View package details for {{ pkg.pkg.pkgname }}">{{ pkg.pkg.pkgname }}</a></td>
+                <td>{{ pkg.pkg.arch.name }}</td>
+                <td>{{ pkg.pkg.repo.name|capfirst }}</td>
+                <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
+                <td>
                     {% if pkg.complete %}
-                        <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:blue">Complete</span></a>
+                    <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
+                        class="complete" title="Toggle completion status">Complete</a>
                     {% else %}
-                        <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"><span style="color:red">Incomplete</span></a>
+                    <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
+                        class="incomplete" title="Toggle completion status">Incomplete</a>
                     {% endif %}
-                    </td>
-                </tr>
+                </td>
+            </tr>
             {% endfor %}
-            </tbody>
-		</table>
-        <br />
-        <div class="box">
-            <h3>List Description</h3>
-            {{list.description|linebreaks}}
-        </div>
-	</div>
+        </tbody>
+    </table>
 
-    {% load cdn %}{% jquery %}
-    <script type="text/javascript">
-        $(function() {
-            $('a[href*=todo/flag]').click(function() {
-                var link = this;
+</div><!-- #dev-todo-details -->
 
-                $.getJSON(link.href, function(data) {
-                    if (data.complete) {
-                        $(link).text('Complete').css('color', 'blue');
-                    } else {
-                        $(link).text('Incomplete').css('color', 'red');
-                    }
-                });
+{% load cdn %}{% jquery %}
+<script type="text/javascript">
+    $(function() {
+        $('a[href*=todo/flag]').click(function() {
+            var link = this;
 
-                return false;
+            $.getJSON(link.href, function(data) {
+                if (data.complete) {
+                    $(link).text('Complete').addClass('complete').removeClass('incomplete');
+                } else {
+                    $(link).text('Incomplete').addClass('incomplete').removeClass('complete');
+                }
             });
+
+            return false;
         });
-    </script>
+    });
+</script>
 {% endblock %}

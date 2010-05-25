@@ -2,34 +2,40 @@
 {% block title %}Arch Linux - Todo Lists{% endblock %}
 
 {% block content %}
-	<div class="greybox">
-        {% if perms.main.add_todolist %}
-            <div style="float:right">
-                <a href="/todo/add/">Add Todo List</a>
-            </div>
-        {% endif %}
-		<h2 class="title">Package ToDo lists</h2>
-		<table class="results" width="100%">
-            <thead>
-		    	<tr>
-                    <th>Name</th>
-                    <th>Creation Date</th>
-                    <th>Creator</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
+<div id="dev-todo" class="box">
+
+    <h2>Package Todo Lists</h2>
+
+    {% if perms.main.add_todolist %}
+    <ul class="admin-actions">
+        <li><a href="/todo/add/" title="Add new todo list">Add Todo List</a></li>
+    </ul>
+    {% endif %}
+
+    <table id="dev-todo-lists" class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Creation Date</th>
+                <th>Creator</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for list in lists %}
-                <tr class="{% cycle pkgr2,pkgr1 %}">
-                    <td style="white-space:nowrap"><a href="/todo/{{ list.id }}/">{{ list.name }}</a></td>
-                    <td>{{ list.date_added }}</td>
-                    <td>{{ list.creator.get_full_name }}</td>
-                    <td>{{ list.description }}</td>
-                    <td>{% if list.complete %}<span style="color:blue">Complete</span>{% else %}<span style="color:red">Incomplete</span>{% endif %}</td>
-                </tr>
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td><a href="/todo/{{ list.id }}/"
+                        title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
+                <td>{{ list.date_added }}</td>
+                <td>{{ list.creator.get_full_name }}</td>
+                <td class="wrap">{{ list.description }}</td>
+                <td>{% if list.complete %}<span class="complete">Complete</span>
+                    {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
+            </tr>
             {% endfor %}
-            </tbody>
-		</table>
-	</div>
+        </tbody>
+    </table>
+
+</div><!-- #dev-todo -->
 {% endblock %}

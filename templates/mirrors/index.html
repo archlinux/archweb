@@ -1,24 +1,21 @@
 {% extends "base.html" %}
 {% load package_extras %}
-{% block title %}Arch Linux - Generate Mirrorlist{% endblock %}
+{% block title %}Arch Linux - Pacman Mirrorlist Generator{% endblock %}
 
 {% block content %}
-<div class="box">
-    <h2 class="title">Generate Custom Mirrorlist</h2>
-    <form method="post">
-        <table>
-            <tr>
-                <td>Architecture</td>
-                {% td_input mirrorlist_form.arch %}
-            </tr>
-            <tr>
-                <td>Country</td>
-                {% td_input mirrorlist_form.country %}
-            </tr>
-            <tr>
-                <td><input type="submit" value="Generate" /></td>
-            </tr>
-        </table>
+<div id="mirrorlist-gen" class="box">
+
+    <h2>Pacman Mirrorlist Generator</h2>
+
+    <p>The following form can generate a custom up-to-date
+    <a href="http://wiki.archlinux.org/index.php/Pacman"
+        title="ArchWiki: Pacman">pacman</a> mirrorlist based on geography.
+    Simply replace the contents of <code>/etc/pacman.d/mirrorlist</code> with
+    the generated code.</p>
+
+    <form id="list-generator" method="post" action=".">
+        {{ mirrorlist_form.as_p }}
+        <p><label></label> <input type="submit" value="Generate List" /></p>
     </form>
 </div>
 {% endblock %}

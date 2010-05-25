@@ -2,28 +2,40 @@
 {% block title %}Arch Linux - Flag Package - {{ pkg.pkgname }}{% endblock %}
 
 {% block content %}
-<div>
-    {% if confirmed %}
-	<p>Thank you. Maintainers have been notified.</p>
-    {% else %}
-	<p>If you notice that one of Arch's packages is out of date (ie, there is a
-    newer <b>stable</b> release available), then please notify us using the
-	form below.</p>
-	<p>The message box portion of the flag utility is optional, and meant for
-	short messages only. If you need more than 200 characters for your
-	message, then file a bug report, email the maintainer directly, or send an
-	email to the arch-general mailing list with your additional text.</p>
+<div id="pkg-flag" class="box">
+{% if confirmed %}
+    <h2>Package Flagged</h2>
 
-	<p><b>Note:</b> Please do <i>not</i> use this facility if the package is
-	broken!  Use the <a href='http://bugs.archlinux.org'>bug tracker</a>
-	instead.</p>
+    <p>Thank you, the maintainers have been notified about <strong>{{ pkg.pkgname }}</strong>.</p>
+
+    <p>You can return to the package details page for
+    <a href="{{ pkg.get_absolute_url }}" title="Package details for {{pkg.pkgname}}">{{pkg.pkgname}}</a>.</p>
+{% else %}
+    <h2>Flag Package: {{ pkg.pkgname }}</h2>
+
+    <p>If you notice a package is out of date (i.e., there is a newer
+    <strong>stable</strong> release available), then please notify us using
+    the form below.</p>
+
+    <p>The message box portion of the flag utility is optional, and meant
+    for short messages only. If you need more than 200 characters for your
+    message, then file a bug report, email the maintainer directly, or send
+    an email to the <a href="http://mailman.archlinux.org/mailman/listinfo/arch-general"
+        title="Visit the arch-general mailing list">arch-general mailing list</a>
+    with your additional text.</p>
+
+    <p><strong>Note:</strong> Please do <em>not</em> use this facility if the
+    package is broken!  Use the <a href="http://bugs.archlinux.org"
+        title="Arch Linux Bugtracker">bug tracker</a> instead.</p>
+
     <p>Please confirm your flag request for {{pkg.pkgname}}:</p>
-	<form method="post" action=".">
-		<table>
-			{{form}}
-		</table>
-		<input type="submit" value=" Confirm " />
-	</form>
-    {% endif %}
+
+    <form id="flag-pkg-form" method="post" action=".">
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+		<p><label></label> <input title="Flag {{ pkg.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
+    </form>
+{% endif %}
 </div>
 {% endblock %}

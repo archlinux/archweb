@@ -1,59 +1,67 @@
-    <div id="devlist">
-    {% for dev in dev_list %}
-        <a href="#{{ dev.username }}">{{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a>  &nbsp;
-    {% endfor %}
-    </div><br /><br />
+<div id="arch-bio-toc">
 
-    <table class="center" cellpadding="20">
+    <p>
+    {% for dev in dev_list %}
+    <a href="#{{ dev.username }}" title="Jump to profile for {{ dev.get_full_name }}">
+        {{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a> &nbsp;&nbsp;
+    {% endfor %}
+    </p>
+
+</div>
+
+<table class="arch-bio-entry">
     {% for dev in dev_list %}
     {% with dev.get_profile as prof %}
-        <tr>
-            <td class="devpic">
-                <img src="{{ prof.picture.url }}" height="175" width="175" style="border:1px solid black" alt="Image for {{ prof.alias }}"/>
-            </td><td>
-                <a name="{{ dev.username }}"></a>
-                <table class="deventry" cellspacing="5">
-                    <tr>
-                        <th>Name:</th>
-                        <td>{{ dev.get_full_name }}</td>
-                    </tr><tr>
-                        <th>Alias:</th>
-                        <td>{{ prof.alias }}</td>
-                    </tr><tr>
-                        <th>Email:</th>
-                        <td>{{ prof.public_email }}</td>
-                    </tr><tr>
-                        <th>Other Contact:</th>
-                        <td>{{ prof.other_contact }}</td>
-                    </tr><tr>
-                        <th>Roles:</th>
-                        <td>{{ prof.roles }}<br />
-                        </td>
-                    </tr><tr>
-                        <th>Website:</th>
-                        <td>{% if prof %}<a href="{{ prof.website }}">{{ prof.website }}</a>{% endif %}</td>
-                    </tr><tr>
-                        <th>Occupation:</th>
-                        <td>{{ prof.occupation }}</td>
-                    </tr><tr>
-                        <th>YOB:</th>
-                        <td>{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
-                    </tr><tr>
-                        <th>Location:</th>
-                        <td>{{ prof.location }}</td>
-                    </tr><tr>
-                        <th>Languages:</th>
-                        <td>{{ prof.languages }}</td>
-                    </tr><tr>
-                        <th>Interests:</th>
-                        <td>{{ prof.interests }}</td>
-                    </tr><tr>
-                        <th>Favorite Distros:</th>
-                        <td>{{ prof.favorite_distros }}</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+    <tr>
+        <td class="pic pic-{{ dev.username }}">
+            <img src="{{ prof.picture.url }}" height="125" width="125" alt="Image for {{ prof.alias }}"/>
+        </td>
+        <td>
+            <a name="{{ dev.username }}"></a>
+            <table class="bio bio-{{ dev.username }}" cellspacing="0">
+                <tr>
+                    <th>Name:</th>
+                    <td>{{ dev.get_full_name }}</td>
+                </tr><tr>
+                    <th>Alias:</th>
+                    <td>{{ prof.alias }}</td>
+                </tr><tr>
+                    <th>Email:</th>
+                    <td>{{ prof.public_email }}</td>
+                </tr><tr>
+                    <th>Other Contact:</th>
+                    <td>{{ prof.other_contact }}</td>
+                </tr><tr>
+                    <th>Roles:</th>
+                    <td>{{ prof.roles }}<br />
+                    </td>
+                </tr><tr>
+                    <th>Website:</th>
+                    <td>{% if prof %}<a href="{{ prof.website }}"
+                            title="Visit the website for {{ dev.get_full_name }}">
+                            {{ prof.website }}</a>{% endif %}</td>
+                </tr><tr>
+                    <th>Occupation:</th>
+                    <td>{{ prof.occupation }}</td>
+                </tr><tr>
+                    <th>YOB:</th>
+                    <td>{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
+                </tr><tr>
+                    <th>Location:</th>
+                    <td>{{ prof.location }}</td>
+                </tr><tr>
+                    <th>Languages:</th>
+                    <td>{{ prof.languages }}</td>
+                </tr><tr>
+                    <th>Interests:</th>
+                    <td>{{ prof.interests }}</td>
+                </tr><tr>
+                    <th>Favorite Distros:</th>
+                    <td>{{ prof.favorite_distros }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
     {% endwith %}
     {% endfor %}
-    </table>
+</table>

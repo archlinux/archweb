@@ -6,127 +6,191 @@
 {% endblock %}
 
 {% block content_left %}
-    <div id="about" class="box">
-        <h2>Welcome to Arch!</h2>
-        <p>
-            You've reached the website for <strong>Arch Linux</strong>, a lightweight
-            and flexible Linux&reg; distribution that tries to Keep It Simple.
-        </p><p>
-            Currently we have official packages optimized for the i686 and x86-64
-            architectures.  We complement our official package sets with a
-            <a href="http://aur.archlinux.org">community-operated package repository</a>
-            that grows in size and quality each and every day.
-        </p><p>
-            Our strong community is diverse and helpful, and we pride ourselves on
-            the range of skillsets and uses for Arch that stem from it.  Please
-            check out our <a href="http://bbs.archlinux.org">forums</a> and
-            <a href="http://www.archlinux.org/mailman/listinfo/">mailing lists</a>
-            to get your feet wet.  Also glance through our <a href="http://wiki.archlinux.org">wiki</a>
-            if you want to learn more about Arch.
-        </p><p style="text-align: right">
-            <a href="{% url page-about %}"><span style="font-size:x-small">Learn more...</span></a>
-        </p>
-    </div>
-    <br /><br />
-    <div style="float:right;position:relative;bottom:-25px">
-        <a href="/feeds/news/"><img src="/media/rss.png" alt="RSS Feed" /></a>
-    </div>
-    <h2 class="title">Latest News</h2>
-    <div>
+<div id="intro" class="box">
+
+    <h2>A simple, lightweight distribution</h2>
+
+    <p>You've reached the website for <strong>Arch Linux</strong>, a
+    lightweight and flexible Linux® distribution that tries to Keep It
+    Simple.</p>
+
+    <p>Currently we have official packages optimized for the i686 and
+    x86-64 architectures. We complement our official package sets with a
+    <a href="http://aur.archlinux.org" title="Arch User Repository (AUR)">
+        community-operated package repository</a> that grows in size and
+    quality each and every day.</p>
+
+    <p>Our strong community is diverse and helpful, and we pride ourselves
+    on the range of skillsets and uses for Arch that stem from it. Please
+    check out our <a href="http://bbs.archlinux.org" title="Arch Forums">forums</a>
+    and <a href="http://www.archlinux.org/mailman/listinfo/" title="Arch Mailing Lists">mailing lists</a>
+    to get your feet wet.  Also glance through our <a href="http://wiki.archlinux.org" title="Arch Wiki">wiki</a>
+    if you want to learn more about Arch.</p>
+
+    <p class="readmore"><a href="{% url page-about %}"
+        title="Learn more about Arch Linux">Learn more...</a></p>
+
+</div><!-- #intro -->
+
+<div id="news">
+
+    <h3>Latest News <span class="more">(<a href="{% url news-list %}"
+                title="Browse the news archives">more</a>)</span></h3>
+
+    <a href="/feeds/news/" title="Arch News RSS Feeds"
+        class="rss-icon"><img src="/media/rss.png" alt="RSS Feed" /></a>
+
     {% for news in news_updates %}
-        <br />
-        <span style="float:right; font-size:x-small">{{ news.postdate }}</span>
-        <h4 class="news"><a href="{{ news.get_absolute_url }}">{{ news.title }}</a></h4>
-        <p class="news">{{ news.content|striptags|truncatewords:60 }}</p>
-        <br />
+    <h4><a href="{{ news.get_absolute_url }}"
+            title="View full article: {{ news.title }}">{{ news.title }}</a></h4>
+    <p class="timestamp">{{ news.postdate }}</p>
+    <p>{{ news.content|striptags|truncatewords:50 }}</p>
     {% endfor %}
-        <span style="float:right;font-size:x-small"><a href="{% url news-list %}">More News...</a></span>
-        <br /><br />
-    </div>
+
+</div><!-- #news -->
 {% endblock %}
 
 {% block content_right %}
-    <div id="search">
-        <form method="get" action="/packages/">
-            <p>Package Search:&nbsp;&nbsp;<input type="text" name="q" size="20" maxlength="200" /></p>
-        </form>
-    </div>
-    <div id="updates">
-        <table width="100%">
-            <tr>
-                <td><h3>Recent Updates</h3></td>
-                <td style="vertical-align:top;text-align:right"><a href="/feeds/packages/"><img src="/media/rss.png" alt="RSS Feed" /></a></td>
-            </tr>
+<div id="pkgsearch" class="widget">
+
+    <form id="pkgsearch-form" method="get" action="/packages/">
+        <fieldset>
+            <p>Package Search:&nbsp;&nbsp;<input id="pkgsearch-field"
+            type="text" name="q" size="18" maxlength="200" /></p>
+        </fieldset>
+    </form>
+
+</div>
+
+<div id="pkg-updates" class="widget box">
+
+    <h3>Recent Updates <span class="more">(<a href="/packages/?sort=-last_update"
+            title="Browse all of the latest packages">more</a>)</span></h3>
+
+    <a href="/feeds/packages/" title="Arch Package Updates RSS Feeds"
+        class="rss-icon"><img src="/media/rss.png" alt="RSS Feed" /></a>
+
+    <table>
         {% for update in pkg_updates %}
         {% with update|first as fpkg %}
-            <tr>
-                <td><span class="{{ fpkg.repo.name|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
-                <td style="text-align:right">
-                    {% for pkg in update %}<a href="{{ pkg.get_absolute_url }}">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
+        <tr>
+            <td class="pkg-name"><span class="{{ fpkg.repo.name|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
+            <td class="pkg-arch">
+                {% for pkg in update %}<a href="{{ pkg.get_absolute_url }}"
+                    title="View package details for {{ pkg.pkgname }}">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
             </td>
-            </tr>
+        </tr>
         {% endwith %}
         {% endfor %}
-            <tr>
-                <td style="font-size:x-small;white-space:nowrap;"><br /><a href="{% url feeds-list %}">More Feeds...</a></td>
-                <td style="text-align:right;font-size:x-small;white-space:nowrap;"><br /><a href="/packages/?sort=-last_update">More Updates...</a></td>
-            </tr>
-        </table>
-    </div>
-    <br />
+    </table>
+
+</div>
+
+<div id="nav-sidebar" class="widget">
+
     <div style="text-align: center;">
         <a href="http://www.archlinux.ca/archcon2010/" title="ArchCon 2010"><img src="/media/archcon.png" class="" title="" alt="ArchCon 2010" /></a>
     </div>
-    <br />
-    {% if user.is_authenticated %}
-      <h3>Dev Links:</h3>
-      <ul class="links">
-          <li><a href="/devel/">Dev Dashboard</a></li>
-          <li><a href="{% url news-list %}">News</a></li>
-          <li><a href="/packages/signoffs/">Signoffs</a></li>
-          <li><a href="/todo/">Todos</a></li>
-          <li><a href="http://www.archlinux.org/mailman/private/arch-dev/">Archives</a></li>
-          <li><a href="http://wiki.archlinux.org/index.php/DeveloperWiki:HOWTO_Be_A_Packager">Package Maintainer's Guide</a></li>
-          <li><a href="/devel/profile/">Profile</a></li>
-      </ul>
-    {% endif %}
-    <h3>Documentation:</h3>
-    <ul class="links">
-        <li><a href="http://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide">Installation Guide</a></li>
-        <li><a href="http://wiki.archlinux.org/index.php/Beginners'_Guide">Beginners' Guide</a></li>
-        <li><a href="http://wiki.archlinux.org">Wiki</a></li>
+
+    <h4>Documentation</h4>
+
+    <ul>
+        <li><a href="http://wiki.archlinux.org/"
+            title="Community documentation">Wiki</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide"
+            title="Official installation guide">Official Installation Guide</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/Beginners'_Guide"
+            title="A good place to start for beginners">Unofficial Beginners' Guide</a></li>
     </ul>
-    <h3>Support Arch:</h3>
-    <ul class="links">
-        <li><a href="{% url page-donate %}">Donate</a></li>
+
+    <h4>Community</h4>
+
+    <ul>
+        <li><a href="http://mailman.archlinux.org/mailman/listinfo/"
+            title="Community and developer mailing lists">Mailing Lists</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/IRC_Channels"
+            title="Official and regional IRC communities">IRC Channels</a></li>
+        <li><a href="http://planet.archlinux.org/"
+            title="Arch in the blogosphere">Planet Arch</a></li>
+        <li><a href="/static/magazine/"
+            title="Community newsletters and magazines">Magazines</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/International_Communities"
+            title="Arch communities in your native language">International Communities</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/Related_Projects"
+            title="Projects that are in some way related to Arch Linux">Related Projects</a></li>
+    </ul>
+
+    <h4>Support</h4>
+
+    <ul>
+        <li><a href="{% url page-donate %}" title="Help support Arch Linux">Donate</a></li>
         <li><a href="http://schwag.archlinux.ca/"
-            title="USB keys, Jewellery, case badges">Arch Schwag</a></li>
+            title="USB keys, jewellery, case badges">Arch Schwag</a></li>
         <li><a href="http://www.zazzle.com/archlinux*"
             title="T-shirts, mugs, mouse pads, hoodies, posters, skateboards, shoes, etc.">Schwag via Zazzle</a></li>
         <li><a href="http://www.freewear.org/?page=list_items&amp;org=Archlinux"
             title="T-shirts">Schwag via Freewear</a></li>
-        <li><a href="{% url page-art %}">Logos &amp; Artwork</a></li>
     </ul>
-    <h3>Community Links:</h3>
-    <ul class="links">
-        <li><a href="http://www.archlinux.org/mailman/listinfo/">Mailing Lists</a></li>
-        <li><a href="http://wiki.archlinux.org/index.php/IRC_Channels">IRC Channels</a></li>
-        <li><a href="http://planet.archlinux.org">Planet Arch</a></li>
-        <li><a href="/static/magazine/">Magazines</a></li>
-        <li><a href="http://wiki.archlinux.org/index.php/Arch_Related_Projects">Arch-Based Projects</a></li>
-        <li><a href="http://wiki.archlinux.org/index.php/International_Communities">International Communities</a></li>
-        <li><a href="http://wiki.archlinux.org/index.php/Arch_Linux_Press_Review">Press</a></li>
+
+    <h4>Development</h4>
+
+    <ul>
+        <li><a href="/packages/"
+            title="View/search the package repository database">Packages</a></li>
+        <li><a href="http://bugs.archlinux.org/"
+            title="Report/track bugs or make feature requests">Bug Tracker</a></li>
+        <li><a href="{% url page-svn %}"
+            title="View SVN entries for packages">SVN Repositories</a></li>
+        <li><a href="http://projects.archlinux.org/"
+            title="Official Arch projects (git)">Projects in Git</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/DeveloperWiki"
+            title="Developer Wiki articles">DeveloperWiki</a></li>
     </ul>
-    <h3>Development:</h3>
-    <ul class="links">
-        <li><a href="{% url page-devs %}">Developers</a></li>
-        <li><a href="{% url page-tus %}">Trusted Users</a></li>
-        <li><a href="{% url page-fellows %}">Fellows</a></li>
-        <li><a href="http://bugs.archlinux.org">Bug Tracker</a></li>
-        <li><a href="{% url page-svn %}">SVN</a></li>
-        <li><a href="http://projects.archlinux.org">Projects</a></li>
+
+    <h4>About</h4>
+
+    <ul>
+        <li><a href="http://wiki.archlinux.org/index.php/ArchLinux:About"
+            title="Learn more about Arch Linux">About Arch</a></li>
+        <li><a href="/download/" title="Get Arch Linux">Download Arch</a></li>
+        <li><a href="http://wiki.archlinux.org/index.php/Arch_Linux_Press_Review"
+            title="Arch Linux in the media">Press Coverage</a></li>
+        <li><a href="{% url page-art %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
+        <li><a href="{% url news-list %}" title="News Archives">News Archives</a></li>
+        <li><a href="/feeds/" title="Various RSS Feeds">RSS Feeds</a></li>
+        <li><a href="{% url page-devs %}" title="Active developers">Developer Profiles</a></li>
+        <li><a href="{% url page-tus %}" title="Active Trusted Users (TUs)">Trusted User Profiles</a></li>
+        <li><a href="{% url page-fellows %}" title="Retired Developers">Fellows Profiles</a></li>
     </ul>
-    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network"><img src="/media/vnet_button.png" class="" title="" alt="velocity network - it's about time" /></a>
-    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png" class="" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
-    <a href="http://www.airvm.com/VirtualServers" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg" class="" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
+
+</div><!-- #nav-sidebar -->
+
+<div id="home-paypal-button" class="widget">
+
+    <form id="paypal-form" name="_xclick" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+        <p><input type="hidden" name="cmd" value="_xclick"/></p>
+        <p><input type="hidden" name="business" value="aaronmgriffin@gmail.com"/></p>
+        <p><input type="hidden" name="currency_code" value="USD"/></p>
+        <p><input type="hidden" name="tax" value="0"/></p>
+        <p><input type="hidden" name="lc" value="US"/></p>
+        <p><input type="hidden" name="bn" value="PP-DonationsBF"/></p>
+        <p><input type="hidden" name="item_name" value="Arch Linux Donation"/></p>
+        <p><input type="hidden" name="no_shipping" value="1"/></p>
+        <p><input type="hidden" name="cn" value="Suggestions/Comments"/></p>
+        <p><input type="hidden" name="no_note" value="1"/></p>
+        <p><input type="image" src="/media/donate.gif" name="submit"
+        title="Make a PayPal donation to the Arch Linux project"
+        alt="Make a PayPal donation to the Arch Linux project"
+        style="background:transparent;border:none;" /></p>
+    </form>
+
+</div>
+
+<div id="sponsors" class="widget">
+
+    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network"><img src="/media/vnet_button.png" alt="Velocity Network - It's about time" /></a>
+    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
+    <a href="http://www.airvm.com/VirtualServers" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
+
+</div>
 {% endblock %}

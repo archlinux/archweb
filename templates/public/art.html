@@ -1,78 +1,129 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - Artwork{% endblock %}
-{% block content %}
-<div class="box">
-    <h2 class="title">Arch Linux Logos and Artwork</h2>
-    <h3>Official Packages</h3>
-    <p>Official logos, artwork, and more are available from the Extra repository. Currently, these packages are:</p>
-    <ul>
-      <li><strong>archlinux-artwork</strong> - official logos, icons and CD labels</li>
-      <li><strong>archlinux-wallpaper</strong> - a variety of desktop wallpapers for standard and widescreen resolutions</li>
-      <li><strong>archlinux-themes-gdm</strong> - GDM login themes</li>
-      <li><strong>archlinux-themes-kde</strong> - KDE themes and icons</li>
-      <li><strong>archlinux-themes-kdm</strong> - KDM login themes</li>
-      <li><strong>archlinux-themes-ksplash</strong> - Ksplash themes</li>
-      <li><strong>archlinux-themes-slim</strong> - SLiM login themes</li>
-    </ul>
-    <p>Alternatively, you can <a href="ftp://ftp.archlinux.org/other/artwork/" title="Browse the FTP archives">download the source files via FTP</a>.</p>
-    <h3>Former Logos</h3>
-    <p>Arch has gone through a few iterations of logos and associated artwork.
-    Here is a good selection of these logos. Several of the later logos can be
-    clicked on to get either a larger PNG or SVG version of the logo.</p>
-    <h4>Original Ribbon Logos</h4>
-    <p>
-    <img src="/logos/old/archlogo.gif" alt="Ribbon Logo 1"/>
-    <img src="/logos/old/archlogo2.gif" alt="Ribbon Logo 2"/>
-    <img src="/logos/old/archlogo_black_plain.png" alt="Ribbon Logo Black"/>
-    </p>
-    <p>
-    <img src="/logos/old/archlogo3.gif" alt="Ribbon Logo Binary 1"/>
-    <img src="/logos/old/archlogo_white.gif" alt="Ribbon Logo Binary 2"/>
-    <img src="/logos/old/archlogo_black.gif" alt="Ribbon Logo Binary Black"/>
-    </p>
-    <h4>"Arch Blue" Logos</h4>
-    <p>
-    <a href="/logos/old/archlinux_logo_2.svg">
-        <img src="/logos/old/archblue.png" alt="Arch Blue Full"/>
-    </a>
-    <span style="margin-left: 1em;">
-    <a href="/logos/old/archlinux_logo_1.svg">
-        <img src="/logos/old/archblue2.png" alt="Arch Blue Compact"/>
-    </a>
-    </span>
-    </p>
-    <h4>"Arch Aqua" Logos</h4>
-    <p>
-    <a href="/logos/old/archlinux_logo_aqua.svg">
-        <img src="/logos/old/sml_128-archlinux_logo_aqua.png" alt="Arch Aqua"/>
-    </a>
-    <a href="/logos/old/scalable/arch_linux_blue.svg">
-        <img src="/logos/old/128x128/arch_linux_blue.png" alt="Arch Aqua Blue"/>
-    </a>
-    <a href="/logos/old/scalable/arch_linux_white.svg">
-        <img src="/logos/old/128x128/arch_linux_white.png" alt="Arch Aqua White"/>
-    </a>
-    </p>
-    <h4>Release-specific Logos</h4>
-    <p>
-    <a href="/logos/old/wombat.png" title="Wombat">
-        <img src="/logos/old/sml-wombat.png" height="128" alt="Arch Wombat"/>
-    </a>
-    </p>
-    <p>
-    <a href="/logos/old/scalable/arch_linux_blue_noodle.svg" title="Noodle">
-        <img src="/logos/old/128x128/arch_linux_blue_noodle.png" alt="Arch Noodle Blue"/>
-    </a>
-    <a href="/logos/old/scalable/arch_linux_white_noodle.svg" title="Noodle">
-        <img src="/logos/old/128x128/arch_linux_white_noodle.png" alt="Arch Noodle White"/>
-    </a>
-    <a href="/logos/old/scalable/arch_noodles.svg" title="Noodle">
-        <img src="/logos/old/128x128/arch_noodles.png" alt="Arch Box of Noodles"/>
-    </a>
-    <a href="/logos/old/scalable/pot_arch.svg" title="Noodle">
-        <img src="/logos/old/128x128/pot_arch.png" alt="Arch Cup of Noodles"/>
-    </a>
-    </p>
-</div>
-{% endblock %}
 
+{% block content %}
+<div id="artwork" class="box">
+
+    <h2>Arch Linux Logos and Artwork</h2>
+
+    <h3>Logos for Press Usage</h3>
+
+    <p>The following Arch Linux logos are available for press and other use, subject to
+    the restrictions of our <a href="http://wiki.archlinux.org/index.php/DeveloperWiki:TrademarkPolicy"
+        title="Arch Linux Trademark Policy">trademark policy</a>.</p>
+
+    <p><strong>Two-color standard version</strong><br />
+    <em>Also available in print-quality
+        <a href="/media/logos/archlinux-logo-dark-1200dpi.png"
+            title="Download 1200dpi PNG format">PNG</a> and scalable
+        <a href="/media/logos/archlinux-logo-dark-scalable.svg"
+            title="Download scalable SVG format">SVG</a> formats.</em></p>
+
+    <img src="/media/logos/archlinux-logo-dark-90dpi.png"
+    alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" />
+
+    <p><strong>Two-color inverted version</strong> (for dark backgrounds)<br />
+    <em>Also available in print-quality
+        <a href="/media/logos/archlinux-logo-light-1200dpi.png"
+            title="Download 1200dpi PNG format">PNG</a> and scalable
+        <a href="/media/logos/archlinux-logo-light-scalable.svg"
+            title="Download scalable SVG format">SVG</a> formats.</em></p>
+
+    <img src="/media/logos/archlinux-logo-light-90dpi.png"
+    alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" class="inverted" />
+
+    <p><strong>One-color standard version</strong><br />
+    <em>Also available in print-quality
+            <a href="/media/logos/archlinux-logo-black-1200dpi.png"
+                title="Download 1200dpi PNG format">PNG</a> and scalable
+            <a href="/media/logos/archlinux-logo-black-scalable.svg"
+                title="Download scalable SVG format">SVG</a> formats.</em></p>
+
+            <img src="/media/logos/archlinux-logo-black-90dpi.png"
+            alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" />
+
+    <p><strong>One-colour inverted version</strong> (for dark backgrounds)<br />
+    <em>Also available in print-quality
+        <a href="/media/logos/archlinux-logo-white-1200dpi.png"
+            title="Download 1200dpi PNG format">PNG</a> and scalable
+        <a href="/media/logos/archlinux-logo-white-scalable.svg"
+            title="Download scalable SVG format">SVG</a> formats.</em></p>
+
+    <img src="/media/logos/archlinux-logo-white-90dpi.png"
+    alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" class="inverted" />
+
+    <h3>Logos and Artwork for the Community</h3>
+
+    <p>Official logos and artwork are also available directly from the
+    repositories. Currently, these packages are:</p>
+
+    <ul>
+        <li><strong>archlinux-artwork</strong> - official logos, icons and CD labels</li>
+        <li><strong>archlinux-wallpaper</strong> - a variety of desktop wallpapers
+            for standard and widescreen resolutions</li>
+        <li><strong>archlinux-themes-kde</strong> - KDE themes and icons</li>
+        <li><strong>archlinux-themes-kdm</strong> - KDM login themes</li>
+        <li><strong>archlinux-themes-slim</strong> - SLiM login themes</li>
+    </ul>
+
+    <p>Alternatively, you can <a href="ftp://ftp.archlinux.org/other/artwork/"
+        title="Browse the FTP archives">download the source files via FTP</a>.</p>
+
+    <h3>Former Logos</h3>
+
+    <p>Arch has gone through a few generations of branding and what follows are
+    some of our past logos. Although these images are no longer used frequently,
+    they remain subject to license restrictions.  Email
+    <strong>tradermarks@archlinux.org</strong> with any questions.</p>
+
+    <h4>Original Ribbon Series</h4>
+
+    <div class="imagelist">
+        <img src="/media/logos/legacy/arch-legacy-ribbon1.png" alt="Arch Ribbon Logo 1"/>
+        <img src="/media/logos/legacy/arch-legacy-ribbon2.png" alt="Arch Ribbon Logo 2"/>
+        <img src="/media/logos/legacy/arch-legacy-ribbon5.png" alt="Arch Ribbon Logo 5"/>
+    </div>
+
+    <div class="imagelist">
+        <img src="/media/logos/legacy/arch-legacy-ribbon3.png" alt="Arch Ribbon Logo 3"/>
+        <img src="/media/logos/legacy/arch-legacy-ribbon4.png" alt="Arch Ribbon Logo 4"/>
+        <img src="/media/logos/legacy/arch-legacy-ribbon6.png" alt="Arch Ribbon Logo 6"/>
+    </div>
+
+    <h4>"Arch Blue" Series</h4>
+
+    <div class="imagelist">
+        <a href="/media/logos/legacy/arch-legacy-blue1.svg" title="Arch Blue">
+            <img src="/media/logos/legacy/arch-legacy-blue1.png" alt="Arch Blue"/></a>
+        <a href="/media/logos/legacy/arch-legacy-blue2.svg" title="Arch Blue Vertical">
+            <img src="/media/logos/legacy/arch-legacy-blue2.png" alt="Arch Blue Vertical"/></a>
+    </div>
+
+    <h4>"Arch Aqua" Series</h4>
+
+    <div class="imagelist">
+        <a href="/media/logos/legacy/arch-legacy-aqua.svg" title="Arch Aqua">
+            <img src="/media/logos/legacy/arch-legacy-aqua.png" alt="Arch Aqua" /></a>
+        <a href="/media/logos/legacy/arch-legacy-aqua-blue.svg" title="Arch Aqua Blue">
+            <img src="/media/logos/legacy/arch-legacy-aqua-blue.png" alt="Arch Aqua Blue" /></a>
+        <a href="/media/logos/legacy/arch-legacy-aqua-white.svg" title="Arch Aqua White">
+            <img src="/media/logos/legacy/arch-legacy-aqua-white.png" alt="Arch Aqua White" /></a>
+    </div>
+
+    <h4>Release-specific Series</h4>
+
+    <div class="imagelist">
+        <a href="/media/logos/legacy/arch-legacy-wombat-lg.png" title="Arch Wombat">
+            <img src="/media/logos/legacy/arch-legacy-wombat.png" alt="Arch Wombat" /></a>
+        <a href="/media/logos/legacy/arch-legacy-noodle-blue.svg" title="Arch Noodle Blue">
+            <img src="/media/logos/legacy/arch-legacy-noodle-blue.png" alt="Arch Noodle Blue" /></a>
+        <a href="/media/logos/legacy/arch-legacy-noodle-white.svg" title="Arch Noodle White">
+            <img src="/media/logos/legacy/arch-legacy-noodle-white.png" alt="Arch Noodle White" /></a>
+        <a href="/media/logos/legacy/arch-legacy-noodle-box.svg" title="Arch Box of Noodles">
+            <img src="/media/logos/legacy/arch-legacy-noodle-box.png" alt="Arch Box of Noodles" /></a>
+        <a href="/media/logos/legacy/arch-legacy-noodle-cup.svg" title="Arch Cup of Noodles">
+            <img src="/media/logos/legacy/arch-legacy-noodle-cup.png" alt="Arch Cup of Noodles" /></a>
+    </div>
+
+</div><!-- #artwork -->
+{% endblock %}

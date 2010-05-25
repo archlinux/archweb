@@ -2,34 +2,42 @@
 {% block title %}Arch Linux - Mirror Overview{% endblock %}
 
 {% block content %}
-<div class="greybox">
-	<table class="results" width="100%">
-		<tr>
-			<th>Name</th>
-			<th>Tier</th>
-			<th>Country</th>
-			<th>Admin Email</th>
-			<th>Public</th>
-			<th>Active</th>
-			<th>ISOs</th>
-			<th>Protocols</th>
-			<th>Rsync IPs</th>
-			<th>Notes</th>
-		</tr>
-		{% for mirror in mirror_list %}
-		<tr>
-			<td>{{mirror.name}}</td>
-			<td>{{mirror.get_tier_display}}</td>
-			<td>{{mirror.country}}</td>
-			<td>{{mirror.admin_email}}</td>
-			<td>{{mirror.public|yesno}}</td>
-			<td>{{mirror.active|yesno}}</td>
-			<td>{{mirror.isos|yesno}}</td>
-			<td>{{mirror.supported_protocols}}</td>
-			<td>{{mirror.rsync_ips.count}}</td>
-			<td>{{mirror.notes}}</td>
-		</tr>
-		{% endfor %}
-	</table>
+<div id="dev-mirrorlist" class="box">
+
+    <h2>Mirror List</h2>
+
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Server</th>
+                <th>Tier</th>
+                <th>Country</th>
+                <th>Admin Email</th>
+                <th>Public</th>
+                <th>Active</th>
+                <th>ISOs</th>
+                <th>Protocols</th>
+                <th>Rsync IPs</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mirror in mirror_list %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{mirror.name}}</td>
+                    <td>{{mirror.get_tier_display}}</td>
+                    <td>{{mirror.country}}</td>
+                    <td>{{mirror.admin_email}}</td>
+                    <td>{{mirror.public|yesno}}</td>
+                    <td>{{mirror.active|yesno}}</td>
+                    <td>{{mirror.isos|yesno}}</td>
+                    <td class="wrap">{{mirror.supported_protocols}}</td>
+                    <td>{{mirror.rsync_ips.count}}</td>
+                    <td class="wrap">{{mirror.notes}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 {% endblock %}

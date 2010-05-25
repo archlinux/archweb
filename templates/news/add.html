@@ -1,22 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - {% if form.instance.id %}Edit{% else %}Add{% endif %} News{% endblock %}
+{% block title %}Arch Linux - News: {% if form.instance.id %}Edit{% else %}Add{% endif %} Article{% endblock %}
 
 {% block content %}
-	<div class="greybox">
-	{% if form.instance.id %}
-		<h2 class="title">Edit News</h2>
-	{% else %}
-		<h2 class="title">Add News</h2>
-	{% endif %}
-		<form method="post" id="newsform" action=".">
-		<table>
-            {{form}}
-			<tr>
-				<td colspan="2" align="right">
-					<input type="submit" value=" Save " />
-				</td>
-			</tr>
-		</table>
-		</form>
-	</div>
+<div id="news-add-article" class="box">
+
+    {% if form.instance.id %}
+    <h2>News: Edit Article</h2>
+    {% else %}
+    <h2>News: Add Article</h2>
+    {% endif %}
+
+    <form id="newsform" method="post" action=".">
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+        {% if form.instance.id %}
+        <p><label></label> <input title="Save changes" type="submit" value="Save" /></p>
+        {% else %}
+        <p><label></label> <input title="Publish this article" type="submit" value="Publish" /></p>
+        {% endif %}
+    </form>
+
+</div>
 {% endblock %}
