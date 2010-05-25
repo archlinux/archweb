@@ -9,13 +9,9 @@
     <div id="actionlist" class="listing">
 
         <ul class="small">
-            <li><a href="{{ pkg.get_arch_svn_link }}" title="View PKGBUILD
-                files for {{ pkg.pkgname }} in the {{pkg.repo|lower}}-{{pkg.arch}}
-                subversion branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
-            <li><a href="{{ pkg.get_trunk_svn_link }}" title="View PKGBUILD
-                files for {{ pkg.pkgname }} in the subversion trunk">SVN Entries (trunk)</a></li>
-            <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug
-                tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
+            <li><a href="{{ pkg.get_arch_svn_link }}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
+            <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
+            <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
             <li>
             {% if pkg.needupdate %}
                 <span class="flagged">This package has been flagged out-of-date</span>
