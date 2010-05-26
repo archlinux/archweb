@@ -16,11 +16,11 @@
             {% if pkg.needupdate %}
                 <span class="flagged">This package has been flagged out-of-date</span>
                 {% if user.is_authenticated %}
-                <br />&nbsp; &nbsp; <a href="/packages/unflag/{{ pkg.id }}/"
+                <br />&nbsp; &nbsp; <a href="unflag/"
                     title="Unflag this package">Click here to unflag</a>
                 {% endif %}
             {% else %}
-            <a href="/packages/flag/{{ pkg.id }}/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
+            <a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
             <a href="/packages/flaghelp/"
                 title="Get help on package flagging"
                 onclick="return !window.open('/packages/flaghelp','FlagHelp',

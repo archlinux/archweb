@@ -25,13 +25,11 @@ sitemaps = {
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^packages/flag/(\d+)/$', 'packages.views.flag'),
     (r'^packages/flaghelp/$', 'packages.views.flaghelp'),
-    (r'^packages/unflag/(\d+)/$',        'packages.views.unflag'),
-    (r'^packages/signoffs/$',              'packages.views.signoffs'),
+    (r'^packages/signoffs/$', 'packages.views.signoffs'),
     (r'^packages/signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
         'packages.views.signoff_package'),
-    (r'^packages/update/$',              'packages.views.update'),
+    (r'^packages/update/$',   'packages.views.update'),
 
     # Preference is for the packages/ url below, but search is kept
     # because other projects link to it
@@ -50,6 +48,10 @@ urlpatterns = patterns('',
         'packages.views.files'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/maintainer/$',
         'packages.views.getmaintainer'),
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/flag/$',
+        'packages.views.flag'),
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/unflag/$',
+        'packages.views.unflag'),
 
     (r'^todo/(\d+)/$',              'todolists.views.view'),
     (r'^todo/add/$',                'todolists.views.add'),

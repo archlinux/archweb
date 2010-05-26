@@ -205,8 +205,9 @@ def files(request, name='', repo='', arch=''):
     return render_to_response(template, RequestContext(request, {'pkg':pkg,'files':files}))
 
 @permission_required('main.change_package')
-def unflag(request, pkgid):
-    pkg = get_object_or_404(Package, id=pkgid)
+def unflag(request, name='', repo='', arch=''):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     pkg.needupdate = 0
     pkg.save()
     return HttpResponseRedirect(pkg.get_absolute_url())
@@ -263,8 +264,9 @@ class FlagForm(forms.Form):
             widget=forms.TextInput(attrs={'style': 'display:none;'}),
             required=False)
 
-def flag(request, pkgid):
-    pkg = get_object_or_404(Package, id=pkgid)
+def flag(request, name='', repo='', arch=''):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     context = {'pkg': pkg}
     if pkg.needupdate == 1:
         # already flagged. do nothing.
