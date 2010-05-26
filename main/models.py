@@ -169,6 +169,7 @@ class Package(models.Model):
     pkgrel = models.CharField(max_length=255)
     pkgdesc = models.CharField(max_length=255, null=True)
     url = models.CharField(max_length=255, null=True)
+    filename = models.CharField(max_length=255)
     compressed_size = models.PositiveIntegerField(null=True)
     installed_size = models.PositiveIntegerField(null=True)
     build_date = models.DateTimeField(null=True)
