@@ -139,6 +139,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.pkgdesc = repopkg.desc
     dbpkg.license = repopkg.license
     dbpkg.url = repopkg.url
+    dbpkg.filename = repopkg.filename
     dbpkg.compressed_size = int(repopkg.csize)
     dbpkg.installed_size = int(repopkg.isize)
     try:
