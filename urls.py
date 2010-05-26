@@ -52,6 +52,8 @@ urlpatterns = patterns('',
         'packages.views.flag'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/unflag/$',
         'packages.views.unflag'),
+    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/download/$',
+        'packages.views.download'),
 
     (r'^todo/(\d+)/$',              'todolists.views.view'),
     (r'^todo/add/$',                'todolists.views.add'),

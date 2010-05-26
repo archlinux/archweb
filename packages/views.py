@@ -12,9 +12,11 @@ from django.views.generic import list_detail
 from django.db.models import Q
 
 import datetime
+import string
 
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
+from main.models import MirrorUrl
 from main.utils import make_choice
 from packages.models import PackageRelation
 
@@ -316,5 +318,19 @@ def flag(request, name='', repo='', arch=''):
 
     return render_to_response('packages/flag.html', context)
 
-# vim: set ts=4 sw=4 et:
+def download(request, name='', repo='', arch=''):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    mirrorurl = MirrorUrl.objects.filter(mirror__country='Any',
+            mirror__public=True, mirror__active=True,
+            protocol__protocol__iexact='HTTP')[0]
+    details = {
+        'host': mirrorurl.url,
+        'arch': pkg.arch.name,
+        'repo': pkg.repo.name.lower(),
+        'file': pkg.filename,
+    }
+    url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(details)
+    return HttpResponseRedirect(url)
 
+# vim: set ts=4 sw=4 et:
