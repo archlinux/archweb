@@ -244,4 +244,6 @@ ul.admin-actions li { display: inline; padding-left: 1.5em; }
 #dev-signoffs .signed-username { color: #888; margin-left: 0.5em; }
 
 /* highlight current website in the navbar */
-#archnavbar ul li.selected a { color: white !important; }
+#archnavbar.anb-home ul li#anb-home a { color: white !important; }
+#archnavbar.anb-packages ul li#anb-packages a { color: white !important; }
+#archnavbar.anb-download ul li#anb-download a { color: white !important; }

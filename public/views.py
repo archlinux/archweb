@@ -53,8 +53,7 @@ def download(request):
     return list_detail.object_list(request, 
             qset.order_by('mirror__country', 'mirror__name', 'protocol'),
             template_name="public/download.html",
-            template_object_name="mirror_url",
-            extra_context={"path": request.path})
+            template_object_name="mirror_url")
 
 def feeds(request):
     context = {
