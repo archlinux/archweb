@@ -16,7 +16,7 @@
 * { margin: 0; padding: 0; line-height: 1.4; }
 
 /* general styling */
-body { min-width: 650px; background: #eef; color: #444; font: normal 100% sans-serif; text-align: center; }
+body { min-width: 650px; background: #e4eeff; color: #222; font: normal 100% sans-serif; text-align: center; }
 p { margin: .33em 0 1em; }
 ol, ul { margin-bottom: 1em; padding-left: 2em; }
 ul { list-style: square; }
@@ -66,7 +66,7 @@ td { vertical-align: top; }
 
 /* table pretty styles */
 table.pretty1 { width: auto; margin-top: 0.25em; margin-bottom: 0.5em; border-collapse: collapse; border: 1px solid #bcd; }
-table.pretty1 th { padding: 0.35em; background: #eef; border: 1px solid #bcd; }
+table.pretty1 th { padding: 0.35em; background: #e4eeff; border: 1px solid #bcd; }
 table.pretty1 td { padding: 0.35em; border: 1px dotted #bcd; }
 table.pretty2 { width: auto; margin-top: 0.25em; margin-bottom: 0.5em; border-collapse: collapse; border: 1px solid #bbb; }
 table.pretty2 th { padding: 0.35em; background: #eee; border: 1px solid #bbb; }
