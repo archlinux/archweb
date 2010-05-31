@@ -100,7 +100,7 @@
                     <td><a href="{{ pkg.get_absolute_url }}"
                             title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                     {% if pkg.needupdate %}
-                    <td><span style="flagged">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
+                    <td><span class="flagged">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
                     {% else %}
                     <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                     {% endif %}
