@@ -141,7 +141,7 @@ def send_todolist_email(todo):
             'todolist': todo.list,
             'weburl': 'http://www.archlinux.org'+ todo.pkg.get_absolute_url()
     }
-    t = loader.get_template('todolists/addedtotodolist')
+    t = loader.get_template('todolists/email_notification.txt')
     c = Context(page_dict)
     send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname,
             t.render(c),
