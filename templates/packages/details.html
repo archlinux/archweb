@@ -50,7 +50,6 @@
             <th>Repository:</th>
             <td><a href="/packages/?repo={{ pkg.repo.name|capfirst }}"
                     title="Browse the {{ pkg.repo.name|capfirst }} repository">{{ pkg.repo.name|capfirst }}</a></td>
-        </tr><tr>
         </tr>{% ifnotequal pkg.pkgname pkg.pkgbase %}<tr>
             <th>Base Package Name:</th>
             <td>{{ pkg.pkgbase }}</td>
