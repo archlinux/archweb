@@ -6,7 +6,7 @@
 
     <h2>Developer Profile</h2>
 
-    <form id="edit-profile-form" method="post" action=".">
+    <form id="edit-profile-form" method="post" action=".">{% csrf_token %}
         <fieldset>
             <legend>Username: <strong>{{ user.username }}</strong></legend>
             {{ form.as_p }}

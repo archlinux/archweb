@@ -69,7 +69,7 @@
     </div>
     {% endif %}
 
-    <form id="pkglist-results-form" method="post" action="/packages/update/">
+    <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
 
         <table class="results">
             <thead>

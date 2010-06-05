@@ -32,7 +32,7 @@
         </ul>
 
         {% if user.is_authenticated %}
-        <form id="pkg-action" method="post" action="/packages/update/">
+        <form id="pkg-action" method="post" action="/packages/update/">{% csrf_token %}
             <div><input type="hidden" name="pkgid" value="{{ pkg.id }}" /></div>
             <p><input title="Adopt this package" type="submit" class="adopt" name="adopt" value="Adopt" />
             &nbsp;&nbsp;<input title="Orphan this package" type="submit" class="disown" name="disown" value="Disown" /></p>

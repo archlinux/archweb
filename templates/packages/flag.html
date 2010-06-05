@@ -31,7 +31,7 @@
 
     <p>Please confirm your flag request for {{pkg.pkgname}}:</p>
 
-    <form id="flag-pkg-form" method="post" action=".">
+    <form id="flag-pkg-form" method="post" action=".">{% csrf_token %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>

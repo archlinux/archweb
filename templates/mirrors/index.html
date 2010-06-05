@@ -13,7 +13,7 @@
     Simply replace the contents of <code>/etc/pacman.d/mirrorlist</code> with
     the generated code.</p>
 
-    <form id="list-generator" method="post" action=".">
+    <form id="list-generator" method="post" action=".">{% csrf_token %}
         {{ mirrorlist_form.as_p }}
         <p><label></label> <input type="submit" value="Generate List" /></p>
     </form>

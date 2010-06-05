@@ -46,6 +46,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'main.middleware.UpdateCacheMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     'django.middleware.http.ConditionalGetMiddleware',
     "django.middleware.common.CommonMiddleware",

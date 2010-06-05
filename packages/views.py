@@ -316,7 +316,7 @@ def flag(request, name='', repo='', arch=''):
 
     context['form'] = form
 
-    return render_to_response('packages/flag.html', context)
+    return render_to_response('packages/flag.html', RequestContext(request, context))
 
 def download(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,

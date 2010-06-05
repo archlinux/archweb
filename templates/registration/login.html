@@ -10,7 +10,7 @@
     <p class="login-error">Your username and password didn't match. Please try again.</p>
     {% endif %}
 
-    <form id="dev-login-form" method="post" action=".">
+    <form id="dev-login-form" method="post" action=".">{% csrf_token %}
         <fieldset>
             <legend>Enter login credentials</legend>
             {{ form.as_p }}

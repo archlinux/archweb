@@ -14,7 +14,7 @@
 
     <p>Are you sure?</p>
 
-    <form method="post" action=".">
+    <form method="post" action=".">{% csrf_token %}
         <input title="Delete this article" id="delete" name="delete"
         type="submit" value="Delete" /></p>
     </form>
