@@ -10,12 +10,6 @@ from main.models import Todolist
 from feeds import PackageFeed, NewsFeed
 from sitemaps import NewsSitemap, PackagesSitemap, PackageFilesSitemap
 
-
-feeds = {
-    'news':     NewsFeed,
-    'packages': PackageFeed,
-}
-
 sitemaps = {
     'news':          NewsSitemap,
     'packages':      PackagesSitemap,
@@ -85,8 +79,12 @@ urlpatterns = patterns('',
 
 # Feeds and sitemaps
     (r'^feeds/$', 'public.views.feeds', {}, 'feeds-list'),
-    (r'^feeds/(?P<url>.*)/$',
-        'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
+    (r'^feeds/news/$', NewsFeed()),
+    (r'^feeds/packages/$', PackageFeed()),
+    (r'^feeds/packages/(?P<arch>[A-z0-9]+)/$',
+        PackageFeed()),
+    (r'^feeds/packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
+        PackageFeed()),
     (r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
         {'sitemaps': sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap',

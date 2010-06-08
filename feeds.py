@@ -1,28 +1,27 @@
 import datetime
 
-from django.contrib.syndication.feeds import Feed, FeedDoesNotExist
+from django.contrib.syndication.feeds import FeedDoesNotExist
+from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from main.models import Arch, Repo, Package, News
 
 class PackageFeed(Feed):
     link = '/packages/'
+    title_template = 'feeds/packages_title.html'
+    description_template = 'feeds/packages_description.html'
 
-    def get_object(self, bits):
-        # just cut the BS early
-        if len(bits) > 2:
-            raise FeedDoesNotExist
-
+    def get_object(self, request, arch='', repo=''):
         obj = dict()
         qs = Package.objects.select_related('arch', 'repo').order_by('-last_update')
 
-        if len(bits) > 0:
+        if arch != '':
             # feed for a single arch, also include 'any' packages everywhere
-            a = Arch.objects.get(name=bits[0])
+            a = Arch.objects.get(name=arch)
             qs = qs.filter(Q(arch=a) | Q(arch__name__iexact='any'))
             obj['arch'] = a
-        if len(bits) > 1:
+        if repo != '':
             # feed for a single arch AND repo
-            r = Repo.objects.get(name=bits[1])
+            r = Repo.objects.get(name=repo)
             qs = qs.filter(repo=r)
             obj['repo'] = r
         obj['qs'] = qs[:50]
@@ -61,6 +60,8 @@ class NewsFeed(Feed):
     title = 'Arch Linux: Recent news updates'
     link = '/news/'
     description = 'The latest and greatest news from the Arch Linux distribution.'
+    title_template = 'feeds/news_title.html'
+    description_template = 'feeds/news_description.html'
 
     def items(self):
         return News.objects.select_related('author').order_by('-postdate', '-id')[:10]
@@ -73,4 +74,3 @@ class NewsFeed(Feed):
         return item.author.get_full_name()
 
 # vim: set ts=4 sw=4 et:
-
