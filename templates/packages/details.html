@@ -50,10 +50,29 @@
             <th>Repository:</th>
             <td><a href="/packages/?repo={{ pkg.repo.name|capfirst }}"
                     title="Browse the {{ pkg.repo.name|capfirst }} repository">{{ pkg.repo.name|capfirst }}</a></td>
-        </tr>{% ifnotequal pkg.pkgname pkg.pkgbase %}<tr>
-            <th>Base Package Name:</th>
+        </tr>
+        {% ifequal pkg.pkgname pkg.pkgbase %}
+        {% with pkg.split_packages as splits %}{% if splits %}
+        <tr>
+            <th>Split Packages:</th>
+            <td>
+                {% for s in splits %}
+                <a href="{{ s.get_absolute_url }}">{{ s.pkgname }}</a><br/>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}{% endwith %}
+        {% else %}
+        <tr>
+            <th>Base Package:</th>
+            {% if pkg.base_package %}
+            <td><a href="{{ pkg.base_package.get_absolute_url }}">{{ pkg.pkgbase }}</a></td>
+            {% else %}
             <td>{{ pkg.pkgbase }}</td>
-        </tr>{% endifnotequal %}<tr>
+            {% endif %}
+        </tr>
+        {% endifequal %}
+        <tr>
             <th>Description:</th>
             <td>{% if pkg.pkgdesc %}{{ pkg.pkgdesc }}{% endif %}</td>
         </tr><tr>

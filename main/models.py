@@ -264,6 +264,36 @@ class Package(models.Model):
         self.deps_cache = deps
         return deps
 
+    def base_package(self):
+        """
+        Locate the base package for this package. It may be this very package,
+        or if it was built in a way that the base package isn't real, will
+        return None.
+        """
+        try:
+            # start by looking for something in this repo
+            return Package.objects.get(arch=self.arch,
+                    repo=self.repo, pkgname=self.pkgbase)
+        except Package.DoesNotExist:
+            # this package might be split across repos? just find one
+            # that matches the correct [testing] repo flag
+            pkglist = Package.objects.filter(arch=self.arch,
+                    repo__testing=self.repo.testing, pkgname=self.pkgbase)
+            if len(pkglist) > 0:
+                return pkglist[0]
+            return None
+
+    def split_packages(self):
+        """
+        Return all packages that were built with this one (e.g. share a pkgbase
+        value). The package this method is called on will never be in the list,
+        and we will never return a package that does not have the same
+        repo.testing flag. For any non-split packages, the return value will be
+        an empty list.
+        """
+        return Package.objects.filter(arch=self.arch,
+                repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
+
     def get_svn_link(self, svnpath):
         linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
         repo = self.repo.name.lower()
