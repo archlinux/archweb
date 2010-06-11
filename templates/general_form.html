@@ -8,7 +8,7 @@
 
     {% if description %}{{description}}{% endif %}
 
-    <form class="general-form" method="post" action=".">{% csrf_token %}
+    <form class="general-form" method="post">{% csrf_token %}
         <fieldset>
             {% for field in form %}
                 <p><label>{{field.label}}{% if field.help_text %}:</label><br />

@@ -10,7 +10,7 @@
     <h2>News: Add Article</h2>
     {% endif %}
 
-    <form id="newsform" method="post" action=".">{% csrf_token %}
+    <form id="newsform" method="post">{% csrf_token %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>
