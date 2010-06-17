@@ -7,7 +7,7 @@
 # Dependencies
  - python
  - mysql-python or python-pysqlite
- - Django = 1.0
+ - Django >= 1.2.X
 
 # Installation
 For a simple testing installation:
@@ -29,7 +29,7 @@ For a simple testing installation:
 
  6. To optionally populate the database with real data:
     $ wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
-    $ scripts/reporead.py i686 ./core.db.tar.gz
+    $ ./manage.py reporead i686 core.db.tar.gz
 
     (alter architecture and repo to get x86_64 and extra packages if needed)
 
