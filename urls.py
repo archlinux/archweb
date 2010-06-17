@@ -66,10 +66,7 @@ urlpatterns = patterns('',
     (r'^mirrors/$',        'devel.views.mirrorlist'),
 
     (r'^mirrorlist/$', 'mirrors.views.choose'),
-    (r'^mirrorlist/(?P<arch>[\S]+)/(?P<country>[A-z0-9 ]+)/$',
-        'mirrors.views.generate'),
-    (r'^mirrorlist/(?P<arch>[\S]+)/$',
-        'mirrors.views.generate'),
+    (r'^mirrorlist/(?P<country>[A-z0-9 ]+)/$', 'mirrors.views.generate'),
 
     (r'^devel/$',          'devel.views.index'),
     (r'^devel/notify/$',   'devel.views.change_notify'),

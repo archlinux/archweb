@@ -9,5 +9,5 @@ content right, and then go back later to fix it all up.
 #{% for mirror_url in mirror_urls %}{% ifchanged %}
 
 # {{ mirror_url.mirror.country }}{% endifchanged %}
-#Server = {{ mirror_url.url}}$repo/os/{{ arch }}{% endfor %}
+#Server = {{ mirror_url.url}}$repo/os/$arch{% endfor %}
 {% endautoescape %}

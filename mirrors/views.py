@@ -4,20 +4,16 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from main.models import Arch, Mirror, MirrorUrl
+from main.models import Mirror, MirrorUrl
 from main.utils import make_choice
 
 class MirrorlistForm(forms.Form):
-    arch = forms.ChoiceField(required=True)
     country = forms.ChoiceField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
-        arches = Arch.objects.exclude(name__iexact='any').order_by('name')
         mirrors = Mirror.objects.values_list(
                 'country', flat=True).distinct().order_by('country')
-        self.fields['arch'].choices = make_choice(
-                        [arch.name for arch in arches])
         self.fields['country'].choices = [('all', 'All')] + make_choice(
                         [mirror for mirror in mirrors])
 
@@ -26,19 +22,16 @@ def choose(request):
     if request.POST:
         form = MirrorlistForm(data=request.POST)
         if form.is_valid():
-            arch = form.cleaned_data['arch']
             country = form.cleaned_data['country']
             return HttpResponseRedirect(reverse(generate,
-                kwargs = {'arch' : arch, 'country' : country }))
+                kwargs = { 'country' : country }))
     else:
         form = MirrorlistForm()
 
     return render_to_response('mirrors/index.html', {'mirrorlist_form': form},
                               context_instance=RequestContext(request))
 
-def generate(request, arch='i686', country=None):
-    # do a quick sanity check on the architecture
-    archobj = get_object_or_404(Arch, name=arch)
+def generate(request, country=None):
     qset = MirrorUrl.objects.select_related().filter(
             Q(protocol__protocol__iexact='HTTP') |
             Q(protocol__protocol__iexact='FTP'),
@@ -50,7 +43,6 @@ def generate(request, arch='i686', country=None):
     res = render_to_response('mirrors/mirrorlist.txt',
             {
                 'mirror_urls': qset,
-                'arch': arch,
             },
             mimetype='text/plain')
     return res
