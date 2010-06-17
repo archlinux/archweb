@@ -1,5 +1,4 @@
-
-* Note: this is an automated message
+{% autoescape off %}* Note: this is an automated message
 
 The following package:
 

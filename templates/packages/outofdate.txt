@@ -1,8 +1,6 @@
+{% autoescape off %}* Note: this is an automated message
 
-* Note: this is an automated message
-
-{{ email }} wants to notify you that the following package may be out
-of date:
+{{ email }} wants to notify you that the following package may be out of date:
 
     Package Name: {{ pkg.pkgname }}
     Architecture: {{ pkg.arch.name }}
@@ -14,4 +12,3 @@ The user provided the following additional text:
 
 {{ message }}
 {% endif %}
-
