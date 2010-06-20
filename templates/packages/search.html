@@ -6,7 +6,8 @@
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/media/admin_media/css/widgets.css" />
 <script type="text/javascript" src="/jsi18n/"></script>
-<script type="text/javascript" src="/media/admin_media/js/core.js"></script>
+{% load adminmedia %}<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
 {{search_form.media}}
 {% endblock %}
 
