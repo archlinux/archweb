@@ -55,8 +55,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
-
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
