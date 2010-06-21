@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
+from main.utils import cache_function
 from packages.models import PackageRelation
 
 ###########################
@@ -216,6 +217,7 @@ class Package(models.Model):
     def approved_for_signoff(self):
         return len(self.signoffs) >= 2
 
+    @cache_function(300)
     def get_requiredby(self):
         """
         Returns a list of package objects.
@@ -225,16 +227,13 @@ class Package(models.Model):
                 arch__name__in=(self.arch.name, 'any')).distinct()
         return requiredby.order_by('pkgname')
 
+    @cache_function(300)
     def get_depends(self):
         """
         Returns a list of dicts. Each dict contains ('pkg' and 'dep').
         If it represents a found package both vars will be available;
         else pkg will be None if it is a 'virtual' dependency.
         """
-        # object level cache. Doesn't last long, but helps for items rendered
-        # twice in the same template.
-        if 'deps_cache' in dir(self):
-            return self.deps_cache
         deps = []
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('depname'):
@@ -259,7 +258,6 @@ class Package(models.Model):
                 if len(pkgs) > 0:
                     pkg = pkgs[0]
             deps.append({'dep': dep, 'pkg': pkg})
-        self.deps_cache = deps
         return deps
 
     def base_package(self):
