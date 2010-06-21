@@ -5,10 +5,6 @@
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/media/admin_media/css/widgets.css" />
-<script type="text/javascript" src="/jsi18n/"></script>
-{% load adminmedia %}<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
-<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
-{{search_form.media}}
 {% endblock %}
 
 {% block content %}
@@ -145,6 +141,7 @@
     </form>
 
 </div><!-- #pkglist-results -->
+{% endif %}
 
 <div id="pkglist-about" class="box">
     <p>You are browsing the Arch Linux package database. From here you can find
@@ -152,5 +149,9 @@
     For unsupported packages, browse the <a href="http://aur.archlinux.org/"
         title="AUR package database">Arch User Repository (AUR).</a></p>
 </div>
-{% endif %}
+
+<script type="text/javascript" src="/jsi18n/"></script>
+{% load adminmedia %}<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
+<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
+{{search_form.media}}
 {% endblock %}
