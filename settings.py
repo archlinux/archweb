@@ -46,6 +46,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'main.middleware.UpdateCacheMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     'django.middleware.http.ConditionalGetMiddleware',
@@ -68,9 +69,12 @@ TEMPLATE_DIRS = (
 # format is app.model
 AUTH_PROFILE_MODULE = 'main.UserProfile'
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.sitemaps',

@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
@@ -59,15 +60,14 @@ def update(request):
                         user=request.user)
                 rels.delete()
 
-        request.user.message_set.create(message="%d packages %sed" % (
-            len(pkgs), mode))
+        messages.info(request, "%d packages %sed." % (count, mode))
         if disallowed_pkgs:
-            request.user.message_set.create(
-                    message="You do not have permission to adopt: %s" % (
-                        ' '.join([p.pkgname for p in disallowed_pkgs])
+            messages.warning(request,
+                    "You do not have permission to %s: %s" % (
+                        mode, ' '.join([p.pkgname for p in disallowed_pkgs])
                         ))
     else:
-        request.user.message_set.create(message="update called without adopt/disown")
+        messages.error(request, "Are you trying to adopt or disown?")
     return HttpResponseRedirect('/packages/')
 
 def details(request, name='', repo='', arch=''):
@@ -247,11 +247,14 @@ def signoff_package(request, arch, pkgname):
             pkgrel=pkg.pkgrel,
             packager=request.user)
 
-    message = "You have successfully" if created else "You have already"
-    request.user.message_set.create(
-            message="%s signed off for %s on %s" % (
-            message, pkg.pkgname, pkg.arch))
-
+    if created:
+        messages.info(request,
+                "You have successfully signed off for %s on %s." % \
+                        (pkg.pkgname, pkg.arch))
+    else:
+        messages.warning(request,
+                "You have already signed off for %s on %s." % \
+                        (pkg.pkgname, pkg.arch))
     return signoffs(request)
 
 def flaghelp(request):
