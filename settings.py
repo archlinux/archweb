@@ -51,7 +51,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.http.ConditionalGetMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.doc.XViewMiddleware",
-    "main.middleware.AutoUserMiddleware",
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 

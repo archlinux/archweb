@@ -3,7 +3,6 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from main.middleware import get_user
 from packages.models import PackageRelation
 
 ###########################
@@ -121,8 +120,7 @@ class Donor(models.Model):
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
-    author = models.ForeignKey(User, related_name='news_author',
-            default=get_user)
+    author = models.ForeignKey(User, related_name='news_author')
     postdate = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=255)
     content = models.TextField()

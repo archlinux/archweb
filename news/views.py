@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
 from django.views.generic import list_detail, create_update
 
 from main.models import News
@@ -22,9 +24,17 @@ class NewsForm(forms.ModelForm):
 
 @permission_required('main.add_news')
 def add(request):
-    return create_update.create_object(request,
-            form_class=NewsForm,
-            template_name='news/add.html')
+    if request.POST:
+        form = NewsForm(request.POST)
+        if form.is_valid():
+            newsitem = form.save(commit=False)
+            newsitem.author = request.user
+            newsitem.save()
+            return redirect(newsitem.get_absolute_url())
+    else:
+        form = NewsForm()
+    return render_to_response('news/add.html',
+            RequestContext(request, { 'form': form }))
 
 @permission_required('main.delete_news')
 def delete(request, newsid):
