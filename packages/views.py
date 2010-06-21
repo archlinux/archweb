@@ -48,19 +48,22 @@ def update(request):
         pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
                 repo__in=repos)
+        count = 0
         for pkg in pkgs:
             maints = pkg.maintainers
             if mode == 'adopt' and request.user not in maints:
                 pr = PackageRelation(pkgbase=pkg.pkgbase,
                         user=request.user,
                         type=PackageRelation.MAINTAINER)
+                count += 1
                 pr.save()
             elif mode == 'disown' and request.user in maints:
                 rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
                         user=request.user)
+                count += rels.count()
                 rels.delete()
 
-        messages.info(request, "%d packages %sed." % (count, mode))
+        messages.info(request, "%d base packages %sed." % (count, mode))
         if disallowed_pkgs:
             messages.warning(request,
                     "You do not have permission to %s: %s" % (
