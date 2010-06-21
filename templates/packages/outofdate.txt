@@ -11,4 +11,4 @@
 The user provided the following additional text:
 
 {{ message }}
-{% endif %}
+{% endif %}{% endautoescape %}
