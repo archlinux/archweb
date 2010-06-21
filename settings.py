@@ -63,6 +63,14 @@ TEMPLATE_DIRS = (
     '%s/templates' % DEPLOY_PATH,
 )
 
+TEMPLATE_LOADERS = (
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.eggs.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
+)
+
 # Set django's User stuff to use our profile model
 # format is app.model
 AUTH_PROFILE_MODULE = 'main.UserProfile'
