@@ -1,5 +1,7 @@
 from main.models import Arch, Repo, Package
+from main.utils import cache_function
 
+@cache_function(300)
 def get_recent_updates():
     # This is a bit of magic. We are going to show 15 on the front page, but we
     # want to try and eliminate cross-architecture wasted space. Pull enough
