@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render_to_response
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.create_update import delete_object
 from django.template import Context, loader
@@ -60,6 +61,7 @@ def list(request):
             RequestContext(request, {'lists':lists}))
 
 @permission_required('main.add_todolist')
+@never_cache
 def add(request):
     if request.POST:
         form = TodoListForm(request.POST)
@@ -86,6 +88,7 @@ def add(request):
             RequestContext(request, page_dict))
 
 @permission_required('main.change_todolist')
+@never_cache
 def edit(request, list_id):
     todo_list = get_object_or_404(Todolist, id=list_id)
     if request.POST:
@@ -124,6 +127,7 @@ def edit(request, list_id):
     return render_to_response('general_form.html', RequestContext(request, page_dict))
 
 @permission_required('main.delete_todolist')
+@never_cache
 def delete_todolist(request, object_id):
     return delete_object(request, object_id=object_id, model=Todolist,
             template_name="todolists/todolist_confirm_delete.html",

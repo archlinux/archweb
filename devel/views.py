@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
 from django.db.models import Q
+from django.views.decorators.cache import never_cache
 
 from main.models import Package, Todolist
 from main.models import Arch, Repo
@@ -20,6 +21,7 @@ pwletters = ascii_letters + digits
 
 
 @login_required
+@never_cache
 def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
@@ -58,6 +60,7 @@ class ProfileForm(forms.Form):
         return self.cleaned_data
 
 @login_required
+@never_cache
 def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
@@ -110,6 +113,7 @@ Password: %s""" % (domain, user.username, pw),
                 fail_silently=False)
 
 @user_passes_test(lambda u: u.is_superuser)
+@never_cache
 def new_user_form(request):
     if request.POST:
         form = NewUserForm(request.POST)

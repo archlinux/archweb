@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
+from django.views.decorators.cache import never_cache
 from django.views.generic import list_detail, create_update
 
 from main.models import News
@@ -23,6 +24,7 @@ class NewsForm(forms.ModelForm):
         exclude=('id', 'author', 'postdate')
 
 @permission_required('main.add_news')
+@never_cache
 def add(request):
     if request.POST:
         form = NewsForm(request.POST)
@@ -37,6 +39,7 @@ def add(request):
             RequestContext(request, { 'form': form }))
 
 @permission_required('main.delete_news')
+@never_cache
 def delete(request, newsid):
     return create_update.delete_object(request,
             News,
@@ -46,6 +49,7 @@ def delete(request, newsid):
             template_object_name='news')
 
 @permission_required('main.change_news')
+@never_cache
 def edit(request, newsid):
     return create_update.update_object(request,
             object_id=newsid,

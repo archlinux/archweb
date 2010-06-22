@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
+from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
 from django.db.models import Q
@@ -218,6 +219,7 @@ def unflag(request, name='', repo='', arch=''):
     return HttpResponseRedirect(pkg.get_absolute_url())
 
 @permission_required('main.change_package')
+@never_cache
 def signoffs(request):
     packages = Package.objects.select_related('arch', 'repo', 'signoffs').filter(repo__testing=True).order_by("pkgname")
     package_list = []
@@ -238,6 +240,7 @@ def signoffs(request):
             RequestContext(request, {'packages': package_list}))
 
 @permission_required('main.change_package')
+@never_cache
 def signoff_package(request, arch, pkgname):
     pkg = get_object_or_404(Package,
             arch__name=arch,
@@ -272,6 +275,7 @@ class FlagForm(forms.Form):
             widget=forms.TextInput(attrs={'style': 'display:none;'}),
             required=False)
 
+@never_cache
 def flag(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
