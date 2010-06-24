@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/media/archweb-print.css" media="print" />
     <link rel="icon" type="image/x-icon" href="/media/favicon.ico" />
     <link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico" />
-    <link rel="search" type="application/opensearchdescription+xml" href="{% url opensearch-packages %}" title="Arch Linux Packages" />
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url opensearch-packages as osp %}{{ osp }}" title="Arch Linux Packages" />
     {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
@@ -23,7 +23,7 @@
                 <li id="anb-wiki"><a href="http://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
                 <li id="anb-bugs"><a href="http://bugs.archlinux.org/" title="Report and track bugs">Bugs</a></li>
                 <li id="anb-aur"><a href="http://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
-                <li id="anb-download"><a href="{% url page-download %}" title="Get Arch Linux">Download</a></li>
+                <li id="anb-download"><a href="{% url page-download as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
             </ul>
         </div>
     </div><!-- #archnavbar -->
@@ -36,7 +36,7 @@
                     <li><a href="http://wiki.archlinux.org/index.php/DeveloperWiki"
                         title="Developer HOWTOs and documentation">DevWiki</a></li>
                     <li><a href="http://projects.archlinux.org/" title="Git Projects">Projects</a></li>
-                    <li><a href="{% url news-list %}" title="Manage news articles">News</a></li>
+                    <li><a href="{% url news-list as newsl %}{{ newsl }}" title="Manage news articles">News</a></li>
                     <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
                     <li><a href="/todo/" title="Developer to-do lists">Todos</a></li>
                     <li><a href="http://www.archlinux.org/mailman/private/arch-dev/"

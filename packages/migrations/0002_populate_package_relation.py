@@ -6,7 +6,9 @@ from django.db import models
 
 class Migration(DataMigration):
 
-    no_dry_run = True
+    depends_on = (
+        ("main", "0003_migrate_maintainer"),
+    )
 
     def forwards(self, orm):
         "Write your forwards methods here."

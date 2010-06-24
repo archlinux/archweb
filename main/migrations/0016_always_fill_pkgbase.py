@@ -6,8 +6,6 @@ from django.db import models
 
 class Migration(DataMigration):
 
-    no_dry_run = True
-
     def forwards(self, orm):
         orm.Package.objects.filter(pkgbase=None).update(pkgbase=models.F('pkgname'))
 
