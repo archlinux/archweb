@@ -46,12 +46,14 @@ def flag(request, listid, pkgid):
     return HttpResponseRedirect('/todo/%s/' % (listid))
 
 @login_required
+@never_cache
 def view(request, listid):
     list = get_object_or_404(Todolist, id=listid)
     return render_to_response('todolists/view.html',
         RequestContext(request, {'list':list}))
 
 @login_required
+@never_cache
 def list(request):
     lists = Todolist.objects.select_related('creator').order_by('-date_added')
     for l in lists:
