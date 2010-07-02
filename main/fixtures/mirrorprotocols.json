@@ -1,0 +1,23 @@
+[
+    {
+        "pk": 2, 
+        "model": "main.mirrorprotocol", 
+        "fields": {
+            "protocol": "ftp"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "main.mirrorprotocol", 
+        "fields": {
+            "protocol": "http"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "main.mirrorprotocol", 
+        "fields": {
+            "protocol": "rsync"
+        }
+    }
+]
