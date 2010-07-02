@@ -64,12 +64,16 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.eggs.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.eggs.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
+
+# Enable caching templates in production environments
+if not TEMPLATE_DEBUG:
+    TEMPLATE_LOADERS = (
+        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
+    )
 
 # Set django's User stuff to use our profile model
 # format is app.model
