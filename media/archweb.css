@@ -93,6 +93,8 @@ div#archdev-navbar li a { padding: 0 0.5em; color: #07b; }
 #sys-message { width: 35em; text-align: center; margin: 1em auto; padding: 0.5em; background: #fff; border: 1px solid #f00; }
 #sys-message p { margin: 0; }
 
+ul.errorlist { color: red; }
+
 /*
  *  PAGE SPECIFIC STYLES
  */
