@@ -15,18 +15,23 @@
 
     <h3>Mirrorlist with all available mirrors</h3>
 
-    <p>You can get an up-to-date
-    <a href="all/">mirrorlist containing all available mirrors</a>.
-    This URL requires no GET or POST parameters so can be fetched from the
-    command line if desired.<p>
+    <p>An up-to-date mirrorlist is available containing all currently active
+    mirrors, optionally filtering by protocol. These URLs requires no GET or
+    POST parameters so they can be fetched from the command line if desired.<p>
+
+    <ul>
+        <li><a href="all/">All mirrors</a></li>
+        <li><a href="all/ftp/">All mirrors, FTP only</a></li>
+        <li><a href="all/http/">All mirrors, HTTP only</a></li>
+    </ul>
 
     <h3>Customized by country mirrorlist</h3>
 
     <p>The following form can generate a custom up-to-date
     <a href="http://wiki.archlinux.org/index.php/Pacman"
-        title="ArchWiki: Pacman">pacman</a> mirrorlist based on geography.
-    Simply replace the contents of <code>/etc/pacman.d/mirrorlist</code> with
-    the generated code.</p>
+        title="ArchWiki: Pacman">pacman</a> mirrorlist based on geography and
+    desired protocol(s).  Simply replace the contents of
+    <code>/etc/pacman.d/mirrorlist</code> with your generated list.</p>
 
     <form id="list-generator" method="get">
         {{ mirrorlist_form.as_p }}

@@ -67,6 +67,10 @@ urlpatterns = patterns('',
 
     (r'^mirrorlist/$', 'mirrors.views.generate', {}, 'mirrorlist'),
     (r'^mirrorlist/all/$', 'mirrors.views.find_mirrors', {'countries': ['all']}),
+    (r'^mirrorlist/all/ftp/$', 'mirrors.views.find_mirrors',
+        {'countries': ['all'], 'protocols': ['ftp']}),
+    (r'^mirrorlist/all/http/$', 'mirrors.views.find_mirrors',
+        {'countries': ['all'], 'protocols': ['http']}),
 
     (r'^devel/$',          'devel.views.index'),
     (r'^devel/notify/$',   'devel.views.change_notify'),
