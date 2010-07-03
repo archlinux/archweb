@@ -14,7 +14,8 @@ def view(request, newsid):
 
 #TODO: May as well use a date-based list here sometime
 def list(request):
-    return list_detail.object_list(request, News.objects.all(),
+    return list_detail.object_list(request,
+            News.objects.all().select_related('author').defer('content'),
             template_name="news/list.html",
             template_object_name="news")
 
