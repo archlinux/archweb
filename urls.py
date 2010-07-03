@@ -63,10 +63,10 @@ urlpatterns = patterns('',
     (r'^news/delete/(\d+)/$',  'news.views.delete'),
     (r'^news/$',               'news.views.list', {}, 'news-list'),
 
-    (r'^mirrors/$',        'devel.views.mirrorlist'),
+    (r'^mirrors/$',        'devel.views.mirrorlist', {}, 'mirrors-list'),
 
-    (r'^mirrorlist/$', 'mirrors.views.choose'),
-    (r'^mirrorlist/(?P<country>[A-z0-9 ]+)/$', 'mirrors.views.generate'),
+    (r'^mirrorlist/$', 'mirrors.views.generate', {}, 'mirrorlist'),
+    (r'^mirrorlist/all/$', 'mirrors.views.find_mirrors', {'countries': ['all']}),
 
     (r'^devel/$',          'devel.views.index'),
     (r'^devel/notify/$',   'devel.views.change_notify'),

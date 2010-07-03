@@ -24,6 +24,9 @@ code { font: 1.2em monospace; background: #ffa; padding: 0.15em 0.25em; }
 pre { font: 1.2em monospace; border: 1px solid #bdb; background: #dfd; padding: 0.5em; margin: 0.25em 2em; }
 blockquote { margin: 1.5em 2em; }
 input { vertical-align: middle; }
+select[multiple] { padding-top: 1px; padding-bottom: 1px; }
+select[multiple] option { padding-left: 0.3em; padding-right: 0.5em; }
+input[type=submit] { padding-left: 0.6em; padding-right: 0.6em; }
 .clear { clear: both; }
 hr { border: none; border-top: 1px solid #888; }
 img { border: 0; }

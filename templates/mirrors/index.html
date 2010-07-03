@@ -7,13 +7,28 @@
 
     <h2>Pacman Mirrorlist Generator</h2>
 
+    <p>This page generates the most up-to-date mirrorlist possible for Arch
+    Linux. The data used here comes straight from the developers' internal
+    mirror database used to track mirror availability and tiering. There are
+    two main options: get a mirrorlist with every available mirror, or get a
+    mirrorlist tailored to your geography.</p>
+
+    <h3>Mirrorlist with all available mirrors</h3>
+
+    <p>You can get an up-to-date
+    <a href="all/">mirrorlist containing all available mirrors</a>.
+    This URL requires no GET or POST parameters so can be fetched from the
+    command line if desired.<p>
+
+    <h3>Customized by country mirrorlist</h3>
+
     <p>The following form can generate a custom up-to-date
     <a href="http://wiki.archlinux.org/index.php/Pacman"
         title="ArchWiki: Pacman">pacman</a> mirrorlist based on geography.
     Simply replace the contents of <code>/etc/pacman.d/mirrorlist</code> with
     the generated code.</p>
 
-    <form id="list-generator" method="post">{% csrf_token %}
+    <form id="list-generator" method="get">
         {{ mirrorlist_form.as_p }}
         <p><label></label> <input type="submit" value="Generate List" /></p>
     </form>
