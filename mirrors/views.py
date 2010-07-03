@@ -15,6 +15,7 @@ class MirrorlistForm(forms.Form):
         mirrors = Mirror.objects.filter(active=True).values_list(
                 'country', flat=True).distinct().order_by('country')
         self.fields['country'].choices = make_choice(mirrors)
+        self.fields['country'].initial = ['Any']
         protos = make_choice(
                 MirrorProtocol.objects.exclude(protocol__iexact='rsync'))
         self.fields['protocol'].choices = protos
