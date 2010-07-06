@@ -14,7 +14,7 @@
             <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
             <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
             <li>
-            {% if pkg.needupdate %}
+            {% if pkg.flag_date %}
                 <span class="flagged">This package has been flagged out-of-date</span>
                 {% if user.is_authenticated %}
                 <br />&nbsp; &nbsp; <a href="unflag/"

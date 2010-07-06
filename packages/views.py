@@ -13,7 +13,7 @@ from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
 from django.db.models import Q
 
-import datetime
+from datetime import datetime
 import string
 
 from main.models import Package, PackageFile
@@ -160,9 +160,9 @@ def search(request, page=None):
                 packages = packages.filter(pkgbase__in=inner_q)
 
             if form.cleaned_data['flagged'] == 'Flagged':
-                packages=packages.filter(needupdate=True)
+                packages=packages.filter(flag_date__isnull=False)
             elif form.cleaned_data['flagged'] == 'Not Flagged':
-                packages = packages.filter(needupdate=False)
+                packages = packages.filter(flag_date__isnull=True)
 
             if form.cleaned_data['q']:
                 query = form.cleaned_data['q']
@@ -171,7 +171,7 @@ def search(request, page=None):
             if form.cleaned_data['last_update']:
                 lu = form.cleaned_data['last_update']
                 packages = packages.filter(last_update__gte=
-                        datetime.datetime(lu.year, lu.month, lu.day, 0, 0))
+                        datetime(lu.year, lu.month, lu.day, 0, 0))
             limit = form.cleaned_data['limit']
     else:
         form = PackageSearchForm()
@@ -214,7 +214,7 @@ def files(request, name='', repo='', arch=''):
 def unflag(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkg.needupdate = 0
+    pkg.flag_date = None
     pkg.save()
     return HttpResponseRedirect(pkg.get_absolute_url())
 
@@ -280,7 +280,7 @@ def flag(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     context = {'pkg': pkg}
-    if pkg.needupdate == 1:
+    if pkg.flag_date is not None:
         # already flagged. do nothing.
         return render_to_response('packages/flagged.html', context)
 
@@ -290,7 +290,7 @@ def flag(request, name='', repo='', arch=''):
             # find all packages from (hopefully) the same PKGBUILD
             pkgs = Package.objects.filter(
                     pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
-            pkgs.update(needupdate=True)
+            pkgs.update(flag_date=datetime.now())
 
             maints = pkg.maintainers
             if not maints:

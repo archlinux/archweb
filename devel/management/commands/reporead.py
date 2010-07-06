@@ -151,7 +151,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             pass
 
     if timestamp:
-        dbpkg.needupdate = False
+        dbpkg.flag_date = None
         dbpkg.last_update = timestamp
     dbpkg.save()
 

@@ -49,7 +49,7 @@ class TodolistManager(models.Manager):
 
 class PackageManager(models.Manager):
     def flagged(self):
-        return self.get_query_set().filter(needupdate=True)
+        return self.get_query_set().filter(flag_date__isnull=False)
 
 #############################
 ### General Model Classes ###

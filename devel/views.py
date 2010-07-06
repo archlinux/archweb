@@ -25,7 +25,7 @@ pwletters = ascii_letters + digits
 def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
-    flagged = Package.objects.select_related('arch', 'repo').filter(needupdate=True)
+    flagged = Package.objects.select_related('arch', 'repo').filter(flag_date__isnull=False)
     flagged = flagged.filter(pkgbase__in=inner_q)
 
     todopkgs = TodolistPkg.objects.select_related(
