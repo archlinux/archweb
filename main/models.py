@@ -367,6 +367,9 @@ class Todolist(models.Model):
     class Meta:
         db_table = 'todolists'
 
+    def get_absolute_url(self):
+        return '/todo/%i/' % self.id
+
 class TodolistPkg(models.Model):
     id = models.AutoField(primary_key=True)
     list = models.ForeignKey('Todolist')

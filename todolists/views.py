@@ -3,7 +3,7 @@ from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.cache import never_cache
 from django.views.generic.create_update import delete_object
@@ -42,7 +42,7 @@ def flag(request, listid, pkgid):
         return HttpResponse(
             simplejson.dumps({'complete': pkg.complete}),
             mimetype='application/json')
-    return HttpResponseRedirect('/todo/%s/' % (listid))
+    return redirect(list)
 
 @login_required
 @never_cache
@@ -113,7 +113,7 @@ def edit(request, list_id):
                             list = todo_list, pkg = pkg)
                     send_todolist_email(tpkg)
 
-            return HttpResponseRedirect('/todo/%d/' % todo_list.id)
+            return redirect(todo_list)
     else:
         form = TodoListForm(initial={
             'name': todo_list.name,
