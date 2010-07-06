@@ -162,7 +162,6 @@ class Package(models.Model):
     id = models.AutoField(primary_key=True)
     repo = models.ForeignKey(Repo, related_name="packages")
     arch = models.ForeignKey(Arch, related_name="packages")
-    needupdate = models.BooleanField(default=False)
     pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
