@@ -321,6 +321,16 @@ class Package(models.Model):
                 and self.pkgver == other.pkgver \
                 and self.pkgrel == other.pkgrel
 
+    def in_testing(self):
+        '''attempt to locate this package in a testing repo; if we are in
+        a testing repo we will always return None.'''
+        if self.repo.testing:
+            return None
+        try:
+            return Package.objects.get(repo__testing=True,
+                    pkgname=self.pkgname, arch=self.arch)
+        except Package.DoesNotExist:
+            return None
 
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
