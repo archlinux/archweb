@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.views.decorators.cache import never_cache
 
-from main.models import Package, Todolist
+from main.models import Package, Todolist, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile, News
 from main.models import Mirror
@@ -25,14 +25,19 @@ pwletters = ascii_letters + digits
 def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
-    packages = Package.objects.select_related('arch', 'repo').filter(needupdate=True)
-    packages = packages.filter(pkgbase__in=inner_q)
+    flagged = Package.objects.select_related('arch', 'repo').filter(needupdate=True)
+    flagged = flagged.filter(pkgbase__in=inner_q)
+
+    todopkgs = TodolistPkg.objects.select_related(
+            'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
+    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q)
 
     page_dict = {
             'todos': Todolist.objects.incomplete(),
             'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
             'maintainers': User.objects.filter(is_active=True).order_by('last_name'),
-            'flagged' : packages,
+            'flagged' : flagged,
+            'todopkgs' : todopkgs,
          }
 
     return render_to_response('devel/index.html',

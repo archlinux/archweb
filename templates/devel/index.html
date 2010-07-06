@@ -60,6 +60,35 @@
         </tbody>
     </table>
 
+    <h3>My Incomplete Todo List Packages</h3>
+
+    <table id="dash-mytodolist" class="results dash-stats">
+        <thead>
+            <tr>
+                <th>Todo List</th>
+                <th class="key">Name</th>
+                <th>Repo</th>
+                <th>Arch</th>
+                <th>Maintainer(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todopkg in todopkgs %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td><a href="{{ todopkg.list.get_absolute_url }}"
+                            title="View todo list: {{ todopkg.list.name }}">{{ todopkg.list.name }}</a></td>
+                    <td><a href="{{ todopkg.pkg.get_absolute_url }}"
+                            title="View package details for {{ todopkg.pkg.pkgname }}">{{ todopkg.pkg.pkgname }}</a></td>
+                    <td>{{ todopkg.pkg.repo.name }}</td>
+                    <td>{{ todopkg.pkg.arch.name }}</td>
+                    <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4"><em>No incomplete todo list packages to display</em></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <form id="dash-pkg-notify" method="post" action="/devel/notify/">{% csrf_token %}
         <fieldset>
             <p><input id="notify" name="notify" type="checkbox" value="yes"
