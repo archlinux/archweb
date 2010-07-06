@@ -13,21 +13,21 @@
             <li><a href="{{ pkg.get_arch_svn_link }}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
             <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
             <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
-            <li>
             {% if pkg.flag_date %}
-                <span class="flagged">This package has been flagged out-of-date</span>
-                {% if user.is_authenticated %}
-                <br />&nbsp; &nbsp; <a href="unflag/"
-                    title="Unflag this package">Click here to unflag</a>
-                {% endif %}
+            <li><span class="flagged">Package has been flagged out-of-date</span></li>
+            {% with pkg.in_testing as testingpkg %}{% if testingpkg %}
+            <li><span class="flagged">Package has version in testing</span></li>
+            {% endif %}{% endwith %}
+            {% if user.is_authenticated %}
+            <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
+            {% endif %}
             {% else %}
-            <a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
+            <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
             <a href="/packages/flaghelp/"
                 title="Get help on package flagging"
                 onclick="return !window.open('/packages/flaghelp','FlagHelp',
-                'height=350,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">(?)</a>
+                'height=350,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">(?)</a></li>
             {% endif %}
-            </li>
             <li><a href="download/" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
         </ul>
 
