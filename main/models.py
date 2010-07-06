@@ -176,6 +176,7 @@ class Package(models.Model):
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     license = models.CharField(max_length=255, null=True)
+    flag_date = models.DateTimeField(null=True)
 
     objects = PackageManager()
     class Meta:
