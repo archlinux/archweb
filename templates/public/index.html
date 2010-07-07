@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load markup %}
+{% load cache %}
 
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
@@ -7,6 +8,7 @@
 {% endblock %}
 
 {% block content_left %}
+{% cache 300 main-page-left %}
 <div id="intro" class="box">
 
     <h2>A simple, lightweight distribution</h2>
@@ -49,9 +51,11 @@
     {% endfor %}
 
 </div><!-- #news -->
+{% endcache %}
 {% endblock %}
 
 {% block content_right %}
+{% cache 300 main-page-right %}
 <div id="pkgsearch" class="widget">
 
     <form id="pkgsearch-form" method="get" action="/packages/">
@@ -196,4 +200,5 @@
     <a href="http://www.airvm.com/VirtualServers" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.jpg" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
 
 </div>
+{% endcache %}
 {% endblock %}
