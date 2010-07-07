@@ -18,7 +18,7 @@
 
     <p class="article-info">{{ news.postdate }} - {{ news.author.get_full_name }}</p>
 
-    <div>{{ news.content|markdown }}</div>
+    <div class="article-content">{{ news.content|markdown }}</div>
 
 </div>
 {% endblock %}

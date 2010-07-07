@@ -104,8 +104,9 @@ ul.errorlist { color: red; }
 
 /* home: news */
 #news { margin-top: 1.5em; }
-#news p { margin-bottom: 1.5em; }
 #news h3 { border-bottom: 1px solid #888; }
+#news div { margin-bottom: 1em; }
+#news div p { margin-bottom: 0.5em; }
 #news .more { font-weight: normal; }
 #news .rss-icon { float: right; margin: -1.6em 0.4em 0 0; }
 #news h4 { font-size: 1em; margin-top: 1.5em; border-bottom: 1px dotted #bbb; }
