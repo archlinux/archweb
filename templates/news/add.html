@@ -9,17 +9,43 @@
     {% else %}
     <h2>News: Add Article</h2>
     {% endif %}
-
+    <p>News articles are formatted using
+    <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a>.
+    Please use this syntax if at all possible over raw HTML, which can be used
+    if Markdown doesn't support what you would like to do. Before posting, you
+    are highly encouraged to use the <strong>Preview</strong> button to check
+    your work.  Javascript must be enabled to use it, but it will render the
+    news item exactly as it will appear on the news view page.</p>
     <form id="newsform" method="post">{% csrf_token %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>
-        {% if form.instance.id %}
-        <p><label></label> <input title="Save changes" type="submit" value="Save" /></p>
-        {% else %}
-        <p><label></label> <input title="Publish this article" type="submit" value="Publish" /></p>
-        {% endif %}
+        <p>
+        <label></label>
+        <input title="Save changes" type="submit" value="Save" />
+        <input id="previewbtn" title="Preview" type="button" value="Preview" />
+        </p>
     </form>
-
 </div>
+
+<div class="news-article box" style="display:none;">
+    <h2>News Preview: <span id="previewtitle"></span></h2>
+    <div id="previewdata"></div>
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript">
+function enablePreview() {
+    $('#previewbtn').click(function(event) {
+        event.preventDefault();
+        $.post('/news/preview/',
+            { data: $('#id_content').val() },
+            function(data) {
+            $('#previewdata').html(data);
+            $('.news-article').show();
+        });
+        $('#previewtitle').html($('#id_title').val());
+    });
+}
+$(document).ready(enablePreview);
+</script>
 {% endblock %}

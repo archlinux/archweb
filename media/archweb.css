@@ -142,7 +142,7 @@ div.widget { margin-bottom: 1.5em; }
 #artwork div.imagelist img { display: inline; margin: 0.75em; }
 
 /* news: article pages */
-div#news-article .article-info { margin: 0; color: #999; }
+div.news-article .article-info { margin: 0; color: #999; }
 
 /* news: add/edit article */
 form#newsform { width: 60em; }

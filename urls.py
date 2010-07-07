@@ -61,6 +61,7 @@ urlpatterns = patterns('',
     (r'^news/add/$',           'news.views.add'),
     (r'^news/edit/(\d+)/$',    'news.views.edit'),
     (r'^news/delete/(\d+)/$',  'news.views.delete'),
+    (r'^news/preview/$',       'news.views.preview'),
     (r'^news/$',               'news.views.list', {}, 'news-list'),
 
     (r'^mirrors/$',        'devel.views.mirrorlist', {}, 'mirrors-list'),

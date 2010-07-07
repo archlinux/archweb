@@ -1,9 +1,12 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.views.decorators.cache import never_cache
 from django.views.generic import list_detail, create_update
+
+import markdown
 
 from main.models import News
 
@@ -56,5 +59,14 @@ def edit(request, newsid):
             object_id=newsid,
             form_class=NewsForm,
             template_name="news/add.html")
+
+@permission_required('main.change_news')
+@never_cache
+def preview(request):
+    markup = ''
+    if request.POST:
+        data = request.POST.get('data', '')
+        markup = markdown.markdown(data)
+    return HttpResponse(markup)
 
 # vim: set ts=4 sw=4 et:

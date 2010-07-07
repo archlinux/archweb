@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.admin',
+    'django.contrib.markup',
     'main', # contains shared models and libs
     'mirrors',
     'news',
