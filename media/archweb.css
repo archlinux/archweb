@@ -113,8 +113,8 @@ ul.errorlist { color: red; }
 
 /* home: pkgsearch box */
 #pkgsearch { padding: 1em 0.75em; background: #3ad; color: #fff; border: 1px solid #08b; } 
-#pkgsearch p { margin: 0; padding: 0; font-weight: bold; text-align: right; }
-#pkgsearch input { vertical-align: bottom; width: 12em; padding: 0.15em; font-size: 1em; color: #000; background: #fff; border: 1px solid #09c; }
+#pkgsearch label { width: auto; padding: 0.1em 0; }
+#pkgsearch input { width: 10em; float: right; font-size: 1em; color: #000; background: #fff; border: 1px solid #09c; }
 
 /* home: recent pkg updates */
 #pkg-updates h3 { margin: 0 0 0.3em; }
