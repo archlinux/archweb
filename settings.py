@@ -25,6 +25,14 @@ DEFAULT_CHARSET = 'utf-8'
 
 SITE_ID = 1
 
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = False
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale
+USE_L10N = False
+
 USE_ETAGS = False
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
