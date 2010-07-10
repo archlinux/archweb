@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load cache %}
+
 {% block title %}Arch Linux - Donate{% endblock %}
 
 {% block content %}
+{% cache 600 donations %}
 <div id="donations" class="box">
 
     <h2>Donate to Arch Linux</h2>
@@ -83,4 +86,5 @@
     <div class="clear"></div>
     <p>A huge thanks to you all for your contributions!</p>
 </div>
+{% endcache %}
 {% endblock %}

@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load cache %}
+
 {% block title %}Arch Linux - {{ user_type }}{% endblock %}
 
 {% block content %}
+{% cache 600 dev-tu-profiles user_type %}
 <div id="dev-tu-profiles" class="box">
 
     <h2>Arch Linux {{user_type}}</h2>
@@ -13,4 +16,5 @@
     {% endwith %}
 
 </div>
+{% endcache %}
 {% endblock %}

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load cache %}
+
 {% block title %}Arch Linux - Downloads{% endblock %}
 {% block navbarclass %}anb-download{% endblock %}
 
@@ -133,6 +135,7 @@
     </ul>
     {% endwith %}
 
+    {% cache 600 download-mirrors %}
     <table id="download-mirrors">
         <thead>
             <tr>
@@ -157,6 +160,7 @@
             </td></tr>
         </tbody>
     </table>
+    {% endcache %}
 
     <p>If you want to become an Official Arch Linux Mirror please follow the
     instructions listed <a href="http://wiki.archlinux.org/index.php/DeveloperWiki:NewMirrors">here</a>.</p>
