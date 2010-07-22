@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     (r'^todo/delete/(?P<object_id>\d+)/$',
         'todolists.views.delete_todolist'),
     (r'^todo/$',                    'todolists.views.list'),
+    (r'^todolists/$',               'todolists.views.public_list'),
 
     (r'^news/(\d+)/$',         'news.views.view'),
     (r'^news/add/$',           'news.views.add'),

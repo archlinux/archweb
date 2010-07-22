@@ -154,5 +154,10 @@ def send_todolist_email(todo):
             [m.email for m in maints],
             fail_silently=True)
 
+def public_list(request):
+    todo_lists = Todolist.objects.incomplete()
+    return render_to_response("todolists/public_list.html",
+            RequestContext(request, {"todo_lists": todo_lists}))
+
 
 # vim: set ts=4 sw=4 et:

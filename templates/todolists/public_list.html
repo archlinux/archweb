@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Todo Lists{% endblock %}
+
+{% block content %}
+    <div id="read_only_todo_lists">
+        {% for list in todo_lists %}
+            <h2>{{list.name}}</h2>
+            <div class="todo_list">
+                <p>{{list.description}}</p>
+                <ul>
+                    {% for pkg in list.packages %}
+                        <li>{{pkg.pkg.pkgname}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
