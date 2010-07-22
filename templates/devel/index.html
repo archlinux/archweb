@@ -24,7 +24,7 @@
             <tbody>
                 {% for todo in todos %}
                     <tr class="{% cycle 'odd' 'even' %}">
-                        <td class="key"><a href="{{ todo.get_absolute_url }}/"
+                        <td class="key"><a href="{{ todo.get_absolute_url }}"
                                 title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                         <td>{{ todo.date_added }}</td>
                         <td>{{ todo.description }}</td>
