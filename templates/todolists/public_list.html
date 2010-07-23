@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+
 {% block title %}Arch Linux - Todo Lists{% endblock %}
 
 {% block content %}
-    <div id="read_only_todo_lists">
+    <div id="public_todo_lists">
         {% for list in todo_lists %}
-            <h2>{{list.name}}</h2>
+            <h4>{{list.name}}</h4>
             <div class="todo_list">
                 <p>{{list.description}}</p>
                 <ul>
@@ -15,4 +16,12 @@
             </div>
         {% endfor %}
     </div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript">
+    $("#public_todo_lists h4").click(
+            function(e) {
+                $(this).next().toggle();
+            }
+    );
+</script>
 {% endblock %}
