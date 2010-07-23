@@ -169,6 +169,11 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
             logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
 
+    if 'groups' in repopkg.__dict__:
+        for y in repopkg.groups:
+            dbpkg.packagegroup_set.create(name=y)
+
+
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if not dbpkg.files_last_update or not dbpkg.last_update:

@@ -82,6 +82,16 @@
             <th>License:</th>
             <td>{{ pkg.license }}</td>
         </tr><tr>
+            <th>Groups:</th>
+            {% with pkg.packagegroup_set.all as groups %}
+            <td>{% if groups %}
+                {% for g in groups %}
+                {{ g.name }}<br/>
+                {% endfor %}
+                {% else %}None{% endif %}
+            </td>
+            {% endwith %}
+         </tr><tr>
             <th>Maintainers:</th>
             {% with pkg.maintainers as maints %}
             <td>{% if maints %}

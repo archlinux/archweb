@@ -20,4 +20,12 @@ class PackageRelation(models.Model):
     class Meta:
         unique_together = (('pkgbase', 'user', 'type'),)
 
+class PackageGroup(models.Model):
+    '''
+    Represents a group a package is in. There is no actual group entity,
+    only names that link to given packages.
+    '''
+    pkg = models.ForeignKey('main.Package')
+    name = models.CharField(max_length=255)
+
 # vim: set ts=4 sw=4 et:
