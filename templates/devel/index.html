@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - Developer Dashboard{% endblock %}
 
-{% block head %}
-{% load cdn %}{% jquery %}
-{% endblock %}
-
 {% block content %}
 <div id="dev-dashboard" class="box">
 
@@ -103,7 +99,7 @@
 <div id="dash-by-arch" class="dash-stats box">
 
     <h3 class="dash-stats" style="cursor: pointer"
-        title="Click to toggle stats by architecture" onclick="$(this).next().toggle();">
+        title="Click to toggle stats by architecture">
         Stats by Architecture <span class="dash-click">(click to toggle)</span></h3>
 
     <table id="stats-by-arch" class="results dash-stats">
@@ -134,7 +130,7 @@
 <div id="dash-by-repo" class="dash-stats box">
 
     <h3 class="dashboard dash-stats" style="cursor: pointer"
-        title="Click to toggle stats by repository" onclick="$(this).next().toggle();">
+        title="Click to toggle stats by repository">
         Stats by Repository <span class="dash-click">(click to toggle)</span></h3>
 
     <table id="stats-by-repo" class="results dash-stats">
@@ -165,7 +161,7 @@
 <div id="dash-by-maintainer" class="dash-stats box">
 
     <h3 class="dashboard dash-stats" style="cursor: pointer"
-        title="Click to toggle stats by maintainer" onclick="$(this).next().toggle();">
+        title="Click to toggle stats by maintainer">
         Stats by Maintainer <span class="dash-click">(click to toggle)</span></h3>
 
     <table id="stats-by-maintainer" class="results dash-stats">
@@ -192,4 +188,12 @@
     </table>
 
 </div><!-- #dash-by-maintainer -->
+{% load cdn %}{% jquery %}
+<script type="text/javascript">
+    $("h3.dash-stats").click(
+            function(e) {
+                $(this).next().toggle();
+            }
+    );
+</script>
 {% endblock %}
