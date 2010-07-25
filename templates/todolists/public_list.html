@@ -3,6 +3,8 @@
 {% block title %}Arch Linux - Todo Lists{% endblock %}
 
 {% block content %}
+<div class="box">
+    <h2>Developer Todo Lists</h2>
     <div id="public_todo_lists">
         {% for list in todo_lists %}
             <h4>{{list.name}}</h4>
@@ -16,6 +18,7 @@
             </div>
         {% endfor %}
     </div>
+</div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript">
     $("#public_todo_lists h4").click(
