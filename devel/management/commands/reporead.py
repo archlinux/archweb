@@ -142,33 +142,34 @@ def find_user(userstring):
     if userstring in find_user.cache:
         return find_user.cache[userstring]
     matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
+    if not matches:
+        return None
+
     user = None
-    if matches and not user:
-        email = matches.group(2)
+    name = matches.group(1)
+    email = matches.group(2)
+
+    def user_email():
+        return User.objects.get(email=email)
+    def profile_email():
+        return User.objects.get(userprofile_user__public_email=email)
+    def user_name():
+        # yes, a bit odd but this is the easiest way since we can't always be
+        # sure how to split the name. Ensure every 'token' appears in at least
+        # one of the two name fields.
+        name_q = Q()
+        for token in name.split():
+            name_q &= (Q(first_name__icontains=token) |
+                    Q(last_name__icontains=token))
+        user = User.objects.get(name_q)
+
+    for matcher in (user_email, profile_email, user_name):
         try:
-            user = User.objects.get(email=email)
+            user = matcher()
+            break
         except (User.DoesNotExist, User.MultipleObjectsReturned):
             pass
-    if matches and not user:
-        email = matches.group(2)
-        try:
-            user = UserProfile.objects.get(public_email=email).user
-        except (UserProfile.DoesNotExist, UserProfile.MultipleObjectsReturned):
-            pass
-    if matches and not user:
-        name = matches.group(1)
-        try:
-            # yes, a bit odd but this is the easiest way to handle multiple
-            # bits in the first and last names since we can't always be sure
-            # how to split the name. Ensure every 'token' appears in at least
-            # one of the two name fields.
-            name_q = Q()
-            for token in name.split():
-                name_q &= (Q(first_name__icontains=token) |
-                        Q(last_name__icontains=token))
-            user = User.objects.get(name_q)
-        except (User.DoesNotExist, User.MultipleObjectsReturned):
-            pass
+
     find_user.cache[userstring] = user
     return user
 
