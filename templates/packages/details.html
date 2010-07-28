@@ -2,6 +2,7 @@
 {% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }} - Package Details{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
+{% load package_extras %}
 {% block content %}
 <div id="pkgdetails" class="box">
 
@@ -96,7 +97,7 @@
             {% with pkg.maintainers as maints %}
             <td>{% if maints %}
                 {% for m in maints %}
-                {{ m.get_full_name }}<br/>
+                {% userpkgs m %}<br/>
                 {% endfor %}
                 {% else %}Orphan{% endif %}
             </td>
@@ -109,7 +110,7 @@
             <td>{{ pkg.installed_size|filesizeformat }}</td>
         </tr><tr>
             <th>Last Packager:</th>
-            <td>{% with pkg.packager as pkgr %}{% if pkgr %}{{ pkgr.get_full_name }}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
+            <td>{% with pkg.packager as pkgr %}{% if pkgr %}{% userpkgs pkgr %}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Build Date:</th>
             <td>{{ pkg.build_date }} UTC</td>
