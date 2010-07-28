@@ -30,3 +30,25 @@ def do_buildsortqs(parser, token):
                 "%r tag's argument should be in quotes" % tagname)
     return BuildQueryStringNode(sortfield[1:-1])
 
+@register.tag
+def userpkgs(parser, token):
+    try:
+        tagname, user = token.split_contents()
+    except ValueError:
+        raise template.TemplateSyntaxError(
+                "%r tag requires a single argument" % tagname)
+    return UserPkgsNode(user)
+
+class UserPkgsNode(template.Node):
+    def __init__(self, user):
+        self.user = template.Variable(user)
+
+    def render(self, context):
+        try:
+            real_user = self.user.resolve(context)
+			# TODO don't hardcode
+            return '<a href="/packages/search/?maintainer=%s">%s</a>' % (
+					real_user.username, real_user.get_full_name())
+        except template.VariableDoesNotExist:
+            return ''
+        pass
