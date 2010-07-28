@@ -219,6 +219,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
             logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
 
+    dbpkg.packagegroup_set.all().delete()
     if 'groups' in repopkg.__dict__:
         for y in repopkg.groups:
             dbpkg.packagegroup_set.create(name=y)
