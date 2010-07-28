@@ -23,7 +23,9 @@ REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models, transaction
+from django.db.models import Q
 from django.core import management
 
 import os
@@ -37,7 +39,7 @@ from optparse import make_option
 from cStringIO import StringIO
 from logging import ERROR, WARNING, INFO, DEBUG
 
-from main.models import Arch, Package, Repo
+from main.models import Arch, Package, Repo, UserProfile
 
 class SomethingFishyException(Exception):
     '''Raised when the database looks like its going to wipe out a bunch of
@@ -129,6 +131,51 @@ class Pkg(object):
             return None
 
 
+def find_user(userstring):
+    '''
+    Attempt to find the corresponding User object for a standard
+    packager string, e.g. something like
+        'A. U. Thor <author@example.com>'.
+    We start by searching for a matching email address; we then move onto
+    matching by first/last name. If we cannot find a user, then return None.
+    '''
+    if userstring in find_user.cache:
+        return find_user.cache[userstring]
+    matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
+    user = None
+    if matches and not user:
+        email = matches.group(2)
+        try:
+            user = User.objects.get(email=email)
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            pass
+    if matches and not user:
+        email = matches.group(2)
+        try:
+            user = UserProfile.objects.get(public_email=email).user
+        except (UserProfile.DoesNotExist, UserProfile.MultipleObjectsReturned):
+            pass
+    if matches and not user:
+        name = matches.group(1)
+        try:
+            # yes, a bit odd but this is the easiest way to handle multiple
+            # bits in the first and last names since we can't always be sure
+            # how to split the name. Ensure every 'token' appears in at least
+            # one of the two name fields.
+            name_q = Q()
+            for token in name.split():
+                name_q &= (Q(first_name__icontains=token) |
+                        Q(last_name__icontains=token))
+            user = User.objects.get(name_q)
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
+            pass
+    find_user.cache[userstring] = user
+    return user
+
+# cached mappings of user strings -> User objects so we don't have to do the
+# lookup more than strictly necessary.
+find_user.cache = {}
+
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     if repopkg.base:
         dbpkg.pkgbase = repopkg.base
@@ -149,6 +196,9 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             dbpkg.build_date = datetime.strptime(repopkg.builddate, '%a %b %d %H:%M:%S %Y')
         except:
             pass
+    dbpkg.packager_str = repopkg.packager
+    # attempt to find the corresponding django user for this string
+    dbpkg.packager = find_user(repopkg.packager)
 
     if timestamp:
         dbpkg.flag_date = None
