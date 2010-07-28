@@ -108,6 +108,9 @@
             <th>Installed Size:</th>
             <td>{{ pkg.installed_size|filesizeformat }}</td>
         </tr><tr>
+            <th>Last Packager:</th>
+            <td>{% with pkg.packager as pkgr %}{% if pkgr %}{{ pkgr.get_full_name }}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
+        </tr><tr>
             <th>Build Date:</th>
             <td>{{ pkg.build_date }} UTC</td>
         </tr><tr>
