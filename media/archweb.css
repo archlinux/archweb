@@ -16,7 +16,7 @@
 * { margin: 0; padding: 0; line-height: 1.4; }
 
 /* general styling */
-body { min-width: 650px; background: #e4eeff; color: #222; font: normal 100% sans-serif; text-align: center; }
+body { min-width: 650px; background: #f6f9fc; color: #222; font: normal 100% sans-serif; text-align: center; }
 p { margin: .33em 0 1em; }
 ol, ul { margin-bottom: 1em; padding-left: 2em; }
 ul { list-style: square; }
@@ -37,8 +37,8 @@ img { border: 0; }
 /* link style */
 a { text-decoration: none; }
 a:link, th a:visited { color: #07b; }
-a:visited { color: #549; }
-a:hover { text-decoration: underline; }
+a:visited { color: #666; }
+a:hover { text-decoration: underline; color: #666; }
 a:active { color: #e90; }
 
 /* headings */
@@ -52,7 +52,7 @@ div#content { width: 95%; margin: 0 auto; text-align: left; }
 div#content-left-wrapper { float: left; width: 100%; } /* req to keep content above sidebar in source code */ 
 div#content-left { margin: 0 340px 0 0; }
 div#content-right { float: left; width: 300px; margin-left: -300px; }
-div.box { margin-bottom: 1.5em; padding: 0.65em; background: #fff; border: 1px solid #bcd; }
+div.box { margin-bottom: 1.5em; padding: 0.65em; background: #ecf2f5; border: 1px solid #bcd; }
 div#footer { clear: both; margin: 2em 0 1em; }
 div#footer p { margin: 0; text-align: center; font-size: 0.85em; }
 
@@ -164,9 +164,10 @@ table#download-mirrors a { display: block; float: right; width: 4em; }
 
 /* pkglists/devlists */
 table.results { font-size: 0.846em; }
-table.results th { padding: 0.5em 1em 0.25em 0.25em; border-bottom: 1px solid #999; white-space: nowrap; }
+table.results th { padding: 0.5em 1em 0.25em 0.25em; border-bottom: 1px solid #999; white-space: nowrap; background-color:#fff; }
 table.results td { padding: .3em 1em .3em 3px; }
-table.results tr.even { background: #e7ecff; }
+table.results tr.odd { background: #fff; }
+table.results tr.even { background: #e4eeff; }
 
 /* pkglist: layout */
 div#pkglist-search { margin-bottom: 1.5em; }
