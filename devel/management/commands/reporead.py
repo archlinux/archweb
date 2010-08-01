@@ -161,7 +161,7 @@ def find_user(userstring):
         for token in name.split():
             name_q &= (Q(first_name__icontains=token) |
                     Q(last_name__icontains=token))
-        user = User.objects.get(name_q)
+        return User.objects.get(name_q)
 
     for matcher in (user_email, profile_email, user_name):
         try:
