@@ -1,5 +1,6 @@
 import cgi, urllib
 from django import template
+from django.utils.html import escape
 
 register = template.Library()
 
@@ -47,8 +48,12 @@ class UserPkgsNode(template.Node):
         try:
             real_user = self.user.resolve(context)
 			# TODO don't hardcode
-            return '<a href="/packages/search/?maintainer=%s">%s</a>' % (
-					real_user.username, real_user.get_full_name())
+            title = escape('View packages maintained by ' + real_user.get_full_name())
+            return '<a href="/packages/search/?maintainer=%s" title="%s">%s</a>' % (
+					real_user.username,
+                    title,
+                    real_user.get_full_name(),
+                    )
         except template.VariableDoesNotExist:
             return ''
         pass
