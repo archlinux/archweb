@@ -82,6 +82,10 @@ class Command(BaseCommand):
         elif v == 2:
             logger.level = DEBUG
 
+        import signal,traceback
+        signal.signal(signal.SIGQUIT,
+                lambda sig, stack: traceback.print_stack(stack))
+
         return read_repo(arch, file, options)
 
 
