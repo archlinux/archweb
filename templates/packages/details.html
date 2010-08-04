@@ -58,7 +58,8 @@
             <th>Split Packages:</th>
             <td>
                 {% for s in splits %}
-                <a href="{{ s.get_absolute_url }}">{{ s.pkgname }}</a><br/>
+                <a href="{{ s.get_absolute_url }}"
+                    title="Package details for {{ pkg.pkgname }}">{{ s.pkgname }}</a><br/>
                 {% endfor %}
             </td>
         </tr>
@@ -67,7 +68,8 @@
         <tr>
             <th>Base Package:</th>
             {% if pkg.base_package %}
-            <td><a href="{{ pkg.base_package.get_absolute_url }}">{{ pkg.pkgbase }}</a></td>
+            <td><a href="{{ pkg.base_package.get_absolute_url }}"
+                    title="Package details for {{ pkg.base_package.pkgname }}">{{ pkg.pkgbase }}</a></td>
             {% else %}
             <td>{{ pkg.pkgbase }}</td>
             {% endif %}
@@ -78,7 +80,8 @@
             <td>{% if pkg.pkgdesc %}{{ pkg.pkgdesc }}{% endif %}</td>
         </tr><tr>
             <th>Upstream URL:</th>
-            <td>{% if pkg.url %}<a href="{{ pkg.url }}">{{ pkg.url }}</a>{% endif %}</td>
+            <td>{% if pkg.url %}<a href="{{ pkg.url }}"
+                    title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url }}</a>{% endif %}</td>
         </tr><tr>
             <th>License:</th>
             <td>{{ pkg.license }}</td>
