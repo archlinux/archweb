@@ -47,19 +47,19 @@ LOGIN_REDIRECT_URL = '/'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
-     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.eggs.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
     'main.middleware.UpdateCacheMiddleware',
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.doc.XViewMiddleware",
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.doc.XViewMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
