@@ -89,6 +89,8 @@ AUTH_PROFILE_MODULE = 'main.UserProfile'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,4 +111,3 @@ INSTALLED_APPS = (
 )
 
 # vim: set ts=4 sw=4 et:
-
