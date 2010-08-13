@@ -98,7 +98,8 @@ class PackageSearchForm(forms.Form):
     arch = forms.ChoiceField(required=False)
     q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
-    last_update = forms.DateField(required=False, widget=AdminDateWidget())
+    last_update = forms.DateField(required=False, widget=AdminDateWidget(),
+            label='Last Updated After')
     flagged = forms.ChoiceField(
             choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
             required=False)
