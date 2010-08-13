@@ -88,9 +88,6 @@
         {% endwith %}
         {% endfor %}
     </table>
-
-    <p class="center"><a href="{% url mirrorlist %}">Update your mirrorlist</a> <img src="/media/new.png" alt="New" /></p>
-
 </div>
 
 <div id="nav-sidebar" class="widget">
@@ -138,6 +135,8 @@
     <h4>Development</h4>
 
     <ul>
+        <li><a href="{% url mirrorlist %}"
+            title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
         <li><a href="/packages/"
             title="View/search the package repository database">Packages</a></li>
         <li><a href="http://bugs.archlinux.org/"
