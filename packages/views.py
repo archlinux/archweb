@@ -124,17 +124,15 @@ class PackageSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(PackageSearchForm, self).__init__(*args, **kwargs)
-        self.fields['repo'].choices = self.fields[
-                'repo'].widget.choices = [('', 'All')] + make_choice(
+        self.fields['repo'].choices = [('', 'All')] + make_choice(
                         [repo.name for repo in Repo.objects.all()])
-        self.fields['arch'].choices = self.fields[
-                'arch'].widget.choices = [('', 'All')] + make_choice(
+        self.fields['arch'].choices = [('', 'All')] + make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
-        self.fields['maintainer'].choices = self.fields[
-                'maintainer'].widget.choices = [
-                        ('', 'All'), ('orphan', 'Orphan')] + make_choice(
-                        [m.username for m in User.objects.order_by('username')])
+        maints = User.objects.filter(is_active=True).order_by('username')
+        self.fields['maintainer'].choices = \
+                [('', 'All'), ('orphan', 'Orphan')] + \
+                [(m.username, m.get_full_name()) for m in maints]
 
 def search(request, page=None):
     current_query = '?'
