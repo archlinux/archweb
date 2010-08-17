@@ -169,8 +169,9 @@ class Package(models.Model):
     pkgdesc = models.CharField(max_length=255, null=True)
     url = models.CharField(max_length=255, null=True)
     filename = models.CharField(max_length=255)
-    compressed_size = models.PositiveIntegerField(null=True)
-    installed_size = models.PositiveIntegerField(null=True)
+    # TODO: it would be nice to have the >0 check constraint back here
+    compressed_size = models.BigIntegerField(null=True)
+    installed_size = models.BigIntegerField(null=True)
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
