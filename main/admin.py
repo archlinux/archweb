@@ -62,7 +62,7 @@ class MirrorAdmin(admin.ModelAdmin):
     ]
 
 class RepoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'testing')
+    list_display = ('name', 'testing', 'bugs_project', 'svn_root')
     list_filter = ('testing',)
     search_fields = ('name',)
 

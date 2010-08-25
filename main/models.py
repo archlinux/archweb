@@ -150,7 +150,12 @@ class Repo(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255,unique=True)
     testing = models.BooleanField(default=False,
-        help_text="Is this repo meant for package testing?")
+            help_text="Is this repo meant for package testing?")
+    bugs_project = models.SmallIntegerField(default=1,
+            help_text="Flyspray project ID for this repository.")
+    svn_root = models.CharField(max_length=64,
+            help_text="SVN root (e.g. path) for this repository.")
+
     def __unicode__(self):
         return self.name
     class Meta:
