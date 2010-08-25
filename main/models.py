@@ -296,7 +296,8 @@ class Package(models.Model):
     def get_svn_link(self, svnpath):
         linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
         repo = self.repo.name.lower()
-        if repo.startswith('community'):
+        # TODO: de-hackify and make this a property on repo object
+        if repo.startswith('community') or repo == 'multilib':
             root = 'community'
         else:
             root = 'packages'
