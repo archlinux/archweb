@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Package Differences by Architecture{% endblock %}
+{% block navbarclass %}anb-packages{% endblock %}
+
+{% block content %}
+{% if differences %}
+<div class="box">
+    <h2>Package Differences by Architecture</h2>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Package Name</th>
+                <th>Repository</th>
+                <th>{{ arch_a.name }} Version</th>
+                <th>{{ arch_b.name }} Version</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name, repo, pkg1, pkg2 in differences %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ name }}</td>
+                <td>{{ repo.name }}</td>
+                {% if pkg1 %}
+                <td><a href="{{ pkg1.get_absolute_url }}"
+                        title="View package details for {{ pkg1.pkgname }}">{{ pkg1.pkgver }}-{{ pkg1.pkgrel }}</a></td>
+                {% else %}<td>-</td>{% endif %}
+                {% if pkg2 %}
+                <td><a href="{{ pkg2.get_absolute_url }}"
+                        title="View package details for {{ pkg2.pkgname }}">{{ pkg2.pkgver }}-{{ pkg2.pkgrel }}</a></td>
+                {% else %}<td>-</td>{% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

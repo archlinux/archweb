@@ -342,4 +342,71 @@ def download(request, name='', repo='', arch=''):
     url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(details)
     return HttpResponseRedirect(url)
 
+def arch_differences(request):
+    from django.db import connection
+    from operator import itemgetter
+    # This is a monster. Join packages against itself, looking for packages in
+    # our non-'any' architectures only, and not having a corresponding package
+    # entry in the other table (or having one with a different pkgver). We will
+    # then go and fetch all of these packages from the database and display
+    # them later using normal ORM models.
+    # TODO: we have some hardcoded magic here with respect to the arches.
+    arch_a = Arch.objects.get(name='i686')
+    arch_b = Arch.objects.get(name='x86_64')
+    sql = """
+SELECT p.id, q.id
+    FROM packages p
+    LEFT JOIN packages q
+    ON (
+        p.pkgname = q.pkgname
+        AND p.repo_id = q.repo_id
+        AND p.arch_id != q.arch_id
+        AND p.id != q.id
+    )
+    WHERE p.arch_id IN (%s, %s)
+    AND (
+        q.id IS NULL
+        OR
+        p.pkgver != q.pkgver
+        OR
+        p.pkgrel != q.pkgrel
+    )
+"""
+    cursor = connection.cursor()
+    cursor.execute(sql, [arch_a.id, arch_b.id])
+    results = cursor.fetchall()
+    to_fetch = []
+    for row in results:
+        # column A will always have a value, column B might be NULL
+        to_fetch.append(row[0])
+    # fetch all of the necessary packages
+    pkgs = Package.objects.in_bulk(to_fetch)
+    # now build a list of tuples containing differences
+    differences = []
+    for row in results:
+        pkg_a = pkgs.get(row[0])
+        pkg_b = pkgs.get(row[1])
+        # We want arch_a to always appear first
+        # pkg_a should never be None
+        if pkg_a.arch == arch_a:
+            item = (pkg_a.pkgname, pkg_a.repo, pkg_a, pkg_b)
+        else:
+            # pkg_b can be None in this case, so be careful
+            name = pkg_a.pkgname if pkg_a else pkg_b.pkgname
+            repo = pkg_a.repo if pkg_a else pkg_b.repo
+            item = (name, repo, pkg_b, pkg_a)
+        if item not in differences:
+            differences.append(item)
+
+    # now sort our list by repository, package name
+    differences.sort(key=lambda a: (a[1].name, a[0]))
+
+    context = {
+            'arch_a': arch_a,
+            'arch_b': arch_b,
+            'differences': differences,
+    }
+    return render_to_response('packages/differences.html',
+            RequestContext(request, context))
+
 # vim: set ts=4 sw=4 et:

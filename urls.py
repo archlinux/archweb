@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     # because other projects link to it
     (r'^packages/search/$',          'packages.views.search'),
     (r'^packages/search/(?P<page>\d+)/$', 'packages.views.search'),
+    (r'^packages/differences/$',     'packages.views.arch_differences'),
     (r'^packages/$',                     'packages.views.search'),
     (r'^packages/(?P<page>\d+)/$',        'packages.views.search'),
 
