@@ -3,40 +3,60 @@
         "pk": 5, 
         "model": "main.repo", 
         "fields": {
+            "svn_root": "community", 
             "testing": false, 
-            "name": "Community"
+            "name": "Community", 
+            "bugs_project": 5
         }
     }, 
     {
         "pk": 6, 
         "model": "main.repo", 
         "fields": {
+            "svn_root": "community", 
             "testing": true, 
-            "name": "Community-Testing"
+            "name": "Community-Testing", 
+            "bugs_project": 5
         }
     }, 
     {
         "pk": 1, 
         "model": "main.repo", 
         "fields": {
+            "svn_root": "packages", 
             "testing": false, 
-            "name": "Core"
+            "name": "Core", 
+            "bugs_project": 1
         }
     }, 
     {
         "pk": 2, 
         "model": "main.repo", 
         "fields": {
+            "svn_root": "packages", 
             "testing": false, 
-            "name": "Extra"
+            "name": "Extra", 
+            "bugs_project": 1
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "main.repo", 
+        "fields": {
+            "svn_root": "community", 
+            "testing": false, 
+            "name": "Multilib", 
+            "bugs_project": 5
         }
     }, 
     {
         "pk": 3, 
         "model": "main.repo", 
         "fields": {
+            "svn_root": "packages", 
             "testing": true, 
-            "name": "Testing"
+            "name": "Testing", 
+            "bugs_project": 1
         }
     }
 ]
