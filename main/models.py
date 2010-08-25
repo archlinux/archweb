@@ -300,13 +300,7 @@ class Package(models.Model):
 
     def get_svn_link(self, svnpath):
         linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
-        repo = self.repo.name.lower()
-        # TODO: de-hackify and make this a property on repo object
-        if repo.startswith('community') or repo == 'multilib':
-            root = 'community'
-        else:
-            root = 'packages'
-        return linkbase % (root, self.pkgbase, svnpath)
+        return linkbase % (self.repo.svn_root, self.pkgbase, svnpath)
 
     def get_arch_svn_link(self):
         repo = self.repo.name.lower()
@@ -316,13 +310,8 @@ class Package(models.Model):
         return self.get_svn_link("trunk")
 
     def get_bugs_link(self):
-        repo = self.repo.name.lower()
-        if repo.startswith('community'):
-            project = 5
-        else:
-            project = 1
         return "http://bugs.archlinux.org/?project=%d&string=%s" % \
-                (project, self.pkgname)
+                (self.repo.bugs_project, self.pkgname)
 
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'
