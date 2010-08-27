@@ -93,7 +93,8 @@
             {% with pkg.packagegroup_set.all as groups %}
             <td>{% if groups %}
                 {% for g in groups %}
-                {{ g.name }}<br/>
+                <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
+                    title="Group details for {{ g.name }}">{{ g.name }}</a><br/>
                 {% endfor %}
                 {% else %}None{% endif %}
             </td>
