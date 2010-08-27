@@ -9,22 +9,46 @@
         {% for list in todo_lists %}
             <h4>{{list.name}}</h4>
             <div class="todo_list">
-                <p>{{list.description|safe}}</p>
-                <ul>
-                    {% for pkg in list.packages %}
-                        <li>{{pkg.pkg.pkgname}}</li>
-                    {% endfor %}
-                </ul>
+                <p>{{list.description|safe|linebreaks}}</p>
+                <table "todo-pkglist-{{ list.id }}" class="results todo-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Arch</th>
+                            <th>Repo</th>
+                            <th>Maintainer</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pkg in list.packages %}
+                        <tr class="{% cycle 'odd' 'even' %}">
+                            <td><a href="{{ pkg.pkg.get_absolute_url }}"
+                                    title="View package details for {{ pkg.pkg.pkgname }}">{{ pkg.pkg.pkgname }}</a></td>
+                            <td>{{ pkg.pkg.arch.name }}</td>
+                            <td>{{ pkg.pkg.repo.name|capfirst }}</td>
+                            <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
+                            <td>
+                                {% if pkg.complete %}
+                                <span class="complete">Complete</a>
+                                {% else %}
+                                <span class="incomplete">Incomplete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         {% endfor %}
     </div>
 </div>
 {% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
-    $("#public_todo_lists h4").click(
-            function(e) {
-                $(this).next().toggle();
-            }
-    );
+$(document).ready(function() {
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
+});
+
 </script>
 {% endblock %}

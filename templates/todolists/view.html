@@ -19,7 +19,7 @@
 
     <p>{{list.description|safe|linebreaks}}</p>
 
-    <table id="dev-todo-pkglist" class="results">
+    <table id="dev-todo-pkglist" class="results todo-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -50,10 +50,9 @@
             {% endfor %}
         </tbody>
     </table>
-
-</div><!-- #dev-todo-details -->
-
+</div>
 {% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
     $(function() {
         $('a[href*=todo/flag]').click(function() {
@@ -70,5 +69,8 @@
             return false;
         });
     });
+$(document).ready(function() {
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
+});
 </script>
 {% endblock %}
