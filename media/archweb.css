@@ -163,11 +163,15 @@ table#download-mirrors td.mirror-server { padding-right: 1em; }
 table#download-mirrors a { display: block; float: right; width: 4em; }
 
 /* pkglists/devlists */
-table.results { font-size: 0.846em; }
+table.results { font-size: 0.846em; border-top: 1px dotted #999; border-bottom: 1px dotted #999; }
 table.results th { padding: 0.5em 1em 0.25em 0.25em; border-bottom: 1px solid #999; white-space: nowrap; background-color:#fff; }
 table.results td { padding: .3em 1em .3em 3px; }
 table.results tr.odd { background: #fff; }
 table.results tr.even { background: #e4eeff; }
+/* additional styles for JS sorting */
+table.results th.header { padding-right: 20px; background-image: url(nosort.gif); background-repeat: no-repeat; background-position: center right; cursor: pointer; }
+table.results th.headerSortDown { background-color: #e4eeff; background-image: url(desc.gif); }
+table.results th.headerSortUp { background-color: #e4eeff; background-image: url(asc.gif); }
 
 /* pkglist: layout */
 div#pkglist-search { margin-bottom: 1.5em; }
@@ -177,8 +181,7 @@ div#pkglist-about { margin-top: 1.5em; }
 #pkglist-results .flagged { color: red; }
 
 /* pkglist: results navigation */
-#pkglist-stats-top { font-size: 0.85em; border-bottom: 1px dotted #999; }
-#pkglist-stats-bottom { font-size: 0.85em; border-top: 1px dotted #999; }
+#pkglist-stats-top, #pkglist-stats-bottom { font-size: 0.85em; }
 #pkglist-results .pkglist-nav { float: right; margin-top: -2.2em; }
 .pkglist-nav .prev { margin-right: 1em; }
 .pkglist-nav .next { margin-right: 1em; }
@@ -234,7 +237,7 @@ form#dash-pkg-notify p { margin: 0; }
 table#stats-by-maintainer, table#stats-by-repo, table#stats-by-arch { display: none; }
 table.dash-stats .key { width: 50%; } 
 span.dash-click { font-weight: normal; font-size: 0.8em; color: #888; }
-div.dash-stats h3 { color: #07b; border-bottom: 1px dotted #aaa; }
+div.dash-stats h3 { color: #07b; }
 
 /* read only (public) todo lists */
 #public_todo_lists .todo_list {
