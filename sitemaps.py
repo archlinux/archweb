@@ -1,8 +1,9 @@
 from django.contrib.sitemaps import Sitemap
 from main.models import Package, News
+from packages.views import get_group_information
 
 class PackagesSitemap(Sitemap):
-    changefreq = "monthly"
+    changefreq = "weekly"
     priority = "0.5"
 
     def items(self):
@@ -14,6 +15,7 @@ class PackagesSitemap(Sitemap):
 
 
 class PackageFilesSitemap(PackagesSitemap):
+    changefreq = "monthly"
     priority = "0.3"
 
     def location(self, obj):
@@ -21,6 +23,20 @@ class PackageFilesSitemap(PackagesSitemap):
 
     def lastmod(self, obj):
         return obj.files_last_update
+
+
+class PackageGroupsSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = "0.4"
+
+    def items(self):
+        return get_group_information()
+
+    def lastmod(self, obj):
+        return obj['last_update']
+
+    def location(self, obj):
+        return '/groups/%s/%s/' % (obj['arch'], obj['name'])
 
 
 class NewsSitemap(Sitemap):
@@ -34,4 +50,3 @@ class NewsSitemap(Sitemap):
         return obj.postdate
 
 # vim: set ts=4 sw=4 et:
-

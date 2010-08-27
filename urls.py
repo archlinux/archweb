@@ -8,12 +8,13 @@ from django.contrib.auth.decorators import permission_required
 
 from main.models import Todolist
 from feeds import PackageFeed, NewsFeed
-from sitemaps import NewsSitemap, PackagesSitemap, PackageFilesSitemap
+import sitemaps
 
 sitemaps = {
-    'news':          NewsSitemap,
-    'packages':      PackagesSitemap,
-    'package-files': PackageFilesSitemap,
+    'news':           sitemaps.NewsSitemap,
+    'packages':       sitemaps.PackagesSitemap,
+    'package-files':  sitemaps.PackageFilesSitemap,
+    'package-groups': sitemaps.PackageGroupsSitemap,
 }
 
 admin.autodiscover()
