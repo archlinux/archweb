@@ -43,7 +43,7 @@
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $(".results").tablesorter({sortList: [[1,0], [2,0]]});
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [2,0]]});
 });
 </script>
 {% endblock %}
