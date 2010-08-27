@@ -17,7 +17,7 @@ class PackageFeed(Feed):
         if arch != '':
             # feed for a single arch, also include 'any' packages everywhere
             a = Arch.objects.get(name=arch)
-            qs = qs.filter(Q(arch=a) | Q(arch__name__iexact='any'))
+            qs = qs.filter(Q(arch=a) | Q(arch__name='any'))
             obj['arch'] = a
         if repo != '':
             # feed for a single arch AND repo
