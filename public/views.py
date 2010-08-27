@@ -60,7 +60,7 @@ def feeds(request):
         'arches': Arch.objects.all(),
         'repos': Repo.objects.all(),
     }
-    return render_to_response('public/feeds.html', context)
+    return render_to_response('public/feeds.html', context,
+                              context_instance=RequestContext(request))
 
 # vim: set ts=4 sw=4 et:
-
