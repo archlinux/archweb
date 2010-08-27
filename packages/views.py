@@ -20,7 +20,7 @@ import string
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.models import MirrorUrl
-from main.utils import make_choice
+from main.utils import cache_function, make_choice
 from packages.models import PackageGroup, PackageRelation
 
 def opensearch(request):
@@ -85,6 +85,7 @@ def details(request, name='', repo='', arch=''):
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
 
+@cache_function(300)
 def get_group_information():
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
