@@ -26,16 +26,17 @@ def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
     flagged = Package.objects.select_related('arch', 'repo').filter(flag_date__isnull=False)
-    flagged = flagged.filter(pkgbase__in=inner_q)
+    flagged = flagged.filter(pkgbase__in=inner_q).order_by('pkgname')
 
     todopkgs = TodolistPkg.objects.select_related(
             'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
-    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q)
+    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by('list__name', 'pkg__pkgname')
 
     page_dict = {
-            'todos': Todolist.objects.incomplete(),
-            'repos': Repo.objects.all(), 'arches': Arch.objects.all(),
-            'maintainers': User.objects.filter(is_active=True).order_by('last_name'),
+            'todos': Todolist.objects.incomplete().order_by('-date_added'),
+            'repos': Repo.objects.all(),
+            'arches': Arch.objects.all(),
+            'maintainers': User.objects.filter(is_active=True).order_by('first_name', 'last_name'),
             'flagged' : flagged,
             'todopkgs' : todopkgs,
          }
@@ -82,7 +83,7 @@ def change_profile(request):
 
 @login_required
 def mirrorlist(request):
-    mirrors = Mirror.objects.select_related().all()
+    mirrors = Mirror.objects.select_related().order_by('tier', 'country')
     return render_to_response('devel/mirrorlist.html',
             RequestContext(request, {'mirror_list': mirrors}))
 

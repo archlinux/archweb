@@ -189,11 +189,18 @@
 
 </div><!-- #dash-by-maintainer -->
 {% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function() {
+    $("#dash-todo").tablesorter({sortList: [[1,1]]});
+    $("#dash-myflagged").tablesorter({sortList: [[0,0]]});
+    $("#dash-mytodolist").tablesorter({sortList: [[0,0], [1,0]]});
+    $("#stats-by-arch").tablesorter({sortList: [[0,0]]});
+    $("#stats-by-repo").tablesorter({sortList: [[0,0]]});
+    $("#stats-by-maintainer").tablesorter({sortList: [[0,0]]});
     $("h3.dash-stats").click(
-            function(e) {
-                $(this).next().toggle();
-            }
+        function(e) { $(this).next().toggle(); }
     );
+});
 </script>
 {% endblock %}

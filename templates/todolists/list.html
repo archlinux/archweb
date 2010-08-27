@@ -36,6 +36,12 @@
             {% endfor %}
         </tbody>
     </table>
-
-</div><!-- #dev-todo -->
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results").tablesorter({sortList: [[1,1]]});
+});
+</script>
 {% endblock %}
