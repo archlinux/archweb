@@ -50,6 +50,7 @@ urlpatterns = patterns('',
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/download/$',
         'packages.views.download'),
 
+    (r'^groups/$', 'packages.views.groups'),
     (r'^groups/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'packages.views.group_details'),
 

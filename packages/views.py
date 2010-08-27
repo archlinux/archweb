@@ -11,16 +11,17 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
-from django.db.models import Q
+from django.db.models import Count, Q
 
 from datetime import datetime
+from operator import itemgetter
 import string
 
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.models import MirrorUrl
 from main.utils import make_choice
-from packages.models import PackageRelation
+from packages.models import PackageGroup, PackageRelation
 
 def opensearch(request):
     if request.is_secure():
@@ -83,6 +84,43 @@ def details(request, name='', repo='', arch=''):
     else:
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
+
+def get_group_information():
+    raw_groups = PackageGroup.objects.values_list(
+            'name', 'pkg__arch__name').order_by('name').annotate(
+             cnt=Count('pkg'))
+    # now for post_processing. we need to seperate things out and add
+    # the count in for 'any' to all of the other architectures.
+    group_mapping = {}
+    for g in raw_groups:
+        arch_groups = group_mapping.setdefault(g[1], {})
+        arch_groups[g[0]] = {'name': g[0], 'arch': g[1], 'count': g[2]}
+
+    # we want to promote the count of 'any' packages in groups to the
+    # other architectures, and also add any 'any'-only groups
+    if 'any' in group_mapping:
+        any_groups = group_mapping['any']
+        del group_mapping['any']
+        for arch, arch_groups in group_mapping.iteritems():
+            for g in any_groups.itervalues():
+                if g['name'] in arch_groups:
+                    arch_groups[g['name']]['count'] += g['count']
+                else:
+                    new_g = g.copy()
+                    # override the arch to not be 'any'
+                    new_g['arch'] = arch
+                    arch_groups[g['name']] = new_g
+
+    # now transform it back into a sorted list
+    groups = []
+    for v in group_mapping.itervalues():
+        groups.extend(v.itervalues())
+    return sorted(groups, key=itemgetter('name', 'arch'))
+
+def groups(request):
+    groups = get_group_information()
+    return render_to_response('packages/groups.html',
+            RequestContext(request, {'groups': groups}))
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
