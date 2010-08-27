@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
@@ -83,6 +83,21 @@ def details(request, name='', repo='', arch=''):
     else:
         return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
+
+def group_details(request, arch, name):
+    arch = get_object_or_404(Arch, name=arch)
+    pkgs = Package.objects.filter(packagegroup__name=name)
+    pkgs = pkgs.filter(Q(arch__name=arch) | Q(arch__name='any'))
+    pkgs = pkgs.order_by('pkgname')
+    if len(pkgs) == 0:
+        raise Http404
+    context = {
+        'groupname': name,
+        'arch': arch,
+        'packages': pkgs,
+    }
+    return render_to_response('packages/group_details.html',
+            RequestContext(request, context))
 
 def getmaintainer(request, name, repo, arch):
     "Returns the maintainers as plaintext."
