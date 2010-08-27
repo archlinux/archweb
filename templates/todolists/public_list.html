@@ -9,7 +9,7 @@
         {% for list in todo_lists %}
             <h4>{{list.name}}</h4>
             <div class="todo_list">
-                <p>{{list.description}}</p>
+                <p>{{list.description|safe}}</p>
                 <ul>
                     {% for pkg in list.packages %}
                         <li>{{pkg.pkg.pkgname}}</li>

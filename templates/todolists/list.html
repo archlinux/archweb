@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block title %}Arch Linux - Todo Lists{% endblock %}
 
 {% block content %}
@@ -29,7 +30,7 @@
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
                 <td>{{ list.date_added }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
-                <td class="wrap">{{ list.description }}</td>
+                <td class="wrap">{{ list.description|safe }}</td>
                 <td>{% if list.complete %}<span class="complete">Complete</span>
                     {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
             </tr>

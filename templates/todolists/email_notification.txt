@@ -12,4 +12,4 @@ has been added to this todo list:
 Creator: {{todolist.creator.get_full_name}}
 Name: {{todolist.name}}
 Description:
-{{todolist.description|wordwrap:69}}{% endautoescape %}
+{{todolist.description|striptags|wordwrap:69}}{% endautoescape %}

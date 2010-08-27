@@ -17,7 +17,7 @@
         {% endif %}
     </ul>
 
-    <p>{{list.description|linebreaks}}</p>
+    <p>{{list.description|safe|linebreaks}}</p>
 
     <table id="dev-todo-pkglist" class="results">
         <thead>

@@ -6,10 +6,10 @@
 
     <h2>Delete Todo List: {{object.name}}</h2>
 
-    <p>You are about to delete the following todo list:</p>
+    <p>You are about to delete the selected todo list:</p>
 
     <blockquote>
-        <p><strong>{{object.name}}:</strong> {{object.description}}</p>
+        <p>{{object.description|safe|linebreaks}}</p>
     </blockquote>
 
     <p>Are you sure?</p>
