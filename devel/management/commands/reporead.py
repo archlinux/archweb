@@ -22,11 +22,9 @@ REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
 
 
 from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import models, transaction
+from django.db import transaction
 from django.db.models import Q
-from django.core import management
 
 import os
 import re
@@ -39,7 +37,7 @@ from optparse import make_option
 from cStringIO import StringIO
 from logging import ERROR, WARNING, INFO, DEBUG
 
-from main.models import Arch, Package, Repo, UserProfile
+from main.models import Arch, Package, Repo
 
 class SomethingFishyException(Exception):
     '''Raised when the database looks like its going to wipe out a bunch of
@@ -63,15 +61,15 @@ class Command(BaseCommand):
     help = "Runs a package repository import for the given arch and file."
     args = "<arch> <filename>"
 
-    def handle(self, arch=None, file=None, **options):
+    def handle(self, arch=None, filename=None, **options):
         if not arch:
             raise CommandError('Architecture is required.')
         if not validate_arch(arch):
             raise CommandError('Specified architecture %s is not currently known.' % arch)
-        if not file:
+        if not filename:
             raise CommandError('Package database file is required.')
-        file = os.path.normpath(file)
-        if not os.path.exists(file) or not os.path.isfile(file):
+        filename = os.path.normpath(filename)
+        if not os.path.exists(filename) or not os.path.isfile(filename):
             raise CommandError('Specified package database file does not exist.')
 
         v = int(options.get('verbosity', 0))
@@ -82,17 +80,17 @@ class Command(BaseCommand):
         elif v == 2:
             logger.level = DEBUG
 
-        import signal,traceback
+        import signal, traceback
         signal.signal(signal.SIGQUIT,
                 lambda sig, stack: traceback.print_stack(stack))
 
-        return read_repo(arch, file, options)
+        return read_repo(arch, filename, options)
 
 
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
 
-    def __init__(self, val):
+    def __init__(self, val, repo):
         selfdict = {}
         squash = ['arch', 'builddate', 'csize', 'desc', 'filename',
                   'installdate', 'isize', 'license', 'md5sum',
@@ -106,7 +104,7 @@ class Pkg(object):
         for x in val.keys():
             if x in squash:
                 if val[x] == None or len(val[x]) == 0:
-                    logger.warning("Package %s has no %s" % (selfdict['name'],x))
+                    logger.warning("Package %s has no %s" % (selfdict['name'], x))
                     selfdict[x] = None
                 else:
                     selfdict[x] = ', '.join(val[x])
@@ -127,8 +125,9 @@ class Pkg(object):
             else:
                 selfdict[x] = val[x]
         self.__dict__ = selfdict
+        self.repo = repo
 
-    def __getattr__(self,name):
+    def __getattr__(self, name):
         if name == 'force':
             return False
         else:
@@ -196,11 +195,13 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.installed_size = int(repopkg.isize)
     try:
         dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
-    except:
+    except ValueError:
         try:
-            dbpkg.build_date = datetime.strptime(repopkg.builddate, '%a %b %d %H:%M:%S %Y')
-        except:
-            pass
+            dbpkg.build_date = datetime.strptime(repopkg.builddate,
+                    '%a %b %d %H:%M:%S %Y')
+        except ValueError:
+            logger.warning('Package %s had unparsable build date %s' % \
+                    (repopkg.name, repopkg.builddate))
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = find_user(repopkg.packager)
@@ -217,12 +218,12 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
         for y in repopkg.depends:
             # make sure we aren't adding self depends..
             # yes *sigh* i have seen them in pkgbuilds
-            dpname,dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
+            dpname, dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
             if dpname == repopkg.name:
                 logger.warning('Package %s has a depend on itself' % repopkg.name)
                 continue
             dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
-            logger.debug('Added %s as dep for pkg %s' % (dpname,repopkg.name))
+            logger.debug('Added %s as dep for pkg %s' % (dpname, repopkg.name))
 
     dbpkg.packagegroup_set.all().delete()
     if 'groups' in repopkg.__dict__:
@@ -323,7 +324,7 @@ def db_update(archname, reponame, pkgs, options):
         # for a non-force, we don't want to do anything at all.
         if filesonly:
             pass
-        elif ''.join((p.ver,p.rel)) == ''.join((dbp.pkgver,dbp.pkgrel)):
+        elif '-'.join((p.ver, p.rel)) == '-'.join((dbp.pkgver, dbp.pkgrel)):
             if not force:
                 continue
         else:
@@ -349,16 +350,16 @@ def parse_inf(iofile):
     store = {}
     lines = iofile.readlines()
     blockname = None
-    max = len(lines)
+    max_len = len(lines)
     i = 0
-    while i < max:
+    while i < max_len:
         line = lines[i].strip()
         if len(line) > 0 and line[0] == '%' and line[1:-1].lower() in REPOVARS:
             blockname = line[1:-1].lower()
-            logger.debug("Parsing package block %s",blockname)
+            logger.debug("Parsing package block %s", blockname)
             store[blockname] = []
             i += 1
-            while i < max and len(lines[i].strip()) > 0:
+            while i < max_len and len(lines[i].strip()) > 0:
                 store[blockname].append(lines[i].strip())
                 i += 1
             # here is where i would convert arrays to strings
@@ -402,8 +403,7 @@ def parse_repo(repopath):
             if tpkg != None:
                 tpkg.reset()
                 data = parse_inf(tpkg)
-                p = Pkg(data)
-                p.repo = reponame
+                p = Pkg(data, reponame)
                 logger.debug("Done parsing package %s", p.name)
                 pkgs.append(p)
             if tarinfo == None:

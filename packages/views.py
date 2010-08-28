@@ -20,20 +20,20 @@ from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.models import MirrorUrl
 from main.utils import make_choice
-from .models import PackageGroup, PackageRelation
+from .models import PackageRelation
 from .utils import get_group_info, get_differences_info
 
 def opensearch(request):
     if request.is_secure():
-        d = "https://%s" % request.META['HTTP_HOST']
+        domain = "https://%s" % request.META['HTTP_HOST']
     else:
-        d = "http://%s" % request.META['HTTP_HOST']
+        domain = "http://%s" % request.META['HTTP_HOST']
     response = HttpResponse(mimetype='application/opensearchdescription+xml')
-    t = loader.get_template('packages/opensearch.xml')
-    c = Context({
-        'domain': d,
+    template = loader.get_template('packages/opensearch.xml')
+    ctx = Context({
+        'domain': domain,
     })
-    response.write(t.render(c))
+    response.write(template.render(ctx))
     return response
 
 @permission_required('main.change_package')
@@ -54,11 +54,11 @@ def update(request):
         for pkg in pkgs:
             maints = pkg.maintainers
             if mode == 'adopt' and request.user not in maints:
-                pr = PackageRelation(pkgbase=pkg.pkgbase,
+                prel = PackageRelation(pkgbase=pkg.pkgbase,
                         user=request.user,
                         type=PackageRelation.MAINTAINER)
                 count += 1
-                pr.save()
+                prel.save()
             elif mode == 'disown' and request.user in maints:
                 rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
                         user=request.user)
@@ -86,9 +86,9 @@ def details(request, name='', repo='', arch=''):
             arch.lower(), repo.title(), name))
 
 def groups(request):
-    groups = get_group_info()
+    grps = get_group_info()
     return render_to_response('packages/groups.html',
-            RequestContext(request, {'groups': groups}))
+            RequestContext(request, {'groups': grps}))
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
@@ -157,7 +157,7 @@ class PackageSearchForm(forms.Form):
 
 def search(request, page=None):
     current_query = '?'
-    limit=50
+    limit = 50
     packages = Package.objects.select_related('arch', 'repo')
 
     if request.GET:
@@ -224,11 +224,12 @@ def search(request, page=None):
 def files(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    files = PackageFile.objects.filter(pkg=pkg).order_by('path')
+    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('path')
     template = 'packages/files.html'
     if request.is_ajax():
         template = 'packages/files-list.html'
-    return render_to_response(template, RequestContext(request, {'pkg':pkg,'files':files}))
+    return render_to_response(template, RequestContext(request,
+        {'pkg':pkg, 'files':fileslist}))
 
 @permission_required('main.change_package')
 def unflag(request, name='', repo='', arch=''):

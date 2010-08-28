@@ -1,6 +1,5 @@
 import datetime
 
-from django.contrib.syndication.feeds import FeedDoesNotExist
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from main.models import Arch, Repo, Package, News
@@ -53,7 +52,7 @@ class PackageFeed(Feed):
         return item.last_update
 
     def item_categories(self, item):
-        return (item.repo.name,item.arch.name)
+        return (item.repo.name, item.arch.name)
 
 
 class NewsFeed(Feed):

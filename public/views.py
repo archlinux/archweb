@@ -1,5 +1,5 @@
 from main.models import Arch, Donor, MirrorUrl, News
-from main.models import Package, Repo
+from main.models import Repo
 from . import utils
 
 from django.contrib.auth.models import User

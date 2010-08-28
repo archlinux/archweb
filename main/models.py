@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
@@ -138,7 +137,7 @@ class News(models.Model):
 
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255,unique=True)
+    name = models.CharField(max_length=255, unique=True)
     def __unicode__(self):
         return self.name
     class Meta:
@@ -148,7 +147,7 @@ class Arch(models.Model):
 
 class Repo(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255,unique=True)
+    name = models.CharField(max_length=255, unique=True)
     testing = models.BooleanField(default=False,
             help_text="Is this repo meant for package testing?")
     bugs_project = models.SmallIntegerField(default=1,

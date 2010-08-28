@@ -2,9 +2,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 
-from django.views.generic.create_update import delete_object
 from django.views.generic.simple import direct_to_template
-from django.contrib.auth.decorators import permission_required
 
 from main.models import Todolist
 from feeds import PackageFeed, NewsFeed

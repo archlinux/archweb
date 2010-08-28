@@ -1,5 +1,4 @@
 from django import forms
-from django.db.models import Q
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt

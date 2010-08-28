@@ -6,19 +6,16 @@ from django.contrib.sites.models import Site
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.mail import send_mail
-from django.db.models import Q
 from django.views.decorators.cache import never_cache
 
 from main.models import Package, Todolist, TodolistPkg
 from main.models import Arch, Repo
-from main.models import UserProfile, News
+from main.models import UserProfile
 from main.models import Mirror
 from packages.models import PackageRelation
 
 import random
 from string import ascii_letters, digits
-pwletters = ascii_letters + digits
-
 
 @login_required
 @never_cache
@@ -30,13 +27,16 @@ def index(request):
 
     todopkgs = TodolistPkg.objects.select_related(
             'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
-    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by('list__name', 'pkg__pkgname')
+    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by(
+            'list__name', 'pkg__pkgname')
+    maintainers = User.objects.filter(is_active=True).order_by(
+            'first_name', 'last_name')
 
     page_dict = {
             'todos': Todolist.objects.incomplete().order_by('-date_added'),
             'repos': Repo.objects.all(),
             'arches': Arch.objects.all(),
-            'maintainers': User.objects.filter(is_active=True).order_by('first_name', 'last_name'),
+            'maintainers': maintainers,
             'flagged' : flagged,
             'todopkgs' : todopkgs,
          }
@@ -48,9 +48,9 @@ def index(request):
 def change_notify(request):
     maint = User.objects.get(username=request.user.username)
     notify = request.POST.get('notify', 'no')
-    pf = maint.get_profile()
-    pf.notify = (notify == 'yes')
-    pf.save()
+    prof = maint.get_profile()
+    prof.notify = (notify == 'yes')
+    prof.save()
     return HttpResponseRedirect('/devel/')
 
 class ProfileForm(forms.Form):
@@ -98,6 +98,7 @@ class NewUserForm(forms.ModelForm):
 
     def save(self):
         profile = forms.ModelForm.save(self, False)
+        pwletters = ascii_letters + digits
         pw = ''.join([random.choice(pwletters) for i in xrange(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
                 email=self.cleaned_data['email'], password=pw)
@@ -125,14 +126,21 @@ def new_user_form(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/admin/auth/user/%d/' %form.instance.user.id)
+            return HttpResponseRedirect('/admin/auth/user/%d/' % \
+                    form.instance.user.id)
     else:
         form = NewUserForm()
-    return render_to_response('general_form.html', RequestContext(
-        request, {'description': '''A new user will be created with the
+
+    context = {
+        'description': '''A new user will be created with the
             following properties in their profile. A random password will be
             generated and the user will be e-mailed with their account details
             n plaintext.''',
-            'form': form, 'title': 'Create User', 'submit_text': 'Create User'}))
+        'form': form,
+        'title': 'Create User',
+        'submit_text': 'Create User'
+    }
+    return render_to_response('general_form.html',
+            RequestContext(request, context))
 
 # vim: set ts=4 sw=4 et:
