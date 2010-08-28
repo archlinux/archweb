@@ -400,17 +400,14 @@ def download(request, name='', repo='', arch=''):
     url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(details)
     return HttpResponseRedirect(url)
 
-def arch_differences(request):
+@cache_function(300)
+def get_differences_information(arch_a, arch_b):
     from django.db import connection
-    from operator import itemgetter
     # This is a monster. Join packages against itself, looking for packages in
     # our non-'any' architectures only, and not having a corresponding package
     # entry in the other table (or having one with a different pkgver). We will
     # then go and fetch all of these packages from the database and display
     # them later using normal ORM models.
-    # TODO: we have some hardcoded magic here with respect to the arches.
-    arch_a = Arch.objects.get(name='i686')
-    arch_b = Arch.objects.get(name='x86_64')
     sql = """
 SELECT p.id, q.id
     FROM packages p
@@ -458,7 +455,13 @@ SELECT p.id, q.id
 
     # now sort our list by repository, package name
     differences.sort(key=lambda a: (a[1].name, a[0]))
+    return differences
 
+def arch_differences(request):
+    # TODO: we have some hardcoded magic here with respect to the arches.
+    arch_a = Arch.objects.get(name='i686')
+    arch_b = Arch.objects.get(name='x86_64')
+    differences = get_differences_information(arch_a, arch_b)
     context = {
             'arch_a': arch_a,
             'arch_b': arch_b,
