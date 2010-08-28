@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from main.models import Package, News
-from packages.views import get_group_information
+from packages.views import get_group_info
 
 class PackagesSitemap(Sitemap):
     changefreq = "weekly"
@@ -30,7 +30,7 @@ class PackageGroupsSitemap(Sitemap):
     priority = "0.4"
 
     def items(self):
-        return get_group_information()
+        return get_group_info()
 
     def lastmod(self, obj):
         return obj['last_update']
