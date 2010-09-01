@@ -69,8 +69,20 @@
             return false;
         });
     });
+$.tablesorter.addParser({
+    id: 'todostatus',
+    is: function(s) { return false; },
+    format: function(s) {
+        return s.match(/incomplete/) ? 1 : 0;
+    },
+    type: 'numeric'
+});
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
+    $(".results").tablesorter({
+        widgets: ['zebra'],
+        sortList: [[0,0], [1,0]],
+        headers: { 4: { sorter: 'todostatus' } }
+    });
 });
 </script>
 {% endblock %}
