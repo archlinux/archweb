@@ -191,13 +191,22 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
+$.tablesorter.addParser({
+    id: 'pkgcount',
+    is: function(s) { return false; },
+    format: function(s) {
+        var m = s.match(/\d+/);
+        return m ? parseInt(m[0]) : 0;
+    },
+    type: 'numeric'
+});
 $(document).ready(function() {
     $("#dash-todo").tablesorter({widgets: ['zebra'], sortList: [[1,1]]});
     $("#dash-myflagged").tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
     $("#dash-mytodolist").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
-    $("#stats-by-arch").tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
-    $("#stats-by-repo").tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
-    $("#stats-by-maintainer").tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
+    $("#stats-by-arch").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
+    $("#stats-by-repo").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
+    $("#stats-by-maintainer").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' } } });
     $("h3.dash-stats").click(
         function(e) { $(this).next().toggle(); }
     );
