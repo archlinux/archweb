@@ -30,8 +30,18 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
+$.tablesorter.addParser({
+    id: 'pkgcount',
+    is: function(s) { return false; },
+    format: function(s) {
+        var m = s.match(/\d+/);
+        return m ? parseInt(m[0]) : 0;
+    },
+    type: 'numeric'
+});
+
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]], headers: { 2: { sorter: 'pkgcount' } } });
 });
 </script>
 {% endblock %}
