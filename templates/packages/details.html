@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load cache %}
+
 {% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }} - Package Details{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
@@ -63,6 +65,7 @@
 
     </div><!-- #actionlist -->
 
+    {% cache 300 package-details-pkginfo pkg.id %}
     <table id="pkginfo">
         <tr>
             <th>Architecture:</th>
@@ -204,6 +207,8 @@
         </div><!-- #pkgfiles -->
 
     </div><!-- #metadata -->
+    {% endcache %}
+
 </div><!-- #pkgdetails -->
 
 {% load cdn %}{% jquery %}
