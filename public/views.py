@@ -4,9 +4,8 @@ from . import utils
 
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.views.generic import list_detail
+from django.views.generic.simple import direct_to_template
 
 
 def index(request):
@@ -15,8 +14,7 @@ def index(request):
         'news_updates': News.objects.order_by('-postdate', '-id')[:10],
         'pkg_updates': pkgs,
     }
-    return render_to_response('public/index.html', context,
-                              context_instance=RequestContext(request))
+    return direct_to_template(request, 'public/index.html', context)
 
 def userlist(request, type='Developers'):
     users = User.objects.order_by('username')
@@ -35,15 +33,13 @@ def userlist(request, type='Developers'):
         'description': msg,
         'users': users,
     }
-    return render_to_response('public/userlist.html', context,
-                              context_instance=RequestContext(request))
+    return direct_to_template(request, 'public/userlist.html', context)
 
 def donate(request):
     context = {
         'donors': Donor.objects.order_by('name'),
     }
-    return render_to_response('public/donate.html', context,
-                              context_instance=RequestContext(request))
+    return direct_to_template(request, 'public/donate.html', context)
 
 def download(request):
     qset = MirrorUrl.objects.filter(
@@ -60,7 +56,6 @@ def feeds(request):
         'arches': Arch.objects.all(),
         'repos': Repo.objects.all(),
     }
-    return render_to_response('public/feeds.html', context,
-                              context_instance=RequestContext(request))
+    return direct_to_template(request, 'public/feeds.html', context)
 
 # vim: set ts=4 sw=4 et:
