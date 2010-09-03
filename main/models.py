@@ -329,6 +329,13 @@ class Package(models.Model):
         except Package.DoesNotExist:
             return None
 
+    def elsewhere(self):
+        '''attempt to locate this package anywhere else, regardless of
+        architecture or repository. Excludes this package from the list.'''
+        return Package.objects.select_related('arch', 'repo').filter(
+                pkgname=self.pkgname).exclude(id=self.id).order_by(
+                'arch__name', 'repo__name')
+
 class Signoff(models.Model):
     pkg = models.ForeignKey(Package)
     pkgver = models.CharField(max_length=255)
