@@ -1,7 +1,7 @@
 from django import forms
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.simple import direct_to_template
+
 from main.models import Mirror, MirrorUrl, MirrorProtocol
 from main.utils import make_choice
 
@@ -31,8 +31,7 @@ def generate(request):
     else:
         form = MirrorlistForm()
 
-    return render_to_response('mirrors/index.html', {'mirrorlist_form': form},
-                              context_instance=RequestContext(request))
+    return direct_to_template(request, 'mirrors/index.html', {'mirrorlist_form': form})
 
 def find_mirrors(request, countries=None, protocols=None):
     print 'protocols', protocols
@@ -46,11 +45,9 @@ def find_mirrors(request, countries=None, protocols=None):
     if countries and 'all' not in countries:
         qset = qset.filter(mirror__country__in=countries)
     qset = qset.order_by('mirror__country', 'mirror__name', 'url')
-    res = render_to_response('mirrors/mirrorlist.txt', {
+    return direct_to_template(request, 'mirrors/mirrorlist.txt', {
                 'mirror_urls': qset,
             },
-            mimetype='text/plain',
-            context_instance=RequestContext(request))
-    return res
+            mimetype='text/plain')
 
 # vim: set ts=4 sw=4 et:

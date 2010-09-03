@@ -1,12 +1,12 @@
 from django import forms
 
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext
+from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, render_to_response, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.cache import never_cache
 from django.views.generic.create_update import delete_object
+from django.views.generic.simple import direct_to_template
 from django.template import Context, loader
 from django.utils import simplejson
 
@@ -48,8 +48,7 @@ def flag(request, listid, pkgid):
 @never_cache
 def view(request, listid):
     list = get_object_or_404(Todolist, id=listid)
-    return render_to_response('todolists/view.html',
-        RequestContext(request, {'list':list}))
+    return direct_to_template(request, 'todolists/view.html', {'list': list})
 
 @login_required
 @never_cache
@@ -58,8 +57,7 @@ def list(request):
     for l in lists:
         l.complete = TodolistPkg.objects.filter(
             list=l.id,complete=False).count() == 0
-    return render_to_response('todolists/list.html',
-            RequestContext(request, {'lists':lists}))
+    return direct_to_template(request, 'todolists/list.html', {'lists': lists})
 
 @permission_required('main.add_todolist')
 @never_cache
@@ -76,7 +74,7 @@ def add(request):
                 tpkg = TodolistPkg.objects.create(list = todo, pkg = pkg)
                 send_todolist_email(tpkg)
 
-            return HttpResponseRedirect('/todo/')
+            return redirect('/todo/')
     else:
         form = TodoListForm()
 
@@ -85,8 +83,7 @@ def add(request):
             'form': form,
             'submit_text': 'Create List'
             }
-    return render_to_response('general_form.html',
-            RequestContext(request, page_dict))
+    return direct_to_template(request, 'general_form.html', page_dict)
 
 @permission_required('main.change_todolist')
 @never_cache
@@ -125,7 +122,7 @@ def edit(request, list_id):
             'form': form,
             'submit_text': 'Save List'
             }
-    return render_to_response('general_form.html', RequestContext(request, page_dict))
+    return direct_to_template(request, 'general_form.html', page_dict)
 
 @permission_required('main.delete_todolist')
 @never_cache
@@ -156,8 +153,8 @@ def send_todolist_email(todo):
 
 def public_list(request):
     todo_lists = Todolist.objects.incomplete()
-    return render_to_response("todolists/public_list.html",
-            RequestContext(request, {"todo_lists": todo_lists}))
+    return direct_to_template(request, "todolists/public_list.html",
+            {"todo_lists": todo_lists})
 
 
 # vim: set ts=4 sw=4 et:

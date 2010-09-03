@@ -3,10 +3,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.core.mail import send_mail
 from django.views.decorators.cache import never_cache
+from django.views.generic.simple import direct_to_template
 
 from main.models import Package, Todolist, TodolistPkg
 from main.models import Arch, Repo
@@ -41,8 +40,7 @@ def index(request):
             'todopkgs' : todopkgs,
          }
 
-    return render_to_response('devel/index.html',
-        RequestContext(request, page_dict))
+    return direct_to_template(request, 'devel/index.html', page_dict)
 
 @login_required
 def change_notify(request):
@@ -78,14 +76,13 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
-    return render_to_response('devel/profile.html',
-            RequestContext(request, {'form': form}))
+    return direct_to_template(request, 'devel/profile.html', {'form': form})
 
 @login_required
 def mirrorlist(request):
     mirrors = Mirror.objects.select_related().order_by('tier', 'country')
-    return render_to_response('devel/mirrorlist.html',
-            RequestContext(request, {'mirror_list': mirrors}))
+    return direct_to_template(request, 'devel/mirrorlist.html',
+            {'mirror_list': mirrors})
 
 class NewUserForm(forms.ModelForm):
     class Meta:
@@ -140,7 +137,6 @@ def new_user_form(request):
         'title': 'Create User',
         'submit_text': 'Create User'
     }
-    return render_to_response('general_form.html',
-            RequestContext(request, context))
+    return direct_to_template(request, 'general_form.html', context)
 
 # vim: set ts=4 sw=4 et:

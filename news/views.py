@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.shortcuts import redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import list_detail, create_update
+from django.views.generic.simple import direct_to_template
 
 import markdown
 
@@ -39,8 +39,7 @@ def add(request):
             return redirect(newsitem.get_absolute_url())
     else:
         form = NewsForm()
-    return render_to_response('news/add.html',
-            RequestContext(request, { 'form': form }))
+    return direct_to_template(request, 'news/add.html', { 'form': form })
 
 @permission_required('main.delete_news')
 @never_cache

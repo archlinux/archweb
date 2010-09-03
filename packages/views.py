@@ -1,16 +1,16 @@
 from django import forms
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.shortcuts import render_to_response
 from django.template import loader, Context, RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 from django.contrib.admin.widgets import AdminDateWidget
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
+from django.views.generic.simple import direct_to_template
 from django.db.models import Q
 
 from datetime import datetime
@@ -28,13 +28,10 @@ def opensearch(request):
         domain = "https://%s" % request.META['HTTP_HOST']
     else:
         domain = "http://%s" % request.META['HTTP_HOST']
-    response = HttpResponse(mimetype='application/opensearchdescription+xml')
-    template = loader.get_template('packages/opensearch.xml')
-    ctx = Context({
-        'domain': domain,
-    })
-    response.write(template.render(ctx))
-    return response
+
+    return direct_to_template(request, 'packages/opensearch.xml',
+            {'domain': domain},
+            mimetype='application/opensearchdescription+xml')
 
 @permission_required('main.change_package')
 def update(request):
@@ -73,22 +70,20 @@ def update(request):
                         ))
     else:
         messages.error(request, "Are you trying to adopt or disown?")
-    return HttpResponseRedirect('/packages/')
+    return redirect('/packages/')
 
 def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
         pkg = get_object_or_404(Package,
                 pkgname=name, repo__name__iexact=repo, arch__name=arch)
-        return render_to_response('packages/details.html', RequestContext(
-            request, {'pkg': pkg, }))
+        return direct_to_template(request, 'packages/details.html', {'pkg': pkg, })
     else:
-        return HttpResponseRedirect("/packages/?arch=%s&repo=%s&q=%s" % (
+        return redirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
 
 def groups(request):
     grps = get_group_info()
-    return render_to_response('packages/groups.html',
-            RequestContext(request, {'groups': grps}))
+    return direct_to_template(request, 'packages/groups.html', {'groups': grps})
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
@@ -102,8 +97,7 @@ def group_details(request, arch, name):
         'arch': arch,
         'packages': pkgs,
     }
-    return render_to_response('packages/group_details.html',
-            RequestContext(request, context))
+    return direct_to_template(request, 'packages/group_details.html', context)
 
 def getmaintainer(request, name, repo, arch):
     "Returns the maintainers as plaintext."
@@ -200,7 +194,7 @@ def search(request, page=None):
             'current_query': current_query
             }
     if packages.count() == 1:
-        return HttpResponseRedirect(packages[0].get_absolute_url())
+        return redirect(packages[0])
 
     allowed_sort = ["arch", "repo", "pkgname", "last_update"]
     allowed_sort += ["-" + s for s in allowed_sort]
@@ -228,8 +222,8 @@ def files(request, name='', repo='', arch=''):
     template = 'packages/files.html'
     if request.is_ajax():
         template = 'packages/files-list.html'
-    return render_to_response(template, RequestContext(request,
-        {'pkg':pkg, 'files':fileslist}))
+    return direct_to_template(request, template,
+            {'pkg':pkg, 'files':fileslist})
 
 @permission_required('main.change_package')
 def unflag(request, name='', repo='', arch=''):
@@ -237,7 +231,7 @@ def unflag(request, name='', repo='', arch=''):
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     pkg.flag_date = None
     pkg.save()
-    return HttpResponseRedirect(pkg.get_absolute_url())
+    return redirect(pkg)
 
 @permission_required('main.change_package')
 @never_cache
@@ -257,8 +251,8 @@ def signoffs(request):
         else:
             repo = "Unknown"
         package_list.append((package, repo))
-    return render_to_response('packages/signoffs.html',
-            RequestContext(request, {'packages': package_list}))
+    return direct_to_template(request, 'packages/signoffs.html',
+            {'packages': package_list})
 
 @permission_required('main.change_package')
 @never_cache
@@ -285,7 +279,7 @@ def signoff_package(request, arch, pkgname):
     return signoffs(request)
 
 def flaghelp(request):
-    return render_to_response('packages/flaghelp.html')
+    return direct_to_template(request, 'packages/flaghelp.html')
 
 class FlagForm(forms.Form):
     email = forms.EmailField(label='* E-mail Address')
@@ -303,7 +297,7 @@ def flag(request, name='', repo='', arch=''):
     context = {'pkg': pkg}
     if pkg.flag_date is not None:
         # already flagged. do nothing.
-        return render_to_response('packages/flagged.html', context)
+        return direct_to_template(request, 'packages/flagged.html', context)
 
     if request.POST:
         form = FlagForm(request.POST)
@@ -347,7 +341,7 @@ def flag(request, name='', repo='', arch=''):
 
     context['form'] = form
 
-    return render_to_response('packages/flag.html', RequestContext(request, context))
+    return direct_to_template(request, 'packages/flag.html', context)
 
 def download(request, name='', repo='', arch=''):
     pkg = get_object_or_404(Package,
@@ -362,7 +356,7 @@ def download(request, name='', repo='', arch=''):
         'file': pkg.filename,
     }
     url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(details)
-    return HttpResponseRedirect(url)
+    return redirect(url)
 
 def arch_differences(request):
     # TODO: we have some hardcoded magic here with respect to the arches.
@@ -374,7 +368,6 @@ def arch_differences(request):
             'arch_b': arch_b,
             'differences': differences,
     }
-    return render_to_response('packages/differences.html',
-            RequestContext(request, context))
+    return direct_to_template(request, 'packages/differences.html', context)
 
 # vim: set ts=4 sw=4 et:
