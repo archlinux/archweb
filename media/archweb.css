@@ -192,9 +192,11 @@ div#pkglist-about { margin-top: 1.5em; }
 #pkglist-search legend { display: none; }
 #pkglist-search label { width: auto; display: block; font-weight: normal; }
 
-/* pkgdetails: action list (svn entries, flag out-of-date) */
-#pkgdetails #actionlist { float: right; }
-#pkgdetails #actionlist ul { list-style: none; padding: 0; font-size: 0.846em }
+/* pkgdetails: details links that float on the right */
+#pkgdetails #detailslinks { float: right; }
+#pkgdetails #detailslinks h4 { margin-top: 0; margin-bottom: 0.25em; }
+#pkgdetails #detailslinks ul { list-style: none; padding: 0; margin-bottom: 0; font-size: 0.846em; }
+#pkgdetails #detailslinks > div { padding: 0.5em; margin-bottom: 1em; background: #eee; border: 1px solid #bbb; }
 #pkgdetails #actionlist .flagged { color: red; font-size: 0.9em; font-style: italic; }
 
 /* pkgdetails: pkg info */

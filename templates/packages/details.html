@@ -8,40 +8,58 @@
 
     <h2>Package Details: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
 
-    <div id="actionlist" class="listing">
+    <div id="detailslinks" class="listing">
 
-        <ul class="small">
-            <li><a href="{{ pkg.get_arch_svn_link }}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
-            <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
-            <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
-            {% if pkg.flag_date %}
-            <li><span class="flagged">Package has been flagged out-of-date</span></li>
-            {% with pkg.in_testing as tp %}{% if tp %}
-            <li><span class="flagged">Version
-                <a href="{{ tp.get_absolute_url }}"
-                    title="Testing package details for {{ tp.pkgname }}">{{ tp.pkgver }}-{{ tp.pkgrel }}</a>
-                in testing</span></li>
-            {% endif %}{% endwith %}
+        <div id="actionlist">
+        <h4>Package Actions</h4>
+            <ul class="small">
+                <li><a href="{{ pkg.get_arch_svn_link }}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
+                <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
+                <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
+                {% if pkg.flag_date %}
+                <li><span class="flagged">Package has been flagged out-of-date</span></li>
+                {% with pkg.in_testing as tp %}{% if tp %}
+                <li><span class="flagged">Version
+                    <a href="{{ tp.get_absolute_url }}"
+                        title="Testing package details for {{ tp.pkgname }}">{{ tp.pkgver }}-{{ tp.pkgrel }}</a>
+                    in testing</span></li>
+                {% endif %}{% endwith %}
+                {% if user.is_authenticated %}
+                <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
+                {% endif %}
+                {% else %}
+                <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
+                <a href="/packages/flaghelp/"
+                    title="Get help on package flagging"
+                    onclick="return !window.open('/packages/flaghelp/','FlagHelp',
+                    'height=350,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">(?)</a></li>
+                {% endif %}
+                <li><a href="download/" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
+            </ul>
+
             {% if user.is_authenticated %}
-            <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
+            <form id="pkg-action" method="post" action="/packages/update/">{% csrf_token %}
+                <div><input type="hidden" name="pkgid" value="{{ pkg.id }}" /></div>
+                <p>{% if user in pkg.maintainers %}
+                    <input title="Orphan this package" type="submit" name="disown" value="Disown"/>
+                    {% else %}
+                    <input title="Adopt this package" type="submit" name="adopt" value="Adopt"/>
+                 {% endif %}</p>
+            </form>
             {% endif %}
-            {% else %}
-            <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
-            <a href="/packages/flaghelp/"
-                title="Get help on package flagging"
-                onclick="return !window.open('/packages/flaghelp/','FlagHelp',
-                'height=350,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">(?)</a></li>
-            {% endif %}
-            <li><a href="download/" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
-        </ul>
+        </div>
 
-        {% if user.is_authenticated %}
-        <form id="pkg-action" method="post" action="/packages/update/">{% csrf_token %}
-            <div><input type="hidden" name="pkgid" value="{{ pkg.id }}" /></div>
-            <p><input title="Adopt this package" type="submit" class="adopt" name="adopt" value="Adopt" />
-            &nbsp;&nbsp;<input title="Orphan this package" type="submit" class="disown" name="disown" value="Disown" /></p>
-        </form>
-        {% endif %}
+        {% with pkg.elsewhere as others %}{% if others %}
+        <div id="elsewhere" class="widget">
+            <h4>Versions Elsewhere</h4>
+            <ul>
+                {% for o in others %}
+                <li><a href="{{ o.get_absolute_url }}"
+                    title="Package details for {{ o.pkgname }}">{{ o.pkgname }} {{ o.pkgver }}-{{ o.pkgrel }} [{{ o.repo.name|lower }}] ({{ o.arch.name }})</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}{% endwith %}
 
     </div><!-- #actionlist -->
 
@@ -62,7 +80,7 @@
             <td>
                 {% for s in splits %}
                 <a href="{{ s.get_absolute_url }}"
-                    title="Package details for {{ pkg.pkgname }}">{{ s.pkgname }}</a><br/>
+                    title="Package details for {{ s.pkgname }}">{{ s.pkgname }}</a><br/>
                 {% endfor %}
             </td>
         </tr>
