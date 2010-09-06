@@ -54,4 +54,18 @@ class MirrorRsync(models.Model):
     class Meta:
         verbose_name = 'Mirror Rsync IP'
 
+class MirrorLog(models.Model):
+    url = models.ForeignKey(MirrorUrl, related_name="logs")
+    check_time = models.DateTimeField(db_index=True)
+    last_sync = models.DateTimeField(null=True)
+    duration = models.FloatField(null=True)
+    is_success = models.BooleanField(default=True)
+    error = models.CharField(max_length=255, blank=True, default='')
+
+    def __unicode__(self):
+        return "Check of %s at %s" % (url.url, check_time)
+
+    class Meta:
+        verbose_name = 'Mirror Check Log'
+
 # vim: set ts=4 sw=4 et:
