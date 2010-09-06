@@ -5,9 +5,6 @@ from django.contrib.sites.models import Site
 from main.utils import cache_function
 from packages.models import PackageRelation
 
-###########################
-### User Profile Class ####
-###########################
 class UserProfile(models.Model):
     id = models.AutoField(primary_key=True) # not technically needed
     notify = models.BooleanField(
@@ -39,9 +36,6 @@ class UserProfile(models.Model):
         verbose_name_plural = 'Additional Profile Data'
 
 
-#######################
-### Manager Classes ###
-#######################
 class TodolistManager(models.Manager):
     def incomplete(self):
         return self.filter(todolistpkg__complete=False).distinct()
@@ -50,9 +44,7 @@ class PackageManager(models.Manager):
     def flagged(self):
         return self.get_query_set().filter(flag_date__isnull=False)
 
-#############################
-### General Model Classes ###
-#############################
+
 TIER_CHOICES = (
     (0, 'Tier 0'),
     (1, 'Tier 1'),
