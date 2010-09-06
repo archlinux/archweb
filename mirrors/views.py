@@ -2,8 +2,8 @@ from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
-from main.models import Mirror, MirrorUrl, MirrorProtocol
 from main.utils import make_choice
+from .models import Mirror, MirrorUrl, MirrorProtocol
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)

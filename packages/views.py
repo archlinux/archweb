@@ -18,8 +18,8 @@ import string
 
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
-from main.models import MirrorUrl
 from main.utils import make_choice
+from mirrors.models import MirrorUrl
 from .models import PackageRelation
 from .utils import get_group_info, get_differences_info
 

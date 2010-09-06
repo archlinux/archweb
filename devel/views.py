@@ -10,7 +10,7 @@ from django.views.generic.simple import direct_to_template
 from main.models import Package, Todolist, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
-from main.models import Mirror
+from mirrors.models import Mirror
 from packages.models import PackageRelation
 
 import random
