@@ -172,13 +172,11 @@ table.results tr.even { background: #e4eeff; }
 table.results th.header { padding-right: 20px; background-image: url(nosort.gif); background-repeat: no-repeat; background-position: center right; cursor: pointer; }
 table.results th.headerSortDown { background-color: #e4eeff; background-image: url(desc.gif); }
 table.results th.headerSortUp { background-color: #e4eeff; background-image: url(asc.gif); }
+table.results .flagged { color: red; }
 
 /* pkglist: layout */
 div#pkglist-search { margin-bottom: 1.5em; }
 div#pkglist-about { margin-top: 1.5em; }
-
-/* pkglist: results */
-#pkglist-results .flagged { color: red; }
 
 /* pkglist: results navigation */
 #pkglist-stats-top, #pkglist-stats-bottom { font-size: 0.85em; }
