@@ -4,8 +4,30 @@
 
 {% block content %}
 {% if differences %}
-<div class="box">
+<div id="differences-filter" class="box filter-criteria">
     <h2>Package Differences by Architecture</h2>
+    <h3>Filter Differences View</h3>
+    <form id="diff_filter" method="post" action=".">
+    <fieldset>
+        <legend>Select filter criteria</legend>
+        <div><label for="id_archonly" title="Limit packages to selected architecture">Architecture Limitation</label>
+            <select name="archonly" id="id_archonly">
+                <option value="all">Show All</option>
+                <option value="both">Only In Both</option>
+                <option value="{{ arch_a.name }}">In {{ arch_a.name }} Only</option>
+                <option value="{{ arch_b.name }}">In {{ arch_b.name }} Only</option>
+            </select>
+        </div>
+        <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
+            <input type="checkbox" checked="checked" name="multilib" id="id_multilib" value="multilib"/></div>
+        <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
+            <input type="checkbox" checked="checked" name="minor" id="id_minor" value="minor"/></div>
+        <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+    </fieldset>
+    </form>
+</div>
+
+<div class="box">
     <table class="results">
         <thead>
             <tr>
@@ -16,19 +38,19 @@
             </tr>
         </thead>
         <tbody>
-            {% for name, repo, pkg1, pkg2 in differences %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td>{{ name }}</td>
-                <td>{{ repo.name }}</td>
-                {% if pkg1 %}
-                <td><a href="{{ pkg1.get_absolute_url }}"
-                        title="View package details for {{ pkg1.pkgname }}">
-                        <span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.pkgver }}-{{ pkg1.pkgrel }}</span></a></td>
+            {% for diff in differences %}
+            <tr class="{% cycle 'odd' 'even' %} {{ diff.classes }}">
+                <td>{{ diff.pkgname }}</td>
+                <td>{{ diff.repo.name }}</td>
+                {% if diff.pkg_a %}
+                <td><a href="{{ diff.pkg_a.get_absolute_url }}"
+                        title="View package details for {{ diff.pkg_a.pkgname }}">
+                        <span{% if diff.pkg_a.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_a.pkgver }}-{{ diff.pkg_a.pkgrel }}</span></a></td>
                 {% else %}<td>-</td>{% endif %}
-                {% if pkg2 %}
-                <td><a href="{{ pkg2.get_absolute_url }}"
-                        title="View package details for {{ pkg2.pkgname }}">
-                        <span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.pkgver }}-{{ pkg2.pkgrel }}</span></a></td>
+                {% if diff.pkg_b %}
+                <td><a href="{{ diff.pkg_b.get_absolute_url }}"
+                        title="View package details for {{ diff.pkg_b.pkgname }}">
+                        <span{% if diff.pkg_b.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_b.pkgver }}-{{ diff.pkg_b.pkgrel }}</span></a></td>
                 {% else %}<td>-</td>{% endif %}
             </tr>
             {% endfor %}
@@ -38,8 +60,53 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
+filter_packages = function() {
+    // start with all rows, and then remove ones we shouldn't show
+    var rows = $(".results tbody tr");
+    if(!$('#id_multilib').is(':checked')) {
+        rows = rows.not(".multilib");
+    }
+    var arch = $("#id_archonly").val();
+    if(arch !== "all") {
+        rows = rows.filter("." + arch);
+    }
+    if(!$('#id_minor').is(':checked')) {
+        // this check is done last because it is the most expensive
+        rows = rows.filter(function(index) {
+            // all this just to get the split version out of the table cell
+            var pat = /(.*)-(.+)/;
+            var ver_a = $('td:eq(2) a', this).text().match(pat);
+            var ver_b = $('td:eq(3) a', this).text().match(pat);
+            // did we match at all?
+            if(!ver_a || !ver_b) return true;
+            // first check pkgver
+            if(ver_a[1] !== ver_b[1]) return true;
+            // pkgver matched, so see if rounded pkgrel matches
+            if(Math.floor(parseFloat(ver_a[1])) == Math.floor(parseFloat(ver_b[1]))) return false;
+            // pkgrel didn't match, so keep the row
+            return true;
+        });
+    }
+    // hide all rows, then show the set we care about
+    $('.results tbody tr').hide();
+    rows.show();
+    // make sure we update the odd/even styling from sorting
+    $('.results').trigger("applyWidgets");
+};
+filter_reset = function() {
+    console.log("reset firing");
+    $('#id_archonly').val("all");
+    $('#id_multilib').attr("checked", "checked");
+    $('#id_minor').attr("checked", "checked");
+    filter_packages();
+};
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
+    $('.results').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
+    $('#diff_filter select').change(filter_packages);
+    $('#diff_filter input').change(filter_packages);
+    $('#criteria_reset').click(filter_reset);
+    // fire function on page load to ensure the current form selections take effect
+    filter_packages();
 });
 </script>
 {% endif %}

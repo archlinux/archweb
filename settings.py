@@ -51,6 +51,8 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )
 
+# This bug is a real bummer:
+# http://code.djangoproject.com/ticket/14105
 MIDDLEWARE_CLASSES = (
     'main.middleware.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

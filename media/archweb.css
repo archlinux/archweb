@@ -175,7 +175,6 @@ table.results th.headerSortUp { background-color: #e4eeff; background-image: url
 table.results .flagged { color: red; }
 
 /* pkglist: layout */
-div#pkglist-search { margin-bottom: 1.5em; }
 div#pkglist-about { margin-top: 1.5em; }
 
 /* pkglist: results navigation */
@@ -184,11 +183,11 @@ div#pkglist-about { margin-top: 1.5em; }
 .pkglist-nav .prev { margin-right: 1em; }
 .pkglist-nav .next { margin-right: 1em; }
 
-/* pkglist: search fields */
-#pkglist-search h3 { font-size: 1em; margin-top:0; }
-#pkglist-search div { float: left; margin-right: 1.65em; font-size: 0.85em; }
-#pkglist-search legend { display: none; }
-#pkglist-search label { width: auto; display: block; font-weight: normal; }
+/* search fields  and other filter selections */
+.filter-criteria h3 { font-size: 1em; margin-top:0; }
+.filter-criteria div { float: left; margin-right: 1.65em; font-size: 0.85em; }
+.filter-criteria legend { display: none; }
+.filter-criteria label { width: auto; display: block; font-weight: normal; }
 
 /* pkgdetails: details links that float on the right */
 #pkgdetails #detailslinks { float: right; }

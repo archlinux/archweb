@@ -44,6 +44,32 @@ def get_group_info():
         groups.extend(val.itervalues())
     return sorted(groups, key=itemgetter('name', 'arch'))
 
+class Difference(object):
+    def __init__(self, pkgname, repo, pkg_a, pkg_b):
+        self.pkgname = pkgname
+        self.repo = repo
+        self.pkg_a = pkg_a
+        self.pkg_b = pkg_b
+
+    def classes(self):
+        '''A list of CSS classes that should be applied to this row in any
+        generated HTML. Useful for sorting, filtering, etc. Contains whether
+        this difference is in both architectures or the sole architecture it
+        belongs to, as well as the repo name.'''
+        css_classes = [self.repo.name.lower()]
+        if self.pkg_a and self.pkg_b:
+            css_classes.append('both')
+        elif self.pkg_a:
+            css_classes.append(self.pkg_a.arch.name)
+        elif self.pkg_b:
+            css_classes.append(self.pkg_b.arch.name)
+        return ' '.join(css_classes)
+
+    def __cmp__(self, other):
+        if isinstance(other, Difference):
+            return cmp(self.__dict__, other.__dict__)
+        return False
+
 @cache_function(300)
 def get_differences_info(arch_a, arch_b):
     # This is a monster. Join packages against itself, looking for packages in
@@ -87,17 +113,17 @@ SELECT p.id, q.id
         # We want arch_a to always appear first
         # pkg_a should never be None
         if pkg_a.arch == arch_a:
-            item = (pkg_a.pkgname, pkg_a.repo, pkg_a, pkg_b)
+            item = Difference(pkg_a.pkgname, pkg_a.repo, pkg_a, pkg_b)
         else:
             # pkg_b can be None in this case, so be careful
             name = pkg_a.pkgname if pkg_a else pkg_b.pkgname
             repo = pkg_a.repo if pkg_a else pkg_b.repo
-            item = (name, repo, pkg_b, pkg_a)
+            item = Difference(name, repo, pkg_b, pkg_a)
         if item not in differences:
             differences.append(item)
 
     # now sort our list by repository, package name
-    differences.sort(key=lambda a: (a[1].name, a[0]))
+    differences.sort(key=lambda a: (a.repo.name, a.pkgname))
     return differences
 
 # vim: set ts=4 sw=4 et:
