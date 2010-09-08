@@ -3,6 +3,7 @@
         "pk": 1, 
         "model": "main.arch", 
         "fields": {
+            "agnostic": true, 
             "name": "any"
         }
     }, 
@@ -10,6 +11,7 @@
         "pk": 2, 
         "model": "main.arch", 
         "fields": {
+            "agnostic": false, 
             "name": "i686"
         }
     }, 
@@ -17,6 +19,7 @@
         "pk": 3, 
         "model": "main.arch", 
         "fields": {
+            "agnostic": false, 
             "name": "x86_64"
         }
     }
