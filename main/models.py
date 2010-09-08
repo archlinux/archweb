@@ -59,8 +59,12 @@ class Donor(models.Model):
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
+    agnostic = models.BooleanField(default=False,
+            help_text="Is this architecture non-platform specific?")
+
     def __unicode__(self):
         return self.name
+
     class Meta:
         db_table = 'arches'
         ordering = ['name']
@@ -78,6 +82,7 @@ class Repo(models.Model):
 
     def __unicode__(self):
         return self.name
+
     class Meta:
         db_table = 'repos'
         ordering = ['name']

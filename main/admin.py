@@ -6,6 +6,11 @@ from main.models import Arch, Donor, Package, Repo, UserProfile
 class DonorAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
+class ArchAdmin(admin.ModelAdmin):
+    list_display = ('name', 'agnostic')
+    list_filter = ('agnostic',)
+    search_fields = ('name',)
+
 class RepoAdmin(admin.ModelAdmin):
     list_display = ('name', 'testing', 'bugs_project', 'svn_root')
     list_filter = ('testing',)
@@ -30,7 +35,7 @@ admin.site.register(User, UserProfileAdmin)
 admin.site.register(Donor, DonorAdmin)
 
 admin.site.register(Package, PackageAdmin)
-admin.site.register(Arch)
+admin.site.register(Arch, ArchAdmin)
 admin.site.register(Repo, RepoAdmin)
 
 # vim: set ts=4 sw=4 et:
