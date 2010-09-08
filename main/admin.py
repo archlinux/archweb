@@ -4,7 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from main.models import Arch, Donor, Package, Repo, UserProfile
 
 class DonorAdmin(admin.ModelAdmin):
-    ordering = ['name']
     search_fields = ('name',)
 
 class RepoAdmin(admin.ModelAdmin):
@@ -15,7 +14,6 @@ class RepoAdmin(admin.ModelAdmin):
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('pkgname', 'repo', 'arch', 'last_update')
     list_filter = ('repo', 'arch')
-    ordering = ['pkgname']
     search_fields = ('pkgname',)
 
 admin.site.unregister(User)
