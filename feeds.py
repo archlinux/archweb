@@ -18,7 +18,7 @@ class PackageFeed(Feed):
         if arch != '':
             # feed for a single arch, also include 'any' packages everywhere
             a = Arch.objects.get(name=arch)
-            qs = qs.filter(Q(arch=a) | Q(arch__name='any'))
+            qs = qs.filter(Q(arch=a) | Q(arch__agnostic=True))
             obj['arch'] = a
         if repo != '':
             # feed for a single arch AND repo
@@ -40,7 +40,7 @@ class PackageFeed(Feed):
         s = 'Recently updated packages in the Arch Linux package repositories'
         if 'arch' in obj:
             s += ' for the \'%s\' architecture' % obj['arch'].name.lower()
-            if obj['arch'].name != 'any':
+            if not obj['arch'].agnostic:
                 s += ' (including \'any\' packages)'
         if 'repo' in obj:
             s += ' in the [%s] repository' % obj['repo'].name.lower()

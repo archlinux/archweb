@@ -155,9 +155,11 @@ class Package(models.Model):
         """
         Returns a list of package objects.
         """
+        arches = list(Arch.objects.filter(agnostic=True))
+        arches.append(self.arch)
         requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
-                arch__name__in=(self.arch.name, 'any')).distinct()
+                arch__in=arches).distinct()
         return requiredby.order_by('pkgname')
 
     @cache_function(300)
@@ -168,12 +170,15 @@ class Package(models.Model):
         else pkg will be None if it is a 'virtual' dependency.
         """
         deps = []
+        arches = list(Arch.objects.filter(agnostic=True))
+        arches.append(self.arch)
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('depname'):
-            pkgs = Package.objects.select_related('arch', 'repo').filter(pkgname=dep.depname)
-            if self.arch.name != 'any':
+            pkgs = Package.objects.select_related('arch', 'repo').filter(
+                    pkgname=dep.depname)
+            if not self.arch.agnostic:
                 # make sure we match architectures if possible
-                pkgs = pkgs.filter(arch__name__in=(self.arch.name, 'any'))
+                pkgs = pkgs.filter(arch__in=arches)
             if len(pkgs) == 0:
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)

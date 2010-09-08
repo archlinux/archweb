@@ -87,8 +87,10 @@ def groups(request):
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
-    pkgs = Package.objects.filter(packagegroup__name=name)
-    pkgs = pkgs.filter(Q(arch__name=arch) | Q(arch__name='any'))
+    arches = [ arch ]
+    arches.extend(Arch.objects.filter(agnostic=True))
+    pkgs = Package.objects.filter(packagegroup__name=name,
+            arch__in=arches)
     pkgs = pkgs.order_by('pkgname')
     if len(pkgs) == 0:
         raise Http404
@@ -350,9 +352,9 @@ def download(request, name='', repo='', arch=''):
             mirror__public=True, mirror__active=True,
             protocol__protocol__iexact='HTTP')[0]
     arch = pkg.arch.name
-    if arch == 'any':
+    if pkg.arch.agnostic:
         # grab the first non-any arch to fake the download path
-        arch = Arch.objects.exclude(name='any')[0].name
+        arch = Arch.objects.exclude(agnostic=True)[0].name
     details = {
         'host': mirrorurl.url,
         'arch': arch,
