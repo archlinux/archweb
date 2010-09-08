@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="pkglist-search" class="box">
+<div id="pkglist-search" class="box filter-criteria">
 
     <h2>Package Database</h2>
 
@@ -18,19 +18,19 @@
 		<p><input type="hidden" name="sort" value='{{sort}}' /></p>
 		<fieldset>
 			<legend>Enter search criteria</legend>
-			<div><label title="Limit results a specific CPU architecture">
+			<div><label for="id_arch" title="Limit results a specific CPU architecture">
 					Arch</label>{{ search_form.arch }}</div>
-			<div><label title="Limit results to a specific respository">
+			<div><label for="id_repo" title="Limit results to a specific respository">
 					Repository</label>{{ search_form.repo }}</div>
-			<div><label title="Enter keywords as desired">
+			<div><label for="id_q" title="Enter keywords as desired">
 					Keywords</label>{{ search_form.q }}</div>
-			<div><label title="Limit results to a specific maintainer">
+			<div><label for="id_maintainer" title="Limit results to a specific maintainer">
 					Maintainer</label>{{ search_form.maintainer}}</div>
-			<div><label title="Limit results to a date after the date entered">
+			<div><label for="id_last_update" title="Limit results to a date after the date entered">
 					Last Updated After</label>{{ search_form.last_update }}</div>
-			<div><label title="Limit results based on out-of-date status">
+			<div><label for="id_flagged" title="Limit results based on out-of-date status">
 					Flagged</label>{{ search_form.flagged }}</div>
-			<div><label title="Select the number of results to display per page">
+			<div><label for="id_limit" title="Select the number of results to display per page">
 					Per Page</label>{{ search_form.limit }}</div>
 			<div ><label>&nbsp;</label><input title="Search for packages using this criteria"
 				type="submit" value="Search" /></div>
