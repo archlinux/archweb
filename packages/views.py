@@ -349,9 +349,13 @@ def download(request, name='', repo='', arch=''):
     mirrorurl = MirrorUrl.objects.filter(mirror__country='Any',
             mirror__public=True, mirror__active=True,
             protocol__protocol__iexact='HTTP')[0]
+    arch = pkg.arch.name
+    if arch == 'any':
+        # grab the first non-any arch to fake the download path
+        arch = Arch.objects.exclude(name='any')[0].name
     details = {
         'host': mirrorurl.url,
-        'arch': pkg.arch.name,
+        'arch': arch,
         'repo': pkg.repo.name.lower(),
         'file': pkg.filename,
     }
