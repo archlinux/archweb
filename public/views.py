@@ -1,5 +1,6 @@
-from main.models import Arch, Repo, Donor, News
+from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
+from news.models import News
 from . import utils
 
 from django.contrib.auth.models import User

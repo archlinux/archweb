@@ -2,7 +2,9 @@ import datetime
 
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
-from main.models import Arch, Repo, Package, News
+
+from main.models import Arch, Repo, Package
+from news.models import News
 
 class PackageFeed(Feed):
     link = '/packages/'

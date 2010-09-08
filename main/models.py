@@ -56,23 +56,6 @@ class Donor(models.Model):
         db_table = 'donors'
         ordering = ['name']
 
-class News(models.Model):
-    id = models.AutoField(primary_key=True)
-    author = models.ForeignKey(User, related_name='news_author')
-    postdate = models.DateField(auto_now_add=True)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
-    def __unicode__(self):
-        return self.title
-    class Meta:
-        db_table = 'news'
-        verbose_name_plural = 'news'
-        get_latest_by = 'postdate'
-        ordering = ['-postdate', '-id']
-
-    def get_absolute_url(self):
-        return '/news/%i/' % self.id
-
 class Arch(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)

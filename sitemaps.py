@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
-from main.models import Package, News
-from packages.views import get_group_info
+from main.models import Package
+from news.models import News
+from packages.utils import get_group_info
 
 class PackagesSitemap(Sitemap):
     changefreq = "weekly"

@@ -8,7 +8,7 @@ from django.views.generic.simple import direct_to_template
 
 import markdown
 
-from main.models import News
+from .models import News
 
 def view(request, newsid):
     return list_detail.object_detail(request, News.objects.all(), newsid,
