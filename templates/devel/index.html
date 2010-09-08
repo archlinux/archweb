@@ -6,30 +6,6 @@
 
     <h2>Developer Dashboard</h2>
 
-    {% if todos %}
-        <h3>Package Todo Lists</h3>
-
-        <table id="dash-todo" class="results dash-stats">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Creation Date</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for todo in todos %}
-                    <tr class="{% cycle 'odd' 'even' %}">
-                        <td class="key"><a href="{{ todo.get_absolute_url }}"
-                                title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                        <td>{{ todo.date_added }}</td>
-                        <td>{{ todo.description|safe }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-
     <h3>My Flagged Packages</h3>
 
     <table id="dash-myflagged" class="results dash-stats">
@@ -51,7 +27,7 @@
                     <td>{{ pkg.arch.name }}</td>
                 </tr>
             {% empty %}
-                <tr><td colspan="4"><em>No flagged packages to display</em></td></tr>
+                <tr class="empty"><td colspan="4"><em>No flagged packages to display</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -80,7 +56,31 @@
                     <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>
                 </tr>
             {% empty %}
-                <tr><td colspan="4"><em>No incomplete todo list packages to display</em></td></tr>
+                <tr class="empty"><td colspan="5"><em>No incomplete todo list packages to display</em></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Package Todo Lists</h3>
+
+    <table id="dash-todo" class="results dash-stats">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Creation Date</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td class="key"><a href="{{ todo.get_absolute_url }}"
+                            title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
+                    <td>{{ todo.date_added }}</td>
+                    <td>{{ todo.description|safe }}</td>
+                </tr>
+            {% empty %}
+                <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -201,12 +201,21 @@ $.tablesorter.addParser({
     type: 'numeric'
 });
 $(document).ready(function() {
-    $("#dash-todo").tablesorter({widgets: ['zebra'], sortList: [[1,1]]});
-    $("#dash-myflagged").tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
-    $("#dash-mytodolist").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
-    $("#stats-by-arch").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
-    $("#stats-by-repo").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
-    $("#stats-by-maintainer").tablesorter({widgets: ['zebra'], sortList: [[0,0]], headers: { 1: { sorter: 'pkgcount' } } });
+    $("#dash-myflagged:not(:has(tbody tr.empty))").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0]]});
+    $("#dash-mytodolist:not(:has(tbody tr.empty))").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0], [1,0]]});
+    $("#dash-todo:not(:has(tbody tr.empty))").tablesorter(
+            {widgets: ['zebra'], sortList: [[1,1]]});
+    $("#stats-by-arch").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0]],
+        headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
+    $("#stats-by-repo").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0]],
+        headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
+    $("#stats-by-maintainer").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0]],
+        headers: { 1: { sorter: 'pkgcount' } } });
     $("h3.dash-stats").click(
         function(e) { $(this).next().toggle(); }
     );
