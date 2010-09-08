@@ -1,0 +1,22 @@
+{% if is_paginated %}
+<div class="pagination">
+    <p>{{paginator.count}} news items, viewing page {{page_obj.number}} of {{paginator.num_pages}}.</p>
+    <p class="news-nav">
+    {% if page_obj.has_previous %}
+    <a class="prev" href="?page={{page_obj.previous_page_number}}"
+        title="Go to previous page">&lt; Prev</a>
+    {% endif %}
+    {% for num in paginator.page_range %}
+    {% ifequal num page_obj.number %}
+    <span>{{num}}</span>
+    {% else %}
+    <a href="?page={{num}}" title="Go to page {{num}}">{{num}}</a>
+    {% endifequal %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a class="next" href="?page={{page_obj.next_page_number}}"
+        title="Go to next page">Next &gt;</a>
+    {% endif %}
+    </p>
+</div>
+{% endif %}

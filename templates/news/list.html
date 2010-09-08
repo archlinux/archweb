@@ -12,6 +12,8 @@
     </ul>
     {% endif %}
 
+    {% include "news/paginator.html" %}
+
     <table id="article-list" class="results">
         <thead>
             <tr>
@@ -44,6 +46,8 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% include "news/paginator.html" %}
 
 </div>
 {% endblock %}

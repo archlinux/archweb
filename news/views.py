@@ -19,6 +19,7 @@ def view(request, newsid):
 def list(request):
     return list_detail.object_list(request,
             News.objects.all().select_related('author').defer('content'),
+            paginate_by=50,
             template_name="news/list.html",
             template_object_name="news")
 
