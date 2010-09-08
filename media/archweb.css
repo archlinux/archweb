@@ -130,7 +130,7 @@ ul.errorlist { color: red; }
 div#nav-sidebar ul { list-style: none; margin: 0.5em 0 0.5em 1em; padding: 0; }
 
 /* home: sponsor banners */
-div#sponsors img { padding: 0.3em 0; }
+div#arch-sponsors img { padding: 0.3em 0; }
 
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
 div.widget { margin-bottom: 1.5em; }
