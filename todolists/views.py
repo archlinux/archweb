@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Count
 from django.views.decorators.cache import never_cache
 from django.views.generic.create_update import delete_object
 from django.views.generic.simple import direct_to_template
@@ -53,10 +54,18 @@ def view(request, listid):
 @login_required
 @never_cache
 def list(request):
-    lists = Todolist.objects.select_related('creator').order_by('-date_added')
+    lists = Todolist.objects.select_related('creator').annotate(
+            pkg_count=Count('todolistpkg')).order_by('-date_added')
+    incomplete = Todolist.objects.filter(todolistpkg__complete=False).annotate(
+            Count('todolistpkg')).values_list('id', 'todolistpkg__count')
+
+    # tag each list with an incomplete package count
+    lookup = {}
+    for k, v in incomplete:
+        lookup[k] = v
     for l in lists:
-        l.complete = TodolistPkg.objects.filter(
-            list=l.id,complete=False).count() == 0
+        l.incomplete_count = lookup.get(l.id, 0)
+
     return direct_to_template(request, 'todolists/list.html', {'lists': lists})
 
 @permission_required('main.add_todolist')

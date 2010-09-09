@@ -20,6 +20,8 @@
                 <th>Creation Date</th>
                 <th>Creator</th>
                 <th>Description</th>
+                <th>Package Count</th>
+                <th>Incomplete Count</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -31,8 +33,10 @@
                 <td>{{ list.date_added }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
                 <td class="wrap">{{ list.description|safe }}</td>
-                <td>{% if list.complete %}<span class="complete">Complete</span>
-                    {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
+                <td>{{ list.pkg_count }}</td>
+                <td>{{ list.incomplete_count }}</td>
+                <td>{% ifequal list.incomplete_count 0 %}<span class="complete">Complete</span>
+                    {% else %}<span class="incomplete">Incomplete</span>{% endifequal %}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -42,7 +46,10 @@
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,1]]});
+    // I'm not sure why it didn't autodetect digit, but it has to be explicit
+    // http://stackoverflow.com/questions/302749/jquery-tablesorter-problem
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,1]],
+        headers: { 4: { sorter: 'digit' }, 5: { sorter: 'digit' } } });
 });
 </script>
 {% endblock %}
