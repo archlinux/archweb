@@ -20,7 +20,7 @@
                 <td>{{ grp.arch }}</td>
                 <td><a href="/groups/{{ grp.arch }}/{{ grp.name }}/"
                         title="Group details for {{ grp.name }}">{{ grp.name }}</a></td>
-                <td>{{ grp.count }} Packages</td>
+                <td>{{ grp.count }}</td>
                 <td>{{ grp.last_update|date:"Y-m-d" }}</td>
             </tr>
             {% endfor %}
@@ -30,18 +30,8 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
-$.tablesorter.addParser({
-    id: 'pkgcount',
-    is: function(s) { return false; },
-    format: function(s) {
-        var m = s.match(/\d+/);
-        return m ? parseInt(m[0]) : 0;
-    },
-    type: 'numeric'
-});
-
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]], headers: { 2: { sorter: 'pkgcount' } } });
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
 });
 </script>
 {% endblock %}
