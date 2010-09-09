@@ -19,7 +19,7 @@
             </select>
         </div>
         <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
-            <input type="checkbox" checked="checked" name="multilib" id="id_multilib" value="multilib"/></div>
+            <input type="checkbox" name="multilib" id="id_multilib" value="multilib"/></div>
         <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
             <input type="checkbox" checked="checked" name="minor" id="id_minor" value="minor"/></div>
         <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
@@ -95,7 +95,7 @@ filter_packages = function() {
 };
 filter_reset = function() {
     $('#id_archonly').val("all");
-    $('#id_multilib').attr("checked", "checked");
+    $('#id_multilib').removeAttr("checked");
     $('#id_minor').attr("checked", "checked");
     filter_packages();
 };
