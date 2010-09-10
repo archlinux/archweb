@@ -12,6 +12,7 @@ from main.models import Arch, Repo
 from main.models import UserProfile
 from mirrors.models import Mirror
 from packages.models import PackageRelation
+from .utils import get_annotated_maintainers
 
 import random
 from string import ascii_letters, digits
@@ -28,8 +29,8 @@ def index(request):
             'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
     todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by(
             'list__name', 'pkg__pkgname')
-    maintainers = User.objects.filter(is_active=True).order_by(
-            'first_name', 'last_name')
+
+    maintainers = get_annotated_maintainers()
 
     page_dict = {
             'todos': Todolist.objects.incomplete().order_by('-date_added'),
