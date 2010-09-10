@@ -21,7 +21,7 @@ class MirrorlistForm(forms.Form):
         self.fields['protocol'].initial = [t[0] for t in protos]
 
 @csrf_exempt
-def generate(request):
+def generate_mirrorlist(request):
     if request.REQUEST.get('country', ''):
         form = MirrorlistForm(data=request.REQUEST)
         if form.is_valid():
