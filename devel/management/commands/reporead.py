@@ -39,11 +39,6 @@ from logging import ERROR, WARNING, INFO, DEBUG
 
 from main.models import Arch, Package, Repo
 
-class SomethingFishyException(Exception):
-    '''Raised when the database looks like its going to wipe out a bunch of
-    packages.'''
-    pass
-
 logging.basicConfig(
     level=WARNING,
     format='%(asctime)s -> %(levelname)s: %(message)s',
@@ -291,7 +286,7 @@ def db_update(archname, reponame, pkgs, options):
     logger.info("DB package ratio: %.1f%%" % dbpercent)
     if dbpercent < 50.0 and not repository.testing:
         logger.error(".db.tar.gz has %.1f%% the number of packages in the web database" % dbpercent)
-        raise SomethingFishyException(
+        raise Exception(
             'It looks like the syncdb is less than half the size of the web db. WTF?')
 
     if dbpercent < 75.0:
@@ -388,7 +383,7 @@ def parse_repo(repopath):
         reponame = m.group(1)
     else:
         logger.error("File does not have the proper extension")
-        raise SomethingFishyException("File does not have the proper extension")
+        raise Exception("File does not have the proper extension")
 
     repodb = tarfile.open(repopath,"r:gz")
     ## assuming well formed tar, with dir first then files after
