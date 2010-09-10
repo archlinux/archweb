@@ -76,8 +76,9 @@ class Command(BaseCommand):
             logger.level = DEBUG
 
         import signal, traceback
-        signal.signal(signal.SIGQUIT,
-                lambda sig, stack: traceback.print_stack(stack))
+        handler = lambda sig, stack: traceback.print_stack(stack)
+        signal.signal(signal.SIGQUIT, handler)
+        signal.signal(signal.SIGUSR1, handler)
 
         return read_repo(arch, filename, options)
 
