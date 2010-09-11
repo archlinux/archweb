@@ -138,8 +138,6 @@ class Package(models.Model):
     @property
     def signoffs(self):
         if 'signoffs_cache' in dir(self):
-            if len(self.signoffs_cache) > 0:
-                print self.signoffs_cache
             return self.signoffs_cache
         self.signoffs_cache = list(Signoff.objects.filter(
             pkg=self,

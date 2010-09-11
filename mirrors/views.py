@@ -34,7 +34,6 @@ def generate(request):
     return direct_to_template(request, 'mirrors/index.html', {'mirrorlist_form': form})
 
 def find_mirrors(request, countries=None, protocols=None):
-    print 'protocols', protocols
     if not protocols:
         protocols = MirrorProtocol.objects.exclude(
                 protocol__iexact='rsync').values_list('protocol', flat=True)
