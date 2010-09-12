@@ -1,6 +1,6 @@
 from django import forms
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
@@ -117,7 +117,7 @@ Password: %s""" % (domain, user.username, pw),
                 [user.email],
                 fail_silently=False)
 
-@user_passes_test(lambda u: u.is_superuser)
+@permission_required('auth.add_user')
 @never_cache
 def new_user_form(request):
     if request.POST:
