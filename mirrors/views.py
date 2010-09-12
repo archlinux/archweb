@@ -1,9 +1,14 @@
 from django import forms
+from django.db.models import Avg, Count, Max, Min, StdDev
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
 from main.utils import make_choice
 from .models import Mirror, MirrorUrl, MirrorProtocol
+from .models import MirrorLog
+
+import datetime
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
@@ -48,5 +53,50 @@ def find_mirrors(request, countries=None, protocols=None):
                 'mirror_urls': qset,
             },
             mimetype='text/plain')
+
+def status(request):
+    cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+    bad_timedelta = datetime.timedelta(days=3)
+
+    protocols = MirrorProtocol.objects.exclude(protocol__iexact='rsync')
+    # I swear, this actually has decent performance...
+    urls = MirrorUrl.objects.select_related(
+            'mirror', 'protocol').filter(
+            mirror__active=True, mirror__public=True,
+            protocol__in=protocols).filter(
+            logs__check_time__gte=cutoff_time).annotate(
+            check_count=Count('logs'), last_sync=Max('logs__last_sync'),
+            last_check=Max('logs__check_time'),
+            duration_avg=Avg('logs__duration'), duration_min=Min('logs__duration'),
+            duration_max=Max('logs__duration'), duration_stddev=StdDev('logs__duration')
+            ).order_by('mirror__country', 'url')
+    # errors during check process go in another table
+    error_logs = MirrorLog.objects.filter(
+            is_success=False, check_time__gte=cutoff_time).values(
+            'url__url', 'url__protocol__protocol', 'url__mirror__country',
+            'error').annotate(Count('error'), Max('check_time'))
+
+    good_urls = []
+    bad_urls = []
+    for url in urls:
+        if url.last_check and url.last_sync:
+            d = url.last_check - url.last_sync
+            url.delay = d
+            url.score = d.days * 24 + d.seconds / 3600 + url.duration_avg + url.duration_stddev
+        else:
+            url.delay = None
+            url.score = None
+        # split them into good and bad lists based on delay
+        if not url.delay or url.delay > bad_timedelta:
+            bad_urls.append(url)
+        else:
+            good_urls.append(url)
+
+    context = {
+        'good_urls': good_urls,
+        'bad_urls': bad_urls,
+        'error_logs': error_logs,
+    }
+    return direct_to_template(request, 'mirrors/status.html', context)
 
 # vim: set ts=4 sw=4 et:

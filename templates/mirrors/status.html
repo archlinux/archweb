@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Mirror Status{% endblock %}
+
+{% block content %}
+<div id="mirrorstatus" class="box">
+    <h2>Mirror Status</h2>
+
+    <h3>Out of Sync Mirrors</h3>
+    {% with bad_urls as urls %}
+    {% include "mirrors/status_table.html" %}
+    {% endwith %}
+
+    <h3>Successfully Syncing Mirrors</h3>
+    {% with good_urls as urls %}
+    {% include "mirrors/status_table.html" %}
+    {% endwith %}
+
+    <h3>Mirror Syncing Error Log</h3>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Mirror URL</th>
+                <th>Protocol</th>
+                <th>Country</th>
+                <th>Error Message</th>
+                <th>Last Occurred</th>
+                <th>Occurrences (last 24 hours)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in error_logs %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ log.url__url }}</td>
+                <td>{{ log.url__protocol__protocol }}</td>
+                <td>{{ log.url__mirror__country }}</td>
+                <td>{{ log.error }}</td>
+                <td>{{ log.check_time__max|date:'Y-m-d H:i' }}</td>
+                <td>{{ log.error__count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results").tablesorter({widgets: ['zebra']});
+});
+</script>
+{% endblock %}
