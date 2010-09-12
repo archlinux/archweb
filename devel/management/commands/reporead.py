@@ -13,19 +13,12 @@ Example:
   ./manage.py reporead i686 /tmp/core.db.tar.gz
 """
 
-# multi value blocks
-REPOVARS = ['arch', 'backup', 'base', 'builddate', 'conflicts', 'csize',
-            'deltas', 'depends', 'desc', 'filename', 'files', 'force',
-            'groups', 'installdate', 'isize', 'license', 'md5sum',
-            'name', 'optdepends', 'packager', 'provides', 'reason',
-            'replaces', 'size', 'url', 'version']
-
-
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Q
 
+import codecs
 import os
 import re
 import sys
@@ -34,7 +27,6 @@ import logging
 from datetime import datetime
 from optparse import make_option
 
-from cStringIO import StringIO
 from logging import ERROR, WARNING, INFO, DEBUG
 
 from main.models import Arch, Package, Repo
@@ -85,49 +77,36 @@ class Command(BaseCommand):
 
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
+    bare = ( 'name', 'base', 'arch', 'desc', 'filename',
+            'md5sum', 'url', 'builddate', 'packager' )
+    squash = ( 'license', )
+    number = ( 'csize', 'isize' )
 
-    def __init__(self, val, repo):
-        selfdict = {}
-        squash = ['arch', 'builddate', 'csize', 'desc', 'filename',
-                  'installdate', 'isize', 'license', 'md5sum',
-                  'packager', 'size', 'url']
-
-        selfdict['name'] = val['name'][0]
-        selfdict['base'] = None
-        del val['name']
-        if 'license' not in val:
-            val['license'] = []
-        for x in val.keys():
-            if x in squash:
-                if val[x] == None or len(val[x]) == 0:
-                    logger.warning("Package %s has no %s" % (selfdict['name'], x))
-                    selfdict[x] = None
-                else:
-                    selfdict[x] = ', '.join(val[x])
-                    # make sure we don't have elements larger than the db char
-                    # fields
-                    if len(selfdict[x]) > 255:
-                        selfdict[x] = selfdict[x][:254]
-            elif x == 'base':
-                selfdict[x] = val[x][0]
-            elif x == 'force':
-                selfdict[x] = True
-            elif x == 'version':
-                version = val[x][0].rsplit('-')
-                selfdict['ver'] = version[0]
-                selfdict['rel'] = version[1]
-            elif x == 'reason':
-                selfdict[x] = int(val[x][0])
-            else:
-                selfdict[x] = val[x]
-        self.__dict__ = selfdict
+    def __init__(self, repo):
         self.repo = repo
+        self.ver = None
+        self.rel = None
+        for k in self.bare + self.squash + self.number:
+            setattr(self, k, None)
 
-    def __getattr__(self, name):
-        if name == 'force':
-            return False
-        else:
-            return None
+    def populate(self, values):
+        for k, v in values.iteritems():
+            # ensure we stay under our DB character limit
+            if k in self.bare:
+                setattr(self, k, v[0][:254])
+            elif k in self.squash:
+                setattr(self, k, u', '.join(v)[:254])
+            elif k in self.number:
+                setattr(self, k, long(v[0]))
+            elif k == 'force':
+                setattr(self, k, True)
+            elif k == 'version':
+                ver, rel = v[0].rsplit('-')
+                setattr(self, 'ver', ver)
+                setattr(self, 'rel', rel)
+            else:
+                # files, depends, etc.
+                setattr(self, k, v)
 
 
 def find_user(userstring):
@@ -187,8 +166,8 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.license = repopkg.license
     dbpkg.url = repopkg.url
     dbpkg.filename = repopkg.filename
-    dbpkg.compressed_size = int(repopkg.csize)
-    dbpkg.installed_size = int(repopkg.isize)
+    dbpkg.compressed_size = repopkg.csize
+    dbpkg.installed_size = repopkg.isize
     try:
         dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
     except ValueError:
@@ -335,33 +314,24 @@ def db_update(archname, reponame, pkgs, options):
     logger.info('Finished updating Arch: %s' % archname)
 
 
-def parse_inf(iofile):
+def parse_info(iofile):
     """
     Parses an Arch repo db information file, and returns variables as a list.
-
-    Arguments:
-     iofile -- A StringIO, FileType, or other object with readlines method.
-
     """
     store = {}
-    lines = iofile.readlines()
     blockname = None
-    max_len = len(lines)
-    i = 0
-    while i < max_len:
-        line = lines[i].strip()
-        if len(line) > 0 and line[0] == '%' and line[1:-1].lower() in REPOVARS:
+    for line in iofile:
+        line = line.strip()
+        if len(line) == 0:
+            continue
+        elif line.startswith('%') and line.endswith('%'):
             blockname = line[1:-1].lower()
             logger.debug("Parsing package block %s", blockname)
             store[blockname] = []
-            i += 1
-            while i < max_len and len(lines[i].strip()) > 0:
-                store[blockname].append(lines[i].strip())
-                i += 1
-            # here is where i would convert arrays to strings
-            # based on count and type, but i dont think it is needed now
-        i += 1
-
+        elif blockname:
+            store[blockname].append(line)
+        else:
+            raise Exception("Read package info outside a block: %s" % line)
     return store
 
 
@@ -391,29 +361,30 @@ def parse_repo(repopath):
     ## repo-add enforces this
     logger.debug("Starting package parsing")
     dbfiles = ('desc', 'depends', 'files')
-    pkgs = []
-    tpkg = None
-    while True:
-        tarinfo = repodb.next()
-        if tarinfo == None or tarinfo.isdir():
-            if tpkg != None:
-                tpkg.reset()
-                data = parse_inf(tpkg)
-                p = Pkg(data, reponame)
-                logger.debug("Done parsing package %s", p.name)
-                pkgs.append(p)
-            if tarinfo == None:
-                break
-            # set new tpkg
-            tpkg = StringIO()
-        if tarinfo.isreg():
-            fname = os.path.split(tarinfo.name)[1]
-            if fname in dbfiles:
-                tpkg.write(repodb.extractfile(tarinfo).read())
-                tpkg.write('\n') # just in case
+    pkgs = {}
+    for tarinfo in repodb.getmembers():
+        if tarinfo.isdir():
+            continue
+        elif tarinfo.isreg():
+            pkgid, fname = os.path.split(tarinfo.name)
+            if fname not in dbfiles:
+                continue
+            data_file = repodb.extractfile(tarinfo)
+            data_file = codecs.EncodedFile(data_file, 'utf-8')
+            try:
+                data = parse_info(data_file)
+                p = pkgs.setdefault(pkgid, Pkg(reponame))
+                p.populate(data)
+            except UnicodeDecodeError, e:
+                logger.warn("Could not correctly decode %s, skipping file" % \
+                        tarinfo.name)
+            data_file.close()
+
+            logger.debug("Done parsing file %s", fname)
+
     repodb.close()
-    logger.info("Finished repo parsing")
-    return (reponame, pkgs)
+    logger.info("Finished repo parsing, %d total packages" % len(pkgs))
+    return (reponame, pkgs.values())
 
 def validate_arch(arch):
     "Check if arch is valid."
