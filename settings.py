@@ -33,6 +33,9 @@ USE_I18N = False
 # calendars according to the current locale
 USE_L10N = False
 
+# Default date format in templates for 'date' filter
+DATE_FORMAT = 'Y-m-d'
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".

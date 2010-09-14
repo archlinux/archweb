@@ -29,7 +29,7 @@
                 <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
                 {% endif %}
                 <td class="wrap">{{ pkg.pkgdesc }}</td>
-                <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+                <td>{{ pkg.last_update|date }}</td>
             </tr>
             {% endfor %}
         </tbody>

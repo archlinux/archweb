@@ -46,7 +46,7 @@
     {% for news in news_updates %}
     <h4><a href="{{ news.get_absolute_url }}"
             title="View full article: {{ news.title }}">{{ news.title }}</a></h4>
-    <p class="timestamp">{{ news.postdate }}</p>
+    <p class="timestamp">{{ news.postdate|date }}</p>
     <div class="article-content">{{ news.content|markdown|truncatewords_html:75 }}</div>
     {% endfor %}
 
