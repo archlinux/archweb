@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 class News(models.Model):
     id = models.AutoField(primary_key=True)
     author = models.ForeignKey(User, related_name='news_author')
-    postdate = models.DateField(auto_now_add=True)
+    postdate = models.DateTimeField(auto_now_add=True, db_index=True)
+    last_modified = models.DateTimeField(editable=False,
+            auto_now=True, db_index=True)
     title = models.CharField(max_length=255)
     content = models.TextField()
 
