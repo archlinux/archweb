@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 class News(models.Model):
     id = models.AutoField(primary_key=True)
     author = models.ForeignKey(User, related_name='news_author')
-    postdate = models.DateTimeField(auto_now_add=True, db_index=True)
+    postdate = models.DateTimeField("post date", auto_now_add=True, db_index=True)
     last_modified = models.DateTimeField(editable=False,
             auto_now=True, db_index=True)
     title = models.CharField(max_length=255)
@@ -20,6 +20,6 @@ class News(models.Model):
         db_table = 'news'
         verbose_name_plural = 'news'
         get_latest_by = 'postdate'
-        ordering = ['-postdate', '-id']
+        ordering = ['-postdate']
 
 # vim: set ts=4 sw=4 et:
