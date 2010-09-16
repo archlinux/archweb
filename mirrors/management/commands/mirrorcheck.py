@@ -84,6 +84,8 @@ def check_mirror_url(mirror_url):
         try:
             parsed_time = datetime.utcfromtimestamp(int(data))
         except ValueError:
+            logger.debug("attempting to parse generated lastsync file"
+                    " from mirror %s, value %s" % (url, data))
             parsed_time = parse_rfc3339_datetime(data)
 
         log.last_sync = parsed_time
