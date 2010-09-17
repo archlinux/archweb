@@ -7,9 +7,16 @@
     <h2>Developer Profile</h2>
 
     <form id="edit-profile-form" method="post">{% csrf_token %}
+        <p><em>Note:</em> This is the public information shown on the developer
+        and/or TU profiles page, so please be appropriate with the information
+        you provide here.</p>
         <fieldset>
-            <legend>Username: <strong>{{ user.username }}</strong></legend>
+            <p><label>Username:</label>
+            <strong>{{ user.username }}</strong></p>
             {{ form.as_p }}
+        </fieldset>
+        <fieldset>
+            {{ profile_form.as_p }}
         </fieldset>
         <p><label></label> <input title="Save changes" type="submit" value="Save" /></p>
     </form>

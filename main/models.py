@@ -19,14 +19,15 @@ class UserProfile(models.Model):
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
     website = models.CharField(max_length=200, null=True, blank=True)
-    yob = models.IntegerField(null=True, blank=True)
+    yob = models.IntegerField("Year of birth", null=True, blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)
     languages = models.CharField(max_length=50, null=True, blank=True)
     interests = models.CharField(max_length=255, null=True, blank=True)
     occupation = models.CharField(max_length=50, null=True, blank=True)
     roles = models.CharField(max_length=255, null=True, blank=True)
     favorite_distros = models.CharField(max_length=255, null=True, blank=True)
-    picture = models.FileField(upload_to='devs', default='devs/silhouette.png')
+    picture = models.FileField(upload_to='devs', default='devs/silhouette.png',
+        help_text="Ideally 125px by 125px")
     user = models.OneToOneField(User, related_name='userprofile')
     allowed_repos = models.ManyToManyField('Repo', blank=True)
     class Meta:

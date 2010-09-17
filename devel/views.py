@@ -52,7 +52,8 @@ def change_notify(request):
     return HttpResponseRedirect('/devel/')
 
 class ProfileForm(forms.Form):
-    email = forms.EmailField(label='E-mail Address')
+    email = forms.EmailField(label='Private email (not shown publicly):',
+            help_text="Used for out of date notifications, etc.")
     passwd1 = forms.CharField(label='New Password', required=False,
             widget=forms.PasswordInput)
     passwd2 = forms.CharField(label='Confirm Password', required=False,
@@ -63,20 +64,29 @@ class ProfileForm(forms.Form):
             raise forms.ValidationError('Passwords do not match.')
         return self.cleaned_data
 
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ['allowed_repos', 'user']
+
 @login_required
 @never_cache
 def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
-        if form.is_valid():
+        profile_form = UserProfileForm(data=request.POST, instance=request.user.get_profile())
+        if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
                 request.user.set_password(form.cleaned_data['passwd1'])
             request.user.save()
+            profile_form.save()
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
-    return direct_to_template(request, 'devel/profile.html', {'form': form})
+        profile_form = UserProfileForm(instance=request.user.get_profile())
+    return direct_to_template(request, 'devel/profile.html',
+            {'form': form, 'profile_form': profile_form})
 
 class NewUserForm(forms.ModelForm):
     class Meta:
