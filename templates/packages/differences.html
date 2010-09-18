@@ -75,14 +75,15 @@ filter_packages = function() {
         rows = rows.filter(function(index) {
             // all this just to get the split version out of the table cell
             var pat = /(.*)-(.+)/;
-            var ver_a = $('td:eq(2) a', this).text().match(pat);
-            var ver_b = $('td:eq(3) a', this).text().match(pat);
+            var ver_a = $('td:eq(2) span', this).text().match(pat);
+            var ver_b = $('td:eq(3) span', this).text().match(pat);
             // did we match at all?
             if(!ver_a || !ver_b) return true;
             // first check pkgver
             if(ver_a[1] !== ver_b[1]) return true;
             // pkgver matched, so see if rounded pkgrel matches
-            if(Math.floor(parseFloat(ver_a[1])) == Math.floor(parseFloat(ver_b[1]))) return false;
+			if(Math.floor(parseFloat(ver_a[2])) ==
+				Math.floor(parseFloat(ver_b[2]))) return false;
             // pkgrel didn't match, so keep the row
             return true;
         });
