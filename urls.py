@@ -62,12 +62,14 @@ urlpatterns = patterns('',
     (r'^todo/$',                    'todolists.views.list'),
     (r'^todolists/$',               'todolists.views.public_list'),
 
-    (r'^news/(\d+)/$',         'news.views.view'),
-    (r'^news/add/$',           'news.views.add'),
-    (r'^news/edit/(\d+)/$',    'news.views.edit'),
-    (r'^news/delete/(\d+)/$',  'news.views.delete'),
-    (r'^news/preview/$',       'news.views.preview'),
-    (r'^news/$',               'news.views.list', {}, 'news-list'),
+    (r'^news/add/$',                     'news.views.add'),
+    (r'^news/preview/$',                 'news.views.preview'),
+    # old news URLs, permanent redirect view so we don't break all links
+    (r'^news/(?P<object_id>\d+)/$',      'news.views.view_redirect'),
+    (r'^news/(?P<slug>[-\w]+)/$',        'news.views.view'),
+    (r'^news/(?P<slug>[-\w]+)/edit/$',   'news.views.edit'),
+    (r'^news/(?P<slug>[-\w]+)/delete/$', 'news.views.delete'),
+    (r'^news/$',                         'news.views.list', {}, 'news-list'),
 
     (r'^mirrors/$',        'devel.views.mirrorlist', {}, 'mirrors-list'),
 

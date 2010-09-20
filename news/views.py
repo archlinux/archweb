@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import list_detail, create_update
 from django.views.generic.simple import direct_to_template
@@ -10,8 +10,13 @@ import markdown
 
 from .models import News
 
-def view(request, newsid):
-    return list_detail.object_detail(request, News.objects.all(), newsid,
+def view_redirect(request, object_id):
+    newsitem = get_object_or_404(News, pk=object_id)
+    return redirect(newsitem, permanent=True)
+
+def view(request, slug=None):
+    return list_detail.object_detail(request, News.objects.all(),
+            slug=slug,
             template_name="news/view.html",
             template_object_name='news')
 
@@ -44,19 +49,19 @@ def add(request):
 
 @permission_required('news.delete_news')
 @never_cache
-def delete(request, newsid):
+def delete(request, slug):
     return create_update.delete_object(request,
             News,
-            object_id=newsid,
+            slug=slug,
             post_delete_redirect='/news/',
             template_name='news/delete.html',
             template_object_name='news')
 
 @permission_required('news.change_news')
 @never_cache
-def edit(request, newsid):
+def edit(request, slug):
     return create_update.update_object(request,
-            object_id=newsid,
+            slug=slug,
             form_class=NewsForm,
             template_name="news/add.html")
 

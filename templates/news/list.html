@@ -34,11 +34,11 @@
                 <td>{{ item.author.get_full_name }}</td>
                 {% if perms.main.change_news %}
                 <td>
-                    <a href="/news/edit/{{ item.id }}/"
+                    <a href="{{ item.get_absolute_url }}edit/"
                         title="Edit: {{ item.title }}">Edit</a>
                     {% endif %}
                     {% if perms.main.delete_news %}
-                    &nbsp;&nbsp;<a href="/news/delete/{{ item.id }}/"
+                    &nbsp;&nbsp;<a href="{{ item.get_absolute_url }}delete/"
                         title="Delete: {{ item.title }}">Delete</a>
                 </td>
                 {% endif %}

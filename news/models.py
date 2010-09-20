@@ -12,7 +12,7 @@ class News(models.Model):
     content = models.TextField()
 
     def get_absolute_url(self):
-        return '/news/%i/' % self.id
+        return '/news/%s/' % self.slug
 
     def __unicode__(self):
         return self.title

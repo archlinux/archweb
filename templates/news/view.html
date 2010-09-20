@@ -9,9 +9,9 @@
 
     {% if perms.main.change_news %}
     <ul class="admin-actions">
-        <li><a href="/news/edit/{{ news.id }}/" title="Edit this article">Edit News Item</a></li>
+        <li><a href="edit/" title="Edit this article">Edit News Item</a></li>
         {% if perms.main.delete_news %}
-        <li><a href="/news/delete/{{ news.id }}/" title="Delete this article">Delete News Item</a></li>
+        <li><a href="delete/" title="Delete this article">Delete News Item</a></li>
         {% endif %}
     </ul>
     {% endif %}
