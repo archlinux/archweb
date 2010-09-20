@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 class News(models.Model):
     id = models.AutoField(primary_key=True)
+    slug = models.SlugField(max_length=255, null=True, unique=True)
     author = models.ForeignKey(User, related_name='news_author')
     postdate = models.DateTimeField("post date", auto_now_add=True, db_index=True)
     last_modified = models.DateTimeField(editable=False,
