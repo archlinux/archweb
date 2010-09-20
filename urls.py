@@ -69,7 +69,7 @@ urlpatterns = patterns('',
     (r'^news/(?P<slug>[-\w]+)/$',        'news.views.view'),
     (r'^news/(?P<slug>[-\w]+)/edit/$',   'news.views.edit'),
     (r'^news/(?P<slug>[-\w]+)/delete/$', 'news.views.delete'),
-    (r'^news/$',                         'news.views.list', {}, 'news-list'),
+    (r'^news/$',                         'news.views.news_list', {}, 'news-list'),
 
     (r'^mirrors/$',        'devel.views.mirrorlist', {}, 'mirrors-list'),
 

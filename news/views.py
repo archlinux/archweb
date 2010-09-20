@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.template.defaultfilters import slugify
 from django.views.decorators.cache import never_cache
 from django.views.generic import list_detail, create_update
 from django.views.generic.simple import direct_to_template
@@ -21,7 +22,7 @@ def view(request, slug=None):
             template_object_name='news')
 
 #TODO: May as well use a date-based list here sometime
-def list(request):
+def news_list(request):
     return list_detail.object_list(request,
             News.objects.all().select_related('author').defer('content'),
             paginate_by=50,
@@ -31,7 +32,19 @@ def list(request):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        exclude=('id', 'author', 'postdate')
+        exclude=('id', 'slug', 'author', 'postdate')
+
+def find_unique_slug(newsitem):
+    '''Attempt to find a unique slug for this news item.'''
+    existing = list(News.objects.values_list('slug', flat=True).distinct())
+
+    suffixed = slug = slugify(newsitem.title)
+    suffix = 0
+    while suffixed in existing:
+        suffix += 1
+        suffixed = "%s-%d" % (slug, suffix)
+
+    return suffixed
 
 @permission_required('news.add_news')
 @never_cache
@@ -41,6 +54,7 @@ def add(request):
         if form.is_valid():
             newsitem = form.save(commit=False)
             newsitem.author = request.user
+            newsitem.slug = find_unique_slug(newsitem)
             newsitem.save()
             return redirect(newsitem.get_absolute_url())
     else:
