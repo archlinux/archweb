@@ -28,7 +28,7 @@ class NewsForm(forms.ModelForm):
         model = News
         exclude=('id', 'author', 'postdate')
 
-@permission_required('main.add_news')
+@permission_required('news.add_news')
 @never_cache
 def add(request):
     if request.POST:
@@ -42,7 +42,7 @@ def add(request):
         form = NewsForm()
     return direct_to_template(request, 'news/add.html', { 'form': form })
 
-@permission_required('main.delete_news')
+@permission_required('news.delete_news')
 @never_cache
 def delete(request, newsid):
     return create_update.delete_object(request,
@@ -52,7 +52,7 @@ def delete(request, newsid):
             template_name='news/delete.html',
             template_object_name='news')
 
-@permission_required('main.change_news')
+@permission_required('news.change_news')
 @never_cache
 def edit(request, newsid):
     return create_update.update_object(request,
@@ -60,7 +60,7 @@ def edit(request, newsid):
             form_class=NewsForm,
             template_name="news/add.html")
 
-@permission_required('main.change_news')
+@permission_required('news.change_news')
 @never_cache
 def preview(request):
     markup = ''
