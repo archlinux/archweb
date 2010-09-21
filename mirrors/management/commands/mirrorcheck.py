@@ -42,7 +42,7 @@ class Command(NoArgsCommand):
         if v == 0:
             logger.level = ERROR
         elif v == 1:
-            logger.level = INFO
+            logger.level = WARNING
         elif v == 2:
             logger.level = DEBUG
 
@@ -84,8 +84,10 @@ def check_mirror_url(mirror_url):
         try:
             parsed_time = datetime.utcfromtimestamp(int(data))
         except ValueError:
-            logger.debug("attempting to parse generated lastsync file"
-                    " from mirror %s, value %s" % (url, data))
+            # it is bad news to try logging the lastsync value;
+            # sometimes we get a crazy-encoded web page.
+            logger.info("attempting to parse generated lastsync file"
+                    " from mirror %s" % url)
             parsed_time = parse_rfc3339_datetime(data)
 
         log.last_sync = parsed_time
