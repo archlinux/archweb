@@ -9,10 +9,12 @@ from .models import Mirror, MirrorUrl, MirrorProtocol
 from .utils import get_mirror_statuses, get_mirror_errors
 
 import datetime
+from operator import attrgetter
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
     protocol = forms.MultipleChoiceField(required=False)
+    use_mirror_status = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
@@ -32,13 +34,14 @@ def generate_mirrorlist(request):
         if form.is_valid():
             countries = form.cleaned_data['country']
             protocols = form.cleaned_data['protocol']
-            return find_mirrors(request, countries, protocols)
+            use_status = form.cleaned_data['use_mirror_status']
+            return find_mirrors(request, countries, protocols, use_status)
     else:
         form = MirrorlistForm()
 
     return direct_to_template(request, 'mirrors/index.html', {'mirrorlist_form': form})
 
-def find_mirrors(request, countries=None, protocols=None):
+def find_mirrors(request, countries=None, protocols=None, use_status=False):
     if not protocols:
         protocols = MirrorProtocol.objects.exclude(
                 protocol__iexact='rsync').values_list('protocol', flat=True)
@@ -48,11 +51,24 @@ def find_mirrors(request, countries=None, protocols=None):
     )
     if countries and 'all' not in countries:
         qset = qset.filter(mirror__country__in=countries)
-    qset = qset.order_by('mirror__country', 'mirror__name', 'url')
-    return direct_to_template(request, 'mirrors/mirrorlist.txt', {
-                'mirror_urls': qset,
+    if not use_status:
+        urls = qset.order_by('mirror__country', 'mirror__name', 'url')
+        template = 'mirrors/mirrorlist.txt'
+    else:
+        scores = dict([(u.id, u.score) for u in get_mirror_statuses()])
+        urls = []
+        for u in qset:
+            u.score = scores[u.id]
+            if u.score and u.score < 100.0:
+                urls.append(u)
+        urls = sorted(urls, key=attrgetter('score'))
+        template = 'mirrors/mirrorlist_status.txt'
+
+    return direct_to_template(request, template, {
+                'mirror_urls': urls,
             },
             mimetype='text/plain')
+
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)
