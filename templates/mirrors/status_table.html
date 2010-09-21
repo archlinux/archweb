@@ -1,0 +1,29 @@
+{% load mirror_status %}
+<table id="{{ table_id }}" class="results">
+    <thead>
+        <tr>
+            <th>Mirror URL</th>
+            <th>Protocol</th>
+            <th>Country</th>
+            <th>Last Sync</th>
+            <th>Delay (hh:mm)</th>
+            <th>μ Duration (secs)</th>
+            <th>σ Duration (secs)</th>
+            <th>Mirror Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m_url in urls %}
+        <tr class="{% cycle 'odd' 'even' %}">
+            <td>{{ m_url.url }}</td>
+            <td>{{ m_url.protocol }}</td>
+            <td>{{ m_url.mirror.country }}</td>
+            <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
+            <td>{{ m_url.delay|duration|default:'unknown' }}</td>
+            <td>{{ m_url.duration_avg|floatformat:2|default:'unknown' }}</td>
+            <td>{{ m_url.duration_stddev|floatformat:2|default:'unknown' }}</td>
+            <td>{{ m_url.score|floatformat:1|default:'unknown' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

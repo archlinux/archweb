@@ -132,17 +132,24 @@
             title="T-shirts">Schwag via Freewear</a></li>
     </ul>
 
-    <h4>Development</h4>
+    <h4>Tools</h4>
 
     <ul>
         <li><a href="{% url mirrorlist %}"
             title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
+        <li><a href="{% url mirror-status %}"
+            title="Check the status of all known mirrors">Mirror Status</a></li>
+        <li><a href="/packages/differences/"
+            title="See differences in packages between available architectures">Differences by Architecture</a></li>
+    </ul>
+
+    <h4>Development</h4>
+
+    <ul>
         <li><a href="/packages/"
             title="View/search the package repository database">Packages</a></li>
         <li><a href="/groups/"
             title="View the available package groups">Package Groups</a></li>
-        <li><a href="/packages/differences/"
-            title="See differences in packages between available architectures">Differences by Architecture</a></li>
         <li><a href="http://bugs.archlinux.org/"
             title="Report/track bugs or make feature requests">Bug Tracker</a></li>
         <li><a href="{% url page-svn %}"
