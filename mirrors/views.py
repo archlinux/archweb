@@ -6,7 +6,7 @@ from django.views.generic.simple import direct_to_template
 
 from main.utils import make_choice
 from .models import Mirror, MirrorUrl, MirrorProtocol
-from .models import MirrorLog
+from .utils import get_mirror_statuses, get_mirror_errors
 
 import datetime
 
@@ -55,28 +55,8 @@ def find_mirrors(request, countries=None, protocols=None):
             mimetype='text/plain')
 
 def status(request):
-    cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
     bad_timedelta = datetime.timedelta(days=3)
-
-    protocols = MirrorProtocol.objects.exclude(protocol__iexact='rsync')
-    # I swear, this actually has decent performance...
-    urls = MirrorUrl.objects.select_related(
-            'mirror', 'protocol').filter(
-            mirror__active=True, mirror__public=True,
-            protocol__in=protocols).filter(
-            logs__check_time__gte=cutoff_time).annotate(
-            check_count=Count('logs'), last_sync=Max('logs__last_sync'),
-            last_check=Max('logs__check_time'),
-            duration_avg=Avg('logs__duration'), duration_min=Min('logs__duration'),
-            duration_max=Max('logs__duration'), duration_stddev=StdDev('logs__duration')
-            ).order_by('-last_sync', '-duration_avg')
-    # errors during check process go in another table
-    error_logs = MirrorLog.objects.filter(
-            is_success=False, check_time__gte=cutoff_time).values(
-            'url__url', 'url__protocol__protocol', 'url__mirror__country',
-            'error').annotate(
-            error_count=Count('error'), last_occurred=Max('check_time')
-            ).order_by('-last_occurred', '-error_count')
+    urls = get_mirror_statuses()
 
     if urls:
         last_check = max([u.last_check for u in urls])
@@ -86,13 +66,6 @@ def status(request):
     good_urls = []
     bad_urls = []
     for url in urls:
-        if url.last_check and url.last_sync:
-            d = url.last_check - url.last_sync
-            url.delay = d
-            url.score = d.days * 24 + d.seconds / 3600 + url.duration_avg + url.duration_stddev
-        else:
-            url.delay = None
-            url.score = None
         # split them into good and bad lists based on delay
         if not url.delay or url.delay > bad_timedelta:
             bad_urls.append(url)
@@ -103,7 +76,7 @@ def status(request):
         'last_check': last_check,
         'good_urls': good_urls,
         'bad_urls': bad_urls,
-        'error_logs': error_logs,
+        'error_logs': get_mirror_errors(),
     }
     return direct_to_template(request, 'mirrors/status.html', context)
 
