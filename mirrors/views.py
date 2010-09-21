@@ -69,12 +69,16 @@ def status(request):
             last_check=Max('logs__check_time'),
             duration_avg=Avg('logs__duration'), duration_min=Min('logs__duration'),
             duration_max=Max('logs__duration'), duration_stddev=StdDev('logs__duration')
-            ).order_by('mirror__country', 'url')
+            ).order_by('-last_sync', '-duration_avg')
     # errors during check process go in another table
     error_logs = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time).values(
             'url__url', 'url__protocol__protocol', 'url__mirror__country',
-            'error').annotate(Count('error'), Max('check_time'))
+            'error').annotate(
+            error_count=Count('error'), last_occurred=Max('check_time')
+            ).order_by('-last_occurred', '-error_count')
+
+    last_check = max([u.last_check for u in urls])
 
     good_urls = []
     bad_urls = []
@@ -93,6 +97,7 @@ def status(request):
             good_urls.append(url)
 
     context = {
+        'last_check': last_check,
         'good_urls': good_urls,
         'bad_urls': bad_urls,
         'error_logs': error_logs,
