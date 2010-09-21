@@ -78,7 +78,10 @@ def status(request):
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
 
-    last_check = max([u.last_check for u in urls])
+    if urls:
+        last_check = max([u.last_check for u in urls])
+    else:
+        last_check = None
 
     good_urls = []
     bad_urls = []
