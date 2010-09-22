@@ -6,7 +6,7 @@
             <th>Protocol</th>
             <th>Country</th>
             <th>Last Sync</th>
-            <th>Delay (hh:mm)</th>
+            <th>μ Delay (hh:mm)</th>
             <th>μ Duration (secs)</th>
             <th>σ Duration (secs)</th>
             <th>Mirror Score</th>
@@ -22,7 +22,7 @@
             <td>{{ m_url.delay|duration|default:'unknown' }}</td>
             <td>{{ m_url.duration_avg|floatformat:2|default:'unknown' }}</td>
             <td>{{ m_url.duration_stddev|floatformat:2|default:'unknown' }}</td>
-            <td>{{ m_url.score|floatformat:1|default:'unknown' }}</td>
+            <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
         </tr>
         {% endfor %}
     </tbody>
