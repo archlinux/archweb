@@ -70,6 +70,12 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False):
             },
             mimetype='text/plain')
 
+def mirrors(request):
+    mirrors = Mirror.objects.select_related().order_by('tier', 'country')
+    if not request.user.is_authenticated():
+        mirrors = mirrors.filter(public=True, active=True)
+    return direct_to_template(request, 'mirrors/mirrors.html',
+            {'mirror_list': mirrors})
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)

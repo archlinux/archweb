@@ -71,8 +71,8 @@ urlpatterns = patterns('',
     (r'^news/(?P<slug>[-\w]+)/delete/$', 'news.views.delete'),
     (r'^news/$',                         'news.views.news_list', {}, 'news-list'),
 
-    (r'^mirrors/$',        'devel.views.mirrorlist', {}, 'mirrors-list'),
-    (r'^mirrors/status/$', 'mirrors.views.status', {}, 'mirror-status'),
+    (r'^mirrors/$',        'mirrors.views.mirrors', {}, 'mirrors-list'),
+    (r'^mirrors/status/$', 'mirrors.views.status',  {}, 'mirror-status'),
 
     (r'^mirrorlist/$', 'mirrors.views.generate_mirrorlist', {}, 'mirrorlist'),
     (r'^mirrorlist/all/$', 'mirrors.views.find_mirrors', {'countries': ['all']}),

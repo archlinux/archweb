@@ -10,7 +10,6 @@ from django.views.generic.simple import direct_to_template
 from main.models import Package, Todolist, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
-from mirrors.models import Mirror
 from packages.models import PackageRelation
 from .utils import get_annotated_maintainers
 
@@ -78,12 +77,6 @@ def change_profile(request):
     else:
         form = ProfileForm(initial={'email': request.user.email})
     return direct_to_template(request, 'devel/profile.html', {'form': form})
-
-@login_required
-def mirrorlist(request):
-    mirrors = Mirror.objects.select_related().order_by('tier', 'country')
-    return direct_to_template(request, 'devel/mirrorlist.html',
-            {'mirror_list': mirrors})
 
 class NewUserForm(forms.ModelForm):
     class Meta:

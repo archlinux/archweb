@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Mirror Overview{% endblock %}
+
+{% block content %}
+<div id="dev-mirrorlist" class="box">
+    <h2>Mirror Overview</h2>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Server</th>
+                <th>Tier</th>
+                <th>Country</th>
+                <th>ISOs</th>
+                <th>Protocols</th>
+                {% if user.is_authenticated %}
+                <th>Public</th>
+                <th>Active</th>
+                <th>Rsync IPs</th>
+                <th>Admin Email</th>
+                <th>Notes</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for mirror in mirror_list %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{mirror.name}}</td>
+                <td>{{mirror.get_tier_display}}</td>
+                <td>{{mirror.country}}</td>
+                <td>{{mirror.isos|yesno}}</td>
+                <td class="wrap">{{mirror.supported_protocols}}</td>
+                {% if user.is_authenticated %}
+                <td>{{mirror.public|yesno}}</td>
+                <td>{{mirror.active|yesno}}</td>
+                <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
+                <td>{{mirror.admin_email}}</td>
+                <td class="wrap">{{mirror.notes|linebreaks}}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [2,0]]});
+});
+</script>
+{% endblock %}

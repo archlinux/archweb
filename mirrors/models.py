@@ -27,7 +27,8 @@ class Mirror(models.Model):
         return self.name
 
     def supported_protocols(self):
-        protocols = MirrorProtocol.objects.filter(urls__mirror=self).distinct()
+        protocols = MirrorProtocol.objects.filter(
+                urls__mirror=self).order_by('protocol').distinct()
         return ", ".join([p.protocol for p in protocols])
 
 class MirrorProtocol(models.Model):
