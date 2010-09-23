@@ -73,6 +73,7 @@ urlpatterns = patterns('',
 
     (r'^mirrors/$',        'mirrors.views.mirrors', {}, 'mirrors-list'),
     (r'^mirrors/status/$', 'mirrors.views.status',  {}, 'mirror-status'),
+    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirrors.views.mirror_details'),
 
     (r'^mirrorlist/$', 'mirrors.views.generate_mirrorlist', {}, 'mirrorlist'),
     (r'^mirrorlist/all/$', 'mirrors.views.find_mirrors', {'countries': ['all']}),

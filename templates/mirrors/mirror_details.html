@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - {{ mirror.name }} - Mirror Details{% endblock %}
+
+{% block content %}
+<!-- TODO: ids and classes -->
+<div id="pkgdetails" class="box">
+
+    <h2>Mirror Details: {{ mirror.name }}</h2>
+
+    <table id="pkginfo">
+        <tr>
+            <th>Name:</th>
+            <td>{{ mirror.name }}</td>
+        </tr><tr>
+            <th>Tier:</th>
+            <td>{{ mirror.get_tier_display }}</td>
+        </tr><tr>
+            <th>Upstream:</th>
+            <!-- TODO: linking to non-public mirrors -->
+            <td>{% if mirror.upstream %}
+                <a href="{{ mirror.upstream.get_absolute_url }}"
+                    title="Mirror details for {{ mirror.upstream.name }}">{{ mirror.upstream.name }}</a>
+                {% else %}None{% endif %}</td>
+        </tr><tr>
+            <th>Downstream:</th>
+            {% with mirror.downstream as ds_mirrors %}
+            <td>{% if ds_mirrors %}
+                {% for ds in ds_mirrors %}
+                <a href="{{ ds.get_absolute_url }}"
+                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a><br/>
+                {% endfor %}
+                {% else %}None{% endif %}
+            </td>
+            {% endwith %}
+        </tr><tr>
+            <th>Country:</th>
+            <td>{{ mirror.country }}</td>
+        </tr><tr>
+            <th>Has ISOs:</th>
+            <td>{{ mirror.isos|yesno }}</td>
+        </tr><tr>
+            <th>Protocols:</th>
+            <td>{{ mirror.supported_protocols }}</td>
+        </tr><tr>
+            <th>Mirror URLs:</th>
+            {% with mirror.urls.all as urls %}
+            <td>{% if urls %}
+                {% for u in urls %}
+                <a href="{{ u.url }}">{{ u.url }}</a><br/>
+                {% endfor %}
+                {% else %}None{% endif %}
+            </td>
+            {% endwith %}
+        </tr>
+    </table>
+</div>
+{% endblock %}

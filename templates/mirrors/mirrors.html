@@ -24,7 +24,8 @@
         <tbody>
             {% for mirror in mirror_list %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td>{{mirror.name}}</td>
+                <td><a href="{{ mirror.get_absolute_url }}"
+                        title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
                 <td>{{mirror.get_tier_display}}</td>
                 <td>{{mirror.country}}</td>
                 <td>{{mirror.isos|yesno}}</td>

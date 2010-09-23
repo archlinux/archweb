@@ -31,6 +31,12 @@ class Mirror(models.Model):
                 urls__mirror=self).order_by('protocol').distinct()
         return ", ".join([p.protocol for p in protocols])
 
+    def downstream(self):
+        return Mirror.objects.filter(upstream=self).order_by('name')
+
+    def get_absolute_url(self):
+        return '/mirrors/%s/' % self.name
+
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
     def __unicode__(self):

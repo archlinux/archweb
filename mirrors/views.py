@@ -1,6 +1,8 @@
 from django import forms
 from django.db.models import Avg, Count, Max, Min, StdDev
 from django.db.models import Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 
@@ -76,6 +78,15 @@ def mirrors(request):
         mirrors = mirrors.filter(public=True, active=True)
     return direct_to_template(request, 'mirrors/mirrors.html',
             {'mirror_list': mirrors})
+
+def mirror_details(request, name):
+    mirror = get_object_or_404(Mirror, name=name)
+    if not request.user.is_authenticated() and \
+            (not mirror.public or not mirror.active):
+        # TODO: maybe this should be 403? but that would leak existence
+        raise Http404
+    return direct_to_template(request, 'mirrors/mirror_details.html',
+            {'mirror': mirror})
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)
