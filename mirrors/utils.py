@@ -5,10 +5,11 @@ from .models import MirrorLog, MirrorProtocol, MirrorUrl
 
 import datetime
 
+default_cutoff = datetime.timedelta(hours=24)
 
 @cache_function(300)
-def get_mirror_statuses():
-    cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+def get_mirror_statuses(cutoff=default_cutoff):
+    cutoff_time = datetime.datetime.utcnow() - cutoff
     protocols = MirrorProtocol.objects.exclude(protocol__iexact='rsync')
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
@@ -41,11 +42,29 @@ def get_mirror_statuses():
         else:
             url.delay = None
             url.score = None
-    return urls
+
+    if urls:
+        last_check = max([u.last_check for u in urls])
+        num_checks = max([u.check_count for u in urls])
+        check_info = MirrorLog.objects.filter(
+                check_time__gte=cutoff_time).aggregate(
+                mn=Min('check_time'), mx=Max('check_time'))
+        check_frequency = (check_info['mx'] - check_info['mn']) / num_checks
+    else:
+        last_check = None
+        num_checks = 0
+        check_frequency = None
+
+    return {
+        'last_check': last_check,
+        'num_checks': num_checks,
+        'check_frequency': check_frequency,
+        'urls': urls,
+    }
 
 @cache_function(300)
-def get_mirror_errors():
-    cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+def get_mirror_errors(cutoff=default_cutoff):
+    cutoff_time = datetime.datetime.utcnow() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(

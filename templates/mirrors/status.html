@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mirror_status %}
 
 {% block title %}Arch Linux - Mirror Status{% endblock %}
 
@@ -21,7 +22,7 @@
         retrieved or contained data we didn't recognize, this column will show
         'unknown'.</li>
         <li><em>μ Delay:</em> The calculated average mirroring delay; e.g. the
-        mean value of <code>last check − last sync</code> for each check of
+        mean value of <tt>last check − last sync</tt> for each check of
         this mirror URL.</li>
         <li><em>μ Duration:</em> The average (mean) time it took to connect and
         retrieve the <tt>lastsync</tt> file from the given URL. Note that this
@@ -31,8 +32,8 @@
         retrieval time. A high standard deviation can indicate an unstable or
         overloaded mirror.</li>
         <li><em>Mirror Score:</em> A very rough calculation for ranking
-        mirrors. It is currently calculated as <code>hours delay + average
-            duration + standard deviation</code>. Lower is better.</li>
+        mirrors. It is currently calculated as <tt>hours delay + average
+            duration + standard deviation</tt>. Lower is better.</li>
     </ul>
     <p>The final table on this page is an error log, which shows any errors
     that occurred while contacting mirrors. This only shows errors that
@@ -43,7 +44,9 @@
         <li><a href="#errorlog">Mirror Syncing Error Log</a></li>
     </ul>
 
-    <p>The last mirror check ran at {{ last_check|date:'Y-m-d H:i' }} UTC.</p>
+    <p>The last mirror check ran at {{ last_check|date:'Y-m-d H:i' }} UTC.
+    Checks have ran {{ num_checks }} times in the last 24 hours at an average
+    interval of {{ check_frequency|duration }} (hh:mm).</p>
 
     <a name="outofsync" id="outofsync"></a>
     <h3>Out of Sync Mirrors</h3>

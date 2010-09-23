@@ -55,7 +55,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False):
         urls = qset.order_by('mirror__country', 'mirror__name', 'url')
         template = 'mirrors/mirrorlist.txt'
     else:
-        scores = dict([(u.id, u.score) for u in get_mirror_statuses()])
+        status_info = get_mirror_statuses()
+        scores = dict([(u.id, u.score) for u in status_info['urls']])
         urls = []
         for u in qset:
             u.score = scores[u.id]
@@ -72,13 +73,9 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False):
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)
-    urls = get_mirror_statuses()
+    status_info = get_mirror_statuses()
 
-    if urls:
-        last_check = max([u.last_check for u in urls])
-    else:
-        last_check = None
-
+    urls = status_info['urls']
     good_urls = []
     bad_urls = []
     for url in urls:
@@ -88,12 +85,12 @@ def status(request):
         else:
             good_urls.append(url)
 
-    context = {
-        'last_check': last_check,
+    context = status_info.copy()
+    context.update({
         'good_urls': good_urls,
         'bad_urls': bad_urls,
         'error_logs': get_mirror_errors(),
-    }
+    })
     return direct_to_template(request, 'mirrors/status.html', context)
 
 # vim: set ts=4 sw=4 et:
