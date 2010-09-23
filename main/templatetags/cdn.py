@@ -11,13 +11,13 @@ class JQueryNode(template.Node):
     def render(self, context):
         # if we have the request in context, we can check if it is secure and
         # serve content from HTTPS instead.
-        secure = 'request' in context and context['request'].is_secure()
+        secure = 'secure' in context and context['secure']
+        prefixes = { False: 'http', True: 'https' }
         version = '1.4.2'
         oncdn = getattr(settings, 'CDN_ENABLED', True)
-        if oncdn and secure:
-            jquery = 'https://ajax.googleapis.com/ajax/libs/jquery/%s/jquery.min.js' % version
-        elif oncdn:
-            jquery = 'http://ajax.googleapis.com/ajax/libs/jquery/%s/jquery.min.js' % version
+        if oncdn:
+            jquery = '%s://ajax.googleapis.com/ajax/libs/jquery/' \
+                    '%s/jquery.min.js' % (prefixes[secure], version)
         else:
             jquery = '/media/jquery-%s.min.js' % version
         return '<script type="text/javascript" src="%s"></script>' % jquery

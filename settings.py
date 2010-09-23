@@ -52,6 +52,16 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.load_template_source',
 )
 
+# We add a processor to determine if the request is secure or not
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.contrib.messages.context_processors.messages',
+    'main.context_processors.secure',
+)
+
 # This bug is a real bummer:
 # http://code.djangoproject.com/ticket/14105
 MIDDLEWARE_CLASSES = (
