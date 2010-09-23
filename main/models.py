@@ -238,7 +238,7 @@ class Package(models.Model):
         return self.get_svn_link("trunk")
 
     def get_bugs_link(self):
-        return "http://bugs.archlinux.org/?project=%d&string=%s" % \
+        return "https://bugs.archlinux.org/?project=%d&string=%s" % \
                 (self.repo.bugs_project, self.pkgname)
 
     def is_same_version(self, other):
