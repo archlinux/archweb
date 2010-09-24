@@ -7,10 +7,10 @@
 
     <h2>News: {{ news.title }}</h2>
 
-    {% if perms.main.change_news %}
+    {% if perms.news.change_news %}
     <ul class="admin-actions">
         <li><a href="edit/" title="Edit this article">Edit News Item</a></li>
-        {% if perms.main.delete_news %}
+        {% if perms.news.delete_news %}
         <li><a href="delete/" title="Delete this article">Delete News Item</a></li>
         {% endif %}
     </ul>

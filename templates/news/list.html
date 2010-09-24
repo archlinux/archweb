@@ -6,7 +6,7 @@
 
     <h2>News Archives</h2>
 
-    {% if perms.main.add_news %}
+    {% if perms.news.add_news %}
     <ul class="admin-actions">
         <li><a href="/news/add/" title="Add a news item">Add News Item</a></li>
     </ul>
@@ -20,7 +20,7 @@
                 <th>Published</th>
                 <th>Title</th>
                 <th>Author</th>
-                {% if perms.main.change_news %}
+                {% if perms.news.change_news %}
                 <th></th>
                 {% endif %}
             </tr>
@@ -32,12 +32,12 @@
                 <td class="wrap"><a href="{{ item.get_absolute_url }}"
                         title="View: {{ item.title }}">{{ item.title }}</a></td>
                 <td>{{ item.author.get_full_name }}</td>
-                {% if perms.main.change_news %}
+                {% if perms.news.change_news %}
                 <td>
                     <a href="{{ item.get_absolute_url }}edit/"
                         title="Edit: {{ item.title }}">Edit</a>
                     {% endif %}
-                    {% if perms.main.delete_news %}
+                    {% if perms.news.delete_news %}
                     &nbsp;&nbsp;<a href="{{ item.get_absolute_url }}delete/"
                         title="Delete: {{ item.title }}">Delete</a>
                 </td>
