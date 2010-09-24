@@ -11,10 +11,9 @@ def get_mirror_statuses():
     cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
     protocols = MirrorProtocol.objects.exclude(protocol__iexact='rsync')
     # I swear, this actually has decent performance...
-    urls = MirrorUrl.objects.select_related(
-            'mirror', 'protocol').filter(
+    urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             mirror__active=True, mirror__public=True,
-            protocol__in=protocols).filter(
+            protocol__in=protocols,
             logs__check_time__gte=cutoff_time).annotate(
             check_count=Count('logs'), last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
@@ -48,7 +47,8 @@ def get_mirror_statuses():
 def get_mirror_errors():
     cutoff_time = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
     errors = MirrorLog.objects.filter(
-            is_success=False, check_time__gte=cutoff_time).values(
+            is_success=False, check_time__gte=cutoff_time,
+            url__mirror__active=True, url__mirror__public=True).values(
             'url__url', 'url__protocol__protocol', 'url__mirror__country',
             'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
