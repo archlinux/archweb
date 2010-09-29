@@ -6,6 +6,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('main', '0014_mirror_notes_rsync_optional'),
+    )
+
     def forwards(self, orm):
         db.rename_table('main_mirror', 'mirrors_mirror')
         db.rename_table('main_mirrorurl', 'mirrors_mirrorurl')
