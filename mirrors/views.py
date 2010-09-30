@@ -25,7 +25,7 @@ class MirrorlistForm(forms.Form):
         self.fields['country'].choices = make_choice(mirrors)
         self.fields['country'].initial = ['Any']
         protos = make_choice(
-                MirrorProtocol.objects.exclude(protocol__iexact='rsync'))
+                MirrorProtocol.objects.filter(is_download=True))
         self.fields['protocol'].choices = protos
         self.fields['protocol'].initial = [t[0] for t in protos]
 
@@ -45,8 +45,8 @@ def generate_mirrorlist(request):
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False):
     if not protocols:
-        protocols = MirrorProtocol.objects.exclude(
-                protocol__iexact='rsync').values_list('protocol', flat=True)
+        protocols = MirrorProtocol.objects.filter(
+                is_download=True).values_list('protocol', flat=True)
     qset = MirrorUrl.objects.select_related().filter(
             protocol__protocol__in=protocols,
             mirror__public=True, mirror__active=True, mirror__isos=True

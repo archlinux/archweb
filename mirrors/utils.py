@@ -10,7 +10,7 @@ default_cutoff = datetime.timedelta(hours=24)
 @cache_function(300)
 def get_mirror_statuses(cutoff=default_cutoff):
     cutoff_time = datetime.datetime.utcnow() - cutoff
-    protocols = MirrorProtocol.objects.exclude(protocol__iexact='rsync')
+    protocols = list(MirrorProtocol.objects.filter(is_download=True))
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             mirror__active=True, mirror__public=True,
