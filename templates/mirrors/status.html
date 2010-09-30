@@ -98,37 +98,8 @@
 </div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
-$.tablesorter.addParser({
-    /* sorts numeric, but put '', 'unknown', and '∞' last. */
-    id: 'mostlydigit',
-    is: function(s,table) {
-        var special = ['', 'unknown', '∞'];
-        var c = table.config;
-        return ($.inArray(s, special) > -1) || $.tablesorter.isDigit(s,c);
-    },
-    format: function(s) {
-        var special = ['', 'unknown', '∞'];
-        if($.inArray(s, special) > -1) return Number.MAX_VALUE;
-        return $.tablesorter.formatFloat(s);
-    },
-    type: 'numeric'
-});
-$.tablesorter.addParser({
-    /* sorts duration; put '', 'unknown', and '∞' last. */
-    id: 'duration',
-    is: function(s,table) {
-        var special = ['', 'unknown', '∞'];
-        return ($.inArray(s, special) > -1) || /^[0-9]+:[0-5][0-9]$/.test(s);
-    },
-    format: function(s) {
-        var special = ['', 'unknown', '∞'];
-        if($.inArray(s, special) > -1) return Number.MAX_VALUE;
-        matches = /^([0-9]+):([0-5][0-9])$/.exec(s);
-        return matches[1] * 60 + matches[2];
-    },
-    type: 'numeric'
-});
 $(document).ready(function() {
     $("#outofsync_mirrors:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[3,1]],

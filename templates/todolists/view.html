@@ -53,31 +53,10 @@
 </div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
-    $(function() {
-        $('a[href*=todo/flag]').click(function() {
-            var link = this;
-
-            $.getJSON(link.href, function(data) {
-                if (data.complete) {
-                    $(link).text('Complete').addClass('complete').removeClass('incomplete');
-                } else {
-                    $(link).text('Incomplete').addClass('incomplete').removeClass('complete');
-                }
-            });
-
-            return false;
-        });
-    });
-$.tablesorter.addParser({
-    id: 'todostatus',
-    is: function(s) { return false; },
-    format: function(s) {
-        return s.match(/incomplete/) ? 1 : 0;
-    },
-    type: 'numeric'
-});
 $(document).ready(function() {
+    $('a[href*=todo/flag]').click(todolist_flag);
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[0,0], [1,0]],

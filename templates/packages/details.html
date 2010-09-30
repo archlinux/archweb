@@ -212,15 +212,8 @@
 </div><!-- #pkgdetails -->
 
 {% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
-function ajaxifyFiles() {
-    $('#filelink').click(function(event) {
-        event.preventDefault();
-        $.get(this.href, function(data) {
-            $('#pkgfilelist').html(data);
-        });
-    });
-}
 $(document).ready(ajaxifyFiles);
 </script>
 {% endblock %}

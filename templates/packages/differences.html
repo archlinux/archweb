@@ -59,47 +59,8 @@
 </div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
-filter_packages = function() {
-    // start with all rows, and then remove ones we shouldn't show
-    var rows = $(".results tbody tr");
-    if(!$('#id_multilib').is(':checked')) {
-        rows = rows.not(".multilib");
-    }
-    var arch = $("#id_archonly").val();
-    if(arch !== "all") {
-        rows = rows.filter("." + arch);
-    }
-    if(!$('#id_minor').is(':checked')) {
-        // this check is done last because it is the most expensive
-        rows = rows.filter(function(index) {
-            // all this just to get the split version out of the table cell
-            var pat = /(.*)-(.+)/;
-            var ver_a = $('td:eq(2) span', this).text().match(pat);
-            var ver_b = $('td:eq(3) span', this).text().match(pat);
-            // did we match at all?
-            if(!ver_a || !ver_b) return true;
-            // first check pkgver
-            if(ver_a[1] !== ver_b[1]) return true;
-            // pkgver matched, so see if rounded pkgrel matches
-			if(Math.floor(parseFloat(ver_a[2])) ==
-				Math.floor(parseFloat(ver_b[2]))) return false;
-            // pkgrel didn't match, so keep the row
-            return true;
-        });
-    }
-    // hide all rows, then show the set we care about
-    $('.results tbody tr').hide();
-    rows.show();
-    // make sure we update the odd/even styling from sorting
-    $('.results').trigger("applyWidgets");
-};
-filter_reset = function() {
-    $('#id_archonly').val("all");
-    $('#id_multilib').removeAttr("checked");
-    $('#id_minor').attr("checked", "checked");
-    filter_packages();
-};
 $(document).ready(function() {
     $('.results').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
     $('#diff_filter select').change(filter_packages);
