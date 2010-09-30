@@ -8,7 +8,7 @@
     <h2>Mirror Status</h2>
     <p>This page reports the status of all known, public, and active Arch Linux
     mirrors. All data on this page reflects the status of the mirrors within
-    the <em>last 24 hours</em>. All listed times are UTC. The check script runs
+    the <em>last {{ cutoff|hours }}</em>. All listed times are UTC. The check script runs
     on a regular basis and polls for the <tt>lastsync</tt> file in the root of
     our repository layout. This file is regularly updated on the central
     repository, so checking the value within allows one to see if the mirror
@@ -21,6 +21,9 @@
         <tt>lastsync</tt> file on the mirror. If this file could not be
         retrieved or contained data we didn't recognize, this column will show
         'unknown'.</li>
+        <li><em>Completion %:</em> The number of mirror checks that have
+        successfully connected and disconnected from the given URL. If this is
+        below 100%, the mirror may be unreliable.</li>
         <li><em>μ Delay:</em> The calculated average mirroring delay; e.g. the
         mean value of <tt>last check − last sync</tt> for each check of
         this mirror URL. Due to the timing of mirror checks, any value under
@@ -38,7 +41,7 @@
     </ul>
     <p>The final table on this page is an error log, which shows any errors
     that occurred while contacting mirrors. This only shows errors that
-    occurred within the last 24 hours.</p>
+    occurred within the last {{ cutoff|hours }}.</p>
     <ul>
         <li><a href="#outofsync">Out of Sync Mirrors</a></li>
         <li><a href="#successful">Successfully Syncing Mirrors</a></li>
@@ -46,7 +49,7 @@
     </ul>
 
     <p>The last mirror check ran at {{ last_check|date:'Y-m-d H:i' }} UTC.
-    Checks have ran {{ num_checks }} times in the last 24 hours at an average
+    Checks have ran {{ num_checks }} times in the last {{ cutoff|hours }} at an average
     interval of {{ check_frequency|duration }} (hh:mm).</p>
 
     <a name="outofsync" id="outofsync"></a>
@@ -75,7 +78,7 @@
                 <th>Country</th>
                 <th>Error Message</th>
                 <th>Last Occurred</th>
-                <th>Occurrences (last 24 hours)</th>
+                <th>Occurrences (last {{ cutoff|hours }})</th>
             </tr>
         </thead>
         <tbody>
@@ -96,12 +99,46 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
+$.tablesorter.addParser({
+    /* sorts numeric, but put '', 'unknown', and '∞' last. */
+    id: 'mostlydigit',
+    is: function(s,table) {
+        var special = ['', 'unknown', '∞'];
+        var c = table.config;
+        return ($.inArray(s, special) > -1) || $.tablesorter.isDigit(s,c);
+    },
+    format: function(s) {
+        var special = ['', 'unknown', '∞'];
+        if($.inArray(s, special) > -1) return Number.MAX_VALUE;
+        return $.tablesorter.formatFloat(s);
+    },
+    type: 'numeric'
+});
+$.tablesorter.addParser({
+    /* sorts duration; put '', 'unknown', and '∞' last. */
+    id: 'duration',
+    is: function(s,table) {
+        var special = ['', 'unknown', '∞'];
+        return ($.inArray(s, special) > -1) || /^[0-9]+:[0-5][0-9]$/.test(s);
+    },
+    format: function(s) {
+        console.log('duration: ' + s);
+        var special = ['', 'unknown', '∞'];
+        if($.inArray(s, special) > -1) return Number.MAX_VALUE;
+        matches = /^([0-9]+):([0-5][0-9])$/.exec(s);
+        console.log(s, matches[1] * 60 + matches[2]);
+        return matches[1] * 60 + matches[2];
+    },
+    type: 'numeric'
+});
 $(document).ready(function() {
-    $("#outofsync_mirrors").tablesorter(
-        {widgets: ['zebra'], sortList: [[3,1], [5,1]]});
-    $("#successful_mirrors").tablesorter(
-        {widgets: ['zebra'], sortList: [[7,0]]});
-    $("#errorlog_mirrors").tablesorter(
+    $("#outofsync_mirrors:has(tbody tr)").tablesorter(
+        {widgets: ['zebra'], sortList: [[3,1]],
+        headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+    $("#successful_mirrors:has(tbody tr)").tablesorter(
+        {widgets: ['zebra'], sortList: [[8,0]],
+        headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+    $("#errorlog_mirrors:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[4,1], [5,1]]});
 });
 </script>

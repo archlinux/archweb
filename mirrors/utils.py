@@ -16,7 +16,9 @@ def get_mirror_statuses(cutoff=default_cutoff):
             mirror__active=True, mirror__public=True,
             protocol__in=protocols,
             logs__check_time__gte=cutoff_time).annotate(
-            check_count=Count('logs'), last_sync=Max('logs__last_sync'),
+            check_count=Count('logs'),
+            success_count=Count('logs__duration'),
+            last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
             duration_avg=Avg('logs__duration'),
             duration_stddev=StdDev('logs__duration')
@@ -32,17 +34,6 @@ def get_mirror_statuses(cutoff=default_cutoff):
         d = log.check_time - log.last_sync
         delays.setdefault(log.url_id, []).append(d)
 
-    for url in urls:
-        if url.id in delays:
-            url_delays = delays[url.id]
-            d = sum(url_delays, datetime.timedelta()) / len(url_delays)
-            url.delay = d
-            hours = d.days * 24.0 + d.seconds / 3600.0
-            url.score = hours + url.duration_avg + url.duration_stddev
-        else:
-            url.delay = None
-            url.score = None
-
     if urls:
         last_check = max([u.last_check for u in urls])
         num_checks = max([u.check_count for u in urls])
@@ -55,7 +46,21 @@ def get_mirror_statuses(cutoff=default_cutoff):
         num_checks = 0
         check_frequency = None
 
+    for url in urls:
+        url.completion_pct = float(url.success_count) / num_checks
+        if url.id in delays:
+            url_delays = delays[url.id]
+            d = sum(url_delays, datetime.timedelta()) / len(url_delays)
+            url.delay = d
+            hours = d.days * 24.0 + d.seconds / 3600.0
+            url.score = hours + url.duration_avg + url.duration_stddev
+        else:
+            url.delay = None
+            url.score = None
+            url.completion = 0.0
+
     return {
+        'cutoff': cutoff,
         'last_check': last_check,
         'num_checks': num_checks,
         'check_frequency': check_frequency,
