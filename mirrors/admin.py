@@ -55,7 +55,11 @@ class MirrorAdmin(admin.ModelAdmin):
             MirrorRsyncInlineAdmin,
     ]
 
+class MirrorProtocolAdmin(admin.ModelAdmin):
+    list_display = ('protocol', 'is_download',)
+    list_filter = ('is_download',)
+
 admin.site.register(Mirror, MirrorAdmin)
-admin.site.register(MirrorProtocol)
+admin.site.register(MirrorProtocol, MirrorProtocolAdmin)
 
 # vim: set ts=4 sw=4 et:

@@ -39,8 +39,12 @@ class Mirror(models.Model):
 
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
+    is_download = models.BooleanField(default=True,
+            help_text="Is protocol useful for end-users, e.g. FTP/HTTP")
+
     def __unicode__(self):
         return self.protocol
+
     class Meta:
         verbose_name = 'Mirror Protocol'
 
@@ -48,16 +52,20 @@ class MirrorUrl(models.Model):
     url = models.CharField(max_length=255)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls")
     mirror = models.ForeignKey(Mirror, related_name="urls")
+
     def __unicode__(self):
         return self.url
+
     class Meta:
         verbose_name = 'Mirror URL'
 
 class MirrorRsync(models.Model):
     ip = models.CharField(max_length=24)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
+
     def __unicode__(self):
         return "%s" % (self.ip)
+
     class Meta:
         verbose_name = 'Mirror Rsync IP'
 
