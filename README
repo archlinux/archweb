@@ -44,19 +44,21 @@ will probably want the following:
 
 4. Sync the database to create it.
 
-        $ python manage.py syncdb
+        $ ./manage.py syncdb
 
 5. Migrate changes.
 
-        $ python manage.py migrate
+        $ ./manage.py migrate
 
 6. Load the fixtures to prepopulate some data.
 
-        $ python manage.py loaddata main/fixtures/arches.json main/fixtures/repos.json
+        $ ./manage.py loaddata main/fixtures/arches.json
+        # ./manage.py loaddata main/fixtures/repos.json
+        # ./manage.py loaddata mirrors/fixtures/mirrorprotocols.json
     
 7. Use the following commands to start a service instance
 
-        $ python manage.py runserver
+        $ ./manage.py runserver
 
 8. To optionally populate the database with real data:
 

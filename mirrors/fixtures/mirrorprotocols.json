@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 1, 
+        "model": "mirrors.mirrorprotocol", 
+        "fields": {
+            "is_download": true, 
+            "protocol": "http"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "mirrors.mirrorprotocol", 
+        "fields": {
+            "is_download": true, 
+            "protocol": "ftp"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "mirrors.mirrorprotocol", 
+        "fields": {
+            "is_download": false, 
+            "protocol": "rsync"
+        }
+    }
+]
