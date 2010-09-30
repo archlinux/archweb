@@ -1,35 +1,72 @@
+# Archweb README
+
+To get a pretty version of this document, run
+
+    $ markdown README > README.html
+
 # License
- See LICENSE file.
+
+See LICENSE file.
 
 # Authors
- See AUTHORS file.
+
+See AUTHORS file.
 
 # Dependencies
- - python
- - mysql-python or python-pysqlite
- - Django >= 1.2.X
 
-# Installation
-For a simple testing installation:
+- python
+- python-virtualenv
 
- 1. Install dependencies.
-    $ pacman -S django python-pysqlite sqlite3
- 
- 2. Copy local_settings.py.example to local_settings.py and modify.
-    Make sure to uncomment the appropriate db section (either sqlite or mysql).
+# Python dependencies
 
- 3. Sync the database to create it.
-    $ python manage.py syncdb
+More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
+use virtualenv to handle these. But if you insist on (Arch Linux) packages, you
+will probably want the following:
 
- 4. Load the fixtures to prepopulate some data.
-    $ python manage.py loaddata arches.json repos.json
+- mysql-python or python-pysqlite
+- django
+- python-markdown
+- python-south
+- python-memcached
+
+# Testing Installation
+
+1. Run `virtualenv`.
+
+        $ cd /path/to/archweb && virtualenv ../archweb
+
+2. Install dependencies through `pip`.
+
+        $ pip -r requirements.txt
+
+3. Copy `local_settings.py.example` to `local_settings.py` and modify.
+   Make sure to uncomment the appropriate db section (either sqlite or mysql).
+
+4. Sync the database to create it.
+
+        $ python manage.py syncdb
+
+5. Migrate changes.
+
+        $ python manage.py migrate
+
+6. Load the fixtures to prepopulate some data.
+
+        $ python manage.py loaddata main/fixtures/arches.json main/fixtures/repos.json
     
- 5. Use the following commands to start a service instance
-    $ python manage.py runserver
+7. Use the following commands to start a service instance
 
- 6. To optionally populate the database with real data:
-    $ wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
-    $ ./manage.py reporead i686 core.db.tar.gz
+        $ python manage.py runserver
 
-    (alter architecture and repo to get x86_64 and extra packages if needed)
+8. To optionally populate the database with real data:
 
+        $ wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
+        $ ./manage.py reporead i686 core.db.tar.gz
+
+Alter architecture and repo to get x86\_64 and packages from other repos if needed.
+
+# Production Installation
+
+Ask someone who knows, or you are going to be in trouble.
+
+vim: set syntax=markdown et:
