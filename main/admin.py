@@ -4,6 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 from main.models import Arch, Donor, Package, Repo, UserProfile
 
 class DonorAdmin(admin.ModelAdmin):
+    list_display = ('name', 'visible')
+    list_filter = ('visible',)
     search_fields = ('name',)
 
 class ArchAdmin(admin.ModelAdmin):

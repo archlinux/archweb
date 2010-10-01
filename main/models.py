@@ -48,6 +48,8 @@ class PackageManager(models.Manager):
 class Donor(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
+    visible = models.BooleanField(default=True,
+            help_text="Should we show this donor on the public page?")
 
     def __unicode__(self):
         return self.name

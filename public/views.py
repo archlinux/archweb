@@ -38,7 +38,7 @@ def userlist(request, type='Developers'):
 
 def donate(request):
     context = {
-        'donors': Donor.objects.order_by('name'),
+        'donors': Donor.objects.filter(visible=True).order_by('name'),
     }
     return direct_to_template(request, 'public/donate.html', context)
 
