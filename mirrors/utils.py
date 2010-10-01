@@ -40,7 +40,11 @@ def get_mirror_statuses(cutoff=default_cutoff):
         check_info = MirrorLog.objects.filter(
                 check_time__gte=cutoff_time).aggregate(
                 mn=Min('check_time'), mx=Max('check_time'))
-        check_frequency = (check_info['mx'] - check_info['mn']) / num_checks
+        if num_checks > 1:
+            check_frequency = (check_info['mx'] - check_info['mn']) \
+                    / (num_checks - 1)
+        else:
+            check_frequency = None;
     else:
         last_check = None
         num_checks = 0
