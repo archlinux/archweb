@@ -307,7 +307,8 @@ class Todolist(models.Model):
 
     @property
     def package_names(self):
-        return '\n'.join(set([p.pkg.pkgname for p in self.packages]))
+        # depends on packages property returning a queryset
+        return self.packages.values_list('pkg__pkgname', flat=True).distinct()
 
     class Meta:
         db_table = 'todolists'

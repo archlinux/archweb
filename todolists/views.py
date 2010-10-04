@@ -68,6 +68,7 @@ def list(request):
 
     return direct_to_template(request, 'todolists/list.html', {'lists': lists})
 
+# TODO: this calls for transaction management and async emailing
 @permission_required('main.add_todolist')
 @never_cache
 def add(request):
@@ -80,7 +81,7 @@ def add(request):
                 description = form.cleaned_data['description'])
 
             for pkg in form.cleaned_data['packages']:
-                tpkg = TodolistPkg.objects.create(list = todo, pkg = pkg)
+                tpkg = TodolistPkg.objects.create(list=todo, pkg=pkg)
                 send_todolist_email(tpkg)
 
             return redirect('/todo/')
@@ -91,9 +92,10 @@ def add(request):
             'title': 'Add Todo List',
             'form': form,
             'submit_text': 'Create List'
-            }
+    }
     return direct_to_template(request, 'general_form.html', page_dict)
 
+# TODO: this calls for transaction management and async emailing
 @permission_required('main.change_todolist')
 @never_cache
 def edit(request, list_id):
@@ -116,7 +118,7 @@ def edit(request, list_id):
             for pkg in form.cleaned_data['packages']:
                 if pkg not in packages:
                     tpkg = TodolistPkg.objects.create(
-                            list = todo_list, pkg = pkg)
+                            list=todo_list, pkg=pkg)
                     send_todolist_email(tpkg)
 
             return redirect(todo_list)
@@ -124,13 +126,13 @@ def edit(request, list_id):
         form = TodoListForm(initial={
             'name': todo_list.name,
             'description': todo_list.description,
-            'packages': todo_list.package_names,
-            })
+            'packages': '\n'.join(todo_list.package_names),
+        })
     page_dict = {
             'title': 'Edit Todo List: %s' % todo_list.name,
             'form': form,
             'submit_text': 'Save List'
-            }
+    }
     return direct_to_template(request, 'general_form.html', page_dict)
 
 @permission_required('main.delete_todolist')
