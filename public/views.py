@@ -43,7 +43,7 @@ def donate(request):
     return direct_to_template(request, 'public/donate.html', context)
 
 def download(request):
-    qset = MirrorUrl.objects.filter(
+    qset = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             Q(protocol__protocol__iexact='HTTP') | Q(protocol__protocol__iexact='FTP'),
             mirror__public=True, mirror__active=True, mirror__isos=True
     )

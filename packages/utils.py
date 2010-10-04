@@ -104,7 +104,7 @@ SELECT p.id, q.id
         # column A will always have a value, column B might be NULL
         to_fetch.append(row[0])
     # fetch all of the necessary packages
-    pkgs = Package.objects.in_bulk(to_fetch)
+    pkgs = Package.objects.select_related('arch', 'repo').in_bulk(to_fetch)
     # now build a list of tuples containing differences
     differences = []
     for row in results:
