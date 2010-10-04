@@ -130,7 +130,7 @@ def find_user(userstring):
     def user_email():
         return User.objects.get(email=email)
     def profile_email():
-        return User.objects.get(userprofile_user__public_email=email)
+        return User.objects.get(userprofile__public_email=email)
     def user_name():
         # yes, a bit odd but this is the easiest way since we can't always be
         # sure how to split the name. Ensure every 'token' appears in at least

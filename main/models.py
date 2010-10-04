@@ -27,8 +27,7 @@ class UserProfile(models.Model):
     roles = models.CharField(max_length=255, null=True, blank=True)
     favorite_distros = models.CharField(max_length=255, null=True, blank=True)
     picture = models.FileField(upload_to='devs', default='devs/silhouette.png')
-    user = models.ForeignKey(
-        User, related_name='userprofile_user', unique=True)
+    user = models.OneToOneField(User, related_name='userprofile')
     allowed_repos = models.ManyToManyField('Repo', blank=True)
     class Meta:
         db_table = 'user_profiles'

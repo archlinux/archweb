@@ -43,7 +43,7 @@ def update(request):
         mode = 'disown'
 
     if mode:
-        repos = request.user.userprofile_user.all()[0].allowed_repos.all()
+        repos = request.user.userprofile.allowed_repos.all()
         pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
                 repo__in=repos)

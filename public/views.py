@@ -18,7 +18,7 @@ def index(request):
     return direct_to_template(request, 'public/index.html', context)
 
 def userlist(request, type='Developers'):
-    users = User.objects.order_by('username')
+    users = User.objects.order_by('username').select_related('userprofile')
     if type == 'Developers':
         users = users.filter(is_active=True, groups__name="Developers")
         msg = "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties."

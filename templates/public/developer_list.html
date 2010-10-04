@@ -11,7 +11,7 @@
 
 <table class="arch-bio-entry">
     {% for dev in dev_list %}
-    {% with dev.get_profile as prof %}
+    {% with dev.userprofile as prof %}
     <tr>
         <td class="pic pic-{{ dev.username }}">
             <img src="{{ prof.picture.url }}" height="125" width="125" alt="Image for {{ prof.alias }}"/>
