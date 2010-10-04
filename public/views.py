@@ -44,7 +44,7 @@ def donate(request):
 
 def download(request):
     qset = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
-            Q(protocol__protocol__iexact='HTTP') | Q(protocol__protocol__iexact='FTP'),
+            protocol__is_download=True,
             mirror__public=True, mirror__active=True, mirror__isos=True
     )
     return list_detail.object_list(request, 
