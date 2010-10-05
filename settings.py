@@ -1,11 +1,14 @@
 import os
 # Django settings for archweb project.
 
-## Import local settings
-from local_settings import *
-
 ## Set the debug values
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+## Notification admins
+ADMINS = (
+   ('Dan McGee', 'dan@archlinux.org'),
+)
 
 # Set managers to admins
 MANAGERS = ADMINS
@@ -90,12 +93,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
-# Enable caching templates in production environments
-if not TEMPLATE_DEBUG:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
-    )
-
 # Set django's User stuff to use our profile model
 # format is app.model
 AUTH_PROFILE_MODULE = 'main.UserProfile'
@@ -122,5 +119,14 @@ INSTALLED_APPS = (
     'public',
     'south', # database migration support
 )
+
+## Import local settings
+from local_settings import *
+
+# Enable caching templates in production environments
+if not TEMPLATE_DEBUG:
+    TEMPLATE_LOADERS = (
+        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
+    )
 
 # vim: set ts=4 sw=4 et:
