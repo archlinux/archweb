@@ -1,5 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+
 from django.core.management import execute_manager
+
 try:
     import settings # Assumed to be in the same directory.
 except ImportError:
