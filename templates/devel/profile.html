@@ -6,7 +6,7 @@
 
     <h2>Developer Profile</h2>
 
-    <form id="edit-profile-form" method="post">{% csrf_token %}
+    <form id="edit-profile-form" enctype="multipart/form-data" method="post">{% csrf_token %}
         <p><em>Note:</em> This is the public information shown on the developer
         and/or TU profiles page, so please be appropriate with the information
         you provide here.</p>

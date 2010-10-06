@@ -74,7 +74,7 @@ class UserProfileForm(forms.ModelForm):
 def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
-        profile_form = UserProfileForm(data=request.POST, instance=request.user.get_profile())
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user.get_profile())
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
