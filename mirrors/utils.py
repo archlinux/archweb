@@ -57,11 +57,16 @@ def get_mirror_statuses(cutoff=default_cutoff):
             d = sum(url_delays, datetime.timedelta()) / len(url_delays)
             url.delay = d
             hours = d.days * 24.0 + d.seconds / 3600.0
-            url.score = hours + url.duration_avg + url.duration_stddev
+
+            if url.completion_pct > 0:
+                divisor = url.completion_pct
+            else:
+                # arbitrary small value
+                divisor = 0.005
+            url.score = (hours + url.duration_avg + url.duration_stddev) / divisor
         else:
             url.delay = None
             url.score = None
-            url.completion = 0.0
 
     return {
         'cutoff': cutoff,

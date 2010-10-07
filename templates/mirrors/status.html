@@ -36,8 +36,9 @@
         retrieval time. A high standard deviation can indicate an unstable or
         overloaded mirror.</li>
         <li><em>Mirror Score:</em> A very rough calculation for ranking
-        mirrors. It is currently calculated as <tt>hours delay + average
-            duration + standard deviation</tt>. Lower is better.</li>
+        mirrors. It is currently calculated as <tt>(hours delay + average
+            duration + standard deviation) / completion percentage</tt>. Lower
+        is better.</li>
     </ul>
     <p>The final table on this page is an error log, which shows any errors
     that occurred while contacting mirrors. This only shows errors that
