@@ -20,6 +20,7 @@ import sys
 import time
 import thread
 from threading import Thread
+import types
 from Queue import Queue, Empty
 import urllib2
 
@@ -81,6 +82,7 @@ def check_mirror_url(mirror_url):
         # lastsync should be an epoch value, but some mirrors
         # are creating their own in RFC-3339 format:
         #     '2010-09-02 11:05:06+02:00'
+        parsed_time = None
         try:
             parsed_time = datetime.utcfromtimestamp(int(data))
         except ValueError:
@@ -91,15 +93,28 @@ def check_mirror_url(mirror_url):
             parsed_time = parse_rfc3339_datetime(data)
 
         log.last_sync = parsed_time
+        # if we couldn't parse a time, this is a failure
+        if parsed_time == None:
+            log.error = "Could not parse time from lastsync"
+            log.is_success = False
         log.duration = end - start
         logger.debug("success: %s, %.2f" % (url, log.duration))
     except urllib2.HTTPError, e:
+        if e.code == 404:
+            # we have a duration, just not a success
+            end = time.time()
+            log.duration = end - start
         log.is_success = False
-        log.error =str(e)
+        log.error = str(e)
         logger.debug("failed: %s, %s" % (url, log.error))
     except urllib2.URLError, e:
         log.is_success=False
         log.error = e.reason
+        if isinstance(e.reason, types.StringTypes) and \
+                re.search(r'550.*No such file', e.reason):
+            # similar to 404 case above, still record duration
+            end = time.time()
+            log.duration = end - start
         if isinstance(e.reason, socket.timeout):
             log.error = "Connection timed out."
         elif isinstance(e.reason, socket.error):
