@@ -2,6 +2,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 
 def cache_function(length):
@@ -18,8 +19,6 @@ def cache_function(length):
     """
     def decorator(func):
         def inner_func(*args, **kwargs):
-            from django.core.cache import cache
-
             raw = [func.__name__, func.__module__, args, kwargs]
             pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
             key = md5_constructor(pickled).hexdigest()
