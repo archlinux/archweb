@@ -78,17 +78,22 @@ class PackageFeed(Feed):
         return (item.repo.name, item.arch.name)
 
 
-def news_etag(request, *args, **kwargs):
-    latest = News.objects.latest('last_modified')
-    if latest:
-        return md5_constructor(str(latest.last_modified)).hexdigest()
+def retrieve_news_latest():
+    try:
+        latest = News.objects.values('last_modified').latest('last_modified')
+        return latest['last_modified']
+    except News.DoesNotExist:
+        pass
     return None
 
-def news_last_modified(request):
-    latest = News.objects.latest('last_modified')
+def news_etag(request, *args, **kwargs):
+    latest = retrieve_news_latest()
     if latest:
-        return latest.last_modified
+        return md5_constructor(str(latest)).hexdigest()
     return None
+
+def news_last_modified(request, *args, **kwargs):
+    return retrieve_news_latest()
 
 class NewsFeed(Feed):
     title = 'Arch Linux: Recent news updates'
