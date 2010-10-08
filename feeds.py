@@ -1,12 +1,17 @@
 import datetime
 
 from django.contrib.syndication.views import Feed
+from django.core.cache import cache
 from django.db.models import Q
+from django.db.models.signals import post_save
 from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
 from main.models import Arch, Repo, Package
 from news.models import News
+
+CACHE_TIMEOUT = 1800
+CACHE_NEWS_KEY = 'cache_news_latest'
 
 def package_etag(request, *args, **kwargs):
     latest = Package.objects.latest('last_update')
@@ -79,12 +84,25 @@ class PackageFeed(Feed):
 
 
 def retrieve_news_latest():
+    latest = cache.get(CACHE_NEWS_KEY)
+    if latest:
+        return latest
     try:
-        latest = News.objects.values('last_modified').latest('last_modified')
-        return latest['last_modified']
+        latest = News.objects.values('last_modified').latest(
+                'last_modified')['last_modified']
+        cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
+        return latest
     except News.DoesNotExist:
         pass
     return None
+
+def refresh_news_latest(**kwargs):
+    # We could delete the value, but that could open a race condition
+    # where the new data wouldn't have been committed yet by the calling
+    # thread. Update it instead.
+    latest = News.objects.values('last_modified').latest(
+            'last_modified')['last_modified']
+    cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
 
 def news_etag(request, *args, **kwargs):
     latest = retrieve_news_latest()
@@ -115,5 +133,8 @@ class NewsFeed(Feed):
 
     def item_author_name(self, item):
         return item.author.get_full_name()
+
+# connect signals needed to keep cache in line with reality
+post_save.connect(refresh_news_latest, sender=News)
 
 # vim: set ts=4 sw=4 et:
