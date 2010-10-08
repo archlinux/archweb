@@ -20,8 +20,8 @@ See AUTHORS file.
 # Python dependencies
 
 More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
-use virtualenv to handle these. But if you insist on (Arch Linux) packages, you
-will probably want the following:
+use virtualenv and pip to handle these. But if you insist on (Arch Linux)
+packages, you will probably want the following:
 
 - mysql-python or python-pysqlite
 - django
@@ -37,7 +37,7 @@ will probably want the following:
 
 2. Install dependencies through `pip`.
 
-        $ pip -r requirements.txt
+        $ pip install -r requirements.txt
 
 3. Copy `local_settings.py.example` to `local_settings.py` and modify.
    Make sure to uncomment the appropriate db section (either sqlite or mysql).
