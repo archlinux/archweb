@@ -12,6 +12,8 @@ from main.models import Arch, Repo, Package
 from news.models import News
 
 CACHE_TIMEOUT = 1800
+INVALIDATE_TIMEOUT = 15
+
 CACHE_PACKAGE_KEY = 'cache_package_latest'
 CACHE_NEWS_KEY = 'cache_news_latest'
 
@@ -36,7 +38,10 @@ def retrieve_package_latest():
         latest = Package.objects.values('last_update').latest(
                 'last_update')['last_update']
         latest = latest + utc_offset()
-        cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
+        # Using add means "don't overwrite anything in there". What could be in
+        # there is an explicit None value that our refresh signal set, which
+        # means we want to avoid race condition possibilities for a bit.
+        cache.add(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
         return latest
     except Package.DoesNotExist:
         pass
@@ -45,11 +50,10 @@ def retrieve_package_latest():
 def refresh_package_latest(**kwargs):
     # We could delete the value, but that could open a race condition
     # where the new data wouldn't have been committed yet by the calling
-    # thread. Update it instead.
-    latest = Package.objects.values('last_update').latest(
-            'last_update')['last_update']
-    latest = latest + utc_offset()
-    cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
+    # thread. Instead, explicitly set it to None for a short amount of time.
+    # Hopefully by the time it expires we will have committed, and the cache
+    # will be valid again. See "Scaling Django" by Mike Malone, slide 30.
+    cache.set(CACHE_PACKAGE_KEY, None, INVALIDATE_TIMEOUT)
 
 def package_etag(request, *args, **kwargs):
     latest = retrieve_package_latest()
@@ -123,20 +127,16 @@ def retrieve_news_latest():
         latest = News.objects.values('last_modified').latest(
                 'last_modified')['last_modified']
         latest = latest + utc_offset()
-        cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
+        # same thoughts apply as in retrieve_package_latest
+        cache.add(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
         return latest
     except News.DoesNotExist:
         pass
     return None
 
 def refresh_news_latest(**kwargs):
-    # We could delete the value, but that could open a race condition
-    # where the new data wouldn't have been committed yet by the calling
-    # thread. Update it instead.
-    latest = News.objects.values('last_modified').latest(
-            'last_modified')['last_modified']
-    latest = latest + utc_offset()
-    cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
+    # same thoughts apply as in refresh_package_latest
+    cache.set(CACHE_NEWS_KEY, None, INVALIDATE_TIMEOUT)
 
 def news_etag(request, *args, **kwargs):
     latest = retrieve_news_latest()
