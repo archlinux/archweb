@@ -11,22 +11,40 @@ from main.models import Arch, Repo, Package
 from news.models import News
 
 CACHE_TIMEOUT = 1800
+CACHE_PACKAGE_KEY = 'cache_package_latest'
 CACHE_NEWS_KEY = 'cache_news_latest'
 
-def package_etag(request, *args, **kwargs):
-    latest = Package.objects.latest('last_update')
+def retrieve_package_latest():
+    # we could break this down based on the request url, but it would probably
+    # cost us more in query time to do so.
+    latest = cache.get(CACHE_PACKAGE_KEY)
     if latest:
-        return md5_constructor(
-                str(kwargs) + str(latest.last_update)).hexdigest()
+        return latest
+    try:
+        latest = Package.objects.values('last_update').latest(
+                'last_update')['last_update']
+        cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
+        return latest
+    except Package.DoesNotExist:
+        pass
+    return None
+
+def refresh_package_latest(**kwargs):
+    # We could delete the value, but that could open a race condition
+    # where the new data wouldn't have been committed yet by the calling
+    # thread. Update it instead.
+    latest = Package.objects.values('last_update').latest(
+            'last_update')['last_update']
+    cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
+
+def package_etag(request, *args, **kwargs):
+    latest = retrieve_package_latest()
+    if latest:
+        return md5_constructor(str(kwargs) + str(latest)).hexdigest()
     return None
 
 def package_last_modified(request, *args, **kwargs):
-    # we could break this down based on the request url, but it would probably
-    # cost us more in query time to do so.
-    latest = Package.objects.latest('last_update')
-    if latest:
-        return latest.last_update
-    return None
+    return retrieve_package_latest()
 
 class PackageFeed(Feed):
     link = '/packages/'
@@ -135,6 +153,7 @@ class NewsFeed(Feed):
         return item.author.get_full_name()
 
 # connect signals needed to keep cache in line with reality
+post_save.connect(refresh_package_latest, sender=Package)
 post_save.connect(refresh_news_latest, sender=News)
 
 # vim: set ts=4 sw=4 et:
