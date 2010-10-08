@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal, ROUND_HALF_DOWN
 
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
@@ -14,6 +15,17 @@ CACHE_TIMEOUT = 1800
 CACHE_PACKAGE_KEY = 'cache_package_latest'
 CACHE_NEWS_KEY = 'cache_news_latest'
 
+def utc_offset():
+    '''Calculate the UTC offset from local time. Useful for converting values
+    stored in local time to things like cache last modifed headers.'''
+    timediff = datetime.datetime.utcnow() - datetime.datetime.now()
+    secs = timediff.days * 86400 + timediff.seconds
+    # round to nearest minute
+    mins = Decimal(secs) / Decimal(60)
+    mins = mins.quantize(Decimal('0'), rounding=ROUND_HALF_DOWN)
+    return datetime.timedelta(minutes=int(mins))
+
+
 def retrieve_package_latest():
     # we could break this down based on the request url, but it would probably
     # cost us more in query time to do so.
@@ -23,6 +35,7 @@ def retrieve_package_latest():
     try:
         latest = Package.objects.values('last_update').latest(
                 'last_update')['last_update']
+        latest = latest + utc_offset()
         cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
         return latest
     except Package.DoesNotExist:
@@ -35,6 +48,7 @@ def refresh_package_latest(**kwargs):
     # thread. Update it instead.
     latest = Package.objects.values('last_update').latest(
             'last_update')['last_update']
+    latest = latest + utc_offset()
     cache.set(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
 
 def package_etag(request, *args, **kwargs):
@@ -108,6 +122,7 @@ def retrieve_news_latest():
     try:
         latest = News.objects.values('last_modified').latest(
                 'last_modified')['last_modified']
+        latest = latest + utc_offset()
         cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
         return latest
     except News.DoesNotExist:
@@ -120,6 +135,7 @@ def refresh_news_latest(**kwargs):
     # thread. Update it instead.
     latest = News.objects.values('last_modified').latest(
             'last_modified')['last_modified']
+    latest = latest + utc_offset()
     cache.set(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
 
 def news_etag(request, *args, **kwargs):
