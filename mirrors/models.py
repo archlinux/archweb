@@ -52,6 +52,8 @@ class MirrorUrl(models.Model):
     url = models.CharField(max_length=255)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls")
     mirror = models.ForeignKey(Mirror, related_name="urls")
+    has_ipv4 = models.BooleanField("IPv4 capable", default=True)
+    has_ipv6 = models.BooleanField("IPv6 capable", default=False)
 
     def __unicode__(self):
         return self.url
