@@ -22,8 +22,9 @@ class MirrorlistForm(forms.Form):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
         mirrors = Mirror.objects.filter(active=True).values_list(
                 'country', flat=True).distinct().order_by('country')
-        self.fields['country'].choices = make_choice(mirrors)
-        self.fields['country'].initial = ['Any']
+        self.fields['country'].choices = [('all','All')] + make_choice(
+                mirrors)
+        self.fields['country'].initial = ['all']
         protos = make_choice(
                 MirrorProtocol.objects.filter(is_download=True))
         self.fields['protocol'].choices = protos
