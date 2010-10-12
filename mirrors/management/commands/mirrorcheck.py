@@ -56,7 +56,8 @@ class Command(NoArgsCommand):
 
 def parse_rfc3339_datetime(time):
     # '2010-09-02 11:05:06+02:00'
-    m = re.match('^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})([-+])(\d{2}):(\d{2})', time)
+    m = re.match('^(\d{4})-(\d{2})-(\d{2}) '
+            '(\d{2}):(\d{2}):(\d{2})([-+])(\d{2}):(\d{2})', time)
     if m:
         vals = m.groups()
         parsed = datetime(int(vals[0]), int(vals[1]), int(vals[2]),
@@ -120,6 +121,10 @@ def check_mirror_url(mirror_url):
         elif isinstance(e.reason, socket.error):
             log.error = e.reason.args[1]
         logger.debug("failed: %s, %s" % (url, log.error))
+    except socket.timeout, e:
+        log.is_success = false
+        log.error = "Connection timed out."
+        logger.debug("failed: %s, %s" % (url, log.error))
 
     log.save()
     return log
@@ -128,8 +133,10 @@ def mirror_url_worker(queue):
     while True:
         try:
             item = queue.get(block=False)
-            check_mirror_url(item)
-            queue.task_done()
+            try:
+                check_mirror_url(item)
+            finally:
+                queue.task_done()
         except Empty:
             return 0
 
