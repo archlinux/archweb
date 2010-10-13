@@ -5,6 +5,12 @@ except ImportError:
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 
+def cache_function_key(func, args, kwargs):
+    raw = [func.__name__, func.__module__, args, kwargs]
+    pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
+    key = md5_constructor(pickled).hexdigest()
+    return 'cache_function.' + func.__name__ + '.' + key
+
 def cache_function(length):
     """
     A variant of the snippet posted by Jeff Wheeler at
@@ -19,10 +25,7 @@ def cache_function(length):
     """
     def decorator(func):
         def inner_func(*args, **kwargs):
-            raw = [func.__name__, func.__module__, args, kwargs]
-            pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
-            key = md5_constructor(pickled).hexdigest()
-            key = 'cache_function.' + func.__name__ + '.' + key
+            key = cache_function_key(func, args, kwargs)
             value = cache.get(key)
             if value is not None:
                 return value
@@ -33,5 +36,11 @@ def cache_function(length):
         return inner_func
     return decorator
 
+def clear_cache_function(func, args, kwargs):
+    key = cache_function_key(func, args, kwargs)
+    cache.delete(key)
+
 #utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]
+
+# vim: set ts=4 sw=4 et:
