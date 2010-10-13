@@ -18,18 +18,15 @@ import re
 import socket
 import sys
 import time
-import thread
 from threading import Thread
 import types
 from Queue import Queue, Empty
 import urllib2
 
-from logging import ERROR, WARNING, INFO, DEBUG
-
-from mirrors.models import Mirror, MirrorUrl, MirrorLog
+from mirrors.models import MirrorUrl, MirrorLog
 
 logging.basicConfig(
-    level=WARNING,
+    level=logging.WARNING,
     format='%(asctime)s -> %(levelname)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     stream=sys.stderr)
@@ -41,11 +38,11 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         v = int(options.get('verbosity', 0))
         if v == 0:
-            logger.level = ERROR
+            logger.level = logging.ERROR
         elif v == 1:
-            logger.level = WARNING
+            logger.level = logging.WARNING
         elif v == 2:
-            logger.level = DEBUG
+            logger.level = logging.DEBUG
 
         import signal, traceback
         handler = lambda sig, stack: traceback.print_stack(stack)
@@ -109,7 +106,7 @@ def check_mirror_url(mirror_url):
         log.error = str(e)
         logger.debug("failed: %s, %s" % (url, log.error))
     except urllib2.URLError, e:
-        log.is_success=False
+        log.is_success = False
         log.error = e.reason
         if isinstance(e.reason, types.StringTypes) and \
                 re.search(r'550.*No such file', e.reason):
@@ -122,7 +119,7 @@ def check_mirror_url(mirror_url):
             log.error = e.reason.args[1]
         logger.debug("failed: %s, %s" % (url, log.error))
     except socket.timeout, e:
-        log.is_success = false
+        log.is_success = False
         log.error = "Connection timed out."
         logger.debug("failed: %s, %s" % (url, log.error))
 
