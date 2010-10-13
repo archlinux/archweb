@@ -5,6 +5,12 @@ except ImportError:
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 
+CACHE_TIMEOUT = 1800
+INVALIDATE_TIMEOUT = 15
+
+CACHE_PACKAGE_KEY = 'cache_package_latest'
+CACHE_NEWS_KEY = 'cache_news_latest'
+
 def cache_function_key(func, args, kwargs):
     raw = [func.__name__, func.__module__, args, kwargs]
     pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
@@ -40,7 +46,23 @@ def clear_cache_function(func, args, kwargs):
     key = cache_function_key(func, args, kwargs)
     cache.delete(key)
 
-#utility to make a pair of django choices
+# utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]
+
+# These are in here because we would be jumping around in some import circles
+# and hoops otherwise. The only thing currently using these keys is the feed
+# caching stuff.
+
+def refresh_package_latest(**kwargs):
+    # We could delete the value, but that could open a race condition
+    # where the new data wouldn't have been committed yet by the calling
+    # thread. Instead, explicitly set it to None for a short amount of time.
+    # Hopefully by the time it expires we will have committed, and the cache
+    # will be valid again. See "Scaling Django" by Mike Malone, slide 30.
+    cache.set(CACHE_PACKAGE_KEY, None, INVALIDATE_TIMEOUT)
+
+def refresh_news_latest(**kwargs):
+    # same thoughts apply as in refresh_package_latest
+    cache.set(CACHE_NEWS_KEY, None, INVALIDATE_TIMEOUT)
 
 # vim: set ts=4 sw=4 et:

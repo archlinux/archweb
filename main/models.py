@@ -325,4 +325,10 @@ class TodolistPkg(models.Model):
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
 
+# connect signals needed to keep cache in line with reality
+from main.utils import refresh_package_latest
+from django.db.models.signals import post_save
+post_save.connect(refresh_package_latest, sender=Package,
+        dispatch_uid="main.models")
+
 # vim: set ts=4 sw=4 et:

@@ -23,4 +23,10 @@ class News(models.Model):
         get_latest_by = 'postdate'
         ordering = ['-postdate']
 
+# connect signals needed to keep cache in line with reality
+from main.utils import refresh_news_latest
+from django.db.models.signals import post_save
+post_save.connect(refresh_news_latest, sender=News,
+        dispatch_uid="news.models")
+
 # vim: set ts=4 sw=4 et:

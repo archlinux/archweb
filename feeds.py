@@ -4,18 +4,13 @@ from decimal import Decimal, ROUND_HALF_DOWN
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.db.models import Q
-from django.db.models.signals import post_save
 from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
 from main.models import Arch, Repo, Package
+from main.utils import CACHE_TIMEOUT, INVALIDATE_TIMEOUT
+from main.utils import CACHE_PACKAGE_KEY, CACHE_NEWS_KEY
 from news.models import News
-
-CACHE_TIMEOUT = 1800
-INVALIDATE_TIMEOUT = 15
-
-CACHE_PACKAGE_KEY = 'cache_package_latest'
-CACHE_NEWS_KEY = 'cache_news_latest'
 
 def utc_offset():
     '''Calculate the UTC offset from local time. Useful for converting values
@@ -46,14 +41,6 @@ def retrieve_package_latest():
     except Package.DoesNotExist:
         pass
     return None
-
-def refresh_package_latest(**kwargs):
-    # We could delete the value, but that could open a race condition
-    # where the new data wouldn't have been committed yet by the calling
-    # thread. Instead, explicitly set it to None for a short amount of time.
-    # Hopefully by the time it expires we will have committed, and the cache
-    # will be valid again. See "Scaling Django" by Mike Malone, slide 30.
-    cache.set(CACHE_PACKAGE_KEY, None, INVALIDATE_TIMEOUT)
 
 def package_etag(request, *args, **kwargs):
     latest = retrieve_package_latest()
@@ -134,10 +121,6 @@ def retrieve_news_latest():
         pass
     return None
 
-def refresh_news_latest(**kwargs):
-    # same thoughts apply as in refresh_package_latest
-    cache.set(CACHE_NEWS_KEY, None, INVALIDATE_TIMEOUT)
-
 def news_etag(request, *args, **kwargs):
     latest = retrieve_news_latest()
     if latest:
@@ -167,9 +150,5 @@ class NewsFeed(Feed):
 
     def item_author_name(self, item):
         return item.author.get_full_name()
-
-# connect signals needed to keep cache in line with reality
-post_save.connect(refresh_package_latest, sender=Package)
-post_save.connect(refresh_news_latest, sender=News)
 
 # vim: set ts=4 sw=4 et:
