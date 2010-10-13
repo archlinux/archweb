@@ -16,6 +16,8 @@ from operator import attrgetter
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
     protocol = forms.MultipleChoiceField(required=False)
+    ip_version = forms.MultipleChoiceField(required=False,
+            label="IP version", choices=(('4','IPv4'), ('6','IPv6')))
     use_mirror_status = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
@@ -29,6 +31,7 @@ class MirrorlistForm(forms.Form):
                 MirrorProtocol.objects.filter(is_download=True))
         self.fields['protocol'].choices = protos
         self.fields['protocol'].initial = [t[0] for t in protos]
+        self.fields['ip_version'].initial = ['4']
 
 @csrf_exempt
 def generate_mirrorlist(request):
@@ -38,13 +41,17 @@ def generate_mirrorlist(request):
             countries = form.cleaned_data['country']
             protocols = form.cleaned_data['protocol']
             use_status = form.cleaned_data['use_mirror_status']
-            return find_mirrors(request, countries, protocols, use_status)
+            ipv4 = '4' in form.cleaned_data['ip_version']
+            ipv6 = '6' in form.cleaned_data['ip_version']
+            return find_mirrors(request, countries, protocols,
+                    use_status, ipv4, ipv6)
     else:
         form = MirrorlistForm()
 
     return direct_to_template(request, 'mirrors/index.html', {'mirrorlist_form': form})
 
-def find_mirrors(request, countries=None, protocols=None, use_status=False):
+def find_mirrors(request, countries=None, protocols=None, use_status=False,
+        ipv4_supported=True, ipv6_supported=True):
     if not protocols:
         protocols = MirrorProtocol.objects.filter(
                 is_download=True).values_list('protocol', flat=True)
@@ -54,6 +61,14 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False):
     )
     if countries and 'all' not in countries:
         qset = qset.filter(mirror__country__in=countries)
+
+    if ipv4_supported and not ipv6_supported:
+        qset = qset.filter(has_ipv4=True)
+    elif ipv6_supported and not ipv4_supported:
+        qset = qset.filter(has_ipv6=True)
+    elif not ipv4_supported and not ipv6_supported:
+        qset = qset.none()
+
     if not use_status:
         urls = qset.order_by('mirror__country', 'mirror__name', 'url')
         template = 'mirrors/mirrorlist.txt'
