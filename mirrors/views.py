@@ -62,12 +62,12 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
     if countries and 'all' not in countries:
         qset = qset.filter(mirror__country__in=countries)
 
-    if ipv4_supported and not ipv6_supported:
-        qset = qset.filter(has_ipv4=True)
-    elif ipv6_supported and not ipv4_supported:
-        qset = qset.filter(has_ipv6=True)
-    elif not ipv4_supported and not ipv6_supported:
-        qset = qset.none()
+    ip_version = Q()
+    if ipv4_supported:
+        ip_version |= Q(has_ipv4=True)
+    if ipv6_supported:
+        ip_version |= Q(has_ipv6=True)
+    qset = qset.filter(ip_version)
 
     if not use_status:
         urls = qset.order_by('mirror__country', 'mirror__name', 'url')
