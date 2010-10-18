@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import messages
+from django.conf import settings
 from django.core.mail import send_mail
 from django.template import loader, Context, RequestContext
 from django.http import HttpResponse, Http404
@@ -311,7 +312,7 @@ def flag(request, name='', repo='', arch=''):
 
             maints = pkg.maintainers
             if not maints:
-                toemail = ['arch-notifications@archlinux.org']
+                toemail = settings.NOTIFICATIONS
                 subject = 'Orphan %s package [%s] marked out-of-date' % \
                         (pkg.repo.name, pkg.pkgname)
             else:
