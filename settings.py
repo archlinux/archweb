@@ -13,7 +13,7 @@ ADMINS = (
 # Set managers to admins
 MANAGERS = ADMINS
 
-# Package out of date emails for orphans
+# Package out-of-date emails for orphans
 NOTIFICATIONS = ['arch-notifications@archlinux.org']
 
 # Full path to the data directory

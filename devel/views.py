@@ -53,7 +53,7 @@ def change_notify(request):
 
 class ProfileForm(forms.Form):
     email = forms.EmailField(label='Private email (not shown publicly):',
-            help_text="Used for out of date notifications, etc.")
+            help_text="Used for out-of-date notifications, etc.")
     passwd1 = forms.CharField(label='New Password', required=False,
             widget=forms.PasswordInput)
     passwd2 = forms.CharField(label='Confirm Password', required=False,

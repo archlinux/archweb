@@ -10,7 +10,7 @@ class UserProfile(models.Model):
     notify = models.BooleanField(
         "Send notifications",
         default=True,
-        help_text="When enabled, send user 'flag out of date' notifications")
+        help_text="When enabled, send user 'flag out-of-date' notifications")
     alias = models.CharField(
         max_length=50,
         help_text="Required field")
