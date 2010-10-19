@@ -19,7 +19,7 @@
                 <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
                 <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
                 {% if pkg.flag_date %}
-                <li><span class="flagged">Package has been flagged out-of-date</span></li>
+                <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
                 {% with pkg.in_testing as tp %}{% if tp %}
                 <li><span class="flagged">Version
                     <a href="{{ tp.get_absolute_url }}"
