@@ -13,7 +13,7 @@
         <div><label for="id_archonly" title="Limit packages to selected architecture">Architecture Limitation</label>
             <select name="archonly" id="id_archonly">
                 <option value="all">Show All</option>
-                <option value="both">Only In Both</option>
+                <option value="both" selected="selected">Only In Both</option>
                 <option value="{{ arch_a.name }}">In {{ arch_a.name }} Only</option>
                 <option value="{{ arch_b.name }}">In {{ arch_b.name }} Only</option>
             </select>
@@ -21,7 +21,7 @@
         <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
             <input type="checkbox" name="multilib" id="id_multilib" value="multilib"/></div>
         <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
-            <input type="checkbox" checked="checked" name="minor" id="id_minor" value="minor"/></div>
+            <input type="checkbox" name="minor" id="id_minor" value="minor"/></div>
         <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
     </fieldset>
     </form>

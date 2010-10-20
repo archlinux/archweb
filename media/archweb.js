@@ -79,7 +79,7 @@ filter_packages = function() {
     // start with all rows, and then remove ones we shouldn't show
     var rows = $(".results tbody tr");
     if(!$('#id_multilib').is(':checked')) {
-        rows = rows.not(".multilib");
+        rows = rows.not(".multilib").not(".multilib-testing");
     }
     var arch = $("#id_archonly").val();
     if(arch !== "all") {
