@@ -6,9 +6,8 @@
 <div id="pkgdetails" class="box">
 
     <h2>Package File List: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
-    <p><a href="{{ pkg.get_absolute_url }}">Back to Package</a></p>
-
     <div id="metadata">
+        <p><a href="{{ pkg.get_absolute_url }}">Back to Package</a></p>
         {% include "packages/files-list.html" %}
     </div>
 

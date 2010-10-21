@@ -1,3 +1,7 @@
+{% if pkg.last_update > pkg.files_last_update %}
+<p class="message">Note: This file list was generated from a previous version
+of the package; it may be out of date.</p>
+{% endif %}
 {% if files.count %}
 <ul>
     {% for file in files %}
@@ -5,5 +9,5 @@
     {% endfor %}
 </ul>
 {% else %}
-<p>No file list available.</p>
+<p class="message">No file list available.</p>
 {% endif %}

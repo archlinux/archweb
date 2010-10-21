@@ -212,6 +212,8 @@ form#flag-pkg-form textarea, form#flag-pkg-form input[type=text] { width: 45%; }
 #pkgdetails #metadata h3 { background: #555; color: #fff; font-size: 1em; margin-bottom: 0.5em; padding: 0.2em 0.35em; }
 #pkgdetails #metadata ul { list-style: none; margin: 0; padding: 0; }
 #pkgdetails #metadata li { padding-left: 0.5em; }
+#pkgdetails #metadata p { padding-left: 0.5em; }
+#pkgdetails #metadata .message { font-style: italic; }
 #pkgdetails #metadata br { clear: both; }
 #pkgdetails #pkgdeps { float: left; width: 48%; margin-right: 2%; }
 #pkgdetails #pkgreqs { float: left; width: 50%; }
