@@ -15,6 +15,8 @@
                 <th>Repo</th>
                 <th>Version</th>
                 <th>Arch</th>
+                <th>Flagged</th>
+                <th>Last Updated</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +27,8 @@
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.pkgver }}</td>
                     <td>{{ pkg.arch.name }}</td>
+                    <td>{{ pkg.flag_date }}</td>
+                    <td>{{ pkg.last_update }}</td>
                 </tr>
             {% empty %}
                 <tr class="empty"><td colspan="4"><em>No flagged packages to display</em></td></tr>
