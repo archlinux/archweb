@@ -124,7 +124,7 @@ ul.errorlist { color: red; }
 #pkg-updates table { margin: 0; }
 #pkg-updates td.pkg-name { white-space: normal; }
 #pkg-updates td.pkg-arch { text-align: right; }
-#pkg-updates span.testing, #pkg-updates span.community-testing { font-style: italic; }
+#pkg-updates span.testing, #pkg-updates span.community-testing, span.multilib-testing { font-style: italic; }
 
 /* home: sidebar navigation */
 div#nav-sidebar ul { list-style: none; margin: 0.5em 0 0.5em 1em; padding: 0; }
