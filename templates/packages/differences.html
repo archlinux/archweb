@@ -37,7 +37,7 @@
                 <th>{{ arch_b.name }} Version</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbody_differences">
             {% for diff in differences %}
             <tr class="{% cycle 'odd' 'even' %} {{ diff.classes }}">
                 <td>{{ diff.pkgname }}</td>

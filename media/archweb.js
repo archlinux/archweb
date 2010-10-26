@@ -57,9 +57,10 @@ function enablePreview() {
         $.post('/news/preview/',
             { data: $('#id_content').val() },
             function(data) {
-            $('#previewdata').html(data);
-            $('.news-article').show();
-        });
+                $('#previewdata').html(data);
+                $('.news-article').show();
+            }
+        );
         $('#previewtitle').html($('#id_title').val());
     });
 }
@@ -77,7 +78,8 @@ function ajaxifyFiles() {
 /* packages/differences.html */
 filter_packages = function() {
     // start with all rows, and then remove ones we shouldn't show
-    var rows = $(".results tbody tr");
+    var rows = $("#tbody_differences").children();
+    var all_rows = rows;
     if(!$('#id_multilib').is(':checked')) {
         rows = rows.not(".multilib").not(".multilib-testing");
     }
@@ -87,32 +89,36 @@ filter_packages = function() {
     }
     if(!$('#id_minor').is(':checked')) {
         // this check is done last because it is the most expensive
+        var pat = /(.*)-(.+)/;
         rows = rows.filter(function(index) {
+            var cells = $(this).children('td');
+
             // all this just to get the split version out of the table cell
-            var pat = /(.*)-(.+)/;
-            var ver_a = $('td:eq(2) span', this).text().match(pat);
-            var ver_b = $('td:eq(3) span', this).text().match(pat);
-            // did we match at all?
-            if(!ver_a || !ver_b) return true;
+            var ver_a = cells.eq(2).find('span').text().match(pat);
+            if(!ver_a) return true;
+
+            var ver_b = cells.eq(3).find('span').text().match(pat);
+            if(!ver_b) return true;
+
             // first check pkgver
             if(ver_a[1] !== ver_b[1]) return true;
             // pkgver matched, so see if rounded pkgrel matches
-			if(Math.floor(parseFloat(ver_a[2])) ==
-				Math.floor(parseFloat(ver_b[2]))) return false;
+            if(Math.floor(parseFloat(ver_a[2])) ==
+                Math.floor(parseFloat(ver_b[2]))) return false;
             // pkgrel didn't match, so keep the row
             return true;
         });
     }
     // hide all rows, then show the set we care about
-    $('.results tbody tr').hide();
+    all_rows.hide();
     rows.show();
     // make sure we update the odd/even styling from sorting
     $('.results').trigger("applyWidgets");
 };
 filter_reset = function() {
-    $('#id_archonly').val("all");
+    $('#id_archonly').val("both");
     $('#id_multilib').removeAttr("checked");
-    $('#id_minor').attr("checked", "checked");
+    $('#id_minor').removeAttr("checked");
     filter_packages();
 };
 
