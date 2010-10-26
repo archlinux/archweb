@@ -13,7 +13,7 @@ class JQueryNode(template.Node):
         # serve content from HTTPS instead.
         secure = 'secure' in context and context['secure']
         prefixes = { False: 'http', True: 'https' }
-        version = '1.4.2'
+        version = '1.4.3'
         oncdn = getattr(settings, 'CDN_ENABLED', True)
         if oncdn:
             jquery = '%s://ajax.googleapis.com/ajax/libs/jquery/' \
