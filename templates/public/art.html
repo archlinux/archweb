@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load cdn %}
+
 {% block title %}Arch Linux - Artwork{% endblock %}
 
 {% block content %}
@@ -14,42 +16,42 @@
 
     <p><strong>Two-color standard version</strong><br />
     <em>Also available in print-quality
-        <a href="/media/logos/archlinux-logo-dark-1200dpi.png"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-dark-1200dpi.png"
             title="Download 1200dpi PNG format">PNG</a> and scalable
-        <a href="/media/logos/archlinux-logo-dark-scalable.svg"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-dark-scalable.svg"
             title="Download scalable SVG format">SVG</a> formats.</em></p>
 
-    <img src="/media/logos/archlinux-logo-dark-90dpi.png"
+    <img src="{% cdnprefix %}/media/logos/archlinux-logo-dark-90dpi.png"
     alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" />
 
     <p><strong>Two-color inverted version</strong> (for dark backgrounds)<br />
     <em>Also available in print-quality
-        <a href="/media/logos/archlinux-logo-light-1200dpi.png"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-light-1200dpi.png"
             title="Download 1200dpi PNG format">PNG</a> and scalable
-        <a href="/media/logos/archlinux-logo-light-scalable.svg"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-light-scalable.svg"
             title="Download scalable SVG format">SVG</a> formats.</em></p>
 
-    <img src="/media/logos/archlinux-logo-light-90dpi.png"
+    <img src="{% cdnprefix %}/media/logos/archlinux-logo-light-90dpi.png"
     alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" class="inverted" />
 
     <p><strong>One-color standard version</strong><br />
     <em>Also available in print-quality
-            <a href="/media/logos/archlinux-logo-black-1200dpi.png"
+            <a href="{% cdnprefix %}/media/logos/archlinux-logo-black-1200dpi.png"
                 title="Download 1200dpi PNG format">PNG</a> and scalable
-            <a href="/media/logos/archlinux-logo-black-scalable.svg"
+            <a href="{% cdnprefix %}/media/logos/archlinux-logo-black-scalable.svg"
                 title="Download scalable SVG format">SVG</a> formats.</em></p>
 
-            <img src="/media/logos/archlinux-logo-black-90dpi.png"
+            <img src="{% cdnprefix %}/media/logos/archlinux-logo-black-90dpi.png"
             alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" />
 
     <p><strong>One-colour inverted version</strong> (for dark backgrounds)<br />
     <em>Also available in print-quality
-        <a href="/media/logos/archlinux-logo-white-1200dpi.png"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-white-1200dpi.png"
             title="Download 1200dpi PNG format">PNG</a> and scalable
-        <a href="/media/logos/archlinux-logo-white-scalable.svg"
+        <a href="{% cdnprefix %}/media/logos/archlinux-logo-white-scalable.svg"
             title="Download scalable SVG format">SVG</a> formats.</em></p>
 
-    <img src="/media/logos/archlinux-logo-white-90dpi.png"
+    <img src="{% cdnprefix %}/media/logos/archlinux-logo-white-90dpi.png"
     alt="Arch Linux PNG logo @ 90dpi" title="Arch Linux PNG logo @ 90dpi" class="inverted" />
 
     <h3>Logos and Artwork for the Community</h3>
@@ -79,50 +81,50 @@
     <h4>Original Ribbon Series</h4>
 
     <div class="imagelist">
-        <img src="/media/logos/legacy/arch-legacy-ribbon1.png" alt="Arch Ribbon Logo 1"/>
-        <img src="/media/logos/legacy/arch-legacy-ribbon2.png" alt="Arch Ribbon Logo 2"/>
-        <img src="/media/logos/legacy/arch-legacy-ribbon5.png" alt="Arch Ribbon Logo 5"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon1.png" alt="Arch Ribbon Logo 1"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon2.png" alt="Arch Ribbon Logo 2"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon5.png" alt="Arch Ribbon Logo 5"/>
     </div>
 
     <div class="imagelist">
-        <img src="/media/logos/legacy/arch-legacy-ribbon3.png" alt="Arch Ribbon Logo 3"/>
-        <img src="/media/logos/legacy/arch-legacy-ribbon4.png" alt="Arch Ribbon Logo 4"/>
-        <img src="/media/logos/legacy/arch-legacy-ribbon6.png" alt="Arch Ribbon Logo 6"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon3.png" alt="Arch Ribbon Logo 3"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon4.png" alt="Arch Ribbon Logo 4"/>
+        <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-ribbon6.png" alt="Arch Ribbon Logo 6"/>
     </div>
 
     <h4>"Arch Blue" Series</h4>
 
     <div class="imagelist">
-        <a href="/media/logos/legacy/arch-legacy-blue1.svg" title="Arch Blue">
-            <img src="/media/logos/legacy/arch-legacy-blue1.png" alt="Arch Blue"/></a>
-        <a href="/media/logos/legacy/arch-legacy-blue2.svg" title="Arch Blue Vertical">
-            <img src="/media/logos/legacy/arch-legacy-blue2.png" alt="Arch Blue Vertical"/></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-blue1.svg" title="Arch Blue">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-blue1.png" alt="Arch Blue"/></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-blue2.svg" title="Arch Blue Vertical">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-blue2.png" alt="Arch Blue Vertical"/></a>
     </div>
 
     <h4>"Arch Aqua" Series</h4>
 
     <div class="imagelist">
-        <a href="/media/logos/legacy/arch-legacy-aqua.svg" title="Arch Aqua">
-            <img src="/media/logos/legacy/arch-legacy-aqua.png" alt="Arch Aqua" /></a>
-        <a href="/media/logos/legacy/arch-legacy-aqua-blue.svg" title="Arch Aqua Blue">
-            <img src="/media/logos/legacy/arch-legacy-aqua-blue.png" alt="Arch Aqua Blue" /></a>
-        <a href="/media/logos/legacy/arch-legacy-aqua-white.svg" title="Arch Aqua White">
-            <img src="/media/logos/legacy/arch-legacy-aqua-white.png" alt="Arch Aqua White" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua.svg" title="Arch Aqua">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua.png" alt="Arch Aqua" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua-blue.svg" title="Arch Aqua Blue">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua-blue.png" alt="Arch Aqua Blue" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua-white.svg" title="Arch Aqua White">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-aqua-white.png" alt="Arch Aqua White" /></a>
     </div>
 
     <h4>Release-specific Series</h4>
 
     <div class="imagelist">
-        <a href="/media/logos/legacy/arch-legacy-wombat-lg.png" title="Arch Wombat">
-            <img src="/media/logos/legacy/arch-legacy-wombat.png" alt="Arch Wombat" /></a>
-        <a href="/media/logos/legacy/arch-legacy-noodle-blue.svg" title="Arch Noodle Blue">
-            <img src="/media/logos/legacy/arch-legacy-noodle-blue.png" alt="Arch Noodle Blue" /></a>
-        <a href="/media/logos/legacy/arch-legacy-noodle-white.svg" title="Arch Noodle White">
-            <img src="/media/logos/legacy/arch-legacy-noodle-white.png" alt="Arch Noodle White" /></a>
-        <a href="/media/logos/legacy/arch-legacy-noodle-box.svg" title="Arch Box of Noodles">
-            <img src="/media/logos/legacy/arch-legacy-noodle-box.png" alt="Arch Box of Noodles" /></a>
-        <a href="/media/logos/legacy/arch-legacy-noodle-cup.svg" title="Arch Cup of Noodles">
-            <img src="/media/logos/legacy/arch-legacy-noodle-cup.png" alt="Arch Cup of Noodles" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-wombat-lg.png" title="Arch Wombat">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-wombat.png" alt="Arch Wombat" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-blue.svg" title="Arch Noodle Blue">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-blue.png" alt="Arch Noodle Blue" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-white.svg" title="Arch Noodle White">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-white.png" alt="Arch Noodle White" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-box.svg" title="Arch Box of Noodles">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-box.png" alt="Arch Box of Noodles" /></a>
+        <a href="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-cup.svg" title="Arch Cup of Noodles">
+            <img src="{% cdnprefix %}/media/logos/legacy/arch-legacy-noodle-cup.png" alt="Arch Cup of Noodles" /></a>
     </div>
 
 </div><!-- #artwork -->
