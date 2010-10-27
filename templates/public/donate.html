@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load cache %}
+{% load cdn %}
 
 {% block title %}Arch Linux - Donate{% endblock %}
 
 {% block content %}
-{% cache 600 donations %}
+{% cache 600 donations secure %}
 <div id="donations" class="box">
 
     <h2>Donate to Arch Linux</h2>
@@ -57,18 +58,18 @@
     in a server rack, bandwidth, and electricity for our main server.</p>
 
     <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux"
-        title="velocity network"><img src="/media/vnet_button.png" class="sponsor-btn-vnet"
+        title="velocity network"><img src="{% cdnprefix %}/media/vnet_button.png" class="sponsor-btn-vnet"
         title="" alt="velocity network - it's about time" /></a>
 
     <p>We also wish to extend a special Thank You to <a
         href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl"
         title="SevenL Networks - Dedicated Arch Linux servers">SevenL Networks</a>
     for their generous and ongoing contribution of a dedicated Arch Linux
-    server . You too can have a dedicated Arch Linux server hosted by SevenL...
+    server. You too can have a dedicated Arch Linux server hosted by SevenL...
     head over to their website for more details.</p>
 
     <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl"
-        title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png"
+        title="SevenL Networks - Dedicated Arch Linux servers"><img src="{% cdnprefix %}/media/sevenl_button.png"
         class="sponsor-btn-sevenl" title="A big Thank You to SevenL Networks for their generous contribution"
         alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
 
@@ -76,7 +77,7 @@
         title="AirVM.com">AirVM.com</a> for contributing a VMWare-based Virtual Machine.</p>
 
     <a href="http://www.airvm.com/ArchLinux"
-        title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.png"
+        title="AirVM.com - Your Green Technology Partner"><img src="{% cdnprefix %}/media/airvm_button.png"
         class="sponsor-btn-airvm" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
 
     <h3>Past donors</h3>

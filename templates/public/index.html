@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load markup %}
 {% load cache %}
+{% load cdn %}
 
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
@@ -8,7 +9,7 @@
 {% endblock %}
 
 {% block content_left %}
-{% cache 300 main-page-left %}
+{% cache 300 main-page-left secure %}
 <div id="intro" class="box">
 
     <h2>A simple, lightweight distribution</h2>
@@ -41,7 +42,7 @@
                 title="Browse the news archives">more</a>)</span></h3>
 
     <a href="/feeds/news/" title="Arch News RSS Feed"
-        class="rss-icon"><img src="/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
 
     {% for news in news_updates %}
     <h4><a href="{{ news.get_absolute_url }}"
@@ -55,7 +56,7 @@
 {% endblock %}
 
 {% block content_right %}
-{% cache 300 main-page-right %}
+{% cache 300 main-page-right secure %}
 <div id="pkgsearch" class="widget">
 
     <form id="pkgsearch-form" method="get" action="/packages/">
@@ -73,7 +74,7 @@
             title="Browse all of the latest packages">more</a>)</span></h3>
 
     <a href="/feeds/packages/" title="Arch Package Updates RSS Feed"
-        class="rss-icon"><img src="/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
 
     <table>
         {% for update in pkg_updates %}
@@ -207,9 +208,15 @@
 
 <div id="arch-sponsors" class="widget">
 
-    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network"><img src="/media/vnet_button.png" alt="Velocity Network - It's about time" /></a>
-    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
-    <a href="http://www.airvm.com/ArchLinux" title="AirVM.com - Your Green Technology Partner"><img src="/media/airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
+    <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network">
+        <img src="{% cdnprefix %}/media/vnet_button.png" alt="Velocity Network - It's about time" />
+    </a>
+    <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">
+        <img src="{% cdnprefix %}/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" />
+    </a>
+    <a href="http://www.airvm.com/ArchLinux" title="AirVM.com - Your Green Technology Partner">
+        <img src="{% cdnprefix %}/media/airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" />
+    </a>
 
 </div>
 {% endcache %}
