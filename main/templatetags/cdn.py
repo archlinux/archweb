@@ -9,14 +9,12 @@ def jquery(parser, token):
 
 class JQueryNode(template.Node):
     def render(self, context):
-        # serve content from HTTPS if we know this request is secure
-        secure = 'secure' in context and context['secure']
         prefixes = { False: 'http', True: 'https' }
         version = '1.4.3'
         oncdn = getattr(settings, 'CDN_ENABLED', True)
         if oncdn:
-            jquery = '%s://ajax.googleapis.com/ajax/libs/jquery/' \
-                    '%s/jquery.min.js' % (prefixes[secure], version)
+            jquery = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
+                    '%s/jquery.min.js' % version
         else:
             jquery = '/media/jquery-%s.min.js' % version
         return '<script type="text/javascript" src="%s"></script>' % jquery
