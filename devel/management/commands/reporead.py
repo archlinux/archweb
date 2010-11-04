@@ -248,44 +248,39 @@ def db_update(archname, reponame, pkgs, options):
     # SELECT them by name.
     dbdict = dict([(pkg.pkgname, pkg) for pkg in dbpkgs])
 
-    # go go set theory!
-    # thank you python for having a set class <3
     logger.debug("Creating sets")
     dbset = set([pkg.pkgname for pkg in dbpkgs])
     syncset = set([pkg.name for pkg in pkgs])
     logger.info("%d packages in current web DB" % len(dbset))
     logger.info("%d packages in new updating db" % len(syncset))
-    # packages in syncdb and not in database (add to database)
-    logger.debug("Set theory: Packages in syncdb not in database")
     in_sync_not_db = syncset - dbset
     logger.info("%d packages in sync not db" % len(in_sync_not_db))
 
     # Try to catch those random orphaning issues that make Eric so unhappy.
-    if len(dbset) > 20:
+    if len(dbset):
         dbpercent = 100.0 * len(syncset) / len(dbset)
     else:
-        # we don't have 20 packages in this repo/arch, so this check could
-        # produce a lot of false positives (or a div by zero). fake it
-        dbpercent = 100.0
+        dbpercent = 0.0
     logger.info("DB package ratio: %.1f%%" % dbpercent)
-    if dbpercent < 50.0 and not repository.testing:
-        logger.error(".db.tar.gz has %.1f%% the number of packages in the web database" % dbpercent)
-        raise Exception(
-            'It looks like the syncdb is less than half the size of the web db. WTF?')
 
+    # Fewer than 20 packages makes the percentage check unreliable, but it also
+    # means we expect the repo to fluctuate a lot.
+    msg = "Package database has %.1f%% the number of packages in the " \
+            "web database" % dbpercent
+    if len(dbset) > 20 and dbpercent < 50.0 and not repository.testing:
+        logger.error(msg)
+        raise Exception(msg)
     if dbpercent < 75.0:
-        logger.warning(".db.tar.gz has %.1f%% the number of packages in the web database." % dbpercent)
+        logger.warning(msg)
 
     if not filesonly:
         # packages in syncdb and not in database (add to database)
-        logger.debug("Set theory: Packages in syncdb not in database")
         for p in [x for x in pkgs if x.name in in_sync_not_db]:
             logger.info("Adding package %s", p.name)
             pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
             populate_pkg(pkg, p, timestamp=datetime.now())
 
         # packages in database and not in syncdb (remove from database)
-        logger.debug("Set theory: Packages in database not in syncdb")
         in_db_not_sync = dbset - syncset
         for p in in_db_not_sync:
             logger.info("Removing package %s from database", p)
@@ -293,7 +288,6 @@ def db_update(archname, reponame, pkgs, options):
                 pkgname=p, arch=architecture, repo=repository).delete()
 
     # packages in both database and in syncdb (update in database)
-    logger.debug("Set theory: Packages in database and syncdb")
     pkg_in_both = syncset & dbset
     for p in [x for x in pkgs if x.name in pkg_in_both]:
         logger.debug("Looking for package updates")
@@ -396,11 +390,11 @@ def validate_arch(arch):
     return arch in available_arches
 
 @transaction.commit_on_success
-def read_repo(primary_arch, file, options):
+def read_repo(primary_arch, repo_file, options):
     """
     Parses repo.db.tar.gz file and returns exit status.
     """
-    repo, packages = parse_repo(file)
+    repo, packages = parse_repo(repo_file)
 
     # sort packages by arch -- to handle noarch stuff
     packages_arches = {}
