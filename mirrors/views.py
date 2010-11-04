@@ -11,7 +11,6 @@ from .models import Mirror, MirrorUrl, MirrorProtocol
 from .utils import get_mirror_statuses, get_mirror_errors
 
 import datetime
-from operator import attrgetter
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
@@ -77,10 +76,14 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         scores = dict([(u.id, u.score) for u in status_info['urls']])
         urls = []
         for u in qset:
-            u.score = scores[u.id]
-            if u.score and u.score < 100.0:
+            u.score = scores.get(u.id, None)
+            # also include mirrors that don't have an up to date score
+            # (as opposed to those that have been set with no score)
+            if (u.id not in scores) or \
+                    (u.score and u.score < 100.0):
                 urls.append(u)
-        urls = sorted(urls, key=attrgetter('score'))
+        # if a url doesn't have a score, treat it as the highest possible
+        urls = sorted(urls, key=lambda x: x.score or 100.0)
         template = 'mirrors/mirrorlist_status.txt'
 
     return direct_to_template(request, template, {
