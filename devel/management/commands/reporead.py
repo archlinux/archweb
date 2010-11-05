@@ -347,14 +347,14 @@ def parse_repo(repopath):
 
     logger.info("Reading repo tarfile %s", repopath)
     filename = os.path.split(repopath)[1]
-    m = re.match(r"^(.*)\.(db|files)\.tar\.(.*)$", filename)
+    m = re.match(r"^(.*)\.(db|files)\.tar(\..*)?$", filename)
     if m:
         reponame = m.group(1)
     else:
         logger.error("File does not have the proper extension")
         raise Exception("File does not have the proper extension")
 
-    repodb = tarfile.open(repopath,"r:gz")
+    repodb = tarfile.open(repopath,"r")
     ## assuming well formed tar, with dir first then files after
     ## repo-add enforces this
     logger.debug("Starting package parsing")
