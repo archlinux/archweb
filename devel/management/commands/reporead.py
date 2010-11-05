@@ -212,6 +212,13 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
+        if dbpkg.pkgver != repopkg.ver or dbpkg.pkgrel != repopkg.rel:
+            logger.info("db version (%s) didn't match repo version (%s) "
+                    "for package %s, skipping file list addition" %
+                    ('-'.join((dbpkg.pkgver, dbpkg.pkgrel)),
+                        '-'.join((repopkg.ver, repopkg.rel)),
+                        dbpkg.pkgname))
+            return
         if not dbpkg.files_last_update or not dbpkg.last_update:
             pass
         elif dbpkg.files_last_update > dbpkg.last_update:
@@ -219,7 +226,8 @@ def populate_files(dbpkg, repopkg, force=False):
     # only delete files if we are reading a DB that contains them
     if 'files' in repopkg.__dict__:
         dbpkg.packagefile_set.all().delete()
-        logger.info("adding %d files for package %s" % (len(repopkg.files), dbpkg.pkgname))
+        logger.info("adding %d files for package %s" %
+                (len(repopkg.files), dbpkg.pkgname))
         for x in repopkg.files:
             dbpkg.packagefile_set.create(path=x)
         dbpkg.files_last_update = datetime.now()
@@ -267,7 +275,9 @@ def db_update(archname, reponame, pkgs, options):
     # means we expect the repo to fluctuate a lot.
     msg = "Package database has %.1f%% the number of packages in the " \
             "web database" % dbpercent
-    if len(dbset) > 20 and dbpercent < 50.0 and not repository.testing:
+    if not filesonly and \
+            len(dbset) > 20 and dbpercent < 50.0 and \
+            not repository.testing:
         logger.error(msg)
         raise Exception(msg)
     if dbpercent < 75.0:
@@ -297,14 +307,14 @@ def db_update(archname, reponame, pkgs, options):
         # for a non-force, we don't want to do anything at all.
         if filesonly:
             pass
-        elif '-'.join((p.ver, p.rel)) == '-'.join((dbp.pkgver, dbp.pkgrel)):
+        elif p.ver == dbp.pkgver and p.rel == dbp.pkgrel:
             if not force:
                 continue
         else:
             timestamp = datetime.now()
         if filesonly:
             logger.debug("Checking files for package %s in database", p.name)
-            populate_files(dbp, p)
+            populate_files(dbp, p, force=force)
         else:
             logger.info("Updating package %s in database", p.name)
             populate_pkg(dbp, p, force=force, timestamp=timestamp)
