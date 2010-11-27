@@ -13,7 +13,7 @@ def get_recent_updates():
         # grab a few extra so we can hopefully catch everything we need
         pkgs += list(Package.objects.select_related(
             'arch', 'repo').filter(arch=arch).order_by('-last_update')[:50])
-    pkgs.sort(key=lambda q: q.last_update)
+    pkgs.sort(key=attrgetter('last_update'))
     updates = []
     ctr = 0
     while ctr < 15 and len(pkgs) > 0:
@@ -22,7 +22,7 @@ def get_recent_updates():
         is_same = lambda q: p.is_same_version(q) and p.repo == q.repo
         samepkgs = filter(is_same, pkgs)
         samepkgs.append(p)
-        samepkgs.sort(key=attrgetter('arch.name'))
+        samepkgs.sort(key=attrgetter('arch'))
         updates.append(samepkgs)
         for q in samepkgs:
             if p != q: pkgs.remove(q)
