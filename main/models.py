@@ -67,6 +67,9 @@ class Arch(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __lt__(self, other):
+        return self.name < other.name
+
     class Meta:
         db_table = 'arches'
         ordering = ['name']
@@ -84,6 +87,9 @@ class Repo(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def __lt__(self, other):
+        return self.name < other.name
 
     class Meta:
         db_table = 'repos'
