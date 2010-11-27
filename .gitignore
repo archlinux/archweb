@@ -3,4 +3,5 @@
 *.swo
 local_settings.py
 archweb.db
+archweb.db-*
 testing/
