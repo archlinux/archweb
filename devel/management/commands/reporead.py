@@ -139,7 +139,6 @@ def find_user(userstring):
         for token in name.split():
             # ignore quoted parts; e.g. nicknames in strings
             if re.match(r'^[\'"].*[\'"]$', token):
-                print "token match:", token
                 continue
             name_q &= (Q(first_name__icontains=token) |
                     Q(last_name__icontains=token))
