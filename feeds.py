@@ -71,7 +71,7 @@ class PackageFeed(Feed):
             obj['arch'] = a
         if repo != '':
             # feed for a single arch AND repo
-            r = Repo.objects.get(name=repo)
+            r = Repo.objects.get(name__iexact=repo)
             qs = qs.filter(repo=r)
             obj['repo'] = r
         obj['qs'] = qs[:50]
