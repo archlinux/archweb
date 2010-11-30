@@ -11,7 +11,7 @@
     <table id="dash-myflagged" class="results dash-stats">
         <thead>
             <tr>
-                <th class="key">Name</th>
+                <th>Name</th>
                 <th>Repo</th>
                 <th>Version</th>
                 <th>Arch</th>
@@ -42,7 +42,7 @@
         <thead>
             <tr>
                 <th>Todo List</th>
-                <th class="key">Name</th>
+                <th>Name</th>
                 <th>Repo</th>
                 <th>Arch</th>
                 <th>Maintainer(s)</th>
@@ -78,10 +78,10 @@
         <tbody>
             {% for todo in todos %}
                 <tr class="{% cycle 'odd' 'even' %}">
-                    <td class="key"><a href="{{ todo.get_absolute_url }}"
+                    <td><a href="{{ todo.get_absolute_url }}"
                             title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                     <td>{{ todo.date_added }}</td>
-                    <td>{{ todo.description|safe }}</td>
+                    <td class="wrap">{{ todo.description|safe }}</td>
                 </tr>
             {% empty %}
                 <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
