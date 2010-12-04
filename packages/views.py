@@ -199,7 +199,7 @@ def search(request, page=None):
     if packages.count() == 1:
         return redirect(packages[0])
 
-    allowed_sort = ["arch", "repo", "pkgname", "last_update"]
+    allowed_sort = ["arch", "repo", "pkgname", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)
     # TODO: sorting by multiple fields makes using a DB index much harder
@@ -208,7 +208,7 @@ def search(request, page=None):
                 request.GET['sort'], 'repo', 'arch', 'pkgname')
         page_dict['sort'] = sort
     else:
-        packages = packages.order_by('repo', 'arch', '-last_update', 'pkgname')
+        packages = packages.order_by('pkgname')
 
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",

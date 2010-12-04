@@ -84,6 +84,8 @@
                     <th>Description</th>
                     <th><a href="/packages/{% buildsortqs "-last_update" %}"
                             title="Sort packages by last update">Last Updated</a></th>
+                    <th><a href="/packages/{% buildsortqs "-flag_date" %}"
+                            title="Sort packages by when marked-out of-date">Flag Date</a></th>
                 </tr>
             </thead>
             <tbody>
@@ -103,6 +105,7 @@
                     {% endif %}
                     <td class="wrap">{{ pkg.pkgdesc }}</td>
                     <td>{{ pkg.last_update|date }}</td>
+                    <td>{{ pkg.flag_date|date }}</td>
                 </tr>
             {% endfor %}
             </tbody>
