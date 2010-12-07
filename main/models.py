@@ -5,6 +5,9 @@ from django.contrib.sites.models import Site
 from main.utils import cache_function
 from packages.models import PackageRelation
 
+from itertools import groupby
+from operator import attrgetter
+
 class UserProfile(models.Model):
     id = models.AutoField(primary_key=True) # not technically needed
     notify = models.BooleanField(
@@ -166,19 +169,43 @@ class Package(models.Model):
     @cache_function(300)
     def get_requiredby(self):
         """
-        Returns a list of package objects.
+        Returns a list of package objects. An attempt will be made to keep this
+        list slim by including the corresponding package in the same testing
+        category as this package if that check makes sense.
         """
         requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
-                arch__in=self.applicable_arches()).distinct()
-        return requiredby.order_by('pkgname')
+                arch__in=self.applicable_arches()
+                ).distinct().order_by('pkgname')
+
+        # find another package by this name in the opposite testing setup
+        if not Package.objects.filter(pkgname=self.pkgname,
+                arch=self.arch).exclude(id=self.id,
+                repo__testing=self.repo.testing).exists():
+            # there isn't one? short circuit, all required by entries are fine
+            return requiredby
+
+        trimmed = []
+        # for each unique package name, try to screen our package list down to
+        # those packages in the same testing category (yes or no) iff there is
+        # a package in the same testing category.
+        for name, pkgs in groupby(requiredby, attrgetter('pkgname')):
+            pkgs = list(pkgs)
+            pkg = pkgs[0]
+            if len(pkgs) > 1:
+                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing]
+                if len(pkgs) > 0:
+                    pkg = pkgs[0]
+            trimmed.append(pkg)
+        return trimmed
 
     @cache_function(300)
     def get_depends(self):
         """
-        Returns a list of dicts. Each dict contains ('pkg' and 'dep').
-        If it represents a found package both vars will be available;
-        else pkg will be None if it is a 'virtual' dependency.
+        Returns a list of dicts. Each dict contains ('pkg' and 'dep'). If it
+        represents a found package both vars will be available; else pkg will
+        be None if it is a 'virtual' dependency. Packages will match the
+        testing status of this package if possible.
         """
         deps = []
         # TODO: we can use list comprehension and an 'in' query to make this more effective
