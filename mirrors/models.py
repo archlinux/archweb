@@ -80,7 +80,7 @@ class MirrorLog(models.Model):
     error = models.CharField(max_length=255, blank=True, default='')
 
     def __unicode__(self):
-        return "Check of %s at %s" % (url.url, check_time)
+        return "Check of %s at %s" % (self.url.url, self.check_time)
 
     class Meta:
         verbose_name = 'Mirror Check Log'
