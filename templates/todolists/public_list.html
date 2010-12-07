@@ -5,44 +5,64 @@
 {% block content %}
 <div class="box">
     <h2>Developer Todo Lists</h2>
-    <div id="public_todo_lists">
-        {% for list in todo_lists %}
-            <h4>{{list.name}}</h4>
-            <div class="todo_list">
-                <p>{{list.description|safe|linebreaks}}</p>
-                <table "todo-pkglist-{{ list.id }}" class="results todo-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Arch</th>
-                            <th>Repo</th>
-                            <th>Maintainer</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for pkg in list.packages %}
-                        <tr class="{% cycle 'odd' 'even' %}">
-                            <td><a href="{{ pkg.pkg.get_absolute_url }}"
-                                    title="View package details for {{ pkg.pkg.pkgname }}">{{ pkg.pkg.pkgname }}</a></td>
-                            <td>{{ pkg.pkg.arch.name }}</td>
-                            <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                            <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
-                            <td>
-                                {% if pkg.complete %}
-                                <span class="complete">Complete</a>
-                                {% else %}
-                                <span class="incomplete">Incomplete</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endfor %}
+    <div id="public_todo_lists_toc">
+        <h3>Open Developer Todo Lists</h3>
+        <p>Todo lists are used by the developers when a rebuild of a set of
+        packages is needed. This is common when a library has an .so version
+        bump; during a toolchain rebuild, or a general cleanup of packages in
+        the repositories. The progress can be tracked here. Only todo lists
+        with currently incomplete packages are shown.</p>
+        {% if todo_lists %}<ul>
+            {% for list in todo_lists %}
+            <li><a href="#{{ list.id }}">{{ list.name }}</a></li>
+            {% endfor %}
+        </ul>{% else %}
+        <p>There are currently no incomplete developer todo lists.</p>
+        {% endif %}
     </div>
 </div>
+{% if todo_lists %}
+<div id="public_todo_lists">
+    {% for list in todo_lists %}
+    <div class="box">
+        <a name="{{ list.id }}"></a>
+        <h4>{{ list.name }}</h4>
+        <div class="todo_list">
+            <div>{{ list.description|safe|linebreaks }}</div>
+            <table id="todo-pkglist-{{ list.id }}" class="results todo-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Arch</th>
+                        <th>Repo</th>
+                        <th>Maintainer</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pkg in list.packages %}
+                    <tr class="{% cycle 'odd' 'even' %}">
+                        <td><a href="{{ pkg.pkg.get_absolute_url }}"
+                                title="View package details for {{ pkg.pkg.pkgname }}">{{ pkg.pkg.pkgname }}</a></td>
+                        <td>{{ pkg.pkg.arch.name }}</td>
+                        <td>{{ pkg.pkg.repo.name|capfirst }}</td>
+                        <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
+                        <td>
+                            {% if pkg.complete %}
+                            <span class="complete">Complete</span>
+                            {% else %}
+                            <span class="incomplete">Incomplete</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript">
