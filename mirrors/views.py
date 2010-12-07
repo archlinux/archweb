@@ -34,7 +34,7 @@ class MirrorlistForm(forms.Form):
 
 @csrf_exempt
 def generate_mirrorlist(request):
-    if request.REQUEST.get('country', ''):
+    if request.method == 'POST' or len(request.GET) > 0:
         form = MirrorlistForm(data=request.REQUEST)
         if form.is_valid():
             countries = form.cleaned_data['country']
