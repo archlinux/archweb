@@ -157,15 +157,20 @@ class Package(models.Model):
         return len(self.signoffs) >= 2
 
     @cache_function(300)
+    def applicable_arches(self):
+        '''The list of (this arch) + (available agnostic arches).'''
+        arches = set(Arch.objects.filter(agnostic=True))
+        arches.add(self.arch)
+        return list(arches)
+
+    @cache_function(300)
     def get_requiredby(self):
         """
         Returns a list of package objects.
         """
-        arches = list(Arch.objects.filter(agnostic=True))
-        arches.append(self.arch)
         requiredby = Package.objects.select_related('arch', 'repo').filter(
                 packagedepend__depname=self.pkgname,
-                arch__in=arches).distinct()
+                arch__in=self.applicable_arches()).distinct()
         return requiredby.order_by('pkgname')
 
     @cache_function(300)
@@ -176,15 +181,13 @@ class Package(models.Model):
         else pkg will be None if it is a 'virtual' dependency.
         """
         deps = []
-        arches = list(Arch.objects.filter(agnostic=True))
-        arches.append(self.arch)
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('depname'):
             pkgs = Package.objects.select_related('arch', 'repo').filter(
                     pkgname=dep.depname)
             if not self.arch.agnostic:
                 # make sure we match architectures if possible
-                pkgs = pkgs.filter(arch__in=arches)
+                pkgs = pkgs.filter(arch__in=self.applicable_arches())
             if len(pkgs) == 0:
                 # couldn't find a package in the DB
                 # it should be a virtual depend (or a removed package)
@@ -231,7 +234,7 @@ class Package(models.Model):
         repo.testing flag. For any non-split packages, the return value will be
         an empty list.
         """
-        return Package.objects.filter(arch=self.arch,
+        return Package.objects.filter(arch__in=self.applicable_arches,
                 repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
 
     def get_svn_link(self, svnpath):
