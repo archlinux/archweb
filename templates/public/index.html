@@ -27,8 +27,10 @@
     <p>Our strong community is diverse and helpful, and we pride ourselves
     on the range of skillsets and uses for Arch that stem from it. Please
     check out our <a href="https://bbs.archlinux.org" title="Arch Forums">forums</a>
-    and <a href="http://mailman.archlinux.org/mailman/listinfo/" title="Arch Mailing Lists">mailing lists</a>
-    to get your feet wet.  Also glance through our <a href="https://wiki.archlinux.org" title="Arch Wiki">wiki</a>
+    and <a href="http://mailman.archlinux.org/mailman/listinfo/"
+        title="Arch Mailing Lists">mailing lists</a>
+    to get your feet wet.  Also glance through our <a href="https://wiki.archlinux.org"
+        title="Arch Wiki">wiki</a>
     if you want to learn more about Arch.</p>
 
     <p class="readmore"><a href="{% url page-about %}"
@@ -80,10 +82,10 @@
         {% for update in pkg_updates %}
         {% with update|first as fpkg %}
         <tr>
-            <td class="pkg-name"><span class="{{ fpkg.repo.name|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
+            <td class="pkg-name"><span class="{{ fpkg.repo|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
             <td class="pkg-arch">
                 {% for pkg in update %}<a href="{{ pkg.get_absolute_url }}"
-                    title="View package details for {{ pkg.pkgname }}">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
+                    title="Details for {{ pkg.pkgname }} [{{ pkg.repo|lower }}]">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
             </td>
         </tr>
         {% endwith %}
