@@ -37,38 +37,43 @@ def opensearch(request):
 @permission_required('main.change_package')
 def update(request):
     ids = request.POST.getlist('pkgid')
-    mode = None
-    if request.POST.has_key('adopt'):
-        mode = 'adopt'
-    if request.POST.has_key('disown'):
-        mode = 'disown'
+    count = 0
 
-    if mode:
+    if request.POST.has_key('adopt'):
         repos = request.user.userprofile.allowed_repos.all()
         pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
                 repo__in=repos)
-        count = 0
+
+        if disallowed_pkgs:
+            messages.warning(request,
+                    "You do not have permission to adopt: %s." % (
+                        ' '.join([p.pkgname for p in disallowed_pkgs])
+                        ))
+
         for pkg in pkgs:
-            maints = pkg.maintainers
-            if mode == 'adopt' and request.user not in maints:
+            if request.user not in pkg.maintainers:
                 prel = PackageRelation(pkgbase=pkg.pkgbase,
                         user=request.user,
                         type=PackageRelation.MAINTAINER)
                 count += 1
                 prel.save()
-            elif mode == 'disown' and request.user in maints:
+
+        messages.info(request, "%d base packages adopted." % count)
+
+    elif request.POST.has_key('disown'):
+        # allow disowning regardless of allowed repos, helps things like
+        # [community] -> [extra] moves
+        for pkg in Package.objects.filter(id__in=ids):
+            if request.user in pkg.maintainers:
                 rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
-                        user=request.user)
+                        user=request.user,
+                        type=PackageRelation.MAINTAINER)
                 count += rels.count()
                 rels.delete()
 
-        messages.info(request, "%d base packages %sed." % (count, mode))
-        if disallowed_pkgs:
-            messages.warning(request,
-                    "You do not have permission to %s: %s" % (
-                        mode, ' '.join([p.pkgname for p in disallowed_pkgs])
-                        ))
+        messages.info(request, "%d base packages disowned." % count)
+
     else:
         messages.error(request, "Are you trying to adopt or disown?")
     return redirect('/packages/')
