@@ -198,10 +198,8 @@ class Package(models.Model):
                 # more than one package, see if we can't shrink it down
                 # grab the first though in case we fail
                 pkg = pkgs[0]
-                if self.repo.testing:
-                    pkgs = pkgs.filter(repo__testing=True)
-                else:
-                    pkgs = pkgs.filter(repo__testing=False)
+                # prevents yet more DB queries, these lists should be short
+                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing]
                 if len(pkgs) > 0:
                     pkg = pkgs[0]
             deps.append({'dep': dep, 'pkg': pkg})
