@@ -51,7 +51,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
         check_frequency = None
 
     for url in urls:
-        url.completion_pct = float(url.success_count) / num_checks
+        url.completion_pct = float(url.success_count) / url.check_count
         if url.id in delays:
             url_delays = delays[url.id]
             d = sum(url_delays, datetime.timedelta()) / len(url_delays)
