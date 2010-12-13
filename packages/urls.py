@@ -1,4 +1,13 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import include, patterns
+
+package_patterns = patterns('packages.views',
+    (r'^$',            'details'),
+    (r'^files/$',      'files'),
+    (r'^maintainer/$', 'getmaintainer'),
+    (r'^flag/$',       'flag'),
+    (r'^unflag/$',     'unflag'),
+    (r'^download/$',   'download'),
+)
 
 urlpatterns = patterns('packages.views',
     (r'^flaghelp/$', 'flaghelp'),
@@ -20,18 +29,9 @@ urlpatterns = patterns('packages.views',
         'details'),
     (r'^(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'details'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'details'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/files/$',
-        'files'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/maintainer/$',
-        'getmaintainer'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/flag/$',
-        'flag'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/unflag/$',
-        'unflag'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/download/$',
-        'download'),
+    # canonical package url. subviews defined above
+    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/',
+        include(package_patterns)),
 )
 
 # vim: set ts=4 sw=4 et:
