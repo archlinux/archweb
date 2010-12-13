@@ -10,7 +10,6 @@ Usage: ./manage.py mirrorcheck
 """
 
 from django.core.management.base import NoArgsCommand
-from django.db.models import Q
 
 from datetime import datetime, timedelta
 import logging
@@ -51,10 +50,10 @@ class Command(NoArgsCommand):
 
         return check_current_mirrors()
 
-def parse_rfc3339_datetime(time):
+def parse_rfc3339_datetime(time_string):
     # '2010-09-02 11:05:06+02:00'
     m = re.match('^(\d{4})-(\d{2})-(\d{2}) '
-            '(\d{2}):(\d{2}):(\d{2})([-+])(\d{2}):(\d{2})', time)
+            '(\d{2}):(\d{2}):(\d{2})([-+])(\d{2}):(\d{2})', time_string)
     if m:
         vals = m.groups()
         parsed = datetime(int(vals[0]), int(vals[1]), int(vals[2]),
@@ -123,46 +122,55 @@ def check_mirror_url(mirror_url):
         log.error = "Connection timed out."
         logger.debug("failed: %s, %s" % (url, log.error))
 
-    log.save()
     return log
 
-def mirror_url_worker(queue):
+def mirror_url_worker(work, output):
     while True:
         try:
-            item = queue.get(block=False)
+            item = work.get(block=False)
             try:
-                check_mirror_url(item)
+                log = check_mirror_url(item)
+                output.put(log)
             finally:
-                queue.task_done()
+                work.task_done()
         except Empty:
             return 0
 
 class MirrorCheckPool(object):
     def __init__(self, work, num_threads=10):
         self.tasks = Queue()
-        for i in work:
+        self.logs = Queue()
+        for i in list(work):
             self.tasks.put(i)
         self.threads = []
         for i in range(num_threads):
-            thread = Thread(target=mirror_url_worker, args=(self.tasks,))
+            thread = Thread(target=mirror_url_worker,
+                    args=(self.tasks, self.logs))
             thread.daemon = True
             self.threads.append(thread)
 
-    def run_and_join(self):
+    def run(self):
         logger.debug("starting threads")
         for t in self.threads:
             t.start()
         logger.debug("joining on all threads")
         self.tasks.join()
+        logger.debug("processing log entries")
+        try:
+            while True:
+                log = self.logs.get(block=False)
+                log.save()
+                self.logs.task_done()
+        except Empty:
+            logger.debug("all log items saved to database")
 
 def check_current_mirrors():
     urls = MirrorUrl.objects.filter(
-            Q(protocol__protocol__iexact='HTTP') |
-            Q(protocol__protocol__iexact='FTP'),
+            protocol__is_download=True,
             mirror__active=True, mirror__public=True)
 
     pool = MirrorCheckPool(urls)
-    pool.run_and_join()
+    pool.run()
     return 0
 
 # For lack of a better place to put it, here is a query to get latest check
