@@ -17,79 +17,93 @@ sitemaps = {
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    (r'^packages/flaghelp/$', 'packages.views.flaghelp'),
-    (r'^packages/signoffs/$', 'packages.views.signoffs'),
+urlpatterns = patterns('packages.views',
+    (r'^packages/flaghelp/$', 'flaghelp'),
+    (r'^packages/signoffs/$', 'signoffs'),
     (r'^packages/signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
-        'packages.views.signoff_package'),
-    (r'^packages/update/$',   'packages.views.update'),
+        'signoff_package'),
+    (r'^packages/update/$',   'update'),
 
     # Preference is for the packages/ url below, but search is kept
     # because other projects link to it
-    (r'^packages/search/$',          'packages.views.search'),
-    (r'^packages/search/(?P<page>\d+)/$', 'packages.views.search'),
-    (r'^packages/differences/$',     'packages.views.arch_differences'),
-    (r'^packages/$',                     'packages.views.search'),
-    (r'^packages/(?P<page>\d+)/$',        'packages.views.search'),
+    (r'^packages/search/$',               'search'),
+    (r'^packages/search/(?P<page>\d+)/$', 'search'),
+    (r'^packages/$',                      'search'),
+    (r'^packages/(?P<page>\d+)/$',        'search'),
+
+    (r'^packages/differences/$',          'arch_differences'),
 
     (r'^packages/(?P<name>[A-z0-9\-+.]+)/$',
-        'packages.views.details'),
+        'details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'packages.views.details'),
+        'details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'packages.views.details'),
+        'details'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/files/$',
-        'packages.views.files'),
+        'files'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/maintainer/$',
-        'packages.views.getmaintainer'),
+        'getmaintainer'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/flag/$',
-        'packages.views.flag'),
+        'flag'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/unflag/$',
-        'packages.views.unflag'),
+        'unflag'),
     (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/download/$',
-        'packages.views.download'),
+        'download'),
 
-    (r'^groups/$', 'packages.views.groups'),
+    (r'^groups/$', 'groups'),
     (r'^groups/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'packages.views.group_details'),
+        'group_details'),
 
-    (r'^todo/(\d+)/$',              'todolists.views.view'),
-    (r'^todo/add/$',                'todolists.views.add'),
-    (r'^todo/edit/(?P<list_id>\d+)/$',  'todolists.views.edit'),
-    (r'^todo/flag/(\d+)/(\d+)/$',   'todolists.views.flag'),
+    (r'^opensearch/packages/$', 'opensearch', {}, 'opensearch-packages'),
+)
+
+urlpatterns += patterns('todolists.views',
+    (r'^todo/$',                       'list'),
+    (r'^todo/(\d+)/$',                 'view'),
+    (r'^todo/add/$',                   'add'),
+    (r'^todo/edit/(?P<list_id>\d+)/$', 'edit'),
+    (r'^todo/flag/(\d+)/(\d+)/$',      'flag'),
     (r'^todo/delete/(?P<object_id>\d+)/$',
-        'todolists.views.delete_todolist'),
-    (r'^todo/$',                    'todolists.views.list'),
-    (r'^todolists/$',               'todolists.views.public_list'),
+        'delete_todolist'),
 
-    (r'^news/add/$',                     'news.views.add'),
-    (r'^news/preview/$',                 'news.views.preview'),
+    (r'^todolists/$',                  'public_list'),
+)
+
+urlpatterns += patterns('news.views',
+    (r'^news/add/$',                     'add'),
+    (r'^news/preview/$',                 'preview'),
     # old news URLs, permanent redirect view so we don't break all links
-    (r'^news/(?P<object_id>\d+)/$',      'news.views.view_redirect'),
-    (r'^news/(?P<slug>[-\w]+)/$',        'news.views.view'),
-    (r'^news/(?P<slug>[-\w]+)/edit/$',   'news.views.edit'),
-    (r'^news/(?P<slug>[-\w]+)/delete/$', 'news.views.delete'),
-    (r'^news/$',                         'news.views.news_list', {}, 'news-list'),
+    (r'^news/(?P<object_id>\d+)/$',      'view_redirect'),
+    (r'^news/(?P<slug>[-\w]+)/$',        'view'),
+    (r'^news/(?P<slug>[-\w]+)/edit/$',   'edit'),
+    (r'^news/(?P<slug>[-\w]+)/delete/$', 'delete'),
+    (r'^news/$',                         'news_list', {}, 'news-list'),
+)
 
-    (r'^mirrors/$',        'mirrors.views.mirrors', {}, 'mirrors-list'),
-    (r'^mirrors/status/$', 'mirrors.views.status',  {}, 'mirror-status'),
-    (r'^mirrors/status/json/$', 'mirrors.views.status_json',  {}, 'mirror-status-json'),
-    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirrors.views.mirror_details'),
+urlpatterns += patterns('mirrors.views',
+    (r'^mirrors/$',        'mirrors', {}, 'mirrors-list'),
+    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirror_details'),
 
-    (r'^mirrorlist/$', 'mirrors.views.generate_mirrorlist', {}, 'mirrorlist'),
-    (r'^mirrorlist/all/$', 'mirrors.views.find_mirrors', {'countries': ['all']}),
-    (r'^mirrorlist/all/ftp/$', 'mirrors.views.find_mirrors',
+    (r'^mirrors/status/$',      'status',  {}, 'mirror-status'),
+    (r'^mirrors/status/json/$', 'status_json',  {}, 'mirror-status-json'),
+
+    (r'^mirrorlist/$',         'generate_mirrorlist', {}, 'mirrorlist'),
+    (r'^mirrorlist/all/$',     'find_mirrors', {'countries': ['all']}),
+    (r'^mirrorlist/all/ftp/$', 'find_mirrors',
         {'countries': ['all'], 'protocols': ['ftp']}),
-    (r'^mirrorlist/all/http/$', 'mirrors.views.find_mirrors',
+    (r'^mirrorlist/all/http/$', 'find_mirrors',
         {'countries': ['all'], 'protocols': ['http']}),
+)
 
-    (r'^devel/$',          'devel.views.index'),
-    (r'^devel/notify/$',   'devel.views.change_notify'),
-    (r'^devel/profile/$',  'devel.views.change_profile'),
-
-    (r'^devel/newuser/$', 'devel.views.new_user_form'),
+urlpatterns += patterns('devel.views',
+    (r'^devel/$',          'index'),
+    (r'^devel/notify/$',   'change_notify'),
+    (r'^devel/profile/$',  'change_profile'),
+    (r'^devel/newuser/$',  'new_user_form'),
+)
 
 # Feeds and sitemaps
+urlpatterns += patterns('',
     (r'^feeds/$', 'public.views.feeds', {}, 'feeds-list'),
     (r'^feeds/news/$', NewsFeed()),
     (r'^feeds/packages/$', PackageFeed()),
@@ -101,31 +115,35 @@ urlpatterns = patterns('',
         {'sitemaps': sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap',
         {'sitemaps': sitemaps}),
+)
 
 # Authentication / Admin
-    (r'^login/$',           'django.contrib.auth.views.login',  {
+urlpatterns += patterns('django.contrib.auth.views',
+    (r'^login/$',           'login',  {
         'template_name': 'registration/login.html'}),
-    (r'^accounts/login/$',  'django.contrib.auth.views.login',  {
+    (r'^accounts/login/$',  'login',  {
         'template_name': 'registration/login.html'}),
-    (r'^logout/$',          'django.contrib.auth.views.logout', {
+    (r'^logout/$',          'logout', {
         'template_name': 'registration/logout.html'}),
-    (r'^accounts/logout/$', 'django.contrib.auth.views.logout', {
+    (r'^accounts/logout/$', 'logout', {
         'template_name': 'registration/logout.html'}),
-    (r'^admin/', include(admin.site.urls)),
+)
 
 # (mostly) Static Pages
-    (r'^$', 'public.views.index', {}, 'index'),
+urlpatterns += patterns('public.views',
+    (r'^$', 'index', {}, 'index'),
     (r'^about/$', direct_to_template, {'template': 'public/about.html'}, 'page-about'),
     (r'^art/$', direct_to_template, {'template': 'public/art.html'}, 'page-art'),
     (r'^svn/$', direct_to_template, {'template': 'public/svn.html'}, 'page-svn'),
-    (r'^developers/$',   'public.views.userlist', { 'type':'Developers' }, 'page-devs'),
-    (r'^trustedusers/$', 'public.views.userlist', { 'type':'Trusted Users' }, 'page-tus'),
-    (r'^fellows/$',      'public.views.userlist', { 'type':'Fellows' }, 'page-fellows'),
-    (r'^donate/$', 'public.views.donate', {}, 'page-donate'),
-    (r'^download/$', 'public.views.download', {}, 'page-download'),
-    (r'^opensearch/packages/$', 'packages.views.opensearch', {}, 'opensearch-packages'),
+    (r'^developers/$',   'userlist', { 'type':'Developers' }, 'page-devs'),
+    (r'^trustedusers/$', 'userlist', { 'type':'Trusted Users' }, 'page-tus'),
+    (r'^fellows/$',      'userlist', { 'type':'Fellows' }, 'page-fellows'),
+    (r'^donate/$',       'donate', {}, 'page-donate'),
+    (r'^download/$',     'download', {}, 'page-download'),
+)
 
-# Some django internals we use
+urlpatterns += patterns('',
+    (r'^admin/', include(admin.site.urls)),
     (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
 )
 
