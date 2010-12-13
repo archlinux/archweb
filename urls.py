@@ -69,17 +69,6 @@ urlpatterns += patterns('todolists.views',
     (r'^todolists/$',                  'public_list'),
 )
 
-urlpatterns += patterns('news.views',
-    (r'^news/add/$',                     'add'),
-    (r'^news/preview/$',                 'preview'),
-    # old news URLs, permanent redirect view so we don't break all links
-    (r'^news/(?P<object_id>\d+)/$',      'view_redirect'),
-    (r'^news/(?P<slug>[-\w]+)/$',        'view'),
-    (r'^news/(?P<slug>[-\w]+)/edit/$',   'edit'),
-    (r'^news/(?P<slug>[-\w]+)/delete/$', 'delete'),
-    (r'^news/$',                         'news_list', {}, 'news-list'),
-)
-
 urlpatterns += patterns('mirrors.views',
     (r'^mirrors/$',        'mirrors', {}, 'mirrors-list'),
     (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirror_details'),
@@ -129,7 +118,7 @@ urlpatterns += patterns('django.contrib.auth.views',
         'template_name': 'registration/logout.html'}),
 )
 
-# (mostly) Static Pages
+# Public pages
 urlpatterns += patterns('public.views',
     (r'^$', 'index', {}, 'index'),
     (r'^about/$', direct_to_template, {'template': 'public/about.html'}, 'page-about'),
@@ -142,9 +131,12 @@ urlpatterns += patterns('public.views',
     (r'^download/$',     'download', {}, 'page-download'),
 )
 
+# Includes and other remaining stuff
 urlpatterns += patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
+
+    (r'^news/', include('news.urls')),
 )
 
 if settings.DEBUG == True:
