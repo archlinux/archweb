@@ -4,7 +4,6 @@ from django.contrib import admin
 
 from django.views.generic.simple import direct_to_template
 
-from main.models import Todolist
 from feeds import PackageFeed, NewsFeed
 import sitemaps
 
@@ -18,38 +17,6 @@ sitemaps = {
 admin.autodiscover()
 
 urlpatterns = patterns('packages.views',
-    (r'^packages/flaghelp/$', 'flaghelp'),
-    (r'^packages/signoffs/$', 'signoffs'),
-    (r'^packages/signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
-        'signoff_package'),
-    (r'^packages/update/$',   'update'),
-
-    # Preference is for the packages/ url below, but search is kept
-    # because other projects link to it
-    (r'^packages/search/$',               'search'),
-    (r'^packages/search/(?P<page>\d+)/$', 'search'),
-    (r'^packages/$',                      'search'),
-    (r'^packages/(?P<page>\d+)/$',        'search'),
-
-    (r'^packages/differences/$',          'arch_differences'),
-
-    (r'^packages/(?P<name>[A-z0-9\-+.]+)/$',
-        'details'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'details'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'details'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/files/$',
-        'files'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/maintainer/$',
-        'getmaintainer'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/flag/$',
-        'flag'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/unflag/$',
-        'unflag'),
-    (r'^packages/(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/download/$',
-        'download'),
-
     (r'^groups/$', 'groups'),
     (r'^groups/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'group_details'),
@@ -58,14 +25,6 @@ urlpatterns = patterns('packages.views',
 )
 
 urlpatterns += patterns('todolists.views',
-    (r'^todo/$',                       'list'),
-    (r'^todo/(\d+)/$',                 'view'),
-    (r'^todo/add/$',                   'add'),
-    (r'^todo/edit/(?P<list_id>\d+)/$', 'edit'),
-    (r'^todo/flag/(\d+)/(\d+)/$',      'flag'),
-    (r'^todo/delete/(?P<object_id>\d+)/$',
-        'delete_todolist'),
-
     (r'^todolists/$',                  'public_list'),
 )
 
@@ -82,13 +41,6 @@ urlpatterns += patterns('mirrors.views',
         {'countries': ['all'], 'protocols': ['ftp']}),
     (r'^mirrorlist/all/http/$', 'find_mirrors',
         {'countries': ['all'], 'protocols': ['http']}),
-)
-
-urlpatterns += patterns('devel.views',
-    (r'^devel/$',          'index'),
-    (r'^devel/notify/$',   'change_notify'),
-    (r'^devel/profile/$',  'change_profile'),
-    (r'^devel/newuser/$',  'new_user_form'),
 )
 
 # Feeds and sitemaps
@@ -136,7 +88,10 @@ urlpatterns += patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
 
-    (r'^news/', include('news.urls')),
+    (r'^devel/',     include('devel.urls')),
+    (r'^news/',      include('news.urls')),
+    (r'^packages/',  include('packages.urls')),
+    (r'^todo/',      include('todolists.urls')),
 )
 
 if settings.DEBUG == True:
