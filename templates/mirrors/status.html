@@ -50,8 +50,11 @@
     </ul>
 
     <p>The last mirror check ran at {{ last_check|date:'Y-m-d H:i' }} UTC.
-    Checks have ran {{ num_checks }} times in the last {{ cutoff|hours }} at an average
-    interval of {{ check_frequency|duration }} (hh:mm).</p>
+    Checks have ran {{ num_checks }} times in the last {{ cutoff|hours }} at
+    an average interval of {{ check_frequency|duration }} (hh:mm).</p>
+
+    <p>This data is also available in <a href="json/">JSON format</a>. The
+    units of all time/duration values are in seconds.</p>
 
     <a name="outofsync" id="outofsync"></a>
     <h3>Out of Sync Mirrors</h3>
