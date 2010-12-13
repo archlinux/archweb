@@ -1,10 +1,12 @@
 from django import forms
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Avg, Count, Max, Min, StdDev
 from django.db.models import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
+from django.utils import simplejson
 
 from main.utils import make_choice
 from .models import Mirror, MirrorUrl, MirrorProtocol
@@ -128,5 +130,38 @@ def status(request):
         'error_logs': get_mirror_errors(),
     })
     return direct_to_template(request, 'mirrors/status.html', context)
+
+class MirrorStatusJSONEncoder(DjangoJSONEncoder):
+    '''Base JSONEncoder extended to handle datetime.timedelta and MirrorUrl
+    serialization. The base class takes care of datetime.datetime types.'''
+    url_attributes = ['url', 'protocol', 'last_sync', 'completion_pct',
+            'delay', 'duration_avg', 'duration_stddev', 'score']
+
+    def default(self, obj):
+        if isinstance(obj, datetime.timedelta):
+            # always returned as integer seconds
+            return obj.days * 24 * 3600 + obj.seconds
+        if hasattr(obj, '__iter__'):
+            # mainly for queryset serialization
+            return list(obj)
+        if isinstance(obj, MirrorUrl):
+            data = {}
+            for attr in self.url_attributes:
+                data[attr] = getattr(obj, attr)
+            # separate because it isn't on the URL directly
+            data['country'] = obj.mirror.country
+            return data
+        if isinstance(obj, MirrorProtocol):
+            return unicode(obj)
+        return super(MirrorStatusJSONEncoder, self).default(obj)
+
+def status_json(request):
+    status_info = get_mirror_statuses()
+    data = status_info.copy()
+    data['version'] = 1
+    to_json = simplejson.dumps(data, ensure_ascii=False,
+            cls=MirrorStatusJSONEncoder)
+    response = HttpResponse(to_json, mimetype='application/json')
+    return response
 
 # vim: set ts=4 sw=4 et:

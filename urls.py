@@ -73,6 +73,7 @@ urlpatterns = patterns('',
 
     (r'^mirrors/$',        'mirrors.views.mirrors', {}, 'mirrors-list'),
     (r'^mirrors/status/$', 'mirrors.views.status',  {}, 'mirror-status'),
+    (r'^mirrors/status/json/$', 'mirrors.views.status_json',  {}, 'mirror-status-json'),
     (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirrors.views.mirror_details'),
 
     (r'^mirrorlist/$', 'mirrors.views.generate_mirrorlist', {}, 'mirrorlist'),
