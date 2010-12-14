@@ -263,7 +263,7 @@ class Package(models.Model):
                 repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
 
     def get_svn_link(self, svnpath):
-        linkbase = "http://repos.archlinux.org/wsvn/%s/%s/%s/"
+        linkbase = "http://projects.archlinux.org/svntogit/%s.git/tree/%s/%s/"
         return linkbase % (self.repo.svn_root, self.pkgbase, svnpath)
 
     def get_arch_svn_link(self):
