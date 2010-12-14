@@ -29,11 +29,11 @@ urlpatterns += patterns('todolists.views',
 )
 
 urlpatterns += patterns('mirrors.views',
-    (r'^mirrors/$',        'mirrors', {}, 'mirrors-list'),
-    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirror_details'),
-
     (r'^mirrors/status/$',      'status',  {}, 'mirror-status'),
     (r'^mirrors/status/json/$', 'status_json',  {}, 'mirror-status-json'),
+
+    (r'^mirrors/$',        'mirrors', {}, 'mirrors-list'),
+    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirror_details'),
 
     (r'^mirrorlist/$',         'generate_mirrorlist', {}, 'mirrorlist'),
     (r'^mirrorlist/all/$',     'find_mirrors', {'countries': ['all']}),
