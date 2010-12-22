@@ -314,13 +314,12 @@ class Signoff(models.Model):
 
 class PackageFile(models.Model):
     pkg = models.ForeignKey(Package)
-    path = models.CharField(max_length=255)
     is_directory = models.BooleanField(default=False)
     directory = models.CharField(max_length=255)
     filename = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
-        return self.path
+        return "%s%s" % (self.directory, self.filename or '')
 
     class Meta:
         db_table = 'package_files'

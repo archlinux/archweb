@@ -237,8 +237,14 @@ def populate_files(dbpkg, repopkg, force=False):
         dbpkg.packagefile_set.all().delete()
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
-        for x in repopkg.files:
-            dbpkg.packagefile_set.create(path=x)
+        for f in repopkg.files:
+            dirname, filename = f.rsplit('/', 1)
+            if filename == '':
+                filename = None
+            dbpkg.packagefile_set.create(
+                    is_directory=(filename is None),
+                    directory=dirname + '/',
+                    filename=filename)
         dbpkg.files_last_update = datetime.now()
         dbpkg.save()
 

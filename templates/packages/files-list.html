@@ -5,7 +5,7 @@ of the package; it may be out of date.</p>
 {% if files.count %}
 <ul>
     {% for file in files %}
-    <li>{{ file.path }}</li>
+    <li>{{ file.directory }}{{ file.filename|default:'' }}</li>
     {% endfor %}
 </ul>
 {% else %}
