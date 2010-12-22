@@ -9,7 +9,6 @@ from itertools import groupby
 from operator import attrgetter
 
 class UserProfile(models.Model):
-    id = models.AutoField(primary_key=True) # not technically needed
     notify = models.BooleanField(
         "Send notifications",
         default=True,
@@ -49,7 +48,6 @@ class PackageManager(models.Manager):
 
 
 class Donor(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
     visible = models.BooleanField(default=True,
             help_text="Should we show this donor on the public page?")
@@ -62,7 +60,6 @@ class Donor(models.Model):
         ordering = ['name']
 
 class Arch(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
     agnostic = models.BooleanField(default=False,
             help_text="Is this architecture non-platform specific?")
@@ -79,7 +76,6 @@ class Arch(models.Model):
         verbose_name_plural = 'arches'
 
 class Repo(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
     testing = models.BooleanField(default=False,
             help_text="Is this repo meant for package testing?")
@@ -100,7 +96,6 @@ class Repo(models.Model):
         verbose_name_plural = 'repos'
 
 class Package(models.Model):
-    id = models.AutoField(primary_key=True)
     repo = models.ForeignKey(Repo, related_name="packages")
     arch = models.ForeignKey(Arch, related_name="packages")
     pkgname = models.CharField(max_length=255, db_index=True)
@@ -308,14 +303,12 @@ class Signoff(models.Model):
     packager = models.ForeignKey(User)
 
 class PackageFile(models.Model):
-    id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
     path = models.CharField(max_length=255)
     class Meta:
         db_table = 'package_files'
 
 class PackageDepend(models.Model):
-    id = models.AutoField(primary_key=True)
     pkg = models.ForeignKey('Package')
     depname = models.CharField(db_index=True, max_length=255)
     depvcmp = models.CharField(max_length=255)
@@ -323,7 +316,6 @@ class PackageDepend(models.Model):
         db_table = 'package_depends'
 
 class Todolist(models.Model):
-    id = models.AutoField(primary_key=True)
     creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -351,7 +343,6 @@ class Todolist(models.Model):
         return '/todo/%i/' % self.id
 
 class TodolistPkg(models.Model):
-    id = models.AutoField(primary_key=True)
     list = models.ForeignKey('Todolist')
     pkg = models.ForeignKey('Package')
     complete = models.BooleanField(default=False)
