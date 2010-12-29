@@ -232,6 +232,7 @@ def populate_files(dbpkg, repopkg, force=False):
         dbpkg.files_last_update = datetime.now()
         dbpkg.save()
 
+@transaction.commit_on_success
 def db_update(archname, reponame, pkgs, options):
     """
     Parses a list and updates the Arch dev database accordingly.
@@ -398,7 +399,6 @@ def validate_arch(arch):
     available_arches = [x.name for x in Arch.objects.all()]
     return arch in available_arches
 
-@transaction.commit_on_success
 def read_repo(primary_arch, repo_file, options):
     """
     Parses repo.db.tar.gz file and returns exit status.
