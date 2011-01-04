@@ -1,9 +1,11 @@
 from django import forms
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import \
+        login_required, permission_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from django.template import loader, Context
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
@@ -168,5 +170,17 @@ def new_user_form(request):
         'submit_text': 'Create User'
     }
     return direct_to_template(request, 'general_form.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+@never_cache
+def admin_log(request, username=None):
+    user = None
+    if username:
+        user = get_object_or_404(User, username=username)
+    context = {
+        'title': "Admin Action Log",
+        'log_user':  user,
+    }
+    return direct_to_template(request, 'devel/admin_log.html', context)
 
 # vim: set ts=4 sw=4 et:

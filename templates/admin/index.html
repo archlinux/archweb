@@ -14,10 +14,18 @@
     <div class="module">
         <table>
             <caption>Custom Admin Pages</caption>
+            {% if perms.auth.add_user %}
             <tr>
                 <th scope="row"><a href="/devel/newuser/">Create New User</a></th>
                 <td></td><td></td>
             </tr>
+            {% endif %}
+            {% if user.is_superuser %}
+            <tr>
+                <th scope="row"><a href="/devel/admin_log/">Admin Actions Log</a></th>
+                <td></td><td></td>
+            </tr>
+            {% endif %}
         </table>
     </div>
 

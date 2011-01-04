@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="/admin/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title }}{% endif %}</div>{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <div class="module">
+{% load log %}
+{% if log_user %}
+{% get_admin_log 100 as admin_log for_user log_user %}
+{% else %}
+{% get_admin_log 100 as admin_log %}
+{% endif %}
+{% if not admin_log %}
+<p>{% trans 'None available' %}</p>
+{% else %}
+<table id="change-history">
+    <thead>
+        <tr>
+            <th scope="col">{% trans 'Date/time' %}</th>
+            <th scope="col">{% trans 'User' %}</th>
+            <th>Type</th>
+            <th>Object</th>
+            <th scope="col">{% trans 'Action' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in admin_log %}
+        <tr>
+            <th scope="row">{{ entry.action_time|date:"DATETIME_FORMAT" }}</th>
+            {% if log_user %}
+            <td>{{ entry.user.username }}{% if entry.user.get_full_name %} ({{ entry.user.get_full_name }}){% endif %}</td>
+            {% else %}
+            <td><a href="{{ entry.user.username }}/">{{ entry.user.username }}</a>{% if entry.user.get_full_name %} ({{ entry.user.get_full_name }}){% endif %}</td>
+            {% endif %}
+            <td>
+                {% if entry.content_type %}
+                <span>{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                {% else %}
+                <span>{% trans 'Unknown content' %}</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}"></span>
+                {% if entry.is_deletion %}
+                {{ entry.object_repr }}
+                {% else %}
+                <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+            </td>
+            <td>{{ entry.change_message }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+    </div>
+</div>
+{% endblock %}
