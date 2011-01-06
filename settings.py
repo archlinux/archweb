@@ -29,14 +29,6 @@ DEFAULT_CHARSET = 'utf-8'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = False
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
-USE_L10N = False
-
 # Default date format in templates for 'date' filter
 DATE_FORMAT = 'Y-m-d'
 
@@ -45,9 +37,12 @@ DATE_FORMAT = 'Y-m-d'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/admin_media/'
 
-# login url
+# Login URL configuration
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+# Set django's User stuff to use our profile model
+AUTH_PROFILE_MODULE = 'main.UserProfile'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -94,12 +89,8 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
-# Set django's User stuff to use our profile model
-# format is app.model
-AUTH_PROFILE_MODULE = 'main.UserProfile'
-
+# Configure where sessions and messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 INSTALLED_APPS = (
