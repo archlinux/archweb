@@ -6,9 +6,7 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ## Notification admins
-ADMINS = (
-   ('Dan McGee', 'dan@archlinux.org'),
-)
+ADMINS = ()
 
 # Set managers to admins
 MANAGERS = ADMINS
