@@ -10,8 +10,8 @@
 	depends on developers keeping the time zone information up to date, so if
 	you see 'UTC' listed, pester them to update their settings.</p>
 	<p>
-	Arch Server Time: {{ now|date:"Y-m-d H:i" }}<br/>
-	UTC Time: {{ utc_now|date:"Y-m-d H:i" }}
+	Arch Server Time: {{ now|date:"Y-m-d H:i T" }}<br/>
+	UTC Time: {{ utc_now|date:"Y-m-d H:i T" }}
 	</p>
 
     <table id="clocks-table" class="results dash-stats">
@@ -31,7 +31,7 @@
                 <td>{{ dev.username }}</td>
                 <td>{{ dev.userprofile.location }}</td>
                 <td>{{ dev.userprofile.time_zone }}</td>
-                <td>{{ dev.current_time|date:"Y-m-d H:i" }}</td>
+                <td>{{ dev.current_time|date:"Y-m-d H:i T" }}</td>
             </tr>
             {% endfor %}
         </tbody>
