@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Developer World Clocks{% endblock %}
+
+{% block content %}
+<div id="dev-clocks-box" class="box">
+    <h2>Developer World Clocks</h2>
+
+	<p>This page helps prevent you from waking a sleeping developer. It also
+	depends on developers keeping the time zone information up to date, so if
+	you see 'UTC' listed, pester them to update their settings.</p>
+	<p>
+	Arch Server Time: {{ now|date:"Y-m-d H:i" }}<br/>
+	UTC Time: {{ utc_now|date:"Y-m-d H:i" }}
+	</p>
+
+    <table id="clocks-table" class="results dash-stats">
+        <thead>
+            <tr>
+                <th>Developer</th>
+                <th>Username</th>
+                <th>Location</th>
+                <th>Time Zone</th>
+                <th>Current Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dev in developers %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ dev.get_full_name }}</td>
+                <td>{{ dev.username }}</td>
+                <td>{{ dev.userprofile.location }}</td>
+                <td>{{ dev.userprofile.time_zone }}</td>
+                <td>{{ dev.current_time|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#clocks-table:has(tbody tr)").tablesorter(
+        {widgets: ['zebra'], sortList: [[1,0]]});
+});
+</script>
+{% endblock %}

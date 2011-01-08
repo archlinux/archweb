@@ -13,6 +13,8 @@ from main.models import UserProfile
 from packages.models import PackageRelation
 from .utils import get_annotated_maintainers
 
+import datetime
+import pytz
 import random
 from string import ascii_letters, digits
 
@@ -38,9 +40,30 @@ def index(request):
             'maintainers': maintainers,
             'flagged' : flagged,
             'todopkgs' : todopkgs,
-         }
+    }
 
     return direct_to_template(request, 'devel/index.html', page_dict)
+
+@login_required
+@never_cache
+def clock(request):
+    devs = User.objects.filter(is_active=True).order_by(
+            'username').select_related('userprofile')
+
+    # now annotate each dev object with their current time
+    now = datetime.datetime.now()
+    utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+    for dev in devs:
+        tz = pytz.timezone(dev.userprofile.time_zone)
+        dev.current_time = utc_now.astimezone(tz)
+
+    page_dict = {
+            'developers': devs,
+            'now': now,
+            'utc_now': utc_now,
+    }
+
+    return direct_to_template(request, 'devel/clock.html', page_dict)
 
 @login_required
 def change_notify(request):
