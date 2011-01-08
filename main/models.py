@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from main.utils import cache_function
+from main.utils import cache_function, make_choice
 from packages.models import PackageRelation
 
 from itertools import groupby
+import pytz
 from operator import attrgetter
 
 class UserProfile(models.Model):
@@ -13,6 +14,11 @@ class UserProfile(models.Model):
         "Send notifications",
         default=True,
         help_text="When enabled, send user 'flag out-of-date' notifications")
+    time_zone = models.CharField(
+        max_length=100,
+        choices=make_choice(pytz.all_timezones),
+        default="UTC",
+        help_text="Used for developer clock page")
     alias = models.CharField(
         max_length=50,
         help_text="Required field")
