@@ -16,7 +16,7 @@ class UserProfile(models.Model):
         help_text="When enabled, send user 'flag out-of-date' notifications")
     time_zone = models.CharField(
         max_length=100,
-        choices=make_choice(pytz.all_timezones),
+        choices=make_choice(pytz.common_timezones),
         default="UTC",
         help_text="Used for developer clock page")
     alias = models.CharField(
