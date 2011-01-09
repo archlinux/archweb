@@ -92,7 +92,7 @@ function ajaxifyFiles() {
 }
 
 /* packages/differences.html */
-filter_packages = function() {
+function filter_packages() {
     // start with all rows, and then remove ones we shouldn't show
     var rows = $('#tbody_differences').children();
     var all_rows = rows;
@@ -130,16 +130,16 @@ filter_packages = function() {
     rows.show();
     // make sure we update the odd/even styling from sorting
     $('.results').trigger('applyWidgets');
-};
-filter_reset = function() {
+}
+function filter_reset() {
     $('#id_archonly').val('both');
     $('#id_multilib').removeAttr('checked');
     $('#id_minor').removeAttr('checked');
     filter_packages();
-};
+}
 
 /* todolists/view.html */
-todolist_flag = function() {
+function todolist_flag() {
     var link = this;
     $.getJSON(link.href, function(data) {
         if (data.complete) {
@@ -151,4 +151,4 @@ todolist_flag = function() {
         }
     });
     return false;
-};
+}
