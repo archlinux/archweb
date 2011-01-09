@@ -36,17 +36,33 @@ if(typeof $.tablesorter !== "undefined") {
     $.tablesorter.addParser({
         /* sorts duration; put '', 'unknown', and '∞' last. */
         id: 'duration',
-        is: function(s,table) {
+        re: /^([0-9]+):([0-5][0-9])$/,
+        is: function(s) {
             var special = ['', 'unknown', '∞'];
-            return ($.inArray(s, special) > -1) || /^[0-9]+:[0-5][0-9]$/.test(s);
+            return ($.inArray(s, special) > -1) || this.re.test(s);
         },
         format: function(s) {
             var special = ['', 'unknown', '∞'];
             if($.inArray(s, special) > -1) return Number.MAX_VALUE;
-            matches = /^([0-9]+):([0-5][0-9])$/.exec(s);
+            var matches = this.re.exec(s);
             return matches[1] * 60 + matches[2];
         },
         type: 'numeric'
+    });
+    $.tablesorter.addParser({
+        id: 'longDateTime',
+        re: /^(\d{4})-(\d{2})-(\d{2}) ([012]\d):([0-5]\d)(:([0-5]\d))?( (\w+))?$/,
+        is: function (s) {
+            return this.re.test(s);
+        },
+        format: function (s) {
+            var matches = this.re.exec(s);
+            /* skip group 6, group 7 is optional seconds */
+            if(matches[7] == undefined) matches[7] = "0";
+            return $.tablesorter.formatFloat(new Date(
+                    matches[1],matches[2],matches[3],matches[4],matches[5],matches[7]).getTime());
+        },
+        type: "numeric"
     });
 }
 
