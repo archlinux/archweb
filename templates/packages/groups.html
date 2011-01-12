@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - Package Groups{% endblock %}
+{% block title %}Arch Linux - Package Groups{% if arch %} - {{ arch }}{% endif %}{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div class="box">
-    <h2>Package Groups Overview</h2>
+    <h2>Package Groups Overview{% if arch %} - {{ arch }}{% endif %}</h2>
     <table class="results">
         <thead>
             <tr>

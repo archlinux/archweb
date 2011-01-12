@@ -8,7 +8,7 @@ from main.utils import cache_function
 from .models import PackageGroup
 
 @cache_function(300)
-def get_group_info():
+def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
              cnt=Count('pkg'), last_update=Max('pkg__last_update'))
@@ -38,10 +38,12 @@ def get_group_info():
                     new_g['arch'] = arch
                     arch_groups[grp['name']] = new_g
 
-    # now transform it back into a sorted list
+    # now transform it back into a sorted list, including only the specified
+    # architectures if we got a list
     groups = []
-    for val in group_mapping.itervalues():
-        groups.extend(val.itervalues())
+    for key, val in group_mapping.iteritems():
+        if not include_arches or key in include_arches:
+            groups.extend(val.itervalues())
     return sorted(groups, key=itemgetter('name', 'arch'))
 
 class Difference(object):

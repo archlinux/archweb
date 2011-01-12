@@ -88,9 +88,17 @@ def details(request, name='', repo='', arch=''):
         return redirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))
 
-def groups(request):
-    grps = get_group_info()
-    return direct_to_template(request, 'packages/groups.html', {'groups': grps})
+def groups(request, arch=None):
+    arches = []
+    if arch:
+        get_object_or_404(Arch, name=arch, agnostic=False)
+        arches.append(arch)
+    grps = get_group_info(arches)
+    context = {
+        'groups': grps,
+        'arch': arch,
+    }
+    return direct_to_template(request, 'packages/groups.html', context)
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)

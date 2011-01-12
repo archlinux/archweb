@@ -18,6 +18,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('packages.views',
     (r'^groups/$', 'groups'),
+    (r'^groups/(?P<arch>[A-z0-9]+)/$', 'groups'),
     (r'^groups/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
         'group_details'),
 
