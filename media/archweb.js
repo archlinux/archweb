@@ -14,7 +14,7 @@ if (typeof $.tablesorter !== 'undefined') {
         id: 'todostatus',
         is: function(s) { return false; },
         format: function(s) {
-            return s.match(/incomplete/) ? 1 : 0;
+            return s.match(/incomplete/i) ? 1 : 0;
         },
         type: 'numeric'
     });
@@ -149,6 +149,9 @@ function todolist_flag() {
             $(link).text('Incomplete').addClass(
                 'incomplete').removeClass('complete');
         }
+        /* let tablesorter know the cell value has changed */
+        /* newer version of tablesorter: $('.results').trigger('updateCell', $(link).parent('td')); */
+        $('.results').trigger('update');
     });
     return false;
 }
