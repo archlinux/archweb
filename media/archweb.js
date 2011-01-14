@@ -21,14 +21,13 @@ if (typeof $.tablesorter !== 'undefined') {
     $.tablesorter.addParser({
         /* sorts numeric, but put '', 'unknown', and '∞' last. */
         id: 'mostlydigit',
+        special: ['', 'unknown', '∞'],
         is: function(s, table) {
-            var special = ['', 'unknown', '∞'];
             var c = table.config;
-            return ($.inArray(s, special) > -1) || $.tablesorter.isDigit(s, c);
+            return ($.inArray(s, this.special) > -1) || $.tablesorter.isDigit(s, c);
         },
         format: function(s) {
-            var special = ['', 'unknown', '∞'];
-            if ($.inArray(s, special) > -1) return Number.MAX_VALUE;
+            if ($.inArray(s, this.special) > -1) return Number.MAX_VALUE;
             return $.tablesorter.formatFloat(s);
         },
         type: 'numeric'
@@ -37,14 +36,14 @@ if (typeof $.tablesorter !== 'undefined') {
         /* sorts duration; put '', 'unknown', and '∞' last. */
         id: 'duration',
         re: /^([0-9]+):([0-5][0-9])$/,
+        special: ['', 'unknown', '∞'],
         is: function(s) {
-            var special = ['', 'unknown', '∞'];
-            return ($.inArray(s, special) > -1) || this.re.test(s);
+            return ($.inArray(s, this.special) > -1) || this.re.test(s);
         },
         format: function(s) {
-            var special = ['', 'unknown', '∞'];
-            if ($.inArray(s, special) > -1) return Number.MAX_VALUE;
+            if ($.inArray(s, this.special) > -1) return Number.MAX_VALUE;
             var matches = this.re.exec(s);
+            if (!matches) return Number.MAX_VALUE;
             return matches[1] * 60 + matches[2];
         },
         type: 'numeric'
@@ -57,6 +56,7 @@ if (typeof $.tablesorter !== 'undefined') {
         },
         format: function(s) {
             var matches = this.re.exec(s);
+            if (!matches) return 0;
             /* skip group 6, group 7 is optional seconds */
             if (matches[7] == undefined) matches[7] = '0';
             return $.tablesorter.formatFloat(new Date(
