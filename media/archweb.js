@@ -150,8 +150,7 @@ function todolist_flag() {
                 'incomplete').removeClass('complete');
         }
         /* let tablesorter know the cell value has changed */
-        /* newer version of tablesorter: $('.results').trigger('updateCell', $(link).parent('td')); */
-        $('.results').trigger('update');
+        $('.results').trigger('updateCell', $(link).parent('td'));
     });
     return false;
 }
