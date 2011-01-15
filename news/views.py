@@ -56,7 +56,7 @@ def add(request):
             newsitem.author = request.user
             newsitem.slug = find_unique_slug(newsitem)
             newsitem.save()
-            return redirect(newsitem.get_absolute_url())
+            return redirect(newsitem)
     else:
         form = NewsForm()
     return direct_to_template(request, 'news/add.html', { 'form': form })
