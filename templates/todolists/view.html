@@ -40,10 +40,10 @@
                 <td>
                     {% if pkg.complete %}
                     <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
-                        class="complete" title="Toggle completion status">Complete</a>
+                        class="status-link complete" title="Toggle completion status">Complete</a>
                     {% else %}
                     <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
-                        class="incomplete" title="Toggle completion status">Incomplete</a>
+                        class="status-link incomplete" title="Toggle completion status">Incomplete</a>
                     {% endif %}
                 </td>
             </tr>
@@ -56,7 +56,7 @@
 <script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('a[href*=todo/flag]').click(todolist_flag);
+    $('a.status-link').click(todolist_flag);
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[0,0], [1,0]],
