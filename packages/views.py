@@ -1,18 +1,19 @@
 from django import forms
 from django.contrib import messages
-from django.conf import settings
-from django.core.mail import send_mail
-from django.template import loader, Context, RequestContext
-from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
-from django.contrib.admin.widgets import AdminDateWidget
+from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models import Q
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.template import loader, Context, RequestContext
+from django.utils import simplejson
 from django.views.decorators.cache import never_cache
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
-from django.db.models import Q
 
 from datetime import datetime
 import string
@@ -276,15 +277,16 @@ def signoff_package(request, arch, pkgname):
             pkgrel=pkg.pkgrel,
             packager=request.user)
 
-    if created:
-        messages.info(request,
-                "You have successfully signed off for %s on %s." % \
-                        (pkg.pkgname, pkg.arch))
-    else:
-        messages.warning(request,
-                "You have already signed off for %s on %s." % \
-                        (pkg.pkgname, pkg.arch))
-    return signoffs(request)
+    if request.is_ajax():
+        data = {
+            'created': created,
+            'approved': pkg.approved_for_signoff(),
+            'user': str(request.user),
+        }
+        return HttpResponse(simplejson.dumps(data),
+                mimetype='application/json')
+
+    return redirect('package-signoffs')
 
 def flaghelp(request):
     return direct_to_template(request, 'packages/flaghelp.html')

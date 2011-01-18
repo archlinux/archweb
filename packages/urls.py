@@ -11,7 +11,7 @@ package_patterns = patterns('packages.views',
 
 urlpatterns = patterns('packages.views',
     (r'^flaghelp/$', 'flaghelp'),
-    (r'^signoffs/$', 'signoffs'),
+    (r'^signoffs/$', 'signoffs', {}, 'package-signoffs'),
     (r'^signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
         'signoff_package'),
     (r'^update/$',   'update'),

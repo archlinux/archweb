@@ -154,3 +154,26 @@ function todolist_flag() {
     });
     return false;
 }
+
+/* signoffs.html */
+function signoff_package() {
+    var link = this;
+    $.getJSON(link.href, function(data) {
+        if (data.created) {
+            var signoff = $('<li>').addClass('signed-username').text(data.user);
+            $(link).append(signoff);
+        }
+        /* update the approved column to reflect reality */
+        if (data.approved) {
+            var approved = $(link).closest('tr').children('.signoff-no');
+            approved.text('Yes').addClass(
+                'signoff-yes').removeClass('signoff-no');
+        } else {
+            var approved = $(link).closest('tr').children('.signoff-yes');
+            approved.text('No').addClass(
+                'signoff-no').removeClass('signoff-yes');
+        }
+        $('.results').trigger('updateCell', approved);
+    });
+    return false;
+}

@@ -33,7 +33,7 @@
                     {{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
                 <td>
                     <ul>
-                        <li><a href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/"
+                        <li><a class="signoff-link" href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/"
                             title="Signoff {{pkg.pkgname}} for {{pkg.arch}}">Signoff</a>
                         </li>
                         {% for signoff in pkg.signoffs %}
@@ -49,9 +49,12 @@
 </div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0]]});
+    $('a.signoff-link').click(signoff_package);
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0]],
+        headers: { 6: { sorter: false } } });
 });
 </script>
 {% endif %}
