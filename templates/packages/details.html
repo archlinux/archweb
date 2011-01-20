@@ -28,6 +28,7 @@
                 {% endif %}{% endwith %}
                 {% if user.is_authenticated %}
                 <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
+                <li><a href="unflag/all/" title="Unflag all matching pkgbase">Click here to unflag all split packages</a></li>
                 {% endif %}
                 {% else %}
                 <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>

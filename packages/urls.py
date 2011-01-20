@@ -6,6 +6,7 @@ package_patterns = patterns('packages.views',
     (r'^maintainer/$', 'getmaintainer'),
     (r'^flag/$',       'flag'),
     (r'^unflag/$',     'unflag'),
+    (r'^unflag/all/$', 'unflag_all'),
     (r'^download/$',   'download'),
 )
 

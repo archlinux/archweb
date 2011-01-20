@@ -232,7 +232,7 @@ def search(request, page=None):
             extra_context=page_dict)
 
 @vary_on_headers('X-Requested-With')
-def files(request, name='', repo='', arch=''):
+def files(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('path')
@@ -243,11 +243,21 @@ def files(request, name='', repo='', arch=''):
             {'pkg':pkg, 'files':fileslist})
 
 @permission_required('main.change_package')
-def unflag(request, name='', repo='', arch=''):
+def unflag(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     pkg.flag_date = None
     pkg.save()
+    return redirect(pkg)
+
+@permission_required('main.change_package')
+def unflag_all(request, name, repo, arch):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    # find all packages from (hopefully) the same PKGBUILD
+    pkgs = Package.objects.filter(
+            pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
+    pkgs.update(flag_date=None)
     return redirect(pkg)
 
 @permission_required('main.change_package')
@@ -309,7 +319,7 @@ class FlagForm(forms.Form):
             required=False)
 
 @never_cache
-def flag(request, name='', repo='', arch=''):
+def flag(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     context = {'pkg': pkg}
@@ -361,7 +371,7 @@ def flag(request, name='', repo='', arch=''):
 
     return direct_to_template(request, 'packages/flag.html', context)
 
-def download(request, name='', repo='', arch=''):
+def download(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     mirrorurl = MirrorUrl.objects.filter(mirror__country='Any',
