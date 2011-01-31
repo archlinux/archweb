@@ -43,13 +43,15 @@ def resolve_mirrors():
     for mirrorurl in MirrorUrl.objects.filter(mirror__active=True):
         try:
             hostname = urlparse(mirrorurl.url).hostname
-            logger.debug("resolving %3i (%s)" % (mirrorurl.id, hostname))
+            logger.debug("resolving %3i (%s)", mirrorurl.id, hostname)
             info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
             families = [x[0] for x in info]
             mirrorurl.has_ipv4 = socket.AF_INET in families
             mirrorurl.has_ipv6 = socket.AF_INET6 in families
+            logger.debug("%s: v4: %s v6: %s", hostname,
+                    mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             mirrorurl.save()
         except socket.error, e:
-            logger.warn("error resolving %s: %s" % (hostname, e))
+            logger.warn("error resolving %s: %s", hostname, e)
 
 # vim: set ts=4 sw=4 et:

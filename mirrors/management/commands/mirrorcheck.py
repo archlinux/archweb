@@ -68,7 +68,7 @@ def parse_rfc3339_datetime(time_string):
 
 def check_mirror_url(mirror_url):
     url = mirror_url.url + 'lastsync'
-    logger.info("checking URL %s" % url)
+    logger.info("checking URL %s", url)
     log = MirrorLog(url=mirror_url, check_time=datetime.utcnow())
     try:
         start = time.time()
@@ -86,7 +86,7 @@ def check_mirror_url(mirror_url):
             # it is bad news to try logging the lastsync value;
             # sometimes we get a crazy-encoded web page.
             logger.info("attempting to parse generated lastsync file"
-                    " from mirror %s" % url)
+                    " from mirror %s", url)
             parsed_time = parse_rfc3339_datetime(data)
 
         log.last_sync = parsed_time
@@ -95,7 +95,7 @@ def check_mirror_url(mirror_url):
             log.error = "Could not parse time from lastsync"
             log.is_success = False
         log.duration = end - start
-        logger.debug("success: %s, %.2f" % (url, log.duration))
+        logger.debug("success: %s, %.2f", url, log.duration)
     except urllib2.HTTPError, e:
         if e.code == 404:
             # we have a duration, just not a success
@@ -103,7 +103,7 @@ def check_mirror_url(mirror_url):
             log.duration = end - start
         log.is_success = False
         log.error = str(e)
-        logger.debug("failed: %s, %s" % (url, log.error))
+        logger.debug("failed: %s, %s", url, log.error)
     except urllib2.URLError, e:
         log.is_success = False
         log.error = e.reason
@@ -116,11 +116,11 @@ def check_mirror_url(mirror_url):
             log.error = "Connection timed out."
         elif isinstance(e.reason, socket.error):
             log.error = e.reason.args[1]
-        logger.debug("failed: %s, %s" % (url, log.error))
+        logger.debug("failed: %s, %s", url, log.error)
     except socket.timeout, e:
         log.is_success = False
         log.error = "Connection timed out."
-        logger.debug("failed: %s, %s" % (url, log.error))
+        logger.debug("failed: %s, %s", url, log.error)
 
     return log
 

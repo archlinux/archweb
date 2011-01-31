@@ -178,8 +178,8 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             dbpkg.build_date = datetime.strptime(repopkg.builddate,
                     '%a %b %d %H:%M:%S %Y')
         except ValueError:
-            logger.warning('Package %s had unparsable build date %s' % \
-                    (repopkg.name, repopkg.builddate))
+            logger.warning('Package %s had unparsable build date %s',
+                    repopkg.name, repopkg.builddate)
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = find_user(repopkg.packager)
@@ -198,10 +198,10 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
             # yes *sigh* i have seen them in pkgbuilds
             dpname, dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
             if dpname == repopkg.name:
-                logger.warning('Package %s has a depend on itself' % repopkg.name)
+                logger.warning('Package %s has a depend on itself', repopkg.name)
                 continue
             dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
-            logger.debug('Added %s as dep for pkg %s' % (dpname, repopkg.name))
+            logger.debug('Added %s as dep for pkg %s', dpname, repopkg.name)
 
     dbpkg.packagegroup_set.all().delete()
     if 'groups' in repopkg.__dict__:
@@ -212,11 +212,10 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if dbpkg.pkgver != repopkg.ver or dbpkg.pkgrel != repopkg.rel:
-            logger.info("db version (%s) didn't match repo version (%s) "
-                    "for package %s, skipping file list addition" %
-                    ('-'.join((dbpkg.pkgver, dbpkg.pkgrel)),
-                        '-'.join((repopkg.ver, repopkg.rel)),
-                        dbpkg.pkgname))
+            logger.info("db version (%s-%s) didn't match repo version (%s-%s) "
+                    "for package %s, skipping file list addition",
+                    dbpkg.pkgver, dbpkg.pkgrel, repopkg.ver, repopkg.rel,
+                    dbpkg.pkgname)
             return
         if not dbpkg.files_last_update or not dbpkg.last_update:
             pass
@@ -225,8 +224,8 @@ def populate_files(dbpkg, repopkg, force=False):
     # only delete files if we are reading a DB that contains them
     if 'files' in repopkg.__dict__:
         dbpkg.packagefile_set.all().delete()
-        logger.info("adding %d files for package %s" %
-                (len(repopkg.files), dbpkg.pkgname))
+        logger.info("adding %d files for package %s",
+                len(repopkg.files), dbpkg.pkgname)
         for x in repopkg.files:
             dbpkg.packagefile_set.create(path=x)
         dbpkg.files_last_update = datetime.now()
@@ -241,7 +240,7 @@ def db_update(archname, reponame, pkgs, options):
       pkgs -- A list of Pkg objects.
 
     """
-    logger.info('Updating Arch: %s' % archname)
+    logger.info('Updating Arch: %s', archname)
     force = options.get('force', False)
     filesonly = options.get('filesonly', False)
     repository = Repo.objects.get(name__iexact=reponame)
@@ -259,17 +258,17 @@ def db_update(archname, reponame, pkgs, options):
     logger.debug("Creating sets")
     dbset = set([pkg.pkgname for pkg in dbpkgs])
     syncset = set([pkg.name for pkg in pkgs])
-    logger.info("%d packages in current web DB" % len(dbset))
-    logger.info("%d packages in new updating db" % len(syncset))
+    logger.info("%d packages in current web DB", len(dbset))
+    logger.info("%d packages in new updating db", len(syncset))
     in_sync_not_db = syncset - dbset
-    logger.info("%d packages in sync not db" % len(in_sync_not_db))
+    logger.info("%d packages in sync not db", len(in_sync_not_db))
 
     # Try to catch those random orphaning issues that make Eric so unhappy.
     if len(dbset):
         dbpercent = 100.0 * len(syncset) / len(dbset)
     else:
         dbpercent = 0.0
-    logger.info("DB package ratio: %.1f%%" % dbpercent)
+    logger.info("DB package ratio: %.1f%%", dbpercent)
 
     # Fewer than 20 packages makes the percentage check unreliable, but it also
     # means we expect the repo to fluctuate a lot.
@@ -319,7 +318,7 @@ def db_update(archname, reponame, pkgs, options):
             logger.info("Updating package %s in database", p.name)
             populate_pkg(dbp, p, force=force, timestamp=timestamp)
 
-    logger.info('Finished updating Arch: %s' % archname)
+    logger.info('Finished updating Arch: %s', archname)
 
 
 def parse_info(iofile):
@@ -384,14 +383,14 @@ def parse_repo(repopath):
                 p = pkgs.setdefault(pkgid, Pkg(reponame))
                 p.populate(data)
             except UnicodeDecodeError, e:
-                logger.warn("Could not correctly decode %s, skipping file" % \
+                logger.warn("Could not correctly decode %s, skipping file",
                         tarinfo.name)
             data_file.close()
 
             logger.debug("Done parsing file %s", fname)
 
     repodb.close()
-    logger.info("Finished repo parsing, %d total packages" % len(pkgs))
+    logger.info("Finished repo parsing, %d total packages", len(pkgs))
     return (reponame, pkgs.values())
 
 def validate_arch(arch):
@@ -415,8 +414,8 @@ def read_repo(primary_arch, repo_file, options):
             packages_arches[package.arch].append(package)
         else:
             # we don't include mis-arched packages
-            logger.warning("Package %s arch = %s" % (
-                package.name,package.arch))
+            logger.warning("Package %s arch = %s",
+                package.name,package.arch)
     logger.info('Starting database updates.')
     for (arch, pkgs) in packages_arches.items():
         db_update(arch, repo, pkgs, options)
