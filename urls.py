@@ -1,3 +1,5 @@
+import os.path
+
 from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
@@ -98,6 +100,6 @@ urlpatterns += patterns('',
 if settings.DEBUG == True:
     urlpatterns += patterns('',
         (r'^media/(.*)$', 'django.views.static.serve', 
-            {'document_root': settings.DEPLOY_PATH+'/media'}))
+            {'document_root': os.path.join(settings.DEPLOY_PATH, 'media')}))
 
 # vim: set ts=4 sw=4 et:
