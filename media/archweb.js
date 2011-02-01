@@ -58,9 +58,12 @@ if (typeof $.tablesorter !== 'undefined') {
             var matches = this.re.exec(s);
             if (!matches) return 0;
             /* skip group 6, group 7 is optional seconds */
-            if (matches[7] == undefined) matches[7] = '0';
-            return $.tablesorter.formatFloat(new Date(
-                    matches[1],matches[2],matches[3],matches[4],matches[5],matches[7]).getTime());
+            if (matches[7] == undefined) matches[7] = 0;
+            /* The awesomeness of the JS date constructor. Month needs to be
+             * between 0-11, because things have to be difficult. */
+            var date = new Date(matches[1], matches[2] - 1, matches[3],
+                matches[4], matches[5], matches[7]);
+            return $.tablesorter.formatFloat(date.getTime());
         },
         type: 'numeric'
     });
