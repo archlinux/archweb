@@ -309,14 +309,18 @@ class Signoff(models.Model):
     packager = models.ForeignKey(User)
 
 class PackageFile(models.Model):
-    pkg = models.ForeignKey('Package')
+    pkg = models.ForeignKey(Package)
     path = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.path
+
     class Meta:
         db_table = 'package_files'
 
 class PackageDepend(models.Model):
-    pkg = models.ForeignKey('Package')
-    depname = models.CharField(db_index=True, max_length=255)
+    pkg = models.ForeignKey(Package)
+    depname = models.CharField(max_length=255, db_index=True)
     depvcmp = models.CharField(max_length=255)
     class Meta:
         db_table = 'package_depends'
@@ -349,8 +353,8 @@ class Todolist(models.Model):
         return '/todo/%i/' % self.id
 
 class TodolistPkg(models.Model):
-    list = models.ForeignKey('Todolist')
-    pkg = models.ForeignKey('Package')
+    list = models.ForeignKey(Todolist)
+    pkg = models.ForeignKey(Package)
     complete = models.BooleanField(default=False)
     class Meta:
         db_table = 'todolist_pkgs'

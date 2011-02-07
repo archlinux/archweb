@@ -104,8 +104,7 @@ def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
-    pkgs = Package.objects.filter(packagegroup__name=name,
-            arch__in=arches)
+    pkgs = Package.objects.filter(groups__name=name, arch__in=arches)
     pkgs = pkgs.order_by('pkgname')
     if len(pkgs) == 0:
         raise Http404

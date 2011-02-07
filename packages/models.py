@@ -25,7 +25,10 @@ class PackageGroup(models.Model):
     Represents a group a package is in. There is no actual group entity,
     only names that link to given packages.
     '''
-    pkg = models.ForeignKey('main.Package')
+    pkg = models.ForeignKey('main.Package', related_name='groups')
     name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
 
 # vim: set ts=4 sw=4 et:

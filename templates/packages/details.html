@@ -112,7 +112,7 @@
             <td>{{ pkg.license }}</td>
         </tr><tr>
             <th>Groups:</th>
-            {% with pkg.packagegroup_set.all as groups %}
+            {% with pkg.groups.all as groups %}
             <td>{% if groups %}
                 {% for g in groups %}
                 <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
