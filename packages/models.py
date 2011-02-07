@@ -31,4 +31,14 @@ class PackageGroup(models.Model):
     def __unicode__(self):
         return self.name
 
+class License(models.Model):
+    pkg = models.ForeignKey('main.Package', related_name='licenses')
+    name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
 # vim: set ts=4 sw=4 et:

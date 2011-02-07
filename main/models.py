@@ -117,7 +117,6 @@ class Package(models.Model):
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
-    license = models.CharField(max_length=255, null=True)
     packager_str = models.CharField(max_length=255)
     packager = models.ForeignKey(User, null=True)
     flag_date = models.DateTimeField(null=True)

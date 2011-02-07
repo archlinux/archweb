@@ -79,14 +79,13 @@ class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
             'md5sum', 'url', 'builddate', 'packager' )
-    squash = ( 'license', )
     number = ( 'csize', 'isize' )
 
     def __init__(self, repo):
         self.repo = repo
         self.ver = None
         self.rel = None
-        for k in self.bare + self.squash + self.number:
+        for k in self.bare + self.number:
             setattr(self, k, None)
 
     def populate(self, values):
@@ -94,8 +93,6 @@ class Pkg(object):
             # ensure we stay under our DB character limit
             if k in self.bare:
                 setattr(self, k, v[0][:254])
-            elif k in self.squash:
-                setattr(self, k, u', '.join(v)[:254])
             elif k in self.number:
                 setattr(self, k, long(v[0]))
             elif k == 'force':
@@ -166,7 +163,6 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
     dbpkg.pkgdesc = repopkg.desc
-    dbpkg.license = repopkg.license
     dbpkg.url = repopkg.url
     dbpkg.filename = repopkg.filename
     dbpkg.compressed_size = repopkg.csize
@@ -207,6 +203,11 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     if 'groups' in repopkg.__dict__:
         for y in repopkg.groups:
             dbpkg.groups.create(name=y)
+
+    dbpkg.licenses.all().delete()
+    if 'license' in repopkg.__dict__:
+        for y in repopkg.license:
+            dbpkg.licenses.create(name=y)
 
 
 def populate_files(dbpkg, repopkg, force=False):

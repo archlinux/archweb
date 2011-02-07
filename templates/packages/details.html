@@ -108,8 +108,8 @@
             <td>{% if pkg.url %}<a href="{{ pkg.url }}"
                     title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url }}</a>{% endif %}</td>
         </tr><tr>
-            <th>License:</th>
-            <td>{{ pkg.license }}</td>
+            <th>License(s):</th>
+            <td>{{ pkg.licenses.all|join:", " }}</td>
         </tr><tr>
             <th>Groups:</th>
             {% with pkg.groups.all as groups %}
