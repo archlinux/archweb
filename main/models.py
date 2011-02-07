@@ -322,6 +322,12 @@ class PackageDepend(models.Model):
     pkg = models.ForeignKey(Package)
     depname = models.CharField(max_length=255, db_index=True)
     depvcmp = models.CharField(max_length=255)
+    optional = models.BooleanField(default=False)
+    description = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return "%s%s" % (depname, depvcmp)
+
     class Meta:
         db_table = 'package_depends'
 
