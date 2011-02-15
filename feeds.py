@@ -62,7 +62,8 @@ class PackageFeed(Feed):
 
     def get_object(self, request, arch='', repo=''):
         obj = dict()
-        qs = Package.objects.select_related('arch', 'repo').order_by('-last_update')
+        qs = Package.objects.select_related('arch', 'repo').order_by(
+                '-last_update')
 
         if arch != '':
             # feed for a single arch, also include 'any' packages everywhere
@@ -142,11 +143,11 @@ class NewsFeed(Feed):
         return wrapper(super(NewsFeed, self).__call__)(request, *args, **kwargs)
 
     def items(self):
-        return News.objects.select_related('author').order_by('-postdate', '-id')[:10]
+        return News.objects.select_related('author').order_by(
+                '-postdate', '-id')[:10]
 
     def item_pubdate(self, item):
-        d = item.postdate
-        return datetime.datetime(d.year, d.month, d.day)
+        return item.postdate
 
     def item_author_name(self, item):
         return item.author.get_full_name()
