@@ -29,7 +29,7 @@ from optparse import make_option
 
 from logging import ERROR, WARNING, INFO, DEBUG
 
-from main.models import Arch, Package, Repo
+from main.models import Arch, Package, PackageDepend, Repo
 
 logging.basicConfig(
     level=WARNING,
@@ -155,6 +155,20 @@ def find_user(userstring):
 # lookup more than strictly necessary.
 find_user.cache = {}
 
+def create_depend(package, dep_str, optional=False):
+    depend = PackageDepend(pkg=package, optional=optional)
+    # lop off any description first
+    parts = dep_str.split(':', 1)
+    if len(parts) > 1:
+        depend.description = parts[1].strip()
+    match = re.match(r"^(.+?)((>=|<=|=|>|<)(.*))?$", parts[0].strip())
+    if match:
+        depend.depname = match.group(1)
+        if match.group(2):
+            depend.depvcmp = match.group(2)
+    depend.save(force_insert=True)
+    return depend
+
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     if repopkg.base:
         dbpkg.pkgbase = repopkg.base
@@ -188,24 +202,20 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     populate_files(dbpkg, repopkg, force=force)
 
     dbpkg.packagedepend_set.all().delete()
-    if 'depends' in repopkg.__dict__:
+    if hasattr(repopkg, 'depends'):
         for y in repopkg.depends:
-            # make sure we aren't adding self depends..
-            # yes *sigh* i have seen them in pkgbuilds
-            dpname, dpvcmp = re.match(r"([a-z0-9._+-]+)(.*)", y).groups()
-            if dpname == repopkg.name:
-                logger.warning('Package %s has a depend on itself', repopkg.name)
-                continue
-            dbpkg.packagedepend_set.create(depname=dpname, depvcmp=dpvcmp)
-            logger.debug('Added %s as dep for pkg %s', dpname, repopkg.name)
+            dep = create_depend(dbpkg, y)
+    if hasattr(repopkg, 'optdepends'):
+        for y in repopkg.optdepends:
+            dep = create_depend(dbpkg, y, True)
 
     dbpkg.groups.all().delete()
-    if 'groups' in repopkg.__dict__:
+    if hasattr(repopkg, 'groups'):
         for y in repopkg.groups:
             dbpkg.groups.create(name=y)
 
     dbpkg.licenses.all().delete()
-    if 'license' in repopkg.__dict__:
+    if hasattr(repopkg, 'license'):
         for y in repopkg.license:
             dbpkg.licenses.create(name=y)
 
@@ -223,7 +233,7 @@ def populate_files(dbpkg, repopkg, force=False):
         elif dbpkg.files_last_update > dbpkg.last_update:
             return
     # only delete files if we are reading a DB that contains them
-    if 'files' in repopkg.__dict__:
+    if hasattr(repopkg, 'files'):
         dbpkg.packagefile_set.all().delete()
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)

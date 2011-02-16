@@ -216,6 +216,10 @@ form#flag-pkg-form textarea, form#flag-pkg-form input[type=text] { width: 45%; }
 #pkgdetails #metadata .message { font-style: italic; }
 #pkgdetails #metadata br { clear: both; }
 #pkgdetails #pkgdeps { float: left; width: 48%; margin-right: 2%; }
+#pkgdetails #metadata .virtual-dep { font-style: italic; }
+#pkgdetails #metadata .testing-dep { font-style: italic; }
+#pkgdetails #metadata .opt-dep { font-style: italic; }
+#pkgdetails #metadata .dep-desc { font-style: italic; }
 #pkgdetails #pkgreqs { float: left; width: 50%; }
 #pkgdetails #pkgfiles { clear: left; padding-top: 1em; }
 

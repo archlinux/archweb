@@ -159,16 +159,18 @@
 
             {% if deps %}
             <ul>
-            {% for depend in deps %}
-            {% ifequal depend.pkg None %}
-                <li>{{ depend.dep.depname }} (virtual)</li>
-            {% else %}
+                {% for depend in deps %}
+                {% ifequal depend.pkg None %}
+                <li>{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span></li>
+                {% else %}
                 <li><a href="{{ depend.pkg.get_absolute_url }}"
-                    title="View package details for {{ depend.dep.depname }}">{{ depend.dep.depname }}</a>
-                    {{ depend.dep.depvcmp }}{% if depend.pkg.repo.testing %}
-                    <span class="testing-dep">(testing)</span>{% endif %}</li>
-            {% endifequal %}
-            {% endfor %}
+                    title="View package details for {{ depend.dep.depname }}">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp|default:"" }}
+                {% if depend.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
+                {% if depend.dep.optional %}<span class="opt-dep">(optional)</span>{% endif %}
+                {% if depend.dep.description %}<span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
+                </li>
+                {% endifequal %}
+                {% endfor %}
             </ul>
             {% endif %}
 
@@ -184,9 +186,10 @@
             {% if rqdby %}
             <ul>
                 {% for req in rqdby %}
-                <li><a href="{{req.get_absolute_url}}"
+                <li><a href="{{ req.get_absolute_url }}"
                     title="View package details for {{ req.pkgname }}">{{ req.pkgname }}</a>
-                    {% if req.repo.testing %} (testing){% endif %}</li>
+                {% if req.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
+                </li>
                 {% endfor %}
             </ul>
             {% endif %}

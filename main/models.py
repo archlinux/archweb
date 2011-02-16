@@ -209,7 +209,7 @@ class Package(models.Model):
         """
         deps = []
         # TODO: we can use list comprehension and an 'in' query to make this more effective
-        for dep in self.packagedepend_set.order_by('depname'):
+        for dep in self.packagedepend_set.order_by('optional', 'depname'):
             pkgs = Package.objects.select_related('arch', 'repo').filter(
                     pkgname=dep.depname)
             if not self.arch.agnostic:
@@ -320,12 +320,12 @@ class PackageFile(models.Model):
 class PackageDepend(models.Model):
     pkg = models.ForeignKey(Package)
     depname = models.CharField(max_length=255, db_index=True)
-    depvcmp = models.CharField(max_length=255)
+    depvcmp = models.CharField(max_length=255, default='')
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return "%s%s" % (depname, depvcmp)
+        return "%s%s" % (self.depname, self.depvcmp)
 
     class Meta:
         db_table = 'package_depends'
