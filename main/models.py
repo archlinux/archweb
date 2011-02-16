@@ -7,7 +7,6 @@ from packages.models import PackageRelation
 
 from itertools import groupby
 import pytz
-from operator import attrgetter
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -173,10 +172,15 @@ class Package(models.Model):
         list slim by including the corresponding package in the same testing
         category as this package if that check makes sense.
         """
-        requiredby = Package.objects.select_related('arch', 'repo').filter(
-                packagedepend__depname=self.pkgname,
-                arch__in=self.applicable_arches()
-                ).distinct().order_by('pkgname')
+        requiredby = PackageDepend.objects.select_related('pkg',
+                'pkg__arch', 'pkg__repo').filter(
+                pkg__arch__in=self.applicable_arches(),
+                depname=self.pkgname).order_by(
+                'pkg__pkgname', 'pkg__id')
+        # sort out duplicate packages; this happens if something has a double
+        # versioned dep such as a kernel module
+        requiredby = [list(vals)[0] for k, vals in
+                groupby(requiredby, lambda x: x.pkg.id)]
 
         # find another package by this name in the opposite testing setup
         if not Package.objects.filter(pkgname=self.pkgname,
@@ -189,14 +193,15 @@ class Package(models.Model):
         # for each unique package name, try to screen our package list down to
         # those packages in the same testing category (yes or no) iff there is
         # a package in the same testing category.
-        for name, pkgs in groupby(requiredby, attrgetter('pkgname')):
-            pkgs = list(pkgs)
-            pkg = pkgs[0]
-            if len(pkgs) > 1:
-                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing]
-                if len(pkgs) > 0:
-                    pkg = pkgs[0]
-            trimmed.append(pkg)
+        for name, dep_pkgs in groupby(requiredby, lambda x: x.pkg.pkgname):
+            dep_pkgs = list(dep_pkgs)
+            dep = dep_pkgs[0]
+            if len(dep_pkgs) > 1:
+                dep_pkgs = [d for d in dep_pkgs
+                        if d.pkg.repo.testing == self.repo.testing]
+                if len(dep_pkgs) > 0:
+                    dep = dep_pkgs[0]
+            trimmed.append(dep)
         return trimmed
 
     @cache_function(300)

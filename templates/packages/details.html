@@ -186,9 +186,10 @@
             {% if rqdby %}
             <ul>
                 {% for req in rqdby %}
-                <li><a href="{{ req.get_absolute_url }}"
-                    title="View package details for {{ req.pkgname }}">{{ req.pkgname }}</a>
-                {% if req.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
+                <li><a href="{{ req.pkg.get_absolute_url }}"
+                    title="View package details for {{ req.pkg.pkgname }}">{{ req.pkg.pkgname }}</a>
+                {% if req.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
+                {% if req.optional %}<span class="opt-dep">(optional)</span>{% endif %}
                 </li>
                 {% endfor %}
             </ul>
