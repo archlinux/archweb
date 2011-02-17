@@ -50,7 +50,7 @@ def resolve_mirrors():
             mirrorurl.has_ipv6 = socket.AF_INET6 in families
             logger.debug("%s: v4: %s v6: %s", hostname,
                     mirrorurl.has_ipv4, mirrorurl.has_ipv6)
-            mirrorurl.save()
+            mirrorurl.save(force_update=True)
         except socket.error, e:
             logger.warn("error resolving %s: %s", hostname, e)
 

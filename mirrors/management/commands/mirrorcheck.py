@@ -10,7 +10,9 @@ Usage: ./manage.py mirrorcheck
 """
 
 from django.core.management.base import NoArgsCommand
+from django.db import transaction
 
+from collections import deque
 from datetime import datetime, timedelta
 import logging
 import re
@@ -130,7 +132,7 @@ def mirror_url_worker(work, output):
             item = work.get(block=False)
             try:
                 log = check_mirror_url(item)
-                output.put(log)
+                output.append(log)
             finally:
                 work.task_done()
         except Empty:
@@ -139,7 +141,7 @@ def mirror_url_worker(work, output):
 class MirrorCheckPool(object):
     def __init__(self, work, num_threads=10):
         self.tasks = Queue()
-        self.logs = Queue()
+        self.logs = deque()
         for i in list(work):
             self.tasks.put(i)
         self.threads = []
@@ -149,6 +151,7 @@ class MirrorCheckPool(object):
             thread.daemon = True
             self.threads.append(thread)
 
+    @transaction.commit_on_success
     def run(self):
         logger.debug("starting threads")
         for t in self.threads:
@@ -156,13 +159,9 @@ class MirrorCheckPool(object):
         logger.debug("joining on all threads")
         self.tasks.join()
         logger.debug("processing log entries")
-        try:
-            while True:
-                log = self.logs.get(block=False)
-                log.save()
-                self.logs.task_done()
-        except Empty:
-            logger.debug("all log items saved to database")
+        for log in self.logs:
+            log.save()
+        logger.debug("log entries saved")
 
 def check_current_mirrors():
     urls = MirrorUrl.objects.filter(
