@@ -57,6 +57,50 @@ class License(models.Model):
     class Meta:
         ordering = ['name']
 
+class Conflict(models.Model):
+    pkg = models.ForeignKey('main.Package', related_name='conflicts')
+    name = models.CharField(max_length=255, db_index=True)
+    comparison = models.CharField(max_length=255, default='')
+    version = models.CharField(max_length=255, default='')
+
+    def __unicode__(self):
+        if self.version:
+            return u'%s%s%s' % (self.name, self.comparison, self.version)
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+class Provision(models.Model):
+    pkg = models.ForeignKey('main.Package', related_name='provides')
+    name = models.CharField(max_length=255, db_index=True)
+    # comparison must be '=' for provides
+    comparison = '='
+    version = models.CharField(max_length=255, default='')
+
+    def __unicode__(self):
+        if self.version:
+            return u'%s=%s' % (self.name, self.version)
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+class Replacement(models.Model):
+    pkg = models.ForeignKey('main.Package', related_name='replaces')
+    name = models.CharField(max_length=255, db_index=True)
+    comparison = models.CharField(max_length=255, default='')
+    version = models.CharField(max_length=255, default='')
+
+    def __unicode__(self):
+        if self.version:
+            return u'%s%s%s' % (self.name, self.comparison, self.version)
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 def remove_inactive_maintainers(sender, instance, created, **kwargs):
     # instance is an auth.models.User; we want to remove any existing
     # maintainer relations if the user is no longer active
