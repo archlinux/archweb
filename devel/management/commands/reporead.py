@@ -188,6 +188,17 @@ def create_depend(package, dep_str, optional=False):
     depend.save(force_insert=True)
     return depend
 
+def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
+    '''Populate the simplest of multivalued attributes. These are those that
+    only deal with a 'name' attribute, such as licenses, groups, etc. The input
+    and output objects and attribute names are specified, and everything is
+    done via hasattr()/getattr().'''
+    collection = getattr(dbpkg, db_attr)
+    collection.all().delete()
+    if hasattr(repopkg, repo_attr):
+        for name in getattr(repopkg, repo_attr):
+            collection.create(name=name)
+
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     if repopkg.base:
         dbpkg.pkgbase = repopkg.base
@@ -229,15 +240,8 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
         for y in repopkg.optdepends:
             dep = create_depend(dbpkg, y, True)
 
-    dbpkg.groups.all().delete()
-    if hasattr(repopkg, 'groups'):
-        for y in repopkg.groups:
-            dbpkg.groups.create(name=y)
-
-    dbpkg.licenses.all().delete()
-    if hasattr(repopkg, 'license'):
-        for y in repopkg.license:
-            dbpkg.licenses.create(name=y)
+    create_multivalued(dbpkg, repopkg, 'groups', 'groups')
+    create_multivalued(dbpkg, repopkg, 'licenses', 'license')
 
 
 def populate_files(dbpkg, repopkg, force=False):
