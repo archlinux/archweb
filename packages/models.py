@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 class PackageRelation(models.Model):
@@ -45,5 +46,16 @@ class License(models.Model):
 
     class Meta:
         ordering = ['name']
+
+def remove_inactive_maintainers(sender, instance, created, **kwargs):
+    # instance is an auth.models.User; we want to remove any existing
+    # maintainer relations if the user is no longer active
+    if not instance.is_active:
+        maint_relations = PackageRelation.objects.filter(user=instance,
+                type=PackageRelation.MAINTAINER)
+        maint_relations.delete()
+
+post_save.connect(remove_inactive_maintainers, sender=User,
+        dispatch_uid="packages.models")
 
 # vim: set ts=4 sw=4 et:
