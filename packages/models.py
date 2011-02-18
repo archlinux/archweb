@@ -17,6 +17,11 @@ class PackageRelation(models.Model):
     pkgbase = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name="package_relations")
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
+
+    def __unicode__(self):
+        return "%s: %s (%s)" % (
+                self.pkgbase, self.user, self.get_type_display())
+
     class Meta:
         unique_together = (('pkgbase', 'user', 'type'),)
 
@@ -29,7 +34,7 @@ class PackageGroup(models.Model):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return self.name
+        return "%s: %s" % (name, pkg)
 
 class License(models.Model):
     pkg = models.ForeignKey('main.Package', related_name='licenses')
