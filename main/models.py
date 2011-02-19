@@ -264,7 +264,7 @@ class Package(models.Model):
         repo.testing flag. For any non-split packages, the return value will be
         an empty list.
         """
-        return Package.objects.filter(arch__in=self.applicable_arches,
+        return Package.objects.filter(arch__in=self.applicable_arches(),
                 repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
 
     def get_svn_link(self, svnpath):
