@@ -167,7 +167,7 @@
                     title="View package details for {{ depend.dep.depname }}">{{ depend.dep.depname }}</a>{{ depend.dep.depvcmp|default:"" }}
                 {% if depend.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
                 {% if depend.dep.optional %}<span class="opt-dep">(optional)</span>{% endif %}
-                {% if depend.dep.description %}<span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
+                {% if depend.dep.description %}- <span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
                 </li>
                 {% endifequal %}
                 {% endfor %}
