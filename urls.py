@@ -17,47 +17,24 @@ sitemaps = {
 }
 
 admin.autodiscover()
+urlpatterns = []
 
-urlpatterns = patterns('packages.views',
-    (r'^groups/$', 'groups'),
-    (r'^groups/(?P<arch>[A-z0-9]+)/$', 'groups'),
-    (r'^groups/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/$',
-        'group_details'),
-
-    (r'^opensearch/packages/$', 'opensearch', {}, 'opensearch-packages'),
-)
-
-urlpatterns += patterns('todolists.views',
-    (r'^todolists/$',                  'public_list'),
-)
-
-urlpatterns += patterns('mirrors.views',
-    (r'^mirrors/status/$',      'status',  {}, 'mirror-status'),
-    (r'^mirrors/status/json/$', 'status_json',  {}, 'mirror-status-json'),
-
-    (r'^mirrors/$',        'mirrors', {}, 'mirrors-list'),
-    (r'^mirrors/(?P<name>[\.\-\w]+)/$', 'mirror_details'),
-
-    (r'^mirrorlist/$',         'generate_mirrorlist', {}, 'mirrorlist'),
-    (r'^mirrorlist/all/$',     'find_mirrors', {'countries': ['all']}),
-    (r'^mirrorlist/all/ftp/$', 'find_mirrors',
-        {'countries': ['all'], 'protocols': ['ftp']}),
-    (r'^mirrorlist/all/http/$', 'find_mirrors',
-        {'countries': ['all'], 'protocols': ['http']}),
-)
-
-# Feeds and sitemaps
-urlpatterns += patterns('',
-    (r'^feeds/$', 'public.views.feeds', {}, 'feeds-list'),
-    (r'^feeds/news/$', NewsFeed()),
-    (r'^feeds/packages/$', PackageFeed()),
-    (r'^feeds/packages/(?P<arch>[A-z0-9]+)/$',
+# Feeds patterns, used later
+feeds_patterns = patterns('',
+    (r'^$',          'public.views.feeds', {}, 'feeds-list'),
+    (r'^news/$',     NewsFeed()),
+    (r'^packages/$', PackageFeed()),
+    (r'^packages/(?P<arch>[A-z0-9]+)/$',
         PackageFeed()),
-    (r'^feeds/packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
+    (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
         PackageFeed()),
-    (r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
+)
+
+# Sitemaps
+urlpatterns += patterns('django.contrib.sitemaps.views',
+    (r'^sitemap.xml$', 'index',
         {'sitemaps': sitemaps}),
-    (r'^sitemap-(?P<section>.+)\.xml$', 'django.contrib.sitemaps.views.sitemap',
+    (r'^sitemap-(?P<section>.+)\.xml$', 'sitemap',
         {'sitemaps': sitemaps}),
 )
 
@@ -88,13 +65,19 @@ urlpatterns += patterns('public.views',
 
 # Includes and other remaining stuff
 urlpatterns += patterns('',
-    (r'^admin/', include(admin.site.urls)),
-    (r'^jsi18n/$', 'django.views.i18n.null_javascript_catalog'),
-
+    (r'^jsi18n/$',   'django.views.i18n.null_javascript_catalog'),
+    (r'^admin/',     include(admin.site.urls)),
     (r'^devel/',     include('devel.urls')),
+    (r'^feeds/',     include(feeds_patterns)),
+    (r'^groups/',    include('packages.urls_groups')),
+    (r'^mirrorlist/',include('mirrors.urls_mirrorlist')),
+    (r'^mirrors/',   include('mirrors.urls')),
     (r'^news/',      include('news.urls')),
     (r'^packages/',  include('packages.urls')),
     (r'^todo/',      include('todolists.urls')),
+    (r'^opensearch/packages/$', 'packages.views.opensearch',
+        {}, 'opensearch-packages'),
+    (r'^todolists/$','todolists.views.public_list'),
 )
 
 if settings.DEBUG == True:
