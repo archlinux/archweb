@@ -6,11 +6,13 @@
 <div class="box">
     <h2>Stale Package Relations</h2>
 
+    <form id="stale-relations-form" method="post" action="update/">{% csrf_token %}
     <h3>Inactive User Relations ({{ inactive_user|length }})</h3>
 
     <table class="results" id="inactive-user">
         <thead>
             <tr>
+                <th>&nbsp;</th>
                 <th>Package Base</th>
                 <th>Packages</th>
                 <th>User</th>
@@ -20,6 +22,7 @@
         <tbody>
             {% for relation in inactive_user %}
             <tr class="{% cycle 'odd' 'even' %}">
+                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}
                     <a href="{{ pkg.get_absolute_url }}"
@@ -29,7 +32,7 @@
                 <td>{{ relation.get_type_display }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="3"><em>No inactive user relations.</em></td></tr>
+                <tr class="empty"><td colspan="5"><em>No inactive user relations.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -39,6 +42,7 @@
     <table class="results" id="missing-pkgbase">
         <thead>
             <tr>
+                <th>&nbsp;</th>
                 <th>Package Base</th>
                 <th>User</th>
                 <th>Type</th>
@@ -47,12 +51,13 @@
         <tbody>
             {% for relation in missing_pkgbase %}
             <tr class="{% cycle 'odd' 'even' %}">
+                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td>{{ relation.user.get_full_name }}</td>
                 <td>{{ relation.get_type_display }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="3"><em>No non-existent pkgbase relations.</em></td></tr>
+                <tr class="empty"><td colspan="4"><em>No non-existent pkgbase relations.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -62,6 +67,7 @@
     <table class="results" id="wrong-permissions">
         <thead>
             <tr>
+                <th>&nbsp;</th>
                 <th>Package Base</th>
                 <th>Packages</th>
                 <th>User</th>
@@ -72,6 +78,7 @@
         <tbody>
             {% for relation in wrong_permissions %}
             <tr class="{% cycle 'odd' 'even' %}">
+                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}
                     <a href="{{ pkg.get_absolute_url }}"
@@ -82,10 +89,14 @@
                 <td class="wrap">{{ relation.repositories|join:", " }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="3"><em>No relations with wrong permissions.</em></td></tr>
+                <tr class="empty"><td colspan="6"><em>No relations with wrong permissions.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <p><input title="Delete selected relations" type="submit" id="delete-relations"
+    name="delete" value="Delete Selected Relations" />
+    </form>
 
 </div>
 {% load cdn %}{% jquery %}
@@ -93,9 +104,9 @@
 <script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#inactive-user:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], sortList: [[2,0]]});
-    $('#missing-pkgbase:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], sortList: [[0,0]]});
+    $('#inactive-user:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[3,0]]});
+    $('#missing-pkgbase:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[1,0]]});
 });
-    $('#wrong-permissions:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], sortList: [[2,0]]});
+    $('#wrong-permissions:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[3,0]]});
 </script>
 {% endblock %}

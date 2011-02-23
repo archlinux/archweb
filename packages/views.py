@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template import loader, Context, RequestContext
 from django.utils import simplejson
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
@@ -36,6 +37,7 @@ def opensearch(request):
             mimetype='application/opensearchdescription+xml')
 
 @permission_required('main.change_package')
+@require_POST
 def update(request):
     ids = request.POST.getlist('pkgid')
     count = 0
@@ -417,5 +419,16 @@ def stale_relations(request):
             'wrong_permissions': wrong_permissions,
     }
     return direct_to_template(request, 'packages/stale_relations.html', context)
+
+@permission_required('packages.delete_packagerelation')
+@require_POST
+def stale_relations_update(request):
+    ids = set(request.POST.getlist('relation_id'))
+
+    if ids:
+        PackageRelation.objects.filter(id__in=ids).delete()
+
+    messages.info(request, "%d package relations deleted." % len(ids))
+    return redirect('/packages/stale_relations/')
 
 # vim: set ts=4 sw=4 et:

@@ -26,6 +26,7 @@ urlpatterns = patterns('packages.views',
 
     (r'^differences/$',          'arch_differences'),
     (r'^stale_relations/$',      'stale_relations'),
+    (r'^stale_relations/update/$','stale_relations_update'),
 
     (r'^(?P<name>[A-z0-9\-+.]+)/$',
         'details'),
