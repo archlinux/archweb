@@ -19,6 +19,16 @@ class PackageRelation(models.Model):
     user = models.ForeignKey(User, related_name="package_relations")
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
 
+    def get_associated_packages(self):
+        # TODO: delayed import to avoid circular reference
+        from main.models import Package
+        return Package.objects.filter(pkgbase=self.pkgbase).select_related(
+                'arch', 'repo')
+
+    def repositories(self):
+        packages = self.get_associated_packages()
+        return sorted(set([p.repo for p in packages]))
+
     def __unicode__(self):
         return "%s: %s (%s)" % (
                 self.pkgbase, self.user, self.get_type_display())

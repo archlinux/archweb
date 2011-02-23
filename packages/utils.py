@@ -5,7 +5,7 @@ from operator import itemgetter
 
 from main.models import Package
 from main.utils import cache_function
-from .models import PackageGroup
+from .models import PackageGroup, PackageRelation
 
 @cache_function(300)
 def get_group_info(include_arches=None):
@@ -127,5 +127,27 @@ SELECT p.id, q.id
     # now sort our list by repository, package name
     differences.sort(key=lambda a: (a.repo.name, a.pkgname))
     return differences
+
+def get_wrong_permissions():
+    sql = """
+SELECT DISTINCT id
+    FROM (
+        SELECT pr.id, p.repo_id, pr.user_id
+        FROM packages p
+        JOIN packages_packagerelation pr ON p.pkgbase = pr.pkgbase
+        WHERE pr.type = %s
+        ) pkgs
+    WHERE pkgs.repo_id NOT IN (
+        SELECT repo_id FROM user_profiles_allowed_repos ar
+        INNER JOIN user_profiles up ON ar.userprofile_id = up.id
+        WHERE up.user_id = pkgs.user_id
+    )
+"""
+    cursor = connection.cursor()
+    cursor.execute(sql, [PackageRelation.MAINTAINER])
+    to_fetch = [row[0] for row in cursor.fetchall()]
+    relations = PackageRelation.objects.select_related('user').filter(
+            id__in=to_fetch)
+    return relations
 
 # vim: set ts=4 sw=4 et:

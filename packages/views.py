@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -23,7 +23,7 @@ from main.models import Arch, Repo, Signoff
 from main.utils import make_choice
 from mirrors.models import MirrorUrl
 from .models import PackageRelation
-from .utils import get_group_info, get_differences_info
+from .utils import get_group_info, get_differences_info, get_wrong_permissions
 
 def opensearch(request):
     if request.is_secure():
@@ -400,5 +400,22 @@ def arch_differences(request):
             'differences': differences,
     }
     return direct_to_template(request, 'packages/differences.html', context)
+
+@login_required
+def stale_relations(request):
+    relations = PackageRelation.objects.select_related('user')
+    pkgbases = Package.objects.all().values('pkgbase')
+
+    inactive_user = relations.filter(user__is_active=False)
+    missing_pkgbase = relations.exclude(
+            pkgbase__in=pkgbases).order_by('pkgbase')
+    wrong_permissions = get_wrong_permissions()
+
+    context = {
+            'inactive_user': inactive_user,
+            'missing_pkgbase': missing_pkgbase,
+            'wrong_permissions': wrong_permissions,
+    }
+    return direct_to_template(request, 'packages/stale_relations.html', context)
 
 # vim: set ts=4 sw=4 et:
