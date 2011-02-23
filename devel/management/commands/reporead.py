@@ -27,9 +27,17 @@ import logging
 from datetime import datetime
 from optparse import make_option
 
+# New in 2.6, but fast (C implementation) in 2.7. We will use it over codecs if
+# available. Eventually remove the codecs import completely.
+io = None
+try:
+    import io
+except ImportError:
+    pass
+
 from logging import ERROR, WARNING, INFO, DEBUG
 
-from main.models import Arch, Package, PackageDepend, Repo
+from main.models import Arch, Package, PackageDepend, PackageFile, Repo
 
 logging.basicConfig(
     level=WARNING,
@@ -241,10 +249,13 @@ def populate_files(dbpkg, repopkg, force=False):
             dirname, filename = f.rsplit('/', 1)
             if filename == '':
                 filename = None
-            dbpkg.packagefile_set.create(
+            # this is basically like calling dbpkg.packagefile_set.create(),
+            # but much faster as we can skip a lot of the repeated code paths
+            pkgfile = PackageFile(pkg=dbpkg,
                     is_directory=(filename is None),
                     directory=dirname + '/',
                     filename=filename)
+            pkgfile.save()
         dbpkg.files_last_update = datetime.now()
         dbpkg.save()
 
@@ -394,7 +405,11 @@ def parse_repo(repopath):
             if fname not in dbfiles:
                 continue
             data_file = repodb.extractfile(tarinfo)
-            data_file = codecs.EncodedFile(data_file, 'utf-8')
+            if io is None:
+                data_file = codecs.EncodedFile(data_file, 'utf-8')
+            else:
+                data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
+                        encoding='utf=8')
             try:
                 data = parse_info(data_file)
                 p = pkgs.setdefault(pkgid, Pkg(reponame))
