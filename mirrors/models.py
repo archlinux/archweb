@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
+from urlparse import urlparse
 
 TIER_CHOICES = (
     (0, 'Tier 0'),
@@ -50,10 +53,19 @@ class MirrorProtocol(models.Model):
 
 class MirrorUrl(models.Model):
     url = models.CharField(max_length=255)
-    protocol = models.ForeignKey(MirrorProtocol, related_name="urls")
+    protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
+            editable=False)
     mirror = models.ForeignKey(Mirror, related_name="urls")
     has_ipv4 = models.BooleanField("IPv4 capable", default=True)
     has_ipv6 = models.BooleanField("IPv6 capable", default=False)
+
+    def clean(self):
+        try:
+            # Auto-map the protocol field by looking at the URL
+            protocol = urlparse(self.url).scheme
+            self.protocol = MirrorProtocol.objects.get(protocol=protocol)
+        except Exception as e:
+            raise ValidationError(e)
 
     def __unicode__(self):
         return self.url

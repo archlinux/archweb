@@ -1,4 +1,5 @@
 import re
+from urlparse import urlparse, urlunsplit
 
 from django import forms
 from django.contrib import admin
@@ -9,15 +10,26 @@ class MirrorUrlForm(forms.ModelForm):
     class Meta:
         model = MirrorUrl
     def clean_url(self):
+        # is this a valid-looking URL?
+        url_parts = urlparse(self.cleaned_data["url"])
+        if not url_parts.scheme:
+            raise forms.ValidationError("No URL scheme (protocol) provided.")
+        if not url_parts.netloc:
+            raise forms.ValidationError("No URL host provided.")
+        if url_parts.params or url_parts.query or url_parts.fragment:
+            raise forms.ValidationError(
+                "URL parameters, query, and fragment elements are not supported.")
         # ensure we always save the URL with a trailing slash
-        url = self.cleaned_data["url"].strip()
-        if url[-1] == '/':
-            return url
-        return url + '/'
+        path = url_parts.path
+        if not path.endswith('/'):
+            path += '/'
+        url = urlunsplit((url_parts.scheme, url_parts.netloc, path, '', ''))
+        return url
 
 class MirrorUrlInlineAdmin(admin.TabularInline):
     model = MirrorUrl
     form = MirrorUrlForm
+    readonly_fields = ('protocol',)
     extra = 3
 
 # ripped off from django.forms.fields, adding netmask ability
