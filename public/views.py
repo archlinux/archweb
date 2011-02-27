@@ -26,7 +26,7 @@ def userlist(request, type='Developers'):
         users = users.filter(is_active=True, groups__name="Trusted Users")
         msg = "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository."
     elif type == 'Fellows':
-        users = users.filter(is_active=False)
+        users = users.filter(is_active=False, groups__name__in=["Developers", "Trusted Users"])
         msg = "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!"
 
     context = {
