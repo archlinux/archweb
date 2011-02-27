@@ -50,6 +50,16 @@
         }
     }, 
     {
+        "pk": 8, 
+        "model": "main.repo", 
+        "fields": {
+            "svn_root": "community", 
+            "testing": true, 
+            "name": "Multilib-Testing", 
+            "bugs_project": 5
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "main.repo", 
         "fields": {
