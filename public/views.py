@@ -5,6 +5,7 @@ from . import utils
 
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import Http404
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
@@ -17,23 +18,34 @@ def index(request):
     }
     return direct_to_template(request, 'public/index.html', context)
 
-def userlist(request, type='Developers'):
-    users = User.objects.order_by('username').select_related('userprofile')
-    if type == 'Developers':
-        users = users.filter(is_active=True, groups__name="Developers")
-        msg = "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties."
-    elif type == 'Trusted Users':
-        users = users.filter(is_active=True, groups__name="Trusted Users")
-        msg = "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository."
-    elif type == 'Fellows':
-        users = users.filter(is_active=False, groups__name__in=["Developers", "Trusted Users"])
-        msg = "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!"
+USER_LISTS = {
+    'devs': {
+        'user_type': 'Developers',
+        'description': "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties.",
+    },
+    'tus': {
+        'user_type': 'Trusted Users',
+        'description': "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository.",
+    },
+    'fellows': {
+        'user_type': 'Fellows',
+        'description': "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!",
+    },
+}
 
-    context = {
-        'user_type': type,
-        'description': msg,
-        'users': users,
-    }
+def userlist(request, type='devs'):
+    users = User.objects.order_by('username').select_related('userprofile')
+    if type == 'devs':
+        users = users.filter(is_active=True, groups__name="Developers")
+    elif type == 'tus':
+        users = users.filter(is_active=True, groups__name="Trusted Users")
+    elif type == 'fellows':
+        users = users.filter(is_active=False, groups__name__in=["Developers", "Trusted Users"])
+    else:
+        raise Http404
+
+    context = USER_LISTS[type].copy()
+    context['users'] = users
     return direct_to_template(request, 'public/userlist.html', context)
 
 def donate(request):
