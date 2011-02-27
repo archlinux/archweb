@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+import socket
 from urlparse import urlparse
 
 TIER_CHOICES = (
@@ -56,8 +57,20 @@ class MirrorUrl(models.Model):
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False)
     mirror = models.ForeignKey(Mirror, related_name="urls")
-    has_ipv4 = models.BooleanField("IPv4 capable", default=True)
-    has_ipv6 = models.BooleanField("IPv6 capable", default=False)
+    has_ipv4 = models.BooleanField("IPv4 capable", default=True,
+            editable=False)
+    has_ipv6 = models.BooleanField("IPv6 capable", default=False,
+            editable=False)
+
+    def address_families(self):
+        hostname = urlparse(self.url).hostname
+        info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
+        families = [x[0] for x in info]
+        return families
+
+    @property
+    def hostname(self):
+        return urlparse(self.url).hostname
 
     def clean(self):
         try:
@@ -66,6 +79,14 @@ class MirrorUrl(models.Model):
             self.protocol = MirrorProtocol.objects.get(protocol=protocol)
         except Exception as e:
             raise ValidationError(e)
+        try:
+            families = self.address_families()
+            self.has_ipv4 = socket.AF_INET in families
+            self.has_ipv6 = socket.AF_INET6 in families
+        except socket.error as e:
+            # We don't fail in this case; we'll just set both to False
+            self.has_ipv4 = False
+            self.has_ipv6 = False
 
     def __unicode__(self):
         return self.url

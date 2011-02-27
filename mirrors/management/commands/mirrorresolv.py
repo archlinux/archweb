@@ -12,7 +12,6 @@ from django.core.management.base import NoArgsCommand
 
 import sys
 import logging
-from urlparse import urlparse
 import socket
 
 from mirrors.models import MirrorUrl
@@ -42,13 +41,11 @@ def resolve_mirrors():
     logger.debug("requesting list of mirror URLs")
     for mirrorurl in MirrorUrl.objects.filter(mirror__active=True):
         try:
-            hostname = urlparse(mirrorurl.url).hostname
-            logger.debug("resolving %3i (%s)", mirrorurl.id, hostname)
-            info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
-            families = [x[0] for x in info]
+            logger.debug("resolving %3i (%s)", mirrorurl.id, mirrorurl.hostname)
+            families = mirrorurl.address_families()
             mirrorurl.has_ipv4 = socket.AF_INET in families
             mirrorurl.has_ipv6 = socket.AF_INET6 in families
-            logger.debug("%s: v4: %s v6: %s", hostname,
+            logger.debug("%s: v4: %s v6: %s", mirrorurl.hostname,
                     mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             mirrorurl.save(force_update=True)
         except socket.error, e:

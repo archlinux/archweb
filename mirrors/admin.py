@@ -29,7 +29,7 @@ class MirrorUrlForm(forms.ModelForm):
 class MirrorUrlInlineAdmin(admin.TabularInline):
     model = MirrorUrl
     form = MirrorUrlForm
-    readonly_fields = ('protocol',)
+    readonly_fields = ('protocol', 'has_ipv4', 'has_ipv6')
     extra = 3
 
 # ripped off from django.forms.fields, adding netmask ability
