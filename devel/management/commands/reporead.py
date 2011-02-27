@@ -391,16 +391,12 @@ def parse_repo(repopath):
         logger.error("File does not have the proper extension")
         raise Exception("File does not have the proper extension")
 
-    repodb = tarfile.open(repopath,"r")
-    ## assuming well formed tar, with dir first then files after
-    ## repo-add enforces this
+    repodb = tarfile.open(repopath, "r")
     logger.debug("Starting package parsing")
     dbfiles = ('desc', 'depends', 'files')
     pkgs = {}
     for tarinfo in repodb.getmembers():
-        if tarinfo.isdir():
-            continue
-        elif tarinfo.isreg():
+        if tarinfo.isreg():
             pkgid, fname = os.path.split(tarinfo.name)
             if fname not in dbfiles:
                 continue
