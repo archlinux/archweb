@@ -1,0 +1,198 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Developers", 
+            "permissions": [
+                [
+                    "change_package", 
+                    "main", 
+                    "package"
+                ], 
+                [
+                    "add_signoff", 
+                    "main", 
+                    "signoff"
+                ], 
+                [
+                    "add_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "change_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "add_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "change_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "delete_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "add_news", 
+                    "news", 
+                    "news"
+                ], 
+                [
+                    "change_news", 
+                    "news", 
+                    "news"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Mirror Maintainers", 
+            "permissions": [
+                [
+                    "add_mirror", 
+                    "mirrors", 
+                    "mirror"
+                ], 
+                [
+                    "change_mirror", 
+                    "mirrors", 
+                    "mirror"
+                ], 
+                [
+                    "delete_mirror", 
+                    "mirrors", 
+                    "mirror"
+                ], 
+                [
+                    "add_mirrorprotocol", 
+                    "mirrors", 
+                    "mirrorprotocol"
+                ], 
+                [
+                    "change_mirrorprotocol", 
+                    "mirrors", 
+                    "mirrorprotocol"
+                ], 
+                [
+                    "delete_mirrorprotocol", 
+                    "mirrors", 
+                    "mirrorprotocol"
+                ], 
+                [
+                    "add_mirrorrsync", 
+                    "mirrors", 
+                    "mirrorrsync"
+                ], 
+                [
+                    "change_mirrorrsync", 
+                    "mirrors", 
+                    "mirrorrsync"
+                ], 
+                [
+                    "delete_mirrorrsync", 
+                    "mirrors", 
+                    "mirrorrsync"
+                ], 
+                [
+                    "add_mirrorurl", 
+                    "mirrors", 
+                    "mirrorurl"
+                ], 
+                [
+                    "change_mirrorurl", 
+                    "mirrors", 
+                    "mirrorurl"
+                ], 
+                [
+                    "delete_mirrorurl", 
+                    "mirrors", 
+                    "mirrorurl"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Trusted Users", 
+            "permissions": [
+                [
+                    "change_package", 
+                    "main", 
+                    "package"
+                ], 
+                [
+                    "add_signoff", 
+                    "main", 
+                    "signoff"
+                ], 
+                [
+                    "add_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "change_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "add_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "change_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "delete_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "User Admins", 
+            "permissions": [
+                [
+                    "add_user", 
+                    "auth", 
+                    "user"
+                ], 
+                [
+                    "change_user", 
+                    "auth", 
+                    "user"
+                ], 
+                [
+                    "add_userprofile", 
+                    "main", 
+                    "userprofile"
+                ], 
+                [
+                    "change_userprofile", 
+                    "main", 
+                    "userprofile"
+                ]
+            ]
+        }
+    }
+]

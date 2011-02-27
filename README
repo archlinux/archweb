@@ -58,6 +58,7 @@ packages, you will probably want the following:
 
         (archweb-env) $ ./manage.py loaddata main/fixtures/arches.json
         (archweb-env) $ ./manage.py loaddata main/fixtures/repos.json
+        (archweb-env) $ ./manage.py loaddata main/fixtures/groups.json
         (archweb-env) $ ./manage.py loaddata mirrors/fixtures/mirrorprotocols.json
     
 7. Use the following commands to start a service instance
