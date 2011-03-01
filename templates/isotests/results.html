@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Testresults{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>Arch releng iso build test results</h2>
+    <table>
+        <tr>
+            <td>
+                <h3>image arch</h3>
+            </td>
+        </tr>
+        {% if arch_choices %}
+        {% for arch in arch_choices %}
+        <tr>
+            <td>{{ arch.name }}</td>
+            <td>{{ arch.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ arch.get_failed_test|default_if_none:"Never failed"  }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>image type</h3>
+            </td>
+        </tr>
+        {% if isotype_choices %}
+        {% for isotype in isotype_choices %}
+        <tr>
+            <td>{{ isotype.name }}</td>
+            <td>{{ isotype.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ isotype.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>image boot</h3>
+            </td>
+        </tr>
+        {% if boottype_choices %}
+        {% for boottype in boottype_choices %}
+        <tr>
+            <td>{{ boottype.name }}</td>
+            <td>{{ boottype.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ boottype.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>hardware type</h3>
+            </td>
+        </tr>
+        {% if hardware_list %}
+        {% for hardware in hardware_list %}
+        <tr>
+            <td>{{ hardware.name }}</td>
+            <td>{{ hardware.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ hardware.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>install type</h3>
+            </td>
+        </tr>
+        {% if installtype_list %}
+        {% for installtype in installtype_list %}
+        <tr>
+            <td>{{ installtype.name }}</td>
+            <td>{{ installtype.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ installtype.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>source selection</h3>
+            </td>
+        </tr>
+        {% if source_list %}
+        {% for source in source_list %}
+        <tr>
+            <td>{{ source.name }}</td>
+            <td>{{ source.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ source.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>clock</h3>
+            </td>
+        </tr>
+        {% if clock_choices %}
+        {% for clock in clock_choices %}
+        <tr>
+            <td>{{ clock.name }}</td>
+            <td>{{ clock.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ clock.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>partitioning/filesystems</h3>
+            </td>
+        </tr>
+        {% if filesystem_list %}
+        {% for filesystem in filesystem_list %}
+        <tr>
+            <td>{{ filesystem.name }}</td>
+            <td>{{ filesystem.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ filesystem.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>fancy stuff</h3>
+            </td>
+        </tr>
+        {% if module_list %}
+        {% for module in module_list %}
+        <tr>
+            <td>{{ module.name }}</td>
+            <td>{{ module.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ module.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>rollback</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>yes</td>
+        </tr>
+        <tr>
+            <td>no</td>
+        </tr>
+        <tr>
+            <td>
+                <h4>rollback: partitioning/filesystems</h4>
+            </td>
+        </tr>
+        {% if filesystem_list %}
+        {% for filesystem in filesystem_list %}
+        <tr>
+            <td>{{ filesystem.name }}</td>
+            <td>{{ filesystem.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ filesystem.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h4>rollback: fancy stuff</h4>
+            </td>
+        </tr>
+        {% if module_list %}
+        {% for module in module_list %}
+        <tr>
+            <td>{{ module.name }}</td>
+            <td>{{ module.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ module.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>bootloader</h3>
+            </td>
+        </tr>
+        {% if bootloader_list %}
+        {% for bootloader in bootloader_list %}
+        <tr>
+            <td>{{ bootloader.name }}</td>
+            <td>{{ bootloader.get_success_test|default_if_none:"Never succeeded" }}</td>
+            <td>{{ bootloader.get_failed_test|default_if_none:"Never failed" }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+</div>
+{% endblock %}

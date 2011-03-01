@@ -6,11 +6,11 @@ info_dict = {
 }
 
 urlpatterns = patterns('isotests.views',
-    (r'^add/$', 'add_result')
-)
+                       (r'^$', 'view_results'),
+                       (r'^add/$', 'add_result')
+                       )
 
 urlpatterns += patterns('',
-    (r'^$',     'django.views.generic.list_detail.object_list', info_dict)
 )
 
 # vim: set ts=4 sw=4 et:

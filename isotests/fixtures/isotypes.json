@@ -1,0 +1,16 @@
+[
+    {
+	"pk": 1,
+	"model": "isotests.isotype",
+	"fields": {
+	    "name": "core"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "isotests.isotype",
+	"fields": {
+	    "name": "net"
+	}
+    }
+]

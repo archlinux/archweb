@@ -1,0 +1,23 @@
+[
+    {
+	"pk": 1,
+	"model": "isotests.clockchoice",
+	"fields": {
+	    "name": "default"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "isotests.clockchoice",
+	"fields": {
+	    "name": "configured manually"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "isotests.clockchoice",
+	"fields": {
+	    "name": "NTP"
+	}
+    }
+]
