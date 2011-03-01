@@ -1,0 +1,37 @@
+[
+    {
+	"pk": 1,
+	"model": "isotests.module",
+	"fields": {
+	    "name": "lvm2"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "isotests.module",
+	"fields": {
+	    "name": "dm_crypt"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "isotests.module",
+	"fields": {
+	    "name": "softraid"
+	}
+    },
+    {
+	"pk": 4,
+	"model": "isotests.module",
+	"fields": {
+	    "name": "nilfs2"
+	}
+    },
+    {
+	"pk": 5,
+	"model": "isotests.module",
+	"fields": {
+	    "name": "btrfs"
+	}
+    }
+]

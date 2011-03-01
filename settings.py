@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'devel',
     'public',
     'south', # database migration support
+    'isotests',
 )
 
 ## Import local settings

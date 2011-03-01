@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Testresults{% endblock %}
+
+{% block content %}
+{% if object_list %}
+<div class="box">
+    <h2>Arch releng iso buid test results</h2>
+    <ul>
+        {% for iso in object_list %}
+        <li><a href="/tests/{{ iso.id }}/">{{ iso }}</a></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No tests are available.</p>
+    {% endif %}
+</div>
+{% endblock %}

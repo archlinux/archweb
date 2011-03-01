@@ -1,0 +1,23 @@
+[
+    {
+	"pk": 1,
+	"model": "isotests.filesystem",
+	"fields": {
+	    "name": "autoprepare (check the installed system, incl fstab)"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "isotests.filesystem",
+	"fields": {
+	    "name": "manual"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "isotests.filesystem",
+	"fields": {
+	    "name": "from config file"
+	}
+    }
+]

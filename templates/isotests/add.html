@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Test Result Entry{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>Arch releng iso build test result entry</h2>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+</div>
+{% endblock %}
