@@ -127,8 +127,8 @@ def getmaintainer(request, name, repo, arch):
     return HttpResponse(str('\n'.join(names)), mimetype='text/plain')
 
 class PackageSearchForm(forms.Form):
-    repo = forms.ChoiceField(required=False)
-    arch = forms.ChoiceField(required=False)
+    repo = forms.MultipleChoiceField(required=False)
+    arch = forms.MultipleChoiceField(required=False)
     q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget(),
@@ -157,9 +157,9 @@ class PackageSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(PackageSearchForm, self).__init__(*args, **kwargs)
-        self.fields['repo'].choices = [('', 'All')] + make_choice(
+        self.fields['repo'].choices = make_choice(
                         [repo.name for repo in Repo.objects.all()])
-        self.fields['arch'].choices = [('', 'All')] + make_choice(
+        self.fields['arch'].choices = make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
         maints = User.objects.filter(is_active=True).order_by('username')
@@ -178,11 +178,11 @@ def search(request, page=None):
         if form.is_valid():
             if form.cleaned_data['repo']:
                 packages = packages.filter(
-                        repo__name=form.cleaned_data['repo'])
+                        repo__name__in=form.cleaned_data['repo'])
 
             if form.cleaned_data['arch']:
                 packages = packages.filter(
-                        arch__name=form.cleaned_data['arch'])
+                        arch__name__in=form.cleaned_data['arch'])
 
             if form.cleaned_data['maintainer'] == 'orphan':
                 inner_q = PackageRelation.objects.all().values('pkgbase')
