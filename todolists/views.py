@@ -32,7 +32,7 @@ class TodoListForm(forms.Form):
         return packages
 
 
-@login_required
+@permission_required('main.change_todolistpkg')
 @never_cache
 def flag(request, listid, pkgid):
     list = get_object_or_404(Todolist, id=listid)

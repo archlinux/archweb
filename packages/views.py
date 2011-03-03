@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import messages
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -403,7 +403,7 @@ def arch_differences(request):
     }
     return direct_to_template(request, 'packages/differences.html', context)
 
-@login_required
+@permission_required('main.change_package')
 def stale_relations(request):
     relations = PackageRelation.objects.select_related('user')
     pkgbases = Package.objects.all().values('pkgbase')
