@@ -89,15 +89,6 @@
         </tbody>
     </table>
 
-    <form id="dash-pkg-notify" method="post" action="/devel/notify/">{% csrf_token %}
-        <fieldset>
-            <p><input id="notify" name="notify" type="checkbox" value="yes"
-            {% if user.get_profile.notify %} checked="checked"{% endif %} />
-            <label for="notify">Notify me when packages are flagged out-of-date</label>
-            <input title="Update notification status" type="submit" value="Update" /></p>
-        </fieldset>
-    </form>
-
 </div><!-- #dev-dashboard -->
 
 <div id="dash-by-arch" class="dash-stats box">

@@ -10,13 +10,6 @@ class DevelTest(TestCase):
         self.assertEqual(response['location'],
                          'http://testserver/login/?next=/devel/')
 
-    def test_notify(self):
-        response = self.client.get('/devel/notify/')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.has_header('Location'), True)
-        self.assertEqual(response['location'],
-                         'http://testserver/login/?next=/devel/notify/')
-
     def test_profile(self):
         response = self.client.get('/devel/profile/')
         self.assertEqual(response.status_code, 302)

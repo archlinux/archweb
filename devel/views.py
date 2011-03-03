@@ -65,15 +65,6 @@ def clock(request):
 
     return direct_to_template(request, 'devel/clock.html', page_dict)
 
-@login_required
-def change_notify(request):
-    maint = User.objects.get(username=request.user.username)
-    notify = request.POST.get('notify', 'no')
-    prof = maint.get_profile()
-    prof.notify = (notify == 'yes')
-    prof.save()
-    return HttpResponseRedirect('/devel/')
-
 class ProfileForm(forms.Form):
     email = forms.EmailField(label='Private email (not shown publicly):',
             help_text="Used for out-of-date notifications, etc.")
