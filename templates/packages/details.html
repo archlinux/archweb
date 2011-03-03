@@ -26,7 +26,7 @@
                         title="Testing package details for {{ tp.pkgname }}">{{ tp.pkgver }}-{{ tp.pkgrel }}</a>
                     in testing</span></li>
                 {% endif %}{% endwith %}
-                {% if user.is_authenticated %}
+                {% if perms.main.change_package %}
                 <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
                 <li><a href="unflag/all/" title="Unflag all matching pkgbase">Click here to unflag all split packages</a></li>
                 {% endif %}
@@ -40,7 +40,7 @@
                 <li><a href="download/" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
             </ul>
 
-            {% if user.is_authenticated %}
+            {% if perms.main.change_package %}
             <form id="pkg-action" method="post" action="/packages/update/">{% csrf_token %}
                 <div><input type="hidden" name="pkgid" value="{{ pkg.id }}" /></div>
                 <p>{% if user in pkg.maintainers %}

@@ -71,7 +71,7 @@
         <table class="results">
             <thead>
                 <tr>
-                    {% if user.is_authenticated %}
+                    {% if perms.main.change_package %}
                     <th>&nbsp;</th>
                     {% endif %}
                     <th><a href="/packages/{% buildsortqs "arch" %}"
@@ -91,7 +91,7 @@
             <tbody>
             {% for pkg in package_list %}
                 <tr class="{% cycle 'odd' 'even' %}">
-                    {% if user.is_authenticated %}
+                    {% if perms.main.change_package %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
                     {% endif %}
                     <td>{{ pkg.arch.name }}</td>
@@ -134,7 +134,7 @@
         </div>
         {% endif %}
 
-        {% if user.is_authenticated %}
+        {% if perms.main.change_package %}
         <p><input title="Adopt selected packages" type="submit" id="adopt-btn"
         name="adopt" value="Adopt Packages" />
         <input title="Orphan selected packages" type="submit" id="disown-btn"

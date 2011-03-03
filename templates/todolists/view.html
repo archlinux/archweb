@@ -38,12 +38,16 @@
                 <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                 <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
                 <td>
+                    {% if perms.main.change_todolistpkg %}
                     {% if pkg.complete %}
                     <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
                         class="status-link complete" title="Toggle completion status">Complete</a>
                     {% else %}
                     <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
                         class="status-link incomplete" title="Toggle completion status">Incomplete</a>
+                    {% endif %}
+                    {% else %}
+                    {% if pkg.complete %}<span class="complete">Complete</span>{% else %}<span class="incomplete">Incomplete</span>{% endif %}
                     {% endif %}
                 </td>
             </tr>
