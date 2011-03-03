@@ -51,6 +51,7 @@ class MirrorProtocol(models.Model):
 
     class Meta:
         verbose_name = 'Mirror Protocol'
+        ordering = ('protocol',)
 
 class MirrorUrl(models.Model):
     url = models.CharField(max_length=255)
