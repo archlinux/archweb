@@ -6,14 +6,18 @@
 
     <h2>{{title}}</h2>
 
-    {% if description %}{{description}}{% endif %}
+    {{description}}
+    {{form.non_field_errors}}
 
     <form class="general-form" method="post">{% csrf_token %}
         <fieldset>
             {% for field in form %}
-                <p><label>{{field.label}}{% if field.help_text %}:</label><br />
-                <span class="form-help">{{field.help_text}}</span> {% else %}:</label> {% endif %}
-                {{field}} {% if field.required %}<span class="form-req-field">*</span>{% endif%}</p>
+            {{field.errors}}
+            <p><label for="{{field.auto_id}}">{{field.label}}:</label>
+            {% if field.help_text %}<br/><span class="form-help">{{field.help_text}}</span>{% endif %}
+            {{field}}
+            {% if field.field.required %}<span class="form-req-field">*</span>{% endif %}
+            </p>
             {% endfor %}
         </fieldset>
         <p><label></label> <input type="submit" value="{{submit_text}}" /></p>
