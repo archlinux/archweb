@@ -42,11 +42,7 @@ urlpatterns += patterns('django.contrib.sitemaps.views',
 urlpatterns += patterns('django.contrib.auth.views',
     (r'^login/$',           'login',  {
         'template_name': 'registration/login.html'}),
-    (r'^accounts/login/$',  'login',  {
-        'template_name': 'registration/login.html'}),
     (r'^logout/$',          'logout', {
-        'template_name': 'registration/logout.html'}),
-    (r'^accounts/logout/$', 'logout', {
         'template_name': 'registration/logout.html'}),
 )
 
