@@ -75,9 +75,7 @@ def add(request):
         form = TodoListForm(request.POST)
         if form.is_valid():
             new_packages = create_todolist_packages(form, creator=request.user)
-            for new_package in new_packages:
-                send_newlist_email(new_package)
-
+            send_todolist_emails(form.instance, new_packages)
             return redirect(form.instance)
     else:
         form = TodoListForm()
@@ -98,10 +96,7 @@ def edit(request, list_id):
         form = TodoListForm(request.POST, instance=todo_list)
         if form.is_valid():
             new_packages = create_todolist_packages(form)
-
-            for new_package in new_packages:
-                send_todolist_email(new_package)
-
+            send_todolist_emails(todo_list, new_packages)
             return redirect(todo_list)
     else:
         form = TodoListForm(instance=todo_list,
@@ -152,25 +147,32 @@ def create_todolist_packages(form, creator=None):
 
     return todo_pkgs
 
-def send_todolist_email(todo):
-    '''Sends an e-mail to the maintainer of a package notifying them that the
-    package has been added to a todo list'''
-    maints = todo.pkg.maintainers.values_list('email', flat=True)
-    if not maints:
-        return
+def send_todolist_emails(todo_list, new_packages):
+    '''Sends emails to package maintainers notifying them that packages have
+    been added to a todo list.'''
+    # start by flipping the incoming list on its head: we want a list of
+    # involved maintainers and the packages they need to be notified about.
+    orphan_packages = []
+    maint_packages = {}
+    for todo_package in new_packages:
+        maints = todo_package.pkg.maintainers.values_list('email', flat=True)
+        if not maints:
+            orphan_packages.append(todo_package)
+        else:
+            for maint in maints:
+                maint_packages.setdefault(maint, []).append(todo_package)
 
-    page_dict = {
-            'pkg': todo.pkg,
-            'todolist': todo.list,
-            'weburl': todo.pkg.get_full_url()
-    }
-    t = loader.get_template('todolists/email_notification.txt')
-    c = Context(page_dict)
-    send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname,
-            t.render(c),
-            'Arch Website Notification <nobody@archlinux.org>',
-            maints,
-            fail_silently=True)
+    for maint, packages in maint_packages.iteritems():
+        c = Context({
+            'todo_packages': sorted(packages),
+            'todolist': todo_list,
+        })
+        t = loader.get_template('todolists/email_notification.txt')
+        send_mail('Packages added to todo list \'%s\'' % todo_list.name,
+                t.render(c),
+                'Arch Website Notification <nobody@archlinux.org>',
+                [maint],
+                fail_silently=True)
 
 def public_list(request):
     todo_lists = Todolist.objects.incomplete()
