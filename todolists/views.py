@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db import transaction
 from django.db.models import Count
 from django.views.decorators.cache import never_cache
 from django.views.generic.create_update import delete_object
@@ -13,11 +14,7 @@ from django.utils import simplejson
 
 from main.models import Todolist, TodolistPkg, Package
 
-class TodoListForm(forms.Form):
-    name = forms.CharField(max_length=255,
-            widget=forms.TextInput(attrs={'size': '30'}))
-    description = forms.CharField(required=False,
-            widget=forms.Textarea(attrs={'rows': '4', 'cols': '60'}))
+class TodoListForm(forms.ModelForm):
     packages = forms.CharField(required=False,
             help_text='(one per line)',
             widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
@@ -26,11 +23,14 @@ class TodoListForm(forms.Form):
         package_names = [s.strip() for s in
                 self.cleaned_data['packages'].split("\n")]
         package_names = set(package_names)
-        packages = Package.objects.filter(
-                pkgname__in=package_names).exclude(
-                repo__testing=True).order_by('arch')
+        packages = Package.objects.filter(pkgname__in=package_names).exclude(
+                repo__testing=True).select_related(
+                        'arch', 'repo').order_by('arch')
         return packages
 
+    class Meta:
+        model = Todolist
+        fields = ('name', 'description')
 
 @permission_required('main.change_todolistpkg')
 @never_cache
@@ -68,23 +68,17 @@ def list(request):
 
     return direct_to_template(request, 'todolists/list.html', {'lists': lists})
 
-# TODO: this calls for transaction management and async emailing
 @permission_required('main.add_todolist')
 @never_cache
 def add(request):
     if request.POST:
         form = TodoListForm(request.POST)
         if form.is_valid():
-            todo = Todolist.objects.create(
-                creator     = request.user,
-                name        = form.cleaned_data['name'],
-                description = form.cleaned_data['description'])
+            new_packages = create_todolist_packages(form, creator=request.user)
+            for new_package in new_packages:
+                send_newlist_email(new_package)
 
-            for pkg in form.cleaned_data['packages']:
-                tpkg = TodolistPkg.objects.create(list=todo, pkg=pkg)
-                send_todolist_email(tpkg)
-
-            return redirect('/todo/')
+            return redirect(form.instance)
     else:
         form = TodoListForm()
 
@@ -101,33 +95,18 @@ def add(request):
 def edit(request, list_id):
     todo_list = get_object_or_404(Todolist, id=list_id)
     if request.POST:
-        form = TodoListForm(request.POST)
+        form = TodoListForm(request.POST, instance=todo_list)
         if form.is_valid():
-            todo_list.name = form.cleaned_data['name']
-            todo_list.description = form.cleaned_data['description']
-            todo_list.save()
+            new_packages = create_todolist_packages(form)
 
-            packages = [p.pkg for p in todo_list.packages]
-
-            # first delete any packages not in the new list
-            for p in todo_list.packages:
-                if p.pkg not in form.cleaned_data['packages']:
-                    p.delete()
-
-            # now add any packages not in the old list
-            for pkg in form.cleaned_data['packages']:
-                if pkg not in packages:
-                    tpkg = TodolistPkg.objects.create(
-                            list=todo_list, pkg=pkg)
-                    send_todolist_email(tpkg)
+            for new_package in new_packages:
+                send_todolist_email(new_package)
 
             return redirect(todo_list)
     else:
-        form = TodoListForm(initial={
-            'name': todo_list.name,
-            'description': todo_list.description,
-            'packages': '\n'.join(todo_list.package_names),
-        })
+        form = TodoListForm(instance=todo_list,
+                initial={ 'packages': '\n'.join(todo_list.package_names) })
+
     page_dict = {
             'title': 'Edit Todo List: %s' % todo_list.name,
             'form': form,
@@ -142,10 +121,41 @@ def delete_todolist(request, object_id):
             template_name="todolists/todolist_confirm_delete.html",
             post_delete_redirect='/todo/')
 
+
+@transaction.commit_on_success
+def create_todolist_packages(form, creator=None):
+    packages = form.cleaned_data['packages']
+    if creator:
+        # todo list is new
+        todolist = form.save(commit=False)
+        todolist.creator = creator
+        todolist.save()
+
+        old_packages = []
+    else:
+        # todo list already existed
+        form.save()
+        todolist = form.instance
+        # first delete any packages not in the new list
+        for todo_pkg in todolist.packages:
+            if todo_pkg.pkg not in packages:
+                todo_pkg.delete()
+
+        # save the old package list so we know what to add
+        old_packages = [p.pkg for p in todolist.packages]
+
+    todo_pkgs = []
+    for package in packages:
+        if package not in old_packages:
+            todo_pkg = TodolistPkg.objects.create(list=todolist, pkg=package)
+            todo_pkgs.append(todo_pkg)
+
+    return todo_pkgs
+
 def send_todolist_email(todo):
     '''Sends an e-mail to the maintainer of a package notifying them that the
     package has been added to a todo list'''
-    maints = todo.pkg.maintainers
+    maints = todo.pkg.maintainers.values_list('email', flat=True)
     if not maints:
         return
 
@@ -159,7 +169,7 @@ def send_todolist_email(todo):
     send_mail('arch: Package [%s] added to Todolist' % todo.pkg.pkgname,
             t.render(c),
             'Arch Website Notification <nobody@archlinux.org>',
-            [m.email for m in maints],
+            maints,
             fail_silently=True)
 
 def public_list(request):
