@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.template import loader, Context
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
@@ -23,8 +24,8 @@ from string import ascii_letters, digits
 def index(request):
     '''the Developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
-    flagged = Package.objects.select_related('arch', 'repo').filter(flag_date__isnull=False)
-    flagged = flagged.filter(pkgbase__in=inner_q).order_by('pkgname')
+    flagged = Package.objects.select_related('arch', 'repo').filter(
+            flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
 
     todopkgs = TodolistPkg.objects.select_related(
             'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
@@ -111,25 +112,34 @@ class NewUserForm(forms.ModelForm):
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError(
+                    "A user with that username already exists.")
+        return username
+
     def save(self):
         profile = forms.ModelForm.save(self, False)
         pwletters = ascii_letters + digits
-        pw = ''.join([random.choice(pwletters) for i in xrange(8)])
+        password = ''.join([random.choice(pwletters) for i in xrange(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
-                email=self.cleaned_data['email'], password=pw)
+                email=self.cleaned_data['email'], password=password)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
         profile.user = user
         profile.save()
-        domain = Site.objects.get_current().domain
+
+        t = loader.get_template('devel/new_account.txt')
+        c = Context({
+            'site': Site.objects.get_current(),
+            'user': user,
+            'password': password,
+        })
 
         send_mail("Your new archweb account",
-                """You can now log into:
-https://%s/login/
-with these login details:
-Username: %s
-Password: %s""" % (domain, user.username, pw),
+                t.render(c),
                 'Arch Website Notification <nobody@archlinux.org>',
                 [user.email],
                 fail_silently=False)

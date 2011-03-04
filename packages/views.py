@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
-from django.template import loader, Context, RequestContext
+from django.template import loader, Context
 from django.utils import simplejson
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
