@@ -50,13 +50,13 @@
 
         <p class="pkglist-nav">
             {% if page_obj.has_previous %}
-            <a class="prev" href="/packages/{{page_obj.previous_page_number}}/{{current_query}}"
+            <a class="prev" href="/packages/{{page_obj.previous_page_number}}/?{{current_query}}"
                 title="Go to previous page">&lt; Prev</a>
             {% else %}
             <span class="prev">&lt; Prev</span>
             {% endif %}
             {% if page_obj.has_next %}
-            <a class="next" href="/packages/{{page_obj.next_page_number}}/{{current_query}}"
+            <a class="next" href="/packages/{{page_obj.next_page_number}}/?{{current_query}}"
                 title="Go to next page">Next &gt;</a>
             {% else %}
             <span class="next">Next &gt;</span>
@@ -74,17 +74,17 @@
                     {% if perms.main.change_package %}
                     <th>&nbsp;</th>
                     {% endif %}
-                    <th><a href="/packages/{% buildsortqs "arch" %}"
+                    <th><a href="/packages/?{% buildsortqs "arch" %}"
                             title="Sort packages by architecture">Arch</a></th>
-                    <th><a href="/packages/{% buildsortqs "repo" %}"
+                    <th><a href="/packages/?{% buildsortqs "repo" %}"
                             title="Sort packages by repository">Repo</a></th>
-                    <th><a href="/packages/{% buildsortqs "pkgname" %}"
+                    <th><a href="/packages/?{% buildsortqs "pkgname" %}"
                             title="Sort packages by package name">Name</a></th>
                     <th>Version</th>
                     <th>Description</th>
-                    <th><a href="/packages/{% buildsortqs "-last_update" %}"
+                    <th><a href="/packages/?{% buildsortqs "-last_update" %}"
                             title="Sort packages by last update">Last Updated</a></th>
-                    <th><a href="/packages/{% buildsortqs "-flag_date" %}"
+                    <th><a href="/packages/?{% buildsortqs "-flag_date" %}"
                             title="Sort packages by when marked-out of-date">Flag Date</a></th>
                 </tr>
             </thead>
@@ -118,13 +118,13 @@
 
                 <p class="pkglist-nav">
                     {% if page_obj.has_previous %}
-                    <a class="prev" href="/packages/{{page_obj.previous_page_number}}/{{current_query}}"
+                    <a class="prev" href="/packages/{{page_obj.previous_page_number}}/?{{current_query}}"
                         title="Go to previous page">&lt; Prev</a>
                     {% else %}
                     <span class="prev">&lt; Prev</span>
                     {% endif %}
                     {% if page_obj.has_next %}
-                    <a class="next" href="/packages/{{page_obj.next_page_number}}/{{current_query}}"
+                    <a class="next" href="/packages/{{page_obj.next_page_number}}/?{{current_query}}"
                         title="Go to next page">Next &gt;</a>
                     {% else %}
                     <span class="next">Next &gt;</span>

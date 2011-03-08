@@ -168,12 +168,10 @@ class PackageSearchForm(forms.Form):
                 [(m.username, m.get_full_name()) for m in maints]
 
 def search(request, page=None):
-    current_query = '?'
     limit = 50
     packages = Package.objects.select_related('arch', 'repo')
 
     if request.GET:
-        current_query += request.GET.urlencode()
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
             if form.cleaned_data['repo']:
@@ -208,12 +206,14 @@ def search(request, page=None):
     else:
         form = PackageSearchForm()
 
-    page_dict = {'search_form': form,
-            'current_query': current_query
-            }
     if packages.count() == 1:
         return redirect(packages[0])
 
+    current_query = request.GET.urlencode()
+    page_dict = {
+            'search_form': form,
+            'current_query': current_query
+    }
     allowed_sort = ["arch", "repo", "pkgname", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)

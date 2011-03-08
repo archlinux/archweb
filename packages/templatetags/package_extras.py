@@ -1,4 +1,6 @@
-import cgi, urllib
+import urllib
+import urlparse
+
 from django import template
 from django.utils.html import escape
 
@@ -9,15 +11,15 @@ class BuildQueryStringNode(template.Node):
         self.sortfield = sortfield
 
     def render(self, context):
-        qs = dict(cgi.parse_qsl(context['current_query'][1:]))
-        if qs.has_key('sort') and qs['sort'] == self.sortfield:
+        qs = urlparse.parse_qs(context['current_query'])
+        if qs.has_key('sort') and self.sortfield in qs['sort']:
             if self.sortfield.startswith('-'):
-                qs['sort'] = self.sortfield[1:]
+                qs['sort'] = [self.sortfield[1:]]
             else:
-                qs['sort'] = '-' + self.sortfield
+                qs['sort'] = ['-' + self.sortfield]
         else:
-            qs['sort'] = self.sortfield
-        return '?' + urllib.urlencode(qs)
+            qs['sort'] = [self.sortfield]
+        return urllib.urlencode(qs, True)
 
 @register.tag(name='buildsortqs')
 def do_buildsortqs(parser, token):
