@@ -55,7 +55,9 @@ def clock(request):
     now = datetime.datetime.now()
     utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
     for dev in devs:
-        tz = pytz.timezone(dev.userprofile.time_zone)
+        # Work around https://bugs.launchpad.net/pytz/+bug/718673
+        timezone = str(dev.userprofile.time_zone)
+        tz = pytz.timezone(timezone)
         dev.current_time = utc_now.astimezone(tz)
 
     page_dict = {
