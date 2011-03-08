@@ -22,13 +22,14 @@
     </div>
 </div>
 {% if todo_lists %}
-<div id="public_todo_lists">
+<div id="public-todo-lists">
     {% for list in todo_lists %}
     <div class="box">
-        <a name="{{ list.id }}"></a>
-        <h4>{{ list.name }}</h4>
-        <div class="todo_list">
-            <div>{{ list.description|safe|linebreaks }}</div>
+        <div class="todo-list">
+            <a name="{{ list.id }}"></a>
+            <h4>{{ list.name }}</h4>
+            <p class="todo-info">{{ list.date_added|date }} - {{ list.creator.get_full_name }}</p>
+            <div>{{ list.description|urlize|linebreaks }}</div>
             <table id="todo-pkglist-{{ list.id }}" class="results todo-table">
                 <thead>
                     <tr>

@@ -248,18 +248,15 @@ table.dash-stats .key { width: 50%; }
 span.dash-click { font-weight: normal; font-size: 0.8em; color: #888; }
 div.dash-stats h3 { color: #07b; }
 
-/* read only (public) todo lists */
-#public_todo_lists .todo_list {
-    margin-left: 2em;
-}
-
 /* dev dashboard: admin actions (add news items, todo list, etc) */
 ul.admin-actions { float: right; list-style: none; margin-top: -2.5em; }
 ul.admin-actions li { display: inline; padding-left: 1.5em; }
 
-/* dev: todo list */
+/* todo lists (public and private) */
 .todo-table .complete { color: green; }
 .todo-table .incomplete { color: red; }
+.todo-info { margin: 0; color: #999; }
+.todo-list h4 { margin-top: 0; margin-bottom: 0.4em; }
 
 /* dev: signoff page */
 #dev-signoffs ul { list-style: none; margin: 0; padding: 0; }

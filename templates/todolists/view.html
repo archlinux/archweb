@@ -17,7 +17,9 @@
         {% endif %}
     </ul>
 
-    <p>{{list.description|safe|linebreaks}}</p>
+    <p class="todo-info">{{ list.date_added|date }} - {{ list.creator.get_full_name }}</p>
+
+    <div>{{list.description|urlize|linebreaks}}</div>
 
     <table id="dev-todo-pkglist" class="results todo-table">
         <thead>
