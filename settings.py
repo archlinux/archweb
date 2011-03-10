@@ -45,13 +45,6 @@ LOGIN_REDIRECT_URL = '/'
 # Set django's User stuff to use our profile model
 AUTH_PROFILE_MODULE = 'main.UserProfile'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.eggs.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-)
-
 # We add a processor to determine if the request is secure or not
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
@@ -60,6 +53,18 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
     'main.context_processors.secure',
+)
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates".
+    # Always use forward slashes, even on Windows.
+    '%s/templates' % DEPLOY_PATH,
+)
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.eggs.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 # This bug is a real bummer:
@@ -77,18 +82,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates".
-    # Always use forward slashes, even on Windows.
-    '%s/templates' % DEPLOY_PATH,
-)
-
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.eggs.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
 
 # Configure where sessions and messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
