@@ -4,6 +4,7 @@ import os
 ## Set the debug values
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+DEBUG_TOOLBAR = False
 
 ## Notification admins
 ADMINS = ()
@@ -120,5 +121,13 @@ if not TEMPLATE_DEBUG:
     TEMPLATE_LOADERS = (
         ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
+
+# Enable the debug toolbar if requested
+if DEBUG_TOOLBAR:
+    MIDDLEWARE_CLASSES = \
+            [ 'debug_toolbar.middleware.DebugToolbarMiddleware' ] + \
+            list(MIDDLEWARE_CLASSES)
+
+    INSTALLED_APPS = list(INSTALLED_APPS) + [ 'debug_toolbar' ]
 
 # vim: set ts=4 sw=4 et:
