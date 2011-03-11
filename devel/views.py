@@ -36,11 +36,22 @@ def index(request):
 
     maintainers = get_annotated_maintainers()
 
+    maintained = PackageRelation.objects.filter(
+            type=PackageRelation.MAINTAINER).values('pkgbase')
+    total_orphans = Package.objects.exclude(pkgbase__in=maintained).count()
+    total_flagged_orphans = Package.objects.filter(
+            flag_date__isnull=False).exclude(pkgbase__in=maintained).count()
+    orphan = {
+            'package_count': total_orphans,
+            'flagged_count': total_flagged_orphans,
+    }
+
     page_dict = {
             'todos': Todolist.objects.incomplete().order_by('-date_added'),
             'repos': Repo.objects.all(),
             'arches': Arch.objects.all(),
             'maintainers': maintainers,
+            'orphan': orphan,
             'flagged' : flagged,
             'todopkgs' : todopkgs,
     }

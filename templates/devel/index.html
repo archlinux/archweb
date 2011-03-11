@@ -166,6 +166,15 @@
                 <th># Packages</th>
                 <th># Flagged</th>
             </tr>
+            <tr class="even">
+                <td><em>Orphan</em></td>
+                <td><a href="/packages/?maintainer=orphan"
+                        title="View all orphan packages">
+                        <strong>{{ orphan.package_count }}</strong> packages</a></td>
+                <td><a href="/packages/?maintainer=orphan&amp;flagged=Flagged"
+                        title="View all flagged orphan packages">
+                        <strong>{{ orphan.flagged_count }}</strong> packages</a></td>
+            </tr>
         </thead>
         <tbody>
             {% for maint in maintainers %}
