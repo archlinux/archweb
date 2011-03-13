@@ -1,5 +1,8 @@
 import urllib
-import urlparse
+try:
+    from urlparse import parse_qs
+except ImportError:
+    from cgi import parse_qs
 
 from django import template
 from django.utils.html import escape
@@ -11,7 +14,7 @@ class BuildQueryStringNode(template.Node):
         self.sortfield = sortfield
 
     def render(self, context):
-        qs = urlparse.parse_qs(context['current_query'])
+        qs = parse_qs(context['current_query'])
         if qs.has_key('sort') and self.sortfield in qs['sort']:
             if self.sortfield.startswith('-'):
                 qs['sort'] = [self.sortfield[1:]]
