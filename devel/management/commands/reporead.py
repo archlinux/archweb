@@ -88,11 +88,13 @@ class Pkg(object):
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
             'md5sum', 'url', 'builddate', 'packager' )
     number = ( 'csize', 'isize' )
+    version_re = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 
     def __init__(self, repo):
         self.repo = repo
         self.ver = None
         self.rel = None
+        self.epoch = 0
         for k in self.bare + self.number:
             setattr(self, k, None)
 
@@ -106,9 +108,11 @@ class Pkg(object):
             elif k == 'force':
                 setattr(self, k, True)
             elif k == 'version':
-                ver, rel = v[0].rsplit('-')
-                setattr(self, 'ver', ver)
-                setattr(self, 'rel', rel)
+                match = self.version_re.match(v[0])
+                self.ver = match.group(3)
+                self.rel = match.group(4)
+                if match.group(2):
+                    self.epoch = int(match.group(2))
             else:
                 # files, depends, etc.
                 setattr(self, k, v)
@@ -184,6 +188,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
         dbpkg.pkgbase = repopkg.name
     dbpkg.pkgver = repopkg.ver
     dbpkg.pkgrel = repopkg.rel
+    dbpkg.epoch = repopkg.epoch
     dbpkg.pkgdesc = repopkg.desc
     dbpkg.url = repopkg.url
     dbpkg.filename = repopkg.filename
@@ -230,10 +235,12 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
-        if dbpkg.pkgver != repopkg.ver or dbpkg.pkgrel != repopkg.rel:
-            logger.info("db version (%s-%s) didn't match repo version (%s-%s) "
-                    "for package %s, skipping file list addition",
-                    dbpkg.pkgver, dbpkg.pkgrel, repopkg.ver, repopkg.rel,
+        if dbpkg.pkgver != repopkg.ver or dbpkg.pkgrel != repopkg.rel \
+                or dbpkg.epoch != repopkg.epoch:
+            logger.info("db version (%s:%s-%s) didn't match repo version "
+                    "(%s:%s-%s) for package %s, skipping file list addition",
+                    dbpkg.epoch, dbpkg.pkgver, dbpkg.pkgrel,
+                    repopkg.epoch, repopkg.ver, repopkg.rel,
                     dbpkg.pkgname)
             return
         if not dbpkg.files_last_update or not dbpkg.last_update:
@@ -334,7 +341,8 @@ def db_update(archname, reponame, pkgs, options):
         # for a non-force, we don't want to do anything at all.
         if filesonly:
             pass
-        elif p.ver == dbp.pkgver and p.rel == dbp.pkgrel:
+        elif p.ver == dbp.pkgver and p.rel == dbp.pkgrel \
+                and p.epoch == dbp.epoch:
             if not force:
                 continue
         else:

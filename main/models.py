@@ -107,6 +107,7 @@ class Package(models.Model):
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
+    epoch = models.PositiveIntegerField(default=0)
     pkgdesc = models.CharField(max_length=255, null=True)
     url = models.CharField(max_length=255, null=True)
     filename = models.CharField(max_length=255)
@@ -286,7 +287,8 @@ class Package(models.Model):
         'is this package similar, name and version-wise, to another'
         return self.pkgname == other.pkgname \
                 and self.pkgver == other.pkgver \
-                and self.pkgrel == other.pkgrel
+                and self.pkgrel == other.pkgrel \
+                and self.epoch == other.epoch
 
     def in_testing(self):
         '''attempt to locate this package in a testing repo; if we are in

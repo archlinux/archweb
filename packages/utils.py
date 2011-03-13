@@ -96,6 +96,8 @@ SELECT p.id, q.id
         p.pkgver != q.pkgver
         OR
         p.pkgrel != q.pkgrel
+        OR
+        p.epoch != q.epoch
     )
 """
     cursor = connection.cursor()
