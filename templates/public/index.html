@@ -82,7 +82,7 @@
         {% for update in pkg_updates %}
         {% with update|first as fpkg %}
         <tr>
-            <td class="pkg-name"><span class="{{ fpkg.repo|lower }}">{{ fpkg.pkgname }} {{ fpkg.pkgver }}-{{ fpkg.pkgrel }}</span></td>
+            <td class="pkg-name"><span class="{{ fpkg.repo|lower }}">{{ fpkg.pkgname }} {{ fpkg.full_version }}</span></td>
             <td class="pkg-arch">
                 {% for pkg in update %}<a href="{{ pkg.get_absolute_url }}"
                     title="Details for {{ pkg.pkgname }} [{{ pkg.repo|lower }}]">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}

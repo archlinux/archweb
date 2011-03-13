@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load cache %}
 
-{% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }} - Package Details{% endblock %}
+{% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.full_version }} - Package Details{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% load package_extras %}
 {% block content %}
 <div id="pkgdetails" class="box">
 
-    <h2>Package Details: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
+    <h2>Package Details: {{ pkg.pkgname }} {{ pkg.full_version }}</h2>
 
     <div id="detailslinks" class="listing">
 
@@ -23,7 +23,7 @@
                 {% with pkg.in_testing as tp %}{% if tp %}
                 <li><span class="flagged">Version
                     <a href="{{ tp.get_absolute_url }}"
-                        title="Testing package details for {{ tp.pkgname }}">{{ tp.pkgver }}-{{ tp.pkgrel }}</a>
+                        title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
                     in testing</span></li>
                 {% endif %}{% endwith %}
                 {% if perms.main.change_package %}
@@ -58,7 +58,7 @@
             <ul>
                 {% for o in others %}
                 <li><a href="{{ o.get_absolute_url }}"
-                    title="Package details for {{ o.pkgname }}">{{ o.pkgname }} {{ o.pkgver }}-{{ o.pkgrel }} [{{ o.repo.name|lower }}] ({{ o.arch.name }})</a></li>
+                    title="Package details for {{ o.pkgname }}">{{ o.pkgname }} {{ o.full_version }} [{{ o.repo.name|lower }}] ({{ o.arch.name }})</a></li>
                 {% endfor %}
             </ul>
         </div>

@@ -99,9 +99,9 @@
                     <td><a href="{{ pkg.get_absolute_url }}"
                             title="Package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                     {% if pkg.flag_date %}
-                    <td><span class="flagged">{{ pkg.pkgver }}-{{ pkg.pkgrel }}</span></td>
+                    <td><span class="flagged">{{ pkg.full_version }}</span></td>
                     {% else %}
-                    <td>{{ pkg.pkgver }}-{{ pkg.pkgrel }}</td>
+                    <td>{{ pkg.full_version }}</td>
                     {% endif %}
                     <td class="wrap">{{ pkg.pkgdesc }}</td>
                     <td>{{ pkg.last_update|date }}</td>

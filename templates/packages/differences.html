@@ -45,12 +45,12 @@
                 {% if diff.pkg_a %}
                 <td><a href="{{ diff.pkg_a.get_absolute_url }}"
                         title="View package details for {{ diff.pkg_a.pkgname }}">
-                        <span{% if diff.pkg_a.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_a.pkgver }}-{{ diff.pkg_a.pkgrel }}</span></a></td>
+                        <span{% if diff.pkg_a.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_a.full_version }}</span></a></td>
                 {% else %}<td>-</td>{% endif %}
                 {% if diff.pkg_b %}
                 <td><a href="{{ diff.pkg_b.get_absolute_url }}"
                         title="View package details for {{ diff.pkg_b.pkgname }}">
-                        <span{% if diff.pkg_b.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_b.pkgver }}-{{ diff.pkg_b.pkgrel }}</span></a></td>
+                        <span{% if diff.pkg_b.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_b.full_version }}</span></a></td>
                 {% else %}<td>-</td>{% endif %}
             </tr>
             {% endfor %}

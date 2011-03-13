@@ -131,6 +131,12 @@ class Package(models.Model):
     def __unicode__(self):
         return self.pkgname
 
+    @property
+    def full_version(self):
+        if self.epoch > 0:
+            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return u'%s-%s' % (self.pkgver, self.pkgrel)
+
     def get_absolute_url(self):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)

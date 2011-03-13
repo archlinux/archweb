@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }} - Package File List{% endblock %}
+{% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.full_version }} - Package File List{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div id="pkgdetails" class="box">
 
-    <h2>Package File List: {{ pkg.pkgname }} {{ pkg.pkgver }}-{{ pkg.pkgrel }}</h2>
+    <h2>Package File List: {{ pkg.pkgname }} {{ pkg.full_version }}</h2>
     <div id="metadata">
         <p><a href="{{ pkg.get_absolute_url }}">Back to Package</a></p>
         {% include "packages/files-list.html" %}
