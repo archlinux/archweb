@@ -4,19 +4,20 @@ from main.models import Arch, Package
 from main.utils import cache_function
 
 @cache_function(300)
-def get_recent_updates():
+def get_recent_updates(number=15):
     # This is a bit of magic. We are going to show 15 on the front page, but we
     # want to try and eliminate cross-architecture wasted space. Pull enough
     # packages that we can later do some screening and trim out the fat.
     pkgs = []
+    # grab a few extra so we can hopefully catch everything we need
+    fetch = number * 4
     for arch in Arch.objects.all():
-        # grab a few extra so we can hopefully catch everything we need
         pkgs += list(Package.objects.select_related(
-            'arch', 'repo').filter(arch=arch).order_by('-last_update')[:50])
+            'arch', 'repo').filter(arch=arch).order_by('-last_update')[:fetch])
     pkgs.sort(key=attrgetter('last_update'))
     updates = []
     ctr = 0
-    while ctr < 15 and len(pkgs) > 0:
+    while ctr < number and len(pkgs) > 0:
         # not particularly happy with this logic, but it works.
         p = pkgs.pop()
         is_same = lambda q: p.is_same_version(q) and p.repo == q.repo
