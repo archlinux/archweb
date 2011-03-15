@@ -126,6 +126,23 @@ def getmaintainer(request, name, repo, arch):
 
     return HttpResponse(str('\n'.join(names)), mimetype='text/plain')
 
+def coerce_limit_value(value):
+    if not value:
+        return 50
+    if value == 'all':
+        return None
+    value = int(value)
+    if value < 0:
+        raise ValueError
+    return value
+
+class LimitTypedChoiceField(forms.TypedChoiceField):
+    def valid_value(self, value):
+        try:
+            return coerce_limit_value(value)
+        except ValueError, TypeError:
+            return False
+
 class PackageSearchForm(forms.Form):
     repo = forms.MultipleChoiceField(required=False)
     arch = forms.MultipleChoiceField(required=False)
@@ -136,24 +153,11 @@ class PackageSearchForm(forms.Form):
     flagged = forms.ChoiceField(
             choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
             required=False)
-    limit = forms.ChoiceField(
+    limit = LimitTypedChoiceField(
             choices=make_choice([50, 100, 250]) + [('all', 'All')],
+            coerce=coerce_limit_value,
             required=False,
             initial=50)
-
-    def clean_limit(self):
-        limit = self.cleaned_data['limit']
-        if limit == 'all':
-            limit = None
-        elif limit:
-            try:
-                limit = int(limit)
-            except:
-                raise forms.ValidationError("Should be an integer")
-        else:
-            limit = 50
-        return limit
-
 
     def __init__(self, *args, **kwargs):
         super(PackageSearchForm, self).__init__(*args, **kwargs)
@@ -186,7 +190,8 @@ def search(request, page=None):
                 inner_q = PackageRelation.objects.all().values('pkgbase')
                 packages = packages.exclude(pkgbase__in=inner_q)
             elif form.cleaned_data['maintainer']:
-                inner_q = PackageRelation.objects.filter(user__username=form.cleaned_data['maintainer']).values('pkgbase')
+                inner_q = PackageRelation.objects.filter(
+                        user__username=form.cleaned_data['maintainer']).values('pkgbase')
                 packages = packages.filter(pkgbase__in=inner_q)
 
             if form.cleaned_data['flagged'] == 'Flagged':
@@ -203,6 +208,9 @@ def search(request, page=None):
                 packages = packages.filter(last_update__gte=
                         datetime(lu.year, lu.month, lu.day, 0, 0))
             limit = form.cleaned_data['limit']
+        else:
+            # Form had errors, don't return any results, just the busted form
+            packages = Package.objects.none()
     else:
         form = PackageSearchForm()
 
