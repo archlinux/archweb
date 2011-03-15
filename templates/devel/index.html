@@ -27,8 +27,8 @@
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.pkgver }}</td>
                     <td>{{ pkg.arch.name }}</td>
-                    <td>{{ pkg.flag_date }}</td>
-                    <td>{{ pkg.last_update }}</td>
+                    <td>{{ pkg.flag_date|date }}</td>
+                    <td>{{ pkg.last_update|date }}</td>
                 </tr>
             {% empty %}
                 <tr class="empty"><td colspan="4"><em>No flagged packages to display</em></td></tr>
@@ -80,7 +80,7 @@
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td><a href="{{ todo.get_absolute_url }}"
                             title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                    <td>{{ todo.date_added }}</td>
+                    <td>{{ todo.date_added|date }}</td>
                     <td class="wrap">{{ todo.description|safe }}</td>
                 </tr>
             {% empty %}
