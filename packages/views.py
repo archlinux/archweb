@@ -207,7 +207,9 @@ def search(request, page=None):
                 lu = form.cleaned_data['last_update']
                 packages = packages.filter(last_update__gte=
                         datetime(lu.year, lu.month, lu.day, 0, 0))
-            limit = form.cleaned_data['limit']
+
+            if form.cleaned_data['limit']:
+                limit = form.cleaned_data['limit']
         else:
             # Form had errors, don't return any results, just the busted form
             packages = Package.objects.none()
