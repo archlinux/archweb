@@ -117,6 +117,13 @@ class Pkg(object):
                 # files, depends, etc.
                 setattr(self, k, v)
 
+    @property
+    def full_version(self):
+        '''Very similar to the main.models.Package method.'''
+        if self.epoch > 0:
+            return u'%d:%s-%s' % (self.epoch, self.ver, self.rel)
+        return u'%s-%s' % (self.ver, self.rel)
+
 
 def find_user(userstring):
     '''
@@ -237,11 +244,9 @@ def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if dbpkg.pkgver != repopkg.ver or dbpkg.pkgrel != repopkg.rel \
                 or dbpkg.epoch != repopkg.epoch:
-            logger.info("db version (%s:%s-%s) didn't match repo version "
-                    "(%s:%s-%s) for package %s, skipping file list addition",
-                    dbpkg.epoch, dbpkg.pkgver, dbpkg.pkgrel,
-                    repopkg.epoch, repopkg.ver, repopkg.rel,
-                    dbpkg.pkgname)
+            logger.info("DB version (%s) didn't match repo version "
+                    "(%s) for package %s, skipping file list addition",
+                    dbpkg.full_version, repopkg.full_version, dbpkg.pkgname)
             return
         if not dbpkg.files_last_update or not dbpkg.last_update:
             pass
@@ -280,25 +285,23 @@ def db_update(archname, reponame, pkgs, options):
     filesonly = options.get('filesonly', False)
     repository = Repo.objects.get(name__iexact=reponame)
     architecture = Arch.objects.get(name__iexact=archname)
-    dbpkgs = Package.objects.filter(arch=architecture, repo=repository)
-    # It makes sense to fully evaluate our DB query now because we will
-    # be using 99% of the objects in our "in both sets" loop. Force eval
-    # by calling list() on the QuerySet.
-    list(dbpkgs)
+    # no-arg order_by() removes even the default ordering; we don't need it
+    dbpkgs = Package.objects.filter(
+            arch=architecture, repo=repository).order_by()
     # This makes our inner loop where we find packages by name *way* more
     # efficient by not having to go to the database for each package to
     # SELECT them by name.
     dbdict = dict([(pkg.pkgname, pkg) for pkg in dbpkgs])
 
     logger.debug("Creating sets")
-    dbset = set([pkg.pkgname for pkg in dbpkgs])
+    dbset = set(dbdict.keys())
     syncset = set([pkg.name for pkg in pkgs])
     logger.info("%d packages in current web DB", len(dbset))
     logger.info("%d packages in new updating db", len(syncset))
     in_sync_not_db = syncset - dbset
     logger.info("%d packages in sync not db", len(in_sync_not_db))
 
-    # Try to catch those random orphaning issues that make Eric so unhappy.
+    # Try to catch those random package deletions that make Eric so unhappy.
     if len(dbset):
         dbpercent = 100.0 * len(syncset) / len(dbset)
     else:
@@ -309,12 +312,14 @@ def db_update(archname, reponame, pkgs, options):
     # means we expect the repo to fluctuate a lot.
     msg = "Package database has %.1f%% the number of packages in the " \
             "web database" % dbpercent
-    if not filesonly and \
+    if len(dbset) == 0 and len(syncset) == 0:
+        pass
+    elif not filesonly and \
             len(dbset) > 20 and dbpercent < 50.0 and \
             not repository.testing:
         logger.error(msg)
         raise Exception(msg)
-    if dbpercent < 75.0:
+    elif dbpercent < 75.0:
         logger.warning(msg)
 
     if not filesonly:
@@ -328,8 +333,8 @@ def db_update(archname, reponame, pkgs, options):
         in_db_not_sync = dbset - syncset
         for p in in_db_not_sync:
             logger.info("Removing package %s from database", p)
-            Package.objects.get(
-                pkgname=p, arch=architecture, repo=repository).delete()
+            dbp = dbdict[p]
+            dbp.delete()
 
     # packages in both database and in syncdb (update in database)
     pkg_in_both = syncset & dbset
@@ -429,10 +434,9 @@ def parse_repo(repopath):
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
     return (reponame, pkgs.values())
 
-def validate_arch(arch):
+def validate_arch(archname):
     "Check if arch is valid."
-    available_arches = [x.name for x in Arch.objects.all()]
-    return arch in available_arches
+    return Arch.objects.filter(name__iexact=archname).exists()
 
 def read_repo(primary_arch, repo_file, options):
     """
@@ -440,21 +444,22 @@ def read_repo(primary_arch, repo_file, options):
     """
     repo, packages = parse_repo(repo_file)
 
-    # sort packages by arch -- to handle noarch stuff
+    # group packages by arch -- to handle noarch stuff
     packages_arches = {}
-    packages_arches['any'] = []
+    for arch in Arch.objects.filter(agnostic=True):
+        packages_arches[arch.name] = []
     packages_arches[primary_arch] = []
 
     for package in packages:
-        if package.arch in ('any', primary_arch):
+        if package.arch in packages_arches:
             packages_arches[package.arch].append(package)
         else:
             # we don't include mis-arched packages
             logger.warning("Package %s arch = %s",
                 package.name,package.arch)
     logger.info('Starting database updates.')
-    for (arch, pkgs) in packages_arches.items():
-        db_update(arch, repo, pkgs, options)
+    for arch in sorted(packages_arches.keys()):
+        db_update(arch, repo, packages_arches[arch], options)
     logger.info('Finished database updates.')
     return 0
 
