@@ -14,8 +14,8 @@ class ArchAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 class RepoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'testing', 'bugs_project', 'svn_root')
-    list_filter = ('testing',)
+    list_display = ('name', 'testing', 'staging', 'bugs_project', 'svn_root')
+    list_filter = ('testing', 'staging')
     search_fields = ('name',)
 
 class PackageAdmin(admin.ModelAdmin):
