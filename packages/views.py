@@ -128,9 +128,10 @@ def getmaintainer(request, name, repo, arch):
 
 def coerce_limit_value(value):
     if not value:
-        return 50
-    if value == 'all':
         return None
+    if value == 'all':
+        # negative value indicates show all results
+        return -1
     value = int(value)
     if value < 0:
         raise ValueError
@@ -139,7 +140,8 @@ def coerce_limit_value(value):
 class LimitTypedChoiceField(forms.TypedChoiceField):
     def valid_value(self, value):
         try:
-            return coerce_limit_value(value)
+            coerce_limit_value(value)
+            return True
         except ValueError, TypeError:
             return False
 
@@ -208,8 +210,11 @@ def search(request, page=None):
                 packages = packages.filter(last_update__gte=
                         datetime(lu.year, lu.month, lu.day, 0, 0))
 
-            if form.cleaned_data['limit']:
-                limit = form.cleaned_data['limit']
+            asked_limit = form.cleaned_data['limit']
+            if asked_limit and asked_limit < 0:
+                limit = None
+            elif asked_limit:
+                limit = asked_limit
         else:
             # Form had errors, don't return any results, just the busted form
             packages = Package.objects.none()
