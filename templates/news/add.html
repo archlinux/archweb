@@ -23,14 +23,14 @@
         <p>
         <label></label>
         <input title="Save changes" type="submit" value="Save" />
-        <input id="previewbtn" title="Preview" type="button" value="Preview" />
+        <input id="news-preview-button" title="Preview" type="button" value="Preview" />
         </p>
     </form>
 </div>
 
-<div class="news-article box" style="display:none;">
-    <h2>News Preview: <span id="previewtitle"></span></h2>
-    <div id="previewdata" class="article-content"></div>
+<div id="news-preview" class="news-article box" style="display:none;">
+    <h2>News Preview: <span id="news-preview-title"></span></h2>
+    <div id="news-preview-data" class="article-content"></div>
 </div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/archweb.js"></script>

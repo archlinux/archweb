@@ -71,16 +71,18 @@ if (typeof $.tablesorter !== 'undefined') {
 
 /* news/add.html */
 function enablePreview() {
-    $('#previewbtn').click(function(event) {
+    $('#news-preview-button').click(function(event) {
         event.preventDefault();
-        $.post('/news/preview/',
-            { data: $('#id_content').val() },
+        $.post('/news/preview/', {
+                data: $('#id_content').val(),
+                csrfmiddlewaretoken: $('#newsform input[name=csrfmiddlewaretoken]').val()
+            },
             function(data) {
-                $('#previewdata').html(data);
-                $('.news-article').show();
+                $('#news-preview-data').html(data);
+                $('#news-preview').show();
             }
         );
-        $('#previewtitle').html($('#id_title').val());
+        $('#news-preview-title').html($('#id_title').val());
     });
 }
 
