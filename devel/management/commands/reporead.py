@@ -316,7 +316,7 @@ def db_update(archname, reponame, pkgs, options):
         pass
     elif not filesonly and \
             len(dbset) > 20 and dbpercent < 50.0 and \
-            not repository.testing:
+            not repository.testing and not repository.staging:
         logger.error(msg)
         raise Exception(msg)
     elif dbpercent < 75.0:
