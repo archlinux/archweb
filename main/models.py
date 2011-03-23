@@ -193,7 +193,7 @@ class Package(models.Model):
 
         # find another package by this name in the opposite testing setup
         if not Package.objects.filter(pkgname=self.pkgname,
-                arch=self.arch).exclude(id=self.id,
+                arch=self.arch).exclude(id=self.id).exclude(
                 repo__testing=self.repo.testing).exists():
             # there isn't one? short circuit, all required by entries are fine
             return requiredby
