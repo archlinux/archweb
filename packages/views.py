@@ -83,9 +83,29 @@ def update(request):
 
 def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
-        pkg = get_object_or_404(Package,
-                pkgname=name, repo__name__iexact=repo, arch__name=arch)
-        return direct_to_template(request, 'packages/details.html', {'pkg': pkg, })
+        try:
+            pkg = Package.objects.get(pkgname=name,
+                    repo__name__iexact=repo, arch__name=arch)
+            return direct_to_template(request, 'packages/details.html',
+                    {'pkg': pkg, })
+        except Package.DoesNotExist:
+            arch = get_object_or_404(Arch, name=arch)
+            arches = [ arch ]
+            arches.extend(Arch.objects.filter(agnostic=True))
+            repo = get_object_or_404(Repo, name__iexact=repo)
+            pkgs = Package.objects.filter(pkgbase=name,
+                    repo__testing=repo.testing, arch__in=arches)
+            pkgs = pkgs.select_related('arch', 'repo').order_by('pkgname')
+            if len(pkgs) == 0:
+                raise Http404
+            context = {
+                'list_title': 'Split Package Details',
+                'name': name,
+                'arch': arch,
+                'packages': pkgs,
+            }
+            return direct_to_template(request, 'packages/packages_list.html',
+                    context)
     else:
         return redirect("/packages/?arch=%s&repo=%s&q=%s" % (
             arch.lower(), repo.title(), name))

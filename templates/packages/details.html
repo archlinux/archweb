@@ -96,7 +96,8 @@
             <td><a href="{{ pkg.base_package.get_absolute_url }}"
                     title="Package details for {{ pkg.base_package.pkgname }}">{{ pkg.pkgbase }}</a></td>
             {% else %}
-            <td>{{ pkg.pkgbase }}</td>
+            <td><a href="../{{ pkg.pkgbase }}/"
+                    title="Split package details for {{ pkg.pkgbase }}">{{ pkg.pkgbase }}</a></td>
             {% endif %}
         </tr>
         {% endifequal %}
