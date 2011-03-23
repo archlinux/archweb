@@ -81,7 +81,7 @@
                     <td><a href="{{ todo.get_absolute_url }}"
                             title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                     <td>{{ todo.date_added|date }}</td>
-                    <td class="wrap">{{ todo.description|safe }}</td>
+                    <td class="wrap">{{ todo.description|urlize }}</td>
                 </tr>
             {% empty %}
                 <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
