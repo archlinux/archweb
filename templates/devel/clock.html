@@ -19,6 +19,7 @@
             <tr>
                 <th>Developer</th>
                 <th>Username</th>
+                <th>Alias</th>
                 <th>Location</th>
                 <th>Time Zone</th>
                 <th>Current Time</th>
@@ -29,6 +30,7 @@
             <tr class="{% cycle 'odd' 'even' %}">
                 <td><a href="mailto:{{ dev.email }}">{{ dev.get_full_name }}</a></td>
                 <td>{{ dev.username }}</td>
+                <td>{{ dev.userprofile.alias }}</td>
                 <td>{{ dev.userprofile.location }}</td>
                 <td>{{ dev.userprofile.time_zone }}</td>
                 <td>{{ dev.current_time|date:"Y-m-d H:i T" }}</td>
