@@ -111,11 +111,12 @@ def group_details(request, arch, name):
     if len(pkgs) == 0:
         raise Http404
     context = {
-        'groupname': name,
+        'list_title': 'Group Details',
+        'name': name,
         'arch': arch,
         'packages': pkgs,
     }
-    return direct_to_template(request, 'packages/group_details.html', context)
+    return direct_to_template(request, 'packages/packages_list.html', context)
 
 def getmaintainer(request, name, repo, arch):
     "Returns the maintainers as plaintext."

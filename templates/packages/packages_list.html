@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - {{ groupname }} - {{ arch.name }} - Group Details{% endblock %}
+{% block title %}Arch Linux - {{ name }} ({{ arch.name }}) - {{ list_title }}{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div class="box">
-    <h2>Details for group {{ groupname }} - {{ arch.name }}</h2>
+    <h2>{{ list_title }} - {{ name }} ({{ arch.name }})</h2>
     <table class="results">
         <thead>
             <tr>
