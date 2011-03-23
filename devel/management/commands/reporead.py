@@ -35,12 +35,10 @@ try:
 except ImportError:
     pass
 
-from logging import ERROR, WARNING, INFO, DEBUG
-
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
 
 logging.basicConfig(
-    level=WARNING,
+    level=logging.WARNING,
     format='%(asctime)s -> %(levelname)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     stream=sys.stderr)
@@ -69,11 +67,11 @@ class Command(BaseCommand):
 
         v = int(options.get('verbosity', 0))
         if v == 0:
-            logger.level = ERROR
+            logger.level = logging.ERROR
         elif v == 1:
-            logger.level = INFO
+            logger.level = logging.INFO
         elif v == 2:
-            logger.level = DEBUG
+            logger.level = logging.DEBUG
 
         import signal, traceback
         handler = lambda sig, stack: traceback.print_stack(stack)
