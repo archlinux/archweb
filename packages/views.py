@@ -107,7 +107,7 @@ def group_details(request, arch, name):
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
     pkgs = Package.objects.filter(groups__name=name, arch__in=arches)
-    pkgs = pkgs.order_by('pkgname')
+    pkgs = pkgs.select_related('arch', 'repo').order_by('pkgname')
     if len(pkgs) == 0:
         raise Http404
     context = {
