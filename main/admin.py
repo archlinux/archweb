@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from main.models import Arch, Donor, Package, Repo, UserProfile
+from main.models import Arch, Donor, Package, Repo, Todolist, UserProfile
 
 class DonorAdmin(admin.ModelAdmin):
     list_display = ('name', 'visible')
@@ -23,6 +23,10 @@ class PackageAdmin(admin.ModelAdmin):
     list_filter = ('repo', 'arch')
     search_fields = ('pkgname',)
 
+class TodolistAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date_added', 'creator', 'description')
+    search_fields = ('name', 'description')
+
 admin.site.unregister(User)
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -39,5 +43,7 @@ admin.site.register(Donor, DonorAdmin)
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Arch, ArchAdmin)
 admin.site.register(Repo, RepoAdmin)
+
+admin.site.register(Todolist, TodolistAdmin)
 
 # vim: set ts=4 sw=4 et:
