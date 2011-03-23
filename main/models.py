@@ -349,8 +349,9 @@ class Todolist(models.Model):
     creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
     objects = TodolistManager()
+
     def __unicode__(self):
         return self.name
 
