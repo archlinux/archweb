@@ -45,7 +45,7 @@ class PackageGroup(models.Model):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
-        return "%s: %s" % (name, pkg)
+        return "%s: %s" % (self.name, self.pkg)
 
 class License(models.Model):
     pkg = models.ForeignKey('main.Package', related_name='licenses')
