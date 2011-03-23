@@ -242,11 +242,7 @@ form#dash-pkg-notify input { vertical-align: middle; margin: 0 0.25em; }
 form#dash-pkg-notify input[type=submit] { margin-top: -0.25em; }
 form#dash-pkg-notify p { margin: 0; }
 
-/* dev dashboard: collapse stat tables by default */
-table#stats-by-maintainer, table#stats-by-repo, table#stats-by-arch { display: none; }
 table.dash-stats .key { width: 50%; } 
-span.dash-click { font-weight: normal; font-size: 0.8em; color: #888; }
-div.dash-stats h3 { color: #07b; }
 
 /* dev dashboard: admin actions (add news items, todo list, etc) */
 ul.admin-actions { float: right; list-style: none; margin-top: -2.5em; }
