@@ -14,6 +14,7 @@
                 <th>Version</th>
                 <th>Description</th>
                 <th>Last Updated</th>
+                <th>Flag Date</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@
                 {% endif %}
                 <td class="wrap">{{ pkg.pkgdesc }}</td>
                 <td>{{ pkg.last_update|date }}</td>
+                <td>{{ pkg.flag_date|date }}</td>
             </tr>
             {% endfor %}
         </tbody>
