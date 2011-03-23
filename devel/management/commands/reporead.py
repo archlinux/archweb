@@ -36,6 +36,7 @@ except ImportError:
     pass
 
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
+from packages.models import Conflict, Provision, Replacement
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -172,19 +173,47 @@ def find_user(userstring):
 # lookup more than strictly necessary.
 find_user.cache = {}
 
+DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.*))?$")
+
 def create_depend(package, dep_str, optional=False):
     depend = PackageDepend(pkg=package, optional=optional)
     # lop off any description first
     parts = dep_str.split(':', 1)
     if len(parts) > 1:
         depend.description = parts[1].strip()
-    match = re.match(r"^(.+?)((>=|<=|=|>|<)(.*))?$", parts[0].strip())
+    match = DEPEND_RE.match(parts[0].strip())
     if match:
         depend.depname = match.group(1)
         if match.group(2):
             depend.depvcmp = match.group(2)
+    else:
+        logger.warning('Package %s had unparsable depend string %s',
+                package.pkgname, dep_str)
+        return None
     depend.save(force_insert=True)
     return depend
+
+def create_related(model, package, rel_str, equals_only=False):
+    related = model(pkg=package)
+    match = DEPEND_RE.match(rel_str)
+    if match:
+        related.name = match.group(1)
+        if match.group(3):
+            comp = match.group(3)
+            if not equals_only:
+                related.comparison = comp
+            elif comp != '=':
+                logger.warning(
+                        'Package %s had unexpected comparison operator %s for %s in %s',
+                        package.pkgname, comp, model.__name__, rel_str)
+        if match.group(4):
+            related.version = match.group(4)
+    else:
+        logger.warning('Package %s had unparsable %s string %s',
+                package.pkgname, model.___name__, rel_str)
+        return None
+    related.save(force_insert=True)
+    return related
 
 def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     '''Populate the simplest of multivalued attributes. These are those that
@@ -233,10 +262,20 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.packagedepend_set.all().delete()
     if hasattr(repopkg, 'depends'):
         for y in repopkg.depends:
-            dep = create_depend(dbpkg, y)
+            create_depend(dbpkg, y)
     if hasattr(repopkg, 'optdepends'):
         for y in repopkg.optdepends:
-            dep = create_depend(dbpkg, y, True)
+            create_depend(dbpkg, y, True)
+
+    if hasattr(repopkg, 'conflicts'):
+        for y in repopkg.conflicts:
+            create_related(Conflict, dbpkg, y)
+    if hasattr(repopkg, 'provides'):
+        for y in repopkg.provides:
+            create_related(Provision, dbpkg, y, equals_only=True)
+    if hasattr(repopkg, 'replaces'):
+        for y in repopkg.replaces:
+            create_related(Replacement, dbpkg, y)
 
     create_multivalued(dbpkg, repopkg, 'groups', 'groups')
     create_multivalued(dbpkg, repopkg, 'licenses', 'license')
