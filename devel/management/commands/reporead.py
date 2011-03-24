@@ -87,6 +87,9 @@ class Pkg(object):
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
             'md5sum', 'url', 'builddate', 'packager' )
     number = ( 'csize', 'isize' )
+    collections = ( 'depends', 'optdepends', 'conflicts',
+            'replaces', 'groups', 'license', 'files' )
+
     version_re = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 
     def __init__(self, repo):
@@ -96,6 +99,11 @@ class Pkg(object):
         self.epoch = 0
         for k in self.bare + self.number:
             setattr(self, k, None)
+        for k in self.collections:
+            setattr(self, k, ())
+        # So we can tell the diffence between a package with no files, and a DB
+        # without files entries
+        self.has_files = False
 
     def populate(self, values):
         for k, v in values.iteritems():
@@ -104,16 +112,17 @@ class Pkg(object):
                 setattr(self, k, v[0][:254])
             elif k in self.number:
                 setattr(self, k, long(v[0]))
-            elif k == 'force':
-                setattr(self, k, True)
             elif k == 'version':
                 match = self.version_re.match(v[0])
                 self.ver = match.group(3)
                 self.rel = match.group(4)
                 if match.group(2):
                     self.epoch = int(match.group(2))
+            elif k == 'files':
+                self.files = v
+                self.has_files = True
             else:
-                # files, depends, etc.
+                # anything left in collections
                 setattr(self, k, v)
 
     @property
@@ -219,12 +228,11 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     '''Populate the simplest of multivalued attributes. These are those that
     only deal with a 'name' attribute, such as licenses, groups, etc. The input
     and output objects and attribute names are specified, and everything is
-    done via hasattr()/getattr().'''
+    done via getattr().'''
     collection = getattr(dbpkg, db_attr)
     collection.all().delete()
-    if hasattr(repopkg, repo_attr):
-        for name in getattr(repopkg, repo_attr):
-            collection.create(name=name)
+    for name in getattr(repopkg, repo_attr):
+        collection.create(name=name)
 
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     if repopkg.base:
@@ -260,25 +268,20 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     populate_files(dbpkg, repopkg, force=force)
 
     dbpkg.packagedepend_set.all().delete()
-    if hasattr(repopkg, 'depends'):
-        for y in repopkg.depends:
-            create_depend(dbpkg, y)
-    if hasattr(repopkg, 'optdepends'):
-        for y in repopkg.optdepends:
-            create_depend(dbpkg, y, True)
+    for y in repopkg.depends:
+        create_depend(dbpkg, y)
+    for y in repopkg.optdepends:
+        create_depend(dbpkg, y, True)
 
     dbpkg.conflicts.all().delete()
-    if hasattr(repopkg, 'conflicts'):
-        for y in repopkg.conflicts:
-            create_related(Conflict, dbpkg, y)
+    for y in repopkg.conflicts:
+        create_related(Conflict, dbpkg, y)
     dbpkg.provides.all().delete()
-    if hasattr(repopkg, 'provides'):
-        for y in repopkg.provides:
-            create_related(Provision, dbpkg, y, equals_only=True)
+    for y in repopkg.provides:
+        create_related(Provision, dbpkg, y, equals_only=True)
     dbpkg.replaces.all().delete()
-    if hasattr(repopkg, 'replaces'):
-        for y in repopkg.replaces:
-            create_related(Replacement, dbpkg, y)
+    for y in repopkg.replaces:
+        create_related(Replacement, dbpkg, y)
 
     create_multivalued(dbpkg, repopkg, 'groups', 'groups')
     create_multivalued(dbpkg, repopkg, 'licenses', 'license')
@@ -297,7 +300,7 @@ def populate_files(dbpkg, repopkg, force=False):
         elif dbpkg.files_last_update > dbpkg.last_update:
             return
     # only delete files if we are reading a DB that contains them
-    if hasattr(repopkg, 'files'):
+    if repopkg.has_files:
         dbpkg.packagefile_set.all().delete()
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
@@ -311,7 +314,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     is_directory=(filename is None),
                     directory=dirname + '/',
                     filename=filename)
-            pkgfile.save()
+            pkgfile.save(force_insert=True)
         dbpkg.files_last_update = datetime.now()
         dbpkg.save()
 
