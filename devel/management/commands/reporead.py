@@ -88,7 +88,7 @@ class Pkg(object):
             'md5sum', 'url', 'builddate', 'packager' )
     number = ( 'csize', 'isize' )
     collections = ( 'depends', 'optdepends', 'conflicts',
-            'replaces', 'groups', 'license', 'files' )
+            'provides', 'replaces', 'groups', 'license', 'files' )
 
     version_re = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 
