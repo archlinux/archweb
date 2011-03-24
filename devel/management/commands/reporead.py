@@ -267,12 +267,15 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
         for y in repopkg.optdepends:
             create_depend(dbpkg, y, True)
 
+    dbpkg.conflicts.all().delete()
     if hasattr(repopkg, 'conflicts'):
         for y in repopkg.conflicts:
             create_related(Conflict, dbpkg, y)
+    dbpkg.provides.all().delete()
     if hasattr(repopkg, 'provides'):
         for y in repopkg.provides:
             create_related(Provision, dbpkg, y, equals_only=True)
+    dbpkg.replaces.all().delete()
     if hasattr(repopkg, 'replaces'):
         for y in repopkg.replaces:
             create_related(Replacement, dbpkg, y)
