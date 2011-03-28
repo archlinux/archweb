@@ -103,7 +103,7 @@
         {% endifequal %}
         <tr>
             <th>Description:</th>
-            <td class="wrap">{% if pkg.pkgdesc %}{{ pkg.pkgdesc }}{% endif %}</td>
+            <td class="wrap">{{ pkg.pkgdesc|default:"" }}</td>
         </tr><tr>
             <th>Upstream URL:</th>
             <td>{% if pkg.url %}<a href="{{ pkg.url }}"
