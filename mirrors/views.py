@@ -104,10 +104,19 @@ def mirror_details(request, name):
     mirror = get_object_or_404(Mirror, name=name)
     if not request.user.is_authenticated() and \
             (not mirror.public or not mirror.active):
-        # TODO: maybe this should be 403? but that would leak existence
         raise Http404
+
+    status_info = get_mirror_statuses()
+    checked_urls = [url for url in status_info['urls'] \
+            if url.mirror_id == mirror.id]
+    all_urls = mirror.urls.select_related('protocol')
+    # get each item from checked_urls and supplement with anything in all_urls
+    # if it wasn't there
+    all_urls = set(checked_urls).union(all_urls)
+    all_urls = sorted(all_urls, key=lambda x: x.url)
+
     return direct_to_template(request, 'mirrors/mirror_details.html',
-            {'mirror': mirror})
+            {'mirror': mirror, 'urls': all_urls})
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)

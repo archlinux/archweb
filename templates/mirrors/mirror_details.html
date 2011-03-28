@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mirror_status %}
 
 {% block title %}Arch Linux - {{ mirror.name }} - Mirror Details{% endblock %}
 
@@ -12,47 +13,105 @@
         <tr>
             <th>Name:</th>
             <td>{{ mirror.name }}</td>
-        </tr><tr>
+        </tr>
+        <tr>
             <th>Tier:</th>
             <td>{{ mirror.get_tier_display }}</td>
-        </tr><tr>
+        </tr>
+        <tr>
+            <th>Country:</th>
+            <td>{{ mirror.country }}</td>
+        </tr>
+        <tr>
+            <th>Has ISOs:</th>
+            <td>{{ mirror.isos|yesno }}</td>
+        </tr>
+        {% if user.is_authenticated %}
+        <tr>
+            <th>Public:</th>
+            <td>{{ mirror.public|yesno }}</td>
+        </tr>
+        <tr>
+            <th>Active:</th>
+            <td>{{ mirror.active|yesno }}</td>
+        </tr>
+        <tr>
+            <th>Rsync IPs:</th>
+            <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
+        </tr>
+        <tr>
+            <th>Admin Email:</th>
+            <td>{{ mirror.admin_email }}</td>
+        </tr>
+        <tr>
+            <th>Notes:</th>
+            <td>{{ mirror.notes|linebreaks }}</td>
+        </tr>
+        <tr>
             <th>Upstream:</th>
-            <!-- TODO: linking to non-public mirrors -->
             <td>{% if mirror.upstream %}
                 <a href="{{ mirror.upstream.get_absolute_url }}"
                     title="Mirror details for {{ mirror.upstream.name }}">{{ mirror.upstream.name }}</a>
                 {% else %}None{% endif %}</td>
-        </tr><tr>
+        </tr>
+        <tr>
             <th>Downstream:</th>
             {% with mirror.downstream as ds_mirrors %}
             <td>{% if ds_mirrors %}
                 {% for ds in ds_mirrors %}
                 <a href="{{ ds.get_absolute_url }}"
-                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a><br/>
+                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a>
+                {% if not ds.active %}<span class="testing-dep">(inactive)</span>{% endif %}
+                {% if not ds.public %}<span class="testing-dep">(private)</span>{% endif %}
+                <br/>
                 {% endfor %}
-                {% else %}None{% endif %}
-            </td>
-            {% endwith %}
-        </tr><tr>
-            <th>Country:</th>
-            <td>{{ mirror.country }}</td>
-        </tr><tr>
-            <th>Has ISOs:</th>
-            <td>{{ mirror.isos|yesno }}</td>
-        </tr><tr>
-            <th>Protocols:</th>
-            <td>{{ mirror.supported_protocols }}</td>
-        </tr><tr>
-            <th>Mirror URLs:</th>
-            {% with mirror.urls.all as urls %}
-            <td>{% if urls %}
-                {% for u in urls %}
-                <a href="{{ u.url }}">{{ u.url }}</a><br/>
-                {% endfor %}
-                {% else %}None{% endif %}
-            </td>
+                {% else %}None{% endif %}</td>
             {% endwith %}
         </tr>
+        {% endif %}
+    </table>
+
+    <h3>Available URLs</h3>
+
+    <table id="available_urls" class="results">
+        <thead>
+            <tr>
+                <th>Mirror URL</th>
+                <th>IPv4</th>
+                <th>IPv6</th>
+                <th>Last Sync</th>
+                <th>Completion %</th>
+                <th>μ Delay (hh:mm)</th>
+                <th>μ Duration (secs)</th>
+                <th>σ Duration (secs)</th>
+                <th>Mirror Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m_url in urls %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{% if m_url.protocol.is_download %}<a href="{{ m_url.url }}">{{ m_url.url }}</a>{% else %}{{ m_url.url }}{% endif %}</td>
+                <td>{{ m_url.has_ipv4|yesno }}</td>
+                <td>{{ m_url.has_ipv6|yesno }}</td>
+                <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
+                <td>{{ m_url.completion_pct|percentage:1 }}</td>
+                <td>{{ m_url.delay|duration|default:'unknown' }}</td>
+                <td>{{ m_url.duration_avg|floatformat:2 }}</td>
+                <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
+                <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#available_urls:has(tbody tr)").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,0]],
+        headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+});
+</script>
 {% endblock %}

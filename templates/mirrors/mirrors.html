@@ -15,7 +15,6 @@
                 {% if user.is_authenticated %}
                 <th>Public</th>
                 <th>Active</th>
-                <th>Rsync IPs</th>
                 <th>Admin Email</th>
                 <th>Notes</th>
                 {% endif %}
@@ -33,7 +32,6 @@
                 {% if user.is_authenticated %}
                 <td>{{mirror.public|yesno}}</td>
                 <td>{{mirror.active|yesno}}</td>
-                <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
                 <td>{{mirror.admin_email}}</td>
                 <td class="wrap">{{mirror.notes|linebreaks}}</td>
                 {% endif %}
