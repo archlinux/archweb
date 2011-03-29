@@ -104,8 +104,10 @@ class Repo(models.Model):
         verbose_name_plural = 'repos'
 
 class Package(models.Model):
-    repo = models.ForeignKey(Repo, related_name="packages")
-    arch = models.ForeignKey(Arch, related_name="packages")
+    repo = models.ForeignKey(Repo, related_name="packages",
+            on_delete=models.PROTECT)
+    arch = models.ForeignKey(Arch, related_name="packages",
+            on_delete=models.PROTECT)
     pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
@@ -121,7 +123,8 @@ class Package(models.Model):
     last_update = models.DateTimeField(null=True, blank=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     packager_str = models.CharField(max_length=255)
-    packager = models.ForeignKey(User, null=True)
+    packager = models.ForeignKey(User, null=True,
+            on_delete=models.SET_NULL)
     flag_date = models.DateTimeField(null=True)
 
     objects = PackageManager()
@@ -348,7 +351,7 @@ class PackageDepend(models.Model):
         db_table = 'package_depends'
 
 class Todolist(models.Model):
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(User, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     description = models.TextField()
     date_added = models.DateTimeField(db_index=True)

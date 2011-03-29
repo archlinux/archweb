@@ -6,7 +6,8 @@ from django.contrib.sites.models import Site
 
 class News(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
-    author = models.ForeignKey(User, related_name='news_author')
+    author = models.ForeignKey(User, related_name='news_author',
+            on_delete=models.PROTECT)
     postdate = models.DateTimeField("post date", db_index=True)
     last_modified = models.DateTimeField(editable=False, db_index=True)
     title = models.CharField(max_length=255)

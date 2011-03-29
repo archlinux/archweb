@@ -14,7 +14,7 @@ TIER_CHOICES = (
 class Mirror(models.Model):
     name = models.CharField(max_length=255, unique=True)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
-    upstream = models.ForeignKey('self', null=True)
+    upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
     country = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
@@ -56,7 +56,7 @@ class MirrorProtocol(models.Model):
 class MirrorUrl(models.Model):
     url = models.CharField(max_length=255, unique=True)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
-            editable=False)
+            editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls")
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
