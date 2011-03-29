@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.db.models import Count
 from django.views.decorators.cache import never_cache
-from django.views.generic.create_update import delete_object
+from django.views.generic import DeleteView
 from django.views.generic.simple import direct_to_template
 from django.template import Context, loader
 from django.utils import simplejson
@@ -109,13 +109,11 @@ def edit(request, list_id):
     }
     return direct_to_template(request, 'general_form.html', page_dict)
 
-@permission_required('main.delete_todolist')
-@never_cache
-def delete_todolist(request, object_id):
-    return delete_object(request, object_id=object_id, model=Todolist,
-            template_name="todolists/todolist_confirm_delete.html",
-            post_delete_redirect='/todo/')
-
+class DeleteTodolist(DeleteView):
+    model = Todolist
+    # model in main == assumes name 'main/todolist_confirm_delete.html'
+    template_name = 'todolists/todolist_confirm_delete.html'
+    success_url = '/todo/'
 
 @transaction.commit_on_success
 def create_todolist_packages(form, creator=None):
