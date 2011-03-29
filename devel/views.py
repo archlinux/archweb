@@ -170,6 +170,20 @@ class NewUserForm(forms.ModelForm):
                 [user.email],
                 fail_silently=False)
 
+def log_addition(request, obj):
+    """Cribbed from ModelAdmin.log_addition."""
+    from django.contrib.admin.models import LogEntry, ADDITION
+    from django.contrib.contenttypes.models import ContentType
+    from django.utils.encoding import force_unicode
+    LogEntry.objects.log_action(
+        user_id         = request.user.pk,
+        content_type_id = ContentType.objects.get_for_model(obj).pk,
+        object_id       = obj.pk,
+        object_repr     = force_unicode(obj),
+        action_flag     = ADDITION,
+        change_message  = "Added via Create New User form."
+    )
+
 @permission_required('auth.add_user')
 @never_cache
 def new_user_form(request):
@@ -177,6 +191,7 @@ def new_user_form(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             form.save()
+            log_addition(request, form.instance.user)
             return HttpResponseRedirect('/admin/auth/user/%d/' % \
                     form.instance.user.id)
     else:
