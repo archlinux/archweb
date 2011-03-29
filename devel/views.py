@@ -119,13 +119,24 @@ def change_profile(request):
             {'form': form, 'profile_form': profile_form})
 
 class NewUserForm(forms.ModelForm):
+    username = forms.CharField(max_length=30)
+    private_email = forms.EmailField()
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+
     class Meta:
         model = UserProfile
         exclude = ('picture', 'user')
-    username = forms.CharField(max_length=30)
-    email = forms.EmailField()
-    first_name = forms.CharField(required=False)
-    last_name = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(NewUserForm, self).__init__(*args, **kwargs)
+        # Hack ourself so certain fields appear first. self.fields is a
+        # SortedDict object where we can manipulate the keyOrder list.
+        order = self.fields.keyOrder
+        keys = ('username', 'private_email', 'first_name', 'last_name')
+        for key in reversed(keys):
+            order.remove(key)
+            order.insert(0, key)
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -139,7 +150,7 @@ class NewUserForm(forms.ModelForm):
         pwletters = ascii_letters + digits
         password = ''.join([random.choice(pwletters) for i in xrange(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
-                email=self.cleaned_data['email'], password=password)
+                email=self.cleaned_data['private_email'], password=password)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
