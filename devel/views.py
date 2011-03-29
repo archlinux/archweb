@@ -2,9 +2,10 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import \
         login_required, permission_required, user_passes_test
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
 from django.views.decorators.cache import never_cache
@@ -123,6 +124,8 @@ class NewUserForm(forms.ModelForm):
     private_email = forms.EmailField()
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
+    groups = forms.ModelMultipleChoiceField(required=False,
+            queryset=Group.objects.all())
 
     class Meta:
         model = UserProfile
@@ -145,8 +148,8 @@ class NewUserForm(forms.ModelForm):
                     "A user with that username already exists.")
         return username
 
-    def save(self):
-        profile = forms.ModelForm.save(self, False)
+    def save(self, commit=True):
+        profile = super(NewUserForm, self).save(False)
         pwletters = ascii_letters + digits
         password = ''.join([random.choice(pwletters) for i in xrange(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
@@ -154,8 +157,13 @@ class NewUserForm(forms.ModelForm):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
+        # sucks that the MRM.add() method can't take a list directly... we have
+        # to resort to dirty * magic.
+        user.groups.add(*self.cleaned_data['groups'])
         profile.user = user
-        profile.save()
+        if commit:
+            profile.save()
+            self.save_m2m()
 
         t = loader.get_template('devel/new_account.txt')
         c = Context({
@@ -190,8 +198,11 @@ def new_user_form(request):
     if request.POST:
         form = NewUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            log_addition(request, form.instance.user)
+            @transaction.commit_on_success
+            def inner_save():
+                form.save()
+                log_addition(request, form.instance.user)
+            inner_save()
             return HttpResponseRedirect('/admin/auth/user/%d/' % \
                     form.instance.user.id)
     else:
