@@ -4,7 +4,7 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 
 from feeds import PackageFeed, NewsFeed
 import sitemaps
@@ -49,13 +49,16 @@ urlpatterns += patterns('django.contrib.auth.views',
 # Public pages
 urlpatterns += patterns('public.views',
     (r'^$', 'index', {}, 'index'),
-    (r'^about/$', direct_to_template, {'template': 'public/about.html'}, 'page-about'),
-    (r'^art/$', direct_to_template, {'template': 'public/art.html'}, 'page-art'),
-    (r'^svn/$', direct_to_template, {'template': 'public/svn.html'}, 'page-svn'),
+    (r'^about/$', TemplateView.as_view(template_name='public/about.html'),
+        {}, 'page-about'),
+    (r'^art/$',   TemplateView.as_view(template_name='public/art.html'),
+        {}, 'page-art'),
+    (r'^svn/$',   TemplateView.as_view(template_name='public/svn.html'),
+        {}, 'page-svn'),
     (r'^developers/$',   'userlist', { 'type':'devs' },    'page-devs'),
     (r'^trustedusers/$', 'userlist', { 'type':'tus' },     'page-tus'),
     (r'^fellows/$',      'userlist', { 'type':'fellows' }, 'page-fellows'),
-    (r'^donate/$',       'donate', {}, 'page-donate'),
+    (r'^donate/$',       'donate',   {}, 'page-donate'),
     (r'^download/$',     'download', {}, 'page-download'),
 )
 
