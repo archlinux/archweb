@@ -3,28 +3,28 @@
 	"pk": 1,
 	"model": "isotests.installtype",
 	"fields": {
-	    "name": "automatic install generic example"
+	    "name": "interactive install"
 	}
     },
     {
 	"pk": 2,
 	"model": "isotests.installtype",
 	"fields": {
-	    "name": "automatic install fancy example"
+	    "name": "automatic install generic example"
 	}
     },
     {
 	"pk": 3,
 	"model": "isotests.installtype",
 	"fields": {
-	    "name": "automatic install custom config (specify in comments)"
+	    "name": "automatic install fancy example"
 	}
     },
     {
 	"pk": 4,
 	"model": "isotests.installtype",
 	"fields": {
-	    "name": "interactive install"
+	    "name": "automatic install custom config (specify in comments)"
 	}
     }
 ]
