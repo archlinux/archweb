@@ -12,7 +12,7 @@ TIER_CHOICES = (
 )
 
 class Mirror(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
     upstream = models.ForeignKey('self', null=True)
     country = models.CharField(max_length=255, db_index=True)
@@ -54,7 +54,7 @@ class MirrorProtocol(models.Model):
         ordering = ('protocol',)
 
 class MirrorUrl(models.Model):
-    url = models.CharField(max_length=255)
+    url = models.CharField(max_length=255, unique=True)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False)
     mirror = models.ForeignKey(Mirror, related_name="urls")
