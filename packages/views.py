@@ -84,7 +84,8 @@ def update(request):
 def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
         try:
-            pkg = Package.objects.get(pkgname=name,
+            pkg = Package.objects.select_related(
+                    'arch', 'repo', 'packager').get(pkgname=name,
                     repo__name__iexact=repo, arch__name=arch)
             return direct_to_template(request, 'packages/details.html',
                     {'pkg': pkg, })
