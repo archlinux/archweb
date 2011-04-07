@@ -128,8 +128,7 @@ class Package(models.Model):
     class Meta:
         db_table = 'packages'
         ordering = ('pkgname',)
-        #get_latest_by = 'last_update'
-        #ordering = ('-last_update',)
+        get_latest_by = 'last_update'
 
     def __unicode__(self):
         return self.pkgname
@@ -390,10 +389,10 @@ def set_todolist_fields(sender, **kwargs):
         todolist.date_added = datetime.utcnow()
 
 # connect signals needed to keep cache in line with reality
-from main.utils import refresh_package_latest
+from main.utils import refresh_latest
 from django.db.models.signals import pre_save, post_save
 
-post_save.connect(refresh_package_latest, sender=Package,
+post_save.connect(refresh_latest, sender=Package,
         dispatch_uid="main.models")
 pre_save.connect(set_todolist_fields, sender=Todolist,
         dispatch_uid="main.models")

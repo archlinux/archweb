@@ -2,15 +2,13 @@ import pytz
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
-from django.core.cache import cache
 from django.db.models import Q
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
+from main.utils import retrieve_latest
 from main.models import Arch, Repo, Package
-from main.utils import CACHE_TIMEOUT
-from main.utils import CACHE_PACKAGE_KEY, CACHE_NEWS_KEY
 from news.models import News
 
 def check_for_unique_id(f):
@@ -31,32 +29,14 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
         super(GuidNotPermalinkFeed, self).write_items(handler)
 
 
-def retrieve_package_latest():
-    # we could break this down based on the request url, but it would probably
-    # cost us more in query time to do so.
-    latest = cache.get(CACHE_PACKAGE_KEY)
-    if latest:
-        return latest
-    try:
-        latest = Package.objects.values('last_update').latest(
-                'last_update')['last_update']
-        # Using add means "don't overwrite anything in there". What could be in
-        # there is an explicit None value that our refresh signal set, which
-        # means we want to avoid race condition possibilities for a bit.
-        cache.add(CACHE_PACKAGE_KEY, latest, CACHE_TIMEOUT)
-        return latest
-    except Package.DoesNotExist:
-        pass
-    return None
-
 def package_etag(request, *args, **kwargs):
-    latest = retrieve_package_latest()
+    latest = retrieve_latest(Package)
     if latest:
         return md5_constructor(str(kwargs) + str(latest)).hexdigest()
     return None
 
 def package_last_modified(request, *args, **kwargs):
-    return retrieve_package_latest()
+    return retrieve_latest(Package)
 
 class PackageFeed(Feed):
     feed_type = GuidNotPermalinkFeed
@@ -125,28 +105,14 @@ class PackageFeed(Feed):
         return (item.repo.name, item.arch.name)
 
 
-def retrieve_news_latest():
-    latest = cache.get(CACHE_NEWS_KEY)
-    if latest:
-        return latest
-    try:
-        latest = News.objects.values('last_modified').latest(
-                'last_modified')['last_modified']
-        # same thoughts apply as in retrieve_package_latest
-        cache.add(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
-        return latest
-    except News.DoesNotExist:
-        pass
-    return None
-
 def news_etag(request, *args, **kwargs):
-    latest = retrieve_news_latest()
+    latest = retrieve_latest(News)
     if latest:
         return md5_constructor(str(latest)).hexdigest()
     return None
 
 def news_last_modified(request, *args, **kwargs):
-    return retrieve_news_latest()
+    return retrieve_latest(News)
 
 class NewsFeed(Feed):
     feed_type = GuidNotPermalinkFeed

@@ -6,10 +6,8 @@ from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 
 CACHE_TIMEOUT = 1800
-INVALIDATE_TIMEOUT = 15
-
-CACHE_PACKAGE_KEY = 'cache_package_latest'
-CACHE_NEWS_KEY = 'cache_news_latest'
+INVALIDATE_TIMEOUT = 10
+CACHE_LATEST_PREFIX = 'cache_latest_'
 
 def cache_function_key(func, args, kwargs):
     raw = [func.__name__, func.__module__, args, kwargs]
@@ -53,16 +51,34 @@ make_choice = lambda l: [(str(m), str(m)) for m in l]
 # and hoops otherwise. The only thing currently using these keys is the feed
 # caching stuff.
 
-def refresh_package_latest(**kwargs):
+def refresh_latest(**kwargs):
+    '''A post_save signal handler to clear out the cached latest value for a
+    given model.'''
+    cache_key = CACHE_LATEST_PREFIX + kwargs['sender'].__name__
     # We could delete the value, but that could open a race condition
     # where the new data wouldn't have been committed yet by the calling
     # thread. Instead, explicitly set it to None for a short amount of time.
     # Hopefully by the time it expires we will have committed, and the cache
     # will be valid again. See "Scaling Django" by Mike Malone, slide 30.
-    cache.set(CACHE_PACKAGE_KEY, None, INVALIDATE_TIMEOUT)
+    cache.set(cache_key, None, INVALIDATE_TIMEOUT)
 
-def refresh_news_latest(**kwargs):
-    # same thoughts apply as in refresh_package_latest
-    cache.set(CACHE_NEWS_KEY, None, INVALIDATE_TIMEOUT)
+def retrieve_latest(sender):
+    # we could break this down based on the request url, but it would probably
+    # cost us more in query time to do so.
+    cache_key = CACHE_LATEST_PREFIX + sender.__name__
+    latest = cache.get(cache_key)
+    if latest:
+        return latest
+    try:
+        latest_by = sender._meta.get_latest_by
+        latest = sender.objects.values(latest_by).latest()[latest_by]
+        # Using add means "don't overwrite anything in there". What could be in
+        # there is an explicit None value that our refresh signal set, which
+        # means we want to avoid race condition possibilities for a bit.
+        cache.add(cache_key, latest, CACHE_TIMEOUT)
+        return latest
+    except sender.DoesNotExist:
+        pass
+    return None
 
 # vim: set ts=4 sw=4 et:
