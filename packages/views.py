@@ -371,7 +371,7 @@ def flag(request, name, repo, arch):
             # find all packages from (hopefully) the same PKGBUILD
             pkgs = Package.objects.filter(
                     pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
-            pkgs.update(flag_date=datetime.now())
+            pkgs.update(flag_date=datetime.utcnow())
 
             maints = pkg.maintainers
             if not maints:

@@ -27,7 +27,7 @@ class News(models.Model):
 
 def set_news_fields(sender, **kwargs):
     news = kwargs['instance']
-    now = datetime.now()
+    now = datetime.utcnow()
     news.last_modified = now
     if not news.postdate:
         news.postdate = now

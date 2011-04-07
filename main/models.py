@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from main.utils import cache_function, make_choice
 from packages.models import PackageRelation
 
+from datetime import datetime
 from itertools import groupby
 import pytz
 
@@ -351,7 +352,7 @@ class Todolist(models.Model):
     creator = models.ForeignKey(User)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    date_added = models.DateTimeField(auto_now_add=True, db_index=True)
+    date_added = models.DateTimeField(db_index=True)
     objects = TodolistManager()
 
     def __unicode__(self):
@@ -383,10 +384,18 @@ class TodolistPkg(models.Model):
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
 
+def set_todolist_fields(sender, **kwargs):
+    todolist = kwargs['instance']
+    if not todolist.date_added:
+        todolist.date_added = datetime.utcnow()
+
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_package_latest
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
+
 post_save.connect(refresh_package_latest, sender=Package,
+        dispatch_uid="main.models")
+pre_save.connect(set_todolist_fields, sender=Todolist,
         dispatch_uid="main.models")
 
 # vim: set ts=4 sw=4 et:

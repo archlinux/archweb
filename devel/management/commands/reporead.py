@@ -315,7 +315,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     directory=dirname + '/',
                     filename=filename)
             pkgfile.save(force_insert=True)
-        dbpkg.files_last_update = datetime.now()
+        dbpkg.files_last_update = datetime.utcnow()
         dbpkg.save()
 
 @transaction.commit_on_success
@@ -374,7 +374,7 @@ def db_update(archname, reponame, pkgs, options):
         for p in [x for x in pkgs if x.name in in_sync_not_db]:
             logger.info("Adding package %s", p.name)
             pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
-            populate_pkg(pkg, p, timestamp=datetime.now())
+            populate_pkg(pkg, p, timestamp=datetime.utcnow())
 
         # packages in database and not in syncdb (remove from database)
         in_db_not_sync = dbset - syncset
@@ -398,7 +398,7 @@ def db_update(archname, reponame, pkgs, options):
             if not force:
                 continue
         else:
-            timestamp = datetime.now()
+            timestamp = datetime.utcnow()
         if filesonly:
             logger.debug("Checking files for package %s in database", p.name)
             populate_files(dbp, p, force=force)

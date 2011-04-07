@@ -1,5 +1,4 @@
-import datetime
-from decimal import Decimal, ROUND_HALF_DOWN
+import pytz
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
@@ -10,7 +9,7 @@ from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
 from main.models import Arch, Repo, Package
-from main.utils import CACHE_TIMEOUT, INVALIDATE_TIMEOUT
+from main.utils import CACHE_TIMEOUT
 from main.utils import CACHE_PACKAGE_KEY, CACHE_NEWS_KEY
 from news.models import News
 
@@ -32,17 +31,6 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
         super(GuidNotPermalinkFeed, self).write_items(handler)
 
 
-def utc_offset():
-    '''Calculate the UTC offset from local time. Useful for converting values
-    stored in local time to things like cache last modifed headers.'''
-    timediff = datetime.datetime.utcnow() - datetime.datetime.now()
-    secs = timediff.days * 86400 + timediff.seconds
-    # round to nearest minute
-    mins = Decimal(secs) / Decimal(60)
-    mins = mins.quantize(Decimal('0'), rounding=ROUND_HALF_DOWN)
-    return datetime.timedelta(minutes=int(mins))
-
-
 def retrieve_package_latest():
     # we could break this down based on the request url, but it would probably
     # cost us more in query time to do so.
@@ -52,7 +40,6 @@ def retrieve_package_latest():
     try:
         latest = Package.objects.values('last_update').latest(
                 'last_update')['last_update']
-        latest = latest + utc_offset()
         # Using add means "don't overwrite anything in there". What could be in
         # there is an explicit None value that our refresh signal set, which
         # means we want to avoid race condition possibilities for a bit.
@@ -132,7 +119,7 @@ class PackageFeed(Feed):
                 date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
-        return item.last_update
+        return item.last_update.replace(tzinfo=pytz.utc)
 
     def item_categories(self, item):
         return (item.repo.name, item.arch.name)
@@ -145,7 +132,6 @@ def retrieve_news_latest():
     try:
         latest = News.objects.values('last_modified').latest(
                 'last_modified')['last_modified']
-        latest = latest + utc_offset()
         # same thoughts apply as in retrieve_package_latest
         cache.add(CACHE_NEWS_KEY, latest, CACHE_TIMEOUT)
         return latest
@@ -184,7 +170,7 @@ class NewsFeed(Feed):
         return item.guid
 
     def item_pubdate(self, item):
-        return item.postdate
+        return item.postdate.replace(tzinfo=pytz.utc)
 
     def item_author_name(self, item):
         return item.author.get_full_name()
