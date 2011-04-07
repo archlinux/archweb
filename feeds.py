@@ -1,6 +1,7 @@
 import datetime
 from decimal import Decimal, ROUND_HALF_DOWN
 
+from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.db.models import Q
@@ -97,8 +98,17 @@ class PackageFeed(Feed):
         s += '.'
         return s
 
+    subtitle = description
+
     def items(self, obj):
         return obj['qs']
+
+    def item_guid(self, item):
+        # http://diveintomark.org/archives/2004/05/28/howto-atom-id
+        date = item.last_update
+        return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
+                date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
         return item.last_update
@@ -135,6 +145,7 @@ class NewsFeed(Feed):
     title = 'Arch Linux: Recent news updates'
     link = '/news/'
     description = 'The latest and greatest news from the Arch Linux distribution.'
+    subtitle = description
     title_template = 'feeds/news_title.html'
     description_template = 'feeds/news_description.html'
 
@@ -145,6 +156,9 @@ class NewsFeed(Feed):
     def items(self):
         return News.objects.select_related('author').order_by(
                 '-postdate', '-id')[:10]
+
+    def item_guid(self, item):
+        return item.guid
 
     def item_pubdate(self, item):
         return item.postdate

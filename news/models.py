@@ -1,13 +1,16 @@
+from datetime import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 class News(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     author = models.ForeignKey(User, related_name='news_author')
-    postdate = models.DateTimeField("post date", auto_now_add=True, db_index=True)
-    last_modified = models.DateTimeField(editable=False,
-            auto_now=True, db_index=True)
+    postdate = models.DateTimeField("post date", db_index=True)
+    last_modified = models.DateTimeField(editable=False, db_index=True)
     title = models.CharField(max_length=255)
+    guid = models.CharField(max_length=255, editable=False)
     content = models.TextField()
 
     def get_absolute_url(self):
@@ -22,10 +25,23 @@ class News(models.Model):
         get_latest_by = 'postdate'
         ordering = ['-postdate']
 
+def set_news_fields(sender, **kwargs):
+    news = kwargs['instance']
+    now = datetime.now()
+    news.last_modified = now
+    if not news.postdate:
+        news.postdate = now
+        # http://diveintomark.org/archives/2004/05/28/howto-atom-id
+        news.guid = 'tag:%s,%s:%s' % (Site.objects.get_current(),
+                now.strftime('%Y-%m-%d'), news.get_absolute_url())
+
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_news_latest
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
+
 post_save.connect(refresh_news_latest, sender=News,
+        dispatch_uid="news.models")
+pre_save.connect(set_news_fields, sender=News,
         dispatch_uid="news.models")
 
 # vim: set ts=4 sw=4 et:
