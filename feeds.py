@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.db.models import Q
+from django.utils.feedgenerator import Rss201rev2Feed
 from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
@@ -12,6 +13,24 @@ from main.models import Arch, Repo, Package
 from main.utils import CACHE_TIMEOUT, INVALIDATE_TIMEOUT
 from main.utils import CACHE_PACKAGE_KEY, CACHE_NEWS_KEY
 from news.models import News
+
+def check_for_unique_id(f):
+    def wrapper(name, contents=None, attrs=None):
+        if attrs is None:
+            attrs = {}
+        if name == 'guid':
+            attrs['isPermaLink'] = 'false'
+        return f(name, contents, attrs)
+    return wrapper
+
+class GuidNotPermalinkFeed(Rss201rev2Feed):
+    def write_items(self, handler):
+        # Totally disgusting. Monkey-patch the hander so if it sees a
+        # 'unique-id' field come through, add an isPermalink="false" attribute.
+        # Workaround for http://code.djangoproject.com/ticket/9800
+        handler.addQuickElement = check_for_unique_id(handler.addQuickElement)
+        super(GuidNotPermalinkFeed, self).write_items(handler)
+
 
 def utc_offset():
     '''Calculate the UTC offset from local time. Useful for converting values
@@ -53,6 +72,8 @@ def package_last_modified(request, *args, **kwargs):
     return retrieve_package_latest()
 
 class PackageFeed(Feed):
+    feed_type = GuidNotPermalinkFeed
+
     link = '/packages/'
     title_template = 'feeds/packages_title.html'
     description_template = 'feeds/packages_description.html'
@@ -142,6 +163,8 @@ def news_last_modified(request, *args, **kwargs):
     return retrieve_news_latest()
 
 class NewsFeed(Feed):
+    feed_type = GuidNotPermalinkFeed
+
     title = 'Arch Linux: Recent news updates'
     link = '/news/'
     description = 'The latest and greatest news from the Arch Linux distribution.'
