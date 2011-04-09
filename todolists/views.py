@@ -35,7 +35,7 @@ class TodoListForm(forms.ModelForm):
 @permission_required('main.change_todolistpkg')
 @never_cache
 def flag(request, listid, pkgid):
-    list = get_object_or_404(Todolist, id=listid)
+    todolist = get_object_or_404(Todolist, id=listid)
     pkg  = get_object_or_404(TodolistPkg, id=pkgid)
     pkg.complete = not pkg.complete
     pkg.save()
@@ -48,8 +48,8 @@ def flag(request, listid, pkgid):
 @login_required
 @never_cache
 def view(request, listid):
-    list = get_object_or_404(Todolist, id=listid)
-    return direct_to_template(request, 'todolists/view.html', {'list': list})
+    todolist = get_object_or_404(Todolist, id=listid)
+    return direct_to_template(request, 'todolists/view.html', {'list': todolist})
 
 @login_required
 @never_cache
@@ -161,13 +161,13 @@ def send_todolist_emails(todo_list, new_packages):
                 maint_packages.setdefault(maint, []).append(todo_package)
 
     for maint, packages in maint_packages.iteritems():
-        c = Context({
+        ctx = Context({
             'todo_packages': sorted(packages),
             'todolist': todo_list,
         })
-        t = loader.get_template('todolists/email_notification.txt')
+        template = loader.get_template('todolists/email_notification.txt')
         send_mail('Packages added to todo list \'%s\'' % todo_list.name,
-                t.render(c),
+                template.render(ctx),
                 'Arch Website Notification <nobody@archlinux.org>',
                 [maint],
                 fail_silently=True)

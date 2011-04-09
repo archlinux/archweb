@@ -165,15 +165,15 @@ class NewUserForm(forms.ModelForm):
             profile.save()
             self.save_m2m()
 
-        t = loader.get_template('devel/new_account.txt')
-        c = Context({
+        template = loader.get_template('devel/new_account.txt')
+        ctx = Context({
             'site': Site.objects.get_current(),
             'user': user,
             'password': password,
         })
 
         send_mail("Your new archweb account",
-                t.render(c),
+                template.render(ctx),
                 'Arch Website Notification <nobody@archlinux.org>',
                 [user.email],
                 fail_silently=False)
