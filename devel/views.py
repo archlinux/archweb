@@ -11,10 +11,11 @@ from django.template import loader, Context
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
-from main.models import Package, Todolist, TodolistPkg
+from main.models import Package, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
 from packages.models import PackageRelation
+from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers
 
 import datetime
@@ -35,6 +36,9 @@ def index(request):
     todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by(
             'list__name', 'pkg__pkgname')
 
+    todolists = get_annotated_todolists()
+    todolists = [todolist for todolist in todolists if todolist.incomplete_count > 0]
+
     maintainers = get_annotated_maintainers()
 
     maintained = PackageRelation.objects.filter(
@@ -48,7 +52,7 @@ def index(request):
     }
 
     page_dict = {
-            'todos': Todolist.objects.incomplete().order_by('-date_added'),
+            'todos': todolists,
             'repos': Repo.objects.all(),
             'arches': Arch.objects.all(),
             'maintainers': maintainers,

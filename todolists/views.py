@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
-from django.db.models import Count
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.views.generic.simple import direct_to_template
@@ -13,6 +12,7 @@ from django.template import Context, loader
 from django.utils import simplejson
 
 from main.models import Todolist, TodolistPkg, Package
+from .utils import get_annotated_todolists
 
 class TodoListForm(forms.ModelForm):
     packages = forms.CharField(required=False,
@@ -53,19 +53,8 @@ def view(request, listid):
 
 @login_required
 @never_cache
-def list(request):
-    lists = Todolist.objects.select_related('creator').annotate(
-            pkg_count=Count('todolistpkg')).order_by('-date_added')
-    incomplete = Todolist.objects.filter(todolistpkg__complete=False).annotate(
-            Count('todolistpkg')).values_list('id', 'todolistpkg__count')
-
-    # tag each list with an incomplete package count
-    lookup = {}
-    for k, v in incomplete:
-        lookup[k] = v
-    for l in lists:
-        l.incomplete_count = lookup.get(l.id, 0)
-
+def todolist_list(request):
+    lists = get_annotated_todolists()
     return direct_to_template(request, 'todolists/list.html', {'lists': lists})
 
 @permission_required('main.add_todolist')

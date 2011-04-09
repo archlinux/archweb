@@ -72,19 +72,26 @@
             <tr>
                 <th>Name</th>
                 <th>Creation Date</th>
+                <th>Creator</th>
                 <th>Description</th>
+                <th>Package Count</th>
+                <th>Incomplete Count</th>
+            </tr>
             </tr>
         </thead>
         <tbody>
             {% for todo in todos %}
-                <tr class="{% cycle 'odd' 'even' %}">
-                    <td><a href="{{ todo.get_absolute_url }}"
-                            title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                    <td>{{ todo.date_added|date }}</td>
-                    <td class="wrap">{{ todo.description|urlize }}</td>
-                </tr>
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td><a href="{{ todo.get_absolute_url }}"
+                        title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
+                <td>{{ todo.date_added|date }}</td>
+                <td>{{ todo.creator.get_full_name }}</td>
+                <td class="wrap">{{ todo.description|urlize }}</td>
+                <td>{{ todo.pkg_count }}</td>
+                <td>{{ todo.incomplete_count }}</td>
+            </tr>
             {% empty %}
-                <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
+            <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
             {% endfor %}
         </tbody>
     </table>

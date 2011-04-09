@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import permission_required
 from .views import DeleteTodolist
 
 urlpatterns = patterns('todolists.views',
-    (r'^$',                       'list'),
+    (r'^$',                       'todolist_list'),
     (r'^(\d+)/$',                 'view'),
     (r'^add/$',                   'add'),
     (r'^edit/(?P<list_id>\d+)/$', 'edit'),
