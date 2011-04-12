@@ -58,6 +58,8 @@ class MirrorUrl(models.Model):
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls")
+    country = models.CharField(max_length=255, blank=True, null=True,
+            db_index=True)
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
     has_ipv6 = models.BooleanField("IPv6 capable", default=False,
@@ -72,6 +74,10 @@ class MirrorUrl(models.Model):
     @property
     def hostname(self):
         return urlparse(self.url).hostname
+
+    @property
+    def real_country(self):
+        return self.country or self.mirror.country
 
     def clean(self):
         try:

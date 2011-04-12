@@ -82,10 +82,13 @@ def get_mirror_errors(cutoff=default_cutoff):
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(
-            'url__url', 'url__protocol__protocol', 'url__mirror__country',
-            'error').annotate(
+            'url__url', 'url__country', 'url__protocol__protocol',
+            'url__mirror__country', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
-    return list(errors)
+    errors = list(errors)
+    for err in errors:
+        err['country'] = err['url__country'] or err['url__mirror__country']
+    return errors
 
 # vim: set ts=4 sw=4 et:

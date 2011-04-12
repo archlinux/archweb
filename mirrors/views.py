@@ -23,10 +23,10 @@ class MirrorlistForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
-        mirrors = Mirror.objects.filter(active=True).values_list(
+        countries = Mirror.objects.filter(active=True).values_list(
                 'country', flat=True).distinct().order_by('country')
         self.fields['country'].choices = [('all','All')] + make_choice(
-                mirrors)
+                countries)
         self.fields['country'].initial = ['all']
         protos = make_choice(
                 MirrorProtocol.objects.filter(is_download=True))
@@ -61,7 +61,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             mirror__public=True, mirror__active=True, mirror__isos=True
     )
     if countries and 'all' not in countries:
-        qset = qset.filter(mirror__country__in=countries)
+        qset = qset.filter(Q(country__in=countries) |
+                Q(mirror__country__in=countries))
 
     ip_version = Q()
     if ipv4_supported:
@@ -71,7 +72,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
     qset = qset.filter(ip_version)
 
     if not use_status:
-        urls = qset.order_by('mirror__country', 'mirror__name', 'url')
+        urls = qset.order_by('mirror__name', 'url')
+        urls = sorted(urls, key=lambda x: x.real_country)
         template = 'mirrors/mirrorlist.txt'
     else:
         status_info = get_mirror_statuses()
@@ -158,7 +160,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             for attr in self.url_attributes:
                 data[attr] = getattr(obj, attr)
             # separate because it isn't on the URL directly
-            data['country'] = obj.mirror.country
+            data['country'] = obj.real_country
             return data
         if isinstance(obj, MirrorProtocol):
             return unicode(obj)

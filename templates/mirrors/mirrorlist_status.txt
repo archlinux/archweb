@@ -8,6 +8,6 @@ content right, and then go back later to fix it all up.
 ## Sorted by mirror score from mirror status page
 ## Generated on {% now "Y-m-d" %}
 {% for mirror_url in mirror_urls %}
-## Score: {{ mirror_url.score|floatformat:1|default:'unknown' }}, {{ mirror_url.mirror.country }}
+## Score: {{ mirror_url.score|floatformat:1|default:'unknown' }}, {{ mirror_url.real_country }}
 #Server = {{ mirror_url.url}}$repo/os/$arch{% endfor %}
 {% endautoescape %}
