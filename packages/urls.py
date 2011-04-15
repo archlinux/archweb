@@ -17,10 +17,6 @@ urlpatterns = patterns('packages.views',
         'signoff_package'),
     (r'^update/$',   'update'),
 
-    # Preference is for the non-search url below, but search is kept
-    # because other projects link to it
-    (r'^search/$',               'search'),
-    (r'^search/(?P<page>\d+)/$', 'search'),
     (r'^$',                      'search'),
     (r'^(?P<page>\d+)/$',        'search'),
 
