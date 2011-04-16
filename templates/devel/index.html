@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load cache %}
+
 {% block title %}Arch Linux - Developer Dashboard{% endblock %}
 
 {% block content %}
@@ -98,6 +100,7 @@
 
 </div><!-- #dev-dashboard -->
 
+{% cache 60 dev-dash-by-arch %}
 <div id="dash-by-arch" class="box">
 
     <h2>Stats by Architecture</h2>
@@ -124,9 +127,10 @@
             {% endfor %}
         </tbody>
     </table>
+</div>{# #dash-by-arch #}
+{% endcache %}
 
-</div><!-- #dash-by-arch -->
-
+{% cache 60 dev-dash-by-repo %}
 <div id="dash-by-repo" class="box">
 
     <h2>Stats by Repository</h2>
@@ -153,9 +157,10 @@
             {% endfor %}
         </tbody>
     </table>
+</div>{# dash-by-arch #}
+{% endcache %}
 
-</div><!-- dash-by-arch -->
-
+{% cache 60 dev-dash-by-maintainer %}
 <div id="dash-by-maintainer" class="box">
 
     <h2>Stats by Maintainer</h2>
@@ -191,8 +196,9 @@
             {% endfor %}
         </tbody>
     </table>
+</div>{# #dash-by-maintainer #}
+{% endcache %}
 
-</div><!-- #dash-by-maintainer -->
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="/media/archweb.js"></script>
