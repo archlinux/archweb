@@ -18,6 +18,7 @@ from django.views.generic.simple import direct_to_template
 
 from datetime import datetime
 import string
+from urllib import urlencode
 
 from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
@@ -108,8 +109,14 @@ def details(request, name='', repo='', arch=''):
             return direct_to_template(request, 'packages/packages_list.html',
                     context)
     else:
-        return redirect("/packages/?arch=%s&repo=%s&q=%s" % (
-            arch.lower(), repo.title(), name))
+        pkg_data = [
+            ('arch', arch.lower()),
+            ('repo', repo.lower()),
+            ('q',    name),
+        ]
+        # only include non-blank values in the query we generate
+        pkg_data = [(x, y) for x, y in pkg_data if y]
+        return redirect("/packages/?%s" % urlencode(pkg_data))
 
 def groups(request, arch=None):
     arches = []
