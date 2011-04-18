@@ -7,6 +7,25 @@ import datetime
 
 default_cutoff = datetime.timedelta(hours=24)
 
+def annotate_url(url, delays):
+    '''Given a MirrorURL object, add a few more attributes to it regarding
+    status, including completion_pct, delay, and score.'''
+    url.completion_pct = float(url.success_count) / url.check_count
+    if url.id in delays:
+        url_delays = delays[url.id]
+        url.delay = sum(url_delays, datetime.timedelta()) / len(url_delays)
+        hours = url.delay.days * 24.0 + url.delay.seconds / 3600.0
+
+        if url.completion_pct > 0:
+            divisor = url.completion_pct
+        else:
+            # arbitrary small value
+            divisor = 0.005
+        url.score = (hours + url.duration_avg + url.duration_stddev) / divisor
+    else:
+        url.delay = None
+        url.score = None
+
 @cache_function(300)
 def get_mirror_statuses(cutoff=default_cutoff):
     cutoff_time = datetime.datetime.utcnow() - cutoff
@@ -31,8 +50,8 @@ def get_mirror_statuses(cutoff=default_cutoff):
             check_time__gte=cutoff_time)
     delays = {}
     for log in times:
-        d = log.check_time - log.last_sync
-        delays.setdefault(log.url_id, []).append(d)
+        delay = log.check_time - log.last_sync
+        delays.setdefault(log.url_id, []).append(delay)
 
     if urls:
         last_check = max([u.last_check for u in urls])
@@ -44,29 +63,14 @@ def get_mirror_statuses(cutoff=default_cutoff):
             check_frequency = (check_info['mx'] - check_info['mn']) \
                     / (num_checks - 1)
         else:
-            check_frequency = None;
+            check_frequency = None
     else:
         last_check = None
         num_checks = 0
         check_frequency = None
 
     for url in urls:
-        url.completion_pct = float(url.success_count) / url.check_count
-        if url.id in delays:
-            url_delays = delays[url.id]
-            d = sum(url_delays, datetime.timedelta()) / len(url_delays)
-            url.delay = d
-            hours = d.days * 24.0 + d.seconds / 3600.0
-
-            if url.completion_pct > 0:
-                divisor = url.completion_pct
-            else:
-                # arbitrary small value
-                divisor = 0.005
-            url.score = (hours + url.duration_avg + url.duration_stddev) / divisor
-        else:
-            url.delay = None
-            url.score = None
+        annotate_url(url, delays)
 
     return {
         'cutoff': cutoff,

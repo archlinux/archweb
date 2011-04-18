@@ -1,6 +1,5 @@
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Avg, Count, Max, Min, StdDev
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -96,11 +95,11 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             mimetype='text/plain')
 
 def mirrors(request):
-    mirrors = Mirror.objects.select_related().order_by('tier', 'country')
+    mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
     if not request.user.is_authenticated():
-        mirrors = mirrors.filter(public=True, active=True)
+        mirror_list = mirror_list.filter(public=True, active=True)
     return direct_to_template(request, 'mirrors/mirrors.html',
-            {'mirror_list': mirrors})
+            {'mirror_list': mirror_list})
 
 def mirror_details(request, name):
     mirror = get_object_or_404(Mirror, name=name)

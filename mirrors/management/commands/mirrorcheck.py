@@ -13,7 +13,7 @@ from django.core.management.base import NoArgsCommand
 from django.db import transaction
 
 from collections import deque
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 import re
 import socket
@@ -134,8 +134,8 @@ class MirrorCheckPool(object):
     @transaction.commit_on_success
     def run(self):
         logger.debug("starting threads")
-        for t in self.threads:
-            t.start()
+        for thread in self.threads:
+            thread.start()
         logger.debug("joining on all threads")
         self.tasks.join()
         logger.debug("processing log entries")

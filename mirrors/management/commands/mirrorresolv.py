@@ -49,6 +49,6 @@ def resolve_mirrors():
                     mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             mirrorurl.save(force_update=True)
         except socket.error, e:
-            logger.warn("error resolving %s: %s", hostname, e)
+            logger.warn("error resolving %s: %s", mirrorurl.hostname, e)
 
 # vim: set ts=4 sw=4 et:
