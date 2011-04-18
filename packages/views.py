@@ -171,7 +171,7 @@ class LimitTypedChoiceField(forms.TypedChoiceField):
         try:
             coerce_limit_value(value)
             return True
-        except ValueError, TypeError:
+        except (ValueError, TypeError):
             return False
 
 class PackageSearchForm(forms.Form):
@@ -226,7 +226,7 @@ def search(request, page=None):
                 packages = packages.filter(pkgbase__in=inner_q)
 
             if form.cleaned_data['flagged'] == 'Flagged':
-                packages=packages.filter(flag_date__isnull=False)
+                packages = packages.filter(flag_date__isnull=False)
             elif form.cleaned_data['flagged'] == 'Not Flagged':
                 packages = packages.filter(flag_date__isnull=True)
 
@@ -369,7 +369,7 @@ def flag(request, name, repo, arch):
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     if pkg.flag_date is not None:
         # already flagged. do nothing.
-        return direct_to_template(request, 'packages/flagged.html', context)
+        return direct_to_template(request, 'packages/flagged.html', {'pkg': pkg})
     # find all packages from (hopefully) the same PKGBUILD
     pkgs = Package.objects.select_related('arch', 'repo').filter(
             pkgbase=pkg.pkgbase, flag_date__isnull=True,
@@ -445,13 +445,13 @@ def download(request, name, repo, arch):
     if pkg.arch.agnostic:
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
-    details = {
+    values = {
         'host': mirrorurl.url,
         'arch': arch,
         'repo': pkg.repo.name.lower(),
         'file': pkg.filename,
     }
-    url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(details)
+    url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(values)
     return redirect(url)
 
 def arch_differences(request):
