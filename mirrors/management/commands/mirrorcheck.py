@@ -52,22 +52,6 @@ class Command(NoArgsCommand):
 
         return check_current_mirrors()
 
-def parse_rfc3339_datetime(time_string):
-    # '2010-09-02 11:05:06+02:00'
-    m = re.match('^(\d{4})-(\d{2})-(\d{2}) '
-            '(\d{2}):(\d{2}):(\d{2})([-+])(\d{2}):(\d{2})', time_string)
-    if m:
-        vals = m.groups()
-        parsed = datetime(int(vals[0]), int(vals[1]), int(vals[2]),
-                int(vals[3]), int(vals[4]), int(vals[5]))
-        # now account for time zone offset
-        sign = vals[6]
-        offset = timedelta(hours=int(sign + vals[7]),
-                minutes=int(sign + vals[8]))
-        # subtract the offset, e.g. '-04:00' should be moved up 4 hours
-        return parsed - offset
-    return None
-
 def check_mirror_url(mirror_url):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
@@ -78,18 +62,14 @@ def check_mirror_url(mirror_url):
         data = result.read()
         result.close()
         end = time.time()
-        # lastsync should be an epoch value, but some mirrors
-        # are creating their own in RFC-3339 format:
-        #     '2010-09-02 11:05:06+02:00'
+        # lastsync should be an epoch value created by us
         parsed_time = None
         try:
             parsed_time = datetime.utcfromtimestamp(int(data))
         except ValueError:
             # it is bad news to try logging the lastsync value;
             # sometimes we get a crazy-encoded web page.
-            logger.info("attempting to parse generated lastsync file"
-                    " from mirror %s", url)
-            parsed_time = parse_rfc3339_datetime(data)
+            pass
 
         log.last_sync = parsed_time
         # if we couldn't parse a time, this is a failure
