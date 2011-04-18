@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Package Flagged - {{ package.pkgname }}{% endblock %}
+{% block navbarclass %}anb-packages{% endblock %}
+
+{% block content %}
+<div id="pkg-flag" class="box">
+	<h2>Package Flagged - {{ package.pkgname }}</h2>
+
+    <p>Thank you, the maintainers have been notified the following packages are out-of-date:</p>
+    <ul>
+        {% for pkg in packages %}
+        <li>{{ pkg.pkgname }} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
+        {% endfor %}
+    </ul>
+
+    <p>You can return to the package details page for
+    <a href="{{ package.get_absolute_url }}" title="Package details for {{package.pkgname}}">{{package.pkgname}}</a>.</p>
+</div>
+{% endblock %}

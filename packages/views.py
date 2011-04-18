@@ -367,17 +367,20 @@ class FlagForm(forms.Form):
 def flag(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    context = {'pkg': pkg}
     if pkg.flag_date is not None:
         # already flagged. do nothing.
         return direct_to_template(request, 'packages/flagged.html', context)
+    # find all packages from (hopefully) the same PKGBUILD
+    pkgs = Package.objects.select_related('arch', 'repo').filter(
+            pkgbase=pkg.pkgbase, flag_date__isnull=True,
+            repo__testing=pkg.repo.testing).order_by(
+            'pkgname', 'repo__name', 'arch__name')
 
     if request.POST:
         form = FlagForm(request.POST)
         if form.is_valid() and form.cleaned_data['website'] == '':
-            # find all packages from (hopefully) the same PKGBUILD
-            pkgs = Package.objects.filter(
-                    pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
+            # save the package list for later use
+            flagged_pkgs = list(pkgs)
             pkgs.update(flag_date=datetime.utcnow())
 
             maints = pkg.maintainers
@@ -394,13 +397,13 @@ def flag(request, name, repo, arch):
                         toemail.append(maint.email)
 
             if toemail:
-                # send notification email to the maintainer
+                # send notification email to the maintainers
                 t = loader.get_template('packages/outofdate.txt')
                 c = Context({
                     'email': form.cleaned_data['email'],
                     'message': form.cleaned_data['usermessage'],
                     'pkg': pkg,
-                    'weburl': pkg.get_full_url(),
+                    'packages': flagged_pkgs,
                 })
                 send_mail(subject,
                         t.render(c),
@@ -408,13 +411,29 @@ def flag(request, name, repo, arch):
                         toemail,
                         fail_silently=True)
 
-            context['confirmed'] = True
+            return redirect('package-flag-confirmed', name=name, repo=repo,
+                    arch=arch)
     else:
         form = FlagForm()
 
-    context['form'] = form
-
+    context = {
+        'package': pkg,
+        'packages': pkgs,
+        'form': form
+    }
     return direct_to_template(request, 'packages/flag.html', context)
+
+def flag_confirmed(request, name, repo, arch):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    pkgs = Package.objects.select_related('arch', 'repo').filter(
+            pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
+            repo__testing=pkg.repo.testing).order_by(
+            'pkgname', 'repo__name', 'arch__name')
+
+    context = {'package': pkg, 'packages': pkgs}
+
+    return direct_to_template(request, 'packages/flag_confirmed.html', context)
 
 def download(request, name, repo, arch):
     pkg = get_object_or_404(Package,

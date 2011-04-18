@@ -1,22 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Arch Linux - Flag Package - {{ pkg.pkgname }}{% endblock %}
+{% block title %}Arch Linux - Flag Package - {{ package.pkgname }}{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div id="pkg-flag" class="box">
-{% if confirmed %}
-    <h2>Package Flagged</h2>
-
-    <p>Thank you, the maintainers have been notified about <strong>{{ pkg.pkgname }}</strong>.</p>
-
-    <p>You can return to the package details page for
-    <a href="{{ pkg.get_absolute_url }}" title="Package details for {{pkg.pkgname}}">{{pkg.pkgname}}</a>.</p>
-{% else %}
-    <h2>Flag Package: {{ pkg.pkgname }}</h2>
+    <h2>Flag Package: {{ package.pkgname }}</h2>
 
     <p>If you notice a package is out-of-date (i.e., there is a newer
     <strong>stable</strong> release available), then please notify us using
     the form below.</p>
+
+    <p>Note that all of the following packages will be marked out of date:</p>
+    <ul>
+        {% for pkg in packages %}
+        <li>{{ pkg.pkgname }} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
+        {% endfor %}
+    </ul>
 
     <p>The message box portion of the flag utility is optional, and meant
     for short messages only. If you need more than 200 characters for your
@@ -26,17 +25,16 @@
     with your additional text.</p>
 
     <p><strong>Note:</strong> Please do <em>not</em> use this facility if the
-    package is broken!  Use the <a href="https://bugs.archlinux.org"
-        title="Arch Linux Bugtracker">bug tracker</a> instead.</p>
+    package is broken! Please <a href="https://bugs.archlinux.org/"
+        title="Arch Linux Bugtracker">file a bug</a> instead.</p>
 
-    <p>Please confirm your flag request for {{pkg.pkgname}}:</p>
+    <p>Please confirm your flag request for {{package.pkgname}}:</p>
 
     <form id="flag-pkg-form" method="post">{% csrf_token %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>
-		<p><label></label> <input title="Flag {{ pkg.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
+        <p><label></label> <input title="Flag {{ package.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
     </form>
-{% endif %}
 </div>
 {% endblock %}
