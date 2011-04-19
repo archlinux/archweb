@@ -18,6 +18,7 @@
                 <li><a href="{{ pkg.get_arch_svn_link }}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
                 <li><a href="{{ pkg.get_trunk_svn_link }}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
                 <li><a href="{{ pkg.get_bugs_link }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
+                <li><a href="{{ pkg.get_bug_report_link }}" title="Report bug for {{ pkg.pkgname }}">Report a Bug</a></li>
                 {% if pkg.flag_date %}
                 <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
                 {% with pkg.in_testing as tp %}{% if tp %}

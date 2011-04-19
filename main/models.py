@@ -8,6 +8,7 @@ from packages.models import PackageRelation
 from datetime import datetime
 from itertools import groupby
 import pytz
+from urllib import urlencode
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -89,6 +90,8 @@ class Repo(models.Model):
             help_text="Is this repo meant for package staging?")
     bugs_project = models.SmallIntegerField(default=1,
             help_text="Flyspray project ID for this repository.")
+    bugs_category = models.SmallIntegerField(default=0,
+            help_text="Flyspray category ID for this repository.")
     svn_root = models.CharField(max_length=64,
             help_text="SVN root (e.g. path) for this repository.")
 
@@ -293,6 +296,14 @@ class Package(models.Model):
     def get_bugs_link(self):
         return "https://bugs.archlinux.org/?project=%d&string=%s" % \
                 (self.repo.bugs_project, self.pkgname)
+
+    def get_bug_report_link(self):
+        data = {
+            'project': self.repo.bugs_project,
+            'product_category': self.repo.bugs_category,
+            'item_summary': '[%s]' % self.pkgname,
+        }
+        return "https://bugs.archlinux.org/newtask?%s" % urlencode(data)
 
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'
