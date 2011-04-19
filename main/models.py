@@ -8,7 +8,6 @@ from packages.models import PackageRelation
 from datetime import datetime
 from itertools import groupby
 import pytz
-from urllib import urlencode
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -281,29 +280,6 @@ class Package(models.Model):
         """
         return Package.objects.filter(arch__in=self.applicable_arches(),
                 repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
-
-    def get_svn_link(self, svnpath):
-        linkbase = "http://projects.archlinux.org/svntogit/%s.git/tree/%s/%s/"
-        return linkbase % (self.repo.svn_root, self.pkgbase, svnpath)
-
-    def get_arch_svn_link(self):
-        repo = self.repo.name.lower()
-        return self.get_svn_link("repos/%s-%s" % (repo, self.arch.name))
-
-    def get_trunk_svn_link(self):
-        return self.get_svn_link("trunk")
-
-    def get_bugs_link(self):
-        return "https://bugs.archlinux.org/?project=%d&string=%s" % \
-                (self.repo.bugs_project, self.pkgname)
-
-    def get_bug_report_link(self):
-        data = {
-            'project': self.repo.bugs_project,
-            'product_category': self.repo.bugs_category,
-            'item_summary': '[%s]' % self.pkgname,
-        }
-        return "https://bugs.archlinux.org/newtask?%s" % urlencode(data)
 
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'
