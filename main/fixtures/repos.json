@@ -3,70 +3,84 @@
         "pk": 5, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "community", 
-            "testing": false, 
+            "bugs_category": 33, 
+            "staging": false, 
             "name": "Community", 
-            "bugs_project": 5
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": false
         }
     }, 
     {
         "pk": 6, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "community", 
-            "testing": true, 
+            "bugs_category": 41, 
+            "staging": false, 
             "name": "Community-Testing", 
-            "bugs_project": 5
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": true
         }
     }, 
     {
         "pk": 1, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "packages", 
-            "testing": false, 
+            "bugs_category": 31, 
+            "staging": false, 
             "name": "Core", 
-            "bugs_project": 1
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
         }
     }, 
     {
         "pk": 2, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "packages", 
-            "testing": false, 
+            "bugs_category": 2, 
+            "staging": false, 
             "name": "Extra", 
-            "bugs_project": 1
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
         }
     }, 
     {
         "pk": 7, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "community", 
-            "testing": false, 
+            "bugs_category": 46, 
+            "staging": false, 
             "name": "Multilib", 
-            "bugs_project": 5
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": false
         }
     }, 
     {
         "pk": 8, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "community", 
-            "testing": true, 
+            "bugs_category": 46, 
+            "staging": false, 
             "name": "Multilib-Testing", 
-            "bugs_project": 5
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": true
         }
     }, 
     {
         "pk": 3, 
         "model": "main.repo", 
         "fields": {
-            "svn_root": "packages", 
-            "testing": true, 
+            "bugs_category": 10, 
+            "staging": false, 
             "name": "Testing", 
-            "bugs_project": 1
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": true
         }
     }
 ]
