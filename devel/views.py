@@ -6,19 +6,22 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
+from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
-from main.models import Package, TodolistPkg
+from main.models import Package, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
 from packages.models import PackageRelation
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers
 
-import datetime
+from datetime import datetime, timedelta
+import operator
 import pytz
 import random
 from string import ascii_letters, digits
@@ -26,7 +29,7 @@ from string import ascii_letters, digits
 @login_required
 @never_cache
 def index(request):
-    '''the Developer dashboard'''
+    '''the developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
     flagged = Package.objects.select_related('arch', 'repo').filter(
             flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
@@ -70,8 +73,8 @@ def clock(request):
             'username').select_related('userprofile')
 
     # now annotate each dev object with their current time
-    now = datetime.datetime.now()
-    utc_now = datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+    now = datetime.now()
+    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     for dev in devs:
         # Work around https://bugs.launchpad.net/pytz/+bug/718673
         timezone = str(dev.userprofile.time_zone)
@@ -122,6 +125,47 @@ def change_profile(request):
         profile_form = UserProfileForm(instance=request.user.get_profile())
     return direct_to_template(request, 'devel/profile.html',
             {'form': form, 'profile_form': profile_form})
+
+@login_required
+def report(request, report):
+    title = "Developer Report"
+    packages = Package.objects.select_related('arch', 'repo')
+    names = attrs = None
+    if report == "old":
+        title = "Packages last built more than two years ago"
+        cutoff = datetime.now() - timedelta(days=730)
+        packages = packages.filter(build_date__lt=cutoff).order_by('build_date')
+    elif report == "big":
+        title = "100 largest compressed packages"
+        packages = packages.order_by('-compressed_size')[:100]
+        names = [ 'Compressed Size', 'Installed Size' ]
+        attrs = [ 'compressed_size', 'installed_size' ]
+    elif report == "uncompressed-man":
+        title = "Packages with uncompressed manpages"
+        # magic going on here! Checking for all '.1'...'.9' extensions
+        invalid_endings = [Q(filename__endswith='.%d' % n) for n in range(1,10)]
+        invalid_endings.append(Q(filename__endswith='.n'))
+        bad_files = PackageFile.objects.filter(Q(directory__contains='man') & (
+                reduce(operator.or_, invalid_endings))
+                ).values_list('pkg_id', flat=True).distinct()
+        packages = packages.filter(id__in=set(bad_files))
+    elif report == "uncompressed-info":
+        title = "Packages with uncompressed infopages"
+        bad_files = PackageFile.objects.filter(directory__contains='/info',
+                filename__endswith='.info').values_list(
+                'pkg_id', flat=True).distinct()
+        packages = packages.filter(id__in=set(bad_files))
+    else:
+        raise Http404
+
+    context = {
+        'title': title,
+        'packages': packages,
+        'column_names': names,
+        'column_attrs': attrs,
+    }
+    return direct_to_template(request, 'devel/packages.html', context)
+
 
 class NewUserForm(forms.ModelForm):
     username = forms.CharField(max_length=30)
