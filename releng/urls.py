@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns
 
-urlpatterns = patterns('isotests.views',
+urlpatterns = patterns('releng.views',
     (r'^$',                              'test_results_overview', {}, 'releng-test-overview'),
     (r'^submit/$',                       'submit_test_result', {}, 'releng-test-submit'),
     (r'^thanks/$',                       'submit_test_thanks', {}, 'releng-test-thanks'),

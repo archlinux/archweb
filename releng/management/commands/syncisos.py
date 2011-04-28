@@ -5,7 +5,7 @@ from HTMLParser import HTMLParser, HTMLParseError
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from isotests.models import Iso
+from releng.models import Iso
 
 class IsoListParser(HTMLParser):
     def __init__(self):

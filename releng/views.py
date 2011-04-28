@@ -63,7 +63,7 @@ def submit_test_result(request):
         form = TestForm()
 
     context = {'form': form}
-    return direct_to_template(request, 'isotests/add.html', context)
+    return direct_to_template(request, 'releng/add.html', context)
 
 def calculate_option_overview(model, is_rollback=False):
     option = {
@@ -101,7 +101,7 @@ def test_results_overview(request):
             'options': all_options,
             'iso_url': settings.ISO_LIST_URL,
     }
-    return direct_to_template(request, 'isotests/results.html', context)
+    return direct_to_template(request, 'releng/results.html', context)
 
 def test_results_iso(request, iso_id):
     iso = get_object_or_404(Iso, pk=iso_id)
@@ -110,7 +110,7 @@ def test_results_iso(request, iso_id):
         'iso_name': iso.name,
         'test_list': test_list
     }
-    return direct_to_template(request, 'isotests/result_list.html', context)
+    return direct_to_template(request, 'releng/result_list.html', context)
 
 def test_results_for(request, option, value):
     if option not in Test._meta.get_all_field_names():
@@ -124,9 +124,9 @@ def test_results_for(request, option, value):
         'value_id': value,
         'test_list': test_list
     }
-    return direct_to_template(request, 'isotests/result_list.html', context)
+    return direct_to_template(request, 'releng/result_list.html', context)
 
 def submit_test_thanks(request):
-    return direct_to_template(request, "isotests/thanks.html", None)
+    return direct_to_template(request, "releng/thanks.html", None)
 
 # vim: set ts=4 sw=4 et:

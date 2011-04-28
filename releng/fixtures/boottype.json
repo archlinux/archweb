@@ -1,21 +1,21 @@
 [
     {
 	"pk": 1,
-	"model": "isotests.boottype",
+	"model": "releng.boottype",
 	"fields": {
 	    "name": "optical"
 	}
     },
     {
 	"pk": 2,
-	"model": "isotests.boottype",
+	"model": "releng.boottype",
 	"fields": {
 	    "name": "usb"
 	}
     },
     {
 	"pk": 3,
-	"model": "isotests.boottype",
+	"model": "releng.boottype",
 	"fields": {
 	    "name": "pxe"
 	}

@@ -1,42 +1,42 @@
 [
     {
 	"pk": 1,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "virtualbox"
 	}
     },
     {
 	"pk": 2,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "qemu"
 	}
     },
     {
 	"pk": 3,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "intel i686"
 	}
     },
     {
 	"pk": 4,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "intel x86_64"
 	}
     },
     {
 	"pk": 5,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "amd i686"
 	}
     },
     {
 	"pk": 6,
-	"model": "isotests.hardwaretype",
+	"model": "releng.hardwaretype",
 	"fields": {
 	    "name": "amd x86_64"
 	}

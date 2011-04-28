@@ -73,11 +73,11 @@ urlpatterns += patterns('',
     (r'^mirrors/',   include('mirrors.urls')),
     (r'^news/',      include('news.urls')),
     (r'^packages/',  include('packages.urls')),
+    (r'^releng/',    include('releng.urls')),
     (r'^todo/',      include('todolists.urls')),
     (r'^opensearch/packages/$', 'packages.views.opensearch',
         {}, 'opensearch-packages'),
     (r'^todolists/$','todolists.views.public_list'),
-    (r'^isotests/',  include('isotests.urls')),
 )
 
 if settings.DEBUG == True:

@@ -1,84 +1,84 @@
 [
     {
 	"pk": 1,
-	"model": "isotests.module",
+	"model": "releng.module",
 	"fields": {
 	    "name": "lvm2"
 	}
     },
     {
 	"pk": 2,
-	"model": "isotests.module",
+	"model": "releng.module",
 	"fields": {
 	    "name": "dm_crypt"
 	}
     },
     {
 	"pk": 3,
-	"model": "isotests.module",
+	"model": "releng.module",
 	"fields": {
 	    "name": "softraid"
 	}
     },
     {
 	"pk": 4,
-	"model": "isotests.module",
+	"model": "releng.module",
 	"fields": {
 	    "name": "nilfs2"
 	}
     },
     {
 	"pk": 5,
-	"model": "isotests.module",
+	"model": "releng.module",
 	"fields": {
 	    "name": "btrfs"
 	}
     },
     {
         "pk": 6,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "ext2"
         }
     },
     {
         "pk": 7,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "ext3"
         }
     },
     {
         "pk": 8,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "ext4"
         }
     },
     {
         "pk": 9,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "swap"
         }
     },
     {
         "pk": 10,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "xfs"
         }
     },
     {
         "pk": 11,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "jfs"
         }
     },
     {
         "pk": 12,
-        "model": "isotests.module",
+        "model": "releng.module",
         "fields": {
             "name": "reiserFS"
         }

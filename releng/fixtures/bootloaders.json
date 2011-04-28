@@ -1,21 +1,21 @@
 [
     {
 	"pk": 1,
-	"model": "isotests.bootloader",
+	"model": "releng.bootloader",
 	"fields": {
 	    "name": "grub"
 	}
     },
     {
 	"pk": 2,
-	"model": "isotests.bootloader",
+	"model": "releng.bootloader",
 	"fields": {
 	    "name": "syslinux"
 	}
     },
     {
 	"pk": 3,
-	"model": "isotests.bootloader",
+	"model": "releng.bootloader",
 	"fields": {
 	    "name": "other/manual"
 	}

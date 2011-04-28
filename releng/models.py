@@ -114,8 +114,8 @@ def set_created_field(sender, **kwargs):
 from django.db.models.signals import pre_save
 
 pre_save.connect(set_created_field, sender=Iso,
-        dispatch_uid="isotests.models")
+        dispatch_uid="releng.models")
 pre_save.connect(set_created_field, sender=Test,
-        dispatch_uid="isotests.models")
+        dispatch_uid="releng.models")
 
 # vim: set ts=4 sw=4 et:
