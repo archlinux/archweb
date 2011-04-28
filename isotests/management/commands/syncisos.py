@@ -36,7 +36,7 @@ class IsoListParser(HTMLParser):
             raise CommandError('Couldn\'t parse "%s"' % url)
 
 class Command(BaseCommand):
-    help = 'Gets new isos from http://releng.archlinux.org/isos/'
+    help = 'Gets new isos from %s' % ISOLISTURL
 
     def handle(self, *args, **options):
         parser = IsoListParser()
