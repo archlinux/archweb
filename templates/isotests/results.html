@@ -3,188 +3,419 @@
 {% block title %}Arch Linux - Testresults{% endblock %}
 
 {% block content %}
+<a href="/isotests/add/">Give feedback</a>
+
 <div class="box">
-	<h2>Arch releng iso build test results</h2>
-	<table>
-		<tr>
-			<td>
-				<h3>image arch</h3>
-			</td>
-		</tr>
-		{% if architecture_list %}
-		{% for architecture in architecture_list %}
-		<tr>
-			<td>{{ architecture.name }}</td>
-			<td>{{ architecture.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ architecture.get_failed_test|default_if_none:"Never failed"  }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>image type</h3>
-			</td>
-		</tr>
-		{% if iso_type_list %}
-		{% for iso_type in iso_type_list %}
-		<tr>
-			<td>{{ iso_type.name }}</td>
-			<td>{{ iso_type.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ iso_type.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>image boot</h3>
-			</td>
-		</tr>
-		{% if boot_type_list %}
-		{% for boot_type in boot_type_list %}
-		<tr>
-			<td>{{ boot_type.name }}</td>
-			<td>{{ boot_type.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ boot_type.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>hardware type</h3>
-			</td>
-		</tr>
-		{% if hardware_type_list %}
-		{% for hardware_type in hardware_type_list %}
-		<tr>
-			<td>{{ hardware_type.name }}</td>
-			<td>{{ hardware_type.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ hardware_type.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>install type</h3>
-			</td>
-		</tr>
-		{% if install_type_list %}
-		{% for install_type in install_type_list %}
-		<tr>
-			<td>{{ install_type.name }}</td>
-			<td>{{ install_type.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ install_type.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>source selection</h3>
-			</td>
-		</tr>
-		{% if source_list %}
-		{% for source in source_list %}
-		<tr>
-			<td>{{ source.name }}</td>
-			<td>{{ source.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ source.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>clock</h3>
-			</td>
-		</tr>
-		{% if clock_choices_list %}
-		{% for clock_choice in clock_choices_list %}
-		<tr>
-			<td>{{ clock_choice.name }}</td>
-			<td>{{ clock_choice.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ clock_choice.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>partitioning/filesystems</h3>
-			</td>
-		</tr>
-		{% if filesystem_list %}
-		{% for filesystem in filesystem_list %}
-		<tr>
-			<td>{{ filesystem.name }}</td>
-			<td>{{ filesystem.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ filesystem.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>fancy stuff</h3>
-			</td>
-		</tr>
-		{% if module_list %}
-		{% for module in module_list %}
-		<tr>
-			<td>{{ module.name }}</td>
-			<td>{{ module.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ module.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>rollback</h3>
-			</td>
-		</tr>
-		<tr>
-			<td>yes</td>
-		</tr>
-		<tr>
-			<td>no</td>
-		</tr>
-		<tr>
-			<td>
-				<h4>rollback: partitioning/filesystems</h4>
-			</td>
-		</tr>
-		{% if filesystem_list %}
-		{% for filesystem in filesystem_list %}
-		<tr>
-			<td>{{ filesystem.name }}</td>
-			<td>{{ filesystem.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ filesystem.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h4>rollback: fancy stuff</h4>
-			</td>
-		</tr>
-		{% if module_list %}
-		{% for module in module_list %}
-		<tr>
-			<td>{{ module.name }}</td>
-			<td>{{ module.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ module.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-		<tr>
-			<td>
-				<h3>bootloader</h3>
-			</td>
-		</tr>
-		{% if bootloader_list %}
-		{% for bootloader in bootloader_list %}
-		<tr>
-			<td>{{ bootloader.name }}</td>
-			<td>{{ bootloader.get_success_test|default_if_none:"Never succeeded" }}</td>
-			<td>{{ bootloader.get_failed_test|default_if_none:"Never failed" }}</td>
-		</tr>
-		{% endfor %}
-		{% endif %}
-	</table>
+    <h2>Arch releng iso build test results</h2>
+    <table>
+        <tr>
+            <td>
+                <h3>image arch</h3>
+            </td>
+        </tr>
+        {% if architecture_list %}
+        {% for architecture in architecture_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/architecture/{{ architecture.pk }}/">
+                    {{ architecture.name }}
+                </a>
+            </td>
+            <td>
+                {% if architecture.get_success_test %}
+                <a href="/isotests/results/{{ architecture.get_success_test.pk }}/">
+                    {{ architecture.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if architecture.get_failed_test %}
+                <a href="/isotests/results/{{ architecture.get_failed_test.pk }}/">
+                    {{ architecture.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>image type</h3>
+            </td>
+        </tr>
+        {% if iso_type_list %}
+        {% for iso_type in iso_type_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/iso_type/{{ iso_type.pk }}/">
+                    {{ iso_type.name }}
+                </a>
+            </td>
+            <td>
+                {% if iso_type.get_success_test %}
+                <a href="/isotests/results/{{ iso_type.get_success_test.pk }}/">
+                    {{ iso_type.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if iso_type.get_failed_test %}
+                <a href="/isotests/results/{{ iso_type.get_failed_test.pk }}/">
+                    {{ iso_type.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>image boot</h3>
+            </td>
+        </tr>
+        {% if boot_type_list %}
+        {% for boot_type in boot_type_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/boot_type/{{ boot_type.pk }}/">
+                    {{ boot_type.name }}
+                </a>
+            </td>
+            <td>
+                {% if boot_type.get_success_test %}
+                <a href="/isotests/results/{{ boot_type.get_success_test.pk }}/">
+                    {{ boot_type.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if boot_type.get_failed_test %}
+                <a href="/isotests/results/{{ boot_type.get_failed_test.pk }}/">
+                    {{ boot_type.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>hardware type</h3>
+            </td>
+        </tr>
+        {% if hardware_type_list %}
+        {% for hardware_type in hardware_type_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/hardware_type/{{ hardware_type.pk }}/">
+                    {{ hardware_type.name }}
+                </a>
+            </td>
+            <td>
+                {% if hardware_type.get_success_test %}
+                <a href="/isotests/results/{{ hardware_type.get_success_test.pk }}/">
+                    {{ hardware_type.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if hardware_type.get_failed_test %}
+                <a href="/isotests/results/{{ hardware_type.get_failed_test.pk }}/">
+                    {{ hardware_type.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>install type</h3>
+            </td>
+        </tr>
+        {% if install_type_list %}
+        {% for install_type in install_type_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/install_type/{{ install_type.pk }}/">
+                    {{ install_type.name }}
+                </a>
+            </td>
+            <td>
+                {% if install_type.get_success_test %}
+                <a href="/isotests/results/{{ install_type.get_success_test.pk }}/">
+                    {{ install_type.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if install_type.get_failed_test %}
+                <a href="/isotests/results/{{ install_type.get_failed_test.pk }}/">
+                    {{ install_type.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>source selection</h3>
+            </td>
+        </tr>
+        {% if source_list %}
+        {% for source in source_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/source/{{ source.pk }}/">
+                    {{ source.name }}
+                </a>
+            </td>
+            <td>
+                {% if source.get_success_test %}
+                <a href="/isotests/results/{{ source.get_success_test.pk }}/">
+                    {{ source.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if source.get_failed_test %}
+                <a href="/isotests/results/{{ source.get_failed_test.pk }}/">
+                    {{ source.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>clock</h3>
+            </td>
+        </tr>
+        {% if clock_choices_list %}
+        {% for clock_choice in clock_choices_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/clock_choice/{{ clock_choice.pk }}/">
+                    {{ clock_choice.name }}
+                </a>
+            </td>
+            <td>
+                {% if clock_choice.get_success_test %}
+                <a href="/isotests/results/{{ clock_choice.get_success_test.pk }}/">
+                    {{ clock_choice.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if clock_choice.get_failed_test %}
+                <a href="/isotests/results/{{ clock_choice.get_failed_test.pk }}/">
+                    {{ clock_choice.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>partitioning/filesystems</h3>
+            </td>
+        </tr>
+        {% if filesystem_list %}
+        {% for filesystem in filesystem_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/filesystem/{{ filesystem.pk }}/">
+                    {{ filesystem.name }}
+                </a>
+            </td>
+            <td>
+                {% if filesystem.get_success_test %}
+                <a href="/isotests/results/{{ filesystem.get_success_test.pk }}/">
+                    {{ filesystem.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if filesystem.get_failed_test %}
+                <a href="/isotests/results/{{ filesystem.get_failed_test.pk }}/">
+                    {{ filesystem.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>fancy stuff</h3>
+            </td>
+        </tr>
+        {% if module_list %}
+        {% for module in module_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/modules/{{ module.pk }}/">
+                    {{ module.name }}
+                </a>
+            </td>
+            <td>
+                {% if module.get_success_test %}
+                <a href="/isotests/results/{{ module.get_success_test.pk }}/">
+                    {{ module.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if module.get_failed_test %}
+                <a href="/isotests/results/{{ module.get_failed_test.pk }}/">
+                    {{ module.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h4>rollback: partitioning/filesystems</h4>
+            </td>
+        </tr>
+        {% if filesystem_list %}
+        {% for filesystem in filesystem_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/rollback_filesystem/{{ filesystem.pk }}/">
+                    {{ filesystem.name }}
+                </a>
+            </td>
+            <td>
+                {% if filesystem.get_rollback_success_test %}
+                <a href="/isotests/results/{{ filesystem.get_rollback_success_test.pk }}/">
+                    {{ filesystem.get_rollback_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if filesystem.get_rollback_failed_test %}
+                <a href="/isotests/results/{{ filesystem.get_rollback_failed_test.pk }}/">
+                    {{ filesystem.get_rollback_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h4>rollback: fancy stuff</h4>
+            </td>
+        </tr>
+        {% if module_list %}
+        {% for module in module_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/rollback_modules/{{ module.pk }}/">
+                    {{ module.name }}
+                </a>
+            </td>
+            <td>
+                {% if module.get_rollback_success_test %}
+                <a href="/isotests/results/{{ module.get_rollback_success_test.pk }}/">
+                    {{ module.get_rollback_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if module.get_rollback_failed_test %}
+                <a href="/isotests/results/{{ module.get_rollback_failed_test.pk }}/">
+                    {{ module.get_rollback_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        <tr>
+            <td>
+                <h3>bootloader</h3>
+            </td>
+        </tr>
+        {% if bootloader_list %}
+        {% for bootloader in bootloader_list %}
+        <tr>
+            <td>
+                <a href="/isotests/results/bootloader/{{ bootloader.pk }}/">
+                    {{ bootloader.name }}
+                </a>
+            </td>
+            <td>
+                {% if bootloader.get_success_test %}
+                <a href="/isotests/results/{{ bootloader.get_success_test.pk }}/">
+                    {{ bootloader.get_success_test.name }}
+                </a>
+                {% else %}
+                Never succeeded
+                {% endif %}
+            </td>
+            <td>
+                {% if bootloader.get_failed_test %}
+                <a href="/isotests/results/{{ bootloader.get_failed_test.pk }}/">
+                    {{ bootloader.get_failed_test.name }}
+                </a>
+                {% else %}
+                Never failed
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
 </div>
 {% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/isotests/">Go back to results</a>
+<a href="/isotests/add/">Give feedback</a>
+
+<div class="box">
+    <h2>
+        Results for :
+        {% if option %}
+        {{ option }}: {{ value }}
+        {% endif %}
+
+        {% if iso_name %}
+        {{ iso_name }}
+        {% endif %}
+    </h2>
+
+    <table>
+        <tr>
+            <th>iso</th>
+            <th>nickname</th>
+            <th>success?</th>
+        </tr>
+        {% for test in test_list %}
+        <tr>
+            <td>{{ test.iso.name }}</td>
+            <td>{{ test.user_name }}</td>
+            <td>{{ test.success|yesno }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

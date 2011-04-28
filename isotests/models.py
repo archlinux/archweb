@@ -7,19 +7,49 @@ class IsoOption(models.Model):
 
     name = models.CharField(max_length=200)
 
+    success_tests = None
+    failed_tests = None
+
     def __unicode__(self):
         return str(self.name)
 
     def get_success_test(self):
-        test = self.test_set.filter(success=True).annotate(Max('iso__id'))
-        if test:
-            return test[0].iso.name
+        if not self.success_tests:
+            self.success_tests = self.test_set.filter(success=True).annotate(Max('iso__id'))
+
+        if self.success_tests:
+            return self.success_tests[0].iso
         return None
 
     def get_failed_test(self):
-        test = self.test_set.filter(success=False).annotate(Max('iso__id'))
-        if test:
-            return test[0].iso.name
+        if not self.failed_tests:
+            self.failed_tests = self.test_set.filter(success=False).annotate(Max('iso__id'))
+
+        if self.failed_tests:
+            return self.failed_tests[0].iso
+        return None
+
+class RollbackOption(IsoOption):
+    class Meta:
+        abstract = True
+
+    success_rollback_tests = None
+    failed_rollback_tests = None
+
+    def get_rollback_success_test(self):
+        if not self.success_rollback_tests:
+            self.success_rollback_tests = self.rollback_test_set.filter(success=True).annotate(Max('iso__id'))
+
+        if self.success_rollback_tests:
+            return self.success_rollback_tests[0].iso
+        return None
+
+    def get_rollback_failed_test(self):
+        if not self.failed_rollback_tests:
+            self.failed_rollback_tests = self.rollback_test_set.filter(success=False).annotate(Max('iso__id'))
+
+        if self.failed_rollback_tests:
+            return self.failed_rollback_tests[0].iso
         return None
 
 class Iso(models.Model):
@@ -50,10 +80,10 @@ class Source(IsoOption):
 class ClockChoice(IsoOption):
     pass
 
-class Filesystem(IsoOption):
+class Filesystem(RollbackOption):
     pass
 
-class Module(IsoOption):
+class Module(RollbackOption):
     pass
 
 class Bootloader(IsoOption):
@@ -72,11 +102,10 @@ class Test(models.Model):
     clock_choice = models.ForeignKey(ClockChoice)
     filesystem = models.ForeignKey(Filesystem)
     modules = models.ManyToManyField(Module, null=True, blank=True)
-    rollback = models.BooleanField()
     rollback_filesystem = models.ForeignKey(Filesystem,
-            related_name="rollback_test", null=True, blank=True)
+            related_name="rollback_test_set", null=True, blank=True)
     rollback_modules = models.ManyToManyField(Module,
-            related_name="rollback_test", null=True, blank=True)
+            related_name="rollback_test_set", null=True, blank=True)
     bootloader = models.ForeignKey(Bootloader)
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)

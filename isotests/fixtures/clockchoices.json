@@ -3,7 +3,7 @@
 	"pk": 1,
 	"model": "isotests.clockchoice",
 	"fields": {
-	    "name": "default"
+	    "name": "unchanged"
 	}
     },
     {

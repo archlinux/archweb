@@ -33,5 +33,54 @@
 	"fields": {
 	    "name": "btrfs"
 	}
+    },
+    {
+        "pk": 6,
+        "model": "isotests.module",
+        "fields": {
+            "name": "ext2"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "isotests.module",
+        "fields": {
+            "name": "ext3"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "isotests.module",
+        "fields": {
+            "name": "ext4"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "isotests.module",
+        "fields": {
+            "name": "swap"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "isotests.module",
+        "fields": {
+            "name": "xfs"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "isotests.module",
+        "fields": {
+            "name": "jfs"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "isotests.module",
+        "fields": {
+            "name": "reiserFS"
+        }
     }
 ]
