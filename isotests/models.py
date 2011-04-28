@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models import Max
 
@@ -15,7 +17,8 @@ class IsoOption(models.Model):
 
     def get_success_test(self):
         if not self.success_tests:
-            self.success_tests = self.test_set.filter(success=True).annotate(Max('iso__id'))
+            self.success_tests = self.test_set.filter(
+                    success=True).annotate(Max('iso__id'))
 
         if self.success_tests:
             return self.success_tests[0].iso
@@ -23,7 +26,8 @@ class IsoOption(models.Model):
 
     def get_failed_test(self):
         if not self.failed_tests:
-            self.failed_tests = self.test_set.filter(success=False).annotate(Max('iso__id'))
+            self.failed_tests = self.test_set.filter(
+                    success=False).annotate(Max('iso__id'))
 
         if self.failed_tests:
             return self.failed_tests[0].iso
@@ -38,7 +42,8 @@ class RollbackOption(IsoOption):
 
     def get_rollback_success_test(self):
         if not self.success_rollback_tests:
-            self.success_rollback_tests = self.rollback_test_set.filter(success=True).annotate(Max('iso__id'))
+            self.success_rollback_tests = self.rollback_test_set.filter(
+                    success=True).annotate(Max('iso__id'))
 
         if self.success_rollback_tests:
             return self.success_rollback_tests[0].iso
@@ -46,14 +51,16 @@ class RollbackOption(IsoOption):
 
     def get_rollback_failed_test(self):
         if not self.failed_rollback_tests:
-            self.failed_rollback_tests = self.rollback_test_set.filter(success=False).annotate(Max('iso__id'))
+            self.failed_rollback_tests = self.rollback_test_set.filter(
+                    success=False).annotate(Max('iso__id'))
 
         if self.failed_rollback_tests:
             return self.failed_rollback_tests[0].iso
         return None
 
 class Iso(models.Model):
-    name = models.CharField(max_length=500)
+    name = models.CharField(max_length=255)
+    created = models.DateTimeField(editable=False)
     active = models.BooleanField(default=True)
 
     def __unicode__(self):
@@ -92,6 +99,7 @@ class Bootloader(IsoOption):
 class Test(models.Model):
     user_name = models.CharField(max_length=500)
     user_email = models.EmailField()
+    created = models.DateTimeField(editable=False)
     iso = models.ForeignKey(Iso)
     architecture = models.ForeignKey(Architecture)
     iso_type = models.ForeignKey(IsoType)
@@ -109,5 +117,18 @@ class Test(models.Model):
     bootloader = models.ForeignKey(Bootloader)
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)
+
+def set_created_field(sender, **kwargs):
+    # We use this same callback for both Isos and Tests
+    obj = kwargs['instance']
+    if not obj.created:
+        obj.created = datetime.utcnow()
+
+from django.db.models.signals import pre_save
+
+pre_save.connect(set_created_field, sender=Iso,
+        dispatch_uid="isotests.models")
+pre_save.connect(set_created_field, sender=Test,
+        dispatch_uid="isotests.models")
 
 # vim: set ts=4 sw=4 et:

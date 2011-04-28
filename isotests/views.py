@@ -1,15 +1,12 @@
-from django.forms import ModelChoiceField, CharField, TextInput
-from django.forms import ModelForm, RadioSelect, CheckboxSelectMultiple
-from django.forms import ModelMultipleChoiceField, BooleanField
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import Context, loader
+from django import forms
+from django.http import HttpResponseRedirect
 from django.views.generic.simple import direct_to_template
 
-from isotests.models import Iso, Architecture, IsoType, BootType
-from isotests.models import HardwareType, InstallType, Source, Test
-from isotests.models import ClockChoice, Filesystem, Module, Bootloader
+from .models import (Architecture, BootType, Bootloader, ClockChoice,
+        Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
+        Test)
 
-class TestForm(ModelForm):
+class TestForm(forms.ModelForm):
     class Meta:
         model = Test
         fields = ("user_name", "user_email", "iso", "architecture",
@@ -18,35 +15,35 @@ class TestForm(ModelForm):
                   "modules", "rollback_filesystem", "rollback_modules",
                   "bootloader", "success", "comments")
         widgets = {
-            "architecture": RadioSelect(),
-            "iso_type": RadioSelect(),
-            "boot_type": RadioSelect(),
-            "hardware_type": RadioSelect(),
-            "install_type": RadioSelect(),
-            "source": RadioSelect(),
-            "clock_choice": RadioSelect(),
-            "bootloader": RadioSelect(),
-            "modules": CheckboxSelectMultiple(),
+            "architecture": forms.RadioSelect(),
+            "iso_type": forms.RadioSelect(),
+            "boot_type": forms.RadioSelect(),
+            "hardware_type": forms.RadioSelect(),
+            "install_type": forms.RadioSelect(),
+            "source": forms.RadioSelect(),
+            "clock_choice": forms.RadioSelect(),
+            "bootloader": forms.RadioSelect(),
+            "modules": forms.CheckboxSelectMultiple(),
         }
-    success = BooleanField(help_text="Only check this if everything went fine. " \
+    success = forms.BooleanField(help_text="Only check this if everything went fine. " \
             "If you you ran into any errors please specify them in the " \
             "comments.", required=False)
-    iso = ModelChoiceField(queryset=Iso.objects.filter(active=True))
-    filesystem = ModelChoiceField(queryset=Filesystem.objects.all(),
+    iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
+    filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
             help_text="Check the installed system, including fstab.",
-            widget=RadioSelect())
-    modules = ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="", widget=CheckboxSelectMultiple(), required=False)
-    rollback_filesystem = ModelChoiceField(queryset=Filesystem.objects.all(),
+            widget=forms.RadioSelect())
+    modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
+            help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
+    rollback_filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
             help_text="If you did a rollback followed by a new attempt to setup " \
             "your lockdevices/filesystems, select which option you took here.",
-            widget=RadioSelect(), required=False)
-    rollback_modules = ModelMultipleChoiceField(queryset=Module.objects.all(),
+            widget=forms.RadioSelect(), required=False)
+    rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
             help_text="If you did a rollback followed b a new attempt to setup " \
             "your lockdevices/filesystems, select which option you took here.",
-    widget=CheckboxSelectMultiple(), required=False)
-    website = CharField(label='',
-            widget=TextInput(attrs={'style': 'display:none;'}), required=False)
+    widget=forms.CheckboxSelectMultiple(), required=False)
+    website = forms.CharField(label='',
+            widget=forms.TextInput(attrs={'style': 'display:none;'}), required=False)
 
 def add_result(request):
     if request.POST:
@@ -72,8 +69,7 @@ def view_results(request):
     filesystem_list = Filesystem.objects.all()
     bootloader_list = Bootloader.objects.all()
 
-    t = loader.get_template("isotests/results.html")
-    c = Context({
+    context = {
             'architecture_list': architecture_list,
             'iso_type_list': iso_type_list,
             'boot_type_list': boot_type_list,
@@ -84,8 +80,8 @@ def view_results(request):
             'filesystem_list': filesystem_list,
             'module_list': module_list,
             'bootloader_list': bootloader_list,
-    })
-    return HttpResponse(t.render(c))
+    }
+    return direct_to_template(request, 'isotests/results.html', context)
 
 def view_results_iso(request, isoid):
     iso = Iso.objects.get(pk=isoid)

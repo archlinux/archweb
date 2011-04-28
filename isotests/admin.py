@@ -1,8 +1,7 @@
 from django.contrib import admin
 
-from isotests.models import Iso, Architecture, IsoType, BootType
-from isotests.models import HardwareType, InstallType, Source
-from isotests.models import ClockChoice, Filesystem, Module, Bootloader
+from .models import (Architecture, BootType, Bootloader, ClockChoice,
+        Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source)
 
 admin.site.register(Iso)
 admin.site.register(Architecture)

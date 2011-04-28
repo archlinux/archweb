@@ -2,10 +2,10 @@ import re
 import urllib
 from HTMLParser import HTMLParser, HTMLParseError
 
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from isotests.models import Iso
-from settings import ISOLISTURL
 
 class IsoListParser(HTMLParser):
     def __init__(self):
@@ -23,25 +23,22 @@ class IsoListParser(HTMLParser):
 
     def parse(self, url):
         try:
-            f = urllib.urlopen(url)
-
-            s = f.read()
-            f.close()
-
-            self.feed(s)
+            remote_file = urllib.urlopen(url)
+            data = remote_file.read()
+            remote_file.close()
+            self.feed(data)
             self.close()
-
             return self.hyperlinks
         except HTMLParseError:
             raise CommandError('Couldn\'t parse "%s"' % url)
 
 class Command(BaseCommand):
-    help = 'Gets new isos from %s' % ISOLISTURL
+    help = 'Gets new isos from %s' % settings.ISO_LIST_URL
 
     def handle(self, *args, **options):
         parser = IsoListParser()
         isonames = Iso.objects.values_list('name', flat=True)
-        new_isos = parser.parse(ISOLISTURL)
+        new_isos = parser.parse(settings.ISO_LIST_URL)
 
         for iso in new_isos:
             if iso not in isonames:
