@@ -262,6 +262,8 @@ ul.admin-actions li { display: inline; padding-left: 1.5em; }
 
 /* iso testing feedback form */
 #releng-feedback label { width: auto; display: inline; font-weight: normal; }
+#releng-feedback ul { padding-left: 1em; }
+#releng-feedback li { list-style: none; }
 
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a { color: white !important; }

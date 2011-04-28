@@ -7,11 +7,22 @@ from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test)
 
+def standard_field(model, help_text=None):
+    return forms.ModelChoiceField(queryset=model.objects.all(),
+        widget=forms.RadioSelect(), empty_label=None, help_text=help_text)
+
 class TestForm(forms.ModelForm):
     iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
-    filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
-            help_text="Check the installed system, including fstab.",
-            widget=forms.RadioSelect())
+    architecture = standard_field(Architecture)
+    iso_type = standard_field(IsoType)
+    boot_type = standard_field(BootType)
+    hardware_type = standard_field(HardwareType)
+    install_type = standard_field(InstallType)
+    source = standard_field(Source)
+    clock_choice = standard_field(ClockChoice)
+    bootloader = standard_field(Bootloader)
+    filesystem = standard_field(Filesystem,
+            help_text="Check the installed system, including fstab.")
     modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
             help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
     rollback_filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
@@ -36,14 +47,6 @@ class TestForm(forms.ModelForm):
                   "modules", "rollback_filesystem", "rollback_modules",
                   "bootloader", "success", "comments")
         widgets = {
-            "architecture": forms.RadioSelect(),
-            "iso_type": forms.RadioSelect(),
-            "boot_type": forms.RadioSelect(),
-            "hardware_type": forms.RadioSelect(),
-            "install_type": forms.RadioSelect(),
-            "source": forms.RadioSelect(),
-            "clock_choice": forms.RadioSelect(),
-            "bootloader": forms.RadioSelect(),
             "modules": forms.CheckboxSelectMultiple(),
         }
 
