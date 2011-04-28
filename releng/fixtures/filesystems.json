@@ -1,0 +1,23 @@
+[
+    {
+	"pk": 1,
+	"model": "releng.filesystem",
+	"fields": {
+	    "name": "autoprepare"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "releng.filesystem",
+	"fields": {
+	    "name": "manual"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "releng.filesystem",
+	"fields": {
+	    "name": "from config file"
+	}
+    }
+]

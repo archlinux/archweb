@@ -1,0 +1,23 @@
+[
+    {
+	"pk": 1,
+	"model": "releng.boottype",
+	"fields": {
+	    "name": "optical"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "releng.boottype",
+	"fields": {
+	    "name": "usb"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "releng.boottype",
+	"fields": {
+	    "name": "pxe"
+	}
+    }
+]

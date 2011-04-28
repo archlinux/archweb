@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'devel',
     'public',
     'south', # database migration support
+    'releng',
 )
 
 ## Import local settings
@@ -122,5 +123,8 @@ if DEBUG_TOOLBAR:
             list(MIDDLEWARE_CLASSES)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + [ 'debug_toolbar' ]
+
+# URL to fetch a current list of available ISOs
+ISO_LIST_URL = 'http://releng.archlinux.org/isos/'
 
 # vim: set ts=4 sw=4 et:

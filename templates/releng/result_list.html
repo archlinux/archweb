@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+    <h2>Results for:
+        {% if option %}{{ option|title }}: {{ value }}{% endif %}
+        {{ iso_name|default:"" }}
+    </h2>
+
+    <p><a href="{% url releng-test-overview %}">Go back to testing results</a></p>
+
+    <table id="releng-result" class="results">
+        <thead>
+            <tr>
+                <th>Iso</th>
+                <th>Submitted By</th>
+                <th>Date Submitted</th>
+                <th>Success</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for test in test_list %}
+            <tr>
+                <td>{{ test.iso.name }}</td>
+                <td>{{ test.user_name }}</td>
+                <td>{{ test.created|date }}</td>
+                <td>{{ test.success|yesno }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results:not(:has(tbody tr.empty))").tablesorter({widgets: ['zebra']});
+});
+</script>
+{% endblock %}

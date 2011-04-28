@@ -1,0 +1,30 @@
+[
+    {
+	"pk": 1,
+	"model": "releng.architecture",
+	"fields": {
+	    "name": "dual, option i686"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "releng.architecture",
+	"fields": {
+	    "name": "dual, option x86_64"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "releng.architecture",
+	"fields": {
+	    "name": "i686"
+	}
+    },
+    {
+	"pk": 4,
+	"model": "releng.architecture",
+	"fields": {
+	    "name": "x86_64"
+	}
+    }
+]

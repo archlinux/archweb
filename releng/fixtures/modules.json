@@ -1,0 +1,86 @@
+[
+    {
+	"pk": 1,
+	"model": "releng.module",
+	"fields": {
+	    "name": "lvm2"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "releng.module",
+	"fields": {
+	    "name": "dm_crypt"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "releng.module",
+	"fields": {
+	    "name": "softraid"
+	}
+    },
+    {
+	"pk": 4,
+	"model": "releng.module",
+	"fields": {
+	    "name": "nilfs2"
+	}
+    },
+    {
+	"pk": 5,
+	"model": "releng.module",
+	"fields": {
+	    "name": "btrfs"
+	}
+    },
+    {
+        "pk": 6,
+        "model": "releng.module",
+        "fields": {
+            "name": "ext2"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "releng.module",
+        "fields": {
+            "name": "ext3"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "releng.module",
+        "fields": {
+            "name": "ext4"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "releng.module",
+        "fields": {
+            "name": "swap"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "releng.module",
+        "fields": {
+            "name": "xfs"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "releng.module",
+        "fields": {
+            "name": "jfs"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "releng.module",
+        "fields": {
+            "name": "reiserFS"
+        }
+    }
+]

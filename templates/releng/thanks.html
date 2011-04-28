@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Feedback - Thanks!{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>Thanks!</h2>
+    <p>Thank you for taking the time to give us this information!
+    Your results have been succesfully added to our database.</p>
+    <p>You can now <a href="{% url releng-test-overview %}">go back to the results</a>,
+    or <a href="{% url releng-test-submit %}">give more feedback</a>.</p>
+</div>
+{% endblock %}

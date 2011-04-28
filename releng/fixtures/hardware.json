@@ -1,0 +1,44 @@
+[
+    {
+	"pk": 1,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "virtualbox"
+	}
+    },
+    {
+	"pk": 2,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "qemu"
+	}
+    },
+    {
+	"pk": 3,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "intel i686"
+	}
+    },
+    {
+	"pk": 4,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "intel x86_64"
+	}
+    },
+    {
+	"pk": 5,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "amd i686"
+	}
+    },
+    {
+	"pk": 6,
+	"model": "releng.hardwaretype",
+	"fields": {
+	    "name": "amd x86_64"
+	}
+    }
+]

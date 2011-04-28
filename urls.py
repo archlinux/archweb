@@ -73,6 +73,7 @@ urlpatterns += patterns('',
     (r'^mirrors/',   include('mirrors.urls')),
     (r'^news/',      include('news.urls')),
     (r'^packages/',  include('packages.urls')),
+    (r'^releng/',    include('releng.urls')),
     (r'^todo/',      include('todolists.urls')),
     (r'^opensearch/packages/$', 'packages.views.opensearch',
         {}, 'opensearch-packages'),
@@ -81,7 +82,7 @@ urlpatterns += patterns('',
 
 if settings.DEBUG == True:
     urlpatterns += patterns('',
-        (r'^media/(.*)$', 'django.views.static.serve', 
+        (r'^media/(.*)$', 'django.views.static.serve',
             {'document_root': os.path.join(settings.DEPLOY_PATH, 'media')}))
 
 # vim: set ts=4 sw=4 et:

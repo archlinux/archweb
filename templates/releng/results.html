@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Release Engineering Testbuild Results{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>Release Engineering Testbuild Results</h2>
+
+    <p>This is a overview screen showing a test results matrix of release
+    engineering produced ISOs. Various options and configurations are shown
+    with last success and last failure results, if known. To help improve ISO
+    quality, you are encouraged to <a href="{% url releng-test-submit %}">give feedback</a>
+    if you have tested and used any ISOs. Both successful and failed results
+    are encouraged and welcome.</p>
+
+    <p>All ISOs referenced on this page are available from
+    <a href="{{ iso_url }}">{{ iso_url }}</a>.</p>
+
+    <table>
+        {% for option in options %}
+        {% include "releng/result_section.html" %}
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
