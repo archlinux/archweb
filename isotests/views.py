@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.simple import direct_to_template
 
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
@@ -58,7 +58,7 @@ def submit_test_result(request):
             test = form.save(commit=False)
             test.ip_address = request.META.get("REMOTE_ADDR", None)
             test.save()
-            return HttpResponseRedirect('/isotests/thanks/')
+            return redirect('releng-test-thanks')
     else:
         form = TestForm()
 

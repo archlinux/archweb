@@ -9,7 +9,7 @@
     <p>This page allows you to submit feedback after testing and using a
     release engineering install ISO. If you do not currently have feedback to
     submit, you may want to take a look at the current
-    <a href="/isotests/">results page</a>.</p>
+    <a href="{% url releng-test-overview %}">results page</a>.</p>
 
     <div id="releng-feedback"> <form action="" method="post">{% csrf_token %}
             {{ form.as_p }}
