@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.views.generic.simple import direct_to_template
 
@@ -80,6 +81,7 @@ def view_results(request):
             'filesystem_list': filesystem_list,
             'module_list': module_list,
             'bootloader_list': bootloader_list,
+            'iso_url': settings.ISO_LIST_URL,
     }
     return direct_to_template(request, 'isotests/results.html', context)
 

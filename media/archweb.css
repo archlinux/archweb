@@ -260,6 +260,9 @@ ul.admin-actions li { display: inline; padding-left: 1.5em; }
 #dev-signoffs .signoff-no { color: red; }
 #dev-signoffs .signed-username { color: #888; margin-left: 0.5em; }
 
+/* iso testing feedback form */
+#releng-feedback label { width: auto; display: inline; font-weight: normal; }
+
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a { color: white !important; }
 #archnavbar.anb-packages ul li#anb-packages a { color: white !important; }

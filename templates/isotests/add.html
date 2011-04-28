@@ -3,13 +3,18 @@
 {% block title %}Arch Linux - Test Result Entry{% endblock %}
 
 {% block content %}
-<a href="/isotests/">Go back to results</a>
-
 <div class="box">
     <h2>Arch Releng Testbuild Feedback Entry</h2>
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
+
+    <p>This page allows you to submit feedback after testing and using a
+    release engineering install ISO. If you do not currently have feedback to
+    submit, you may want to take a look at the current
+    <a href="/isotests/">results page</a>.</p>
+
+    <div id="releng-feedback"> <form action="" method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
 </div>
 {% endblock %}

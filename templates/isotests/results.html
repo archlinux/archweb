@@ -1,16 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Arch Linux - Testresults{% endblock %}
+{% block title %}Arch Linux - Release Engineering Testbuild Results{% endblock %}
 
 {% block content %}
-<a href="/isotests/add/">Give feedback</a>
-
 <div class="box">
-    <h2>Arch Releng Testbuild Feedback results</h2>
+    <h2>Release Engineering Testbuild Results</h2>
+
+    <p>This is a overview screen showing a test results matrix of release
+    engineering produced ISOs. Various options and configurations are shown
+    with last success and last failure results, if known. To help improve ISO
+    quality, you are encouraged to <a href="/isotests/add/">give feedback</a>
+    if you have tested and used any ISOs. Both successful and failed results
+    are encouraged and welcome.</p>
+
+    <p>All ISOs referenced on this page are available from
+    <a href="{{ iso_url }}">{{ iso_url }}</a>.</p>
+
     <table>
         <tr>
             <td>
-                <h3>image arch</h3>
+                <h3>Architecture</h3>
             </td>
         </tr>
         {% if architecture_list %}
@@ -44,7 +53,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>image type</h3>
+                <h3>Image Type</h3>
             </td>
         </tr>
         {% if iso_type_list %}
@@ -78,7 +87,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>image boot</h3>
+                <h3>Boot Type</h3>
             </td>
         </tr>
         {% if boot_type_list %}
@@ -112,7 +121,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>hardware type</h3>
+                <h3>Hardware Type</h3>
             </td>
         </tr>
         {% if hardware_type_list %}
@@ -146,7 +155,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>install type</h3>
+                <h3>Install Type</h3>
             </td>
         </tr>
         {% if install_type_list %}
@@ -180,7 +189,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>source selection</h3>
+                <h3>Source Selection</h3>
             </td>
         </tr>
         {% if source_list %}
@@ -214,7 +223,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>clock</h3>
+                <h3>Clock Choice</h3>
             </td>
         </tr>
         {% if clock_choices_list %}
@@ -248,7 +257,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>partitioning/filesystems</h3>
+                <h3>Partitioning &amp; Filesystems</h3>
             </td>
         </tr>
         {% if filesystem_list %}
@@ -282,7 +291,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>fancy stuff</h3>
+                <h3>Fancy Stuff</h3>
             </td>
         </tr>
         {% if module_list %}
@@ -316,7 +325,7 @@
         {% endif %}
         <tr>
             <td>
-                <h4>rollback: partitioning/filesystems</h4>
+                <h3>Rollback: Partitioning &amp; Filesystems</h3>
             </td>
         </tr>
         {% if filesystem_list %}
@@ -350,7 +359,7 @@
         {% endif %}
         <tr>
             <td>
-                <h4>rollback: fancy stuff</h4>
+                <h3>Rollback: Fancy Stuff</h4>
             </td>
         </tr>
         {% if module_list %}
@@ -384,7 +393,7 @@
         {% endif %}
         <tr>
             <td>
-                <h3>bootloader</h3>
+                <h3>Bootloader</h3>
             </td>
         </tr>
         {% if bootloader_list %}
