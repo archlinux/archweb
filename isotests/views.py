@@ -8,6 +8,26 @@ from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Test)
 
 class TestForm(forms.ModelForm):
+    iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
+    filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
+            help_text="Check the installed system, including fstab.",
+            widget=forms.RadioSelect())
+    modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
+            help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
+    rollback_filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
+            help_text="If you did a rollback followed by a new attempt to setup " \
+            "your lockdevices/filesystems, select which option you took here.",
+            widget=forms.RadioSelect(), required=False)
+    rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
+            help_text="If you did a rollback followed b a new attempt to setup " \
+            "your lockdevices/filesystems, select which option you took here.",
+            widget=forms.CheckboxSelectMultiple(), required=False)
+    success = forms.BooleanField(help_text="Only check this if everything went fine. " \
+            "If you you ran into any errors please specify them in the " \
+            "comments.", required=False)
+    website = forms.CharField(label='',
+            widget=forms.TextInput(attrs={'style': 'display:none;'}), required=False)
+
     class Meta:
         model = Test
         fields = ("user_name", "user_email", "iso", "architecture",
@@ -26,25 +46,6 @@ class TestForm(forms.ModelForm):
             "bootloader": forms.RadioSelect(),
             "modules": forms.CheckboxSelectMultiple(),
         }
-    success = forms.BooleanField(help_text="Only check this if everything went fine. " \
-            "If you you ran into any errors please specify them in the " \
-            "comments.", required=False)
-    iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
-    filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
-            help_text="Check the installed system, including fstab.",
-            widget=forms.RadioSelect())
-    modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
-    rollback_filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
-            help_text="If you did a rollback followed by a new attempt to setup " \
-            "your lockdevices/filesystems, select which option you took here.",
-            widget=forms.RadioSelect(), required=False)
-    rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="If you did a rollback followed b a new attempt to setup " \
-            "your lockdevices/filesystems, select which option you took here.",
-    widget=forms.CheckboxSelectMultiple(), required=False)
-    website = forms.CharField(label='',
-            widget=forms.TextInput(attrs={'style': 'display:none;'}), required=False)
 
 def add_result(request):
     if request.POST:
