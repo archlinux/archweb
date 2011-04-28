@@ -4,59 +4,43 @@ from django.db import models
 from django.db.models import Max
 
 class IsoOption(models.Model):
-    class Meta:
-        abstract = True
-
     name = models.CharField(max_length=200)
 
-    success_tests = None
-    failed_tests = None
-
     def __unicode__(self):
-        return str(self.name)
+        return self.name
 
-    def get_success_test(self):
-        if not self.success_tests:
-            self.success_tests = self.test_set.filter(
-                    success=True).annotate(Max('iso__id'))
+    def get_test_result(self, success):
+        try:
+            return self.test_set.filter(success=success).select_related(
+                    'iso').latest('iso__id').iso
+        except Test.DoesNotExist:
+            return None
 
-        if self.success_tests:
-            return self.success_tests[0].iso
-        return None
+    def get_last_success(self):
+        return self.get_test_result(True)
 
-    def get_failed_test(self):
-        if not self.failed_tests:
-            self.failed_tests = self.test_set.filter(
-                    success=False).annotate(Max('iso__id'))
+    def get_last_failure(self):
+        return self.get_test_result(False)
 
-        if self.failed_tests:
-            return self.failed_tests[0].iso
-        return None
-
-class RollbackOption(IsoOption):
     class Meta:
         abstract = True
 
-    success_rollback_tests = None
-    failed_rollback_tests = None
+class RollbackOption(IsoOption):
+    def get_rollback_test_result(self, success):
+        try:
+            return self.rollback_test_set.filter(success=success).select_related(
+                    'iso').latest('iso__id').iso
+        except Test.DoesNotExist:
+            return None
 
-    def get_rollback_success_test(self):
-        if not self.success_rollback_tests:
-            self.success_rollback_tests = self.rollback_test_set.filter(
-                    success=True).annotate(Max('iso__id'))
+    def get_last_rollback_success(self):
+        return self.get_rollback_test_result(True)
 
-        if self.success_rollback_tests:
-            return self.success_rollback_tests[0].iso
-        return None
+    def get_last_rollback_failure(self):
+        return self.get_rollback_test_result(False)
 
-    def get_rollback_failed_test(self):
-        if not self.failed_rollback_tests:
-            self.failed_rollback_tests = self.rollback_test_set.filter(
-                    success=False).annotate(Max('iso__id'))
-
-        if self.failed_rollback_tests:
-            return self.failed_rollback_tests[0].iso
-        return None
+    class Meta:
+        abstract = True
 
 class Iso(models.Model):
     name = models.CharField(max_length=255)
@@ -112,11 +96,11 @@ class Test(models.Model):
     clock_choice = models.ForeignKey(ClockChoice)
     filesystem = models.ForeignKey(Filesystem)
     modules = models.ManyToManyField(Module, null=True, blank=True)
+    bootloader = models.ForeignKey(Bootloader)
     rollback_filesystem = models.ForeignKey(Filesystem,
             related_name="rollback_test_set", null=True, blank=True)
     rollback_modules = models.ManyToManyField(Module,
             related_name="rollback_test_set", null=True, blank=True)
-    bootloader = models.ForeignKey(Bootloader)
 
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)

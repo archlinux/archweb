@@ -1,12 +1,11 @@
 from django.conf.urls.defaults import patterns
 
 urlpatterns = patterns('isotests.views',
-    (r'^$',                                              'view_results'),
-    (r'^add/$',                                          'add_result'),
-    (r'^thanks/$',                                       'thanks'),
-    (r'^results/$',                                      'view_results'),
-    (r'^results/(?P<option>[a-z0-9_]+)/(?P<value>.+)/$', 'view_results_for'),
-    (r'^results/(?P<isoid>.+)/$',                        'view_results_iso'),
+    (r'^$',                              'test_results_overview', {}, 'releng-test-overview'),
+    (r'^submit/$',                       'submit_test_result', {}, 'releng-test-submit'),
+    (r'^thanks/$',                       'submit_test_thanks', {}, 'releng-test-thanks'),
+    (r'^iso/(?P<iso_id>\d+)/$',          'test_results_iso', {}, 'releng-results-iso'),
+    (r'^(?P<option>.+)/(?P<value>\d+)/$','test_results_for', {}, 'releng-results-for'),
 )
 
 # vim: set ts=4 sw=4 et:

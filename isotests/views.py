@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
 
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
@@ -20,11 +21,11 @@ class TestForm(forms.ModelForm):
     install_type = standard_field(InstallType)
     source = standard_field(Source)
     clock_choice = standard_field(ClockChoice)
-    bootloader = standard_field(Bootloader)
     filesystem = standard_field(Filesystem,
             help_text="Check the installed system, including fstab.")
     modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
             help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
+    bootloader = standard_field(Bootloader)
     rollback_filesystem = forms.ModelChoiceField(queryset=Filesystem.objects.all(),
             help_text="If you did a rollback followed by a new attempt to setup " \
             "your lockdevices/filesystems, select which option you took here.",
@@ -44,13 +45,13 @@ class TestForm(forms.ModelForm):
         fields = ("user_name", "user_email", "iso", "architecture",
                   "iso_type", "boot_type", "hardware_type",
                   "install_type", "source", "clock_choice", "filesystem",
-                  "modules", "rollback_filesystem", "rollback_modules",
-                  "bootloader", "success", "comments")
+                  "modules", "bootloader", "rollback_filesystem",
+                  "rollback_modules", "success", "comments")
         widgets = {
             "modules": forms.CheckboxSelectMultiple(),
         }
 
-def add_result(request):
+def submit_test_result(request):
     if request.POST:
         form = TestForm(request.POST)
         if form.is_valid() and request.POST['website'] == '':
@@ -64,53 +65,68 @@ def add_result(request):
     context = {'form': form}
     return direct_to_template(request, 'isotests/add.html', context)
 
-def view_results(request):
-    architecture_list = Architecture.objects.all()
-    iso_type_list = IsoType.objects.all()
-    boot_type_list = BootType.objects.all()
-    hardware_type_list = HardwareType.objects.all()
-    install_type_list = InstallType.objects.all()
-    source_list = Source.objects.all()
-    clock_choice_list = ClockChoice.objects.all()
-    module_list = Module.objects.all()
-    filesystem_list = Filesystem.objects.all()
-    bootloader_list = Bootloader.objects.all()
+def calculate_option_overview(model, is_rollback=False):
+    option = {
+        'option': model,
+        'name': model._meta.verbose_name,
+        'is_rollback': is_rollback,
+        'values': []
+    }
+    for value in model.objects.all():
+        data = { 'value': value }
+        if is_rollback:
+            data['success'] = value.get_last_rollback_success()
+            data['failure'] = value.get_last_rollback_failure()
+        else:
+            data['success'] = value.get_last_success()
+            data['failure'] = value.get_last_failure()
+        option['values'].append(data)
 
+    return option
+
+def test_results_overview(request):
+    # data structure produced:
+    # [ { option, name, is_rollback, values: [ { value, success, failure } ... ] } ... ]
+    all_options = []
+    models = [ Architecture, IsoType, BootType, HardwareType, InstallType,
+            Source, ClockChoice, Filesystem, Module, Bootloader ]
+    for model in models:
+        all_options.append(calculate_option_overview(model))
+    # now handle rollback options
+    for model in [ Filesystem, Module ]:
+        all_options.append(calculate_option_overview(model, True))
+
+    print all_options
     context = {
-            'architecture_list': architecture_list,
-            'iso_type_list': iso_type_list,
-            'boot_type_list': boot_type_list,
-            'hardware_type_list': hardware_type_list,
-            'install_type_list': install_type_list,
-            'source_list': source_list,
-            'clock_choices_list': clock_choice_list,
-            'filesystem_list': filesystem_list,
-            'module_list': module_list,
-            'bootloader_list': bootloader_list,
+            'options': all_options,
             'iso_url': settings.ISO_LIST_URL,
     }
     return direct_to_template(request, 'isotests/results.html', context)
 
-def view_results_iso(request, isoid):
-    iso = Iso.objects.get(pk=isoid)
-    test_list = Test.objects.filter(iso__pk=isoid)
+def test_results_iso(request, iso_id):
+    iso = get_object_or_404(Iso, pk=iso_id)
+    test_list = iso.test_set.all()
     context = {
         'iso_name': iso.name,
         'test_list': test_list
     }
     return direct_to_template(request, 'isotests/result_list.html', context)
 
-def view_results_for(request, option, value):
-    kwargs = {option: value}
-    test_list = Test.objects.filter(**kwargs).order_by("iso__name", "pk")
+def test_results_for(request, option, value):
+    if option not in Test._meta.get_all_field_names():
+        raise Http404
+    option_model = getattr(Test, option).field.rel.to
+    real_value = get_object_or_404(option_model, pk=value)
+    test_list = real_value.test_set.order_by("iso__name", "pk")
     context = {
         'option': option,
-        'value': value,
+        'value': real_value,
+        'value_id': value,
         'test_list': test_list
     }
     return direct_to_template(request, 'isotests/result_list.html', context)
 
-def thanks(request):
+def submit_test_thanks(request):
     return direct_to_template(request, "isotests/thanks.html", None)
 
 # vim: set ts=4 sw=4 et:

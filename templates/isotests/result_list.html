@@ -3,9 +3,7 @@
 {% block content %}
 <div class="box">
     <h2>Results for:
-        {% if option %}
-        {{ option }}: {{ value }}
-        {% endif %}
+        {% if option %}{{ option|title }}: {{ value }}{% endif %}
         {{ iso_name|default:"" }}
     </h2>
 
