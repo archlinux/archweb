@@ -124,4 +124,7 @@ if DEBUG_TOOLBAR:
 
     INSTALLED_APPS = list(INSTALLED_APPS) + [ 'debug_toolbar' ]
 
+# rtf settings
+ISOLISTURL = 'http://releng.archlinux.org/isos/'
+
 # vim: set ts=4 sw=4 et:

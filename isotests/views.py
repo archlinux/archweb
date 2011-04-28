@@ -108,3 +108,5 @@ def view_results_for(request, option, value):
 
 def thanks(request):
     return direct_to_template(request, "isotests/thanks.html", None)
+
+# vim: set ts=4 sw=4 et:

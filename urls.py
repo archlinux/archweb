@@ -77,11 +77,12 @@ urlpatterns += patterns('',
     (r'^opensearch/packages/$', 'packages.views.opensearch',
         {}, 'opensearch-packages'),
     (r'^todolists/$','todolists.views.public_list'),
+    (r'^isotests/',  include('isotests.urls')),
 )
 
 if settings.DEBUG == True:
     urlpatterns += patterns('',
-        (r'^media/(.*)$', 'django.views.static.serve', 
+        (r'^media/(.*)$', 'django.views.static.serve',
             {'document_root': os.path.join(settings.DEPLOY_PATH, 'media')}))
 
 # vim: set ts=4 sw=4 et:

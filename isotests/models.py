@@ -109,3 +109,5 @@ class Test(models.Model):
     bootloader = models.ForeignKey(Bootloader)
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)
+
+# vim: set ts=4 sw=4 et:
