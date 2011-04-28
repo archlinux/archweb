@@ -50,7 +50,9 @@ def add_result(request):
     if request.POST:
         form = TestForm(request.POST)
         if form.is_valid() and request.POST['website'] == '':
-            form.save()
+            test = form.save(commit=False)
+            test.ip_address = request.META.get("REMOTE_ADDR", None)
+            test.save()
             return HttpResponseRedirect('/isotests/thanks/')
     else:
         form = TestForm()

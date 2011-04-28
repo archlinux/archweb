@@ -99,7 +99,9 @@ class Bootloader(IsoOption):
 class Test(models.Model):
     user_name = models.CharField(max_length=500)
     user_email = models.EmailField()
+    ip_address = models.IPAddressField()
     created = models.DateTimeField(editable=False)
+
     iso = models.ForeignKey(Iso)
     architecture = models.ForeignKey(Architecture)
     iso_type = models.ForeignKey(IsoType)
@@ -115,6 +117,7 @@ class Test(models.Model):
     rollback_modules = models.ManyToManyField(Module,
             related_name="rollback_test_set", null=True, blank=True)
     bootloader = models.ForeignKey(Bootloader)
+
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)
 
