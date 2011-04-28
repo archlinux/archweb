@@ -1,128 +1,77 @@
 from django.db import models
 from django.db.models import Max
-from datetime import datetime
 
-# Create your models here.
+class IsoOption(models.Model):
+    class Meta:
+        abstract = True
+
+    name = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return str(self.name)
+
+    def get_success_test(self):
+        test = self.test_set.filter(success=True).annotate(Max('iso__id'))
+        if test:
+            return test[0].iso.name
+        return None
+
+    def get_failed_test(self):
+        test = self.test_set.filter(success=False).annotate(Max('iso__id'))
+        if test:
+            return test[0].iso.name
+        return None
+
 class Iso(models.Model):
-    date = models.DateField()
-
-    def __unicode__(self):
-        return str(self.date)
-
-class Architecture(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=500)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.name
 
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class Architecture(IsoOption):
+    pass
 
-class Isotype(models.Model):
-    name = models.CharField(max_length=200)
+class IsoType(IsoOption):
+    pass
 
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class BootType(IsoOption):
+    pass
 
-class Boottype(models.Model):
-    name = models.CharField(max_length=200)
+class HardwareType(IsoOption):
+    pass
 
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class InstallType(IsoOption):
+    pass
 
-class Hardware(models.Model):
-    name = models.CharField(max_length=200)
+class Source(IsoOption):
+    pass
 
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class ClockChoice(IsoOption):
+    pass
 
-class InstallType(models.Model):
-    name = models.CharField(max_length=200)
+class Filesystem(IsoOption):
+    pass
 
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class Module(IsoOption):
+    pass
 
-class Source(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
-
-class Clockchoice(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
-
-class Filesystem(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
-
-class Module(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
-
-class Bootloader(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-    def get_success_test(self):
-        return self.test_set.filter(success=True).aggregate(Max('iso__date'))['iso__date__max']
-    def get_failed_test(self):
-        return self.test_set.filter(success=False).aggregate(Max('iso__date'))['iso__date__max']
+class Bootloader(IsoOption):
+    pass
 
 class Test(models.Model):
     user_name = models.CharField(max_length=500)
     user_email = models.EmailField()
     iso = models.ForeignKey(Iso)
-    arch = models.ForeignKey(Architecture)
-    isotype = models.ForeignKey(Isotype)
-    boottype = models.ForeignKey(Boottype)
-    hardwaretype = models.ForeignKey(Hardware)
-    installtype = models.ForeignKey(InstallType)
+    architecture = models.ForeignKey(Architecture)
+    iso_type = models.ForeignKey(IsoType)
+    boot_type = models.ForeignKey(BootType)
+    hardware_type = models.ForeignKey(HardwareType)
+    install_type = models.ForeignKey(InstallType)
     source = models.ForeignKey(Source)
-    clock = models.ForeignKey(Clockchoice)
+    clock_choice = models.ForeignKey(ClockChoice)
     filesystem = models.ForeignKey(Filesystem)
-    ms = models.ManyToManyField(Module, null=True, blank=True)
+    modules = models.ManyToManyField(Module, null=True, blank=True)
     rollback = models.BooleanField()
     rollback_filesystem = models.ForeignKey(Filesystem,
             related_name="rollback_test", null=True, blank=True)

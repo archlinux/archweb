@@ -1,50 +1,64 @@
-# Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
-from django.forms import ModelForm, DateField
-from isotests.models import *
-from django.shortcuts import render_to_response
-from django.template import RequestContext, Context, loader
+from django.forms import ModelForm, RadioSelect, CheckboxSelectMultiple
+from django.forms import ModelChoiceField
+from isotests.models import Iso, Architecture, IsoType, BootType
+from isotests.models import HardwareType, InstallType, Source, Test
+from isotests.models import ClockChoice, Filesystem, Module, Bootloader
+from django.template import Context, loader
+from django.views.generic.simple import direct_to_template
 
 class TestForm(ModelForm):
     class Meta:
         model = Test
+        widgets = {
+            "architecture": RadioSelect(),
+            "iso_type": RadioSelect(),
+            "boot_type": RadioSelect(),
+            "hardware_type": RadioSelect(),
+            "install_type": RadioSelect(),
+            "source": RadioSelect(),
+            "clock_choice": RadioSelect(),
+            "filesystem": RadioSelect(),
+            "rollback_filesystem": RadioSelect(),
+            "bootloader": RadioSelect(),
+            "modules": CheckboxSelectMultiple(),
+            "rollback_modules": CheckboxSelectMultiple(),
+        }
+    iso = ModelChoiceField(queryset=Iso.objects.filter(active=True))
 
 def add_result(request):
-    if request.method == 'POST': # If the form has been submitted...
-        form = TestForm(request.POST) # A form bound to the post data
-        if form.is_valid(): # All validation rules pass
+    if request.method == 'POST':
+        form = TestForm(request.POST)
+        if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/isotests') # Redirect after POST
+            return HttpResponseRedirect('/isotests')
     else:
-        form = TestForm() # An unbound form
+        form = TestForm()
 
-    return render_to_response('isotests/add.html', { 'form': form, },
-            context_instance=RequestContext(request))
+    context = {'form': form}
+    return direct_to_template(request, 'isotests/add.html', context)
 
 def view_results(request):
-    result_success_list = Test.objects.filter(success=True)
-    result_failed_list = Test.objects.filter(success=False)
-
     architecture_list = Architecture.objects.all()
-    isotype_list = Isotype.objects.all()
-    boottype_list = Boottype.objects.all()
-    hardware_list = Hardware.objects.all()
-    installtype_list = InstallType.objects.all()
+    iso_type_list = IsoType.objects.all()
+    boot_type_list = BootType.objects.all()
+    hardware_type_list = HardwareType.objects.all()
+    install_type_list = InstallType.objects.all()
     source_list = Source.objects.all()
-    clockchoice_list = Clockchoice.objects.all()
+    clock_choice_list = ClockChoice.objects.all()
     module_list = Module.objects.all()
     filesystem_list = Filesystem.objects.all()
     bootloader_list = Bootloader.objects.all()
 
     t = loader.get_template("isotests/results.html")
     c = Context({
-            'arch_choices': architecture_list,
-            'isotype_choices': isotype_list,
-            'boottype_choices': boottype_list,
-            'hardware_list': hardware_list,
-            'installtype_list': installtype_list,
+            'architecture_list': architecture_list,
+            'iso_type_list': iso_type_list,
+            'boot_type_list': boot_type_list,
+            'hardware_type_list': hardware_type_list,
+            'install_type_list': install_type_list,
             'source_list': source_list,
-            'clock_choices': clockchoice_list,
+            'clock_choices_list': clock_choice_list,
             'filesystem_list': filesystem_list,
             'module_list': module_list,
             'bootloader_list': bootloader_list,
