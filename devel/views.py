@@ -136,8 +136,9 @@ def report(request, report):
         cutoff = datetime.now() - timedelta(days=730)
         packages = packages.filter(build_date__lt=cutoff).order_by('build_date')
     elif report == 'big':
-        title = '100 largest compressed packages'
-        packages = packages.order_by('-compressed_size')[:100]
+        title = 'Packages with compressed size > 50 MiB'
+        cutoff = 50 * 1024 * 1024
+        packages = packages.filter(compressed_size__gte=cutoff).order_by('-compressed_size')
         names = [ 'Compressed Size', 'Installed Size' ]
         attrs = [ 'compressed_size', 'installed_size' ]
     elif report == 'uncompressed-man':
