@@ -128,20 +128,20 @@ def change_profile(request):
 
 @login_required
 def report(request, report):
-    title = "Developer Report"
+    title = 'Developer Report'
     packages = Package.objects.select_related('arch', 'repo')
     names = attrs = None
-    if report == "old":
-        title = "Packages last built more than two years ago"
+    if report == 'old':
+        title = 'Packages last built more than two years ago'
         cutoff = datetime.now() - timedelta(days=730)
         packages = packages.filter(build_date__lt=cutoff).order_by('build_date')
-    elif report == "big":
-        title = "100 largest compressed packages"
+    elif report == 'big':
+        title = '100 largest compressed packages'
         packages = packages.order_by('-compressed_size')[:100]
         names = [ 'Compressed Size', 'Installed Size' ]
         attrs = [ 'compressed_size', 'installed_size' ]
-    elif report == "uncompressed-man":
-        title = "Packages with uncompressed manpages"
+    elif report == 'uncompressed-man':
+        title = 'Packages with uncompressed manpages'
         # magic going on here! Checking for all '.1'...'.9' extensions
         invalid_endings = [Q(filename__endswith='.%d' % n) for n in range(1,10)]
         invalid_endings.append(Q(filename__endswith='.n'))
@@ -149,8 +149,8 @@ def report(request, report):
                 reduce(operator.or_, invalid_endings))
                 ).values_list('pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
-    elif report == "uncompressed-info":
-        title = "Packages with uncompressed infopages"
+    elif report == 'uncompressed-info':
+        title = 'Packages with uncompressed infopages'
         bad_files = PackageFile.objects.filter(directory__contains='/info',
                 filename__endswith='.info').values_list(
                 'pkg_id', flat=True).distinct()
