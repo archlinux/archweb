@@ -96,7 +96,6 @@ def test_results_overview(request):
     for model in [ Filesystem, Module ]:
         all_options.append(calculate_option_overview(model, True))
 
-    print all_options
     context = {
             'options': all_options,
             'iso_url': settings.ISO_LIST_URL,
