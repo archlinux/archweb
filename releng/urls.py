@@ -1,6 +1,6 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import include, patterns
 
-urlpatterns = patterns('releng.views',
+feedback_patterns = patterns('releng.views',
     (r'^$',                              'test_results_overview', {}, 'releng-test-overview'),
     (r'^submit/$',                       'submit_test_result', {}, 'releng-test-submit'),
     (r'^thanks/$',                       'submit_test_thanks', {}, 'releng-test-thanks'),
@@ -8,4 +8,7 @@ urlpatterns = patterns('releng.views',
     (r'^(?P<option>.+)/(?P<value>\d+)/$','test_results_for', {}, 'releng-results-for'),
 )
 
+urlpatterns = patterns('',
+    (r'^feedback/', include(feedback_patterns)),
+)
 # vim: set ts=4 sw=4 et:
