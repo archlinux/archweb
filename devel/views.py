@@ -13,7 +13,7 @@ from django.template import loader, Context
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
-from main.models import Package, PackageFile, TodolistPkg
+from main.models import Package, PackageDepend, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
 from packages.models import PackageRelation
@@ -156,6 +156,13 @@ def report(request, report):
                 filename__endswith='.info').values_list(
                 'pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
+    elif report == 'unneeded-orphans':
+        title = 'Orphan packages required by no other packages'
+        owned = PackageRelation.objects.all().values('pkgbase')
+        required = PackageDepend.objects.all().values('depname')
+        # The two separate calls to exclude is required to do the right thing
+        packages = packages.exclude(pkgbase__in=owned).exclude(
+                pkgname__in=required)
     else:
         raise Http404
 

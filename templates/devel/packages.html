@@ -6,6 +6,7 @@
 {% block content %}
 <div class="box">
     <h2>{{ title }}</h2>
+    <p>{{ packages|length }} package{{ packages|pluralize }} found.</p>
     <table class="results">
         <thead>
             <tr>
