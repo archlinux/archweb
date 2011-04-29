@@ -9,7 +9,8 @@ class IsoAdmin(admin.ModelAdmin):
     list_filter = ('active',)
 
 class TestAdmin(admin.ModelAdmin):
-    list_display = ('user_name', 'user_email', 'created', 'ip_address', 'iso', 'success')
+    list_display = ('user_name', 'user_email', 'created', 'ip_address',
+            'iso', 'success')
     list_filter = ('success', 'iso')
 
 

@@ -19,7 +19,7 @@ class IsoListParser(HTMLParser):
             for name, value in attrs:
                 if name == "href":
                     if value != '../' and self.url_re.search(value) != None:
-                        self.hyperlinks.append(value[:len(value)-1])
+                        self.hyperlinks.append(value[:-1])
 
     def parse(self, url):
         try:
@@ -38,11 +38,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         parser = IsoListParser()
         isonames = Iso.objects.values_list('name', flat=True)
-        new_isos = parser.parse(settings.ISO_LIST_URL)
+        active_isos = parser.parse(settings.ISO_LIST_URL)
 
-        for iso in new_isos:
+        # create any names that don't already exist
+        for iso in active_isos:
             if iso not in isonames:
-                new = Iso(name=iso)
+                new = Iso(name=iso, active=True)
                 new.save()
+        # and then mark all other names as no longer active
+        Iso.objects.exclude(name__in=active_isos).update(active=False)
 
 # vim: set ts=4 sw=4 et:
