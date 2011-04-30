@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
+from django.template.defaultfilters import filesizeformat
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
@@ -140,7 +141,13 @@ def report(request, report):
         cutoff = 50 * 1024 * 1024
         packages = packages.filter(compressed_size__gte=cutoff).order_by('-compressed_size')
         names = [ 'Compressed Size', 'Installed Size' ]
-        attrs = [ 'compressed_size', 'installed_size' ]
+        attrs = [ 'compressed_size_pretty', 'installed_size_pretty' ]
+        # Format the compressed and installed sizes with MB/GB/etc suffixes
+        for package in packages:
+            package.compressed_size_pretty = filesizeformat(
+                package.compressed_size)
+            package.installed_size_pretty = filesizeformat(
+                package.installed_size)
     elif report == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
         # magic going on here! Checking for all '.1'...'.9' extensions

@@ -67,6 +67,33 @@ if (typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+    $.tablesorter.addParser({
+        id: 'filesize',
+        re: /^(\d+(?:\.\d+)?) (bytes?|KB|MB|GB|TB)$/,
+        is: function(s) {
+            return this.re.test(s);
+        },
+        format: function(s) {
+            var matches = this.re.exec(s);
+            var size = parseFloat(matches[1]);
+            var suffix = matches[2];
+
+            switch(suffix) {
+                case 'byte':
+                case 'bytes':
+                    return size;
+                case 'KB':
+                    return size * 1024;
+                case 'MB':
+                    return size * 1024 * 1024;
+                case 'GB':
+                    return size * 1024 * 1024 * 1024;
+                case 'TB':
+                    return size * 1024 * 1024 * 1024 * 1024;
+            }
+        },
+        type: 'numeric'
+    });
 }
 
 /* news/add.html */
