@@ -67,6 +67,7 @@ packages, you will probably want the following:
 
         (archweb-env) $ wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
         (archweb-env) $ ./manage.py reporead i686 core.db.tar.gz
+        (archweb-env) $ ./manage.py syncisos
 
 Alter architecture and repo to get x86\_64 and packages from other repos if needed.
 
