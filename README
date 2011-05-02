@@ -54,12 +54,10 @@ packages, you will probably want the following:
 
         (archweb-env) $ ./manage.py migrate
 
-6. Load the fixtures to prepopulate some data.
+6. Load the fixtures to prepopulate some data. If you don't want some of the
+   provided data, adjust the file glob accordingly.
 
-        (archweb-env) $ ./manage.py loaddata main/fixtures/arches.json
-        (archweb-env) $ ./manage.py loaddata main/fixtures/repos.json
-        (archweb-env) $ ./manage.py loaddata main/fixtures/groups.json
-        (archweb-env) $ ./manage.py loaddata mirrors/fixtures/mirrorprotocols.json
+        (archweb-env) $ ./manage.py loaddata */fixtures/*.json
     
 7. Use the following commands to start a service instance
 
