@@ -8,10 +8,10 @@ from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test)
 
-def standard_field(model, help_text=None, required=True):
+def standard_field(model, empty_label=None, help_text=None, required=True):
     return forms.ModelChoiceField(queryset=model.objects.all(),
-        widget=forms.RadioSelect(), empty_label=None, help_text=help_text,
-        required=required)
+        widget=forms.RadioSelect(), empty_label=empty_label,
+        help_text=help_text, required=required)
 
 class TestForm(forms.ModelForm):
     iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
@@ -30,7 +30,7 @@ class TestForm(forms.ModelForm):
     rollback_filesystem = standard_field(Filesystem,
             help_text="If you did a rollback followed by a new attempt to setup " \
             "your lockdevices/filesystems, select which option you took here.",
-            required=False)
+            empty_label="N/A (did not rollback)", required=False)
     rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
             help_text="If you did a rollback followed b a new attempt to setup " \
             "your lockdevices/filesystems, select which option you took here.",
