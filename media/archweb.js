@@ -69,12 +69,13 @@ if (typeof $.tablesorter !== 'undefined') {
     });
     $.tablesorter.addParser({
         id: 'filesize',
-        re: /^(\d+(?:\.\d+)?) (bytes?|KB|MB|GB|TB)$/,
+        re: /^(\d+(?:\.\d+)?) (bytes?|KB|MB|GB|TB|PB)$/,
         is: function(s) {
             return this.re.test(s);
         },
         format: function(s) {
             var matches = this.re.exec(s);
+            if (!matches) return 0;
             var size = parseFloat(matches[1]);
             var suffix = matches[2];
 
@@ -90,6 +91,8 @@ if (typeof $.tablesorter !== 'undefined') {
                     return size * 1024 * 1024 * 1024;
                 case 'TB':
                     return size * 1024 * 1024 * 1024 * 1024;
+                case 'PB':
+                    return size * 1024 * 1024 * 1024 * 1024 * 1024;
             }
         },
         type: 'numeric'
