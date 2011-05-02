@@ -1,5 +1,7 @@
 <tr>
-    <td><h3>{% if option.is_rollback %}Rollback: {% endif %}{{ option.name|title }}</h3></td>
+    <th>{% if option.is_rollback %}Rollback: {% endif %}{{ option.name|title }}</td>
+    <th>Last Success</th>
+    <th>Last Failure</th>
 </tr>
 {% for item in option.values %}
 <tr>
