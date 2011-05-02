@@ -59,6 +59,7 @@ def submit_test_result(request):
             test = form.save(commit=False)
             test.ip_address = request.META.get("REMOTE_ADDR", None)
             test.save()
+            form.save_m2m()
             return redirect('releng-test-thanks')
     else:
         form = TestForm()
