@@ -467,6 +467,7 @@ def arch_differences(request):
     return direct_to_template(request, 'packages/differences.html', context)
 
 @permission_required('main.change_package')
+@never_cache
 def stale_relations(request):
     relations = PackageRelation.objects.select_related('user')
     pkgbases = Package.objects.all().values('pkgbase')
