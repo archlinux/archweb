@@ -1,5 +1,7 @@
+from datetime import datetime
+
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
 
 class PackageRelation(models.Model):
@@ -18,6 +20,7 @@ class PackageRelation(models.Model):
     pkgbase = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name="package_relations")
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
+    created = models.DateTimeField(editable=False)
 
     def get_associated_packages(self):
         # TODO: delayed import to avoid circular reference
@@ -109,7 +112,15 @@ def remove_inactive_maintainers(sender, instance, created, **kwargs):
                 type=PackageRelation.MAINTAINER)
         maint_relations.delete()
 
+def set_created_field(sender, **kwargs):
+    # We use this same callback for both Isos and Tests
+    obj = kwargs['instance']
+    if not obj.created:
+        obj.created = datetime.utcnow()
+
 post_save.connect(remove_inactive_maintainers, sender=User,
+        dispatch_uid="packages.models")
+pre_save.connect(set_created_field, sender=PackageRelation,
         dispatch_uid="packages.models")
 
 # vim: set ts=4 sw=4 et:

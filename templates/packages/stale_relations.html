@@ -17,6 +17,7 @@
                 <th>Packages</th>
                 <th>User</th>
                 <th>Type</th>
+                <th>Created</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +31,7 @@
                 {% endfor %}</td>
                 <td>{{ relation.user.get_full_name }}</td>
                 <td>{{ relation.get_type_display }}</td>
+                <td>{{ relation.created }}</td>
             </tr>
             {% empty %}
                 <tr class="empty"><td colspan="5"><em>No inactive user relations.</em></td></tr>
@@ -46,6 +48,7 @@
                 <th>Package Base</th>
                 <th>User</th>
                 <th>Type</th>
+                <th>Created</th>
             </tr>
         </thead>
         <tbody>
@@ -55,6 +58,7 @@
                 <td>{{ relation.pkgbase }}</td>
                 <td>{{ relation.user.get_full_name }}</td>
                 <td>{{ relation.get_type_display }}</td>
+                <td>{{ relation.created }}</td>
             </tr>
             {% empty %}
                 <tr class="empty"><td colspan="4"><em>No non-existent pkgbase relations.</em></td></tr>
@@ -71,6 +75,7 @@
                 <th>Package Base</th>
                 <th>Packages</th>
                 <th>User</th>
+                <th>Created</th>
                 <th>Allowed Repos</th>
                 <th>Currently in Repos</th>
             </tr>
@@ -85,6 +90,7 @@
                         title="View package details for {{ pkg.pkgname }}">{{ pkg.repo|lower }}/{{ pkg.pkgname }} ({{ pkg.arch }})</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}</td>
                 <td>{{ relation.user.get_full_name }}</td>
+                <td>{{ relation.created }}</td>
                 <td class="wrap">{{ relation.user.userprofile.allowed_repos.all|join:", " }}</td>
                 <td class="wrap">{{ relation.repositories|join:", " }}</td>
             </tr>
