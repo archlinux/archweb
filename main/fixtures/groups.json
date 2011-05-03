@@ -85,11 +85,6 @@
                     "mirrorprotocol"
                 ], 
                 [
-                    "delete_mirrorprotocol", 
-                    "mirrors", 
-                    "mirrorprotocol"
-                ], 
-                [
                     "add_mirrorrsync", 
                     "mirrors", 
                     "mirrorrsync"
@@ -118,6 +113,219 @@
                     "delete_mirrorurl", 
                     "mirrors", 
                     "mirrorurl"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Package Relation Maintainers", 
+            "permissions": [
+                [
+                    "add_packagerelation", 
+                    "packages", 
+                    "packagerelation"
+                ], 
+                [
+                    "change_packagerelation", 
+                    "packages", 
+                    "packagerelation"
+                ], 
+                [
+                    "delete_packagerelation", 
+                    "packages", 
+                    "packagerelation"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Release Engineering", 
+            "permissions": [
+                [
+                    "add_architecture", 
+                    "releng", 
+                    "architecture"
+                ], 
+                [
+                    "change_architecture", 
+                    "releng", 
+                    "architecture"
+                ], 
+                [
+                    "delete_architecture", 
+                    "releng", 
+                    "architecture"
+                ], 
+                [
+                    "add_bootloader", 
+                    "releng", 
+                    "bootloader"
+                ], 
+                [
+                    "change_bootloader", 
+                    "releng", 
+                    "bootloader"
+                ], 
+                [
+                    "delete_bootloader", 
+                    "releng", 
+                    "bootloader"
+                ], 
+                [
+                    "add_boottype", 
+                    "releng", 
+                    "boottype"
+                ], 
+                [
+                    "change_boottype", 
+                    "releng", 
+                    "boottype"
+                ], 
+                [
+                    "delete_boottype", 
+                    "releng", 
+                    "boottype"
+                ], 
+                [
+                    "add_clockchoice", 
+                    "releng", 
+                    "clockchoice"
+                ], 
+                [
+                    "change_clockchoice", 
+                    "releng", 
+                    "clockchoice"
+                ], 
+                [
+                    "delete_clockchoice", 
+                    "releng", 
+                    "clockchoice"
+                ], 
+                [
+                    "add_filesystem", 
+                    "releng", 
+                    "filesystem"
+                ], 
+                [
+                    "change_filesystem", 
+                    "releng", 
+                    "filesystem"
+                ], 
+                [
+                    "delete_filesystem", 
+                    "releng", 
+                    "filesystem"
+                ], 
+                [
+                    "add_hardwaretype", 
+                    "releng", 
+                    "hardwaretype"
+                ], 
+                [
+                    "change_hardwaretype", 
+                    "releng", 
+                    "hardwaretype"
+                ], 
+                [
+                    "delete_hardwaretype", 
+                    "releng", 
+                    "hardwaretype"
+                ], 
+                [
+                    "add_installtype", 
+                    "releng", 
+                    "installtype"
+                ], 
+                [
+                    "change_installtype", 
+                    "releng", 
+                    "installtype"
+                ], 
+                [
+                    "delete_installtype", 
+                    "releng", 
+                    "installtype"
+                ], 
+                [
+                    "add_iso", 
+                    "releng", 
+                    "iso"
+                ], 
+                [
+                    "change_iso", 
+                    "releng", 
+                    "iso"
+                ], 
+                [
+                    "delete_iso", 
+                    "releng", 
+                    "iso"
+                ], 
+                [
+                    "add_isotype", 
+                    "releng", 
+                    "isotype"
+                ], 
+                [
+                    "change_isotype", 
+                    "releng", 
+                    "isotype"
+                ], 
+                [
+                    "delete_isotype", 
+                    "releng", 
+                    "isotype"
+                ], 
+                [
+                    "add_module", 
+                    "releng", 
+                    "module"
+                ], 
+                [
+                    "change_module", 
+                    "releng", 
+                    "module"
+                ], 
+                [
+                    "delete_module", 
+                    "releng", 
+                    "module"
+                ], 
+                [
+                    "add_source", 
+                    "releng", 
+                    "source"
+                ], 
+                [
+                    "change_source", 
+                    "releng", 
+                    "source"
+                ], 
+                [
+                    "delete_source", 
+                    "releng", 
+                    "source"
+                ], 
+                [
+                    "add_test", 
+                    "releng", 
+                    "test"
+                ], 
+                [
+                    "change_test", 
+                    "releng", 
+                    "test"
+                ], 
+                [
+                    "delete_test", 
+                    "releng", 
+                    "test"
                 ]
             ]
         }
