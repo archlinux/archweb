@@ -43,7 +43,7 @@ def flag(request, listid, pkgid):
         return HttpResponse(
             simplejson.dumps({'complete': pkg.complete}),
             mimetype='application/json')
-    return redirect(list)
+    return redirect(todolist)
 
 @login_required
 @never_cache
