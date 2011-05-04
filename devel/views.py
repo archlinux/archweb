@@ -159,7 +159,9 @@ def report(request, report):
         packages = packages.filter(id__in=set(bad_files))
     elif report == 'uncompressed-info':
         title = 'Packages with uncompressed infopages'
-        bad_files = PackageFile.objects.filter(directory__contains='/info',
+        # we don't worry abut looking for '*.info-1', etc., given that an
+        # uncompressed root page probably exists in the package anyway
+        bad_files = PackageFile.objects.filter(directory__endswith='/info/',
                 filename__endswith='.info').values_list(
                 'pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
