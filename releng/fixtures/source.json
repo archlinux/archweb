@@ -3,14 +3,14 @@
 	"pk": 1,
 	"model": "releng.source",
 	"fields": {
-	    "name": "net install manual networking config (Check that it works + rc.conf, resolv.conf, mirrorlist)"
+	    "name": "net install manual networking config (verify network, rc.conf, resolv.conf, mirrorlist)"
 	}
     },
     {
 	"pk": 2,
 	"model": "releng.source",
 	"fields": {
-	    "name": "net install dhcp (Check that it works + rc.conf)"
+	    "name": "net install dhcp (verify network, rc.conf, mirrorlist)"
 	}
     },
     {

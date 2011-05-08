@@ -24,7 +24,7 @@
 	"pk": 4,
 	"model": "releng.installtype",
 	"fields": {
-	    "name": "automatic install custom config (specify in comments)"
+	    "name": "automatic install custom config (if special, specify in comments)"
 	}
     }
 ]
