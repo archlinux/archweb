@@ -31,11 +31,11 @@ class TestForm(forms.ModelForm):
             help_text="Verify that the entries in the bootloader config look ok")
     rollback_filesystem = standard_field(Filesystem,
             help_text="If you did a rollback followed by a new attempt to setup " \
-            "your lockdevices/filesystems, select which option you took here.",
+            "your blockdevices/filesystems, select which option you took here.",
             empty_label="N/A (did not rollback)", required=False)
     rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="If you did a rollback followed b a new attempt to setup " \
-            "your lockdevices/filesystems, select which option you took here.",
+            help_text="If you did a rollback followed by a new attempt to setup " \
+            "your blockdevices/filesystems, select which option you took here.",
             widget=forms.CheckboxSelectMultiple(), required=False)
     success = forms.BooleanField(help_text="Only check this if everything went fine. " \
             "If you you ran into any errors please specify them in the " \
