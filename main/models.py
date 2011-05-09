@@ -188,9 +188,12 @@ class Package(models.Model):
         """
         requiredby = PackageDepend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').filter(
-                pkg__arch__in=self.applicable_arches(),
                 depname=self.pkgname).order_by(
-                'pkg__pkgname', 'pkg__id')
+                'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
+        if not self.arch.agnostic:
+            # make sure we match architectures if possible
+            requiredby = requiredby.filter(
+                    pkg__arch__in=self.applicable_arches())
         # sort out duplicate packages; this happens if something has a double
         # versioned dep such as a kernel module
         requiredby = [list(vals)[0] for k, vals in
