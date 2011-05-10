@@ -69,10 +69,13 @@ def submit_test_result(request):
     context = {'form': form}
     return direct_to_template(request, 'releng/add.html', context)
 
-def calculate_option_overview(model, is_rollback=False):
+def calculate_option_overview(field_name):
+    field = Test._meta.get_field(field_name)
+    model = field.rel.to
+    is_rollback = field_name.startswith('rollback_')
     option = {
         'option': model,
-        'name': model._meta.verbose_name,
+        'name': field_name,
         'is_rollback': is_rollback,
         'values': []
     }
@@ -92,13 +95,11 @@ def test_results_overview(request):
     # data structure produced:
     # [ { option, name, is_rollback, values: [ { value, success, failure } ... ] } ... ]
     all_options = []
-    models = [ Architecture, IsoType, BootType, HardwareType, InstallType,
-            Source, ClockChoice, Filesystem, Module, Bootloader ]
-    for model in models:
-        all_options.append(calculate_option_overview(model))
-    # now handle rollback options
-    for model in [ Filesystem, Module ]:
-        all_options.append(calculate_option_overview(model, True))
+    fields = [ 'architecture', 'iso_type', 'boot_type', 'hardware_type',
+            'install_type', 'source', 'clock_choice', 'filesystem', 'modules',
+            'bootloader', 'rollback_filesystem', 'rollback_modules' ]
+    for field in fields:
+        all_options.append(calculate_option_overview(field))
 
     context = {
             'options': all_options,
