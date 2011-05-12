@@ -14,7 +14,8 @@ def standard_field(model, empty_label=None, help_text=None, required=True):
         help_text=help_text, required=required)
 
 class TestForm(forms.ModelForm):
-    iso = forms.ModelChoiceField(queryset=Iso.objects.filter(active=True))
+    iso = forms.ModelChoiceField(queryset=Iso.objects.filter(
+        active=True).order_by('-id'))
     architecture = standard_field(Architecture)
     iso_type = standard_field(IsoType)
     boot_type = standard_field(BootType)
@@ -121,7 +122,7 @@ def test_results_for(request, option, value):
         raise Http404
     option_model = getattr(Test, option).field.rel.to
     real_value = get_object_or_404(option_model, pk=value)
-    test_list = real_value.test_set.order_by("iso__name", "pk")
+    test_list = real_value.test_set.order_by('-iso__name', '-pk')
     context = {
         'option': option,
         'value': real_value,
