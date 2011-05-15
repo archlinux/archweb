@@ -24,12 +24,12 @@ class TestForm(forms.ModelForm):
     source = standard_field(Source)
     clock_choice = standard_field(ClockChoice)
     filesystem = standard_field(Filesystem,
-            help_text="verify /etc/fstab, `df -hT` output and commands like " \
-            "lvdisplay for special modules")
+            help_text="Verify /etc/fstab, `df -hT` output and commands like " \
+            "lvdisplay for special modules.")
     modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
             help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
     bootloader = standard_field(Bootloader,
-            help_text="Verify that the entries in the bootloader config look ok")
+            help_text="Verify that the entries in the bootloader config looks OK.")
     rollback_filesystem = standard_field(Filesystem,
             help_text="If you did a rollback followed by a new attempt to setup " \
             "your blockdevices/filesystems, select which option you took here.",
