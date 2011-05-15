@@ -3,21 +3,70 @@
 	"pk": 1,
 	"model": "releng.clockchoice",
 	"fields": {
-	    "name": "unchanged"
+	    "name": "default region/timezone, keep clock"
 	}
     },
     {
 	"pk": 2,
 	"model": "releng.clockchoice",
 	"fields": {
-	    "name": "configured manually"
+	    "name": "default region/timezone, change clock manually (UTC)"
 	}
     },
     {
 	"pk": 3,
 	"model": "releng.clockchoice",
 	"fields": {
-	    "name": "NTP"
+	    "name": "default region/timezone, change clock with NTP (UTC)"
+	}
+    },
+    {
+	"pk": 4,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "default region/timezone, change clock manually (localtime)"
+	}
+    },
+    {
+	"pk": 5,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "default region/timezone, change clock with NTP (localtime)"
+	}
+    },2
+    {
+	"pk": 6,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "update region/timezone, keep clock"
+	}
+    },
+    {
+	"pk": 7,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "update region/timezone, change clock manually (UTC)"
+	}
+    },
+    {
+	"pk": 8,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "update region/timezone, change clock with NTP (UTC)"
+	}
+    },
+    {
+	"pk": 9,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "update region/timezone, change clock manually (localtime)"
+	}
+    },
+    {
+	"pk": 10,
+	"model": "releng.clockchoice",
+	"fields": {
+	    "name": "update region/timezone, change clock with NTP (localtime)"
 	}
     }
 ]
