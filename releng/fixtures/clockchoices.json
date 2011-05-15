@@ -33,7 +33,7 @@
 	"fields": {
 	    "name": "default region/timezone, change clock with NTP (localtime)"
 	}
-    },2
+    },
     {
 	"pk": 6,
 	"model": "releng.clockchoice",
