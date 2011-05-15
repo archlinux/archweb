@@ -128,18 +128,21 @@ def change_profile(request):
             {'form': form, 'profile_form': profile_form})
 
 @login_required
-def report(request, report):
+def report(request, report, username=None):
     title = 'Developer Report'
     packages = Package.objects.select_related('arch', 'repo')
-    names = attrs = None
+    names = attrs = user = None
+
     if report == 'old':
         title = 'Packages last built more than two years ago'
         cutoff = datetime.now() - timedelta(days=730)
-        packages = packages.filter(build_date__lt=cutoff).order_by('build_date')
+        packages = packages.filter(
+                build_date__lt=cutoff).order_by('build_date')
     elif report == 'big':
         title = 'Packages with compressed size > 50 MiB'
         cutoff = 50 * 1024 * 1024
-        packages = packages.filter(compressed_size__gte=cutoff).order_by('-compressed_size')
+        packages = packages.filter(
+                compressed_size__gte=cutoff).order_by('-compressed_size')
         names = [ 'Compressed Size', 'Installed Size' ]
         attrs = [ 'compressed_size_pretty', 'installed_size_pretty' ]
         # Format the compressed and installed sizes with MB/GB/etc suffixes
@@ -175,8 +178,19 @@ def report(request, report):
     else:
         raise Http404
 
+    if username:
+        user = get_object_or_404(User, username=username, is_active=True)
+        maintained = PackageRelation.objects.filter(user=user,
+                type=PackageRelation.MAINTAINER).values('pkgbase')
+        packages = packages.filter(pkgbase__in=maintained)
+
+    maints = User.objects.filter(id__in=PackageRelation.objects.filter(
+        type=PackageRelation.MAINTAINER).values('user'))
+
     context = {
+        'all_maintainers': maints,
         'title': title,
+        'maintainer': user,
         'packages': packages,
         'column_names': names,
         'column_attrs': attrs,

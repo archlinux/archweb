@@ -100,13 +100,21 @@
 
     <h3>Developer Reports</h3>
     <ul>
-        <li><a href="reports/big/">Big</a>: All packages with compressed size &gt; 50 MiB</li>
-        <li><a href="reports/old/">Old</a>: Packages last built more than two years ago</li>
-        <li><a href="reports/uncompressed-man/">Uncompressed Manpages</a>: Self-explanatory</li>
-        <li><a href="reports/uncompressed-info/">Uncompressed Info Pages</a>: Self-explanatory</li>
-        <li><a href="reports/unneeded-orphans/">Unneeded Orphans</a>: Packages
-        that have no maintainer and are not required by any other package in
-        any repository</li>
+        <li><a href="reports/big/">Big</a>:
+        All packages with compressed size &gt; 50 MiB
+        (<a href="reports/big/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/old/">Old</a>:
+        Packages last built more than two years ago
+        (<a href="reports/old/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/uncompressed-man/">Uncompressed Manpages</a>:
+        Self-explanatory
+        (<a href="reports/uncompressed-man/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/uncompressed-info/">Uncompressed Info Pages</a>:
+        Self-explanatory
+        (<a href="reports/uncompressed-info/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/unneeded-orphans/">Unneeded Orphans</a>:
+        Packages that have no maintainer and are not required by any other
+        package in any repository</li>
     </ul>
 
 </div><!-- #dev-dashboard -->

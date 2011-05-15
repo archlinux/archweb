@@ -7,6 +7,7 @@ urlpatterns = patterns('devel.views',
     (r'^$',          'index'),
     (r'^newuser/$',  'new_user_form'),
     (r'^profile/$',  'change_profile'),
+    (r'^reports/(?P<report>.*)/(?P<username>.*)/$', 'report'),
     (r'^reports/(?P<report>.*)/$', 'report'),
 )
 

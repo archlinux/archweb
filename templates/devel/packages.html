@@ -5,8 +5,12 @@
 
 {% block content %}
 <div class="box">
-    <h2>{{ title }}</h2>
-    <p>{{ packages|length }} package{{ packages|pluralize }} found.</p>
+	<h2>{{ title }}{% if maintainer %},
+		maintained by {{ maintainer.get_full_name }}{% endif%}</h2>
+	<p>{{ packages|length }} package{{ packages|pluralize }} found.
+	{% if maintainer %}This report only includes packages maintained by
+	{{ maintainer.get_full_name }} ({{ maintainer.username }}).{% endif %}
+	</p>
     <table class="results">
         <thead>
             <tr>
