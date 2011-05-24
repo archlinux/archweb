@@ -38,9 +38,13 @@ class TestForm(forms.ModelForm):
             help_text="If you did a rollback followed by a new attempt to setup " \
             "your blockdevices/filesystems, select which option you took here.",
             widget=forms.CheckboxSelectMultiple(), required=False)
-    success = forms.BooleanField(help_text="Only check this if everything went fine. " \
-            "If you you ran into any errors please specify them in the " \
-            "comments.", required=False)
+    success = forms.BooleanField(
+            help_text="Only check this if everything went fine. " \
+            "If you ran into problems please create a ticket on <a " \
+            "href=\"https://bugs.archlinux.org/index.php?project=6\">the " \
+            "bugtracker</a> (or check that one already exists) and link to " \
+            "it in the comments.",
+            required=False)
     website = forms.CharField(label='',
             widget=forms.TextInput(attrs={'style': 'display:none;'}), required=False)
 
