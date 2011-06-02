@@ -1,12 +1,12 @@
-<div id="arch-bio-toc">
+{% load pgp %}
 
+<div id="arch-bio-toc">
     <p>
     {% for dev in dev_list %}
     <a href="#{{ dev.username }}" title="Jump to profile for {{ dev.get_full_name }}">
         {{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a> &nbsp;&nbsp;
     {% endfor %}
     </p>
-
 </div>
 
 <table class="arch-bio-entry">
@@ -32,12 +32,15 @@
                     <th>Other Contact:</th>
                     <td>{{ prof.other_contact }}</td>
                 </tr><tr>
+                    <th>PGP Key:</th>
+                    <td>{% pgp_key_link prof.pgp_key %}</td>
+                </tr><tr>
                     <th>Roles:</th>
                     <td>{{ prof.roles }}<br />
                     </td>
                 </tr><tr>
                     <th>Website:</th>
-                    <td>{% if prof %}<a href="{{ prof.website }}"
+                    <td>{% if prof.website %}<a href="{{ prof.website }}"
                             title="Visit the website for {{ dev.get_full_name }}">
                             {{ prof.website }}</a>{% endif %}</td>
                 </tr><tr>

@@ -1,6 +1,8 @@
 from django.db import models
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.forms import ValidationError
 
 from main.utils import cache_function, make_choice
 from packages.models import PackageRelation
@@ -8,6 +10,12 @@ from packages.models import PackageRelation
 from datetime import datetime
 from itertools import groupby
 import pytz
+
+def validate_pgp_key_length(value):
+    if len(value) not in (8, 16, 40):
+        raise ValidationError(
+                u'Ensure this value has 8, 16, or 40 characters (it has %d).' % len(value),
+                'pgp_key_value')
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -26,6 +34,11 @@ class UserProfile(models.Model):
         max_length=50,
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
+    pgp_key = models.CharField(max_length=40, null=True, blank=True,
+        verbose_name="PGP key", validators=[RegexValidator(r'^[0-9A-F]+$',
+            "Ensure this value consists of only hex characters.", 'hex_char'),
+            validate_pgp_key_length],
+        help_text="PGP Key ID or fingerprint (8, 16, or 40 hex digits)")
     website = models.CharField(max_length=200, null=True, blank=True)
     yob = models.IntegerField("Year of birth", null=True, blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)

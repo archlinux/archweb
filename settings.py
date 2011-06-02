@@ -107,6 +107,8 @@ INSTALLED_APPS = (
     'releng',
 )
 
+PGP_SERVER = 'pgp.mit.edu:11371'
+
 ## Import local settings
 from local_settings import *
 

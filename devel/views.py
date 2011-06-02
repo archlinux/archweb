@@ -102,6 +102,13 @@ class ProfileForm(forms.Form):
         return self.cleaned_data
 
 class UserProfileForm(forms.ModelForm):
+    def clean_pgp_key(self):
+        data = self.cleaned_data['pgp_key']
+        # strip 0x prefix if provided; store uppercase
+        if data.startswith('0x'):
+            data = data[2:]
+        return data.upper()
+
     class Meta:
         model = UserProfile
         exclude = ['allowed_repos', 'user']
