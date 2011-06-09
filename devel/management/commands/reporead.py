@@ -404,7 +404,7 @@ def db_update(archname, reponame, pkgs, options):
             logger.info("Removing package %s", p)
             dbp = dbdict[p]
             dbp.delete()
-            batcher.batch_commit(score)
+            batcher.batch_commit(1)
 
     # packages in both database and in syncdb (update in database)
     pkg_in_both = syncset & dbset
