@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Q
 
-import codecs
+import io
 import os
 import re
 import sys
@@ -26,14 +26,6 @@ import tarfile
 import logging
 from datetime import datetime
 from optparse import make_option
-
-# New in 2.6, but fast (C implementation) in 2.7. We will use it over codecs if
-# available. Eventually remove the codecs import completely.
-io = None
-try:
-    import io
-except ImportError:
-    pass
 
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
 from packages.models import Conflict, Provision, Replacement
@@ -74,11 +66,6 @@ class Command(BaseCommand):
         elif v == 2:
             logger.level = logging.DEBUG
 
-        import signal, traceback
-        handler = lambda sig, stack: traceback.print_stack(stack)
-        signal.signal(signal.SIGQUIT, handler)
-        signal.signal(signal.SIGUSR1, handler)
-
         return read_repo(arch, filename, options)
 
 
@@ -101,8 +88,7 @@ class Pkg(object):
             setattr(self, k, None)
         for k in self.collections:
             setattr(self, k, ())
-        # So we can tell the diffence between a package with no files, and a DB
-        # without files entries
+        self.files = None
         self.has_files = False
 
     def populate(self, values):
@@ -461,16 +447,13 @@ def parse_repo(repopath):
             if fname not in dbfiles:
                 continue
             data_file = repodb.extractfile(tarinfo)
-            if io is None:
-                data_file = codecs.EncodedFile(data_file, 'utf-8')
-            else:
-                data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                        encoding='utf=8')
+            data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
+                    encoding='utf=8')
             try:
                 data = parse_info(data_file)
                 p = pkgs.setdefault(pkgid, Pkg(reponame))
                 p.populate(data)
-            except UnicodeDecodeError, e:
+            except UnicodeDecodeError:
                 logger.warn("Could not correctly decode %s, skipping file",
                         tarinfo.name)
             data_file.close()

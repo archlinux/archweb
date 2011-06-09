@@ -45,11 +45,6 @@ class Command(NoArgsCommand):
         elif v == 2:
             logger.level = logging.DEBUG
 
-        import signal, traceback
-        handler = lambda sig, stack: traceback.print_stack(stack)
-        signal.signal(signal.SIGQUIT, handler)
-        signal.signal(signal.SIGUSR1, handler)
-
         return check_current_mirrors()
 
 def check_mirror_url(mirror_url):
