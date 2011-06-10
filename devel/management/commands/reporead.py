@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Q
 
+from collections import defaultdict
 import io
 import os
 import re
@@ -72,7 +73,7 @@ class Command(BaseCommand):
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
-            'md5sum', 'url', 'builddate', 'packager' )
+            'md5sum', 'url', 'packager' )
     number = ( 'csize', 'isize' )
     collections = ( 'depends', 'optdepends', 'conflicts',
             'provides', 'replaces', 'groups', 'license', 'files' )
@@ -104,6 +105,16 @@ class Pkg(object):
                 self.rel = match.group(4)
                 if match.group(2):
                     self.epoch = int(match.group(2))
+            elif k == 'builddate':
+                try:
+                    self.builddate = datetime.utcfromtimestamp(int(v[0]))
+                except ValueError:
+                    try:
+                        self.builddate = datetime.strptime(v[0],
+                                '%a %b %d %H:%M:%S %Y')
+                    except ValueError:
+                        logger.warning('Package %s had unparsable build date %s',
+                                self.name, v[0])
             elif k == 'files':
                 self.files = v
                 self.has_files = True
@@ -235,15 +246,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.filename = repopkg.filename
     dbpkg.compressed_size = repopkg.csize
     dbpkg.installed_size = repopkg.isize
-    try:
-        dbpkg.build_date = datetime.utcfromtimestamp(int(repopkg.builddate))
-    except ValueError:
-        try:
-            dbpkg.build_date = datetime.strptime(repopkg.builddate,
-                    '%a %b %d %H:%M:%S %Y')
-        except ValueError:
-            logger.warning('Package %s had unparsable build date %s',
-                    repopkg.name, repopkg.builddate)
+    dbpkg.build_date = repopkg.builddate
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = find_user(repopkg.packager)
@@ -394,7 +397,7 @@ def db_update(archname, reponame, pkgs, options):
         # packages in syncdb and not in database (add to database)
         for p in [x for x in pkgs if x.name in in_sync_not_db]:
             logger.info("Adding package %s", p.name)
-            pkg = Package(pkgname = p.name, arch = architecture, repo = repository)
+            pkg = Package(pkgname=p.name, arch=architecture, repo=repository)
             score = populate_pkg(pkg, p, timestamp=datetime.utcnow())
             batcher.batch_commit(score)
 
@@ -480,7 +483,8 @@ def parse_repo(repopath):
     repodb = tarfile.open(repopath, "r")
     logger.debug("Starting package parsing")
     dbfiles = ('desc', 'depends', 'files')
-    pkgs = {}
+    newpkg = lambda: Pkg(reponame)
+    pkgs = defaultdict(newpkg)
     for tarinfo in repodb.getmembers():
         if tarinfo.isreg():
             pkgid, fname = os.path.split(tarinfo.name)
@@ -490,9 +494,7 @@ def parse_repo(repopath):
             data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
                     encoding='utf=8')
             try:
-                data = parse_info(data_file)
-                p = pkgs.setdefault(pkgid, Pkg(reponame))
-                p.populate(data)
+                pkgs[pkgid].populate(parse_info(data_file))
             except UnicodeDecodeError:
                 logger.warn("Could not correctly decode %s, skipping file",
                         tarinfo.name)
