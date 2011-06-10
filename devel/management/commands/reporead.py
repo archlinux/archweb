@@ -116,11 +116,11 @@ class Pkg(object):
                         logger.warning('Package %s had unparsable build date %s',
                                 self.name, v[0])
             elif k == 'files':
-                self.files = v
+                self.files = tuple(v)
                 self.has_files = True
             else:
                 # anything left in collections
-                setattr(self, k, v)
+                setattr(self, k, tuple(v))
 
     @property
     def full_version(self):
@@ -528,7 +528,9 @@ def read_repo(primary_arch, repo_file, options):
         else:
             # we don't include mis-arched packages
             logger.warning("Package %s arch = %s",
-                package.name,package.arch)
+                package.name, package.arch)
+    del packages
+
     logger.info('Starting database updates.')
     for arch in sorted(packages_arches.keys()):
         db_update(arch, repo, packages_arches[arch], options)
