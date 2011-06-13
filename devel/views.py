@@ -140,9 +140,14 @@ def report(request, report, username=None):
 
     if report == 'old':
         title = 'Packages last built more than two years ago'
-        cutoff = datetime.now() - timedelta(days=730)
+        cutoff = datetime.now() - timedelta(days=365 * 2)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
+    elif report == 'long-out-of-date':
+        title = 'Packages marked out-of-date more than 90 days ago'
+        cutoff = datetime.now() - timedelta(days=90)
+        packages = packages.filter(
+                flag_date__lt=cutoff).order_by('flag_date')
     elif report == 'big':
         title = 'Packages with compressed size > 50 MiB'
         cutoff = 50 * 1024 * 1024
