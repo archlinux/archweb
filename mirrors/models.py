@@ -1,8 +1,17 @@
+import socket
+from urlparse import urlparse
+
 from django.db import models
 from django.core.exceptions import ValidationError
 
-import socket
-from urlparse import urlparse
+class NullCharField(models.CharField):
+    description = "String (up to %(max_length)s), NULL if value is empty"
+    _south_introspects = True
+
+    def get_prep_value(self, value):
+        if value == '':
+            return None
+        return self.to_python(value)
 
 TIER_CHOICES = (
     (0, 'Tier 0'),
@@ -58,7 +67,7 @@ class MirrorUrl(models.Model):
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls")
-    country = models.CharField(max_length=255, blank=True, null=True,
+    country = NullCharField(max_length=255, null=True, blank=True,
             db_index=True)
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
