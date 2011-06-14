@@ -187,6 +187,10 @@
 
     <h2>Stats by Maintainer</h2>
 
+    {% if perms.main.change_package %}
+    <p><a href="/packages/stale_relations/">Look for stale relations</a></p>
+    {% endif %}
+
     <table id="stats-by-maintainer" class="results dash-stats">
         <thead>
             <tr>
