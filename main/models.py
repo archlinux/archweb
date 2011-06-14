@@ -11,6 +11,17 @@ from datetime import datetime
 from itertools import groupby
 import pytz
 
+class PositiveBigIntegerField(models.BigIntegerField):
+    _south_introspects = True
+
+    def get_internal_type(self):
+        return "PositiveBigIntegerField"
+
+    def formfield(self, **kwargs):
+        defaults = {'min_value': 0}
+        defaults.update(kwargs)
+        return super(PositiveBigIntegerField, self).formfield(**defaults)
+
 def validate_pgp_key_length(value):
     if len(value) not in (8, 16, 40):
         raise ValidationError(
@@ -131,11 +142,10 @@ class Package(models.Model):
     pkgdesc = models.CharField(max_length=255, null=True)
     url = models.CharField(max_length=255, null=True)
     filename = models.CharField(max_length=255)
-    # TODO: it would be nice to have the >0 check constraint back here
-    compressed_size = models.BigIntegerField(null=True)
-    installed_size = models.BigIntegerField(null=True)
+    compressed_size = PositiveBigIntegerField()
+    installed_size = PositiveBigIntegerField()
     build_date = models.DateTimeField(null=True)
-    last_update = models.DateTimeField(null=True, blank=True)
+    last_update = models.DateTimeField()
     files_last_update = models.DateTimeField(null=True, blank=True)
     packager_str = models.CharField(max_length=255)
     packager = models.ForeignKey(User, null=True,
