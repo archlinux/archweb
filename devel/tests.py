@@ -26,7 +26,4 @@ class DevelTest(TestCase):
 
     def test_mirrors(self):
         response = self.client.get('/mirrors/')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.has_header('Location'), True)
-        self.assertEqual(response['location'],
-                         'http://testserver/login/?next=/mirrors/')
+        self.assertEqual(response.status_code, 200)
