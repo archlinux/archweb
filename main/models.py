@@ -15,7 +15,7 @@ class PositiveBigIntegerField(models.BigIntegerField):
     _south_introspects = True
 
     def get_internal_type(self):
-        return "PositiveBigIntegerField"
+        return "BigIntegerField"
 
     def formfield(self, **kwargs):
         defaults = {'min_value': 0}
