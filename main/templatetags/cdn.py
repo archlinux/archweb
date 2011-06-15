@@ -3,21 +3,16 @@ from django.conf import settings
 
 register = template.Library()
 
-@register.tag
-def jquery(parser, token):
-    return JQueryNode()
-
-class JQueryNode(template.Node):
-    def render(self, context):
-        prefixes = { False: 'http', True: 'https' }
-        version = '1.4.3'
-        oncdn = getattr(settings, 'CDN_ENABLED', True)
-        if oncdn:
-            jquery = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
-                    '%s/jquery.min.js' % version
-        else:
-            jquery = '/media/jquery-%s.min.js' % version
-        return '<script type="text/javascript" src="%s"></script>' % jquery
+@register.simple_tag
+def jquery():
+    version = '1.4.3'
+    oncdn = getattr(settings, 'CDN_ENABLED', True)
+    if oncdn:
+        link = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
+                '%s/jquery.min.js' % version
+    else:
+        link = '/media/jquery-%s.min.js' % version
+    return '<script type="text/javascript" src="%s"></script>' % link
 
 @register.tag
 def cdnprefix(parser, token):
