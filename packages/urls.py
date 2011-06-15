@@ -19,10 +19,10 @@ urlpatterns = patterns('packages.views',
         'signoff_package'),
     (r'^update/$',   'update'),
 
-    (r'^$',                      'search'),
+    (r'^$',                      'search', {}, 'packages-search'),
     (r'^(?P<page>\d+)/$',        'search'),
 
-    (r'^differences/$',          'arch_differences'),
+    (r'^differences/$',          'arch_differences', {}, 'packages-differences'),
     (r'^stale_relations/$',      'stale_relations'),
     (r'^stale_relations/update/$','stale_relations_update'),
 

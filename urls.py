@@ -10,6 +10,7 @@ from feeds import PackageFeed, NewsFeed
 import sitemaps
 
 sitemaps = {
+    'base':           sitemaps.BaseSitemap,
     'news':           sitemaps.NewsSitemap,
     'packages':       sitemaps.PackagesSitemap,
     'package-files':  sitemaps.PackageFilesSitemap,
