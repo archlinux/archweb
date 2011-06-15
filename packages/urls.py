@@ -2,8 +2,9 @@ from django.conf.urls.defaults import include, patterns
 
 package_patterns = patterns('packages.views',
     (r'^$',            'details'),
+    (r'^json/$',       'details_json'),
     (r'^files/$',      'files'),
-    (r'^maintainer/$', 'getmaintainer'),
+    (r'^files/json/$', 'files_json'),
     (r'^flag/$',       'flag'),
     (r'^flag/done/$',  'flag_confirmed', {}, 'package-flag-confirmed'),
     (r'^unflag/$',     'unflag'),

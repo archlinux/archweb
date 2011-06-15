@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core.mail import send_mail
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -24,8 +25,29 @@ from main.models import Package, PackageFile
 from main.models import Arch, Repo, Signoff
 from main.utils import make_choice
 from mirrors.models import MirrorUrl
-from .models import PackageRelation
+from .models import PackageRelation, PackageGroup
 from .utils import get_group_info, get_differences_info, get_wrong_permissions
+
+class PackageJSONEncoder(DjangoJSONEncoder):
+    pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
+            'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
+            'installed_size', 'build_date', 'last_update', 'flag_date' ]
+
+    def default(self, obj):
+        if hasattr(obj, '__iter__'):
+            # mainly for queryset serialization
+            return list(obj)
+        if isinstance(obj, Package):
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.pkg_attributes)
+            data['groups'] = obj.groups.all()
+            return data
+        if isinstance(obj, PackageFile):
+            filename = obj.filename or ''
+            return obj.directory + filename
+        if isinstance(obj, (Repo, Arch, PackageGroup)):
+            return obj.name.lower()
+        return super(PackageJSONEncoder, self).default(obj)
 
 def opensearch(request):
     if request.is_secure():
@@ -145,15 +167,6 @@ def group_details(request, arch, name):
         'packages': pkgs,
     }
     return direct_to_template(request, 'packages/packages_list.html', context)
-
-def getmaintainer(request, name, repo, arch):
-    "Returns the maintainers as plaintext."
-
-    pkg = get_object_or_404(Package,
-        pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    names = [m.username for m in pkg.maintainers]
-
-    return HttpResponse(str('\n'.join(names)), mimetype='text/plain')
 
 def coerce_limit_value(value):
     if not value:
@@ -286,6 +299,27 @@ def files(request, name, repo, arch):
         template = 'packages/files-list.html'
     return direct_to_template(request, template,
             {'pkg':pkg, 'files':fileslist})
+
+def details_json(request, name, repo, arch):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    to_json = simplejson.dumps(pkg, ensure_ascii=False,
+            cls=PackageJSONEncoder)
+    return HttpResponse(to_json, mimetype='application/json')
+
+def files_json(request, name, repo, arch):
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('directory', 'filename')
+    data = {
+        'pkgname': pkg.pkgname,
+        'repo': pkg.repo.name.lower(),
+        'arch': pkg.arch.name.lower(),
+        'files': fileslist,
+    }
+    to_json = simplejson.dumps(data, ensure_ascii=False,
+            cls=PackageJSONEncoder)
+    return HttpResponse(to_json, mimetype='application/json')
 
 @permission_required('main.change_package')
 def unflag(request, name, repo, arch):

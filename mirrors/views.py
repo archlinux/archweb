@@ -155,9 +155,8 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             # mainly for queryset serialization
             return list(obj)
         if isinstance(obj, MirrorUrl):
-            data = {}
-            for attr in self.url_attributes:
-                data[attr] = getattr(obj, attr)
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.url_attributes)
             # separate because it isn't on the URL directly
             data['country'] = obj.real_country
             return data
