@@ -5,7 +5,7 @@ register = template.Library()
 
 @register.simple_tag
 def jquery():
-    version = '1.4.3'
+    version = '1.4.4'
     oncdn = getattr(settings, 'CDN_ENABLED', True)
     if oncdn:
         link = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
