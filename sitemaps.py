@@ -47,6 +47,6 @@ class NewsSitemap(Sitemap):
         return News.objects.all()
 
     def lastmod(self, obj):
-        return obj.postdate
+        return obj.last_modified
 
 # vim: set ts=4 sw=4 et:
