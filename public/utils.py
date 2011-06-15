@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from main.models import Arch, Package
+from main.models import Arch, Package, Repo
 from main.utils import cache_function
 
 class RecentUpdate(object):
@@ -57,8 +57,8 @@ def get_recent_updates(number=15):
     # grab a few extra so we can hopefully catch everything we need
     fetch = number * 6
     for arch in Arch.objects.all():
-        pkgs += list(Package.objects.select_related(
-            'arch', 'repo').filter(arch=arch).order_by('-last_update')[:fetch])
+        pkgs += list(Package.objects.normal().filter(
+            arch=arch).order_by('-last_update')[:fetch])
     pkgs.sort(key=attrgetter('last_update'))
 
     updates = []

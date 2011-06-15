@@ -117,9 +117,8 @@ def details(request, name='', repo='', arch=''):
             arches = [ arch ]
             arches.extend(Arch.objects.filter(agnostic=True))
             repo = get_object_or_404(Repo, name__iexact=repo)
-            pkgs = Package.objects.filter(pkgbase=name,
-                    repo__testing=repo.testing, arch__in=arches)
-            pkgs = pkgs.select_related('arch', 'repo').order_by('pkgname')
+            pkgs = Package.objects.normal().filter(pkgbase=name,
+                    repo__testing=repo.testing, arch__in=arches).order_by('pkgname')
             if len(pkgs) == 0:
                 raise Http404
             context = {
@@ -156,8 +155,8 @@ def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
-    pkgs = Package.objects.filter(groups__name=name, arch__in=arches)
-    pkgs = pkgs.select_related('arch', 'repo').order_by('pkgname')
+    pkgs = Package.objects.normal().filter(
+            groups__name=name, arch__in=arches).order_by('pkgname')
     if len(pkgs) == 0:
         raise Http404
     context = {
@@ -217,7 +216,7 @@ class PackageSearchForm(forms.Form):
 
 def search(request, page=None):
     limit = 50
-    packages = Package.objects.select_related('arch', 'repo')
+    packages = Package.objects.normal()
 
     if request.GET:
         form = PackageSearchForm(data=request.GET)
@@ -405,7 +404,7 @@ def flag(request, name, repo, arch):
         # already flagged. do nothing.
         return direct_to_template(request, 'packages/flagged.html', {'pkg': pkg})
     # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.select_related('arch', 'repo').filter(
+    pkgs = Package.objects.normal().filter(
             pkgbase=pkg.pkgbase, flag_date__isnull=True,
             repo__testing=pkg.repo.testing).order_by(
             'pkgname', 'repo__name', 'arch__name')
@@ -460,7 +459,7 @@ def flag(request, name, repo, arch):
 def flag_confirmed(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkgs = Package.objects.select_related('arch', 'repo').filter(
+    pkgs = Package.objects.normal().filter(
             pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
             repo__testing=pkg.repo.testing).order_by(
             'pkgname', 'repo__name', 'arch__name')

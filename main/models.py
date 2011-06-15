@@ -74,8 +74,10 @@ class TodolistManager(models.Manager):
 
 class PackageManager(models.Manager):
     def flagged(self):
-        return self.get_query_set().filter(flag_date__isnull=False)
+        return self.filter(flag_date__isnull=False)
 
+    def normal(self):
+        return self.select_related('arch', 'repo')
 
 class Donor(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -255,8 +257,7 @@ class Package(models.Model):
         deps = []
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('optional', 'depname'):
-            pkgs = Package.objects.select_related('arch', 'repo').filter(
-                    pkgname=dep.depname)
+            pkgs = Package.objects.normal().filter(pkgname=dep.depname)
             if not self.arch.agnostic:
                 # make sure we match architectures if possible
                 pkgs = pkgs.filter(arch__in=self.applicable_arches())
@@ -320,7 +321,7 @@ class Package(models.Model):
         if self.repo.testing:
             return None
         try:
-            return Package.objects.get(repo__testing=True,
+            return Package.objects.normal().get(repo__testing=True,
                     pkgname=self.pkgname, arch=self.arch)
         except Package.DoesNotExist:
             return None
@@ -328,7 +329,7 @@ class Package(models.Model):
     def elsewhere(self):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
-        return Package.objects.select_related('arch', 'repo').filter(
+        return Package.objects.normal().filter(
                 pkgname=self.pkgname).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')
 

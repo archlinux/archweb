@@ -51,7 +51,7 @@ class PackageFeed(Feed):
 
     def get_object(self, request, arch='', repo=''):
         obj = dict()
-        qs = Package.objects.select_related('arch', 'repo').order_by(
+        qs = Package.objects.normal().order_by(
                 '-last_update')
 
         if arch != '':

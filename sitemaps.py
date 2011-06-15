@@ -8,8 +8,7 @@ class PackagesSitemap(Sitemap):
     priority = "0.5"
 
     def items(self):
-        return Package.objects.select_related('arch', 'repo').all()
-        return Package.objects.all()
+        return Package.objects.normal()
 
     def lastmod(self, obj):
         return obj.last_update

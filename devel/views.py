@@ -32,7 +32,7 @@ from string import ascii_letters, digits
 def index(request):
     '''the developer dashboard'''
     inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
-    flagged = Package.objects.select_related('arch', 'repo').filter(
+    flagged = Package.objects.normal().filter(
             flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
 
     todopkgs = TodolistPkg.objects.select_related(
@@ -135,7 +135,7 @@ def change_profile(request):
 @login_required
 def report(request, report, username=None):
     title = 'Developer Report'
-    packages = Package.objects.select_related('arch', 'repo')
+    packages = Package.objects.normal()
     names = attrs = user = None
 
     if report == 'old':
