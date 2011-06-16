@@ -262,9 +262,6 @@ def search(request, page=None):
     else:
         form = PackageSearchForm()
 
-    if packages.count() == 1:
-        return redirect(packages[0])
-
     current_query = request.GET.urlencode()
     page_dict = {
             'search_form': form,
