@@ -2,12 +2,16 @@
 <p class="message">Note: This file list was generated from a previous version
 of the package; it may be out of date.</p>
 {% endif %}
-{% if files.count %}
+{% if pkg.files_last_update %}
+{% if files|length %}
 <ul>
     {% for file in files %}
     <li>{{ file.directory }}{{ file.filename|default:'' }}</li>
     {% endfor %}
 </ul>
+{% else %}
+<p class="message">Package has no files.</p>
+{% endif %}
 {% else %}
 <p class="message">No file list available.</p>
 {% endif %}

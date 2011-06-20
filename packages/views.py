@@ -290,11 +290,14 @@ def files(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('directory', 'filename')
+    context = {
+        'pkg': pkg,
+        'files': fileslist,
+    }
     template = 'packages/files.html'
     if request.is_ajax():
         template = 'packages/files-list.html'
-    return direct_to_template(request, template,
-            {'pkg':pkg, 'files':fileslist})
+    return direct_to_template(request, template, context)
 
 def details_json(request, name, repo, arch):
     pkg = get_object_or_404(Package,
