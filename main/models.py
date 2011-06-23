@@ -73,6 +73,10 @@ class TodolistManager(models.Manager):
         return self.filter(todolistpkg__complete=False).distinct()
 
 class PackageManager(models.Manager):
+    def flagged(self):
+        """Used by dev dashboard."""
+        return self.filter(flag_date__isnull=False)
+
     def normal(self):
         return self.select_related('arch', 'repo')
 
