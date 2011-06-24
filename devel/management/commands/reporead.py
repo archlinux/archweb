@@ -16,7 +16,6 @@ Example:
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import Q
 
 from collections import defaultdict
 import io
@@ -28,6 +27,7 @@ import logging
 from datetime import datetime
 from optparse import make_option
 
+from devel.utils import find_user
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
 from packages.models import Conflict, Provision, Replacement
 
@@ -129,55 +129,6 @@ class Pkg(object):
             return u'%d:%s-%s' % (self.epoch, self.ver, self.rel)
         return u'%s-%s' % (self.ver, self.rel)
 
-
-def find_user(userstring):
-    '''
-    Attempt to find the corresponding User object for a standard
-    packager string, e.g. something like
-        'A. U. Thor <author@example.com>'.
-    We start by searching for a matching email address; we then move onto
-    matching by first/last name. If we cannot find a user, then return None.
-    '''
-    if userstring in find_user.cache:
-        return find_user.cache[userstring]
-    matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
-    if not matches:
-        return None
-
-    user = None
-    name = matches.group(1)
-    email = matches.group(2)
-
-    def user_email():
-        return User.objects.get(email=email)
-    def profile_email():
-        return User.objects.get(userprofile__public_email=email)
-    def user_name():
-        # yes, a bit odd but this is the easiest way since we can't always be
-        # sure how to split the name. Ensure every 'token' appears in at least
-        # one of the two name fields.
-        name_q = Q()
-        for token in name.split():
-            # ignore quoted parts; e.g. nicknames in strings
-            if re.match(r'^[\'"].*[\'"]$', token):
-                continue
-            name_q &= (Q(first_name__icontains=token) |
-                    Q(last_name__icontains=token))
-        return User.objects.get(name_q)
-
-    for matcher in (user_email, profile_email, user_name):
-        try:
-            user = matcher()
-            break
-        except (User.DoesNotExist, User.MultipleObjectsReturned):
-            pass
-
-    find_user.cache[userstring] = user
-    return user
-
-# cached mappings of user strings -> User objects so we don't have to do the
-# lookup more than strictly necessary.
-find_user.cache = {}
 
 DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.*))?$")
 
