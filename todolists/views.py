@@ -23,8 +23,8 @@ class TodoListForm(forms.ModelForm):
         package_names = [s.strip() for s in
                 self.cleaned_data['packages'].split("\n")]
         package_names = set(package_names)
-        packages = Package.objects.filter(pkgname__in=package_names).exclude(
-                repo__testing=True).select_related(
+        packages = Package.objects.filter(pkgname__in=package_names).filter(
+                repo__testing=False, repo__staging=False).select_related(
                         'arch', 'repo').order_by('arch')
         return packages
 
