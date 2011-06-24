@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from django.contrib.auth.models import User
-from devel.utils import UserFinder 
+from devel.utils import UserFinder
 from main.models import UserProfile
 
 class DevelTest(TestCase):
@@ -86,6 +86,16 @@ class FindUserTest(TestCase):
                 self.finder.find("John"))
         self.assertEqual(self.user3,
                 self.finder.find("Bob Jones <bjones AT Arch Linux DOT org>"))
+
+    def test_by_invalid(self):
+        self.assertEqual(self.user1,
+                self.finder.find("Joe User <user1@example.com"))
+        self.assertEqual(self.user1,
+                self.finder.find("Joe 'nickname' User <user1@example.com"))
+        self.assertEqual(self.user1,
+                self.finder.find("Joe \"nickname\" User <user1@example.com"))
+        self.assertEqual(self.user1,
+                self.finder.find("Joe User <joe@differentdomain.com"))
 
     def test_cache(self):
         # simply look two of them up, but then do it repeatedly

@@ -88,10 +88,12 @@ class UserFinder(object):
             return None
         if userstring in self.cache:
             return self.cache[userstring]
-        matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
+
+        name = email = None
+
+        matches = re.match(r'^([^<]+)? ?<([^>]*)>?', userstring)
         if not matches:
-            name = userstring
-            email = None
+            name = userstring.strip()
         else:
             name = matches.group(1)
             email = matches.group(2)
