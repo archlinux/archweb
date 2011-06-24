@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from django.contrib.auth.models import User
-from devel.utils import find_user
+from devel.utils import UserFinder 
 from main.models import UserProfile
 
 class DevelTest(TestCase):
@@ -33,6 +33,8 @@ class DevelTest(TestCase):
 class FindUserTest(TestCase):
 
     def setUp(self):
+        self.finder = UserFinder()
+
         self.user1 = User.objects.create(username="joeuser", first_name="Joe",
                 last_name="User", email="user1@example.com")
         self.user2 = User.objects.create(username="john", first_name="John",
@@ -44,29 +46,60 @@ class FindUserTest(TestCase):
             email_addr = "%s@awesome.com" % user.username
             UserProfile.objects.create(user=user, public_email=email_addr)
 
+        self.user4 = User.objects.create(username="tim1", first_name="Tim",
+                last_name="One", email="tim@example.com")
+        self.user5 = User.objects.create(username="tim2", first_name="Tim",
+                last_name="Two", email="timtwo@example.com")
+
     def test_not_matching(self):
-        self.assertIsNone(find_user(None))
-        self.assertIsNone(find_user(""))
-        self.assertIsNone(find_user("Bogus"))
-        self.assertIsNone(find_user("Bogus <invalid"))
-        self.assertIsNone(find_user("Bogus User <bogus@example.com>"))
-        self.assertIsNone(find_user("<bogus@example.com>"))
-        self.assertIsNone(find_user("bogus@example.com"))
-        self.assertIsNone(find_user("Unknown Packager"))
+        self.assertIsNone(self.finder.find(None))
+        self.assertIsNone(self.finder.find(""))
+        self.assertIsNone(self.finder.find("Bogus"))
+        self.assertIsNone(self.finder.find("Bogus <invalid"))
+        self.assertIsNone(self.finder.find("Bogus User <bogus@example.com>"))
+        self.assertIsNone(self.finder.find("<bogus@example.com>"))
+        self.assertIsNone(self.finder.find("bogus@example.com"))
+        self.assertIsNone(self.finder.find("Unknown Packager"))
 
     def test_by_email(self):
-        self.assertEqual(self.user1, find_user("XXX YYY <user1@example.com>"))
-        self.assertEqual(self.user2, find_user("YYY ZZZ <user2@example.com>"))
+        self.assertEqual(self.user1,
+                self.finder.find("XXX YYY <user1@example.com>"))
+        self.assertEqual(self.user2,
+                self.finder.find("YYY ZZZ <user2@example.com>"))
 
     def test_by_profile_email(self):
-        self.assertEqual(self.user1, find_user("XXX <joeuser@awesome.com>"))
-        self.assertEqual(self.user2, find_user("YYY <john@awesome.com>"))
-        self.assertEqual(self.user3, find_user("ZZZ <bjones@awesome.com>"))
+        self.assertEqual(self.user1,
+                self.finder.find("XXX <joeuser@awesome.com>"))
+        self.assertEqual(self.user2,
+                self.finder.find("YYY <john@awesome.com>"))
+        self.assertEqual(self.user3,
+                self.finder.find("ZZZ <bjones@awesome.com>"))
 
     def test_by_name(self):
-        self.assertEqual(self.user1, find_user("Joe User <joe@differentdomain.com>"))
-        self.assertEqual(self.user1, find_user("Joe User"))
-        self.assertEqual(self.user2, find_user("John <john@differentdomain.com>"))
-        self.assertEqual(self.user3, find_user("Bob Jones <bjones AT Arch Linux DOT org>"))
+        self.assertEqual(self.user1,
+                self.finder.find("Joe User <joe@differentdomain.com>"))
+        self.assertEqual(self.user1,
+                self.finder.find("Joe User"))
+        self.assertEqual(self.user2,
+                self.finder.find("John <john@differentdomain.com>"))
+        self.assertEqual(self.user2,
+                self.finder.find("John"))
+        self.assertEqual(self.user3,
+                self.finder.find("Bob Jones <bjones AT Arch Linux DOT org>"))
+
+    def test_cache(self):
+        # simply look two of them up, but then do it repeatedly
+        for i in range(50):
+            self.assertEqual(self.user1,
+                    self.finder.find("XXX YYY <user1@example.com>"))
+            self.assertEqual(self.user3,
+                    self.finder.find("Bob Jones <bjones AT Arch Linux DOT org>"))
+
+    def test_ambiguous(self):
+        self.assertEqual(self.user4,
+                self.finder.find("Tim One <tim@anotherdomain.com>"))
+        self.assertEqual(self.user5,
+                self.finder.find("Tim Two <tim@anotherdomain.com>"))
+        self.assertIsNone(self.finder.find("Tim <tim@anotherdomain.com>"))
 
 # vim: set ts=4 sw=4 et:

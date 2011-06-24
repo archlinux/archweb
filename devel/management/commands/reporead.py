@@ -27,7 +27,7 @@ import logging
 from datetime import datetime
 from optparse import make_option
 
-from devel.utils import find_user
+from devel.utils import UserFinder
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
 from packages.models import Conflict, Provision, Replacement
 
@@ -182,6 +182,8 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     for name in getattr(repopkg, repo_attr):
         collection.create(name=name)
 
+finder = UserFinder()
+
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     db_score = 1
 
@@ -200,7 +202,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.build_date = repopkg.builddate
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
-    dbpkg.packager = find_user(repopkg.packager)
+    dbpkg.packager = finder.find(repopkg.packager)
 
     if timestamp:
         dbpkg.flag_date = None

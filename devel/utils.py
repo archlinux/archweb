@@ -43,35 +43,25 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
 
     return maintainers
 
-def find_user(userstring):
-    '''
-    Attempt to find the corresponding User object for a standard
-    packager string, e.g. something like
-        'A. U. Thor <author@example.com>'.
-    We start by searching for a matching email address; we then move onto
-    matching by first/last name. If we cannot find a user, then return None.
-    '''
-    if not userstring:
-        return None
-    if userstring in find_user.cache:
-        return find_user.cache[userstring]
-    matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
-    if not matches:
-        name = userstring
-        email = None
-    else:
-        name = matches.group(1)
-        email = matches.group(2)
 
-    def user_email():
+class UserFinder(object):
+    def __init__(self):
+        self.cache = {}
+
+    @staticmethod
+    def user_email(name, email):
         if email:
             return User.objects.get(email=email)
         return None
-    def profile_email():
+
+    @staticmethod
+    def profile_email(name, email):
         if email:
             return User.objects.get(userprofile__public_email=email)
         return None
-    def user_name():
+
+    @staticmethod
+    def user_name(name, email):
         # yes, a bit odd but this is the easiest way since we can't always be
         # sure how to split the name. Ensure every 'token' appears in at least
         # one of the two name fields.
@@ -86,20 +76,40 @@ def find_user(userstring):
                     Q(last_name__icontains=token))
         return User.objects.get(name_q)
 
-    user = None
-    for matcher in (user_email, profile_email, user_name):
-        try:
-            user = matcher()
-            if user != None:
-                break
-        except (User.DoesNotExist, User.MultipleObjectsReturned):
-            pass
+    def find(self, userstring):
+        '''
+        Attempt to find the corresponding User object for a standard
+        packager string, e.g. something like
+            'A. U. Thor <author@example.com>'.
+        We start by searching for a matching email address; we then move onto
+        matching by first/last name. If we cannot find a user, then return None.
+        '''
+        if not userstring:
+            return None
+        if userstring in self.cache:
+            return self.cache[userstring]
+        matches = re.match(r'^([^<]+)? ?<([^>]*)>', userstring)
+        if not matches:
+            name = userstring
+            email = None
+        else:
+            name = matches.group(1)
+            email = matches.group(2)
 
-    find_user.cache[userstring] = user
-    return user
+        user = None
+        find_methods = (self.user_email, self.profile_email, self.user_name)
+        for matcher in find_methods:
+            try:
+                user = matcher(name, email)
+                if user != None:
+                    break
+            except (User.DoesNotExist, User.MultipleObjectsReturned):
+                pass
 
-# cached mappings of user strings -> User objects so we don't have to do the
-# lookup more than strictly necessary.
-find_user.cache = {}
+        self.cache[userstring] = user
+        return user
+
+    def clear_cache(self):
+        self.cache = {}
 
 # vim: set ts=4 sw=4 et:
