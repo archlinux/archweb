@@ -191,6 +191,7 @@ class PackageSearchForm(forms.Form):
     arch = forms.MultipleChoiceField(required=False)
     q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
+    packager = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget(),
             label='Last Updated After')
     flagged = forms.ChoiceField(
@@ -212,6 +213,9 @@ class PackageSearchForm(forms.Form):
         maints = User.objects.filter(is_active=True).order_by('username')
         self.fields['maintainer'].choices = \
                 [('', 'All'), ('orphan', 'Orphan')] + \
+                [(m.username, m.get_full_name()) for m in maints]
+        self.fields['packager'].choices = \
+                [('', 'All'), ('unknown', 'Unknown')] + \
                 [(m.username, m.get_full_name()) for m in maints]
 
 def search(request, page=None):
@@ -236,6 +240,12 @@ def search(request, page=None):
                 inner_q = PackageRelation.objects.filter(
                         user__username=form.cleaned_data['maintainer']).values('pkgbase')
                 packages = packages.filter(pkgbase__in=inner_q)
+
+            if form.cleaned_data['packager'] == 'unknown':
+                packages = packages.filter(packager__isnull=True)
+            elif form.cleaned_data['packager']:
+                packages = packages.filter(
+                        packager__username=form.cleaned_data['packager'])
 
             if form.cleaned_data['flagged'] == 'Flagged':
                 packages = packages.filter(flag_date__isnull=False)

@@ -182,10 +182,10 @@
 </div>{# dash-by-arch #}
 {% endcache %}
 
-{% cache 60 dev-dash-by-maintainer %}
-<div id="dash-by-maintainer" class="box">
+{% cache 60 dev-dash-by-developer %}
+<div id="dash-by-developer" class="box">
 
-    <h2>Stats by Maintainer</h2>
+    <h2>Stats by Developer</h2>
 
     {% if perms.main.change_package %}
     <p><a href="/packages/stale_relations/">Look for stale relations</a></p>
@@ -195,17 +195,24 @@
         <thead>
             <tr>
                 <th class="key">Maintainer</th>
-                <th># Packages</th>
+                <th># Maintained</th>
                 <th># Flagged</th>
+                <th># Last Packager</th>
             </tr>
             <tr class="even">
-                <td><em>Orphan</em></td>
+                <td><em>Orphan/Unknown</em></td>
                 <td><a href="/packages/?maintainer=orphan"
                         title="View all orphan packages">
-                        <strong>{{ orphan.package_count }}</strong> packages</a></td>
+                        <strong>{{ orphan.package_count }}</strong> packages</a>
+                </td>
                 <td><a href="/packages/?maintainer=orphan&amp;flagged=Flagged"
                         title="View all flagged orphan packages">
-                        <strong>{{ orphan.flagged_count }}</strong> packages</a></td>
+                        <strong>{{ orphan.flagged_count }}</strong> packages</a>
+                </td>
+                <td><a href="/packages/?packager=unknown"
+                        title="View all packages last updated by unknown">
+                        <strong>{{ orphan.updated_count }}</strong> packages</a>
+                </td>
             </tr>
         </thead>
         <tbody>
@@ -214,15 +221,21 @@
                     <td>{{ maint.get_full_name }}</td>
                     <td><a href="/packages/?maintainer={{ maint.username }}"
                             title="View all packages maintained by {{ maint.get_full_name }}">
-                            <strong>{{ maint.package_count }}</strong> packages</a></td>
+                            <strong>{{ maint.package_count }}</strong> packages</a>
+                    </td>
                     <td><a href="/packages/?maintainer={{ maint.username }}&amp;flagged=Flagged"
                             title="View all flagged packages maintained by {{ maint.get_full_name }}">
-                            <strong>{{ maint.flagged_count }}</strong> packages</a></td>
+                            <strong>{{ maint.flagged_count }}</strong> packages</a>
+                    </td>
+                    <td><a href="/packages/?packager={{ maint.username }}"
+                            title="View all packages last updated by {{ maint.get_full_name }}">
+                            <strong>{{ maint.updated_count }}</strong> packages</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-</div>{# #dash-by-maintainer #}
+</div>{# #dash-by-developer #}
 {% endcache %}
 
 {% load cdn %}{% jquery %}
@@ -236,9 +249,11 @@ $(document).ready(function() {
         {widgets: ['zebra'], sortList: [[0,0], [1,0]]});
     $("#dash-todo:not(:has(tbody tr.empty))").tablesorter(
             {widgets: ['zebra'], sortList: [[1,1]]});
-    $(".dash-stats").tablesorter(
-        {widgets: ['zebra'], sortList: [[0,0]],
-        headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' } } });
+    $(".dash-stats").tablesorter({
+        widgets: ['zebra'],
+        sortList: [[0,0]],
+        headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' }, 3: { sorter: 'pkgcount' } }
+    });
 });
 </script>
 {% endblock %}

@@ -50,9 +50,11 @@ def index(request):
     total_orphans = Package.objects.exclude(pkgbase__in=maintained).count()
     total_flagged_orphans = Package.objects.filter(
             flag_date__isnull=False).exclude(pkgbase__in=maintained).count()
+    total_updated = Package.objects.filter(packager__isnull=True).count()
     orphan = {
             'package_count': total_orphans,
             'flagged_count': total_flagged_orphans,
+            'updated_count': total_updated,
     }
 
     page_dict = {
