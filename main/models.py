@@ -332,6 +332,17 @@ class Package(models.Model):
         except Package.DoesNotExist:
             return None
 
+    def in_staging(self):
+        '''attempt to locate this package in a staging repo; if we are in
+        a staging repo we will always return None.'''
+        if self.repo.staging:
+            return None
+        try:
+            return Package.objects.normal().get(repo__staging=True,
+                    pkgname=self.pkgname, arch=self.arch)
+        except Package.DoesNotExist:
+            return None
+
     def elsewhere(self):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
