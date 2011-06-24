@@ -243,7 +243,7 @@ class Package(models.Model):
             if len(dep_pkgs) > 1:
                 dep_pkgs = [d for d in dep_pkgs
                         if d.pkg.repo.testing == self.repo.testing and
-                        d.pkg.repo.staging = self.repo.staging]
+                        d.pkg.repo.staging == self.repo.staging]
                 if len(dep_pkgs) > 0:
                     dep = dep_pkgs[0]
             trimmed.append(dep)
@@ -276,7 +276,7 @@ class Package(models.Model):
                 pkg = pkgs[0]
                 # prevents yet more DB queries, these lists should be short
                 pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing
-                        and p.repo.staging = self.repo.staging]
+                        and p.repo.staging == self.repo.staging]
                 if len(pkgs) > 0:
                     pkg = pkgs[0]
             deps.append({'dep': dep, 'pkg': pkg})
