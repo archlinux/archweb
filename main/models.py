@@ -226,6 +226,7 @@ class Package(models.Model):
                 groupby(requiredby, lambda x: x.pkg.id)]
 
         # find another package by this name in the opposite testing setup
+        # TODO: figure out staging exclusions too
         if not Package.objects.filter(pkgname=self.pkgname,
                 arch=self.arch).exclude(id=self.id).exclude(
                 repo__testing=self.repo.testing).exists():
@@ -241,7 +242,8 @@ class Package(models.Model):
             dep = dep_pkgs[0]
             if len(dep_pkgs) > 1:
                 dep_pkgs = [d for d in dep_pkgs
-                        if d.pkg.repo.testing == self.repo.testing]
+                        if d.pkg.repo.testing == self.repo.testing and
+                        d.pkg.repo.staging = self.repo.staging]
                 if len(dep_pkgs) > 0:
                     dep = dep_pkgs[0]
             trimmed.append(dep)
@@ -273,7 +275,8 @@ class Package(models.Model):
                 # grab the first though in case we fail
                 pkg = pkgs[0]
                 # prevents yet more DB queries, these lists should be short
-                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing]
+                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing
+                        and p.repo.staging = self.repo.staging]
                 if len(pkgs) > 0:
                     pkg = pkgs[0]
             deps.append({'dep': dep, 'pkg': pkg})
@@ -293,7 +296,8 @@ class Package(models.Model):
             # this package might be split across repos? just find one
             # that matches the correct [testing] repo flag
             pkglist = Package.objects.filter(arch=self.arch,
-                    repo__testing=self.repo.testing, pkgname=self.pkgbase)
+                    repo__testing=self.repo.testing,
+                    repo__staging=self.repo.staging, pkgname=self.pkgbase)
             if len(pkglist) > 0:
                 return pkglist[0]
             return None
@@ -303,11 +307,12 @@ class Package(models.Model):
         Return all packages that were built with this one (e.g. share a pkgbase
         value). The package this method is called on will never be in the list,
         and we will never return a package that does not have the same
-        repo.testing flag. For any non-split packages, the return value will be
-        an empty list.
+        repo.testing and repo.staging flags. For any non-split packages, the
+        return value will be an empty list.
         """
         return Package.objects.filter(arch__in=self.applicable_arches(),
-                repo__testing=self.repo.testing, pkgbase=self.pkgbase).exclude(id=self.id)
+                repo__testing=self.repo.testing, repo__staging=self.repo.staging,
+                pkgbase=self.pkgbase).exclude(id=self.id)
 
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'

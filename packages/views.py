@@ -118,7 +118,8 @@ def details(request, name='', repo='', arch=''):
             arches.extend(Arch.objects.filter(agnostic=True))
             repo = get_object_or_404(Repo, name__iexact=repo)
             pkgs = Package.objects.normal().filter(pkgbase=name,
-                    repo__testing=repo.testing, arch__in=arches).order_by('pkgname')
+                    repo__testing=repo.testing, repo__staging=repo.staging,
+                    arch__in=arches).order_by('pkgname')
             if len(pkgs) == 0:
                 raise Http404
             context = {
@@ -343,8 +344,8 @@ def unflag_all(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.filter(
-            pkgbase=pkg.pkgbase, repo__testing=pkg.repo.testing)
+    pkgs = Package.objects.filter(pkgbase=pkg.pkgbase,
+            repo__testing=pkg.repo.testing, repo__staging=pkg.repo.staging)
     pkgs.update(flag_date=None)
     return redirect(pkg)
 
@@ -416,7 +417,8 @@ def flag(request, name, repo, arch):
     # find all packages from (hopefully) the same PKGBUILD
     pkgs = Package.objects.normal().filter(
             pkgbase=pkg.pkgbase, flag_date__isnull=True,
-            repo__testing=pkg.repo.testing).order_by(
+            repo__testing=pkg.repo.testing,
+            repo__staging=pkg.repo.staging).order_by(
             'pkgname', 'repo__name', 'arch__name')
 
     if request.POST:
@@ -471,7 +473,8 @@ def flag_confirmed(request, name, repo, arch):
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     pkgs = Package.objects.normal().filter(
             pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
-            repo__testing=pkg.repo.testing).order_by(
+            repo__testing=pkg.repo.testing,
+            repo__staging=pkg.repo.staging).order_by(
             'pkgname', 'repo__name', 'arch__name')
 
     context = {'package': pkg, 'packages': pkgs}
