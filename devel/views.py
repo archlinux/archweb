@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import F, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
@@ -163,6 +163,23 @@ def report(request, report, username=None):
                 package.compressed_size)
             package.installed_size_pretty = filesizeformat(
                 package.installed_size)
+    elif report == 'badcompression':
+        title = 'Packages that have little need for compression'
+        cutoff = 0.90 * F('installed_size')
+        packages = packages.filter(compressed_size__gt=0, installed_size__gt=0,
+                compressed_size__gte=cutoff).order_by('-compressed_size')
+        names = [ 'Compressed Size', 'Installed Size', 'Ratio', 'Type' ]
+        attrs = [ 'compressed_size_pretty', 'installed_size_pretty',
+                'ratio', 'compress_type' ]
+        # Format the compressed and installed sizes with MB/GB/etc suffixes
+        for package in packages:
+            package.compressed_size_pretty = filesizeformat(
+                package.compressed_size)
+            package.installed_size_pretty = filesizeformat(
+                package.installed_size)
+            ratio = package.compressed_size / float(package.installed_size)
+            package.ratio = '%.2f' % ratio
+            package.compress_type = package.filename.split('.')[-1]
     elif report == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
         # magic going on here! Checking for all '.1'...'.9' extensions
