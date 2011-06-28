@@ -32,8 +32,8 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
         pkg_count[k] = total
         flag_count[k] = flagged
 
-    update_count = Package.objects.values_list('packager').annotate(
-            Count('packager'))
+    update_count = Package.objects.values_list('packager').order_by(
+            'packager').annotate(Count('packager'))
     update_count = dict(update_count)
 
     for m in maintainers:
