@@ -2,6 +2,9 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
+from datetime import datetime
+
 from django.core.cache import cache
 from django.utils.hashcompat import md5_constructor
 
@@ -80,5 +83,12 @@ def retrieve_latest(sender):
     except sender.DoesNotExist:
         pass
     return None
+
+def set_created_field(sender, **kwargs):
+    '''This will set the 'created' field on any object to datetime.utcnow() if
+    it is unset. For use as a pre_save signal handler.'''
+    obj = kwargs['instance']
+    if hasattr(obj, 'created') and not obj.created:
+        obj.created = datetime.utcnow()
 
 # vim: set ts=4 sw=4 et:

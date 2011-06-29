@@ -1,6 +1,7 @@
-from datetime import datetime
-
 from django.db import models
+from django.db.models.signals import pre_save
+
+from main.utils import set_created_field
 
 class IsoOption(models.Model):
     name = models.CharField(max_length=200)
@@ -103,14 +104,6 @@ class Test(models.Model):
 
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)
-
-def set_created_field(sender, **kwargs):
-    # We use this same callback for both Isos and Tests
-    obj = kwargs['instance']
-    if not obj.created:
-        obj.created = datetime.utcnow()
-
-from django.db.models.signals import pre_save
 
 pre_save.connect(set_created_field, sender=Iso,
         dispatch_uid="releng.models")

@@ -1,8 +1,8 @@
-from datetime import datetime
-
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
+
+from main.utils import set_created_field
 
 class PackageRelation(models.Model):
     '''
@@ -111,12 +111,6 @@ def remove_inactive_maintainers(sender, instance, created, **kwargs):
         maint_relations = PackageRelation.objects.filter(user=instance,
                 type=PackageRelation.MAINTAINER)
         maint_relations.delete()
-
-def set_created_field(sender, **kwargs):
-    # We use this same callback for both Isos and Tests
-    obj = kwargs['instance']
-    if not obj.created:
-        obj.created = datetime.utcnow()
 
 post_save.connect(remove_inactive_maintainers, sender=User,
         dispatch_uid="packages.models")
