@@ -27,7 +27,7 @@
                 <td><a href="{{ pkg.get_absolute_url }}"
                         title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                 <td>{{ pkg.full_version }}</td>
-                <td>{{ pkg.last_update }}</td>
+                <td>{{ pkg.last_update|date }}</td>
                 <td>{{ target }}</td>
                 <td class="signoff-{{pkg.approved_for_signoff|yesno}}">
                     {{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
