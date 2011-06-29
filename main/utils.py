@@ -91,4 +91,39 @@ def set_created_field(sender, **kwargs):
     if hasattr(obj, 'created') and not obj.created:
         obj.created = datetime.utcnow()
 
+def groupby_preserve_order(iterable, keyfunc):
+    '''Take an iterable and regroup using keyfunc to determine whether items
+    belong to the same group. The order of the iterable is preserved and
+    similar keys do not have to be consecutive. This means the earliest
+    occurrence of a given key will determine the order of the lists in the
+    returned list.'''
+    seen_keys = {}
+    result = []
+    for item in iterable:
+        key = keyfunc(item)
+
+        group = seen_keys.get(key, None)
+        if group is None:
+            group = []
+            seen_keys[key] = group
+            result.append(group)
+
+        group.append(item)
+
+    return result
+
+class PackageStandin(object):
+    '''Resembles a Package object, and has a few of the same fields, but is
+    really a link to a pkgbase that has no package with matching pkgname.'''
+    def __init__(self, package):
+        self.package = package
+        self.pkgname = package.pkgbase
+
+    def __getattr__(self, name):
+        return getattr(self.package, name)
+
+    def get_absolute_url(self):
+        return '/packages/%s/%s/%s/' % (
+                self.repo.name.lower(), self.arch.name, self.pkgbase)
+
 # vim: set ts=4 sw=4 et:

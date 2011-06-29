@@ -1,7 +1,7 @@
 from operator import attrgetter
 
 from main.models import Arch, Package, Repo
-from main.utils import cache_function
+from main.utils import cache_function, groupby_preserve_order, PackageStandin
 
 class RecentUpdate(object):
     def __init__(self, packages):
@@ -35,18 +35,12 @@ class RecentUpdate(object):
             for package in self.packages:
                 yield package
         else:
-            # time to fake out the template, this is a tad dirty
-            arches = set(pkg.arch for pkg in self.others)
-            for arch in arches:
-                url = '/packages/%s/%s/%s/' % (
-                        self.repo.name.lower(), arch.name, self.pkgbase)
-                package_stub = {
-                    'pkgname': self.pkgbase,
-                    'arch': arch,
-                    'repo': self.repo,
-                    'get_absolute_url': url
-                }
-                yield package_stub
+            # fake out the template- this is slightly hacky but yields one
+            # 'package-like' object per arch which is what the normal loop does
+            arches = set()
+            for package in self.others:
+                if package.arch not in arches and not arches.add(package.arch):
+                    yield PackageStandin(package)
 
 @cache_function(300)
 def get_recent_updates(number=15):
@@ -59,20 +53,14 @@ def get_recent_updates(number=15):
     for arch in Arch.objects.all():
         pkgs += list(Package.objects.normal().filter(
             arch=arch).order_by('-last_update')[:fetch])
-    pkgs.sort(key=attrgetter('last_update'))
+    pkgs.sort(key=attrgetter('last_update'), reverse=True)
+
+    same_pkgbase_key = lambda x: (x.repo.name, x.pkgbase)
+    grouped = groupby_preserve_order(pkgs, same_pkgbase_key)
 
     updates = []
-    while len(pkgs) > 0:
-        pkg = pkgs.pop()
-
-        in_group = lambda x: pkg.repo == x.repo and pkg.pkgbase == x.pkgbase
-        samepkgs = [other for other in pkgs if in_group(other)]
-        samepkgs.append(pkg)
-
-        # now remove all the packages we just pulled out
-        pkgs = [other for other in pkgs if other not in samepkgs]
-
-        update = RecentUpdate(samepkgs)
+    for group in grouped:
+        update = RecentUpdate(group)
         updates.append(update)
 
     return updates[:number]
