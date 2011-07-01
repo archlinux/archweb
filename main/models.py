@@ -22,6 +22,25 @@ class PositiveBigIntegerField(models.BigIntegerField):
         defaults.update(kwargs)
         return super(PositiveBigIntegerField, self).formfield(**defaults)
 
+class PGPKeyField(models.CharField):
+    _south_introspects = True
+
+    def to_python(self, value):
+        if value == '':
+            return None
+        value = super(PGPKeyField, self).to_python(value)
+        # remove all spaces
+        value = value.replace(' ', '')
+        # prune prefixes, either 0x or 2048R/ type
+        if value.startswith('0x'):
+            value = value[2:]
+        value = value.split('/')[-1]
+        return value
+
+    def formfield(self, **kwargs):
+        # override so we don't set max_length form field attribute
+        return models.Field.formfield(self, **kwargs)
+
 def validate_pgp_key_length(value):
     if len(value) not in (8, 16, 40):
         raise ValidationError(
@@ -45,7 +64,7 @@ class UserProfile(models.Model):
         max_length=50,
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
-    pgp_key = models.CharField(max_length=40, null=True, blank=True,
+    pgp_key = PGPKeyField(max_length=40, null=True, blank=True,
         verbose_name="PGP key", validators=[RegexValidator(r'^[0-9A-F]+$',
             "Ensure this value consists of only hex characters.", 'hex_char'),
             validate_pgp_key_length],
