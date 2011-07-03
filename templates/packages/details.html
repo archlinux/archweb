@@ -38,7 +38,7 @@
                     onclick="return !window.open('/packages/flaghelp/','FlagHelp',
                     'height=350,width=450,location=no,scrollbars=yes,menubars=no,toolbars=no,resizable=no');">(?)</a></li>
                 {% endif %}
-                <li><a href="download/" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
+                <li><a href="download/" rel="nofollow" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
             </ul>
 
             {% if perms.main.change_package %}
