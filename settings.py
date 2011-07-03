@@ -32,6 +32,7 @@ SITE_ID = 1
 
 # Default date format in templates for 'date' filter
 DATE_FORMAT = 'Y-m-d'
+DATETIME_FORMAT = 'Y-m-d H:i'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

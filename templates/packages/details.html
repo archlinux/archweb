@@ -144,7 +144,7 @@
             <td>{% with pkg.packager as pkgr %}{% if pkgr %}{% userpkgs pkgr %}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Build Date:</th>
-            <td>{{ pkg.build_date }} UTC</td>
+            <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
         </tr><tr>
             <th>Last Updated:</th>
             <td>{{ pkg.last_update|date }}</td>
