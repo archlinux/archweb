@@ -92,21 +92,16 @@ SELECT p.id, q.id
     WHERE p.arch_id IN (%s, %s)
     AND (
         q.id IS NULL
-        OR
-        p.pkgver != q.pkgver
-        OR
-        p.pkgrel != q.pkgrel
-        OR
-        p.epoch != q.epoch
+        OR p.pkgver != q.pkgver
+        OR p.pkgrel != q.pkgrel
+        OR p.epoch != q.epoch
     )
 """
     cursor = connection.cursor()
     cursor.execute(sql, [arch_a.id, arch_b.id])
     results = cursor.fetchall()
-    to_fetch = []
-    for row in results:
-        # column A will always have a value, column B might be NULL
-        to_fetch.append(row[0])
+    # column A will always have a value, column B might be NULL
+    to_fetch = [row[0] for row in results]
     # fetch all of the necessary packages
     pkgs = Package.objects.normal().in_bulk(to_fetch)
     # now build a list of tuples containing differences
