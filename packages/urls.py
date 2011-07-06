@@ -9,14 +9,13 @@ package_patterns = patterns('packages.views',
     (r'^flag/done/$',  'flag_confirmed', {}, 'package-flag-confirmed'),
     (r'^unflag/$',     'unflag'),
     (r'^unflag/all/$', 'unflag_all'),
+    (r'^signoff/$',    'signoff_package'),
     (r'^download/$',   'download'),
 )
 
 urlpatterns = patterns('packages.views',
     (r'^flaghelp/$', 'flaghelp'),
     (r'^signoffs/$', 'signoffs', {}, 'package-signoffs'),
-    (r'^signoff_package/(?P<arch>[A-z0-9]+)/(?P<pkgname>[A-z0-9\-+.]+)/$',
-        'signoff_package'),
     (r'^update/$',   'update'),
 
     (r'^$',                      'search', {}, 'packages-search'),

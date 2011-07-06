@@ -372,11 +372,9 @@ def signoffs(request):
 
 @permission_required('main.change_package')
 @never_cache
-def signoff_package(request, arch, pkgname):
+def signoff_package(request, name, repo, arch):
     pkg = get_object_or_404(Package,
-            arch__name=arch,
-            pkgname=pkgname,
-            repo__testing=True)
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
 
     signoff, created = Signoff.objects.get_or_create(
             pkg=pkg,

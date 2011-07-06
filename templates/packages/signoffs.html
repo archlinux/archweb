@@ -34,7 +34,7 @@
                     {{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
                 <td>
                     <ul>
-                        <li><a class="signoff-link" href="/packages/signoff_package/{{pkg.arch}}/{{pkg.pkgname}}/"
+                        <li><a class="signoff-link" href="{{ pkg.get_absolute_url }}signoff/"
                             title="Signoff {{pkg.pkgname}} for {{pkg.arch}}">Signoff</a>
                         </li>
                         {% for signoff in pkg.signoffs %}

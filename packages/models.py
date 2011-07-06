@@ -25,8 +25,7 @@ class PackageRelation(models.Model):
     def get_associated_packages(self):
         # TODO: delayed import to avoid circular reference
         from main.models import Package
-        return Package.objects.filter(pkgbase=self.pkgbase).select_related(
-                'arch', 'repo')
+        return Package.objects.normal().filter(pkgbase=self.pkgbase)
 
     def repositories(self):
         packages = self.get_associated_packages()
