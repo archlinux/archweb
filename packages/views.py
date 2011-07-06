@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, get_list_or_404, redirect
 from django.template import loader, Context
 from django.utils import simplejson
 from django.views.decorators.cache import never_cache
@@ -18,15 +18,16 @@ from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
 from datetime import datetime
+from operator import attrgetter
 import string
 from urllib import urlencode
 
-from main.models import Package, PackageFile
-from main.models import Arch, Repo, Signoff
-from main.utils import make_choice
+from main.models import Package, PackageFile, Arch, Repo
+from main.utils import make_choice, groupby_preserve_order, PackageStandin
 from mirrors.models import MirrorUrl
-from .models import PackageRelation, PackageGroup
-from .utils import get_group_info, get_differences_info, get_wrong_permissions
+from .models import PackageRelation, PackageGroup, Signoff
+from .utils import (get_group_info, get_differences_info,
+        get_wrong_permissions, get_current_signoffs)
 
 class PackageJSONEncoder(DjangoJSONEncoder):
     pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
@@ -349,38 +350,101 @@ def unflag_all(request, name, repo, arch):
     pkgs.update(flag_date=None)
     return redirect(pkg)
 
+class PackageSignoffGroup(object):
+    '''Encompasses all packages in testing with the same pkgbase.'''
+    def __init__(self, packages, target_repo=None, signoffs=None):
+        if len(packages) == 0:
+            raise Exception
+        self.packages = packages
+        self.target_repo = target_repo
+        self.signoffs = signoffs
+
+        first = packages[0]
+        self.pkgbase = first.pkgbase
+        self.arch = first.arch
+        self.repo = first.repo
+        self.version = ''
+
+        version = first.full_version
+        if all(version == pkg.full_version for pkg in packages):
+            self.version = version
+
+    @property
+    def package(self):
+        '''Try and return a relevant single package object representing this
+        group. Start by seeing if there is only one package, then look for the
+        matching package by name, finally falling back to a standin package
+        object.'''
+        if len(self.packages) == 1:
+            return self.packages[0]
+
+        same_pkgs = [p for p in self.packages if p.pkgname == p.pkgbase]
+        if same_pkgs:
+            return same_pkgs[0]
+
+        return PackageStandin(self.packages[0])
+
+    def find_signoffs(self, all_signoffs):
+        '''Look through a list of Signoff objects for ones matching this
+        particular group and store them on the object.'''
+        if self.signoffs is None:
+            self.signoffs = []
+        for s in all_signoffs:
+            if s.pkgbase != self.pkgbase:
+                continue
+            if self.version and not s.full_version == self.version:
+                continue
+            if s.arch_id == self.arch.id and s.repo_id == self.repo.id:
+                self.signoffs.append(s)
+
+    def approved(self):
+        if self.signoffs:
+            good_signoffs = [s for s in self.signoffs if not s.revoked]
+            return len(good_signoffs) >= Signoff.REQUIRED
+        return False
+
 @permission_required('main.change_package')
 @never_cache
 def signoffs(request):
-    packages = Package.objects.select_related('arch', 'repo', 'signoffs').filter(repo__testing=True).order_by("pkgname")
-    package_list = []
+    test_pkgs = Package.objects.normal().filter(repo__testing=True)
+    packages = test_pkgs.order_by('pkgname')
 
-    q_pkgname = Package.objects.filter(repo__testing=True).values('pkgname').distinct().query
-    package_repos = Package.objects.values('pkgname', 'repo__name').exclude(repo__testing=True).filter(pkgname__in=q_pkgname)
-    pkgtorepo = dict()
-    for pr in package_repos:
-        pkgtorepo[pr['pkgname']] = pr['repo__name']
+    # Collect all pkgbase values in testing repos
+    q_pkgbase = test_pkgs.values('pkgbase')
+    package_repos = Package.objects.order_by().values_list(
+            'pkgbase', 'repo__name').filter(
+            repo__testing=False, repo__staging=False,
+            pkgbase__in=q_pkgbase).distinct()
+    pkgtorepo = dict(package_repos)
 
-    for package in packages:
-        if package.pkgname in pkgtorepo:
-            repo = pkgtorepo[package.pkgname]
-        else:
-            repo = "Unknown"
-        package_list.append((package, repo))
+    # Collect all existing signoffs for these packages
+    signoffs = get_current_signoffs()
+
+    same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
+    grouped = groupby_preserve_order(packages, same_pkgbase_key)
+    signoff_groups = []
+    for group in grouped:
+        signoff_group = PackageSignoffGroup(group)
+        signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
+                "Unknown")
+        signoff_group.find_signoffs(signoffs)
+        signoff_groups.append(signoff_group)
+
+    signoff_groups.sort(key=attrgetter('pkgbase'))
+
     return direct_to_template(request, 'packages/signoffs.html',
-            {'packages': package_list})
+            {'signoff_groups': signoff_groups})
 
 @permission_required('main.change_package')
 @never_cache
 def signoff_package(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    packages = get_list_or_404(Package, pkgbase=name,
+            arch__name=arch, repo__name__iexact=repo, repo__testing=True)
 
+    pkg = packages[0]
     signoff, created = Signoff.objects.get_or_create(
-            pkg=pkg,
-            pkgver=pkg.pkgver,
-            pkgrel=pkg.pkgrel,
-            packager=request.user)
+            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo, user=request.user)
 
     if request.is_ajax():
         data = {

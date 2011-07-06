@@ -6,6 +6,7 @@ from django.forms import ValidationError
 
 from main.utils import cache_function, make_choice
 from packages.models import PackageRelation
+from packages.models import Signoff as PackageSignoff
 
 from datetime import datetime
 from itertools import groupby
@@ -206,16 +207,13 @@ class Package(models.Model):
 
     @property
     def signoffs(self):
-        if 'signoffs_cache' in dir(self):
-            return self.signoffs_cache
-        self.signoffs_cache = list(Signoff.objects.filter(
-            pkg=self,
-            pkgver=self.pkgver,
-            pkgrel=self.pkgrel))
-        return self.signoffs_cache
+        return PackageSignoff.objects.select_related('user').filter(
+            pkgbase=self.pkgbase, pkgver=self.pkgver, pkgrel=self.pkgrel,
+            epoch=self.epoch, arch=self.arch, repo=self.repo)
 
     def approved_for_signoff(self):
-        return len(self.signoffs) >= 2
+        count = self.signoffs.filter(revoked__isnull=True).count()
+        return count >= PackageSignoff.REQUIRED
 
     @cache_function(300)
     def applicable_arches(self):

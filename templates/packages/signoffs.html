@@ -7,13 +7,15 @@
 
     <h2>Package Signoffs</h2>
 
-    <p>{{ packages|length }} package{{ packages|pluralize }} found.</p>
+    <p>{{ signoff_groups|length }} signoff group{{ signoff_groups|pluralize }} found.
+    A "signoff group" consists of packages grouped by pkgbase, architecture, and repository.</p>
 
     <table id="signoffs" class="results">
         <thead>
             <tr>
                 <th>Arch</th>
-                <th>Package</th>
+                <th>Package Base</th>
+                <th># of Packages</th>
                 <th>Version</th>
                 <th>Last Updated</th>
                 <th>Target Repo</th>
@@ -22,28 +24,31 @@
             </tr>
         </thead>
         <tbody>
-            {% for pkg,target in packages %}
+            {% for group in signoff_groups %}
+            {% with group.package as pkg %}
             <tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ pkg.arch.name }}</td>
                 <td><a href="{{ pkg.get_absolute_url }}"
                         title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
+                <td>{{ group.packages|length }}</td>
                 <td>{{ pkg.full_version }}</td>
                 <td>{{ pkg.last_update|date }}</td>
-                <td>{{ target }}</td>
-                <td class="signoff-{{pkg.approved_for_signoff|yesno}}">
-                    {{ pkg.approved_for_signoff|yesno:"Yes,No" }}</td>
+                <td>{{ group.target_repo }}</td>
+                <td class="signoff-{{group.approved|yesno}}">
+                    {{ group.approved|yesno:"Yes,No" }}</td>
                 <td>
                     <ul>
                         <li><a class="signoff-link" href="{{ pkg.get_absolute_url }}signoff/"
-                            title="Signoff {{pkg.pkgname}} for {{pkg.arch}}">Signoff</a>
+                            title="Signoff {{ pkg.pkgname }} for {{ pkg.arch }}">Signoff</a>
                         </li>
-                        {% for signoff in pkg.signoffs %}
-                        <li class="signed-username" title="Signed off by {{signoff.packager}}">
-                        {{signoff.packager}}</li>
+                        {% for signoff in group.signoffs %}
+                        <li class="signed-username" title="Signed off by {{ signoff.user }}">
+                        {{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
                         {% endfor %}
                     </ul>
                 </td>
             </tr>
+            {% endwith %}
             {% endfor %}
         </tbody>
     </table>

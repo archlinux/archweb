@@ -55,6 +55,8 @@ class Signoff(models.Model):
     revoked = models.DateTimeField(null=True)
     comments = models.TextField(null=True, blank=True)
 
+    REQUIRED = 2
+
     @property
     def packages(self):
         # TODO: delayed import to avoid circular reference
