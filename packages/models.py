@@ -32,11 +32,46 @@ class PackageRelation(models.Model):
         return sorted(set([p.repo for p in packages]))
 
     def __unicode__(self):
-        return "%s: %s (%s)" % (
+        return u'%s: %s (%s)' % (
                 self.pkgbase, self.user, self.get_type_display())
 
     class Meta:
         unique_together = (('pkgbase', 'user', 'type'),)
+
+class Signoff(models.Model):
+    '''
+    A signoff for a package (by pkgbase) at a given point in time. These are
+    not keyed directly to a Package object so they don't ever get deleted when
+    Packages come and go from testing repositories.
+    '''
+    pkgbase = models.CharField(max_length=255, db_index=True)
+    pkgver = models.CharField(max_length=255)
+    pkgrel = models.CharField(max_length=255)
+    epoch = models.PositiveIntegerField(default=0)
+    arch = models.ForeignKey('main.Arch')
+    repo = models.ForeignKey('main.Repo')
+    user = models.ForeignKey(User, related_name="package_signoffs")
+    created = models.DateTimeField(editable=False)
+    revoked = models.DateTimeField(null=True)
+    comments = models.TextField(null=True, blank=True)
+
+    @property
+    def packages(self):
+        # TODO: delayed import to avoid circular reference
+        from main.models import Package
+        return Package.objects.normal().filter(pkgbase=self.pkgbase,
+                pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=pkg.epoch,
+                arch=self.arch, repo=self.repo)
+
+    @property
+    def full_version(self):
+        if self.epoch > 0:
+            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return u'%s-%s' % (self.pkgver, self.pkgrel)
+
+    def __unicode__(self):
+        return u'%s-%s: %s' % (
+                self.pkgbase, self.full_version, self.user)
 
 class PackageGroup(models.Model):
     '''
@@ -114,6 +149,8 @@ def remove_inactive_maintainers(sender, instance, created, **kwargs):
 post_save.connect(remove_inactive_maintainers, sender=User,
         dispatch_uid="packages.models")
 pre_save.connect(set_created_field, sender=PackageRelation,
+        dispatch_uid="packages.models")
+pre_save.connect(set_created_field, sender=Signoff,
         dispatch_uid="packages.models")
 
 # vim: set ts=4 sw=4 et:
