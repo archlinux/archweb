@@ -1,11 +1,12 @@
+from collections import defaultdict
+from operator import itemgetter
+
 from django.db import connection
 from django.db.models import Count, Max
 
-from operator import itemgetter
-
 from main.models import Package
 from main.utils import cache_function
-from .models import PackageGroup, PackageRelation
+from .models import PackageGroup, PackageRelation, Signoff
 
 @cache_function(300)
 def get_group_info(include_arches=None):
@@ -146,5 +147,29 @@ SELECT DISTINCT id
     relations = PackageRelation.objects.select_related('user').filter(
             id__in=to_fetch)
     return relations
+
+def get_current_signoffs():
+    '''Returns a mapping of pkgbase -> signoff objects.'''
+    sql = """
+SELECT DISTINCT s.id
+    FROM packages_signoff s
+    JOIN packages p ON (
+        s.pkgbase = p.pkgbase
+        AND s.pkgver = p.pkgver
+        AND s.pkgrel = p.pkgrel
+        AND s.epoch = p.epoch
+        AND s.arch_id = p.arch_id
+        AND s.repo_id = p.repo_id
+    )
+    JOIN repos r ON p.repo_id = r.id
+    WHERE r.testing = %s
+"""
+    cursor = connection.cursor()
+    cursor.execute(sql, [True])
+    results = cursor.fetchall()
+    # fetch all of the returned signoffs by ID
+    to_fetch = [row[0] for row in results]
+    signoffs = Signoff.objects.select_related('user').in_bulk(to_fetch)
+    return signoffs.values()
 
 # vim: set ts=4 sw=4 et:
