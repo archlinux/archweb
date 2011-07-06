@@ -279,7 +279,9 @@ def search(request, page=None):
             'search_form': form,
             'current_query': current_query
     }
-    allowed_sort = ["arch", "repo", "pkgname", "last_update", "flag_date"]
+    allowed_sort = ["arch", "repo", "pkgname", "pkgname",
+            "compressed_size", "installed_size",
+            "build_date", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)
     # TODO: sorting by multiple fields makes using a DB index much harder
