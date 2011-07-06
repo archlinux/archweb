@@ -367,12 +367,6 @@ class Package(models.Model):
                 pkgname=self.pkgname).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')
 
-class Signoff(models.Model):
-    pkg = models.ForeignKey(Package)
-    pkgver = models.CharField(max_length=255)
-    pkgrel = models.CharField(max_length=255)
-    packager = models.ForeignKey(User)
-
 class PackageFile(models.Model):
     pkg = models.ForeignKey(Package)
     is_directory = models.BooleanField(default=False)
