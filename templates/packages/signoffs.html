@@ -3,10 +3,11 @@
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
-{% if packages %}
 <div id="dev-signoffs" class="box">
 
     <h2>Package Signoffs</h2>
+
+    <p>{{ packages|length }} package{{ packages|pluralize }} found.</p>
 
     <table id="signoffs" class="results">
         <thead>
@@ -43,7 +44,7 @@
                     </ul>
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
 </div>
@@ -57,5 +58,4 @@ $(document).ready(function() {
         headers: { 6: { sorter: false } } });
 });
 </script>
-{% endif %}
 {% endblock %}
