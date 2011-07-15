@@ -5,6 +5,7 @@
 {% block content %}
 <div class="box">
     <h2>{{ list_title }} - {{ name }} ({{ arch.name }})</h2>
+    <p>{{ packages|length }} package{{ packages|pluralize }} found.</p>
     <table class="results">
         <thead>
             <tr>
