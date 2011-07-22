@@ -40,17 +40,40 @@
 
 <div id="news">
 
-    <h3>Latest News <span class="more">(<a href="{% url news-list %}"
-                title="Browse the news archives">more</a>)</span></h3>
+    <h3>
+        <a href="{% url news-list %}" title="Browse the news archives">Latest News</a>
+        <span class="arrow"></span>
+    </h3>
 
     <a href="/feeds/news/" title="Arch News RSS Feed"
         class="rss-icon"><img src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
 
     {% for news in news_updates %}
-    <h4><a href="{{ news.get_absolute_url }}"
-            title="View full article: {{ news.title }}">{{ news.title }}</a></h4>
+    {% if forloop.counter0 < 5 %}
+    <h4>
+        <a href="{{ news.get_absolute_url }}"
+            title="View full article: {{ news.title }}">{{ news.title }}</a>
+    </h4>
     <p class="timestamp">{{ news.postdate|date }}</p>
     <div class="article-content">{{ news.content|markdown|truncatewords_html:75 }}</div>
+    {% else %}
+    {% if forloop.counter0 == 5 %}
+    <h3>
+        <a href="{% url news-list %}"
+            title="Browse the news archives">Older News</a>
+        <span class="arrow"></span>
+    </h3>
+    <dl class="newslist">
+    {% endif %}
+        <dt>{{ news.postdate|date }}</dt>
+        <dd>
+            <a href="{{ news.get_absolute_url }}"
+                title="View full article: {{ news.title }}">{{ news.title }}</a>
+        </dd>
+    {% if forloop.last %}
+    </dl>
+    {% endif %}
+    {% endif %}
     {% endfor %}
 
 </div><!-- #news -->

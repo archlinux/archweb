@@ -13,7 +13,7 @@ from django.views.generic.simple import direct_to_template
 def index(request):
     pkgs = utils.get_recent_updates()
     context = {
-        'news_updates': News.objects.order_by('-postdate', '-id')[:10],
+        'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': pkgs,
     }
     return direct_to_template(request, 'public/index.html', context)
