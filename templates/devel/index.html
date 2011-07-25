@@ -27,7 +27,7 @@
                     <td><a href="{{ pkg.get_absolute_url }}"
                             title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
                     <td>{{ pkg.repo.name }}</td>
-                    <td>{{ pkg.pkgver }}</td>
+                    <td>{{ pkg.full_version }}</td>
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
                     <td>{{ pkg.last_update|date }}</td>

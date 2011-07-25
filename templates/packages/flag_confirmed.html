@@ -4,12 +4,13 @@
 
 {% block content %}
 <div id="pkg-flag" class="box">
-	<h2>Package Flagged - {{ package.pkgname }}</h2>
+    <h2>Package Flagged - {{ package.pkgname }}</h2>
 
     <p>Thank you, the maintainers have been notified the following packages are out-of-date:</p>
     <ul>
         {% for pkg in packages %}
-        <li>{{ pkg.pkgname }} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
+        <li><a href="{{ pkg.get_absolute_url }}"
+            title="Package details for {{package.pkgname}}">{{ pkg.pkgname }} {{ pkg.full_version }}</a> [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
         {% endfor %}
     </ul>
 
