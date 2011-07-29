@@ -81,7 +81,7 @@ class PackageGroup(models.Model):
     only names that link to given packages.
     '''
     pkg = models.ForeignKey('main.Package', related_name='groups')
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
 
     def __unicode__(self):
         return "%s: %s" % (self.name, self.pkg)
