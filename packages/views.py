@@ -279,7 +279,7 @@ def search(request, page=None):
             'search_form': form,
             'current_query': current_query
     }
-    allowed_sort = ["arch", "repo", "pkgname", "pkgname",
+    allowed_sort = ["arch", "repo", "pkgname", "pkgbase",
             "compressed_size", "installed_size",
             "build_date", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
