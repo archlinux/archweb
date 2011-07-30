@@ -307,12 +307,12 @@ class Package(models.Model):
         """
         try:
             # start by looking for something in this repo
-            return Package.objects.get(arch=self.arch,
+            return Package.objects.normal().get(arch=self.arch,
                     repo=self.repo, pkgname=self.pkgbase)
         except Package.DoesNotExist:
             # this package might be split across repos? just find one
             # that matches the correct [testing] repo flag
-            pkglist = Package.objects.filter(arch=self.arch,
+            pkglist = Package.objects.normal().filter(arch=self.arch,
                     repo__testing=self.repo.testing,
                     repo__staging=self.repo.staging, pkgname=self.pkgbase)
             if len(pkglist) > 0:
@@ -327,7 +327,7 @@ class Package(models.Model):
         repo.testing and repo.staging flags. For any non-split packages, the
         return value will be an empty list.
         """
-        return Package.objects.filter(arch__in=self.applicable_arches(),
+        return Package.objects.normal().filter(arch__in=self.applicable_arches(),
                 repo__testing=self.repo.testing, repo__staging=self.repo.staging,
                 pkgbase=self.pkgbase).exclude(id=self.id)
 
