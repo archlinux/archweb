@@ -28,7 +28,7 @@
                 <td>{{mirror.get_tier_display}}</td>
                 <td>{{mirror.country}}</td>
                 <td>{{mirror.isos|yesno}}</td>
-                <td class="wrap">{{mirror.supported_protocols}}</td>
+                <td class="wrap">{{mirror.supported_protocols|join:", "}}</td>
                 {% if user.is_authenticated %}
                 <td>{{mirror.public|yesno}}</td>
                 <td>{{mirror.active|yesno}}</td>
