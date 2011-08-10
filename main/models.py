@@ -386,6 +386,64 @@ class PackageDepend(models.Model):
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
 
+    def get_best_satisfier(self, arches=None, testing=None, staging=None):
+        '''Find a satisfier for this dependency that best matches the given
+        criteria. It will not search provisions, but will find packages named
+        and matching repo characteristics if possible.'''
+        pkgs = Package.objects.normal().filter(pkgname=self.depname)
+        if arches is not None:
+            # make sure we match architectures if possible
+            pkgs = pkgs.filter(arch__in=arches)
+        if len(pkgs) == 0:
+            # couldn't find a package in the DB
+            # it should be a virtual depend (or a removed package)
+            return None
+        if len(pkgs) == 1:
+            return pkgs[0]
+        # more than one package, see if we can't shrink it down
+        # grab the first though in case we fail
+        pkg = pkgs[0]
+        # prevents yet more DB queries, these lists should be short;
+        # after each grab the best available in case we remove all entries
+        if staging is not None:
+            pkgs = [p for p in pkgs if p.repo.staging == staging]
+        if len(pkgs) > 0:
+            pkg = pkgs[0]
+
+        if testing is not None:
+            pkgs = [p for p in pkgs if p.repo.testing == testing]
+        if len(pkgs) > 0:
+            pkg = pkgs[0]
+
+        return pkg
+
+    def get_providers(self, arches=None, testing=None, staging=None):
+        '''Return providers of this dep. Does *not* include exact matches as it
+        checks the Provision names only, use get_best_satisfier() instead.'''
+        pkgs = Package.objects.normal().filter(
+                provides__name=self.depname).distinct()
+        if arches is not None:
+            pkgs = pkgs.filter(arch__in=arches)
+
+        # Logic here is to filter out packages that are in multiple repos if
+        # they are not requested. For example, if testing is False, only show a
+        # testing package if it doesn't exist in a non-testing repo.
+        if staging is not None:
+            filtered = {}
+            for p in pkgs:
+                if p.pkgname not in filtered or p.repo.staging == staging:
+                    filtered[p.pkgname] = p
+            pkgs = filtered.values()
+
+        if testing is not None:
+            filtered = {}
+            for p in pkgs:
+                if p.pkgname not in filtered or p.repo.testing == testing:
+                    filtered[p.pkgname] = p
+            pkgs = filtered.values()
+
+        return pkgs
+
     def __unicode__(self):
         return "%s%s" % (self.depname, self.depvcmp)
 
