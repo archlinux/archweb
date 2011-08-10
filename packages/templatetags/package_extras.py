@@ -37,6 +37,11 @@ def do_buildsortqs(parser, token):
     return BuildQueryStringNode(sortfield[1:-1])
 
 @register.simple_tag
+def pkg_details_link(pkg):
+    template = '<a href="%s" title="View package details for %s">%s</a>'
+    return template % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
+
+@register.simple_tag
 def userpkgs(user):
     if user:
         # TODO don't hardcode
@@ -47,7 +52,6 @@ def userpkgs(user):
                 user.get_full_name(),
         )
     return ''
-
 
 def svn_link(package, svnpath):
     '''Helper function for the two real SVN link methods.'''
