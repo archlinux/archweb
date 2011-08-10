@@ -1,16 +1,15 @@
 {% extends "base.html" %}
+{% load package_extras %}
+
 {% block title %}Arch Linux - Flag Package - {{ pkg.pkgname }}{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div id="pkg-flagged-error" class="box">
-
     <h2>Error: Package already flagged</h2>
 
     <p><strong>{{pkg.pkgname}}</strong> has already been flagged out-of-date.</p>
 
-    <p>You can return to the package details page for
-    <a href="{{ pkg.get_absolute_url }}" title="Package details for {{pkg.pkgname}}">{{pkg.pkgname}}</a>.</p>
-
+    <p>You can return to the package details page for {% pkg_details_link pkg %}.</p>
 </div>
 {% endblock %}

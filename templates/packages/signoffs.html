@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load package_extras %}
+
 {% block title %}Arch Linux - Package Signoffs{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
@@ -28,8 +30,7 @@
             {% with group.package as pkg %}
             <tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ pkg.arch.name }}</td>
-                <td><a href="{{ pkg.get_absolute_url }}"
-                        title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
+                <td>{% pkg_details_link pkg %}</td>
                 <td>{{ group.packages|length }}</td>
                 <td>{{ pkg.full_version }}</td>
                 <td>{{ pkg.last_update|date }}</td>

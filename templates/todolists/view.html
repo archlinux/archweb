@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load package_extras %}
+
 {% block title %}Arch Linux - Todo: {{ list.name }}{% endblock %}
 
 {% block content %}
@@ -34,8 +36,7 @@
         <tbody>
             {% for pkg in list.packages %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="{{ pkg.pkg.get_absolute_url }}"
-                        title="View package details for {{ pkg.pkg.pkgname }}">{{ pkg.pkg.pkgname }}</a></td>
+                <td>{% pkg_details_link pkg.pkg %}</td>
                 <td>{{ pkg.pkg.arch.name }}</td>
                 <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                 <td>{{ pkg.pkg.maintainers|join:', ' }}</td>

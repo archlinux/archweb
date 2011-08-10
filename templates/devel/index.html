@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load cache %}
+{% load package_extras %}
 
 {% block title %}Arch Linux - Developer Dashboard{% endblock %}
 
@@ -24,8 +25,7 @@
         <tbody>
             {% for pkg in flagged %}
                 <tr class="{% cycle 'odd' 'even' %}">
-                    <td><a href="{{ pkg.get_absolute_url }}"
-                            title="View package details for {{ pkg.pkgname }}">{{ pkg.pkgname }}</a></td>
+                    <td>{% pkg_details_link pkg %}</td>
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.full_version }}</td>
                     <td>{{ pkg.arch.name }}</td>
@@ -55,8 +55,7 @@
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td><a href="{{ todopkg.list.get_absolute_url }}"
                             title="View todo list: {{ todopkg.list.name }}">{{ todopkg.list.name }}</a></td>
-                    <td><a href="{{ todopkg.pkg.get_absolute_url }}"
-                            title="View package details for {{ todopkg.pkg.pkgname }}">{{ todopkg.pkg.pkgname }}</a></td>
+                    <td>{% pkg_details_link todopkg.pkg %}</td>
                     <td>{{ todopkg.pkg.repo.name }}</td>
                     <td>{{ todopkg.pkg.arch.name }}</td>
                     <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>

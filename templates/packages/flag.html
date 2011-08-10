@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load package_extras %}
+
 {% block title %}Arch Linux - Flag Package - {{ package.pkgname }}{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
@@ -13,7 +15,7 @@
     <p>Note that all of the following packages will be marked out of date:</p>
     <ul>
         {% for pkg in packages %}
-        <li>{{ pkg.pkgname }} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
+        <li>{% pkg_details_link pkg %} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
         {% endfor %}
     </ul>
 
