@@ -42,6 +42,10 @@ def pkg_details_link(pkg):
     return template % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
 
 @register.simple_tag
+def multi_pkg_details(pkgs):
+    return ', '.join([pkg_details_link(pkg) for pkg in pkgs])
+
+@register.simple_tag
 def userpkgs(user):
     if user:
         # TODO don't hardcode
