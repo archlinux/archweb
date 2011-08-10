@@ -269,36 +269,30 @@ class Package(models.Model):
     @cache_function(300)
     def get_depends(self):
         """
-        Returns a list of dicts. Each dict contains ('pkg' and 'dep'). If it
-        represents a found package both vars will be available; else pkg will
-        be None if it is a 'virtual' dependency. Packages will match the
-        testing status of this package if possible.
+        Returns a list of dicts. Each dict contains ('dep', 'pkg', and
+        'providers'). If it represents a found package both vars will be
+        available; else pkg will be None if it is a 'virtual' dependency.
+        If pkg is None and providers are known, they will be available in
+        providers.
+        Packages will match the testing status of this package if possible.
         """
         deps = []
+        arches = None
+        if not self.arch.agnostic:
+            arches = self.applicable_arches()
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.packagedepend_set.order_by('optional', 'depname'):
-            pkgs = Package.objects.normal().filter(pkgname=dep.depname)
-            if not self.arch.agnostic:
-                # make sure we match architectures if possible
-                pkgs = pkgs.filter(arch__in=self.applicable_arches())
-            if len(pkgs) == 0:
-                # couldn't find a package in the DB
-                # it should be a virtual depend (or a removed package)
-                pkg = None
-            elif len(pkgs) == 1:
-                pkg = pkgs[0]
-            else:
-                # more than one package, see if we can't shrink it down
-                # grab the first though in case we fail
-                pkg = pkgs[0]
-                # prevents yet more DB queries, these lists should be short
-                pkgs = [p for p in pkgs if p.repo.testing == self.repo.testing
-                        and p.repo.staging == self.repo.staging]
-                if len(pkgs) > 0:
-                    pkg = pkgs[0]
-            deps.append({'dep': dep, 'pkg': pkg})
+            pkg = dep.get_best_satisfier(arches, testing=self.repo.testing,
+                    staging=self.repo.staging)
+            providers = None
+            if not pkg:
+                providers = dep.get_providers(arches,
+                        testing=self.repo.testing, staging=self.repo.staging)
+                print providers
+            deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         return deps
 
+    @cache_function(300)
     def base_package(self):
         """
         Locate the base package for this package. It may be this very package,
