@@ -158,7 +158,10 @@
             <ul>
                 {% for depend in deps %}
                 {% ifequal depend.pkg None %}
-                <li>{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span></li>
+                {% if depend.providers %}
+                <li>{{ depend.dep.depname }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span></li>
+                {% else %}<li>{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span></li>
+                {% endif %}
                 {% else %}
                 <li>{% pkg_details_link depend.pkg %}{{ depend.dep.depvcmp|default:"" }}
                 {% if depend.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
