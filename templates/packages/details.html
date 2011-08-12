@@ -18,6 +18,7 @@
             <ul class="small">
                 <li><a href="{% svn_arch pkg %}" title="View SVN entries in the {{pkg.repo|lower}}-{{pkg.arch}} branch">SVN Entries ({{pkg.repo|lower}}-{{pkg.arch}})</a></li>
                 <li><a href="{% svn_trunk pkg %}" title="View SVN entries on trunk">SVN Entries (trunk)</a></li>
+                <li><a href="{% get_wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a></li>
                 <li><a href="{% bugs_list pkg %}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a></li>
                 <li><a href="{% bug_report pkg %}" title="Report bug for {{ pkg.pkgname }}">Report a Bug</a></li>
                 {% if pkg.flag_date %}

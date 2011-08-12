@@ -73,6 +73,14 @@ def svn_trunk(package):
     return svn_link(package, "trunk")
 
 @register.simple_tag
+def get_wiki_link(package):
+    data = {
+        'search': package.pkgname,
+    }
+    return "https://wiki.archlinux.org/index.php/Special:Search?%s" % \
+            urlencode(data)
+
+@register.simple_tag
 def bugs_list(package):
     data = {
         'project': package.repo.bugs_project,
