@@ -14,8 +14,8 @@ See AUTHORS file.
 
 # Dependencies
 
-- python
-- python-virtualenv
+- python2
+- python2-virtualenv
 
 # Python dependencies
 
@@ -31,13 +31,13 @@ packages, you will probably want the following:
 
 # Testing Installation
 
-1. Run `virtualenv`.
+1. Run `virtualenv2`.
 
-        $ cd /path/to/archweb && virtualenv ../archweb-env
+        $ cd /path/to/archweb && virtualenv2 ../archweb-env
 
-2. Source the virtualenv.
+2. Activate the virtualenv.
 
-        $ . ../archweb-env/bin/activate
+        $ source ../archweb-env/bin/activate
 
 2. Install dependencies through `pip`.
 
@@ -58,7 +58,7 @@ packages, you will probably want the following:
    provided data, adjust the file glob accordingly.
 
         (archweb-env) $ ./manage.py loaddata */fixtures/*.json
-    
+
 7. Use the following commands to start a service instance
 
         (archweb-env) $ ./manage.py runserver
@@ -69,7 +69,8 @@ packages, you will probably want the following:
         (archweb-env) $ ./manage.py reporead i686 core.db.tar.gz
         (archweb-env) $ ./manage.py syncisos
 
-Alter architecture and repo to get x86\_64 and packages from other repos if needed.
+Alter architecture and repo to get x86\_64 and packages from other repos if
+needed.
 
 # Production Installation
 
