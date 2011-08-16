@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+    <h2>Failures and Successes for Testing ISOs</h2>
+
+    <p><a href="{% url releng-test-overview %}">Go back to testing results</a></p>
+
+    <table id="releng-result" class="results">
+        <thead>
+            <tr>
+                <th>ISO</th>
+                <th>Currently Available</th>
+                <th># Successes</th>
+                <th># Failures</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for iso in isos %}
+            <tr>
+                <td>
+                    <a href="{% url releng-results-iso iso.pk %}">
+                        {{ iso.name }}
+                    </a>
+                </td>
+                <td>
+                    {{ iso.active|yesno }}
+                </td>
+                <td>
+                    {{ iso.successes }}
+                </td>
+                <td>
+                    {{ iso.failures }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results:not(:has(tbody tr.empty))").tablesorter({widgets: ['zebra']});
+});
+</script>
+{% endblock %}

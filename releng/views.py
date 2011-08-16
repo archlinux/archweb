@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.simple import direct_to_template
@@ -137,5 +138,18 @@ def test_results_for(request, option, value):
 
 def submit_test_thanks(request):
     return direct_to_template(request, "releng/thanks.html", None)
+
+def iso_overview(request):
+    isos = Iso.objects.all().order_by('-pk')
+    successes = dict(Iso.objects.values_list('pk').filter(test__success=True).annotate(ct=Count('test')))
+    failures = dict(Iso.objects.values_list('pk').filter(test__success=False).annotate(ct=Count('test')))
+    for iso in isos:
+        iso.successes = successes.get(iso.pk, 0)
+        iso.failures = failures.get(iso.pk, 0)
+
+    context = {
+        'isos': isos
+    }
+    return direct_to_template(request, 'releng/iso_overview.html', context)
 
 # vim: set ts=4 sw=4 et:

@@ -6,6 +6,7 @@ feedback_patterns = patterns('releng.views',
     (r'^thanks/$',                       'submit_test_thanks', {}, 'releng-test-thanks'),
     (r'^iso/(?P<iso_id>\d+)/$',          'test_results_iso', {}, 'releng-results-iso'),
     (r'^(?P<option>.+)/(?P<value>\d+)/$','test_results_for', {}, 'releng-results-for'),
+    (r'^iso/overview/$',                 'iso_overview', {}, 'releng-iso-overview'),
 )
 
 urlpatterns = patterns('',
