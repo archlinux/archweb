@@ -73,7 +73,7 @@ class Command(BaseCommand):
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
-            'md5sum', 'url', 'packager' )
+            'md5sum', 'sha256sum', 'pgpsig', 'url', 'packager' )
     number = ( 'csize', 'isize' )
     collections = ( 'depends', 'optdepends', 'conflicts',
             'provides', 'replaces', 'groups', 'license', 'files' )
