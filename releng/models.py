@@ -45,6 +45,7 @@ class RollbackOption(IsoOption):
 class Iso(models.Model):
     name = models.CharField(max_length=255)
     created = models.DateTimeField(editable=False)
+    removed = models.DateTimeField(null=True, blank=True, default=None)
     active = models.BooleanField(default=True)
 
     def __unicode__(self):

@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 import urllib
 from HTMLParser import HTMLParser, HTMLParseError
@@ -45,7 +46,9 @@ class Command(BaseCommand):
             if iso not in isonames:
                 new = Iso(name=iso, active=True)
                 new.save()
+        now = datetime.utcnow()
         # and then mark all other names as no longer active
-        Iso.objects.exclude(name__in=active_isos).update(active=False)
+        Iso.objects.filter(active=True).exclude(name__in=active_isos).update(
+                active=False, removed=now)
 
 # vim: set ts=4 sw=4 et:
