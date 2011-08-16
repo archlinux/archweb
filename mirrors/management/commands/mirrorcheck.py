@@ -68,7 +68,7 @@ def check_mirror_url(mirror_url):
 
         log.last_sync = parsed_time
         # if we couldn't parse a time, this is a failure
-        if parsed_time == None:
+        if parsed_time is None:
             log.error = "Could not parse time from lastsync"
             log.is_success = False
         log.duration = end - start
