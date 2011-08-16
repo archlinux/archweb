@@ -153,12 +153,12 @@
 </div><!-- #pkglist-results -->
 {% else %}
 <div class="box">
-	<p>We couldn't find any packages matching your query. Try searching again
-	using different criteria, or try
-	{% if search_form.q.data %}
-	<a href="https://aur.archlinux.org/packages.php?K={{ search_form.q.data }}">searching the AUR</a>
-	{% else %}searching the AUR{% endif %}
-	to see if the package can be found there.</p>
+    <p>We couldn't find any packages matching your query. Try searching again
+    using different criteria, or try
+    {% if search_form.q.data %}
+    <a href="https://aur.archlinux.org/packages.php?K={{ search_form.q.data }}">searching the AUR</a>
+    {% else %}searching the AUR{% endif %}
+    to see if the package can be found there.</p>
 </div>
 {% endif %}
 

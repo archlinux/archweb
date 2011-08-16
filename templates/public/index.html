@@ -82,7 +82,7 @@
         {% for update in pkg_updates %}
         <tr>
             <td class="pkg-name"><span class="{{ update.repo|lower }}">{{ update.pkgbase }} {{ update.version }}</span></td>
-			<td class="pkg-arch">
+            <td class="pkg-arch">
                 {% for pkg in update.package_links %}<a href="{{ pkg.get_absolute_url }}"
                     title="Details for {{ pkg.pkgname }} [{{ pkg.repo|lower }}]">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}
             </td>
@@ -161,7 +161,7 @@
             title="Developer Wiki articles">DeveloperWiki</a></li>
         <li><a href="/todolists/"
             title="Developer Todo Lists">Todo Lists</a></li>
-		<li><a href="{% url releng-test-overview %}"
+        <li><a href="{% url releng-test-overview %}"
             title="Releng Testbuild Feedback">Releng Testbuild Feedback</a></li>
     </ul>
 
