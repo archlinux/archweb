@@ -2,41 +2,59 @@
 
 ## Debug settings
 DEBUG = False
+TEMPLATE_DEBUG = True
+DEBUG_TOOLBAR = True
+
+## For django debug toolbar
+INTERNAL_IPS = ('127.0.0.1',)
 
 ## Notification admins
 ADMINS = (
    # ('Joe Admin', 'joeadmin@example.com'),
 )
 
-## Sqlite Database settings
-#DATABASE_ENGINE     = 'sqlite3'
-#DATABASE_NAME       = 'archweb.db'
-
 ## MySQL Database settings
-#DATABASE_ENGINE     = 'mysql'
-#DATABASE_NAME       = 'archlinux'
-#DATABASE_USER       = 'archlinux'
-#DATABASE_PASSWORD   = 'archlinux'
-#DATABASE_HOST       = ''
-#DATABASE_PORT       = ''
+DATABASES = {
+    'default': {
+        'ENGINE'  : 'django.db.backends.mysql',
+        'NAME'    : 'archlinux',
+        'USER'    : 'archlinux',
+        'PASSWORD': 'archlinux',
+        'HOST'    : '',
+        'PORT'    : '',
+        'OPTIONS' : {'init_command': 'SET storage_engine=InnoDB'},
+    },
+}
 
-## Define cache middleware settings
-CACHE_BACKEND = 'memcached://127.0.0.1:11211'
-CACHE_MIDDLEWARE_SECONDS = 900
+## Define cache settings
+CACHES = {
+    'default': {
+        'BACKEND' : 'django.core.cache.backends.dummy.DummyCache',
+        #'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
+        #'LOCATION': '127.0.0.1:11211',
+    }
+}
 CACHE_MIDDLEWARE_KEY_PREFIX = 'arch'
+CACHE_MIDDLEWARE_SECONDS = 300
+
+## Use secure session cookies? Make this true if you want all
+## logged-in actions to take place over HTTPS only. If developing
+## locally, you will want to use False.
+SESSION_COOKIE_SECURE = False
 
 ## location for saving dev pictures
-MEDIA_ROOT = '/var/www/archlinux/htdocs/img/'
+MEDIA_ROOT = '/srv/example.com/img/'
 
 ## web url for serving image files
-MEDIA_URL = 'http://www.archlinux.org/img/'
+MEDIA_URL = 'http://example.com/img/'
 
 ## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
-#dummy cache
-if DEBUG:
-    CACHE_BACKEND = 'dummy:///'
+## CDN settings
+CDN_ENABLED = False
+CDN_PATH = 'http://example.com/path/'
+CDN_PATH_SECURE = 'https://example.com/path/'
+
 
 # vim: set ts=4 sw=4 et:
-

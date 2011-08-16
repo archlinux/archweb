@@ -84,9 +84,12 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-# Configure where sessions and messages should reside
+# Configure where messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# Session configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_COOKIE_HTTPONLY = True
 
 INSTALLED_APPS = (
     'django.contrib.auth',
