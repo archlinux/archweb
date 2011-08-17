@@ -10,36 +10,10 @@ class IsoOption(models.Model):
     def __unicode__(self):
         return self.name
 
-    def get_test_result(self, success):
-        try:
-            return self.test_set.filter(success=success).select_related(
-                    'iso').latest('iso__id').iso
-        except Test.DoesNotExist:
-            return None
-
-    def get_last_success(self):
-        return self.get_test_result(True)
-
-    def get_last_failure(self):
-        return self.get_test_result(False)
-
     class Meta:
         abstract = True
 
 class RollbackOption(IsoOption):
-    def get_rollback_test_result(self, success):
-        try:
-            return self.rollback_test_set.filter(success=success).select_related(
-                    'iso').latest('iso__id').iso
-        except Test.DoesNotExist:
-            return None
-
-    def get_last_rollback_success(self):
-        return self.get_rollback_test_result(True)
-
-    def get_last_rollback_failure(self):
-        return self.get_rollback_test_result(False)
-
     class Meta:
         abstract = True
 

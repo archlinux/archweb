@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.simple import direct_to_template
@@ -85,17 +85,48 @@ def calculate_option_overview(field_name):
         'is_rollback': is_rollback,
         'values': []
     }
+    if not is_rollback:
+        successes = dict(model.objects.values_list('pk').filter(
+            test__success=True).annotate(latest=Max('test__iso__id')))
+        failures = dict(model.objects.values_list('pk').filter(
+            test__success=False).annotate(latest=Max('test__iso__id')))
+    else:
+        successes = dict(model.objects.values_list('pk').filter(
+            rollback_test_set__success=True).annotate(
+                latest=Max('rollback_test_set__iso__id')))
+        failures = dict(model.objects.values_list('pk').filter(
+            rollback_test_set__success=False).annotate(
+                latest=Max('rollback_test_set__iso__id')))
+
     for value in model.objects.all():
-        data = { 'value': value }
-        if is_rollback:
-            data['success'] = value.get_last_rollback_success()
-            data['failure'] = value.get_last_rollback_failure()
-        else:
-            data['success'] = value.get_last_success()
-            data['failure'] = value.get_last_failure()
+        data = {
+            'value': value,
+            'success': successes.get(value.pk),
+            'failure': failures.get(value.pk),
+        }
         option['values'].append(data)
 
     return option
+
+def options_fetch_iso(options):
+    '''Replaces the Iso PK with a full Iso model object in a list of options
+    used on the overview page. We do it this way to only have to query the Iso
+    table once rather than once per option.'''
+    # collect all necessary Iso PKs
+    all_pks = set()
+    for option in options:
+        all_pks.update(v['success'] for v in option['values'])
+        all_pks.update(v['failure'] for v in option['values'])
+
+    all_pks.discard(None)
+    all_isos = Iso.objects.in_bulk(all_pks)
+
+    for option in options:
+        for value in option['values']:
+            value['success'] = all_isos.get(value['success'])
+            value['failure'] = all_isos.get(value['failure'])
+
+    return options
 
 def test_results_overview(request):
     # data structure produced:
@@ -106,6 +137,8 @@ def test_results_overview(request):
             'bootloader', 'rollback_filesystem', 'rollback_modules' ]
     for field in fields:
         all_options.append(calculate_option_overview(field))
+
+    all_options = options_fetch_iso(all_options)
 
     context = {
             'options': all_options,
