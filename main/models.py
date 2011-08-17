@@ -82,6 +82,7 @@ class UserProfile(models.Model):
         help_text="Ideally 125px by 125px")
     user = models.OneToOneField(User, related_name='userprofile')
     allowed_repos = models.ManyToManyField('Repo', blank=True)
+
     class Meta:
         db_table = 'user_profiles'
         verbose_name = 'Additional Profile Data'
@@ -173,6 +174,7 @@ class Package(models.Model):
     packager_str = models.CharField(max_length=255)
     packager = models.ForeignKey(User, null=True,
             on_delete=models.SET_NULL)
+    pgp_signature = models.TextField(null=True, blank=True)
     flag_date = models.DateTimeField(null=True)
 
     objects = PackageManager()
@@ -198,6 +200,9 @@ class Package(models.Model):
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+
+    def is_signed(self):
+        return bool(self.pgp_signature)
 
     @property
     def maintainers(self):
@@ -288,7 +293,6 @@ class Package(models.Model):
             if not pkg:
                 providers = dep.get_providers(arches,
                         testing=self.repo.testing, staging=self.repo.staging)
-                print providers
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         return deps
 

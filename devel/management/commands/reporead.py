@@ -203,6 +203,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = finder.find(repopkg.packager)
+    dbpkg.pgp_signature = repopkg.pgpsig
 
     if timestamp:
         dbpkg.flag_date = None
