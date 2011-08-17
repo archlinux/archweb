@@ -115,7 +115,7 @@ def test_results_overview(request):
 
 def test_results_iso(request, iso_id):
     iso = get_object_or_404(Iso, pk=iso_id)
-    test_list = iso.test_set.all()
+    test_list = iso.test_set.select_related()
     context = {
         'iso_name': iso.name,
         'test_list': test_list
@@ -127,7 +127,8 @@ def test_results_for(request, option, value):
         raise Http404
     option_model = getattr(Test, option).field.rel.to
     real_value = get_object_or_404(option_model, pk=value)
-    test_list = real_value.test_set.order_by('-iso__name', '-pk')
+    test_list = real_value.test_set.select_related().order_by(
+            '-iso__name', '-pk')
     context = {
         'option': option,
         'value': real_value,

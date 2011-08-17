@@ -12,9 +12,10 @@
     <table id="releng-result" class="results">
         <thead>
             <tr>
-                <th>Iso</th>
+                <th>ISO</th>
                 <th>Submitted By</th>
                 <th>Date Submitted</th>
+                <th>Architecture</th>
                 <th>Success</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ test.iso.name }}</td>
                 <td>{{ test.user_name }}</td>
                 <td>{{ test.created|date }}</td>
+                <td>{{ test.architecture }}</td>
                 <td>{{ test.success|yesno }}</td>
             </tr>
             {% endfor %}
