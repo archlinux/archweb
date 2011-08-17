@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
 
@@ -47,6 +48,9 @@ class Iso(models.Model):
     created = models.DateTimeField(editable=False)
     removed = models.DateTimeField(null=True, blank=True, default=None)
     active = models.BooleanField(default=True)
+
+    def get_absolute_url(self):
+        return reverse('releng-results-iso', args=[self.pk])
 
     def __unicode__(self):
         return self.name

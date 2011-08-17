@@ -19,9 +19,7 @@
             {% for iso in isos %}
             <tr>
                 <td>
-                    <a href="{% url releng-results-iso iso.pk %}">
-                        {{ iso.name }}
-                    </a>
+                    <a href="{{ iso.get_absolute_url }}">{{ iso.name }}</a>
                 </td>
                 <td>
                     {{ iso.active|yesno }}
