@@ -34,18 +34,25 @@ class IsoListParser(HTMLParser):
             raise CommandError('Couldn\'t parse "%s"' % url)
 
 class Command(BaseCommand):
-    help = 'Gets new isos from %s' % settings.ISO_LIST_URL
+    help = 'Gets new ISOs from %s' % settings.ISO_LIST_URL
 
     def handle(self, *args, **options):
         parser = IsoListParser()
         isonames = Iso.objects.values_list('name', flat=True)
         active_isos = parser.parse(settings.ISO_LIST_URL)
 
-        # create any names that don't already exist
         for iso in active_isos:
+            # create any names that don't already exist
             if iso not in isonames:
                 new = Iso(name=iso, active=True)
                 new.save()
+            # update those that do if they were marked inactive
+            else:
+                existing = Iso.objects.get(name=iso)
+                if not existing.active:
+                    existing.active = True
+                    existing.removed = None
+                    existing.save()
         now = datetime.utcnow()
         # and then mark all other names as no longer active
         Iso.objects.filter(active=True).exclude(name__in=active_isos).update(
