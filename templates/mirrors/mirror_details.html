@@ -24,16 +24,16 @@
         </tr>
         <tr>
             <th>Has ISOs:</th>
-            <td>{{ mirror.isos|yesno }}</td>
+            <td>{{ mirror.isos|yesno|capfirst }}</td>
         </tr>
         {% if user.is_authenticated %}
         <tr>
             <th>Public:</th>
-            <td>{{ mirror.public|yesno }}</td>
+            <td>{{ mirror.public|yesno|capfirst }}</td>
         </tr>
         <tr>
             <th>Active:</th>
-            <td>{{ mirror.active|yesno }}</td>
+            <td>{{ mirror.active|yesno|capfirst }}</td>
         </tr>
         <tr>
             <th>Rsync IPs:</th>
@@ -91,8 +91,8 @@
             {% for m_url in urls %}
             <tr class="{% cycle 'odd' 'even' %}">
                 <td>{% if m_url.protocol.is_download %}<a href="{{ m_url.url }}">{{ m_url.url }}</a>{% else %}{{ m_url.url }}{% endif %}</td>
-                <td>{{ m_url.has_ipv4|yesno }}</td>
-                <td>{{ m_url.has_ipv6|yesno }}</td>
+                <td>{{ m_url.has_ipv4|yesno|capfirst }}</td>
+                <td>{{ m_url.has_ipv6|yesno|capfirst }}</td>
                 <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
                 <td>{{ m_url.completion_pct|percentage:1 }}</td>
                 <td>{{ m_url.delay|duration|default:'unknown' }}</td>

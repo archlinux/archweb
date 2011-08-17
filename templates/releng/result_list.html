@@ -26,7 +26,7 @@
                 <td>{{ test.user_name }}</td>
                 <td>{{ test.created|date }}</td>
                 <td>{{ test.architecture }}</td>
-                <td>{{ test.success|yesno }}</td>
+                <td>{{ test.success|yesno|capfirst }}</td>
             </tr>
             {% endfor %}
         </tbody>

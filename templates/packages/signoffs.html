@@ -35,8 +35,8 @@
                 <td>{{ pkg.full_version }}</td>
                 <td>{{ pkg.last_update|date }}</td>
                 <td>{{ group.target_repo }}</td>
-                <td class="signoff-{{group.approved|yesno}}">
-                    {{ group.approved|yesno:"Yes,No" }}</td>
+                <td class="signoff-{{ group.approved|yesno }}">
+                    {{ group.approved|yesno|capfirst }}</td>
                 <td>
                     <ul>
                         <li><a class="signoff-link" href="{{ pkg.get_absolute_url }}signoff/"

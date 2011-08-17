@@ -27,11 +27,11 @@
                         title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
                 <td>{{mirror.get_tier_display}}</td>
                 <td>{{mirror.country}}</td>
-                <td>{{mirror.isos|yesno}}</td>
+                <td>{{mirror.isos|yesno|capfirst}}</td>
                 <td class="wrap">{{mirror.supported_protocols|join:", "}}</td>
                 {% if user.is_authenticated %}
-                <td>{{mirror.public|yesno}}</td>
-                <td>{{mirror.active|yesno}}</td>
+                <td>{{mirror.public|yesno|capfirst}}</td>
+                <td>{{mirror.active|yesno|capfirst}}</td>
                 <td>{{mirror.admin_email}}</td>
                 <td class="wrap">{{mirror.notes|linebreaks}}</td>
                 {% endif %}

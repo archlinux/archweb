@@ -21,15 +21,9 @@
                 <td>
                     <a href="{{ iso.get_absolute_url }}">{{ iso.name }}</a>
                 </td>
-                <td>
-                    {{ iso.active|yesno }}
-                </td>
-                <td>
-                    {{ iso.successes }}
-                </td>
-                <td>
-                    {{ iso.failures }}
-                </td>
+                <td>{{ iso.active|yesno|capfirst }}</td>
+                <td>{{ iso.successes }}</td>
+                <td>{{ iso.failures }}</td>
             </tr>
             {% endfor %}
         </tbody>
