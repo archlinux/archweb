@@ -81,7 +81,7 @@ def calculate_option_overview(field_name):
     is_rollback = field_name.startswith('rollback_')
     option = {
         'option': model,
-        'name': field_name,
+        'name': model._meta.verbose_name,
         'is_rollback': is_rollback,
         'values': []
     }
@@ -159,11 +159,12 @@ def test_results_for(request, option, value):
     if option not in Test._meta.get_all_field_names():
         raise Http404
     option_model = getattr(Test, option).field.rel.to
+    option_model.verbose_name = option_model._meta.verbose_name
     real_value = get_object_or_404(option_model, pk=value)
     test_list = real_value.test_set.select_related().order_by(
             '-iso__name', '-pk')
     context = {
-        'option': option,
+        'option': option_model,
         'value': real_value,
         'value_id': value,
         'test_list': test_list
