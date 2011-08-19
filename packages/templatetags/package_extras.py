@@ -9,6 +9,10 @@ from django.utils.html import escape
 
 register = template.Library()
 
+def link_encode(url, query, doseq=False):
+    data = urlencode(query, doseq).replace('&', '&amp;')
+    return "%s?%s" % (url, data)
+
 class BuildQueryStringNode(template.Node):
     def __init__(self, sortfield):
         self.sortfield = sortfield
@@ -22,7 +26,7 @@ class BuildQueryStringNode(template.Node):
                 qs['sort'] = ['-' + self.sortfield]
         else:
             qs['sort'] = [self.sortfield]
-        return urlencode(qs, True)
+        return urlencode(qs, True).replace('&', '&amp;')
 
 @register.tag(name='buildsortqs')
 def do_buildsortqs(parser, token):
@@ -74,27 +78,29 @@ def svn_trunk(package):
 
 @register.simple_tag
 def get_wiki_link(package):
+    url = "https://wiki.archlinux.org/index.php/Special:Search"
     data = {
         'search': package.pkgname,
     }
-    return "https://wiki.archlinux.org/index.php/Special:Search?%s" % \
-            urlencode(data)
+    return link_encode(url, data)
 
 @register.simple_tag
 def bugs_list(package):
+    url = "https://bugs.archlinux.org/"
     data = {
         'project': package.repo.bugs_project,
         'string': package.pkgname,
     }
-    return "https://bugs.archlinux.org/?%s" % urlencode(data)
+    return link_encode(url, data)
 
 @register.simple_tag
 def bug_report(package):
+    url = "https://bugs.archlinux.org/newtask"
     data = {
         'project': package.repo.bugs_project,
         'product_category': package.repo.bugs_category,
         'item_summary': '[%s]' % package.pkgname,
     }
-    return "https://bugs.archlinux.org/newtask?%s" % urlencode(data)
+    return link_encode(url, data)
 
 # vim: set ts=4 sw=4 et:
