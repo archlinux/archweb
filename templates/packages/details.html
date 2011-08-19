@@ -142,8 +142,8 @@
         {% comment %}
             <th>Signed:</th>
             <td>{{ pkg.is_signed|yesno|capfirst }}</td>
-        {% endcomment %}
         </tr><tr>
+        {% endcomment %}
             <th>Build Date:</th>
             <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
         </tr><tr>
