@@ -133,7 +133,6 @@
         <li><a href="http://www.archlinux.org/iso/{{version}}/md5sums.txt" 
             title="Get the latest MD5 checksums">MD5 checksums</a></li>
     </ul>
-    {% endwith %}
 
     {% cache 600 download-mirrors %}
     <table id="download-mirrors">
@@ -154,13 +153,14 @@
             </td></tr>
             <tr><td class="mirror-server">{{mirror_url.mirror.name}}</td><td>
                     {% endifchanged %}
-                    <a href="{{mirror_url.url}}iso/" 
-                        title="Download from {{mirror_url.url}}iso/">{{mirror_url.protocol.protocol|upper}}</a>
+                    <a href="{{mirror_url.url}}iso/{{ version }}/"
+                        title="Download from {{mirror_url.url}}">{{mirror_url.protocol.protocol|upper}}</a>
                     {% endfor %}
             </td></tr>
         </tbody>
     </table>
     {% endcache %}
+    {% endwith %}
 
     <p>If you want to become an Official Arch Linux Mirror please follow the
     instructions listed <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:NewMirrors">here</a>.</p>
