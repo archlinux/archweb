@@ -3,6 +3,7 @@ from mirrors.models import MirrorUrl
 from news.models import News
 from . import utils
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import Http404
@@ -59,10 +60,14 @@ def download(request):
             protocol__is_download=True,
             mirror__public=True, mirror__active=True, mirror__isos=True
     )
+    context = {
+        'releng_iso_url': settings.ISO_LIST_URL,
+    }
     return list_detail.object_list(request, 
             qset.order_by('mirror__country', 'mirror__name', 'protocol'),
             template_name="public/download.html",
-            template_object_name="mirror_url")
+            template_object_name="mirror_url",
+            extra_context=context)
 
 def feeds(request):
     context = {
