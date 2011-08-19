@@ -930,6 +930,14 @@ ul.admin-actions {
     position: relative; top: -0.9em;
 }
 
+#releng-result .success-yes {
+    color: green;
+}
+
+#releng-result .success-no {
+    color: red;
+}
+
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a,
 #archnavbar.anb-packages ul li#anb-packages a,
