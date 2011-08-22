@@ -5,8 +5,8 @@ from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Test)
 
 class IsoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created', 'active')
-    list_filter = ('active',)
+    list_display = ('name', 'created', 'active', 'removed')
+    list_filter = ('active', 'created')
 
 class TestAdmin(admin.ModelAdmin):
     list_display = ('user_name', 'user_email', 'created', 'ip_address',

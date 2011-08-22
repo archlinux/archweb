@@ -29,11 +29,15 @@ class Iso(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'ISO'
+
 class Architecture(IsoOption):
     pass
 
 class IsoType(IsoOption):
-    pass
+    class Meta:
+        verbose_name = 'ISO type'
 
 class BootType(IsoOption):
     pass
