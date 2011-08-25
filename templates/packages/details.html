@@ -139,11 +139,9 @@
             <th>Last Packager:</th>
             <td>{% with pkg.packager as pkgr %}{% if pkgr %}{% userpkgs pkgr %}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
-        {% comment %}
             <th>Signed:</th>
             <td>{{ pkg.is_signed|yesno|capfirst }}</td>
         </tr><tr>
-        {% endcomment %}
             <th>Build Date:</th>
             <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
         </tr><tr>
