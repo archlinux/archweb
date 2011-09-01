@@ -61,20 +61,13 @@ def userpkgs(user):
         )
     return ''
 
-def svn_link(package, svnpath):
-    '''Helper function for the two real SVN link methods.'''
-    parts = (package.repo.svn_root, package.pkgbase, svnpath)
-    linkbase = "http://projects.archlinux.org/svntogit/%s.git/tree/%s/%s/"
+@register.simple_tag
+def scm_link(package, operation):
+    parts = (package.repo.svn_root, operation, package.pkgbase)
+    linkbase = (
+        "http://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
+        "h=packages/%s")
     return linkbase % tuple(urlquote(part) for part in parts)
-
-@register.simple_tag
-def svn_arch(package):
-    repo = package.repo.name.lower()
-    return svn_link(package, "repos/%s-%s" % (repo, package.arch.name))
-
-@register.simple_tag
-def svn_trunk(package):
-    return svn_link(package, "trunk")
 
 @register.simple_tag
 def get_wiki_link(package):
