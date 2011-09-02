@@ -78,7 +78,7 @@ select[multiple] {
     }
 
 input[type=submit] {
-    padding-left: 0.6em;
+    padding: 0 0.6em;
 }
 
 .clear {
