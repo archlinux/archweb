@@ -234,9 +234,11 @@ class Package(models.Model):
         list slim by including the corresponding package in the same testing
         category as this package if that check makes sense.
         """
+        provides = set(self.provides.values_list('name', flat=True))
+        provides.add(self.pkgname)
         requiredby = PackageDepend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').filter(
-                depname=self.pkgname).order_by(
+                depname__in=provides).order_by(
                 'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
