@@ -123,7 +123,16 @@
                 {% else %}None{% endif %}
             </td>
             {% endwith %}
-         </tr><tr>
+        </tr>
+        {% with pkg.provides.all as provides %}
+        {% if provides %}
+        <tr>
+            <th>Provides:</th>
+            <td>{% for p in provides %}{{ p.name }}{% if p.version %}={{ p.version }}{% endif %}<br/>{% endfor %}</td>
+        </tr>
+        {% endif %}
+        {% endwith %}
+        <tr>
             <th>Maintainers:</th>
             {% with pkg.maintainers as maints %}
             <td>{% if maints %}
