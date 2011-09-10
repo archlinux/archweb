@@ -196,7 +196,7 @@ class Package(models.Model):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)
 
-    def get_full_url(self, proto='http'):
+    def get_full_url(self, proto='https'):
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
