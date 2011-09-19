@@ -135,6 +135,7 @@
                 <th class="key">Arch</th>
                 <th># Packages</th>
                 <th># Flagged</th>
+                <th># Signed</th>
             </tr>
         </thead>
         <tbody>
@@ -147,6 +148,8 @@
                     <td><a href="/packages/?arch={{ arch.name }}&amp;flagged=Flagged"
                             title="View all flagged packages for the {{ arch.name }} architecture">
                             <strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
+
+                    <td><strong>{{ arch.packages.signed.count }}</strong> packages</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -165,6 +168,7 @@
                 <th class="key">Repository</th>
                 <th># Packages</th>
                 <th># Flagged</th>
+                <th># Signed</th>
             </tr>
         </thead>
         <tbody>
@@ -177,6 +181,7 @@
                     <td><a href="/packages/?repo={{ repo.name }}&amp;flagged=Flagged"
                             title="View all flagged packages in the {{ repo.name }} repository">
                             <strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
+                    <td><strong>{{ repo.packages.signed.count }}</strong> packages</td>
                 </tr>
             {% endfor %}
         </tbody>

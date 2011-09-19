@@ -199,6 +199,9 @@ class PackageSearchForm(forms.Form):
     flagged = forms.ChoiceField(
             choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
             required=False)
+    signed = forms.ChoiceField(
+            choices=[('', 'All')] + make_choice(['Signed', 'Unsigned']),
+            required=False)
     limit = LimitTypedChoiceField(
             choices=make_choice([50, 100, 250]) + [('all', 'All')],
             coerce=coerce_limit_value,
@@ -253,6 +256,11 @@ def search(request, page=None):
                 packages = packages.filter(flag_date__isnull=False)
             elif form.cleaned_data['flagged'] == 'Not Flagged':
                 packages = packages.filter(flag_date__isnull=True)
+
+            if form.cleaned_data['signed'] == 'Signed':
+                packages = packages.filter(pgp_signature__isnull=False)
+            elif form.cleaned_data['signed'] == 'Unsigned':
+                packages = packages.filter(pgp_signature__isnull=True)
 
             if form.cleaned_data['q']:
                 query = form.cleaned_data['q']
