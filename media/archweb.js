@@ -6,7 +6,7 @@ if (typeof $.tablesorter !== 'undefined') {
         is: function(s) { return false; },
         format: function(s) {
             var m = s.match(/\d+/);
-            return m ? parseInt(m[0]) : 0;
+            return m ? parseInt(m[0], 10) : 0;
         },
         type: 'numeric'
     });
@@ -27,7 +27,9 @@ if (typeof $.tablesorter !== 'undefined') {
             return ($.inArray(s, this.special) > -1) || $.tablesorter.isDigit(s, c);
         },
         format: function(s) {
-            if ($.inArray(s, this.special) > -1) return Number.MAX_VALUE;
+            if ($.inArray(s, this.special) > -1) {
+                return Number.MAX_VALUE;
+            }
             return $.tablesorter.formatFloat(s);
         },
         type: 'numeric'
@@ -41,9 +43,13 @@ if (typeof $.tablesorter !== 'undefined') {
             return ($.inArray(s, this.special) > -1) || this.re.test(s);
         },
         format: function(s) {
-            if ($.inArray(s, this.special) > -1) return Number.MAX_VALUE;
+            if ($.inArray(s, this.special) > -1) {
+                return Number.MAX_VALUE;
+            }
             var matches = this.re.exec(s);
-            if (!matches) return Number.MAX_VALUE;
+            if (!matches) {
+                return Number.MAX_VALUE;
+            }
             return matches[1] * 60 + matches[2];
         },
         type: 'numeric'
@@ -56,9 +62,13 @@ if (typeof $.tablesorter !== 'undefined') {
         },
         format: function(s) {
             var matches = this.re.exec(s);
-            if (!matches) return 0;
+            if (!matches) {
+                return 0;
+            }
             /* skip group 6, group 7 is optional seconds */
-            if (matches[7] == undefined) matches[7] = 0;
+            if (matches[7] === undefined) {
+                matches[7] = 0;
+            }
             /* The awesomeness of the JS date constructor. Month needs to be
              * between 0-11, because things have to be difficult. */
             var date = new Date(matches[1], matches[2] - 1, matches[3],
@@ -75,7 +85,9 @@ if (typeof $.tablesorter !== 'undefined') {
         },
         format: function(s) {
             var matches = this.re.exec(s);
-            if (!matches) return 0;
+            if (!matches) {
+                return 0;
+            }
             var size = parseFloat(matches[1]);
             var suffix = matches[2];
 
@@ -146,16 +158,24 @@ function filter_packages() {
 
             // all this just to get the split version out of the table cell
             var ver_a = cells.eq(2).find('span').text().match(pat);
-            if (!ver_a) return true;
+            if (!ver_a) {
+                return true;
+            }
 
             var ver_b = cells.eq(3).find('span').text().match(pat);
-            if (!ver_b) return true;
+            if (!ver_b) {
+                return true;
+            }
 
             // first check pkgver
-            if (ver_a[1] !== ver_b[1]) return true;
+            if (ver_a[1] !== ver_b[1]) {
+                return true;
+            }
             // pkgver matched, so see if rounded pkgrel matches
-            if (Math.floor(parseFloat(ver_a[2])) ==
-                Math.floor(parseFloat(ver_b[2]))) return false;
+            if (Math.floor(parseFloat(ver_a[2])) ===
+                    Math.floor(parseFloat(ver_b[2]))) {
+                return false;
+            }
             // pkgrel didn't match, so keep the row
             return true;
         });
@@ -199,12 +219,13 @@ function signoff_package() {
             $(link).append(signoff);
         }
         /* update the approved column to reflect reality */
+        var approved;
         if (data.approved) {
-            var approved = $(link).closest('tr').children('.signoff-no');
+            approved = $(link).closest('tr').children('.signoff-no');
             approved.text('Yes').addClass(
                 'signoff-yes').removeClass('signoff-no');
         } else {
-            var approved = $(link).closest('tr').children('.signoff-yes');
+            approved = $(link).closest('tr').children('.signoff-yes');
             approved.text('No').addClass(
                 'signoff-no').removeClass('signoff-yes');
         }
