@@ -92,20 +92,19 @@ if (typeof $.tablesorter !== 'undefined') {
             var suffix = matches[2];
 
             switch(suffix) {
-                case 'byte':
-                case 'bytes':
-                    return size;
-                case 'KB':
-                    return size * 1024;
-                case 'MB':
-                    return size * 1024 * 1024;
-                case 'GB':
-                    return size * 1024 * 1024 * 1024;
-                case 'TB':
-                    return size * 1024 * 1024 * 1024 * 1024;
+                /* intentional fall-through at each level */
                 case 'PB':
-                    return size * 1024 * 1024 * 1024 * 1024 * 1024;
+                    size *= 1024;
+                case 'TB':
+                    size *= 1024;
+                case 'GB':
+                    size *= 1024;
+                case 'MB':
+                    size *= 1024;
+                case 'KB':
+                    size *= 1024;
             }
+            return size;
         },
         type: 'numeric'
     });
