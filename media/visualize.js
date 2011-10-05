@@ -1,8 +1,8 @@
 function packages_treemap(chart_id, orderings, default_order) {
     var jq_div = $(chart_id),
         color = d3.scale.category20();
-        key_func = function(d) { return d.key; },
-        value_package_count = function(d) { return d.count; };
+    var key_func = function(d) { return d.key; };
+    var value_package_count = function(d) { return d.count; };
 
     var treemap = d3.layout.treemap()
         .size([jq_div.width(), jq_div.height()])
@@ -23,8 +23,12 @@ function packages_treemap(chart_id, orderings, default_order) {
     var prop_px = function(prop, offset) {
         return function(d) {
             var dist = d[prop] + offset;
-            if (dist > 0) return dist + "px";
-            else return "0px";
+            if (dist > 0) {
+                return dist + "px";
+            }
+            else {
+                return "0px";
+            }
         };
     };
 
@@ -36,10 +40,11 @@ function packages_treemap(chart_id, orderings, default_order) {
 
     var fetch_for_ordering = function(order) {
         d3.json(order.url, function(json) {
-            var nodes = d3_div.data([json]).selectAll("div").data(treemap.nodes, key_func);
+            var nodes = d3_div.data([json]).selectAll("div")
+                .data(treemap.nodes, key_func);
             /* start out new nodes in the center of the picture area */
             var w_center = jq_div.width() / 2;
-            var h_center = jq_div.height() / 2;
+                h_center = jq_div.height() / 2;
             nodes.enter().append("div")
                 .attr("class", "treemap-cell")
                 .attr("title", function(d) { return d.name; })
