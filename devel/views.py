@@ -31,7 +31,12 @@ from string import ascii_letters, digits
 @never_cache
 def index(request):
     '''the developer dashboard'''
-    inner_q = PackageRelation.objects.filter(user=request.user).values('pkgbase')
+    if(request.user.is_authenticated()):
+        inner_q = PackageRelation.objects.filter(user=request.user)
+    else:
+        inner_q = PackageRelation.objects.none()
+    inner_q = inner_q.values('pkgbase')
+
     flagged = Package.objects.normal().filter(
             flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
 
