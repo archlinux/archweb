@@ -109,6 +109,7 @@ INSTALLED_APPS = (
     'public',
     'south', # database migration support
     'releng',
+    'visualize',
 )
 
 PGP_SERVER = 'pgp.mit.edu:11371'

@@ -948,3 +948,30 @@ ul.admin-actions {
 #archnavbar.anb-download ul li#anb-download a {
     color: white !important;
 }
+
+/* visualizations page */
+.visualize-buttons {
+    margin: 0.5em 0.33em;
+}
+
+    .visualize-buttons button.active {
+        depressed: true;
+    }
+
+.visualize-chart {
+    position: relative;
+    height: 500px;
+    margin: 0.33em;
+}
+
+#visualize-archrepo .treemap-cell {
+    border: solid 1px white;
+    overflow: hidden;
+    position: absolute;
+}
+
+    #visualize-archrepo .treemap-cell span {
+        padding: 3px;
+        font-size: 0.85em;
+        line-height: 1em;
+    }

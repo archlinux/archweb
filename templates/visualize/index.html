@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Visualizations{% endblock %}
+
+{% block content %}
+<div class="box">
+
+    <h2>Visualizations of Packaging Data</h2>
+
+    <h3>Package Treemap</h3>
+
+    <div class="visualize-buttons">
+        <div>
+            <span>Scale Using:</span>
+            <button id="visualize-archrepo-count" class="visualize-archrepo-scaleby active">Package Count</button>
+            <button id="visualize-archrepo-flagged" class="visualize-archrepo-scaleby">Flagged</button>
+            <button id="visualize-archrepo-csize" class="visualize-archrepo-scaleby">Compressed Size</button>
+            <button id="visualize-archrepo-isize" class="visualize-archrepo-scaleby">Installed Size</button>
+        </div>
+        <div>
+            <span>Group By:</span>
+            <button id="visualize-archrepo-repo" class="visualize-archrepo-groupby active">Repository</button>
+            <button id="visualize-archrepo-arch" class="visualize-archrepo-groupby">Architecture</button>
+        </div>
+    </div>
+    <div id="visualize-archrepo" class="visualize-chart"></div>
+</div>
+
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="/media/d3.min.js"></script>
+<script type="text/javascript" src="/media/d3.layout.min.js"></script>
+<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript" src="/media/visualize.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var orderings = {
+        "repo": { url: "{% url visualize-byrepo %}", color_attr: "repo" },
+        "arch": { url: "{% url visualize-byarch %}", color_attr: "arch" },
+    };
+    packages_treemap("#visualize-archrepo", orderings, "repo");
+});
+</script>
+{% endblock %}
