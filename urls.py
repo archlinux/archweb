@@ -5,6 +5,8 @@ from django.conf import settings
 from django.contrib import admin
 
 from django.views.generic import TemplateView
+from django.views.decorators.cache import cache_page
+from django.views.i18n import null_javascript_catalog
 
 from feeds import PackageFeed, NewsFeed
 import sitemaps
@@ -65,7 +67,8 @@ urlpatterns += patterns('public.views',
 
 # Includes and other remaining stuff
 urlpatterns += patterns('',
-    (r'^jsi18n/$',   'django.views.i18n.null_javascript_catalog'),
+    # cache this static JS resource for 1 week rather than default 5 minutes
+    (r'^jsi18n/$',   cache_page(604800)(null_javascript_catalog)),
     (r'^admin/',     include(admin.site.urls)),
     (r'^devel/',     include('devel.urls')),
     (r'^feeds/',     include(feeds_patterns)),
