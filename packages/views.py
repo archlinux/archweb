@@ -191,6 +191,8 @@ class LimitTypedChoiceField(forms.TypedChoiceField):
 class PackageSearchForm(forms.Form):
     repo = forms.MultipleChoiceField(required=False)
     arch = forms.MultipleChoiceField(required=False)
+    name = forms.CharField(required=False)
+    desc = forms.CharField(required=False)
     q = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
@@ -262,14 +264,23 @@ def search(request, page=None):
             elif form.cleaned_data['signed'] == 'Unsigned':
                 packages = packages.filter(pgp_signature__isnull=True)
 
-            if form.cleaned_data['q']:
-                query = form.cleaned_data['q']
-                q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
-                packages = packages.filter(q)
             if form.cleaned_data['last_update']:
                 lu = form.cleaned_data['last_update']
                 packages = packages.filter(last_update__gte=
                         datetime(lu.year, lu.month, lu.day, 0, 0))
+
+            if form.cleaned_data['name']:
+                name = form.cleaned_data['name']
+                packages = packages.filter(pkgname__icontains=name)
+
+            if form.cleaned_data['desc']:
+                desc = form.cleaned_data['desc']
+                packages = packages.filter(pkgdesc__icontains=desc)
+
+            if form.cleaned_data['q']:
+                query = form.cleaned_data['q']
+                q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
+                packages = packages.filter(q)
 
             asked_limit = form.cleaned_data['limit']
             if asked_limit and asked_limit < 0:
