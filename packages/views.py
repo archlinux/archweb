@@ -293,24 +293,22 @@ def search(request, page=None):
     else:
         form = PackageSearchForm()
 
-    current_query = request.GET.urlencode()
-    page_dict = {
-            'search_form': form,
-            'current_query': current_query
-    }
     allowed_sort = ["arch", "repo", "pkgname", "pkgbase",
             "compressed_size", "installed_size",
             "build_date", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
     sort = request.GET.get('sort', None)
-    # TODO: sorting by multiple fields makes using a DB index much harder
     if sort in allowed_sort:
-        packages = packages.order_by(
-                request.GET['sort'], 'repo', 'arch', 'pkgname')
+        packages = packages.order_by(sort)
         page_dict['sort'] = sort
     else:
         packages = packages.order_by('pkgname')
 
+    current_query = request.GET.urlencode()
+    page_dict = {
+            'search_form': form,
+            'current_query': current_query
+    }
     return list_detail.object_list(request, packages,
             template_name="packages/search.html",
             page=page,
