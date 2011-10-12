@@ -5,7 +5,6 @@ from . import utils
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models import Q
 from django.http import Http404
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
@@ -34,18 +33,18 @@ USER_LISTS = {
     },
 }
 
-def userlist(request, type='devs'):
+def userlist(request, user_type='devs'):
     users = User.objects.order_by('username').select_related('userprofile')
-    if type == 'devs':
+    if user_type == 'devs':
         users = users.filter(is_active=True, groups__name="Developers")
-    elif type == 'tus':
+    elif user_type == 'tus':
         users = users.filter(is_active=True, groups__name="Trusted Users")
-    elif type == 'fellows':
+    elif user_type == 'fellows':
         users = users.filter(is_active=False, groups__name__in=["Developers", "Trusted Users"])
     else:
         raise Http404
 
-    context = USER_LISTS[type].copy()
+    context = USER_LISTS[user_type].copy()
     context['users'] = users
     return direct_to_template(request, 'public/userlist.html', context)
 

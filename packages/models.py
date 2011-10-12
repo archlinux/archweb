@@ -62,7 +62,7 @@ class Signoff(models.Model):
         # TODO: delayed import to avoid circular reference
         from main.models import Package
         return Package.objects.normal().filter(pkgbase=self.pkgbase,
-                pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=pkg.epoch,
+                pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=self.epoch,
                 arch=self.arch, repo=self.repo)
 
     @property

@@ -1,6 +1,7 @@
 import os.path
 
-from django.conf.urls.defaults import *
+# Stupid Django. Don't remove these "unused" handler imports
+from django.conf.urls.defaults import handler500, handler404, include, patterns
 from django.conf import settings
 from django.contrib import admin
 
@@ -11,7 +12,7 @@ from django.views.i18n import null_javascript_catalog
 from feeds import PackageFeed, NewsFeed
 import sitemaps
 
-sitemaps = {
+our_sitemaps = {
     'base':           sitemaps.BaseSitemap,
     'news':           sitemaps.NewsSitemap,
     'packages':       sitemaps.PackagesSitemap,
@@ -36,9 +37,9 @@ feeds_patterns = patterns('',
 # Sitemaps
 urlpatterns += patterns('django.contrib.sitemaps.views',
     (r'^sitemap.xml$', 'index',
-        {'sitemaps': sitemaps}),
+        {'sitemaps': our_sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'sitemap',
-        {'sitemaps': sitemaps}),
+        {'sitemaps': our_sitemaps}),
 )
 
 # Authentication / Admin
@@ -58,9 +59,9 @@ urlpatterns += patterns('public.views',
         {}, 'page-art'),
     (r'^svn/$',   TemplateView.as_view(template_name='public/svn.html'),
         {}, 'page-svn'),
-    (r'^developers/$',   'userlist', { 'type':'devs' },    'page-devs'),
-    (r'^trustedusers/$', 'userlist', { 'type':'tus' },     'page-tus'),
-    (r'^fellows/$',      'userlist', { 'type':'fellows' }, 'page-fellows'),
+    (r'^developers/$',   'userlist', { 'user_type':'devs' },    'page-devs'),
+    (r'^trustedusers/$', 'userlist', { 'user_type':'tus' },     'page-tus'),
+    (r'^fellows/$',      'userlist', { 'user_type':'fellows' }, 'page-fellows'),
     (r'^donate/$',       'donate',   {}, 'page-donate'),
     (r'^download/$',     'download', {}, 'page-download'),
 )

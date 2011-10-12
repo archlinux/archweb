@@ -4,7 +4,7 @@
 
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.cache import get_cache_key, learn_cache_key, patch_response_headers, get_max_age
+from django.utils.cache import learn_cache_key, patch_response_headers, get_max_age
 
 class UpdateCacheMiddleware(object):
     """

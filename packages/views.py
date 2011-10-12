@@ -19,7 +19,7 @@ from django.views.generic.simple import direct_to_template
 
 from datetime import datetime
 from operator import attrgetter
-import string
+from string import Template
 from urllib import urlencode
 
 from main.models import Package, PackageFile, Arch, Repo
@@ -575,7 +575,7 @@ def download(request, name, repo, arch):
         'repo': pkg.repo.name.lower(),
         'file': pkg.filename,
     }
-    url = string.Template('${host}${repo}/os/${arch}/${file}').substitute(values)
+    url = Template('${host}${repo}/os/${arch}/${file}').substitute(values)
     return redirect(url)
 
 def arch_differences(request):

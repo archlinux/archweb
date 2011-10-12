@@ -18,10 +18,20 @@ def arch_repo_data():
     arches = Arch.objects.values_list('name', flat=True)
     repos = Repo.objects.values_list('name', flat=True)
 
+    def build_map(name, arch, repo):
+        key = '%s:%s' % (repo or '', arch or '')
+        return {
+            'key': key,
+            'name': name,
+            'arch': arch,
+            'repo': repo,
+            'data': [],
+        }
+
     # now transform these results into two mappings: one ordered (repo, arch),
     # and one ordered (arch, repo).
-    arch_groups = dict((a, { 'name': a, 'key': ':%s' % a, 'arch': a, 'repo': None, 'data': [] }) for a in arches)
-    repo_groups = dict((r, { 'name': r, 'key': '%s:' % r, 'arch': None, 'repo': r, 'data': [] }) for r in repos)
+    arch_groups = dict((a, build_map(a, a, None)) for a in arches)
+    repo_groups = dict((r, build_map(r, None, r)) for r in repos)
     for row in qs:
         arch = row['arch__name']
         repo = row['repo__name']

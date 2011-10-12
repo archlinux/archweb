@@ -32,7 +32,7 @@ def news_list(request):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        exclude=('id', 'slug', 'author', 'postdate')
+        exclude = ('id', 'slug', 'author', 'postdate')
 
 def find_unique_slug(newsitem):
     '''Attempt to find a unique slug for this news item.'''

@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from main.models import Arch, Package, Repo
+from main.models import Arch, Package
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
 
 class RecentUpdate(object):
