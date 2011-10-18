@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% load package_extras %}
 
-{% block title %}Arch Linux - Flag Package - {{ package.pkgname }}{% endblock %}
+{% block title %}Arch Linux - Flag Package - {{ package.pkgname }} {{ package.full_version }} ({{ package.arch.name }}){% endblock %}
+{% block head %}<meta name="robots" content="noindex"/>{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div id="pkg-flag" class="box">
-    <h2>Flag Package: {{ package.pkgname }}</h2>
+    <h2>Flag Package: {{ package.pkgname }} {{ package.full_version }} ({{ package.arch.name }})</h2>
 
     <p>If you notice a package is out-of-date (i.e., there is a newer
     <strong>stable</strong> release available), then please notify us using
     the form below. Do <em>not</em> report bugs via this form!</p>
 
-    <p>Note that all of the following packages will be marked out of date:</p>
+    <p>Note that the following {{ packages|length }} package{{ packages|pluralize }} will be marked out of date:</p>
     <ul>
         {% for pkg in packages %}
         <li>{% pkg_details_link pkg %} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
