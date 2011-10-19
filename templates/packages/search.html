@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load package_extras %}
+{% load adminmedia %}
+
 {% block title %}Arch Linux - Package Database{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/media/admin_media/css/widgets.css" />
+<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
 {% endblock %}
 
 {% block content %}
@@ -170,7 +172,7 @@
 </div>
 
 <script type="text/javascript" src="/jsi18n/"></script>
-{% load adminmedia %}<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
 <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
+<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
 {{search_form.media}}
 {% endblock %}
