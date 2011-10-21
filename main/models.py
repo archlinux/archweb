@@ -27,7 +27,7 @@ class PGPKeyField(models.CharField):
     _south_introspects = True
 
     def to_python(self, value):
-        if value == '':
+        if value == '' or value is None:
             return None
         value = super(PGPKeyField, self).to_python(value)
         # remove all spaces

@@ -24,7 +24,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 class Command(NoArgsCommand):
-    help = "Runs a check on all active mirror URLs to determine if they are reachable via IPv4 and/or v6."
+    help = "Match all packages with a packager_str but NULL packager_id to a packager if we can find one."
 
     def handle_noargs(self, **options):
         v = int(options.get('verbosity', None))
