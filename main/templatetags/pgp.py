@@ -4,7 +4,6 @@ from django.conf import settings
 register = template.Library()
 
 def format_key(key_id):
-    print len(key_id)
     if len(key_id) in (8, 20):
         return u'0x%s' % key_id
     elif len(key_id) == 40:
@@ -24,7 +23,7 @@ def pgp_key_link(key_id):
         return format_key(key_id)
     url = 'http://%s/pks/lookup?op=vindex&fingerprint=on&exact=on&search=0x%s' % \
             (pgp_server, key_id)
-    values = (url, key_id, format_key(key_id))
-    return '<a href="%s" title="PGP key search for 0x%s">%s</a>' % values
+    values = (url, format_key(key_id), key_id[-8:])
+    return '<a href="%s" title="PGP key search for %s">0x%s</a>' % values
 
 # vim: set ts=4 sw=4 et:

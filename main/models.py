@@ -36,17 +36,12 @@ class PGPKeyField(models.CharField):
         if value.startswith('0x'):
             value = value[2:]
         value = value.split('/')[-1]
-        return value
+        # make all (hex letters) uppercase
+        return value.upper()
 
     def formfield(self, **kwargs):
         # override so we don't set max_length form field attribute
         return models.Field.formfield(self, **kwargs)
-
-def validate_pgp_key_length(value):
-    if len(value) not in (8, 16, 40):
-        raise ValidationError(
-                u'Ensure this value has 8, 16, or 40 characters (it has %d).' % len(value),
-                'pgp_key_value')
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -66,10 +61,10 @@ class UserProfile(models.Model):
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
     pgp_key = PGPKeyField(max_length=40, null=True, blank=True,
-        verbose_name="PGP key", validators=[RegexValidator(r'^[0-9A-F]+$',
-            "Ensure this value consists of only hex characters.", 'hex_char'),
-            validate_pgp_key_length],
-        help_text="PGP Key ID or fingerprint (8, 16, or 40 hex digits)")
+        verbose_name="PGP key fingerprint",
+        validators=[RegexValidator(r'^[0-9A-F]{40}$',
+            "Ensure this value consists of 40 hex characters.", 'hex_char')],
+        help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     website = models.CharField(max_length=200, null=True, blank=True)
     yob = models.IntegerField("Year of birth", null=True, blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)
