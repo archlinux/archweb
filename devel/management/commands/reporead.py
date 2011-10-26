@@ -73,7 +73,7 @@ class Command(BaseCommand):
 class Pkg(object):
     """An interim 'container' object for holding Arch package data."""
     bare = ( 'name', 'base', 'arch', 'desc', 'filename',
-            'md5sum', 'sha256sum', 'pgpsig', 'url', 'packager' )
+            'md5sum', 'sha256sum', 'url', 'packager' )
     number = ( 'csize', 'isize' )
     collections = ( 'depends', 'optdepends', 'conflicts',
             'provides', 'replaces', 'groups', 'license', 'files' )
@@ -85,6 +85,7 @@ class Pkg(object):
         self.ver = None
         self.rel = None
         self.epoch = 0
+        self.pgpsig = None
         for k in self.bare + self.number:
             setattr(self, k, None)
         for k in self.collections:
@@ -99,6 +100,9 @@ class Pkg(object):
                 setattr(self, k, v[0][:254])
             elif k in self.number:
                 setattr(self, k, long(v[0]))
+            elif k == 'pgpsig':
+                # do NOT prune this value at all
+                setattr(self, k, v[0])
             elif k == 'version':
                 match = self.version_re.match(v[0])
                 self.ver = match.group(3)
