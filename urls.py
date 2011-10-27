@@ -36,6 +36,8 @@ feeds_patterns = patterns('',
 
 # Sitemaps
 urlpatterns += patterns('django.contrib.sitemaps.views',
+    # Thanks Django, we can't cache these longer because of
+    # https://code.djangoproject.com/ticket/2713
     (r'^sitemap.xml$', 'index',
         {'sitemaps': our_sitemaps}),
     (r'^sitemap-(?P<section>.+)\.xml$', 'sitemap',
@@ -85,6 +87,19 @@ urlpatterns += patterns('',
         {}, 'opensearch-packages'),
     (r'^todolists/$','todolists.views.public_list'),
 )
+
+legacy_urls = (
+    ('^about.php',     '/about/'),
+    ('^changelog.php', '/packages/?sort=-last_update'),
+    ('^download.php',  '/download/'),
+    ('^index.php',     '/'),
+    ('^logos.php',     '/art/'),
+    ('^news.php',      '/news/'),
+)
+
+for old_url, new_url in legacy_urls:
+    urlpatterns += patterns('django.views.generic.simple',
+            (old_url, 'redirect_to', {'url': new_url}))
 
 if settings.DEBUG == True:
     urlpatterns += patterns('',
