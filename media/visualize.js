@@ -2,7 +2,14 @@ function packages_treemap(chart_id, orderings, default_order) {
     var jq_div = $(chart_id),
         color = d3.scale.category20();
     var key_func = function(d) { return d.key; };
-    var value_package_count = function(d) { return d.count; };
+    var value_package_count = function(d) { return d.count; },
+        value_flagged_count = function(d) { return d.flagged; },
+        value_compressed_size = function(d) { return d.csize; },
+        value_installed_size = function(d) { return d.isize; };
+
+    /* tag the function so when we display, we can format filesizes */
+    value_package_count.is_size = value_flagged_count.is_size = false;
+    value_compressed_size.is_size = value_installed_size.is_size = true;
 
     var treemap = d3.layout.treemap()
         .size([jq_div.width(), jq_div.height()])
@@ -15,7 +22,12 @@ function packages_treemap(chart_id, orderings, default_order) {
         if (d.children) {
             return "";
         }
-        return "<span>" + d.name + ": " + treemap.value()(d) + "</span>";
+        var valuefunc = treemap.value();
+        var value = valuefunc(d);
+        if (valuefunc.is_size && value !== undefined) {
+            value = format_filesize(value);
+        }
+        return "<span>" + d.name + ": " + value + "</span>";
     };
 
     var d3_div = d3.select(jq_div.get(0));
@@ -81,9 +93,9 @@ function packages_treemap(chart_id, orderings, default_order) {
 
     /* each scale button tweaks our value, e.g. net size function */
     make_scale_button("count", value_package_count);
-    make_scale_button("flagged", function(d) { return d.flagged; });
-    make_scale_button("csize", function(d) { return d.csize; });
-    make_scale_button("isize", function(d) { return d.isize; });
+    make_scale_button("flagged", value_flagged_count);
+    make_scale_button("csize", value_compressed_size);
+    make_scale_button("isize", value_installed_size);
 
     var make_group_button = function(name, order) {
         var button_id = chart_id + "-" + name;
