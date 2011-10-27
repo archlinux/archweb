@@ -57,7 +57,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
                 is_download=True).values_list('protocol', flat=True)
     qset = MirrorUrl.objects.select_related().filter(
             protocol__protocol__in=protocols,
-            mirror__public=True, mirror__active=True, mirror__isos=True
+            mirror__public=True, mirror__active=True,
     )
     if countries and 'all' not in countries:
         qset = qset.filter(Q(country__in=countries) |
