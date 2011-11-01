@@ -1,10 +1,11 @@
 from django.db import models
+from django.db.models.signals import pre_save
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.forms import ValidationError
 
-from main.utils import cache_function, make_choice
+from main.utils import cache_function, make_choice, set_created_field
 from packages.models import PackageRelation
 from packages.models import Signoff as PackageSignoff
 
@@ -104,13 +105,15 @@ class Donor(models.Model):
     name = models.CharField(max_length=255, unique=True)
     visible = models.BooleanField(default=True,
             help_text="Should we show this donor on the public page?")
+    created = models.DateTimeField()
 
     def __unicode__(self):
         return self.name
 
     class Meta:
         db_table = 'donors'
-        ordering = ['name']
+        ordering = ('name',)
+        get_latest_by = 'when'
 
 class Arch(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -177,6 +180,7 @@ class Package(models.Model):
     flag_date = models.DateTimeField(null=True)
 
     objects = PackageManager()
+
     class Meta:
         db_table = 'packages'
         ordering = ('pkgname',)
@@ -481,6 +485,7 @@ class TodolistPkg(models.Model):
     list = models.ForeignKey(Todolist)
     pkg = models.ForeignKey(Package)
     complete = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
@@ -497,6 +502,8 @@ from django.db.models.signals import pre_save, post_save
 post_save.connect(refresh_latest, sender=Package,
         dispatch_uid="main.models")
 pre_save.connect(set_todolist_fields, sender=Todolist,
+        dispatch_uid="main.models")
+pre_save.connect(set_created_field, sender=Donor,
         dispatch_uid="main.models")
 
 # vim: set ts=4 sw=4 et:
