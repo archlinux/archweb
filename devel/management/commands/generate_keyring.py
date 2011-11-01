@@ -8,7 +8,6 @@ Usage: ./manage.py generate_keyring <keyserver> <keyring_path>
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db.models import Q
 
 import logging
 import subprocess
@@ -44,9 +43,10 @@ class Command(BaseCommand):
 def generate_keyring(keyserver, keyring):
     logger.info("getting all known key IDs")
 
-    exclude = Q(pgp_key__isnull=True) & Q(pgp_key__exact="")
-    key_ids = UserProfile.objects.exclude(
-            exclude).values_list("pgp_key", flat=True)
+    # Screw you Django, for not letting one natively do value != <empty string>
+    key_ids = UserProfile.objects.filter(user__is_active=True,
+            pgp_key__isnull=False).extra(where=["pgp_key != ''"]).values_list(
+            "pgp_key", flat=True)
     logger.info("%d keys fetched from user profiles", len(key_ids))
 
     gpg_cmd = ["gpg", "--no-default-keyring", "--keyring", keyring,
