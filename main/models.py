@@ -470,6 +470,11 @@ class Todolist(models.Model):
     def get_absolute_url(self):
         return '/todo/%i/' % self.id
 
+    def get_full_url(self, proto='https'):
+        '''get a URL suitable for things like email including the domain'''
+        domain = Site.objects.get_current().domain
+        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+
 class TodolistPkg(models.Model):
     list = models.ForeignKey(Todolist)
     pkg = models.ForeignKey(Package)

@@ -1,10 +1,11 @@
-{% autoescape off %}The todo list {{ todolist.name }} has had the following packages added to it for which you are a maintainer:
+{% autoescape off %}The todo list "{{ todolist.name }}" has had the following packages added to it for which you are a maintainer:
 
 {% for tpkg in todo_packages %}
 * {{ tpkg.pkg.repo.name|lower }}/{{ tpkg.pkg.pkgname }} ({{ tpkg.pkg.arch.name }}) - {{ tpkg.pkg.get_full_url }}{% endfor %}
 
 Todo list information:
-Creator: {{todolist.creator.get_full_name}}
-Name: {{todolist.name}}
+Name: {{ todolist.name }}
+URL: {{ todolist.get_full_url }}
+Creator: {{ todolist.creator.get_full_name }}
 Description:
-{{todolist.description|striptags|wordwrap:69}}{% endautoescape %}
+{{ todolist.description|striptags|wordwrap:78 }}{% endautoescape %}
