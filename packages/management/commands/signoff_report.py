@@ -8,6 +8,7 @@ repository.
 Usage: ./manage.py signoff_report <email> <repository>
 """
 
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
@@ -104,7 +105,6 @@ def generate_report(email, repo_name):
         'leaders': leaders,
     })
     from_addr = 'Arch Website Notification <nobody@archlinux.org>'
-    #send_mail(subject, t.render(c), from_addr, email)
-    print t.render(c)
+    send_mail(subject, t.render(c), from_addr, [email])
 
 # vim: set ts=4 sw=4 et:
