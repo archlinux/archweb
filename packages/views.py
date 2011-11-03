@@ -23,11 +23,11 @@ from string import Template
 from urllib import urlencode
 
 from main.models import Package, PackageFile, Arch, Repo
-from main.utils import make_choice, groupby_preserve_order, PackageStandin
+from main.utils import make_choice
 from mirrors.models import MirrorUrl
-from .models import PackageRelation, PackageGroup, SignoffSpecification, Signoff
+from .models import PackageRelation, PackageGroup, Signoff
 from .utils import (get_group_info, get_differences_info,
-        get_wrong_permissions, get_current_signoffs)
+        get_wrong_permissions, get_signoff_groups, approved_by_signoffs)
 
 class PackageJSONEncoder(DjangoJSONEncoder):
     pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
@@ -369,100 +369,12 @@ def unflag_all(request, name, repo, arch):
     pkgs.update(flag_date=None)
     return redirect(pkg)
 
-DEFAULT_SIGNOFF_SPEC = SignoffSpecification(required=2)
-
-def approved_by_signoffs(signoffs, spec=DEFAULT_SIGNOFF_SPEC):
-    if signoffs:
-        good_signoffs = sum(1 for s in signoffs if not s.revoked)
-        return good_signoffs >= spec.required
-    return False
-
-class PackageSignoffGroup(object):
-    '''Encompasses all packages in testing with the same pkgbase.'''
-    def __init__(self, packages, user=None):
-        if len(packages) == 0:
-            raise Exception
-        self.packages = packages
-        self.user = user
-        self.target_repo = None
-        self.signoffs = set()
-        self.specification = DEFAULT_SIGNOFF_SPEC
-
-        first = packages[0]
-        self.pkgbase = first.pkgbase
-        self.arch = first.arch
-        self.repo = first.repo
-        self.version = ''
-
-        version = first.full_version
-        if all(version == pkg.full_version for pkg in packages):
-            self.version = version
-
-    @property
-    def package(self):
-        '''Try and return a relevant single package object representing this
-        group. Start by seeing if there is only one package, then look for the
-        matching package by name, finally falling back to a standin package
-        object.'''
-        if len(self.packages) == 1:
-            return self.packages[0]
-
-        same_pkgs = [p for p in self.packages if p.pkgname == p.pkgbase]
-        if same_pkgs:
-            return same_pkgs[0]
-
-        return PackageStandin(self.packages[0])
-
-    def find_signoffs(self, all_signoffs):
-        '''Look through a list of Signoff objects for ones matching this
-        particular group and store them on the object.'''
-        for s in all_signoffs:
-            if s.pkgbase != self.pkgbase:
-                continue
-            if self.version and not s.full_version == self.version:
-                continue
-            if s.arch_id == self.arch.id and s.repo_id == self.repo.id:
-                self.signoffs.add(s)
-
-    def approved(self):
-        return approved_by_signoffs(self.signoffs, self.specification)
-
-    def user_signed_off(self, user=None):
-        '''Did a given user signoff on this package? user can be passed as an
-        argument, or attached to the group object itself so this can be called
-        from a template.'''
-        if user is None:
-            user = self.user
-        return user in (s.user for s in self.signoffs if not s.revoked)
-
 @permission_required('main.change_package')
 @never_cache
 def signoffs(request):
-    test_pkgs = Package.objects.normal().filter(repo__testing=True)
-    packages = test_pkgs.order_by('pkgname')
-
-    # Collect all pkgbase values in testing repos
-    q_pkgbase = test_pkgs.values('pkgbase')
-    package_repos = Package.objects.order_by().values_list(
-            'pkgbase', 'repo__name').filter(
-            repo__testing=False, repo__staging=False,
-            pkgbase__in=q_pkgbase).distinct()
-    pkgtorepo = dict(package_repos)
-
-    # Collect all existing signoffs for these packages
-    signoffs = get_current_signoffs()
-
-    same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
-    grouped = groupby_preserve_order(packages, same_pkgbase_key)
-    signoff_groups = []
-    for group in grouped:
-        signoff_group = PackageSignoffGroup(group, user=request.user)
-        signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
-                "Unknown")
-        signoff_group.find_signoffs(signoffs)
-        signoff_groups.append(signoff_group)
-
-    signoff_groups.sort(key=attrgetter('pkgbase'))
+    signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
+    for group in signoff_groups:
+        group.user = request.user
 
     context = {
         'signoff_groups': signoff_groups,

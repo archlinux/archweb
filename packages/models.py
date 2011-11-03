@@ -115,8 +115,11 @@ class Signoff(models.Model):
         return u'%s-%s' % (self.pkgver, self.pkgrel)
 
     def __unicode__(self):
-        return u'%s-%s: %s' % (
-                self.pkgbase, self.full_version, self.user)
+        revoked = u''
+        if self.revoked:
+            revoked = u' (revoked)'
+        return u'%s-%s: %s%s' % (
+                self.pkgbase, self.full_version, self.user, revoked)
 
 class PackageGroup(models.Model):
     '''

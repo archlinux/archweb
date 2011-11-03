@@ -1,12 +1,11 @@
-from collections import defaultdict
 from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Count, Max
 
-from main.models import Package
-from main.utils import cache_function
-from .models import PackageGroup, PackageRelation, Signoff
+from main.models import Package, Repo
+from main.utils import cache_function, groupby_preserve_order, PackageStandin
+from .models import PackageGroup, PackageRelation, SignoffSpecification, Signoff
 
 @cache_function(300)
 def get_group_info(include_arches=None):
@@ -148,8 +147,90 @@ SELECT DISTINCT id
             id__in=to_fetch)
     return relations
 
-def get_current_signoffs():
-    '''Returns a mapping of pkgbase -> signoff objects.'''
+
+DEFAULT_SIGNOFF_SPEC = SignoffSpecification()
+
+def approved_by_signoffs(signoffs, spec=DEFAULT_SIGNOFF_SPEC):
+    if signoffs:
+        good_signoffs = sum(1 for s in signoffs if not s.revoked)
+        return good_signoffs >= spec.required
+    return False
+
+class PackageSignoffGroup(object):
+    '''Encompasses all packages in testing with the same pkgbase.'''
+    def __init__(self, packages, user=None):
+        if len(packages) == 0:
+            raise Exception
+        self.packages = packages
+        self.user = user
+        self.target_repo = None
+        self.signoffs = set()
+        self.specification = DEFAULT_SIGNOFF_SPEC
+
+        first = packages[0]
+        self.pkgbase = first.pkgbase
+        self.arch = first.arch
+        self.repo = first.repo
+        self.version = ''
+        self.last_update = first.last_update
+        self.packager = first.packager
+
+        version = first.full_version
+        if all(version == pkg.full_version for pkg in packages):
+            self.version = version
+
+    @property
+    def package(self):
+        '''Try and return a relevant single package object representing this
+        group. Start by seeing if there is only one package, then look for the
+        matching package by name, finally falling back to a standin package
+        object.'''
+        if len(self.packages) == 1:
+            return self.packages[0]
+
+        same_pkgs = [p for p in self.packages if p.pkgname == p.pkgbase]
+        if same_pkgs:
+            return same_pkgs[0]
+
+        return PackageStandin(self.packages[0])
+
+    def find_signoffs(self, all_signoffs):
+        '''Look through a list of Signoff objects for ones matching this
+        particular group and store them on the object.'''
+        for s in all_signoffs:
+            if s.pkgbase != self.pkgbase:
+                continue
+            if self.version and not s.full_version == self.version:
+                continue
+            if s.arch_id == self.arch.id and s.repo_id == self.repo.id:
+                self.signoffs.add(s)
+
+    def approved(self):
+        return approved_by_signoffs(self.signoffs, self.specification)
+
+    @property
+    def completed(self):
+        return sum(1 for s in self.signoffs if not s.revoked)
+
+    @property
+    def required(self):
+        return self.specification.required
+
+    def user_signed_off(self, user=None):
+        '''Did a given user signoff on this package? user can be passed as an
+        argument, or attached to the group object itself so this can be called
+        from a template.'''
+        if user is None:
+            user = self.user
+        return user in (s.user for s in self.signoffs if not s.revoked)
+
+    def __unicode__(self):
+        return u'%s-%s (%s): %d' % (
+                self.pkgbase, self.version, self.arch, len(self.signoffs))
+
+def get_current_signoffs(repos):
+    '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
+    cursor = connection.cursor()
     sql = """
 SELECT DISTINCT s.id
     FROM packages_signoff s
@@ -162,14 +243,49 @@ SELECT DISTINCT s.id
         AND s.repo_id = p.repo_id
     )
     JOIN repos r ON p.repo_id = r.id
-    WHERE r.testing = %s
+    WHERE r.id IN (
 """
-    cursor = connection.cursor()
-    cursor.execute(sql, [True])
+    sql += ", ".join("%s" for r in repos)
+    sql += ")"
+    cursor.execute(sql, [r.id for r in repos])
+
     results = cursor.fetchall()
     # fetch all of the returned signoffs by ID
     to_fetch = [row[0] for row in results]
     signoffs = Signoff.objects.select_related('user').in_bulk(to_fetch)
     return signoffs.values()
+
+def get_target_repo_map(pkgbases):
+    package_repos = Package.objects.order_by().values_list(
+            'pkgbase', 'repo__name').filter(
+            repo__testing=False, repo__staging=False,
+            pkgbase__in=pkgbases).distinct()
+    return dict(package_repos)
+
+def get_signoff_groups(repos=None):
+    if repos is None:
+        repos = Repo.objects.filter(testing=True)
+
+    test_pkgs = Package.objects.normal().filter(repo__in=repos)
+    packages = test_pkgs.order_by('pkgname')
+
+    # Collect all pkgbase values in testing repos
+    q_pkgbase = test_pkgs.values('pkgbase')
+    pkgtorepo = get_target_repo_map(q_pkgbase)
+
+    # Collect all existing signoffs for these packages
+    signoffs = get_current_signoffs(repos)
+
+    same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
+    grouped = groupby_preserve_order(packages, same_pkgbase_key)
+    signoff_groups = []
+    for group in grouped:
+        signoff_group = PackageSignoffGroup(group)
+        signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
+                "Unknown")
+        signoff_group.find_signoffs(signoffs)
+        signoff_groups.append(signoff_group)
+
+    return signoff_groups
 
 # vim: set ts=4 sw=4 et:

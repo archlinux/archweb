@@ -5,8 +5,8 @@
 </ul>
 {% if group.user_signed_off %}
 <div><a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/revoke/"
-        title="Revoke signoff {{ group.package.pkgname }} for {{ group.package.arch }}">Revoke Signoff</a></div>
+        title="Revoke signoff {{ group.pkgbase }} for {{ group.arch }}">Revoke Signoff</a></div>
 {% else %}
 <div><a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/"
-        title="Signoff {{ group.package.pkgname }} for {{ group.package.arch }}">Signoff</a></div>
+        title="Signoff {{ group.pkgbase }} for {{ group.arch }}">Signoff</a></div>
 {% endif %}

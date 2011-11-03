@@ -34,6 +34,7 @@
                 <th>Package Base/Version</th>
                 <th>Arch</th>
                 <th>Target Repo</th>
+                <th>Packager</th>
                 <th># of Packages</th>
                 <th>Last Updated</th>
                 <th>Approved</th>
@@ -42,18 +43,17 @@
         </thead>
         <tbody id="tbody_signoffs">
             {% for group in signoff_groups %}
-            {% with group.package as pkg %}
-            <tr class="{% cycle 'odd' 'even' %} {{ pkg.arch.name }}">
-                <td>{% pkg_details_link pkg %} {{ pkg.full_version }}</td>
-                <td>{{ pkg.arch.name }}</td>
+            <tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }}">
+                <td>{% pkg_details_link group.package %} {{ group.version }}</td>
+                <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
+                <td>{{ group.packager|default:"Unknown" }}</td>
                 <td>{{ group.packages|length }}</td>
-                <td>{{ pkg.last_update|date }}</td>
+                <td>{{ group.last_update|date }}</td>
                 <td class="signoff-{{ group.approved|yesno }}">
                     {{ group.approved|yesno|capfirst }}</td>
                 <td>{% include "packages/signoff_cell.html" %}</td>
             </tr>
-            {% endwith %}
             {% endfor %}
         </tbody>
     </table>
