@@ -80,9 +80,9 @@ def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
             'username').select_related('userprofile')
 
-    # now annotate each dev object with their current time
     now = datetime.now()
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    # now annotate each dev object with their current time
     for dev in devs:
         tz = pytz.timezone(dev.userprofile.time_zone)
         dev.current_time = utc_now.astimezone(tz)
@@ -147,12 +147,12 @@ def report(request, report, username=None):
 
     if report == 'old':
         title = 'Packages last built more than two years ago'
-        cutoff = datetime.now() - timedelta(days=365 * 2)
+        cutoff = datetime.utcnow() - timedelta(days=365 * 2)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
     elif report == 'long-out-of-date':
         title = 'Packages marked out-of-date more than 90 days ago'
-        cutoff = datetime.now() - timedelta(days=90)
+        cutoff = datetime.utcnow() - timedelta(days=90)
         packages = packages.filter(
                 flag_date__lt=cutoff).order_by('flag_date')
     elif report == 'big':
