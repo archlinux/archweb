@@ -12,42 +12,46 @@
     <p>{{ signoff_groups|length }} signoff group{{ signoff_groups|pluralize }} found.
     A "signoff group" consists of packages grouped by pkgbase, architecture, and repository.</p>
 
+    <div class="box filter-criteria">
+        <h3>Filter Displayed Signoffs</h3>
+        <form id="signoffs_filter" method="post" action=".">
+        <fieldset>
+            <legend>Select filter criteria</legend>
+            {% for arch in arches %}
+            <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
+                <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
+            {% endfor %}
+            <div><label for="id_pending" title="Packages with not enough signoffs">Only Pending Approval</label>
+                <input type="checkbox" name="pending" id="id_pending" value="pending"/></div>
+            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+        </fieldset>
+        </form>
+    </div>
+
     <table id="signoffs" class="results">
         <thead>
             <tr>
+                <th>Package Base/Version</th>
                 <th>Arch</th>
-                <th>Package Base</th>
-                <th># of Packages</th>
-                <th>Version</th>
-                <th>Last Updated</th>
                 <th>Target Repo</th>
+                <th># of Packages</th>
+                <th>Last Updated</th>
                 <th>Approved</th>
-                <th>Signoff</th>
+                <th>Signoffs</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbody_signoffs">
             {% for group in signoff_groups %}
             {% with group.package as pkg %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr class="{% cycle 'odd' 'even' %} {{ pkg.arch.name }}">
+                <td>{% pkg_details_link pkg %} {{ pkg.full_version }}</td>
                 <td>{{ pkg.arch.name }}</td>
-                <td>{% pkg_details_link pkg %}</td>
-                <td>{{ group.packages|length }}</td>
-                <td>{{ pkg.full_version }}</td>
-                <td>{{ pkg.last_update|date }}</td>
                 <td>{{ group.target_repo }}</td>
+                <td>{{ group.packages|length }}</td>
+                <td>{{ pkg.last_update|date }}</td>
                 <td class="signoff-{{ group.approved|yesno }}">
                     {{ group.approved|yesno|capfirst }}</td>
-                <td>
-                    <ul>
-                        <li><a class="signoff-link" href="{{ pkg.get_absolute_url }}signoff/"
-                            title="Signoff {{ pkg.pkgname }} for {{ pkg.arch }}">Signoff</a>
-                        </li>
-                        {% for signoff in group.signoffs %}
-                        <li class="signed-username" title="Signed off by {{ signoff.user }}">
-                        {{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
+                <td>{% include "packages/signoff_cell.html" %}</td>
             </tr>
             {% endwith %}
             {% endfor %}
@@ -60,8 +64,12 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('a.signoff-link').click(signoff_package);
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0]],
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0]],
         headers: { 6: { sorter: false } } });
+    $('#signoffs_filter input').change(filter_signoffs);
+    $('#criteria_reset').click(filter_signoffs_reset);
+    // fire function on page load to ensure the current form selections take effect
+    filter_signoffs();
 });
 </script>
 {% endblock %}

@@ -65,7 +65,7 @@ $(document).ready(function() {
     $('.results').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
     $('#diff_filter select').change(filter_packages);
     $('#diff_filter input').change(filter_packages);
-    $('#criteria_reset').click(filter_reset);
+    $('#criteria_reset').click(filter_differences_reset);
     // fire function on page load to ensure the current form selections take effect
     filter_packages();
 });

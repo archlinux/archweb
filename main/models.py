@@ -7,7 +7,6 @@ from django.forms import ValidationError
 
 from main.utils import cache_function, make_choice, set_created_field
 from packages.models import PackageRelation
-from packages.models import Signoff as PackageSignoff
 
 from datetime import datetime
 from itertools import groupby
@@ -212,16 +211,6 @@ class Package(models.Model):
         return User.objects.filter(
                 package_relations__pkgbase=self.pkgbase,
                 package_relations__type=PackageRelation.MAINTAINER)
-
-    @property
-    def signoffs(self):
-        return PackageSignoff.objects.select_related('user').filter(
-            pkgbase=self.pkgbase, pkgver=self.pkgver, pkgrel=self.pkgrel,
-            epoch=self.epoch, arch=self.arch, repo=self.repo)
-
-    def approved_for_signoff(self):
-        count = self.signoffs.filter(revoked__isnull=True).count()
-        return count >= PackageSignoff.REQUIRED
 
     @cache_function(300)
     def applicable_arches(self):

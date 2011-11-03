@@ -38,6 +38,49 @@ class PackageRelation(models.Model):
     class Meta:
         unique_together = (('pkgbase', 'user', 'type'),)
 
+class SignoffSpecification(models.Model):
+    '''
+    A specification for the signoff policy for this particular revision of a
+    pakcage. The default is requiring two signoffs for a given package. These
+    are created only if necessary; e.g., if one wanted to override the
+    required=2 attribute, otherwise a sane default object is used.
+    '''
+    pkgbase = models.CharField(max_length=255, db_index=True)
+    pkgver = models.CharField(max_length=255)
+    pkgrel = models.CharField(max_length=255)
+    epoch = models.PositiveIntegerField(default=0)
+    arch = models.ForeignKey('main.Arch')
+    repo = models.ForeignKey('main.Repo')
+    user = models.ForeignKey(User)
+    created = models.DateTimeField(editable=False)
+    required = models.PositiveIntegerField(default=2)
+    enabled = models.BooleanField(default=True)
+    known_bad = models.BooleanField(default=False)
+    comments = models.TextField(null=True, blank=True)
+
+class SignoffManager(models.Manager):
+    def get_from_package(self, pkg, user, revoked=False):
+        '''Utility method to pull all relevant name-version fields from a
+        package and create a matching signoff.'''
+        not_revoked = not revoked
+        return Signoff.objects.get(
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
+                revoked__isnull=not_revoked, user=user)
+
+    def get_or_create_from_package(self, pkg, user):
+        '''Utility method to pull all relevant name-version fields from a
+        package and create a matching signoff.'''
+        return Signoff.objects.get_or_create(
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
+                revoked=None, user=user)
+
+    def for_package(self, pkg):
+        return self.select_related('user').filter(
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+
 class Signoff(models.Model):
     '''
     A signoff for a package (by pkgbase) at a given point in time. These are
@@ -55,7 +98,7 @@ class Signoff(models.Model):
     revoked = models.DateTimeField(null=True)
     comments = models.TextField(null=True, blank=True)
 
-    REQUIRED = 2
+    objects = SignoffManager()
 
     @property
     def packages(self):

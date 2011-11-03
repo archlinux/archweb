@@ -25,7 +25,7 @@ from urllib import urlencode
 from main.models import Package, PackageFile, Arch, Repo
 from main.utils import make_choice, groupby_preserve_order, PackageStandin
 from mirrors.models import MirrorUrl
-from .models import PackageRelation, PackageGroup, Signoff
+from .models import PackageRelation, PackageGroup, SignoffSpecification, Signoff
 from .utils import (get_group_info, get_differences_info,
         get_wrong_permissions, get_current_signoffs)
 
@@ -369,14 +369,24 @@ def unflag_all(request, name, repo, arch):
     pkgs.update(flag_date=None)
     return redirect(pkg)
 
+DEFAULT_SIGNOFF_SPEC = SignoffSpecification(required=2)
+
+def approved_by_signoffs(signoffs, spec=DEFAULT_SIGNOFF_SPEC):
+    if signoffs:
+        good_signoffs = sum(1 for s in signoffs if not s.revoked)
+        return good_signoffs >= spec.required
+    return False
+
 class PackageSignoffGroup(object):
     '''Encompasses all packages in testing with the same pkgbase.'''
-    def __init__(self, packages, target_repo=None, signoffs=None):
+    def __init__(self, packages, user=None):
         if len(packages) == 0:
             raise Exception
         self.packages = packages
-        self.target_repo = target_repo
-        self.signoffs = signoffs
+        self.user = user
+        self.target_repo = None
+        self.signoffs = set()
+        self.specification = DEFAULT_SIGNOFF_SPEC
 
         first = packages[0]
         self.pkgbase = first.pkgbase
@@ -406,21 +416,24 @@ class PackageSignoffGroup(object):
     def find_signoffs(self, all_signoffs):
         '''Look through a list of Signoff objects for ones matching this
         particular group and store them on the object.'''
-        if self.signoffs is None:
-            self.signoffs = []
         for s in all_signoffs:
             if s.pkgbase != self.pkgbase:
                 continue
             if self.version and not s.full_version == self.version:
                 continue
             if s.arch_id == self.arch.id and s.repo_id == self.repo.id:
-                self.signoffs.append(s)
+                self.signoffs.add(s)
 
     def approved(self):
-        if self.signoffs:
-            good_signoffs = [s for s in self.signoffs if not s.revoked]
-            return len(good_signoffs) >= Signoff.REQUIRED
-        return False
+        return approved_by_signoffs(self.signoffs, self.specification)
+
+    def user_signed_off(self, user=None):
+        '''Did a given user signoff on this package? user can be passed as an
+        argument, or attached to the group object itself so this can be called
+        from a template.'''
+        if user is None:
+            user = self.user
+        return user in (s.user for s in self.signoffs if not s.revoked)
 
 @permission_required('main.change_package')
 @never_cache
@@ -443,7 +456,7 @@ def signoffs(request):
     grouped = groupby_preserve_order(packages, same_pkgbase_key)
     signoff_groups = []
     for group in grouped:
-        signoff_group = PackageSignoffGroup(group)
+        signoff_group = PackageSignoffGroup(group, user=request.user)
         signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
                 "Unknown")
         signoff_group.find_signoffs(signoffs)
@@ -451,27 +464,43 @@ def signoffs(request):
 
     signoff_groups.sort(key=attrgetter('pkgbase'))
 
-    return direct_to_template(request, 'packages/signoffs.html',
-            {'signoff_groups': signoff_groups})
+    context = {
+        'signoff_groups': signoff_groups,
+        'arches': Arch.objects.all(),
+    }
+    return direct_to_template(request, 'packages/signoffs.html', context)
 
 @permission_required('main.change_package')
 @never_cache
-def signoff_package(request, name, repo, arch):
+def signoff_package(request, name, repo, arch, revoke=False):
     packages = get_list_or_404(Package, pkgbase=name,
             arch__name=arch, repo__name__iexact=repo, repo__testing=True)
 
-    pkg = packages[0]
-    signoff, created = Signoff.objects.get_or_create(
-            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo, user=request.user)
+    package = packages[0]
+
+    if revoke:
+        try:
+            signoff = Signoff.objects.get_from_package(
+                    package, request.user, False)
+        except Signoff.DoesNotExist:
+            raise Http404
+        signoff.revoked = datetime.utcnow()
+        signoff.save()
+        created = False
+    else:
+        signoff, created = Signoff.objects.get_or_create_from_package(
+                package, request.user)
+
+    all_signoffs = Signoff.objects.for_package(package)
 
     if request.is_ajax():
         data = {
             'created': created,
-            'approved': pkg.approved_for_signoff(),
+            'revoked': bool(signoff.revoked),
+            'approved': approved_by_signoffs(all_signoffs),
             'user': str(request.user),
         }
-        return HttpResponse(simplejson.dumps(data),
+        return HttpResponse(simplejson.dumps(data, ensure_ascii=False),
                 mimetype='application/json')
 
     return redirect('package-signoffs')

@@ -139,7 +139,7 @@ function ajaxifyFiles() {
 
 /* packages/differences.html */
 function filter_packages() {
-    // start with all rows, and then remove ones we shouldn't show
+    /* start with all rows, and then remove ones we shouldn't show */
     var rows = $('#tbody_differences').children();
     var all_rows = rows;
     if (!$('#id_multilib').is(':checked')) {
@@ -150,12 +150,12 @@ function filter_packages() {
         rows = rows.filter('.' + arch);
     }
     if (!$('#id_minor').is(':checked')) {
-        // this check is done last because it is the most expensive
+        /* this check is done last because it is the most expensive */
         var pat = /(.*)-(.+)/;
         rows = rows.filter(function(index) {
             var cells = $(this).children('td');
 
-            // all this just to get the split version out of the table cell
+            /* all this just to get the split version out of the table cell */
             var ver_a = cells.eq(2).find('span').text().match(pat);
             if (!ver_a) {
                 return true;
@@ -166,26 +166,26 @@ function filter_packages() {
                 return true;
             }
 
-            // first check pkgver
+            /* first check pkgver */
             if (ver_a[1] !== ver_b[1]) {
                 return true;
             }
-            // pkgver matched, so see if rounded pkgrel matches
+            /* pkgver matched, so see if rounded pkgrel matches */
             if (Math.floor(parseFloat(ver_a[2])) ===
                     Math.floor(parseFloat(ver_b[2]))) {
                 return false;
             }
-            // pkgrel didn't match, so keep the row
+            /* pkgrel didn't match, so keep the row */
             return true;
         });
     }
-    // hide all rows, then show the set we care about
+    /* hide all rows, then show the set we care about */
     all_rows.hide();
     rows.show();
-    // make sure we update the odd/even styling from sorting
+    /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets');
 }
-function filter_reset() {
+function filter_packages_reset() {
     $('#id_archonly').val('both');
     $('#id_multilib').removeAttr('checked');
     $('#id_minor').removeAttr('checked');
@@ -213,24 +213,70 @@ function todolist_flag() {
 function signoff_package() {
     var link = this;
     $.getJSON(link.href, function(data) {
+        link = $(link);
+        var signoff = null;
         if (data.created) {
-            var signoff = $('<li>').addClass('signed-username').text(data.user);
-            $(link).append(signoff);
+            signoff = $('<li>').addClass('signed-username').text(data.user);
+            link.closest('td').children('ul').append(signoff);
+        } else if(data.user) {
+            signoff = link.closest('td').find('li').filter(function(index) {
+                return $(this).text() == data.user;
+            });
+        }
+        console.log(signoff, data.revoked, data.user);
+        if (signoff && data.revoked) {
+            signoff.text(signoff.text() + ' (revoked)');
         }
         /* update the approved column to reflect reality */
         var approved;
         if (data.approved) {
-            approved = $(link).closest('tr').children('.signoff-no');
+            approved = link.closest('tr').children('.signoff-no');
             approved.text('Yes').addClass(
                 'signoff-yes').removeClass('signoff-no');
         } else {
-            approved = $(link).closest('tr').children('.signoff-yes');
+            approved = link.closest('tr').children('.signoff-yes');
             approved.text('No').addClass(
                 'signoff-no').removeClass('signoff-yes');
+        }
+        link.removeAttr('title');
+        /* Form our new link. The current will be something like
+         * '/packages/repo/arch/package/...' */
+        var base_href = link.attr('href').split('/').slice(0, 5).join('/');
+        if (data.revoked) {
+            link.text('Signoff');
+            link.attr('href', base_href + '/signoff/');
+        } else {
+            link.text('Revoke Signoff');
+            link.attr('href', base_href + '/signoff/revoke/');
         }
         $('.results').trigger('updateCell', approved);
     });
     return false;
+}
+
+function filter_signoffs() {
+    /* start with all rows, and then remove ones we shouldn't show */
+    var rows = $('#tbody_signoffs').children();
+    var all_rows = rows;
+    $('#signoffs_filter .arch_filter').each(function() {
+        if (!$(this).is(':checked')) {
+            console.log($(this).val());
+            rows = rows.not('.' + $(this).val());
+        }
+    });
+    if ($('#id_pending').is(':checked')) {
+        rows = rows.has('td.signoff-no');
+    }
+    /* hide all rows, then show the set we care about */
+    all_rows.hide();
+    rows.show();
+    /* make sure we update the odd/even styling from sorting */
+    $('.results').trigger('applyWidgets');
+}
+function filter_signoffs_reset() {
+    $('#signoffs_filter .arch_filter').attr('checked', 'checked');
+    $('#id_pending').removeAttr('checked');
+    filter_signoffs();
 }
 
 /* visualizations */
