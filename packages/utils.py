@@ -156,6 +156,7 @@ def attach_maintainers(packages):
     '''Given a queryset or something resembling it of package objects, find all
     the maintainers and attach them to the packages to prevent N+1 query
     cascading.'''
+    packages = list(packages)
     pkgbases = set(p.pkgbase for p in packages)
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
             pkgbase__in=pkgbases).values_list('pkgbase', 'user_id').distinct()

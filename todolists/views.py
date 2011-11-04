@@ -12,6 +12,7 @@ from django.template import Context, loader
 from django.utils import simplejson
 
 from main.models import Todolist, TodolistPkg, Package
+from packages.utils import attach_maintainers
 from .utils import get_annotated_todolists
 
 class TodoListForm(forms.ModelForm):
@@ -49,6 +50,9 @@ def flag(request, listid, pkgid):
 @never_cache
 def view(request, listid):
     todolist = get_object_or_404(Todolist, id=listid)
+    # we don't hold onto the result, but the objects are the same here,
+    # so accessing maintainers in the template is now cheap
+    attach_maintainers(tp.pkg for tp in todolist.packages)
     return direct_to_template(request, 'todolists/view.html', {'list': todolist})
 
 @login_required
@@ -163,8 +167,10 @@ def send_todolist_emails(todo_list, new_packages):
 
 def public_list(request):
     todo_lists = Todolist.objects.incomplete()
+    # total hackjob, but it makes this a lot less query-intensive.
+    all_pkgs = [tp for tl in todo_lists for tp in tl.packages]
+    attach_maintainers([tp.pkg for tp in all_pkgs])
     return direct_to_template(request, "todolists/public_list.html",
             {"todo_lists": todo_lists})
-
 
 # vim: set ts=4 sw=4 et:

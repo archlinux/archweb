@@ -460,12 +460,17 @@ class Todolist(models.Model):
     def __unicode__(self):
         return self.name
 
+    _packages = None
+
     @property
     def packages(self):
-        # select_related() does not use LEFT OUTER JOIN for nullable ForeignKey
-        # fields. That is why we need to explicitly list the ones we want.
-        return TodolistPkg.objects.select_related(
-            'pkg__repo', 'pkg__arch').filter(list=self).order_by('pkg')
+        if not self._packages:
+            # select_related() does not use LEFT OUTER JOIN for nullable
+            # ForeignKey fields. That is why we need to explicitly list the
+            # ones we want.
+            self._packages = TodolistPkg.objects.select_related(
+                'pkg__repo', 'pkg__arch').filter(list=self).order_by('pkg')
+        return self._packages
 
     @property
     def package_names(self):
