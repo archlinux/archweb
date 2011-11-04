@@ -17,7 +17,7 @@
         title="Signoff {{ group.pkgbase }} for {{ group.arch }}">Signoff</a></div>
 {% endif %}
 {% endif %}
-{% if group.packager == user %}
+{% if user == group.packager or user in group.maintainers %}
 <div>
     <a class="signoff-options" href="{{ group.package.get_absolute_url }}signoff/options/">Signoff Options</a>
 </div>

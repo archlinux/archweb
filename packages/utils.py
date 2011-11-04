@@ -2,6 +2,7 @@ from operator import itemgetter
 
 from django.db import connection
 from django.db.models import Count, Max
+from django.contrib.auth.models import User
 
 from main.models import Package, Repo
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
@@ -172,6 +173,9 @@ class PackageSignoffGroup(object):
         self.version = ''
         self.last_update = first.last_update
         self.packager = first.packager
+        self.maintainers = User.objects.filter(
+                package_relations__type=PackageRelation.MAINTAINER,
+                package_relations__pkgbase=self.pkgbase)
 
         self.specification = \
                 SignoffSpecification.objects.get_or_default_from_package(first)
