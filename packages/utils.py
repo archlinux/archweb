@@ -248,8 +248,7 @@ SELECT DISTINCT s.id
         AND s.arch_id = p.arch_id
         AND s.repo_id = p.repo_id
     )
-    JOIN repos r ON p.repo_id = r.id
-    WHERE r.id IN (
+    WHERE p.repo_id IN (
 """
     sql += ", ".join("%s" for r in repos)
     sql += ")"
@@ -264,15 +263,16 @@ SELECT DISTINCT s.id
 def get_target_repo_map(pkgbases):
     package_repos = Package.objects.order_by().values_list(
             'pkgbase', 'repo__name').filter(
-            repo__testing=False, repo__staging=False,
             pkgbase__in=pkgbases).distinct()
     return dict(package_repos)
 
 def get_signoff_groups(repos=None):
     if repos is None:
         repos = Repo.objects.filter(testing=True)
+    repo_ids = [r.pk for r in repos]
 
-    test_pkgs = Package.objects.normal().filter(repo__in=repos)
+    test_pkgs = Package.objects.select_related(
+            'arch', 'repo', 'packager').filter(repo__in=repo_ids)
     packages = test_pkgs.order_by('pkgname')
 
     # Collect all pkgbase values in testing repos
