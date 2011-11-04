@@ -11,9 +11,11 @@
     <a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/revoke/"
         title="Revoke signoff {{ group.pkgbase }} for {{ group.arch }}">Revoke Signoff</a></div>
 {% else %}
+{% if not group.specification.known_bad and group.specification.enabled %}
 <div>
     <a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/"
         title="Signoff {{ group.pkgbase }} for {{ group.arch }}">Signoff</a></div>
+{% endif %}
 {% endif %}
 {% if group.packager == user %}
 <div>

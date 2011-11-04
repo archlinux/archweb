@@ -5,7 +5,8 @@ from django.db.models import Count, Max
 
 from main.models import Package, Repo
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
-from .models import PackageGroup, PackageRelation, SignoffSpecification, Signoff
+from .models import (PackageGroup, PackageRelation,
+        SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
 
 @cache_function(300)
 def get_group_info(include_arches=None):
@@ -148,9 +149,7 @@ SELECT DISTINCT id
     return relations
 
 
-DEFAULT_SIGNOFF_SPEC = SignoffSpecification()
-
-def approved_by_signoffs(signoffs, spec=DEFAULT_SIGNOFF_SPEC):
+def approved_by_signoffs(signoffs, spec):
     if signoffs:
         good_signoffs = sum(1 for s in signoffs if not s.revoked)
         return good_signoffs >= spec.required
@@ -158,14 +157,13 @@ def approved_by_signoffs(signoffs, spec=DEFAULT_SIGNOFF_SPEC):
 
 class PackageSignoffGroup(object):
     '''Encompasses all packages in testing with the same pkgbase.'''
-    def __init__(self, packages, user=None):
+    def __init__(self, packages):
         if len(packages) == 0:
             raise Exception
         self.packages = packages
-        self.user = user
+        self.user = None
         self.target_repo = None
         self.signoffs = set()
-        self.specification = DEFAULT_SIGNOFF_SPEC
 
         first = packages[0]
         self.pkgbase = first.pkgbase
@@ -174,6 +172,10 @@ class PackageSignoffGroup(object):
         self.version = ''
         self.last_update = first.last_update
         self.packager = first.packager
+
+        self.specification = \
+                SignoffSpecification.objects.get_or_default_from_package(first)
+        self.default_spec = self.specification is DEFAULT_SIGNOFF_SPEC
 
         version = first.full_version
         if all(version == pkg.full_version for pkg in packages):

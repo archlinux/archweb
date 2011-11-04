@@ -39,6 +39,7 @@
                 <th>Last Updated</th>
                 <th>Approved</th>
                 <th>Signoffs</th>
+                <th>Notes</th>
             </tr>
         </thead>
         <tbody id="tbody_signoffs">
@@ -50,8 +51,22 @@
                 <td>{{ group.packager|default:"Unknown" }}</td>
                 <td>{{ group.packages|length }}</td>
                 <td>{{ group.last_update|date }}</td>
-                <td class="signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
+                {% if group.specification.known_bad %}
+                <td class="approval signoff-bad">Bad</td>
+                {% else %}
+                {% if not group.specification.enabled %}
+                <td class="approval signoff-disabled">Disabled</td>
+                {% else %}
+                <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
+                {% endif %}
+                {% endif %}
                 <td>{% include "packages/signoff_cell.html" %}</td>
+                <td class="wrap">{% if not group.default_spec %}{% with group.specification as spec %}
+                    {% if spec.required != 2 %}Required signoffs: {{ spec.required }}<br/>{% endif %}
+                    {% if not spec.enabled %}Signoffs are not currently enabled<br/>{% endif %}
+                    {% if spec.known_bad %}Package is known to be bad<br/>{% endif %}
+                    {{ spec.comments|default:""|linebreaks }}
+                {% endwith %}{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -64,7 +79,7 @@
 $(document).ready(function() {
     $('a.signoff-link').click(signoff_package);
     $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0]],
-        headers: { 7: { sorter: false } } });
+        headers: { 7: { sorter: false }, 8: {sorter: false } } });
     $('#signoffs_filter input').change(filter_signoffs);
     $('#criteria_reset').click(filter_signoffs_reset);
     // fire function on page load to ensure the current form selections take effect

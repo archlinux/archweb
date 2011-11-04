@@ -7,8 +7,9 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
-from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, get_list_or_404, redirect
+from django.http import HttpResponse, Http404, HttpResponseForbidden
+from django.shortcuts import (get_object_or_404, get_list_or_404,
+        redirect, render)
 from django.template import loader, Context
 from django.utils import simplejson
 from django.views.decorators.cache import never_cache
@@ -404,12 +405,16 @@ def signoff_package(request, name, repo, arch, revoke=False):
                 package, request.user)
 
     all_signoffs = Signoff.objects.for_package(package)
+    spec = SignoffSpecification.objects.get_or_default_from_package(package)
 
     if request.is_ajax():
         data = {
             'created': created,
             'revoked': bool(signoff.revoked),
-            'approved': approved_by_signoffs(all_signoffs),
+            'approved': approved_by_signoffs(all_signoffs, spec),
+            'required': spec.required,
+            'enabled': spec.enabled,
+            'known_bad': spec.known_bad,
             'user': str(request.user),
         }
         return HttpResponse(simplejson.dumps(data, ensure_ascii=False),
@@ -429,7 +434,9 @@ def signoff_options(request, name, repo, arch):
             arch__name=arch, repo__name__iexact=repo, repo__testing=True)
     package = packages[0]
 
-    # TODO ensure submitter is maintainer and/or packager
+    if request.user != package.packager and \
+            request.user not in package.maintainers:
+        return render(request, '403.html', status=403)
 
     try:
         spec = SignoffSpecification.objects.get_from_package(package)

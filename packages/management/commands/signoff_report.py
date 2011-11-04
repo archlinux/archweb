@@ -56,6 +56,8 @@ def generate_report(email, repo_name):
     # Collect all existing signoffs for these packages
     signoff_groups = sorted(get_signoff_groups([repo]),
             key=attrgetter('target_repo', 'arch', 'pkgbase'))
+    disabled = []
+    bad = []
     complete = []
     incomplete = []
     new = []
@@ -68,10 +70,16 @@ def generate_report(email, repo_name):
     old_cutoff = now - timedelta(days=old_days)
 
     for group in signoff_groups:
-        if group.approved():
+        spec = group.specification
+        if spec.known_bad:
+            bad.append(group)
+        elif not spec.enabled:
+            disabled.append(group)
+        elif group.approved():
             complete.append(group)
         else:
             incomplete.append(group)
+
         if group.package.last_update > new_cutoff:
             new.append(group)
         if group.package.last_update < old_cutoff:
@@ -96,6 +104,9 @@ def generate_report(email, repo_name):
     c = Context({
         'repo': repo,
         'signoffs_url': signoffs_url,
+        'disabled': disabled,
+        'bad': bad,
+        'all': signoff_groups,
         'incomplete': incomplete,
         'complete': complete,
         'new': new,

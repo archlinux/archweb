@@ -215,28 +215,33 @@ function signoff_package() {
     $.getJSON(link.href, function(data) {
         link = $(link);
         var signoff = null;
+        var cell = link.closest('td');
         if (data.created) {
             signoff = $('<li>').addClass('signed-username').text(data.user);
-            link.closest('td').children('ul').append(signoff);
+            var list = cell.children('ul');
+            if (list.size() == 0) {
+                list = $('<ul>').prependTo(cell);
+            }
+            list.append(signoff);
         } else if(data.user) {
             signoff = link.closest('td').find('li').filter(function(index) {
                 return $(this).text() == data.user;
             });
         }
-        console.log(signoff, data.revoked, data.user);
         if (signoff && data.revoked) {
             signoff.text(signoff.text() + ' (revoked)');
         }
         /* update the approved column to reflect reality */
-        var approved;
-        if (data.approved) {
-            approved = link.closest('tr').children('.signoff-no');
-            approved.text('Yes').addClass(
-                'signoff-yes').removeClass('signoff-no');
+        var approved = link.closest('tr').children('.approval');
+        approved.attr('class', '');
+        if (data.known_bad) {
+            approved.text('Bad').addClass('signoff-bad');
+        } else if (!data.enabled) {
+            approved.text('Disabled').addClass('signoff-disabled');
+        } else if (data.approved) {
+            approved.text('Yes').addClass('signoff-yes');
         } else {
-            approved = link.closest('tr').children('.signoff-yes');
-            approved.text('No').addClass(
-                'signoff-no').removeClass('signoff-yes');
+            approved.text('No').addClass('signoff-no');
         }
         link.removeAttr('title');
         /* Form our new link. The current will be something like
@@ -245,6 +250,10 @@ function signoff_package() {
         if (data.revoked) {
             link.text('Signoff');
             link.attr('href', base_href + '/signoff/');
+            /* should we be hiding the link? */
+            if (data.known_bad || !data.enabled) {
+                link.remove();
+            }
         } else {
             link.text('Revoke Signoff');
             link.attr('href', base_href + '/signoff/revoke/');
@@ -260,7 +269,6 @@ function filter_signoffs() {
     var all_rows = rows;
     $('#signoffs_filter .arch_filter').each(function() {
         if (!$(this).is(':checked')) {
-            console.log($(this).val());
             rows = rows.not('.' + $(this).val());
         }
     });

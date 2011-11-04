@@ -914,8 +914,12 @@ ul.admin-actions {
     color: red;
 }
 
-#dev-signoffs .signed-username {
-    color: #888;
+#dev-signoffs .signoff-bad {
+    color: darkorange;
+}
+
+#dev-signoffs .signoff-disabled {
+    color: gray;
 }
 
 /* iso testing feedback form */

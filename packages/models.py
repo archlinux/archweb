@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
@@ -42,22 +44,26 @@ class PackageRelation(models.Model):
 class SignoffSpecificationManager(models.Manager):
     def get_from_package(self, pkg):
         '''Utility method to pull all relevant name-version fields from a
-        package and get a matching specification.'''
+        package and get a matching signoff specification.'''
         return self.get(
                 pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
                 epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
 
-    def get_or_create_from_package(self, pkg):
-        '''Utility method to pull all relevant name-version fields from a
-        package and get or create a matching specification.'''
-        return self.get_or_create(
-                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+    def get_or_default_from_package(self, pkg):
+        '''utility method to pull all relevant name-version fields from a
+        package and get a matching signoff specification, or return the default
+        base case.'''
+        try:
+            return self.get(
+                    pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                    epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+        except SignoffSpecification.DoesNotExist:
+            return DEFAULT_SIGNOFF_SPEC
 
 class SignoffSpecification(models.Model):
     '''
     A specification for the signoff policy for this particular revision of a
-    pakcage. The default is requiring two signoffs for a given package. These
+    package. The default is requiring two signoffs for a given package. These
     are created only if necessary; e.g., if one wanted to override the
     required=2 attribute, otherwise a sane default object is used.
     '''
@@ -87,6 +93,12 @@ class SignoffSpecification(models.Model):
 
     def __unicode__(self):
         return u'%s-%s' % (self.pkgbase, self.full_version)
+
+
+# fake default signoff spec when we don't have a persisted one in the database
+FakeSignoffSpecification = namedtuple('FakeSignoffSpecification',
+        ('required', 'enabled', 'known_bad', 'comments'))
+DEFAULT_SIGNOFF_SPEC = FakeSignoffSpecification(2, True, False, u'')
 
 
 class SignoffManager(models.Manager):

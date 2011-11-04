@@ -1,6 +1,19 @@
 === {% autoescape off %}Signoff report for [{{ repo|lower }}] ===
 {{ signoffs_url }}
 
+There are currently:
+* {{ new|length }} new package{{ new|length|pluralize }} in last {{ new_hours }} hours
+* {{ bad|length }} known bad package{{ bad|length|pluralize }}
+* {{ disabled|length }} package{{ disabled|length|pluralize }} not accepting signoffs
+* {{ complete|length }} fully signed off package{{ complete|length|pluralize }}
+* {{ incomplete|length }} package{{ incomplete|length|pluralize }} missing signoffs
+* {{ old|length }} package{{ old|length|pluralize }} older than {{ old_days }} days
+
+(Note: the word 'package' as used here refers to packages as grouped by
+pkgbase, architecture, and repository; e.g., one PKGBUILD produces one
+package per architecture, even if it is a split package.)
+
+
 == New packages in [{{ repo|lower}}] in last {{ new_hours }} hours ({{ new|length }} total) ==
 {% for group in new %}
 * {{ group.pkgbase }}-{{ group.version }} ({{ group.arch }}){% endfor %}
