@@ -38,6 +38,22 @@ class PackageRelation(models.Model):
     class Meta:
         unique_together = (('pkgbase', 'user', 'type'),)
 
+
+class SignoffSpecificationManager(models.Manager):
+    def get_from_package(self, pkg):
+        '''Utility method to pull all relevant name-version fields from a
+        package and get a matching specification.'''
+        return self.get(
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+
+    def get_or_create_from_package(self, pkg):
+        '''Utility method to pull all relevant name-version fields from a
+        package and get or create a matching specification.'''
+        return self.get_or_create(
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+
 class SignoffSpecification(models.Model):
     '''
     A specification for the signoff policy for this particular revision of a
@@ -53,25 +69,40 @@ class SignoffSpecification(models.Model):
     repo = models.ForeignKey('main.Repo')
     user = models.ForeignKey(User)
     created = models.DateTimeField(editable=False)
-    required = models.PositiveIntegerField(default=2)
-    enabled = models.BooleanField(default=True)
-    known_bad = models.BooleanField(default=False)
+    required = models.PositiveIntegerField(default=2,
+        help_text="How many signoffs are required for this package?")
+    enabled = models.BooleanField(default=True,
+        help_text="Is this package eligible for signoffs?")
+    known_bad = models.BooleanField(default=False,
+        help_text="Is package is known to be broken in some way?")
     comments = models.TextField(null=True, blank=True)
+
+    objects = SignoffSpecificationManager()
+
+    @property
+    def full_version(self):
+        if self.epoch > 0:
+            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return u'%s-%s' % (self.pkgver, self.pkgrel)
+
+    def __unicode__(self):
+        return u'%s-%s' % (self.pkgbase, self.full_version)
+
 
 class SignoffManager(models.Manager):
     def get_from_package(self, pkg, user, revoked=False):
         '''Utility method to pull all relevant name-version fields from a
-        package and create a matching signoff.'''
+        package and get a matching signoff.'''
         not_revoked = not revoked
-        return Signoff.objects.get(
+        return self.get(
                 pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
                 epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
                 revoked__isnull=not_revoked, user=user)
 
     def get_or_create_from_package(self, pkg, user):
         '''Utility method to pull all relevant name-version fields from a
-        package and create a matching signoff.'''
-        return Signoff.objects.get_or_create(
+        package and get or create a matching signoff.'''
+        return self.get_or_create(
                 pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
                 epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
                 revoked=None, user=user)
@@ -196,9 +227,8 @@ def remove_inactive_maintainers(sender, instance, created, **kwargs):
 
 post_save.connect(remove_inactive_maintainers, sender=User,
         dispatch_uid="packages.models")
-pre_save.connect(set_created_field, sender=PackageRelation,
-        dispatch_uid="packages.models")
-pre_save.connect(set_created_field, sender=Signoff,
-        dispatch_uid="packages.models")
+for sender in (PackageRelation, SignoffSpecification, Signoff):
+    pre_save.connect(set_created_field, sender=sender,
+            dispatch_uid="packages.models")
 
 # vim: set ts=4 sw=4 et:

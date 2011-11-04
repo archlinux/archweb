@@ -50,8 +50,7 @@
                 <td>{{ group.packager|default:"Unknown" }}</td>
                 <td>{{ group.packages|length }}</td>
                 <td>{{ group.last_update|date }}</td>
-                <td class="signoff-{{ group.approved|yesno }}">
-                    {{ group.approved|yesno|capfirst }}</td>
+                <td class="signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
                 <td>{% include "packages/signoff_cell.html" %}</td>
             </tr>
             {% endfor %}

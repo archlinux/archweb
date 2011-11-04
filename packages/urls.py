@@ -11,6 +11,7 @@ package_patterns = patterns('packages.views',
     (r'^unflag/all/$', 'unflag_all'),
     (r'^signoff/$',    'signoff_package'),
     (r'^signoff/revoke/$', 'signoff_package', {'revoke': True}),
+    (r'^signoff/options/$', 'signoff_options'),
     (r'^download/$',   'download'),
 )
 

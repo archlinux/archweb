@@ -1,12 +1,23 @@
+{% spaceless %}
+{% if group.signoffs %}
 <ul>
     {% for signoff in group.signoffs %}
     <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
     {% endfor %}
 </ul>
+{% endif %}
 {% if group.user_signed_off %}
-<div><a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/revoke/"
+<div>
+    <a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/revoke/"
         title="Revoke signoff {{ group.pkgbase }} for {{ group.arch }}">Revoke Signoff</a></div>
 {% else %}
-<div><a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/"
+<div>
+    <a class="signoff-link" href="{{ group.package.get_absolute_url }}signoff/"
         title="Signoff {{ group.pkgbase }} for {{ group.arch }}">Signoff</a></div>
 {% endif %}
+{% if group.packager == user %}
+<div>
+    <a class="signoff-options" href="{{ group.package.get_absolute_url }}signoff/options/">Packager Options</a>
+</div>
+{% endif %}
+{% endspaceless %}

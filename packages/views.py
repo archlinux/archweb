@@ -25,7 +25,7 @@ from urllib import urlencode
 from main.models import Package, PackageFile, Arch, Repo
 from main.utils import make_choice
 from mirrors.models import MirrorUrl
-from .models import PackageRelation, PackageGroup, Signoff
+from .models import PackageRelation, PackageGroup, SignoffSpecification, Signoff
 from .utils import (get_group_info, get_differences_info,
         get_wrong_permissions, get_signoff_groups, approved_by_signoffs)
 
@@ -416,6 +416,44 @@ def signoff_package(request, name, repo, arch, revoke=False):
                 mimetype='application/json')
 
     return redirect('package-signoffs')
+
+class SignoffOptionsForm(forms.ModelForm):
+    class Meta:
+        model = SignoffSpecification
+        fields = ('required', 'enabled', 'known_bad', 'comments')
+
+@permission_required('main.change_package')
+@never_cache
+def signoff_options(request, name, repo, arch):
+    packages = get_list_or_404(Package, pkgbase=name,
+            arch__name=arch, repo__name__iexact=repo, repo__testing=True)
+    package = packages[0]
+
+    # TODO ensure submitter is maintainer and/or packager
+
+    try:
+        spec = SignoffSpecification.objects.get_from_package(package)
+    except SignoffSpecification.DoesNotExist:
+        # create a fake one, but don't save it just yet
+        spec = SignoffSpecification(pkgbase=package.pkgbase,
+                pkgver=package.pkgver, pkgrel=package.pkgrel,
+                epoch=package.epoch, arch=package.arch, repo=package.repo)
+        spec.user = request.user
+
+    if request.POST:
+        form = SignoffOptionsForm(request.POST, instance=spec)
+        if form.is_valid():
+            form.save()
+            return redirect('package-signoffs')
+    else:
+        form = SignoffOptionsForm(instance=spec)
+
+    context = {
+        'packages': packages,
+        'package': package,
+        'form': form,
+    }
+    return direct_to_template(request, 'packages/signoff_options.html', context)
 
 def flaghelp(request):
     return direct_to_template(request, 'packages/flaghelp.html')

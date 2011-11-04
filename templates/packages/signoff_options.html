@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Arch Linux - Package Signoff Options - {{ package.pkgbase }} {{ package.full_version }} ({{ package.arch.name }}){% endblock %}
+{% block head %}<meta name="robots" content="noindex"/>{% endblock %}
+{% block navbarclass %}anb-packages{% endblock %}
+
+{% block content %}
+<div id="signoff-options" class="box">
+    <h2>Package Signoff Options: {{ package.pkgbase }} {{ package.full_version }} ({{ package.arch.name }})</h2>
+    <form id="signoff-options-form" method="post">{% csrf_token %}
+        <fieldset>
+            {{ form.as_p }}
+        </fieldset>
+        <p><label></label> <input title="Set Signoff Options" type="submit" value="Set Signoff Options" /></p>
+    </form>
+
+</div>
+{% endblock %}
