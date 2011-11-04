@@ -313,6 +313,7 @@ def get_current_specifications(repos):
 def get_target_repo_map(pkgbases):
     package_repos = Package.objects.order_by().values_list(
             'pkgbase', 'repo__name').filter(
+            repo__testing=False, repo__staging=False,
             pkgbase__in=pkgbases).distinct()
     return dict(package_repos)
 
