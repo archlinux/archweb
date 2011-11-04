@@ -69,6 +69,10 @@ def generate_report(email, repo_name):
     new_cutoff = now - timedelta(hours=new_hours)
     old_cutoff = now - timedelta(days=old_days)
 
+    if len(signoff_groups) == 0:
+        # no need to send an email at all
+        return
+
     for group in signoff_groups:
         spec = group.specification
         if spec.known_bad:

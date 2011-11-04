@@ -14,27 +14,28 @@ pkgbase, architecture, and repository; e.g., one PKGBUILD produces one
 package per architecture, even if it is a split package.)
 
 
-== New packages in [{{ repo|lower}}] in last {{ new_hours }} hours ({{ new|length }} total) ==
+{% if new %}== New packages in [{{ repo|lower}}] in last {{ new_hours }} hours ({{ new|length }} total) ==
 {% for group in new %}
 * {{ group.pkgbase }}-{{ group.version }} ({{ group.arch }}){% endfor %}
 
-{% regroup incomplete by target_repo as by_repo %}{% for target_repo in by_repo %}
+{% endif %}{% regroup incomplete by target_repo as by_repo %}{% for target_repo in by_repo %}
 == Incomplete signoffs for [{{ target_repo.grouper|lower }}] ({{ target_repo.list|length }} total) ==
 {% for group in target_repo.list %}
 * {{ group.pkgbase }}-{{ group.version }} ({{ group.arch }})
     {{ group.completed }}/{{ group.required }} signoffs{% endfor %}
 {% endfor %}
 
-== Completed signoffs ({{ complete|length }} total) ==
+{% if complete %}== Completed signoffs ({{ complete|length }} total) ==
 {% for group in complete %}
 * {{ group.pkgbase }}-{{ group.version }} ({{ group.arch }}){% endfor %}
 
 
-== All packages in [{{ repo|lower }}] for more than {{ old_days }} days ({{ old|length }} total) ==
+{% endif %}{% if old %}== All packages in [{{ repo|lower }}] for more than {{ old_days }} days ({{ old|length }} total) ==
 {% for group in old %}
 * {{ group.pkgbase }}-{{ group.version }} ({{ group.arch }}), since {{ group.last_update|date }}{% endfor %}
-{% endautoescape %}
 
-== Top five in signoffs in last {{ new_hours }} hours ==
+
+{% endif %}== Top five in signoffs in last {{ new_hours }} hours ==
 {% for leader in leaders %}
 {{ forloop.counter }}. {{ leader.user }} - {{ leader.count }} signoffs{% endfor %}
+{% endautoescape %}
