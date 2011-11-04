@@ -206,11 +206,19 @@ class Package(models.Model):
     def is_signed(self):
         return bool(self.pgp_signature)
 
+    _maintainers = None
+
     @property
     def maintainers(self):
-        return User.objects.filter(
-                package_relations__pkgbase=self.pkgbase,
-                package_relations__type=PackageRelation.MAINTAINER)
+        if self._maintainers is None:
+            self._maintainers = User.objects.filter(
+                    package_relations__pkgbase=self.pkgbase,
+                    package_relations__type=PackageRelation.MAINTAINER)
+        return self._maintainers
+
+    @maintainers.setter
+    def maintainers(self, maintainers):
+        self._maintainers = maintainers
 
     @cache_function(300)
     def applicable_arches(self):

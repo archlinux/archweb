@@ -1,3 +1,4 @@
+from collections import defaultdict
 from operator import itemgetter
 
 from django.db import connection
@@ -127,6 +128,7 @@ SELECT p.id, q.id
     differences.sort(key=lambda a: (a.repo.name, a.pkgname))
     return differences
 
+
 def get_wrong_permissions():
     sql = """
 SELECT DISTINCT id
@@ -148,6 +150,32 @@ SELECT DISTINCT id
     relations = PackageRelation.objects.select_related('user').filter(
             id__in=to_fetch)
     return relations
+
+
+def attach_maintainers(packages):
+    '''Given a queryset or something resembling it of package objects, find all
+    the maintainers and attach them to the packages to prevent N+1 query
+    cascading.'''
+    pkgbases = set(p.pkgbase for p in packages)
+    rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
+            pkgbase__in=pkgbases).values_list('pkgbase', 'user_id').distinct()
+
+    # get all the user objects we will need
+    user_ids = set(rel[1] for rel in rels)
+    users = User.objects.in_bulk(user_ids)
+
+    # now build a pkgbase -> [maintainers...] map
+    maintainers = defaultdict(list)
+    for rel in rels:
+        maintainers[rel[0]].append(users[rel[1]])
+
+    annotated = []
+    # and finally, attach the maintainer lists on the original packages
+    for package in packages:
+        package.maintainers = maintainers[package.pkgbase]
+        annotated.append(package)
+
+    return annotated
 
 
 def approved_by_signoffs(signoffs, spec):
@@ -173,9 +201,7 @@ class PackageSignoffGroup(object):
         self.version = ''
         self.last_update = first.last_update
         self.packager = first.packager
-        self.maintainers = User.objects.filter(
-                package_relations__type=PackageRelation.MAINTAINER,
-                package_relations__pkgbase=self.pkgbase)
+        self.maintainers = first.maintainers
 
         self.specification = \
                 SignoffSpecification.objects.get_or_default_from_package(first)
@@ -236,6 +262,7 @@ class PackageSignoffGroup(object):
 
 def get_current_signoffs(repos):
     '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
+    # TODO this isn't current at all- this is every single signoff...
     cursor = connection.cursor()
     sql = """
 SELECT DISTINCT s.id
@@ -274,6 +301,7 @@ def get_signoff_groups(repos=None):
     test_pkgs = Package.objects.select_related(
             'arch', 'repo', 'packager').filter(repo__in=repo_ids)
     packages = test_pkgs.order_by('pkgname')
+    packages = attach_maintainers(packages)
 
     # Collect all pkgbase values in testing repos
     q_pkgbase = test_pkgs.values('pkgbase')
