@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import (get_object_or_404, get_list_or_404,
@@ -426,9 +427,35 @@ def signoff_package(request, name, repo, arch, revoke=False):
     return redirect('package-signoffs')
 
 class SignoffOptionsForm(forms.ModelForm):
+    apply_all = forms.BooleanField(required=False,
+        help_text="Apply these options to all architectures?")
+
     class Meta:
         model = SignoffSpecification
         fields = ('required', 'enabled', 'known_bad', 'comments')
+
+def _signoff_options_all(request, name, repo):
+    seen_ids = set()
+    with transaction.commit_on_success():
+        # find or create a specification for all architectures, then
+        # graft the form data onto them
+        packages = Package.objects.filter(pkgbase=name,
+            repo__name__iexact=repo, repo__testing=True)
+        for package in packages:
+            try:
+                spec = SignoffSpecification.objects.get_from_package(package)
+                if spec.pk in seen_ids:
+                    continue
+            except SignoffSpecification.DoesNotExist:
+                spec = SignoffSpecification(pkgbase=package.pkgbase,
+                        pkgver=package.pkgver, pkgrel=package.pkgrel,
+                        epoch=package.epoch, arch=package.arch,
+                        repo=package.repo)
+                spec.user = request.user
+            form = SignoffOptionsForm(request.POST, instance=spec)
+            if form.is_valid():
+                form.save()
+            seen_ids.add(form.instance.pk)
 
 @permission_required('main.change_package')
 @never_cache
@@ -453,7 +480,10 @@ def signoff_options(request, name, repo, arch):
     if request.POST:
         form = SignoffOptionsForm(request.POST, instance=spec)
         if form.is_valid():
-            form.save()
+            if form.cleaned_data['apply_all']:
+                _signoff_options_all(request, name, repo)
+            else:
+                form.save()
             return redirect('package-signoffs')
     else:
         form = SignoffOptionsForm(instance=spec)
