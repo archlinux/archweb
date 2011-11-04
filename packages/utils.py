@@ -310,12 +310,25 @@ def get_current_specifications(repos):
     to_fetch = [row[0] for row in results]
     return SignoffSpecification.objects.in_bulk(to_fetch).values()
 
-def get_target_repo_map(pkgbases):
-    package_repos = Package.objects.order_by().values_list(
-            'pkgbase', 'repo__name').filter(
-            repo__testing=False, repo__staging=False,
-            pkgbase__in=pkgbases).distinct()
-    return dict(package_repos)
+def get_target_repo_map(repos):
+    sql = """
+SELECT DISTINCT p1.pkgbase, r.name
+    FROM packages p1
+    JOIN repos r ON p1.repo_id = r.id
+    JOIN packages p2 ON p1.pkgbase = p2.pkgbase
+    WHERE r.staging = %s
+    AND r.testing = %s
+    AND p2.repo_id IN (
+    """
+    sql += ','.join(['%s' for r in repos])
+    sql += ")"
+
+    params = [False, False]
+    params.extend(r.pk for r in repos)
+
+    cursor = connection.cursor()
+    cursor.execute(sql, params)
+    return dict(cursor.fetchall())
 
 def get_signoff_groups(repos=None):
     if repos is None:
@@ -328,8 +341,7 @@ def get_signoff_groups(repos=None):
     packages = attach_maintainers(packages)
 
     # Collect all pkgbase values in testing repos
-    q_pkgbase = test_pkgs.values('pkgbase')
-    pkgtorepo = get_target_repo_map(q_pkgbase)
+    pkgtorepo = get_target_repo_map(repos)
 
     # Collect all possible signoffs and specifications for these packages
     signoffs = get_current_signoffs(repos)
