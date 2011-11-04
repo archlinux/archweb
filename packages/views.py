@@ -388,8 +388,9 @@ def signoffs(request):
 def signoff_package(request, name, repo, arch, revoke=False):
     packages = get_list_or_404(Package, pkgbase=name,
             arch__name=arch, repo__name__iexact=repo, repo__testing=True)
-
     package = packages[0]
+
+    spec = SignoffSpecification.objects.get_or_default_from_package(package)
 
     if revoke:
         try:
@@ -401,11 +402,13 @@ def signoff_package(request, name, repo, arch, revoke=False):
         signoff.save()
         created = False
     else:
+        # ensure we should even be accepting signoffs
+        if spec.known_bad or not spec.enabled:
+            return render(request, '403.html', status=403)
         signoff, created = Signoff.objects.get_or_create_from_package(
                 package, request.user)
 
     all_signoffs = Signoff.objects.for_package(package)
-    spec = SignoffSpecification.objects.get_or_default_from_package(package)
 
     if request.is_ajax():
         data = {
