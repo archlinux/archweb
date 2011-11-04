@@ -267,22 +267,27 @@ function filter_signoffs() {
     /* start with all rows, and then remove ones we shouldn't show */
     var rows = $('#tbody_signoffs').children();
     var all_rows = rows;
-    $('#signoffs_filter .arch_filter').each(function() {
+    /* apply arch and repo filters */
+    $('#signoffs_filter .arch_filter').add(
+            '#signoffs_filter .repo_filter').each(function() {
         if (!$(this).is(':checked')) {
             rows = rows.not('.' + $(this).val());
         }
     });
+    /* and then the slightly more expensive pending check */
     if ($('#id_pending').is(':checked')) {
         rows = rows.has('td.signoff-no');
     }
     /* hide all rows, then show the set we care about */
     all_rows.hide();
     rows.show();
+    $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets');
 }
 function filter_signoffs_reset() {
     $('#signoffs_filter .arch_filter').attr('checked', 'checked');
+    $('#signoffs_filter .repo_filter').attr('checked', 'checked');
     $('#id_pending').removeAttr('checked');
     filter_signoffs();
 }

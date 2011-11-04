@@ -381,6 +381,7 @@ def signoffs(request):
     context = {
         'signoff_groups': signoff_groups,
         'arches': Arch.objects.all(),
+        'repo_names': sorted(set(g.target_repo for g in signoff_groups)),
     }
     return direct_to_template(request, 'packages/signoffs.html', context)
 

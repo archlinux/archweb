@@ -9,7 +9,7 @@
 
     <h2>Package Signoffs</h2>
 
-    <p>{{ signoff_groups|length }} signoff group{{ signoff_groups|pluralize }} found.
+    <p>{{ signoff_groups|length }} total signoff group{{ signoff_groups|pluralize }} found.
     A "signoff group" consists of packages grouped by pkgbase, architecture, and repository.</p>
 
     <div class="box filter-criteria">
@@ -21,9 +21,15 @@
             <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
                 <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
             {% endfor %}
+            {% for repo_name in repo_names %}
+            <div><label for="id_repo_{{ repo_name|lower }}" title="Target Repository {{ repo_name }}">[{{ repo_name|lower }}]</label>
+                <input type="checkbox" name="repo_{{ repo_name|lower }}" id="id_repo_{{ repo_name|lower }}" class="repo_filter" value="{{ repo_name|lower }}" checked="checked"/></div>
+            {% endfor %}
             <div><label for="id_pending" title="Packages with not enough signoffs">Only Pending Approval</label>
                 <input type="checkbox" name="pending" id="id_pending" value="pending"/></div>
-            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+            <div><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+            <div class="clear"></div>
+            <div id="filter-info"><span id="filter-count">{{ signoff_groups|length }}</span> signoff groups displayed.</div>
         </fieldset>
         </form>
     </div>
@@ -44,7 +50,7 @@
         </thead>
         <tbody id="tbody_signoffs">
             {% for group in signoff_groups %}
-            <tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }}">
+            <tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }} {{ group.target_repo|lower }}">
                 <td>{% pkg_details_link group.package %} {{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
