@@ -194,6 +194,8 @@ class PackageSignoffGroup(object):
         self.user = None
         self.target_repo = None
         self.signoffs = set()
+        self.specification = DEFAULT_SIGNOFF_SPEC
+        self.default_spec = True
 
         first = packages[0]
         self.pkgbase = first.pkgbase
@@ -203,10 +205,6 @@ class PackageSignoffGroup(object):
         self.last_update = first.last_update
         self.packager = first.packager
         self.maintainers = first.maintainers
-
-        self.specification = \
-                SignoffSpecification.objects.get_or_default_from_package(first)
-        self.default_spec = self.specification is DEFAULT_SIGNOFF_SPEC
 
         version = first.full_version
         if all(version == pkg.full_version for pkg in packages):
@@ -238,6 +236,17 @@ class PackageSignoffGroup(object):
             if s.arch_id == self.arch.id and s.repo_id == self.repo.id:
                 self.signoffs.add(s)
 
+    def find_specification(self, specifications):
+        for spec in specifications:
+            if spec.pkgbase != self.pkgbase:
+                continue
+            if self.version and not spec.full_version == self.version:
+                continue
+            if spec.arch_id == self.arch.id and spec.repo_id == self.repo.id:
+                self.specification = spec
+                self.default_spec = False
+                return
+
     def approved(self):
         return approved_by_signoffs(self.signoffs, self.specification)
 
@@ -261,13 +270,9 @@ class PackageSignoffGroup(object):
         return u'%s-%s (%s): %d' % (
                 self.pkgbase, self.version, self.arch, len(self.signoffs))
 
-def get_current_signoffs(repos):
-    '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
-    # TODO this isn't current at all- this is every single signoff...
-    cursor = connection.cursor()
-    sql = """
+_SQL_SPEC_OR_SIGNOFF = """
 SELECT DISTINCT s.id
-    FROM packages_signoff s
+    FROM %s s
     JOIN packages p ON (
         s.pkgbase = p.pkgbase
         AND s.pkgver = p.pkgver
@@ -276,17 +281,34 @@ SELECT DISTINCT s.id
         AND s.arch_id = p.arch_id
         AND s.repo_id = p.repo_id
     )
-    WHERE p.repo_id IN (
+    AND p.repo_id IN (%s)
 """
-    sql += ", ".join("%s" for r in repos)
-    sql += ")"
-    cursor.execute(sql, [r.id for r in repos])
+
+def get_current_signoffs(repos):
+    '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
+    cursor = connection.cursor()
+    # query pre-process- fill in table name and placeholders for IN
+    sql = _SQL_SPEC_OR_SIGNOFF % ('packages_signoff',
+            ','.join(['%s' for r in repos]))
+    cursor.execute(sql, [r.pk for r in repos])
 
     results = cursor.fetchall()
     # fetch all of the returned signoffs by ID
     to_fetch = [row[0] for row in results]
     signoffs = Signoff.objects.select_related('user').in_bulk(to_fetch)
     return signoffs.values()
+
+def get_current_specifications(repos):
+    '''Returns a mapping of pkgbase -> signoff specification objects for the
+    given repos.'''
+    cursor = connection.cursor()
+    sql = _SQL_SPEC_OR_SIGNOFF % ('packages_signoffspecification',
+            ','.join(['%s' for r in repos]))
+    cursor.execute(sql, [r.pk for r in repos])
+
+    results = cursor.fetchall()
+    to_fetch = [row[0] for row in results]
+    return SignoffSpecification.objects.in_bulk(to_fetch).values()
 
 def get_target_repo_map(pkgbases):
     package_repos = Package.objects.order_by().values_list(
@@ -308,8 +330,9 @@ def get_signoff_groups(repos=None):
     q_pkgbase = test_pkgs.values('pkgbase')
     pkgtorepo = get_target_repo_map(q_pkgbase)
 
-    # Collect all existing signoffs for these packages
+    # Collect all possible signoffs and specifications for these packages
     signoffs = get_current_signoffs(repos)
+    specs = get_current_specifications(repos)
 
     same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
     grouped = groupby_preserve_order(packages, same_pkgbase_key)
@@ -319,6 +342,7 @@ def get_signoff_groups(repos=None):
         signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
                 "Unknown")
         signoff_group.find_signoffs(signoffs)
+        signoff_group.find_specification(specs)
         signoff_groups.append(signoff_group)
 
     return signoff_groups
