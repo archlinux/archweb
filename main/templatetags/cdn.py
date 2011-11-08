@@ -23,12 +23,7 @@ class CDNPrefixNode(template.Node):
         oncdn = getattr(settings, 'CDN_ENABLED', True)
         if not oncdn:
             return ''
-        secure = 'secure' in context and context['secure']
         # if left undefined, same behavior as if CDN is turned off
-        paths = {
-                False: getattr(settings, 'CDN_PATH', ''),
-                True: getattr(settings, 'CDN_PATH_SECURE', ''),
-        }
-        return paths[secure]
+        return getattr(settings, 'CDN_PATH', '')
 
 # vim: set ts=4 sw=4 et:
