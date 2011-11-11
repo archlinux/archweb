@@ -15,8 +15,8 @@
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Repo</th>
                 <th>Version</th>
+                <th>Repo</th>
                 <th>Arch</th>
                 <th>Flagged</th>
                 <th>Last Updated</th>
@@ -26,8 +26,8 @@
             {% for pkg in flagged %}
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td>{% pkg_details_link pkg %}</td>
-                    <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.full_version }}</td>
+                    <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
                     <td>{{ pkg.last_update|date }}</td>
@@ -92,6 +92,47 @@
             </tr>
             {% empty %}
             <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Signoff Status</h3>
+
+    <table id="dash-signoffs" class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Arch</th>
+                <th>Target Repo</th>
+                <th>Last Updated</th>
+                <th>Approved</th>
+                <th>Signoffs</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in signoffs %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{% pkg_details_link group.package %}</td>
+                <td>{{ group.version }}</td>
+                <td>{{ group.arch.name }}</td>
+                <td>{{ group.target_repo }}</td>
+                <td>{{ group.last_update|date }}</td>
+                {% if group.specification.known_bad %}
+                <td class="approval signoff-bad">Bad</td>
+                {% else %}
+                {% if not group.specification.enabled %}
+                <td class="approval signoff-disabled">Disabled</td>
+                {% else %}
+                <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
+                {% endif %}
+                {% endif %}
+                <td><ul class="signoff-list">
+                    {% for signoff in group.signoffs %}
+                    <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
+                    {% endfor %}
+                </ul></td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -255,6 +296,11 @@ $(document).ready(function() {
         {widgets: ['zebra'], sortList: [[0,0], [1,0]]});
     $("#dash-todo:not(:has(tbody tr.empty))").tablesorter(
             {widgets: ['zebra'], sortList: [[1,1]]});
+    $("#dash-signoffs:not(:has(tbody tr.empty))").tablesorter({
+            widgets: ['zebra'],
+            sortList: [[0,0]],
+            headers: { 6: {sorter: false } }
+    });
     $(".dash-stats").tablesorter({
         widgets: ['zebra'],
         sortList: [[0,0]],

@@ -330,7 +330,7 @@ SELECT DISTINCT p1.pkgbase, r.name
     cursor.execute(sql, params)
     return dict(cursor.fetchall())
 
-def get_signoff_groups(repos=None):
+def get_signoff_groups(repos=None, user=None):
     if repos is None:
         repos = Repo.objects.filter(testing=True)
     repo_ids = [r.pk for r in repos]
@@ -339,6 +339,11 @@ def get_signoff_groups(repos=None):
             'arch', 'repo', 'packager').filter(repo__in=repo_ids)
     packages = test_pkgs.order_by('pkgname')
     packages = attach_maintainers(packages)
+
+    # Filter by user if asked to do so
+    if user is not None:
+        packages = [p for p in packages if user == p.packager
+                or user in p.maintainers]
 
     # Collect all pkgbase values in testing repos
     pkgtorepo = get_target_repo_map(repos)

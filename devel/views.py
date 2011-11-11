@@ -18,6 +18,7 @@ from main.models import Package, PackageDepend, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from main.models import UserProfile
 from packages.models import PackageRelation
+from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers
 
@@ -48,6 +49,9 @@ def index(request):
     todolists = get_annotated_todolists()
     todolists = [todolist for todolist in todolists if todolist.incomplete_count > 0]
 
+    signoffs = sorted(get_signoff_groups(user=request.user),
+            key=operator.attrgetter('pkgbase'))
+
     maintainers = get_annotated_maintainers()
 
     maintained = PackageRelation.objects.filter(
@@ -70,6 +74,7 @@ def index(request):
             'orphan': orphan,
             'flagged' : flagged,
             'todopkgs' : todopkgs,
+            'signoffs': signoffs
     }
 
     return direct_to_template(request, 'devel/index.html', page_dict)
