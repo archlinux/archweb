@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 from main.models import Package
 from news.models import News
-from packages.utils import get_group_info
+from packages.utils import get_group_info, get_split_packages_info
 
 class PackagesSitemap(Sitemap):
     changefreq = "weekly"
@@ -39,6 +39,21 @@ class PackageGroupsSitemap(Sitemap):
 
     def location(self, obj):
         return '/groups/%s/%s/' % (obj['arch'], obj['name'])
+
+
+class SplitPackagesSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = "0.3"
+
+    def items(self):
+        return get_split_packages_info()
+
+    def lastmod(self, obj):
+        return obj['last_update']
+
+    def location(self, obj):
+        return '/packages/%s/%s/%s/' % (
+                obj['repo'].name.lower(), obj['arch'], obj['pkgbase'])
 
 
 class NewsSitemap(Sitemap):

@@ -2,10 +2,10 @@ from collections import defaultdict
 from operator import itemgetter
 
 from django.db import connection
-from django.db.models import Count, Max
+from django.db.models import Count, Max, F
 from django.contrib.auth.models import User
 
-from main.models import Package, Repo
+from main.models import Package, Arch, Repo
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
 from .models import (PackageGroup, PackageRelation,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
@@ -48,6 +48,20 @@ def get_group_info(include_arches=None):
         if not include_arches or key in include_arches:
             groups.extend(val.itervalues())
     return sorted(groups, key=itemgetter('name', 'arch'))
+
+def get_split_packages_info():
+    '''Return info on split packages that do not have an actual package name
+    matching the split pkgbase.'''
+    pkgnames = Package.objects.values('pkgname')
+    split_pkgs = Package.objects.exclude(pkgname=F('pkgbase')).exclude(
+            pkgbase__in=pkgnames).values('pkgbase', 'repo', 'arch').annotate(
+            last_update=Max('last_update'))
+    all_arches = Arch.objects.in_bulk(set(s['arch'] for s in split_pkgs))
+    all_repos = Repo.objects.in_bulk(set(s['repo'] for s in split_pkgs))
+    for split in split_pkgs:
+        split['arch'] = all_arches[split['arch']]
+        split['repo'] = all_repos[split['repo']]
+    return split_pkgs
 
 class Difference(object):
     def __init__(self, pkgname, repo, pkg_a, pkg_b):
