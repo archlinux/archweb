@@ -7,10 +7,10 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-		orm.Arch.objects.filter(name='any').update(agnostic=True)
+        orm.Arch.objects.filter(name='any').update(agnostic=True)
 
     def backwards(self, orm):
-		pass
+        pass
 
     models = {
         'auth.group': {
