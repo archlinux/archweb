@@ -36,6 +36,7 @@ class PackageSearchForm(forms.Form):
     name = forms.CharField(required=False)
     desc = forms.CharField(required=False)
     q = forms.CharField(required=False)
+    sort = forms.CharField(required=False)
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget(),
@@ -67,68 +68,74 @@ class PackageSearchForm(forms.Form):
                 [('', 'All'), ('unknown', 'Unknown')] + \
                 [(m.username, m.get_full_name()) for m in maints]
 
+def parse_form(form, packages):
+    if form.cleaned_data['repo']:
+        packages = packages.filter(
+                repo__name__in=form.cleaned_data['repo'])
+
+    if form.cleaned_data['arch']:
+        packages = packages.filter(
+                arch__name__in=form.cleaned_data['arch'])
+
+    if form.cleaned_data['maintainer'] == 'orphan':
+        inner_q = PackageRelation.objects.all().values('pkgbase')
+        packages = packages.exclude(pkgbase__in=inner_q)
+    elif form.cleaned_data['maintainer']:
+        inner_q = PackageRelation.objects.filter(
+                user__username=form.cleaned_data['maintainer']).values('pkgbase')
+        packages = packages.filter(pkgbase__in=inner_q)
+
+    if form.cleaned_data['packager'] == 'unknown':
+        packages = packages.filter(packager__isnull=True)
+    elif form.cleaned_data['packager']:
+        packages = packages.filter(
+                packager__username=form.cleaned_data['packager'])
+
+    if form.cleaned_data['flagged'] == 'Flagged':
+        packages = packages.filter(flag_date__isnull=False)
+    elif form.cleaned_data['flagged'] == 'Not Flagged':
+        packages = packages.filter(flag_date__isnull=True)
+
+    if form.cleaned_data['signed'] == 'Signed':
+        packages = packages.filter(pgp_signature__isnull=False)
+    elif form.cleaned_data['signed'] == 'Unsigned':
+        packages = packages.filter(pgp_signature__isnull=True)
+
+    if form.cleaned_data['last_update']:
+        lu = form.cleaned_data['last_update']
+        packages = packages.filter(last_update__gte=
+                datetime(lu.year, lu.month, lu.day, 0, 0))
+
+    if form.cleaned_data['name']:
+        name = form.cleaned_data['name']
+        packages = packages.filter(pkgname__icontains=name)
+
+    if form.cleaned_data['desc']:
+        desc = form.cleaned_data['desc']
+        packages = packages.filter(pkgdesc__icontains=desc)
+
+    if form.cleaned_data['q']:
+        query = form.cleaned_data['q']
+        q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
+        packages = packages.filter(q)
+
+    return packages
+
 def search(request, page=None):
     limit = 50
+    sort = None
     packages = Package.objects.normal()
 
     if request.GET:
         form = PackageSearchForm(data=request.GET)
         if form.is_valid():
-            if form.cleaned_data['repo']:
-                packages = packages.filter(
-                        repo__name__in=form.cleaned_data['repo'])
-
-            if form.cleaned_data['arch']:
-                packages = packages.filter(
-                        arch__name__in=form.cleaned_data['arch'])
-
-            if form.cleaned_data['maintainer'] == 'orphan':
-                inner_q = PackageRelation.objects.all().values('pkgbase')
-                packages = packages.exclude(pkgbase__in=inner_q)
-            elif form.cleaned_data['maintainer']:
-                inner_q = PackageRelation.objects.filter(
-                        user__username=form.cleaned_data['maintainer']).values('pkgbase')
-                packages = packages.filter(pkgbase__in=inner_q)
-
-            if form.cleaned_data['packager'] == 'unknown':
-                packages = packages.filter(packager__isnull=True)
-            elif form.cleaned_data['packager']:
-                packages = packages.filter(
-                        packager__username=form.cleaned_data['packager'])
-
-            if form.cleaned_data['flagged'] == 'Flagged':
-                packages = packages.filter(flag_date__isnull=False)
-            elif form.cleaned_data['flagged'] == 'Not Flagged':
-                packages = packages.filter(flag_date__isnull=True)
-
-            if form.cleaned_data['signed'] == 'Signed':
-                packages = packages.filter(pgp_signature__isnull=False)
-            elif form.cleaned_data['signed'] == 'Unsigned':
-                packages = packages.filter(pgp_signature__isnull=True)
-
-            if form.cleaned_data['last_update']:
-                lu = form.cleaned_data['last_update']
-                packages = packages.filter(last_update__gte=
-                        datetime(lu.year, lu.month, lu.day, 0, 0))
-
-            if form.cleaned_data['name']:
-                name = form.cleaned_data['name']
-                packages = packages.filter(pkgname__icontains=name)
-
-            if form.cleaned_data['desc']:
-                desc = form.cleaned_data['desc']
-                packages = packages.filter(pkgdesc__icontains=desc)
-
-            if form.cleaned_data['q']:
-                query = form.cleaned_data['q']
-                q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
-                packages = packages.filter(q)
-
+            packages = parse_form(form, packages)
             asked_limit = form.cleaned_data['limit']
             if asked_limit and asked_limit < 0:
                 limit = None
             elif asked_limit:
                 limit = asked_limit
+            sort = form.cleaned_data['sort']
         else:
             # Form had errors, don't return any results, just the busted form
             packages = Package.objects.none()
@@ -144,7 +151,6 @@ def search(request, page=None):
             "compressed_size", "installed_size",
             "build_date", "last_update", "flag_date"]
     allowed_sort += ["-" + s for s in allowed_sort]
-    sort = request.GET.get('sort', None)
     if sort in allowed_sort:
         packages = packages.order_by(sort)
         page_dict['sort'] = sort
