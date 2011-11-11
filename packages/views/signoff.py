@@ -154,6 +154,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, PackageSignoffGroup):
             data = dict((attr, getattr(obj, attr))
                     for attr in self.signoff_group_attrs)
+            data['pkgnames'] = [p.pkgname for p in obj.packages]
             data['package_count'] = len(obj.packages)
             data['approved'] = obj.approved()
             data.update((attr, getattr(obj.specification, attr))
