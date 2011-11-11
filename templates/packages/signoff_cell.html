@@ -1,6 +1,6 @@
 {% spaceless %}
 {% if group.signoffs %}
-<ul>
+<ul class="signoff-list">
     {% for signoff in group.signoffs %}
     <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
     {% endfor %}

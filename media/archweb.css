@@ -899,26 +899,26 @@ ul.admin-actions {
     background: #ffd;
 }
 
-#dev-signoffs ul {
+ul.signoff-list {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-#dev-signoffs .signoff-yes {
+.signoff-yes {
     color: green;
     font-weight: bold;
 }
 
-#dev-signoffs .signoff-no {
+.signoff-no {
     color: red;
 }
 
-#dev-signoffs .signoff-bad {
+.signoff-bad {
     color: darkorange;
 }
 
-#dev-signoffs .signoff-disabled {
+.signoff-disabled {
     color: gray;
 }
 
