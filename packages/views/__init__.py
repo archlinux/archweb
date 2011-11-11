@@ -27,8 +27,9 @@ from urllib import urlencode
 from main.models import Package, PackageFile, Arch, Repo
 from main.utils import make_choice
 from mirrors.models import MirrorUrl
-from .models import PackageRelation, PackageGroup, SignoffSpecification, Signoff
-from .utils import (get_group_info, get_differences_info,
+from ..models import (PackageRelation, PackageGroup,
+        SignoffSpecification, Signoff)
+from ..utils import (get_group_info, get_differences_info,
         get_wrong_permissions, get_signoff_groups, approved_by_signoffs,
         PackageSignoffGroup)
 
