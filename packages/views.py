@@ -29,7 +29,8 @@ from main.utils import make_choice
 from mirrors.models import MirrorUrl
 from .models import PackageRelation, PackageGroup, SignoffSpecification, Signoff
 from .utils import (get_group_info, get_differences_info,
-        get_wrong_permissions, get_signoff_groups, approved_by_signoffs)
+        get_wrong_permissions, get_signoff_groups, approved_by_signoffs,
+        PackageSignoffGroup)
 
 class PackageJSONEncoder(DjangoJSONEncoder):
     pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
@@ -371,6 +372,7 @@ def unflag_all(request, name, repo, arch):
     pkgs.update(flag_date=None)
     return redirect(pkg)
 
+
 @permission_required('main.change_package')
 @never_cache
 def signoffs(request):
@@ -495,6 +497,49 @@ def signoff_options(request, name, repo, arch):
         'form': form,
     }
     return direct_to_template(request, 'packages/signoff_options.html', context)
+
+class SignoffJSONEncoder(DjangoJSONEncoder):
+    '''Base JSONEncoder extended to handle all serialization of all classes
+    related to signoffs.'''
+    signoff_group_attrs = ['arch', 'last_update', 'maintainers', 'packager',
+            'pkgbase', 'repo', 'signoffs', 'target_repo', 'version']
+    signoff_spec_attrs = ['required', 'enabled', 'known_bad', 'comments']
+    signoff_attrs = ['user', 'created', 'revoked']
+
+    def default(self, obj):
+        if isinstance(obj, PackageSignoffGroup):
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.signoff_group_attrs)
+            data['package_count'] = len(obj.packages)
+            data['approved'] = obj.approved()
+            data.update((attr, getattr(obj.specification, attr))
+                    for attr in self.signoff_spec_attrs)
+            return data
+        elif isinstance(obj, Signoff):
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.signoff_attrs)
+            return data
+        elif isinstance(obj, Arch) or isinstance(obj, Repo):
+            return unicode(obj)
+        elif isinstance(obj, User):
+            return obj.username
+        elif isinstance(obj, set):
+            return list(obj)
+        return super(SignoffJSONEncoder, self).default(obj)
+
+@permission_required('main.change_package')
+@never_cache
+def signoffs_json(request):
+    signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
+    data = {
+        'version': 1,
+        'signoff_groups': signoff_groups,
+    }
+    to_json = simplejson.dumps(data, ensure_ascii=False,
+            cls=SignoffJSONEncoder)
+    response = HttpResponse(to_json, mimetype='application/json')
+    return response
+
 
 def flaghelp(request):
     return direct_to_template(request, 'packages/flaghelp.html')

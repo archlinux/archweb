@@ -18,6 +18,7 @@ package_patterns = patterns('packages.views',
 urlpatterns = patterns('packages.views',
     (r'^flaghelp/$', 'flaghelp'),
     (r'^signoffs/$', 'signoffs', {}, 'package-signoffs'),
+    (r'^signoffs/json/$', 'signoffs_json', {}, 'package-signoffs-json'),
     (r'^update/$',   'update'),
 
     (r'^$',                      'search', {}, 'packages-search'),
