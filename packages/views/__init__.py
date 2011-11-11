@@ -3,15 +3,12 @@ from django.contrib import messages
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
-from django.conf import settings
-from django.core.mail import send_mail
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponse, Http404, HttpResponseForbidden
 from django.shortcuts import (get_object_or_404, get_list_or_404,
         redirect, render)
-from django.template import loader, Context
 from django.utils import simplejson
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
@@ -32,6 +29,9 @@ from ..models import (PackageRelation, PackageGroup,
 from ..utils import (get_group_info, get_differences_info,
         get_wrong_permissions, get_signoff_groups, approved_by_signoffs,
         PackageSignoffGroup)
+
+# make other views available from this same package
+from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
 
 class PackageJSONEncoder(DjangoJSONEncoder):
     pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
@@ -355,24 +355,6 @@ def files_json(request, name, repo, arch):
             cls=PackageJSONEncoder)
     return HttpResponse(to_json, mimetype='application/json')
 
-@permission_required('main.change_package')
-def unflag(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkg.flag_date = None
-    pkg.save()
-    return redirect(pkg)
-
-@permission_required('main.change_package')
-def unflag_all(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.filter(pkgbase=pkg.pkgbase,
-            repo__testing=pkg.repo.testing, repo__staging=pkg.repo.staging)
-    pkgs.update(flag_date=None)
-    return redirect(pkg)
-
 
 @permission_required('main.change_package')
 @never_cache
@@ -541,92 +523,6 @@ def signoffs_json(request):
     response = HttpResponse(to_json, mimetype='application/json')
     return response
 
-
-def flaghelp(request):
-    return direct_to_template(request, 'packages/flaghelp.html')
-
-class FlagForm(forms.Form):
-    email = forms.EmailField(label='* E-mail Address')
-    usermessage = forms.CharField(label='Message To Dev',
-            widget=forms.Textarea, required=False)
-    # The field below is used to filter out bots that blindly fill out all input elements
-    website = forms.CharField(label='',
-            widget=forms.TextInput(attrs={'style': 'display:none;'}),
-            required=False)
-
-@never_cache
-def flag(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    if pkg.flag_date is not None:
-        # already flagged. do nothing.
-        return direct_to_template(request, 'packages/flagged.html', {'pkg': pkg})
-    # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.normal().filter(
-            pkgbase=pkg.pkgbase, flag_date__isnull=True,
-            repo__testing=pkg.repo.testing,
-            repo__staging=pkg.repo.staging).order_by(
-            'pkgname', 'repo__name', 'arch__name')
-
-    if request.POST:
-        form = FlagForm(request.POST)
-        if form.is_valid() and form.cleaned_data['website'] == '':
-            # save the package list for later use
-            flagged_pkgs = list(pkgs)
-            pkgs.update(flag_date=datetime.utcnow())
-
-            maints = pkg.maintainers
-            if not maints:
-                toemail = settings.NOTIFICATIONS
-                subject = 'Orphan %s package [%s] marked out-of-date' % \
-                        (pkg.repo.name, pkg.pkgname)
-            else:
-                toemail = []
-                subject = '%s package [%s] marked out-of-date' % \
-                        (pkg.repo.name, pkg.pkgname)
-                for maint in maints:
-                    if maint.get_profile().notify == True:
-                        toemail.append(maint.email)
-
-            if toemail:
-                # send notification email to the maintainers
-                t = loader.get_template('packages/outofdate.txt')
-                c = Context({
-                    'email': form.cleaned_data['email'],
-                    'message': form.cleaned_data['usermessage'],
-                    'pkg': pkg,
-                    'packages': flagged_pkgs,
-                })
-                send_mail(subject,
-                        t.render(c),
-                        'Arch Website Notification <nobody@archlinux.org>',
-                        toemail,
-                        fail_silently=True)
-
-            return redirect('package-flag-confirmed', name=name, repo=repo,
-                    arch=arch)
-    else:
-        form = FlagForm()
-
-    context = {
-        'package': pkg,
-        'packages': pkgs,
-        'form': form
-    }
-    return direct_to_template(request, 'packages/flag.html', context)
-
-def flag_confirmed(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkgs = Package.objects.normal().filter(
-            pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
-            repo__testing=pkg.repo.testing,
-            repo__staging=pkg.repo.staging).order_by(
-            'pkgname', 'repo__name', 'arch__name')
-
-    context = {'package': pkg, 'packages': pkgs}
-
-    return direct_to_template(request, 'packages/flag_confirmed.html', context)
 
 def download(request, name, repo, arch):
     pkg = get_object_or_404(Package,
