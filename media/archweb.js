@@ -218,9 +218,9 @@ function signoff_package() {
         var cell = link.closest('td');
         if (data.created) {
             signoff = $('<li>').addClass('signed-username').text(data.user);
-            var list = cell.children('ul');
+            var list = cell.children('ul.signoff-list');
             if (list.size() == 0) {
-                list = $('<ul>').prependTo(cell);
+                list = $('<ul class="signoff-list">').prependTo(cell);
             }
             list.append(signoff);
         } else if(data.user) {
