@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+"""
+populate_signoffs command
+
+Pull the latest commit message from SVN for a given package that is
+signoff-eligible and does not have an existing comment attached.
+
+Usage: ./manage.py populate_signoffs
+"""
+
+from datetime import datetime
+import logging
+import subprocess
+import sys
+from xml.etree.ElementTree import XML
+
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.management.base import NoArgsCommand
+
+from ...models import SignoffSpecification
+from ...utils import get_signoff_groups
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s -> %(levelname)s: %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    stream=sys.stderr)
+logger = logging.getLogger()
+
+class Command(NoArgsCommand):
+    help = "Pull the latest commit message from SVN for a given package that is signoff-eligible and does not have an existing comment attached"
+
+    def handle_noargs(self, **options):
+        v = int(options.get('verbosity', None))
+        if v == 0:
+            logger.level = logging.ERROR
+        elif v == 1:
+            logger.level = logging.INFO
+        elif v == 2:
+            logger.level = logging.DEBUG
+
+        return add_signoff_comments()
+
+def svn_log(pkgbase, repo):
+    path = '%s%s/%s/trunk/' % (settings.SVN_BASE_URL, repo.svn_root, pkgbase)
+    cmd = ['svn', 'log', '--limit=1', '--xml', path]
+    log_data = subprocess.check_output(cmd)
+    # the XML format is very very simple, especially with only one revision
+    xml = XML(log_data)
+    revision = int(xml.find('logentry').get('revision'))
+    date = datetime.strptime(xml.findtext('logentry/date'),
+            '%Y-%m-%dT%H:%M:%S.%fZ')
+    return {
+        'revision': revision,
+        'date': date,
+        'author': xml.findtext('logentry/author'),
+        'message': xml.findtext('logentry/msg'),
+    }
+
+def create_specification(package, log):
+    trimmed_message = log['message'].strip()
+    spec = SignoffSpecification(pkgbase=package.pkgbase,
+            pkgver=package.pkgver, pkgrel=package.pkgrel,
+            epoch=package.epoch, arch=package.arch, repo=package.repo,
+            comments=trimmed_message)
+    try:
+        spec.user = User.objects.get(username=log['author'])
+    except User.DoesNotExist:
+        pass
+
+    return spec
+
+def add_signoff_comments():
+    logger.info("getting all signoff groups")
+    groups = get_signoff_groups()
+    logger.info("%d signoff groups found", len(groups))
+
+    for group in groups:
+        if not group.default_spec:
+            continue
+
+        logger.debug("getting SVN log for %s (%s)", group.pkgbase, group.repo)
+        log = svn_log(group.pkgbase, group.repo)
+        logger.info("creating spec with SVN message for %s", group.pkgbase)
+        spec = create_specification(group.packages[0], log)
+        spec.save()
+
+# vim: set ts=4 sw=4 et:

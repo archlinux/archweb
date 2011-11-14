@@ -71,7 +71,7 @@
                     {% if spec.required != 2 %}Required signoffs: {{ spec.required }}<br/>{% endif %}
                     {% if not spec.enabled %}Signoffs are not currently enabled<br/>{% endif %}
                     {% if spec.known_bad %}Package is known to be bad<br/>{% endif %}
-                    {{ spec.comments|default:""|linebreaks }}
+                    {{ spec.comments|default:""|linebreaksbr }}
                 {% endwith %}{% endif %}</td>
             </tr>
             {% endfor %}

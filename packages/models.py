@@ -73,7 +73,7 @@ class SignoffSpecification(models.Model):
     epoch = models.PositiveIntegerField(default=0)
     arch = models.ForeignKey('main.Arch')
     repo = models.ForeignKey('main.Repo')
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True)
     created = models.DateTimeField(editable=False)
     required = models.PositiveIntegerField(default=2,
         help_text="How many signoffs are required for this package?")

@@ -22,7 +22,7 @@ import logging
 from operator import attrgetter
 import sys
 
-from main.models import Package, Repo
+from main.models import Repo
 from packages.models import Signoff
 from packages.utils import get_signoff_groups
 

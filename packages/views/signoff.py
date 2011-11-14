@@ -98,7 +98,10 @@ def _signoff_options_all(request, name, repo):
                         pkgver=package.pkgver, pkgrel=package.pkgrel,
                         epoch=package.epoch, arch=package.arch,
                         repo=package.repo)
+
+            if spec.user is None:
                 spec.user = request.user
+
             form = SignoffOptionsForm(request.POST, instance=spec)
             if form.is_valid():
                 form.save()
@@ -122,6 +125,8 @@ def signoff_options(request, name, repo, arch):
         spec = SignoffSpecification(pkgbase=package.pkgbase,
                 pkgver=package.pkgver, pkgrel=package.pkgrel,
                 epoch=package.epoch, arch=package.arch, repo=package.repo)
+
+    if spec.user is None:
         spec.user = request.user
 
     if request.POST:
