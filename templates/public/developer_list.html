@@ -4,7 +4,7 @@
     <p>
     {% for dev in dev_list %}
     <a href="#{{ dev.username }}" title="Jump to profile for {{ dev.get_full_name }}">
-        {{ dev.first_name }}{{ dev.last_name.0|capfirst}}</a> &nbsp;&nbsp;
+        {{ dev.first_name }} {{ dev.last_name }}</a> &nbsp;&nbsp;
     {% endfor %}
     </p>
 </div>

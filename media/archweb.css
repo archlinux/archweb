@@ -802,6 +802,10 @@ div#arch-bio-toc {
     text-align: center;
 }
 
+    div#arch-bio-toc a {
+        white-space: nowrap;
+    }
+
 table.arch-bio-entry td.pic {
     vertical-align: top;
     padding-right: 15px;

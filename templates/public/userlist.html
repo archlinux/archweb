@@ -6,7 +6,6 @@
 {% block content %}
 {% cache 600 dev-tu-profiles user_type %}
 <div id="dev-tu-profiles" class="box">
-
     <h2>Arch Linux {{user_type}}</h2>
 
     <p>{{description}}</p>
@@ -14,7 +13,6 @@
     {% with users as dev_list %}
     {% include 'public/developer_list.html' %}
     {% endwith %}
-
 </div>
 {% endcache %}
 {% endblock %}

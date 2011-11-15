@@ -21,7 +21,7 @@ def pgp_key_link(key_id):
     pgp_server = getattr(settings, 'PGP_SERVER', None)
     if not pgp_server:
         return format_key(key_id)
-    url = 'http://%s/pks/lookup?op=vindex&fingerprint=on&exact=on&search=0x%s' % \
+    url = 'http://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % \
             (pgp_server, key_id)
     values = (url, format_key(key_id), key_id[-8:])
     return '<a href="%s" title="PGP key search for %s">0x%s</a>' % values
