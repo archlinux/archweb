@@ -112,7 +112,15 @@ INSTALLED_APPS = (
     'visualize',
 )
 
+## Server used for linking to PGP keysearch results
 PGP_SERVER = 'pgp.mit.edu:11371'
+
+# URL to fetch a current list of available ISOs
+ISO_LIST_URL = 'http://releng.archlinux.org/isos/'
+
+# URL for SVN access for fetching commit messages (note absence of packages or
+# community bit on the end, repo.svn_root is appended)
+SVN_BASE_URL = 'svn+ssh://svn.archlinux.org/srv/svn-'
 
 ## Import local settings
 from local_settings import *
@@ -130,12 +138,5 @@ if DEBUG_TOOLBAR:
             list(MIDDLEWARE_CLASSES)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + [ 'debug_toolbar' ]
-
-# URL to fetch a current list of available ISOs
-ISO_LIST_URL = 'http://releng.archlinux.org/isos/'
-
-# URL for SVN access for fetching commit messages (note absence of packages or
-# community bit on the end, repo.svn_root is appended)
-SVN_BASE_URL = 'svn+ssh://svn.archlinux.org/srv/svn-'
 
 # vim: set ts=4 sw=4 et:
