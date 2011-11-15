@@ -33,7 +33,7 @@
                     <td>{{ pkg.last_update|date }}</td>
                 </tr>
             {% empty %}
-                <tr class="empty"><td colspan="4"><em>No flagged packages to display</em></td></tr>
+                <tr class="empty"><td colspan="6"><em>No flagged packages to display</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -91,7 +91,7 @@
                 <td>{{ todo.incomplete_count }}</td>
             </tr>
             {% empty %}
-            <tr class="empty"><td colspan="3"><em>No package todo lists to display</em></td></tr>
+            <tr class="empty"><td colspan="6"><em>No package todo lists to display</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -133,6 +133,8 @@
                     {% endfor %}
                 </ul></td>
             </tr>
+            {% empty %}
+            <tr class="empty"><td colspan="7"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
