@@ -20,6 +20,7 @@ from django.core.management.base import NoArgsCommand
 
 from ...models import SignoffSpecification
 from ...utils import get_signoff_groups
+from devel.utils import UserFinder
 
 logging.basicConfig(
     level=logging.INFO,
@@ -58,23 +59,21 @@ def svn_log(pkgbase, repo):
         'message': xml.findtext('logentry/msg'),
     }
 
-def create_specification(package, log):
+def create_specification(package, log, finder):
     trimmed_message = log['message'].strip()
     spec = SignoffSpecification(pkgbase=package.pkgbase,
             pkgver=package.pkgver, pkgrel=package.pkgrel,
             epoch=package.epoch, arch=package.arch, repo=package.repo,
             comments=trimmed_message)
-    try:
-        spec.user = User.objects.get(username=log['author'])
-    except User.DoesNotExist:
-        pass
-
+    spec.user = finder.find_by_username(log['author'])
     return spec
 
 def add_signoff_comments():
     logger.info("getting all signoff groups")
     groups = get_signoff_groups()
     logger.info("%d signoff groups found", len(groups))
+
+    finder = UserFinder()
 
     for group in groups:
         if not group.default_spec:
@@ -83,7 +82,7 @@ def add_signoff_comments():
         logger.debug("getting SVN log for %s (%s)", group.pkgbase, group.repo)
         log = svn_log(group.pkgbase, group.repo)
         logger.info("creating spec with SVN message for %s", group.pkgbase)
-        spec = create_specification(group.packages[0], log)
+        spec = create_specification(group.packages[0], log, finder)
         spec.save()
 
 # vim: set ts=4 sw=4 et:

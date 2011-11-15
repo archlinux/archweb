@@ -47,6 +47,7 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
 class UserFinder(object):
     def __init__(self):
         self.cache = {}
+        self.username_cache = {}
 
     @staticmethod
     def user_email(name, email):
@@ -111,7 +112,22 @@ class UserFinder(object):
         self.cache[userstring] = user
         return user
 
+    def find_by_username(self, username):
+        if not username:
+            return None
+        if username in self.username_cache:
+            return self.username_cache[username]
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = None
+
+        self.username_cache[username] = user
+        return user
+
     def clear_cache(self):
         self.cache = {}
+        self.username_cache = {}
 
 # vim: set ts=4 sw=4 et:
