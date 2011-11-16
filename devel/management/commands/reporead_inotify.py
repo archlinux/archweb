@@ -23,6 +23,7 @@ import threading
 import time
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import connection
 
 from main.models import Arch, Repo
 from .reporead import read_repo
@@ -89,6 +90,11 @@ class Command(BaseCommand):
         if total_paths != len(all_paths):
             raise CommandError('path template did not uniquely '
                     'determine architecture for each file')
+
+        # this thread is done using the database; all future access is done in
+        # the spawned read_repo() processes, so close the otherwise completely
+        # idle connection.
+        connection.close()
 
         # A proper atomic replacement of the database as done by rsync is type
         # IN_MOVED_TO. repo-add/remove will finish with a IN_CLOSE_WRITE.
