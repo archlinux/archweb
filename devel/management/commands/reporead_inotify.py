@@ -15,6 +15,7 @@ correctly.
 """
 
 import logging
+import multiprocessing
 import os.path
 import pyinotify
 import sys
@@ -133,6 +134,7 @@ class Database(object):
                 return
             if self.update_thread:
                 self.update_thread.cancel()
+                self.update_thread = None
             self._start_update_countdown()
 
     def update(self):
@@ -142,8 +144,13 @@ class Database(object):
             self.updating = True
 
         try:
-            # invoke reporead's primary method
-            read_repo(self.arch, self.path, {})
+            # invoke reporead's primary method. we do this in a separate
+            # process for memory conservation purposes; these processes grow
+            # rather large so it is best to free up the memory ASAP.
+            process = multiprocessing.Process(target=read_repo,
+                    args=[self.arch, self.path, {}])
+            process.start()
+            process.join()
         finally:
             logger.debug('Done updating database %s.', self.path)
             with self.lock:
