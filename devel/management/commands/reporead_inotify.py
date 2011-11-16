@@ -54,6 +54,11 @@ class Command(BaseCommand):
         logger.info('Entering notifier loop')
         notifier.loop()
 
+        logger.info('Cancelling remaining threads...')
+        for thread in threading.enumerate():
+            if hasattr(thread, 'cancel'):
+                thread.cancel()
+
     def setup_notifier(self):
         '''Set up and configure the inotify machinery and logic.
         This takes the provided or default path_template and builds a list of
