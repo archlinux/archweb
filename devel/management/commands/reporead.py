@@ -450,13 +450,14 @@ def parse_repo(repopath):
                 continue
             data_file = repodb.extractfile(tarinfo)
             data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                    encoding='utf=8')
+                    encoding='UTF-8')
             try:
                 pkgs[pkgid].populate(parse_info(data_file))
             except UnicodeDecodeError:
                 logger.warn("Could not correctly decode %s, skipping file",
                         tarinfo.name)
             data_file.close()
+            del data_file
 
             logger.debug("Done parsing file %s/%s", pkgid, fname)
 
@@ -498,10 +499,10 @@ def read_repo(primary_arch, repo_file, options):
             logger.warning("Package %s arch = %s", package.name, package.arch)
     del packages
 
-    logger.info('Starting database updates.')
+    logger.info('Starting database updates for %s.', repo_file)
     for arch in sorted(packages_arches.keys()):
         db_update(arch, repo, packages_arches[arch], options)
-    logger.info('Finished database updates.')
+    logger.info('Finished database updates for %s.', repo_file)
     return 0
 
 # vim: set ts=4 sw=4 et:
