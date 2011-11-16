@@ -51,8 +51,6 @@ class Command(BaseCommand):
     def handle(self, arch=None, filename=None, **options):
         if not arch:
             raise CommandError('Architecture is required.')
-        if not validate_arch(arch):
-            raise CommandError('Specified architecture %s is not currently known.' % arch)
         if not filename:
             raise CommandError('Package database file is required.')
         filename = os.path.normpath(filename)
@@ -464,29 +462,38 @@ def parse_repo(repopath):
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
     return (reponame, pkgs.values())
 
-def validate_arch(archname):
+def locate_arch(arch):
     "Check if arch is valid."
-    return Arch.objects.filter(name__iexact=archname).exists()
+    if isinstance(arch, Arch):
+        return arch
+    try:
+        return Arch.objects.get(name__iexact=arch)
+    except Arch.DoesNotExist:
+        raise CommandError(
+                'Specified architecture %s is not currently known.' % arch)
+
 
 def read_repo(primary_arch, repo_file, options):
     """
     Parses repo.db.tar.gz file and returns exit status.
     """
+    # always returns an Arch object, regardless of what is passed in
+    primary_arch = locate_arch(primary_arch)
+
     repo, packages = parse_repo(repo_file)
 
     # group packages by arch -- to handle noarch stuff
     packages_arches = {}
     for arch in Arch.objects.filter(agnostic=True):
         packages_arches[arch.name] = []
-    packages_arches[primary_arch] = []
+    packages_arches[primary_arch.name] = []
 
     for package in packages:
         if package.arch in packages_arches:
             packages_arches[package.arch].append(package)
         else:
             # we don't include mis-arched packages
-            logger.warning("Package %s arch = %s",
-                package.name, package.arch)
+            logger.warning("Package %s arch = %s", package.name, package.arch)
     del packages
 
     logger.info('Starting database updates.')
