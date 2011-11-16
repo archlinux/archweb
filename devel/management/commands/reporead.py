@@ -36,6 +36,8 @@ logging.basicConfig(
     format='%(asctime)s -> %(levelname)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     stream=sys.stderr)
+TRACE = 5
+logging.addLevelName(TRACE, 'TRACE')
 logger = logging.getLogger()
 
 class Command(BaseCommand):
@@ -368,7 +370,7 @@ def db_update(archname, reponame, pkgs, options):
     # packages in both database and in syncdb (update in database)
     pkg_in_both = syncset & dbset
     for p in [x for x in pkgs if x.name in pkg_in_both]:
-        logger.debug("Looking for package updates")
+        logger.debug("Checking package %s", p.name)
         dbp = dbdict[p.name]
         timestamp = None
         # for a force, we don't want to update the timestamp.
@@ -406,7 +408,7 @@ def parse_info(iofile):
             continue
         elif line.startswith('%') and line.endswith('%'):
             blockname = line[1:-1].lower()
-            logger.debug("Parsing package block %s", blockname)
+            logger.log(TRACE, "Parsing package block %s", blockname)
             store[blockname] = []
         elif blockname:
             store[blockname].append(line)
@@ -456,7 +458,7 @@ def parse_repo(repopath):
                         tarinfo.name)
             data_file.close()
 
-            logger.debug("Done parsing file %s", fname)
+            logger.debug("Done parsing file %s/%s", pkgid, fname)
 
     repodb.close()
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
