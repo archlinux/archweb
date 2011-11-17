@@ -16,7 +16,7 @@ correctly.
 
 import logging
 import multiprocessing
-import os.path
+import os
 import pyinotify
 import sys
 import threading
@@ -113,10 +113,11 @@ class Database(object):
     various bits of metadata and state representing the file path, when we last
     updated, how long our delay is before performing the update, whether we are
     updating now, etc.'''
-    def __init__(self, arch, path, delay=60.0):
+    def __init__(self, arch, path, delay=60.0, nice=3):
         self.arch = arch
         self.path = path
         self.delay = delay
+        self.nice = nice
         self.mtime = None
         self.last_import = None
         self.update_thread = None
@@ -153,8 +154,12 @@ class Database(object):
             # invoke reporead's primary method. we do this in a separate
             # process for memory conservation purposes; these processes grow
             # rather large so it is best to free up the memory ASAP.
-            process = multiprocessing.Process(target=read_repo,
-                    args=[self.arch, self.path, {}])
+            def run():
+                if self.nice != 0:
+                    os.nice(self.nice)
+                read_repo(self.arch, self.path, {})
+
+            process = multiprocessing.Process(target=run)
             process.start()
             process.join()
         finally:
