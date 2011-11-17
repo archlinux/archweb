@@ -159,7 +159,7 @@ class Package(models.Model):
             on_delete=models.PROTECT)
     arch = models.ForeignKey(Arch, related_name="packages",
             on_delete=models.PROTECT)
-    pkgname = models.CharField(max_length=255, db_index=True)
+    pkgname = models.CharField(max_length=255)
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
@@ -184,6 +184,7 @@ class Package(models.Model):
         db_table = 'packages'
         ordering = ('pkgname',)
         get_latest_by = 'last_update'
+        unique_together = (('pkgname', 'repo', 'arch'),)
 
     def __unicode__(self):
         return self.pkgname
