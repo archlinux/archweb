@@ -164,7 +164,7 @@ class Package(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    pkgdesc = models.CharField(max_length=255, null=True)
+    pkgdesc = models.TextField(null=True)
     url = models.CharField(max_length=255, null=True)
     filename = models.CharField(max_length=255)
     compressed_size = PositiveBigIntegerField()
