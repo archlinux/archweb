@@ -1,4 +1,4 @@
-from urllib import urlencode, quote as urlquote
+from urllib import urlencode, quote as urlquote, unquote
 try:
     from urlparse import parse_qs
 except ImportError:
@@ -12,6 +12,17 @@ register = template.Library()
 def link_encode(url, query, doseq=False):
     data = urlencode(query, doseq).replace('&', '&amp;')
     return "%s?%s" % (url, data)
+
+@register.filter
+def url_unquote(original_url):
+    try:
+        url = original_url
+        if isinstance(url, unicode):
+            url = url.encode('ascii')
+        url = unquote(url).decode('utf-8')
+        return url
+    except UnicodeError:
+        return original_url
 
 class BuildQueryStringNode(template.Node):
     def __init__(self, sortfield):

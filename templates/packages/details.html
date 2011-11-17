@@ -108,7 +108,7 @@
         </tr><tr>
             <th>Upstream URL:</th>
             <td>{% if pkg.url %}<a href="{{ pkg.url }}"
-                    title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url }}</a>{% endif %}</td>
+                    title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url|url_unquote }}</a>{% endif %}</td>
         </tr><tr>
             <th>License(s):</th>
             <td>{{ pkg.licenses.all|join:", " }}</td>
