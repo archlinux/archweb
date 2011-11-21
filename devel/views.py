@@ -83,7 +83,7 @@ def index(request):
 @never_cache
 def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
-            'username').select_related('userprofile')
+            'first_name', 'last_name').select_related('userprofile')
 
     now = datetime.now()
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)

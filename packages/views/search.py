@@ -60,7 +60,8 @@ class PackageSearchForm(forms.Form):
         self.fields['arch'].choices = make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
-        maints = User.objects.filter(is_active=True).order_by('username')
+        maints = User.objects.filter(is_active=True).order_by(
+                'first_name', 'last_name')
         self.fields['maintainer'].choices = \
                 [('', 'All'), ('orphan', 'Orphan')] + \
                 [(m.username, m.get_full_name()) for m in maints]

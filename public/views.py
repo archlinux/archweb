@@ -34,13 +34,15 @@ USER_LISTS = {
 }
 
 def userlist(request, user_type='devs'):
-    users = User.objects.order_by('username').select_related('userprofile')
+    users = User.objects.order_by(
+            'first_name', 'last_name').select_related('userprofile')
     if user_type == 'devs':
         users = users.filter(is_active=True, groups__name="Developers")
     elif user_type == 'tus':
         users = users.filter(is_active=True, groups__name="Trusted Users")
     elif user_type == 'fellows':
-        users = users.filter(is_active=False, groups__name__in=["Developers", "Trusted Users"])
+        users = users.filter(is_active=False,
+                groups__name__in=["Developers", "Trusted Users"])
     else:
         raise Http404
 

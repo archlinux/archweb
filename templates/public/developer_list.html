@@ -21,7 +21,7 @@
             <table class="bio bio-{{ dev.username }}" cellspacing="0">
                 <tr>
                     <th>Name:</th>
-                    <td>{{ dev.get_full_name }}</td>
+                    <td>{{ dev.get_full_name }}{% if prof.latin_name %} ({{ prof.latin_name}}){% endif %}</td>
                 </tr><tr>
                     <th>Alias:</th>
                     <td>{{ prof.alias }}</td>

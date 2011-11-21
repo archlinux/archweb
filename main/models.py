@@ -77,6 +77,8 @@ class UserProfile(models.Model):
         help_text="Ideally 125px by 125px")
     user = models.OneToOneField(User, related_name='userprofile')
     allowed_repos = models.ManyToManyField('Repo', blank=True)
+    latin_name = models.CharField(max_length=255, null=True, blank=True,
+        help_text="Latin-form name; used only for non-Latin full names")
 
     class Meta:
         db_table = 'user_profiles'
