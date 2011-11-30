@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load pgp %}
+
+{% block title %}Arch Linux - Master Signing Keys{% endblock %}
+
+{% block content %}
+<div id="signing-keys" class="box">
+    <h2>Master Signing Keys</h2>
+
+    <p>This page lists the Arch Linux Master Keys. This is a distributed set of
+    keys that are seen as "official" signing keys of the distribution. Each key
+    is held by a different developer, and a revocation certificate for the key
+    is held by a different developer. Thus, no one developer has absolute hold
+    on any sort of absolute, root trust.</p>
+    <p>The {{ keys|length }} key{{ keys|pluralize }} listed below should be
+    regarded as the current set of master keys. They are available on public
+    keyservers and should be signed by the owner of the key.</p>
+    <p>All official Arch Linux developers and trusted users should have their
+    key signed by at least three of these master keys. This is in accordance
+    with the PGP <em>web of trust</em> concept. If a user is willing to
+    marginally trust all of the master keys, three signatures from different
+    master keys will consider a given developer's key as valid. For more
+    information on trust, please consult the
+    <a href="http://www.gnupg.org/gph/en/manual.html">GNU Privacy Handbook</a>
+    and <a href="http://www.gnupg.org/gph/en/manual.html#AEN385">Using trust to
+    validate keys</a>.</p>
+
+    <table class="pretty2">
+        <thead>
+            <tr>
+                <th>Master Key</th>
+                <th>Full Fingerprint</th>
+                <th>Owner</th>
+                <th>Owner's Signing Key</th>
+                <th>Revoker</th>
+                <th>Revoker's Signing Key</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key in keys %}
+            <tr>
+                <td>{% pgp_key_link key.pgp_key %}</td>
+                <td>{{ key.pgp_key|pgp_fingerprint }}</td>
+                {% with key.owner.userprofile as owner_profile %}
+                <td><a href="{{ owner_profile.get_absolute_url }}">{{ key.owner.get_full_name }}</a></td>
+                <td>{% pgp_key_link owner_profile.pgp_key %}</td>
+                {% endwith %}
+                {% with key.revoker.userprofile as revoker_profile %}
+                <td><a href="{{ revoker_profile.get_absolute_url }}">{{ key.revoker.get_full_name }}</a></td>
+                <td>{% pgp_key_link revoker_profile.pgp_key %}</td>
+                {% endwith %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

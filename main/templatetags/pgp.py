@@ -1,5 +1,7 @@
 from django import template
 from django.conf import settings
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -25,5 +27,16 @@ def pgp_key_link(key_id):
             (pgp_server, key_id)
     values = (url, format_key(key_id), key_id[-8:])
     return '<a href="%s" title="PGP key search for %s">0x%s</a>' % values
+
+@register.filter
+def pgp_fingerprint(key_id, autoescape=True):
+    if not key_id:
+        return u''
+    if autoescape:
+        esc = conditional_escape
+    else:
+        esc = lambda x: x
+    return mark_safe(format_key(esc(key_id)))
+pgp_fingerprint.needs_autoescape = True
 
 # vim: set ts=4 sw=4 et:

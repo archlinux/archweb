@@ -67,6 +67,7 @@ urlpatterns += patterns('public.views',
     (r'^fellows/$',      'userlist', { 'user_type':'fellows' }, 'page-fellows'),
     (r'^donate/$',       'donate',   {}, 'page-donate'),
     (r'^download/$',     'download', {}, 'page-download'),
+    (r'^master-keys/$',  'keys',     {}, 'page-keys'),
 )
 
 # Includes and other remaining stuff

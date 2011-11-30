@@ -53,6 +53,18 @@ class UserProfile(models.Model):
         verbose_name = 'Additional Profile Data'
         verbose_name_plural = 'Additional Profile Data'
 
+    def get_absolute_url(self):
+        # TODO: this is disgusting. find a way to consolidate this logic with
+        # public.views.userlist among other places, and make some constants or
+        # something so we aren't using copies of string names everywhere.
+        group_names = self.user.groups.values_list('name', flat=True)
+        if "Developers" in group_names:
+            prefix = "developers"
+        elif "Trusted Users" in group_names:
+            prefix = "trustedusers"
+        else:
+            prefix = "fellows"
+        return '/%s/#%s' % (prefix, self.user.username)
 
 class TodolistManager(models.Manager):
     def incomplete(self):

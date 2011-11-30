@@ -1,17 +1,17 @@
-from main.models import Arch, Repo, Donor
-from mirrors.models import MirrorUrl
-from news.models import News
-from . import utils
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import Http404
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
+from devel.models import MasterKey
+from main.models import Arch, Repo, Donor
+from mirrors.models import MirrorUrl
+from news.models import News
+from utils import get_recent_updates
 
 def index(request):
-    pkgs = utils.get_recent_updates()
+    pkgs = get_recent_updates()
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': pkgs,
@@ -76,5 +76,11 @@ def feeds(request):
         'repos': Repo.objects.all(),
     }
     return direct_to_template(request, 'public/feeds.html', context)
+
+def keys(request):
+    context = {
+        'keys': MasterKey.objects.select_related('owner', 'revoker').all(),
+    }
+    return direct_to_template(request, 'public/keys.html', context)
 
 # vim: set ts=4 sw=4 et:
