@@ -24,7 +24,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 class Command(BaseCommand):
-    args = "<keyserver> <keyring_path>"
+    args = "<keyserver> <keyring_path> [ownertrust_path]"
     help = "Assemble a GPG keyring with all known developer keys."
 
     def handle(self, *args, **options):
@@ -36,10 +36,14 @@ class Command(BaseCommand):
         elif v == 2:
             logger.level = logging.DEBUG
 
-        if len(args) != 2:
+        if len(args) < 2:
             raise CommandError("keyserver and keyring_path must be provided")
 
-        return generate_keyring(args[0], args[1])
+        generate_keyring(args[0], args[1])
+
+        if len(args) > 2:
+            generate_ownertrust(args[2])
+
 
 def generate_keyring(keyserver, keyring):
     logger.info("getting all known key IDs")
@@ -59,5 +63,24 @@ def generate_keyring(keyserver, keyring):
     gpg_cmd.extend(master_key_ids)
     subprocess.check_call(gpg_cmd)
     logger.info("keyring at %s successfully updated", keyring)
+
+
+TRUST_LEVELS = {
+    'unknown': 0,
+    'expired': 1,
+    'undefined': 2,
+    'never': 3,
+    'marginal': 4,
+    'fully': 5,
+    'ultimate': 6,
+}
+
+
+def generate_ownertrust(trust_path):
+    master_key_ids = MasterKey.objects.values_list("pgp_key", flat=True)
+    with open(trust_path, "w") as trustfile:
+        for key_id in master_key_ids:
+            trustfile.write("%s:%d:\n" % (key_id, TRUST_LEVELS['marginal']))
+    logger.info("trust file at %s created or overwritten", trust_path)
 
 # vim: set ts=4 sw=4 et:
