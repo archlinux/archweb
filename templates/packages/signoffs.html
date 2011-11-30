@@ -56,7 +56,7 @@
                 <td>{{ group.target_repo }}</td>
                 <td>{{ group.packager|default:"Unknown" }}</td>
                 <td>{{ group.packages|length }}</td>
-                <td>{{ group.last_update|date }}</td>
+                <td class="epoch-{{ group.last_update|date:'U' }}">{{ group.last_update|date }}</td>
                 {% if group.specification.known_bad %}
                 <td class="approval signoff-bad">Bad</td>
                 {% else %}
@@ -85,7 +85,7 @@
 $(document).ready(function() {
     $('a.signoff-link').click(signoff_package);
     $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0]],
-        headers: { 7: { sorter: false }, 8: {sorter: false } } });
+        headers: { 5: { sorter: 'epochdate' }, 7: { sorter: false }, 8: {sorter: false } } });
     $('#signoffs_filter input').change(filter_signoffs);
     $('#criteria_reset').click(filter_signoffs_reset);
     // fire function on page load to ensure the current form selections take effect

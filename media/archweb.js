@@ -55,6 +55,19 @@ if (typeof $.tablesorter !== 'undefined') {
         type: 'numeric'
     });
     $.tablesorter.addParser({
+        id: 'epochdate',
+        is: function(s) { return false; },
+        format: function(s, t, c) {
+            /* TODO: this assumes our magic class is the only one */
+            var epoch = $(c).attr('class');
+            if (!epoch.indexOf('epoch-') == 0) {
+                return 0;
+            }
+            return epoch.slice(6);
+        },
+        type: 'numeric'
+    });
+    $.tablesorter.addParser({
         id: 'longDateTime',
         re: /^(\d{4})-(\d{2})-(\d{2}) ([012]\d):([0-5]\d)(:([0-5]\d))?( (\w+))?$/,
         is: function(s) {
