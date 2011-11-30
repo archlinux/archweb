@@ -79,7 +79,8 @@ def feeds(request):
 
 def keys(request):
     context = {
-        'keys': MasterKey.objects.select_related('owner', 'revoker').all(),
+        'keys': MasterKey.objects.select_related('owner', 'revoker',
+            'owner__userprofile', 'revoker__userprofile').all(),
     }
     return direct_to_template(request, 'public/keys.html', context)
 

@@ -14,4 +14,7 @@ class MasterKey(models.Model):
     created = models.DateTimeField()
     revoked = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        ordering = ('created',)
+
 # vim: set ts=4 sw=4 et:
