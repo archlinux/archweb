@@ -1,47 +1,17 @@
 from django.db import models
 from django.db.models.signals import pre_save
-from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.forms import ValidationError
 
-from main.utils import cache_function, make_choice, set_created_field
+from .fields import PositiveBigIntegerField, PGPKeyField
+from .utils import cache_function, make_choice, set_created_field
 from packages.models import PackageRelation
 
 from datetime import datetime
 from itertools import groupby
 import pytz
 
-class PositiveBigIntegerField(models.BigIntegerField):
-    _south_introspects = True
-
-    def get_internal_type(self):
-        return "BigIntegerField"
-
-    def formfield(self, **kwargs):
-        defaults = {'min_value': 0}
-        defaults.update(kwargs)
-        return super(PositiveBigIntegerField, self).formfield(**defaults)
-
-class PGPKeyField(models.CharField):
-    _south_introspects = True
-
-    def to_python(self, value):
-        if value == '' or value is None:
-            return None
-        value = super(PGPKeyField, self).to_python(value)
-        # remove all spaces
-        value = value.replace(' ', '')
-        # prune prefixes, either 0x or 2048R/ type
-        if value.startswith('0x'):
-            value = value[2:]
-        value = value.split('/')[-1]
-        # make all (hex letters) uppercase
-        return value.upper()
-
-    def formfield(self, **kwargs):
-        # override so we don't set max_length form field attribute
-        return models.Field.formfield(self, **kwargs)
 
 class UserProfile(models.Model):
     notify = models.BooleanField(
@@ -62,8 +32,6 @@ class UserProfile(models.Model):
     other_contact = models.CharField(max_length=100, null=True, blank=True)
     pgp_key = PGPKeyField(max_length=40, null=True, blank=True,
         verbose_name="PGP key fingerprint",
-        validators=[RegexValidator(r'^[0-9A-F]{40}$',
-            "Ensure this value consists of 40 hex characters.", 'hex_char')],
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     website = models.CharField(max_length=200, null=True, blank=True)
     yob = models.IntegerField("Year of birth", null=True, blank=True)
