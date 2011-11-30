@@ -382,11 +382,13 @@ def db_update(archname, reponame, pkgs, options):
         # files/depends/all related items to be double-imported.
         if filesonly:
             with transaction.commit_on_success():
+                if not dbpkg.files_last_update or not dbpkg.last_update:
+                    pass
+                elif dbpkg.files_last_update > dbpkg.last_update:
+                    logger.debug("Files for %s are up to date", pkg.name)
+                    continue
                 # TODO Django 1.4 select_for_update() will work once released
                 dbpkg = select_pkg_for_update(dbpkg)
-                if pkg_same_version(pkg, dbpkg):
-                    logger.debug("Package %s was already updated", pkg.name)
-                    continue
                 logger.debug("Checking files for package %s", pkg.name)
                 populate_files(dbpkg, pkg, force=force)
         else:
