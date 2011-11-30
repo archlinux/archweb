@@ -71,10 +71,24 @@ class BaseSitemap(Sitemap):
     base_viewnames = (
             ('index', 1.0, 'hourly'),
             ('packages-search', 0.8, 'hourly'),
-            'page-about', 'page-art', 'page-svn', 'page-devs', 'page-tus',
-            'page-fellows', 'page-donate', 'page-download', 'news-list',
-            'feeds-list', 'groups-list', 'mirror-list', 'mirror-status',
-            'mirrorlist', 'packages-differences', 'releng-test-overview',
+            ('page-keys', 0.8, 'weekly'),
+            ('news-list', 0.7, 'weekly'),
+            ('groups-list', 0.5, 'weekly'),
+            ('mirror-status', 0.4, 'hourly'),
+            'page-about',
+            'page-art',
+            'page-svn',
+            'page-devs',
+            'page-tus',
+            'page-fellows',
+            'page-donate',
+            'page-download',
+            'feeds-list',
+            'mirror-list',
+            'mirrorlist',
+            'packages-differences',
+            'releng-test-overview',
+            'visualize-index',
     )
 
     def items(self):

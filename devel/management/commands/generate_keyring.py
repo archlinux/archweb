@@ -13,6 +13,7 @@ import logging
 import subprocess
 import sys
 
+from devel.models import MasterKey
 from main.models import UserProfile
 
 logging.basicConfig(
@@ -48,11 +49,14 @@ def generate_keyring(keyserver, keyring):
             pgp_key__isnull=False).extra(where=["pgp_key != ''"]).values_list(
             "pgp_key", flat=True)
     logger.info("%d keys fetched from user profiles", len(key_ids))
+    master_key_ids = MasterKey.objects.values_list("pgp_key", flat=True)
+    logger.info("%d keys fetched from master keys", len(master_key_ids))
 
     gpg_cmd = ["gpg", "--no-default-keyring", "--keyring", keyring,
             "--keyserver", keyserver, "--recv-keys"]
     logger.info("running command: %r", gpg_cmd)
     gpg_cmd.extend(key_ids)
+    gpg_cmd.extend(master_key_ids)
     subprocess.check_call(gpg_cmd)
     logger.info("keyring at %s successfully updated", keyring)
 
