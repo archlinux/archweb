@@ -282,40 +282,20 @@ def select_pkg_for_update(dbpkg):
     return list(new_pkg)[0]
 
 
-def db_update(archname, reponame, pkgs, options):
-    """
-    Parses a list and updates the Arch dev database accordingly.
-
-    Arguments:
-      pkgs -- A list of Pkg objects.
-
-    """
-    logger.info('Updating Arch: %s', archname)
-    force = options.get('force', False)
-    filesonly = options.get('filesonly', False)
-
+def update_common(archname, reponame, pkgs, sanity_check=True):
     with transaction.commit_manually():
         repository = Repo.objects.get(name__iexact=reponame)
         architecture = Arch.objects.get(name__iexact=archname)
         # no-arg order_by() removes even the default ordering; we don't need it
         dbpkgs = Package.objects.filter(
                 arch=architecture, repo=repository).order_by()
-        # This makes our inner loop where we find packages by name *way* more
-        # efficient by not having to go to the database for each package to
-        # SELECT them by name.
-        dbdict = dict((dbpkg.pkgname, dbpkg) for dbpkg in dbpkgs)
 
-        logger.debug("Creating sets")
-        dbset = set(dbdict.keys())
-        syncset = set([pkg.name for pkg in pkgs])
-        logger.info("%d packages in current web DB", len(dbset))
-        logger.info("%d packages in new updating db", len(syncset))
-        in_sync_not_db = syncset - dbset
-        logger.info("%d packages in sync not db", len(in_sync_not_db))
+        logger.info("%d packages in current web DB", len(dbpkgs))
+        logger.info("%d packages in new updating DB", len(pkgs))
 
         # Try to catch those random package deletions that make Eric so unhappy.
-        if len(dbset):
-            dbpercent = 100.0 * len(syncset) / len(dbset)
+        if len(dbpkgs):
+            dbpercent = 100.0 * len(pkgs) / len(dbpkgs)
         else:
             dbpercent = 0.0
         logger.info("DB package ratio: %.1f%%", dbpercent)
@@ -324,11 +304,13 @@ def db_update(archname, reponame, pkgs, options):
         # means we expect the repo to fluctuate a lot.
         msg = "Package database has %.1f%% the number of packages in the " \
                 "web database" % dbpercent
-        if len(dbset) == 0 and len(syncset) == 0:
+        if not sanity_check:
             pass
-        elif not filesonly and \
-                len(dbset) > 20 and dbpercent < 50.0 and \
-                not repository.testing and not repository.staging:
+        elif repository.testing or repository.staging:
+            pass
+        elif len(dbpkgs) == 0 and len(pkgs) == 0:
+            pass
+        elif len(dbpkgs) > 20 and dbpercent < 50.0:
             logger.error(msg)
             raise Exception(msg)
         elif dbpercent < 75.0:
@@ -339,27 +321,45 @@ def db_update(archname, reponame, pkgs, options):
         # to guard against simultaneous updates
         transaction.commit()
 
-    if not filesonly:
-        # packages in syncdb and not in database (add to database)
-        for pkg in (pkg for pkg in pkgs if pkg.name in in_sync_not_db):
-            logger.info("Adding package %s", pkg.name)
-            dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
-            try:
-                with transaction.commit_on_success():
-                    populate_pkg(dbpkg, pkg, timestamp=datetime.utcnow())
-            except IntegrityError:
-                logger.warning("Could not add package %s; "
-                        "not fatal if another thread beat us to it.",
-                        pkg.name, exc_info=True)
+    return dbpkgs
 
-        # packages in database and not in syncdb (remove from database)
-        for pkgname in (dbset - syncset):
-            logger.info("Removing package %s", pkgname)
-            dbpkg = dbdict[pkgname]
+def db_update(archname, reponame, pkgs, force=False):
+    """
+    Parses a list of packages and updates the packages database accordingly.
+    """
+    logger.info('Updating %s (%s)', reponame, archname)
+    dbpkgs = update_common(archname, reponame, pkgs, True)
+
+    # This makes our inner loop where we find packages by name *way* more
+    # efficient by not having to go to the database for each package to
+    # SELECT them by name.
+    dbdict = dict((dbpkg.pkgname, dbpkg) for dbpkg in dbpkgs)
+
+    dbset = set(dbdict.keys())
+    syncset = set([pkg.name for pkg in pkgs])
+
+    in_sync_not_db = syncset - dbset
+    logger.info("%d packages in sync not db", len(in_sync_not_db))
+    # packages in syncdb and not in database (add to database)
+    for pkg in (pkg for pkg in pkgs if pkg.name in in_sync_not_db):
+        logger.info("Adding package %s", pkg.name)
+        dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
+        try:
             with transaction.commit_on_success():
-                # no race condition here as long as simultaneous threads both
-                # issue deletes; second delete will be a no-op
-                dbpkg.delete()
+                populate_pkg(dbpkg, pkg, timestamp=datetime.utcnow())
+        except IntegrityError:
+            logger.warning("Could not add package %s; "
+                    "not fatal if another thread beat us to it.",
+                    pkg.name, exc_info=True)
+
+    # packages in database and not in syncdb (remove from database)
+    for pkgname in (dbset - syncset):
+        logger.info("Removing package %s", pkgname)
+        dbpkg = dbdict[pkgname]
+        with transaction.commit_on_success():
+            # no race condition here as long as simultaneous threads both
+            # issue deletes; second delete will be a no-op
+            dbpkg.delete()
 
     # packages in both database and in syncdb (update in database)
     pkg_in_both = syncset & dbset
@@ -369,9 +369,7 @@ def db_update(archname, reponame, pkgs, options):
         timestamp = None
         # for a force, we don't want to update the timestamp.
         # for a non-force, we don't want to do anything at all.
-        if filesonly:
-            pass
-        elif pkg_same_version(pkg, dbpkg):
+        if pkg_same_version(pkg, dbpkg):
             if not force:
                 continue
         else:
@@ -380,28 +378,45 @@ def db_update(archname, reponame, pkgs, options):
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing
         # files/depends/all related items to be double-imported.
-        if filesonly:
-            with transaction.commit_on_success():
-                if not dbpkg.files_last_update or not dbpkg.last_update:
-                    pass
-                elif dbpkg.files_last_update > dbpkg.last_update:
-                    logger.debug("Files for %s are up to date", pkg.name)
-                    continue
-                # TODO Django 1.4 select_for_update() will work once released
-                dbpkg = select_pkg_for_update(dbpkg)
-                logger.debug("Checking files for package %s", pkg.name)
-                populate_files(dbpkg, pkg, force=force)
-        else:
-            with transaction.commit_on_success():
-                # TODO Django 1.4 select_for_update() will work once released
-                dbpkg = select_pkg_for_update(dbpkg)
-                if pkg_same_version(pkg, dbpkg):
-                    logger.debug("Package %s was already updated", pkg.name)
-                    continue
-                logger.info("Updating package %s", pkg.name)
-                populate_pkg(dbpkg, pkg, force=force, timestamp=timestamp)
+        with transaction.commit_on_success():
+            # TODO Django 1.4 select_for_update() will work once released
+            dbpkg = select_pkg_for_update(dbpkg)
+            if pkg_same_version(pkg, dbpkg):
+                logger.debug("Package %s was already updated", pkg.name)
+                continue
+            logger.info("Updating package %s", pkg.name)
+            populate_pkg(dbpkg, pkg, force=force, timestamp=timestamp)
 
-    logger.info('Finished updating Arch: %s', archname)
+    logger.info('Finished updating arch: %s', archname)
+
+
+def filesonly_update(archname, reponame, pkgs, force=False):
+    """
+    Parses a list of packages and updates the packages database accordingly.
+    """
+    logger.info('Updating files for %s (%s)', reponame, archname)
+    dbpkgs = update_common(archname, reponame, pkgs, False)
+    dbdict = dict((dbpkg.pkgname, dbpkg) for dbpkg in dbpkgs)
+    dbset = set(dbdict.keys())
+
+    for pkg in (pkg for pkg in pkgs if pkg.name in dbset):
+        dbpkg = dbdict[pkg.name]
+
+        # The odd select_for_update song and dance here are to ensure
+        # simultaneous updates don't happen on a package, causing
+        # files to be double-imported.
+        with transaction.commit_on_success():
+            if not dbpkg.files_last_update or not dbpkg.last_update:
+                pass
+            elif dbpkg.files_last_update > dbpkg.last_update:
+                logger.debug("Files for %s are up to date", pkg.name)
+                continue
+            # TODO Django 1.4 select_for_update() will work once released
+            dbpkg = select_pkg_for_update(dbpkg)
+            logger.debug("Checking files for package %s", pkg.name)
+            populate_files(dbpkg, pkg, force=force)
+
+    logger.info('Finished updating arch: %s', archname)
 
 
 def parse_info(iofile):
@@ -490,6 +505,8 @@ def read_repo(primary_arch, repo_file, options):
     """
     # always returns an Arch object, regardless of what is passed in
     primary_arch = locate_arch(primary_arch)
+    force = options.get('force', False)
+    filesonly = options.get('filesonly', False)
 
     repo, packages = parse_repo(repo_file)
 
@@ -509,7 +526,10 @@ def read_repo(primary_arch, repo_file, options):
 
     logger.info('Starting database updates for %s.', repo_file)
     for arch in sorted(packages_arches.keys()):
-        db_update(arch, repo, packages_arches[arch], options)
+        if filesonly:
+            filesonly_update(arch, repo, packages_arches[arch], force)
+        else:
+            db_update(arch, repo, packages_arches[arch], force)
     logger.info('Finished database updates for %s.', repo_file)
     return 0
 
