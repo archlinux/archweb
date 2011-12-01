@@ -329,6 +329,8 @@ def db_update(archname, reponame, pkgs, force=False):
     """
     logger.info('Updating %s (%s)', reponame, archname)
     dbpkgs = update_common(archname, reponame, pkgs, True)
+    repository = Repo.objects.get(name__iexact=reponame)
+    architecture = Arch.objects.get(name__iexact=archname)
 
     # This makes our inner loop where we find packages by name *way* more
     # efficient by not having to go to the database for each package to
