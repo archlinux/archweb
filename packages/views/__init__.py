@@ -169,9 +169,13 @@ def files(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('directory', 'filename')
+    dir_count = sum(1 for f in fileslist if f.is_directory)
+    files_count = len(fileslist) - dir_count
     context = {
         'pkg': pkg,
         'files': fileslist,
+        'files_count': files_count,
+        'dir_count': dir_count,
     }
     template = 'packages/files.html'
     if request.is_ajax():
