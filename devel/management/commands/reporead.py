@@ -373,7 +373,7 @@ def db_update(archname, reponame, pkgs, force=False):
         # for a non-force, we don't want to do anything at all.
         if not force and pkg_same_version(pkg, dbpkg):
             continue
-        else:
+        elif not force:
             timestamp = datetime.utcnow()
 
         # The odd select_for_update song and dance here are to ensure
