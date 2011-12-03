@@ -123,7 +123,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ['allowed_repos', 'user']
+        exclude = ('allowed_repos', 'user', 'latin_name')
 
 @login_required
 @never_cache
