@@ -61,7 +61,7 @@ def multi_pkg_details(pkgs):
     return ', '.join([pkg_details_link(pkg) for pkg in pkgs])
 
 @register.simple_tag
-def userpkgs(user):
+def maintainer_link(user):
     if user:
         # TODO don't hardcode
         title = escape('View packages maintained by ' + user.get_full_name())
@@ -71,6 +71,19 @@ def userpkgs(user):
                 user.get_full_name(),
         )
     return ''
+
+@register.simple_tag
+def packager_link(user):
+    if user:
+        # TODO don't hardcode
+        title = escape('View packages packaged by ' + user.get_full_name())
+        return '<a href="/packages/?packager=%s" title="%s">%s</a>' % (
+                user.username,
+                title,
+                user.get_full_name(),
+        )
+    return ''
+
 
 @register.simple_tag
 def scm_link(package, operation):
