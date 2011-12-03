@@ -371,9 +371,8 @@ def db_update(archname, reponame, pkgs, force=False):
         timestamp = None
         # for a force, we don't want to update the timestamp.
         # for a non-force, we don't want to do anything at all.
-        if pkg_same_version(pkg, dbpkg):
-            if not force:
-                continue
+        if not force and pkg_same_version(pkg, dbpkg):
+            continue
         else:
             timestamp = datetime.utcnow()
 
@@ -383,7 +382,7 @@ def db_update(archname, reponame, pkgs, force=False):
         with transaction.commit_on_success():
             # TODO Django 1.4 select_for_update() will work once released
             dbpkg = select_pkg_for_update(dbpkg)
-            if pkg_same_version(pkg, dbpkg):
+            if not force and pkg_same_version(pkg, dbpkg):
                 logger.debug("Package %s was already updated", pkg.name)
                 continue
             logger.info("Updating package %s", pkg.name)
@@ -410,7 +409,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
         with transaction.commit_on_success():
             if not dbpkg.files_last_update or not dbpkg.last_update:
                 pass
-            elif dbpkg.files_last_update > dbpkg.last_update:
+            elif not force and dbpkg.files_last_update > dbpkg.last_update:
                 logger.debug("Files for %s are up to date", pkg.name)
                 continue
             # TODO Django 1.4 select_for_update() will work once released
