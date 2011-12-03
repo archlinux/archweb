@@ -179,7 +179,7 @@ def files(request, name, repo, arch):
     }
     template = 'packages/files.html'
     if request.is_ajax():
-        template = 'packages/files-list.html'
+        template = 'packages/files_list.html'
     return direct_to_template(request, template, context)
 
 def details_json(request, name, repo, arch):

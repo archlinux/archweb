@@ -5,9 +5,8 @@ of the package; it may be out of date.</p>
 {% if pkg.files_last_update %}
 {% if files|length %}
 <ul>
-    {% for file in files %}
-    <li>{{ file.directory }}{{ file.filename|default:'' }}</li>
-    {% endfor %}
+{% for file in files %}
+<li>{{ file.directory }}{{ file.filename|default:'' }}</li>{% endfor %}
 </ul>
 {% else %}
 <p class="message">Package has no files.</p>
