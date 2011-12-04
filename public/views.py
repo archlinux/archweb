@@ -63,6 +63,7 @@ def download(request):
     )
     context = {
         'releng_iso_url': settings.ISO_LIST_URL,
+        'releng_pxeboot_url': settings.PXEBOOT_URL,
     }
     return list_detail.object_list(request, 
             qset.order_by('mirror__country', 'mirror__name', 'protocol'),

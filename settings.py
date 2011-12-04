@@ -118,6 +118,9 @@ PGP_SERVER = 'pgp.mit.edu:11371'
 # URL to fetch a current list of available ISOs
 ISO_LIST_URL = 'http://releng.archlinux.org/isos/'
 
+# URL to the PXE netboot instructions
+PXEBOOT_URL = 'http://releng.archlinux.org/pxeboot/'
+
 # URL for SVN access for fetching commit messages (note absence of packages or
 # community bit on the end, repo.svn_root is appended)
 SVN_BASE_URL = 'svn+ssh://svn.archlinux.org/srv/svn-'
