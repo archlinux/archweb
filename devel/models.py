@@ -17,4 +17,17 @@ class MasterKey(models.Model):
     class Meta:
         ordering = ('created',)
 
+
+class PGPSignature(models.Model):
+    signer = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+        help_text="consists of 40 hex digits; use `gpg --fingerprint`")
+    signee = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+        help_text="consists of 40 hex digits; use `gpg --fingerprint`")
+    created = models.DateField()
+    expires = models.DateField(null=True)
+    valid = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'PGP signature'
+
 # vim: set ts=4 sw=4 et:
