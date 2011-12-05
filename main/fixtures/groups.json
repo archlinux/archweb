@@ -11,11 +11,6 @@
                     "package"
                 ], 
                 [
-                    "add_signoff", 
-                    "main", 
-                    "signoff"
-                ], 
-                [
                     "add_todolist", 
                     "main", 
                     "todolist"
@@ -49,6 +44,26 @@
                     "change_news", 
                     "news", 
                     "news"
+                ], 
+                [
+                    "add_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "change_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "add_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
+                ], 
+                [
+                    "change_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
                 ]
             ]
         }
@@ -342,11 +357,6 @@
                     "package"
                 ], 
                 [
-                    "add_signoff", 
-                    "main", 
-                    "signoff"
-                ], 
-                [
                     "add_todolist", 
                     "main", 
                     "todolist"
@@ -370,6 +380,26 @@
                     "delete_todolistpkg", 
                     "main", 
                     "todolistpkg"
+                ], 
+                [
+                    "add_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "change_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "add_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
+                ], 
+                [
+                    "change_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
                 ]
             ]
         }
