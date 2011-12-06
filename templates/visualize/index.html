@@ -4,10 +4,7 @@
 
 {% block content %}
 <div class="box">
-
-    <h2>Visualizations of Packaging Data</h2>
-
-    <h3>Package Treemap</h3>
+    <h2>Visualization of Package Data</h2>
 
     <div class="visualize-buttons">
         <div>
@@ -25,9 +22,16 @@
     </div>
     <div id="visualize-archrepo" class="visualize-chart"></div>
 </div>
+{% comment %}
+<div class="box">
+    <h2>Visualization of PGP Master and Signing Keys</h2>
 
+    <div id="visualize-keys" class="visualize-chart"></div>
+</div>
+{% endcomment %}
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="/media/d3.min.js"></script>
+<script type="text/javascript" src="/media/d3.geom.min.js"></script>
 <script type="text/javascript" src="/media/d3.layout.min.js"></script>
 <script type="text/javascript" src="/media/archweb.js"></script>
 <script type="text/javascript" src="/media/visualize.js"></script>
@@ -38,6 +42,7 @@ $(document).ready(function() {
         "arch": { url: "{% url visualize-byarch %}", color_attr: "arch" },
     };
     packages_treemap("#visualize-archrepo", orderings, "repo");
+    /*developer_keys("#visualize-keys", "{% url visualize-pgp_keys %}");*/
 });
 </script>
 {% endblock %}

@@ -986,3 +986,15 @@ ul.signoff-list {
         font-size: 0.85em;
         line-height: 1em;
     }
+
+#visualize-keys svg {
+    width: 100%;
+}
+
+    #visualize-keys circle {
+        stroke-width: 1.5px;
+    }
+
+    #visualize-keys line {
+        stroke: #888;
+    }

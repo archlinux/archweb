@@ -1,5 +1,5 @@
 function packages_treemap(chart_id, orderings, default_order) {
-    var jq_div = $(chart_id),
+    var jq_div = jQuery(chart_id),
         color = d3.scale.category20();
     var key_func = function(d) { return d.key; };
     var value_package_count = function(d) { return d.count; },
@@ -109,7 +109,7 @@ function packages_treemap(chart_id, orderings, default_order) {
         });
     };
 
-    $.each(orderings, function(k, v) {
+    jQuery.each(orderings, function(k, v) {
         make_group_button(k, v);
     });
 
@@ -120,7 +120,131 @@ function packages_treemap(chart_id, orderings, default_order) {
             .data(treemap.size([jq_div.width(), jq_div.height()]), key_func)
             .call(cell);
     };
-    $(window).resize(function() {
+    jQuery(window).resize(function() {
+        if (resize_timeout) {
+            clearTimeout(resize_timeout);
+        }
+        resize_timeout = setTimeout(real_resize, 200);
+    });
+}
+
+function developer_keys(chart_id, data_url) {
+    var jq_div = jQuery(chart_id),
+        r = 10;
+
+    var force = d3.layout.force()
+        .gravity(0.1)
+        .charge(-200)
+        .linkStrength(0.2)
+        .size([jq_div.width(), jq_div.height()]);
+
+    var svg = d3.select(chart_id)
+        .append("svg");
+
+    d3.json(data_url, function(json) {
+        var fill = d3.scale.category20();
+
+        var index_for_key = function(key) {
+            var i;
+            key = key.slice(-8);
+            for (i = 0; i < json.nodes.length; i++) {
+                var node_key = json.nodes[i].key;
+                if (node_key && node_key.slice(-8) === key) {
+                    return i;
+                }
+            }
+        };
+
+        /* filter edges to only include those that we have two nodes for */
+        var edges = jQuery.grep(json.edges, function(d, i) {
+            d.source = index_for_key(d.signer);
+            d.target = index_for_key(d.signee);
+            return d.source >= 0 && d.target >= 0;
+        });
+
+        jQuery.map(json.nodes, function(d, i) { d.master_sigs = 0; });
+        jQuery.map(edges, function(d, i) {
+            if (json.nodes[d.source].group === "master") {
+                json.nodes[d.target].master_sigs += 1;
+            }
+        });
+        jQuery.map(json.nodes, function(d, i) {
+            if (d.group === "dev" || d.group === "tu") {
+                d.approved = d.master_sigs >= 3;
+            } else {
+                d.approved = null;
+            }
+        });
+
+        var link = svg.selectAll("line")
+            .data(edges)
+            .enter()
+            .append("line");
+
+        var node = svg.selectAll("circle")
+            .data(json.nodes)
+            .enter().append("circle")
+            .attr("r", function(d) {
+                switch (d.group) {
+                case "master":
+                    return r * 1.6 - 0.75;
+                case "cacert":
+                    return r * 1.4 - 0.75;
+                case "dev":
+                case "tu":
+                default:
+                    return r - 0.75;
+                }
+            })
+            .style("fill", function(d) { return fill(d.group); })
+            .style("stroke", function(d) {
+                if (d.approved === null) {
+                    return d3.rgb(fill(d.group)).darker();
+                } else if (d.approved) {
+                    return "green";
+                } else {
+                    return "red";
+                }
+            })
+            .call(force.drag);
+        node.append("title").text(function(d) { return d.name; });
+
+        var distance = function(d, i) {
+            /* place a long line between all master keys and other keys.
+             * however, other connected clusters should be close together. */
+            if (d.source.group === "master" || d.target.group === "master") {
+                return 200;
+            } else {
+                return 50;
+            }
+        };
+
+        var tick = function() {
+            var offset = r * 2,
+                w = jq_div.width(),
+                h = jq_div.height();
+            node.attr("cx", function(d) { return (d.x = Math.max(offset, Math.min(w - offset, d.x))); })
+                .attr("cy", function(d) { return (d.y = Math.max(offset, Math.min(h - offset, d.y))); });
+
+            link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+        };
+
+        force.nodes(json.nodes)
+            .links(edges)
+            .linkDistance(distance)
+            .on("tick", tick)
+            .start();
+    });
+
+    var resize_timeout = null;
+    var real_resize = function() {
+        resize_timeout = null;
+        force.size([jq_div.width(), jq_div.height()]);
+    };
+    jQuery(window).resize(function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
