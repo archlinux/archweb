@@ -2,8 +2,8 @@
 
 ## Debug settings
 DEBUG = False
-TEMPLATE_DEBUG = True
-DEBUG_TOOLBAR = True
+TEMPLATE_DEBUG = False
+#DEBUG_TOOLBAR = True
 
 ## For django debug toolbar
 INTERNAL_IPS = ('127.0.0.1',)
@@ -46,7 +46,7 @@ SESSION_COOKIE_SECURE = False
 MEDIA_ROOT = '/srv/example.com/img/'
 
 ## web url for serving image files
-MEDIA_URL = 'http://example.com/img/'
+MEDIA_URL = '/media/img/'
 
 ## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
