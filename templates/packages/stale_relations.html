@@ -106,8 +106,8 @@
 
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#inactive-user:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[3,0]]});

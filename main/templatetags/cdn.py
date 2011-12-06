@@ -11,7 +11,8 @@ def jquery():
         link = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
                 '%s/jquery.min.js' % version
     else:
-        link = '/media/jquery-%s.min.js' % version
+        static_url = getattr(settings, 'STATIC_URL', '/static/')
+        link = '%sjquery-%s.min.js' % (static_url, version)
     return '<script type="text/javascript" src="%s"></script>' % link
 
 @register.tag

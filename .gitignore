@@ -4,4 +4,5 @@
 local_settings.py
 archweb.db
 archweb.db-*
+collected_static/
 testing/

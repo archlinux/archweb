@@ -40,8 +40,8 @@
     </table>
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="/media/archweb.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#clocks-table:has(tbody tr)").tablesorter(

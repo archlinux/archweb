@@ -34,11 +34,6 @@ SITE_ID = 1
 DATE_FORMAT = 'Y-m-d'
 DATETIME_FORMAT = 'Y-m-d H:i'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/admin_media/'
-
 # Login URL configuration
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -52,6 +47,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'main.context_processors.secure',
 )
@@ -84,6 +80,17 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
+# URL to serve static files
+STATIC_URL = '/static/'
+
+# Location to collect static files
+STATIC_ROOT = os.path.join(DEPLOY_PATH, 'collected_static')
+
+# Look for more static files in these locations
+STATICFILES_DIRS = (
+    os.path.join(DEPLOY_PATH, 'sitestatic'),
+)
+
 # Configure where messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
@@ -100,14 +107,16 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.markup',
-    'main', # contains shared models and libs
+    'django.contrib.staticfiles',
+    'south',
+
+    'main',
     'mirrors',
     'news',
     'packages',
     'todolists',
     'devel',
     'public',
-    'south', # database migration support
     'releng',
     'visualize',
 )

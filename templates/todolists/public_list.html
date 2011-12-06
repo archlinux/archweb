@@ -65,11 +65,11 @@
 </div>
 {% endif %}
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="/media/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0], [1,0]]});
 });
-
 </script>
 {% endblock %}
