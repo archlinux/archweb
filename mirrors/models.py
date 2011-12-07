@@ -28,7 +28,7 @@ class Mirror(models.Model):
     admin_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
-    isos = models.BooleanField(default=True)
+    isos = models.BooleanField("ISOs", default=True)
     rsync_user = models.CharField(max_length=50, blank=True, default='')
     rsync_password = models.CharField(max_length=50, blank=True, default='')
     notes = models.TextField(blank=True)
@@ -59,11 +59,10 @@ class MirrorProtocol(models.Model):
         return self.protocol
 
     class Meta:
-        verbose_name = 'Mirror Protocol'
         ordering = ('protocol',)
 
 class MirrorUrl(models.Model):
-    url = models.CharField(max_length=255, unique=True)
+    url = models.CharField("URL", max_length=255, unique=True)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls")
@@ -108,17 +107,17 @@ class MirrorUrl(models.Model):
         return self.url
 
     class Meta:
-        verbose_name = 'Mirror URL'
+        verbose_name = 'mirror URL'
 
 class MirrorRsync(models.Model):
-    ip = models.CharField(max_length=24)
+    ip = models.CharField("IP", max_length=24)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
 
     def __unicode__(self):
         return "%s" % (self.ip)
 
     class Meta:
-        verbose_name = 'Mirror Rsync IP'
+        verbose_name = 'mirror rsync IP'
 
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
@@ -132,6 +131,6 @@ class MirrorLog(models.Model):
         return "Check of %s at %s" % (self.url.url, self.check_time)
 
     class Meta:
-        verbose_name = 'Mirror Check Log'
+        verbose_name = 'mirror check log'
 
 # vim: set ts=4 sw=4 et:

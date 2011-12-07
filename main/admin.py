@@ -24,7 +24,8 @@ class PackageAdmin(admin.ModelAdmin):
     list_display = ('pkgname', 'full_version', 'repo', 'arch', 'packager',
             'last_update', 'build_date')
     list_filter = ('repo', 'arch')
-    search_fields = ('pkgname',)
+    search_fields = ('pkgname', 'pkgbase', 'pkgdesc')
+    date_hierarchy = 'build_date'
 
 class TodolistAdmin(admin.ModelAdmin):
     list_display = ('name', 'date_added', 'creator', 'description')
