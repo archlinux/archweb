@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -17,6 +18,10 @@ class MasterKey(models.Model):
     class Meta:
         ordering = ('created',)
 
+    def __unicode__(self):
+        return u'%s, created %s' % (
+                self.owner.get_full_name(), self.created)
+
 
 class PGPSignature(models.Model):
     signer = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
@@ -24,10 +29,13 @@ class PGPSignature(models.Model):
     signee = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     created = models.DateField()
-    expires = models.DateField(null=True)
+    expires = models.DateField(null=True, blank=True)
     valid = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'PGP signature'
+
+    def __unicode__(self):
+        return u'%s → %s' % (self.signer, self.signee)
 
 # vim: set ts=4 sw=4 et:
