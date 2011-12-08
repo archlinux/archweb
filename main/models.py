@@ -6,7 +6,6 @@ from django.forms import ValidationError
 
 from .fields import PositiveBigIntegerField, PGPKeyField
 from .utils import cache_function, make_choice, set_created_field
-from packages.models import PackageRelation
 
 from datetime import datetime
 from itertools import groupby
@@ -193,6 +192,7 @@ class Package(models.Model):
 
     @property
     def maintainers(self):
+        from packages.models import PackageRelation
         if self._maintainers is None:
             self._maintainers = User.objects.filter(
                     package_relations__pkgbase=self.pkgbase,

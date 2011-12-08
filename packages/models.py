@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
 
+from main.models import Arch, Repo
 from main.utils import set_created_field
 
 class PackageRelation(models.Model):
@@ -71,8 +72,8 @@ class SignoffSpecification(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    arch = models.ForeignKey('main.Arch')
-    repo = models.ForeignKey('main.Repo')
+    arch = models.ForeignKey(Arch)
+    repo = models.ForeignKey(Repo)
     user = models.ForeignKey(User, null=True)
     created = models.DateTimeField(editable=False)
     required = models.PositiveIntegerField(default=2,
@@ -134,8 +135,8 @@ class Signoff(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    arch = models.ForeignKey('main.Arch')
-    repo = models.ForeignKey('main.Repo')
+    arch = models.ForeignKey(Arch)
+    repo = models.ForeignKey(Repo)
     user = models.ForeignKey(User, related_name="package_signoffs")
     created = models.DateTimeField(editable=False)
     revoked = models.DateTimeField(null=True)
@@ -163,6 +164,29 @@ class Signoff(models.Model):
             revoked = u' (revoked)'
         return u'%s-%s: %s%s' % (
                 self.pkgbase, self.full_version, self.user, revoked)
+
+
+class FlagRequest(models.Model):
+    user = models.ForeignKey(User, blank=True, null=True)
+    user_email = models.EmailField('email address')
+    created = models.DateTimeField(editable=False)
+    ip_address = models.IPAddressField('IP address')
+    pkgbase = models.CharField(max_length=255, db_index=True)
+    repo = models.ForeignKey(Repo)
+    num_packages = models.PositiveIntegerField('number of packages', default=1)
+    message = models.TextField('message to developer', blank=True)
+    is_spam = models.BooleanField(default=False,
+            help_text="Is this comment from a real person?")
+    is_legitimate = models.BooleanField(default=True,
+            help_text="Is this actually an out-of-date flag request?")
+
+    def who(self):
+        if self.user:
+            return self.user.get_full_name()
+        return self.user_email
+
+    def __unicode__(self):
+        return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
 class PackageGroup(models.Model):
     '''
@@ -230,7 +254,7 @@ class Replacement(models.Model):
 
 
 # hook up some signals
-for sender in (PackageRelation, SignoffSpecification, Signoff):
+for sender in (PackageRelation, SignoffSpecification, Signoff, FlagRequest):
     pre_save.connect(set_created_field, sender=sender,
             dispatch_uid="packages.models")
 
