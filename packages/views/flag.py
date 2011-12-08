@@ -9,6 +9,7 @@ from django.template import loader, Context
 from django.views.generic.simple import direct_to_template
 from django.views.decorators.cache import never_cache
 
+from ..models import FlagRequest
 from main.models import Package
 
 
@@ -17,7 +18,7 @@ def flaghelp(request):
 
 class FlagForm(forms.Form):
     email = forms.EmailField(label='* E-mail Address')
-    usermessage = forms.CharField(label='Message To Dev',
+    message = forms.CharField(label='Message To Dev',
             widget=forms.Textarea, required=False)
     # The field below is used to filter out bots that blindly fill out all
     # input elements
@@ -47,6 +48,16 @@ def flag(request, name, repo, arch):
             flagged_pkgs = list(pkgs)
             pkgs.update(flag_date=datetime.utcnow())
 
+            # store our flag request
+            flag_request = FlagRequest(user_email=form.cleaned_data['email'],
+                    ip_address=request.META.get('REMOTE_ADDR', '127.0.0.1'),
+                    pkgbase=pkg.pkgbase, repo=pkg.repo,
+                    num_packages=len(flagged_pkgs),
+                    message=form.cleaned_data['message'])
+            if request.user.is_authenticated():
+                flag_request.user = request.user
+            flag_request.save()
+
             maints = pkg.maintainers
             if not maints:
                 toemail = settings.NOTIFICATIONS
@@ -65,7 +76,7 @@ def flag(request, name, repo, arch):
                 tmpl = loader.get_template('packages/outofdate.txt')
                 ctx = Context({
                     'email': form.cleaned_data['email'],
-                    'message': form.cleaned_data['usermessage'],
+                    'message': form.cleaned_data['message'],
                     'pkg': pkg,
                     'packages': flagged_pkgs,
                 })
@@ -78,7 +89,10 @@ def flag(request, name, repo, arch):
             return redirect('package-flag-confirmed', name=name, repo=repo,
                     arch=arch)
     else:
-        form = FlagForm()
+        initial = {}
+        if request.user.is_authenticated():
+            initial['email'] = request.user.email
+        form = FlagForm(initial=initial)
 
     context = {
         'package': pkg,
