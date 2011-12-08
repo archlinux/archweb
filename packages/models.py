@@ -229,16 +229,7 @@ class Replacement(models.Model):
         ordering = ['name']
 
 
-def remove_inactive_maintainers(sender, instance, created, **kwargs):
-    # instance is an auth.models.User; we want to remove any existing
-    # maintainer relations if the user is no longer active
-    if not instance.is_active:
-        maint_relations = PackageRelation.objects.filter(user=instance,
-                type=PackageRelation.MAINTAINER)
-        maint_relations.delete()
-
-post_save.connect(remove_inactive_maintainers, sender=User,
-        dispatch_uid="packages.models")
+# hook up some signals
 for sender in (PackageRelation, SignoffSpecification, Signoff):
     pre_save.connect(set_created_field, sender=sender,
             dispatch_uid="packages.models")
