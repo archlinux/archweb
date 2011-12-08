@@ -1,4 +1,5 @@
 from collections import defaultdict
+from itertools import chain
 from operator import itemgetter
 
 from django.db import connection
@@ -63,6 +64,7 @@ def get_split_packages_info():
         split['repo'] = all_repos[split['repo']]
     return split_pkgs
 
+
 class Difference(object):
     def __init__(self, pkgname, repo, pkg_a, pkg_b):
         self.pkgname = pkgname
@@ -88,6 +90,7 @@ class Difference(object):
         if isinstance(other, Difference):
             return cmp(self.__dict__, other.__dict__)
         return False
+
 
 @cache_function(300)
 def get_differences_info(arch_a, arch_b):
@@ -141,6 +144,46 @@ SELECT p.id, q.id
     # now sort our list by repository, package name
     differences.sort(key=lambda a: (a.repo.name, a.pkgname))
     return differences
+
+
+def multilib_differences():
+    # Query for checking multilib out of date-ness
+    sql = """
+SELECT ml.id, reg.id
+    FROM packages ml
+    JOIN packages reg
+    ON (
+        reg.pkgname = (
+            CASE WHEN ml.pkgname LIKE %s
+                THEN SUBSTRING(ml.pkgname, 7)
+            WHEN ml.pkgname LIKE %s
+                THEN SUBSTRING(ml.pkgname FROM 1 FOR CHAR_LENGTH(ml.pkgname) - 9)
+            ELSE
+                ml.pkgname
+            END
+        )
+        AND reg.pkgver != ml.pkgver
+    )
+    JOIN repos r ON reg.repo_id = r.id
+    WHERE ml.repo_id = %s
+    AND r.testing = %s
+    AND r.staging = %s
+    AND reg.arch_id = %s
+    ORDER BY ml.last_update
+"""
+    multilib = Repo.objects.get(name__iexact='multilib')
+    i686 = Arch.objects.get(name='i686')
+    params = ['lib32-%', '%-multilib', multilib.id, False, False, i686.id]
+
+    cursor = connection.cursor()
+    cursor.execute(sql, params)
+    results = cursor.fetchall()
+
+    # fetch all of the necessary packages
+    to_fetch = set(chain.from_iterable(results))
+    pkgs = Package.objects.normal().in_bulk(to_fetch)
+
+    return [(pkgs[ml], pkgs[reg]) for ml, reg in results]
 
 
 def get_wrong_permissions():

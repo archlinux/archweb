@@ -668,9 +668,13 @@ div#pkglist-about {
 }
 
 /* search fields  and other filter selections */
+.filter-criteria {
+    margin-bottom: 1em;
+}
+
 .filter-criteria h3 {
     font-size: 1em;
-    margin-top:0;
+    margin-top: 0;
 }
 
 .filter-criteria div {

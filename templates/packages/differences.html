@@ -4,31 +4,32 @@
 
 {% block content %}
 {% if differences %}
-<div id="differences-filter" class="box filter-criteria">
-    <h2>Package Differences by Architecture</h2>
-    <h3>Filter Differences View</h3>
-    <form id="diff_filter" method="post" action=".">
-    <fieldset>
-        <legend>Select filter criteria</legend>
-        <div><label for="id_archonly" title="Limit packages to selected architecture">Architecture Limitation</label>
-            <select name="archonly" id="id_archonly">
-                <option value="all">Show All</option>
-                <option value="both" selected="selected">Only In Both</option>
-                <option value="{{ arch_a.name }}">In {{ arch_a.name }} Only</option>
-                <option value="{{ arch_b.name }}">In {{ arch_b.name }} Only</option>
-            </select>
-        </div>
-        <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
-            <input type="checkbox" name="multilib" id="id_multilib" value="multilib"/></div>
-        <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
-            <input type="checkbox" name="minor" id="id_minor" value="minor"/></div>
-        <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
-    </fieldset>
-    </form>
-</div>
-
 <div class="box">
-    <table class="results">
+    <h2>Package Differences by Architecture</h2>
+    <div id="differences-filter" class="filter-criteria">
+        <h3>Filter Differences View</h3>
+        <form id="diff_filter" method="post" action=".">
+        <fieldset>
+            <legend>Select filter criteria</legend>
+            <div><label for="id_archonly" title="Limit packages to selected architecture">Architecture Limitation</label>
+                <select name="archonly" id="id_archonly">
+                    <option value="all">Show All</option>
+                    <option value="both" selected="selected">Only In Both</option>
+                    <option value="{{ arch_a.name }}">In {{ arch_a.name }} Only</option>
+                    <option value="{{ arch_b.name }}">In {{ arch_b.name }} Only</option>
+                </select>
+            </div>
+            <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
+                <input type="checkbox" name="multilib" id="id_multilib" value="multilib"/></div>
+            <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
+                <input type="checkbox" name="minor" id="id_minor" value="minor"/></div>
+            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+        </fieldset>
+        </form>
+    </div>
+    {# TODO some sort of spacing here #}
+
+    <table id="table_differences" class="results">
         <thead>
             <tr>
                 <th>Package Name</th>
@@ -57,17 +58,54 @@
         </tbody>
     </table>
 </div>
+
+<div class="box">
+    <h2>Multilib Differences to Main Packages</h2>
+
+    <table id="table_multilib_differences" class="results">
+        <thead>
+            <tr>
+                <th>Multilib Name</th>
+                <th>Multilib Version</th>
+                <th>i686 Version</th>
+                <th>i686 Name</th>
+                <th>i686 Repo</th>
+                <th>Multilib Last Updated</th>
+                <th>i686 Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pkg1, pkg2 in multilib_differences %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td><a href="{{ pkg1.get_absolute_url }}"
+                        title="View package details for {{ pkg1.pkgname }}">{{ pkg1.pkgname }}</a></td>
+                <td><span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.full_version }}</span></td>
+                <td><span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.full_version }}</span></td>
+                <td><a href="{{ pkg2.get_absolute_url }}"
+                        title="View package details for {{ pkg2.pkgname }}">{{ pkg2.pkgname }}</a></td>
+                <td>{{ pkg2.repo }}</td>
+                <td>{{ pkg1.last_update|date }}</td>
+                <td>{{ pkg2.last_update|date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.results').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
+    $('#table_differences').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
     $('#diff_filter select').change(filter_packages);
     $('#diff_filter input').change(filter_packages);
     $('#criteria_reset').click(filter_packages_reset);
     // fire function on page load to ensure the current form selections take effect
     filter_packages();
+
+    $('#table_multilib_differences').tablesorter({widgets: ['zebra'], sortList: [[5, 0]]});
 });
 </script>
 {% endif %}

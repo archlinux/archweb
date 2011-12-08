@@ -16,7 +16,7 @@ from main.models import Package, PackageFile, Arch, Repo
 from mirrors.models import MirrorUrl
 from ..models import PackageRelation, PackageGroup
 from ..utils import (get_group_info, get_differences_info,
-        get_wrong_permissions)
+        multilib_differences, get_wrong_permissions)
 
 # make other views available from this same package
 from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
@@ -233,10 +233,12 @@ def arch_differences(request):
     arch_a = Arch.objects.get(name='i686')
     arch_b = Arch.objects.get(name='x86_64')
     differences = get_differences_info(arch_a, arch_b)
+    multilib_diffs = multilib_differences()
     context = {
             'arch_a': arch_a,
             'arch_b': arch_b,
             'differences': differences,
+            'multilib_differences': multilib_diffs
     }
     return direct_to_template(request, 'packages/differences.html', context)
 
