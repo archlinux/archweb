@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import F, Q
+from django.db.models import F
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
@@ -150,6 +150,15 @@ def report(request, report, username=None):
     packages = Package.objects.normal()
     names = attrs = user = None
 
+    if username:
+        user = get_object_or_404(User, username=username, is_active=True)
+        maintained = PackageRelation.objects.filter(user=user,
+                type=PackageRelation.MAINTAINER).values('pkgbase')
+        packages = packages.filter(pkgbase__in=maintained)
+
+    maints = User.objects.filter(id__in=PackageRelation.objects.filter(
+        type=PackageRelation.MAINTAINER).values('user'))
+
     if report == 'old':
         title = 'Packages last built more than two years ago'
         cutoff = datetime.utcnow() - timedelta(days=365 * 2)
@@ -192,20 +201,24 @@ def report(request, report, username=None):
             package.compress_type = package.filename.split('.')[-1]
     elif report == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
-        # magic going on here! Checking for all '.1'...'.9' extensions
-        invalid_endings = [Q(filename__endswith='.%d' % n) for n in range(1,10)]
-        invalid_endings.append(Q(filename__endswith='.n'))
-        bad_files = PackageFile.objects.filter(Q(directory__contains='man') & (
-                reduce(operator.or_, invalid_endings))
-                ).values_list('pkg_id', flat=True).distinct()
+        # checking for all '.0'...'.9' + '.n' extensions
+        bad_files = PackageFile.objects.filter(directory__contains='/man/',
+                filename__regex=r'\.[0-9n]').exclude(filename__endswith='.gz')
+        if username:
+            pkg_ids = set(packages.values_list('id', flat=True))
+            bad_files = bad_files.filter(pkg__in=pkg_ids)
+        bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
     elif report == 'uncompressed-info':
         title = 'Packages with uncompressed infopages'
-        # we don't worry abut looking for '*.info-1', etc., given that an
+        # we don't worry about looking for '*.info-1', etc., given that an
         # uncompressed root page probably exists in the package anyway
         bad_files = PackageFile.objects.filter(directory__endswith='/info/',
-                filename__endswith='.info').values_list(
-                'pkg_id', flat=True).distinct()
+                filename__endswith='.info')
+        if username:
+            pkg_ids = set(packages.values_list('id', flat=True))
+            bad_files = bad_files.filter(pkg__in=pkg_ids)
+        bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
     elif report == 'unneeded-orphans':
         title = 'Orphan packages required by no other packages'
@@ -216,15 +229,6 @@ def report(request, report, username=None):
                 pkgname__in=required)
     else:
         raise Http404
-
-    if username:
-        user = get_object_or_404(User, username=username, is_active=True)
-        maintained = PackageRelation.objects.filter(user=user,
-                type=PackageRelation.MAINTAINER).values('pkgbase')
-        packages = packages.filter(pkgbase__in=maintained)
-
-    maints = User.objects.filter(id__in=PackageRelation.objects.filter(
-        type=PackageRelation.MAINTAINER).values('user'))
 
     context = {
         'all_maintainers': maints,
