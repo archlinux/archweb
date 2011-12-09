@@ -11,6 +11,13 @@ class RecentUpdate(object):
         self.pkgbase = first.pkgbase
         self.repo = first.repo
         self.version = ''
+        self.classes = set()
+
+        self.classes.add(self.repo.name.lower())
+        if self.repo.testing:
+            self.classes.add('testing')
+        if self.repo.staging:
+            self.classes.add('staging')
 
         packages = sorted(packages, key=attrgetter('arch', 'pkgname'))
         # split the packages into two lists. we need to prefer packages

@@ -104,7 +104,7 @@
     <table>
         {% for update in pkg_updates %}
         <tr>
-            <td class="pkg-name"><span class="{{ update.repo|lower }}">{{ update.pkgbase }} {{ update.version }}</span></td>
+            <td class="pkg-name"><span class="{{ update.classes|join:' ' }}">{{ update.pkgbase }} {{ update.version }}</span></td>
             <td class="pkg-arch">
                 {% for pkg in update.package_links %}<a href="{{ pkg.get_absolute_url }}"
                     title="Details for {{ pkg.pkgname }} [{{ pkg.repo|lower }}]">{{ pkg.arch }}</a>{% if not forloop.last %}/{% endif %}{% endfor %}

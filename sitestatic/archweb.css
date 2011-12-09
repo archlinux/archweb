@@ -481,15 +481,11 @@ h3 span.arrow {
         text-align: right;
     }
 
-    #pkg-updates span.testing,
-    #pkg-updates span.community-testing,
-    span.multilib-testing {
+    #pkg-updates span.testing {
         font-style: italic;
     }
 
-    #pkg-updates span.staging,
-    #pkg-updates span.community-staging,
-    span.multilib-staging {
+    #pkg-updates span.staging {
         font-style: italic;
         color: #ff8040;
     }
