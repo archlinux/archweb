@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-{% load markup %}
-{% load cache %}
-{% load cdn %}
+{% load markup cache cdn %}
 
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
@@ -164,7 +162,8 @@
         <li><a href="{% url mirror-status %}"
             title="Check the status of all known mirrors">Mirror Status</a></li>
         <li><a href="/packages/differences/"
-            title="See differences in packages between available architectures">Differences Reports</a></li>
+            title="See differences in packages between available architectures">Differences Reports</a>
+        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
     </ul>
 
     <h4>Development</h4>
@@ -173,11 +172,13 @@
         <li><a href="{% url page-keys %}"
             title="Package/Database signing master keys">Master Keys</a></li>
         <li><a href="/packages/"
-            title="View/search the package repository database">Packages</a></li>
+            title="View/search the package repository database">Packages</a>
+        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
         <li><a href="/groups/"
             title="View the available package groups">Package Groups</a></li>
         <li><a href="{% url visualize-index %}"
-            title="View visualizations">Visualizations</a></li>
+            title="View visualizations">Visualizations</a>
+        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
         <li><a href="{% url page-svn %}"
             title="View SVN entries for packages">SVN Repositories</a></li>
         <li><a href="http://projects.archlinux.org/"

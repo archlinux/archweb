@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load cache %}
+{% load cache cdn %}
 
 {% block title %}Arch Linux - Downloads{% endblock %}
 {% block navbarclass %}anb-download{% endblock %}
@@ -123,7 +123,8 @@
         <li><a href="{{ releng_iso_url }}"
             title="Release Engineering ISO download">Download snapshots</a></li>
         <li><a href="{{ releng_pxeboot_url }}"
-            title="Arch Linux Netboot Live System">Boot latest snapshots over the network</a></li>
+            title="Arch Linux Netboot Live System">Boot latest snapshots over the network</a>
+        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
         <li><a href="{% url releng-test-overview %}"
             title="Release Engineering ISO feedback">Feedback</a></li>
     </ul>
