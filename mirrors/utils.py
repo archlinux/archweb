@@ -40,8 +40,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
             duration_avg=Avg('logs__duration'),
-            #duration_stddev=StdDev('logs__duration')
-            duration_stddev=Max('logs__duration')
+            duration_stddev=StdDev('logs__duration')
             ).order_by('-last_sync', '-duration_avg')
 
     # The Django ORM makes it really hard to get actual average delay in the
