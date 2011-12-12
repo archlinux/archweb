@@ -239,6 +239,12 @@ pkg_same_version = lambda pkg, dbpkg: pkg.ver == dbpkg.pkgver \
         and pkg.rel == dbpkg.pkgrel and pkg.epoch == dbpkg.epoch
 
 
+def delete_pkg_files(dbpkg):
+    database = router.db_for_write(Package, instance=dbpkg)
+    cursor = connections[database].cursor()
+    cursor.execute('DELETE FROM package_files WHERE pkg_id = %s', [dbpkg.id])
+
+
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if not pkg_same_version(repopkg, dbpkg):
@@ -253,7 +259,7 @@ def populate_files(dbpkg, repopkg, force=False):
 
     # only delete files if we are reading a DB that contains them
     if repopkg.has_files:
-        dbpkg.packagefile_set.all().delete()
+        delete_pkg_files(dbpkg)
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
         for f in repopkg.files:
@@ -262,6 +268,7 @@ def populate_files(dbpkg, repopkg, force=False):
                 filename = None
             # this is basically like calling dbpkg.packagefile_set.create(),
             # but much faster as we can skip a lot of the repeated code paths
+            # TODO use Django 1.4 bulk_create
             pkgfile = PackageFile(pkg=dbpkg,
                     is_directory=(filename is None),
                     directory=dirname + '/',
@@ -361,6 +368,7 @@ def db_update(archname, reponame, pkgs, force=False):
         with transaction.commit_on_success():
             # no race condition here as long as simultaneous threads both
             # issue deletes; second delete will be a no-op
+            delete_pkg_files(dbpkg)
             dbpkg.delete()
 
     # packages in both database and in syncdb (update in database)
