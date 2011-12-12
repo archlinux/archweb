@@ -19,7 +19,7 @@ class FlagRequestAdmin(admin.ModelAdmin):
 
 
 class SignoffAdmin(admin.ModelAdmin):
-    list_display = ('pkgbase', 'pkgver', 'pkgrel', 'arch', 'repo',
+    list_display = ('pkgbase', 'full_version', 'arch', 'repo',
             'user', 'created', 'revoked')
     list_filter = ('arch', 'repo', 'user')
     search_fields = ('pkgbase', 'user__username')
@@ -27,7 +27,7 @@ class SignoffAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
 
 class SignoffSpecificationAdmin(admin.ModelAdmin):
-    list_display = ('pkgbase', 'pkgver', 'pkgrel', 'arch', 'repo',
+    list_display = ('pkgbase', 'full_version', 'arch', 'repo',
             'user', 'created', 'comments')
     list_filter = ('arch', 'repo', 'user')
     search_fields = ('pkgbase', 'user__username')
