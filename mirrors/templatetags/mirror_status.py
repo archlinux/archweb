@@ -10,7 +10,7 @@ def duration(value):
         return u''
     # does not take microseconds into account
     total_secs = value.seconds + value.days * 24 * 3600
-    mins, secs = divmod(total_secs, 60)
+    mins = total_secs // 60
     hrs, mins = divmod(mins, 60)
     return '%d:%02d' % (hrs, mins)
 
@@ -20,7 +20,7 @@ def hours(value):
         return u''
     # does not take microseconds into account
     total_secs = value.seconds + value.days * 24 * 3600
-    mins, secs = divmod(total_secs, 60)
+    mins = total_secs // 60
     hrs, mins = divmod(mins, 60)
     if hrs == 1:
         return '%d hour' % hrs

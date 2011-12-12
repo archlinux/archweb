@@ -377,7 +377,7 @@ SELECT DISTINCT p1.pkgbase, r.name
     AND r.testing = %s
     AND p2.repo_id IN (
     """
-    sql += ','.join(['%s' for r in repos])
+    sql += ','.join(['%s' for _ in repos])
     sql += ")"
 
     params = [False, False]

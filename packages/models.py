@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 
 from main.models import Arch, Repo
@@ -167,6 +167,9 @@ class Signoff(models.Model):
 
 
 class FlagRequest(models.Model):
+    '''
+    A notification the package is out-of-date submitted through the web site.
+    '''
     user = models.ForeignKey(User, blank=True, null=True)
     user_email = models.EmailField('email address')
     created = models.DateTimeField(editable=False)

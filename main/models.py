@@ -1,8 +1,6 @@
 from django.db import models
-from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.forms import ValidationError
 
 from .fields import PositiveBigIntegerField, PGPKeyField
 from .utils import cache_function, make_choice, set_created_field
@@ -229,7 +227,7 @@ class Package(models.Model):
                     pkg__arch__in=self.applicable_arches())
         # sort out duplicate packages; this happens if something has a double
         # versioned dep such as a kernel module
-        requiredby = [list(vals)[0] for k, vals in
+        requiredby = [list(vals)[0] for _, vals in
                 groupby(requiredby, lambda x: x.pkg.id)]
 
         # find another package by this name in the opposite testing setup
@@ -244,7 +242,7 @@ class Package(models.Model):
         # for each unique package name, try to screen our package list down to
         # those packages in the same testing category (yes or no) iff there is
         # a package in the same testing category.
-        for name, dep_pkgs in groupby(requiredby, lambda x: x.pkg.pkgname):
+        for _, dep_pkgs in groupby(requiredby, lambda x: x.pkg.pkgname):
             dep_pkgs = list(dep_pkgs)
             dep = dep_pkgs[0]
             if len(dep_pkgs) > 1:

@@ -99,7 +99,7 @@ class FindUserTest(TestCase):
 
     def test_cache(self):
         # simply look two of them up, but then do it repeatedly
-        for i in range(50):
+        for _ in range(5):
             self.assertEqual(self.user1,
                     self.finder.find("XXX YYY <user1@example.com>"))
             self.assertEqual(self.user3,

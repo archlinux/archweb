@@ -27,6 +27,7 @@ def url_unquote(original_url):
 class BuildQueryStringNode(template.Node):
     def __init__(self, sortfield):
         self.sortfield = sortfield
+        super(BuildQueryStringNode, self).__init__()
 
     def render(self, context):
         qs = parse_qs(context['current_query'])
@@ -53,8 +54,8 @@ def do_buildsortqs(parser, token):
 
 @register.simple_tag
 def pkg_details_link(pkg):
-    template = '<a href="%s" title="View package details for %s">%s</a>'
-    return template % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
+    link = '<a href="%s" title="View package details for %s">%s</a>'
+    return link % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
 
 @register.simple_tag
 def multi_pkg_details(pkgs):

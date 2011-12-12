@@ -24,7 +24,6 @@ from datetime import datetime
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
 from django.db import connections, router, transaction
 from django.db.utils import IntegrityError
 
@@ -91,6 +90,7 @@ class Pkg(object):
             setattr(self, k, None)
         for k in self.collections:
             setattr(self, k, ())
+        self.builddate = None
         self.files = None
         self.has_files = False
 

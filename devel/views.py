@@ -145,7 +145,7 @@ def change_profile(request):
             {'form': form, 'profile_form': profile_form})
 
 @login_required
-def report(request, report, username=None):
+def report(request, report_name, username=None):
     title = 'Developer Report'
     packages = Package.objects.normal()
     names = attrs = user = None
@@ -159,17 +159,17 @@ def report(request, report, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    if report == 'old':
+    if report_name == 'old':
         title = 'Packages last built more than two years ago'
         cutoff = datetime.utcnow() - timedelta(days=365 * 2)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
-    elif report == 'long-out-of-date':
+    elif report_name == 'long-out-of-date':
         title = 'Packages marked out-of-date more than 90 days ago'
         cutoff = datetime.utcnow() - timedelta(days=90)
         packages = packages.filter(
                 flag_date__lt=cutoff).order_by('flag_date')
-    elif report == 'big':
+    elif report_name == 'big':
         title = 'Packages with compressed size > 50 MiB'
         cutoff = 50 * 1024 * 1024
         packages = packages.filter(
@@ -182,7 +182,7 @@ def report(request, report, username=None):
                 package.compressed_size)
             package.installed_size_pretty = filesizeformat(
                 package.installed_size)
-    elif report == 'badcompression':
+    elif report_name == 'badcompression':
         title = 'Packages that have little need for compression'
         cutoff = 0.90 * F('installed_size')
         packages = packages.filter(compressed_size__gt=0, installed_size__gt=0,
@@ -199,7 +199,7 @@ def report(request, report, username=None):
             ratio = package.compressed_size / float(package.installed_size)
             package.ratio = '%.2f' % ratio
             package.compress_type = package.filename.split('.')[-1]
-    elif report == 'uncompressed-man':
+    elif report_name == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
         # checking for all '.0'...'.9' + '.n' extensions
         bad_files = PackageFile.objects.filter(directory__contains='/man/',
@@ -209,7 +209,7 @@ def report(request, report, username=None):
             bad_files = bad_files.filter(pkg__in=pkg_ids)
         bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
-    elif report == 'uncompressed-info':
+    elif report_name == 'uncompressed-info':
         title = 'Packages with uncompressed infopages'
         # we don't worry about looking for '*.info-1', etc., given that an
         # uncompressed root page probably exists in the package anyway
@@ -220,7 +220,7 @@ def report(request, report, username=None):
             bad_files = bad_files.filter(pkg__in=pkg_ids)
         bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
         packages = packages.filter(id__in=set(bad_files))
-    elif report == 'unneeded-orphans':
+    elif report_name == 'unneeded-orphans':
         title = 'Orphan packages required by no other packages'
         owned = PackageRelation.objects.all().values('pkgbase')
         required = PackageDepend.objects.all().values('depname')
@@ -273,7 +273,7 @@ class NewUserForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super(NewUserForm, self).save(False)
         pwletters = ascii_letters + digits
-        password = ''.join([random.choice(pwletters) for i in xrange(8)])
+        password = ''.join([random.choice(pwletters) for _ in xrange(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
                 email=self.cleaned_data['private_email'], password=password)
         user.first_name = self.cleaned_data['first_name']

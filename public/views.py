@@ -8,7 +8,7 @@ from devel.models import MasterKey
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
-from utils import get_recent_updates
+from .utils import get_recent_updates
 
 def index(request):
     pkgs = get_recent_updates()

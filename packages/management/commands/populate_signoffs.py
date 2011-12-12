@@ -15,7 +15,6 @@ import sys
 from xml.etree.ElementTree import XML
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.management.base import NoArgsCommand
 
 from ...models import SignoffSpecification
