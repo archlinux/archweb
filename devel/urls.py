@@ -7,8 +7,8 @@ urlpatterns = patterns('devel.views',
     (r'^$',          'index', {},     'devel-index'),
     (r'^newuser/$',  'new_user_form'),
     (r'^profile/$',  'change_profile'),
-    (r'^reports/(?P<report>.*)/(?P<username>.*)/$', 'report'),
-    (r'^reports/(?P<report>.*)/$', 'report'),
+    (r'^reports/(?P<report_name>.*)/(?P<username>.*)/$', 'report'),
+    (r'^reports/(?P<report_name>.*)/$', 'report'),
 )
 
 # vim: set ts=4 sw=4 et:
