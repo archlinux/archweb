@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -27,7 +28,8 @@ from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 class PackageJSONEncoder(DjangoJSONEncoder):
     pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
             'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
-            'installed_size', 'build_date', 'last_update', 'flag_date' ]
+            'installed_size', 'build_date', 'last_update', 'flag_date',
+            'maintainers', 'packager' ]
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -43,6 +45,8 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             return obj.directory + filename
         if isinstance(obj, (Repo, Arch, PackageGroup)):
             return obj.name.lower()
+        elif isinstance(obj, User):
+            return obj.username
         return super(PackageJSONEncoder, self).default(obj)
 
 def opensearch(request):
