@@ -23,7 +23,7 @@
         <tbody>
             {% for relation in inactive_user %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}
                     <a href="{{ pkg.get_absolute_url }}"
@@ -54,7 +54,7 @@
         <tbody>
             {% for relation in missing_pkgbase %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td>{{ relation.user.get_full_name }}</td>
                 <td>{{ relation.get_type_display }}</td>
@@ -83,7 +83,7 @@
         <tbody>
             {% for relation in wrong_permissions %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}
                     <a href="{{ pkg.get_absolute_url }}"
@@ -114,5 +114,9 @@ $(document).ready(function() {
     $('#missing-pkgbase:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[1,0]]});
 });
     $('#wrong-permissions:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[3,0]]});
+    $('table.results').bind('sortEnd', function() {
+        $('input.relation-checkbox').enableCheckboxRangeSelection();
+    });
+    $('input.relation-checkbox').enableCheckboxRangeSelection();
 </script>
 {% endblock %}

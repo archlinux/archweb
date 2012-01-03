@@ -123,6 +123,26 @@ if (typeof $.tablesorter !== 'undefined') {
     });
 }
 
+(function($) {
+  $.fn.enableCheckboxRangeSelection = function() {
+    var lastCheckbox = null;
+	var lastElement = null;
+
+	var spec = this;
+    spec.unbind("click.checkboxrange");
+    spec.bind("click.checkboxrange", function(e) {
+      if (lastCheckbox != null && e.shiftKey) {
+        spec.slice(
+          Math.min(spec.index(lastCheckbox), spec.index(e.target)),
+          Math.max(spec.index(lastCheckbox), spec.index(e.target)) + 1
+        ).attr({checked: e.target.checked ? "checked" : ""});
+      }
+      lastCheckbox = e.target;
+    });
+
+  };
+})(jQuery);
+
 /* news/add.html */
 function enablePreview() {
     $('#news-preview-button').click(function(event) {
