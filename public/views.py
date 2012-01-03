@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.views.decorators.cache import cache_control
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
@@ -10,6 +11,7 @@ from mirrors.models import MirrorUrl
 from news.models import News
 from .utils import get_recent_updates
 
+@cache_control(max_age=300)
 def index(request):
     pkgs = get_recent_updates()
     context = {
@@ -33,6 +35,7 @@ USER_LISTS = {
     },
 }
 
+@cache_control(max_age=300)
 def userlist(request, user_type='devs'):
     users = User.objects.order_by(
             'first_name', 'last_name').select_related('userprofile')
@@ -50,12 +53,14 @@ def userlist(request, user_type='devs'):
     context['users'] = users
     return direct_to_template(request, 'public/userlist.html', context)
 
+@cache_control(max_age=300)
 def donate(request):
     context = {
         'donors': Donor.objects.filter(visible=True).order_by('name'),
     }
     return direct_to_template(request, 'public/donate.html', context)
 
+@cache_control(max_age=300)
 def download(request):
     qset = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             protocol__is_download=True,
@@ -71,6 +76,7 @@ def download(request):
             template_object_name="mirror_url",
             extra_context=context)
 
+@cache_control(max_age=300)
 def feeds(request):
     context = {
         'arches': Arch.objects.all(),
@@ -78,6 +84,7 @@ def feeds(request):
     }
     return direct_to_template(request, 'public/feeds.html', context)
 
+@cache_control(max_age=300)
 def keys(request):
     context = {
         'keys': MasterKey.objects.select_related('owner', 'revoker',

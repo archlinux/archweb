@@ -27,12 +27,12 @@ urlpatterns = []
 # Feeds patterns, used later
 feeds_patterns = patterns('',
     (r'^$',          'public.views.feeds', {}, 'feeds-list'),
-    (r'^news/$',     NewsFeed()),
-    (r'^packages/$', PackageFeed()),
+    (r'^news/$',     cache_page(300)(NewsFeed())),
+    (r'^packages/$', cache_page(300)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/$',
-        PackageFeed()),
+        cache_page(300)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
-        PackageFeed()),
+        cache_page(300)(PackageFeed())),
 )
 
 # Sitemaps
