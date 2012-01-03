@@ -67,7 +67,6 @@ TEMPLATE_LOADERS = (
 # This bug is a real bummer:
 # http://code.djangoproject.com/ticket/14105
 MIDDLEWARE_CLASSES = (
-    'main.middleware.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,7 +74,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
