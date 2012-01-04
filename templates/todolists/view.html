@@ -23,6 +23,11 @@
 
     <div>{{list.description|urlize|linebreaks}}</div>
 
+    <p>Link to lists of pkgbase values:</p>
+    <ul>{% for svn_root in svn_roots %}
+        <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
+    {% endfor %}</ul>
+
     <table id="dev-todo-pkglist" class="results todo-table">
         <thead>
             <tr>

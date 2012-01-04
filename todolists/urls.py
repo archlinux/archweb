@@ -5,7 +5,8 @@ from .views import DeleteTodolist
 
 urlpatterns = patterns('todolists.views',
     (r'^$',                       'todolist_list'),
-    (r'^(\d+)/$',                 'view'),
+    (r'^(?P<list_id>\d+)/$',      'view'),
+    (r'^(?P<list_id>\d+)/pkgbases/(?P<svn_root>[a-z]+)/$', 'list_pkgbases'),
     (r'^add/$',                   'add'),
     (r'^edit/(?P<list_id>\d+)/$', 'edit'),
     (r'^flag/(\d+)/(\d+)/$',      'flag'),

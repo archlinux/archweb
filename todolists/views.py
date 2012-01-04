@@ -2,7 +2,7 @@ from django import forms
 
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.views.decorators.cache import never_cache
@@ -11,7 +11,7 @@ from django.views.generic.simple import direct_to_template
 from django.template import Context, loader
 from django.utils import simplejson
 
-from main.models import Todolist, TodolistPkg, Package
+from main.models import Todolist, TodolistPkg, Package, Repo
 from packages.utils import attach_maintainers
 from .utils import get_annotated_todolists
 
@@ -35,9 +35,9 @@ class TodoListForm(forms.ModelForm):
 
 @permission_required('main.change_todolistpkg')
 @never_cache
-def flag(request, listid, pkgid):
-    todolist = get_object_or_404(Todolist, id=listid)
-    pkg  = get_object_or_404(TodolistPkg, id=pkgid)
+def flag(request, list_id, pkg_id):
+    todolist = get_object_or_404(Todolist, id=list_id)
+    pkg = get_object_or_404(TodolistPkg, id=pkg_id)
     pkg.complete = not pkg.complete
     pkg.save()
     if request.is_ajax():
@@ -48,12 +48,27 @@ def flag(request, listid, pkgid):
 
 @login_required
 @never_cache
-def view(request, listid):
-    todolist = get_object_or_404(Todolist, id=listid)
+def view(request, list_id):
+    todolist = get_object_or_404(Todolist, id=list_id)
+    svn_roots = Repo.objects.order_by().values_list(
+            'svn_root', flat=True).distinct()
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(tp.pkg for tp in todolist.packages)
-    return direct_to_template(request, 'todolists/view.html', {'list': todolist})
+    return direct_to_template(request, 'todolists/view.html', {
+        'list': todolist,
+        'svn_roots': svn_roots,
+    })
+
+# really no need for login_required on this one...
+def list_pkgbases(request, list_id, svn_root):
+    '''Used to make bulk moves of packages a lot easier.'''
+    todolist = get_object_or_404(Todolist, id=list_id)
+    repos = get_list_or_404(Repo, svn_root=svn_root)
+    pkgbases = set(tp.pkg.pkgbase for tp in todolist.packages
+            if tp.pkg.repo in repos)
+    return HttpResponse('\n'.join(sorted(pkgbases)),
+        mimetype='text/plain')
 
 @login_required
 @never_cache
