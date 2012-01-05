@@ -13,6 +13,7 @@ from django.template import loader, Context
 from django.template.defaultfilters import filesizeformat
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
+from django.utils.http import http_date
 
 from main.models import Package, PackageDepend, PackageFile, TodolistPkg
 from main.models import Arch, Repo
@@ -27,9 +28,9 @@ import operator
 import pytz
 import random
 from string import ascii_letters, digits
+import time
 
 @login_required
-@never_cache
 def index(request):
     '''the developer dashboard'''
     if(request.user.is_authenticated()):
@@ -80,7 +81,6 @@ def index(request):
     return direct_to_template(request, 'devel/index.html', page_dict)
 
 @login_required
-@never_cache
 def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
             'first_name', 'last_name').select_related('userprofile')
@@ -98,7 +98,14 @@ def clock(request):
             'utc_now': utc_now,
     }
 
-    return direct_to_template(request, 'devel/clock.html', page_dict)
+    response = direct_to_template(request, 'devel/clock.html', page_dict)
+    if not response.has_header('Expires'):
+        # why this works only with the non-UTC date I have no idea...
+        expire_time = now.replace(minute=utc_now.minute + 1,
+                second=0, microsecond=0)
+        expire_time = time.mktime(expire_time.timetuple())
+        response['Expires'] = http_date(expire_time)
+    return response
 
 class ProfileForm(forms.Form):
     email = forms.EmailField(label='Private email (not shown publicly):',
@@ -342,7 +349,6 @@ def new_user_form(request):
     return direct_to_template(request, 'general_form.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
-@never_cache
 def admin_log(request, username=None):
     user = None
     if username:

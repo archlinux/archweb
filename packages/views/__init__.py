@@ -5,7 +5,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import simplejson
-from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.simple import direct_to_template
@@ -247,7 +246,6 @@ def arch_differences(request):
     return direct_to_template(request, 'packages/differences.html', context)
 
 @permission_required('main.change_package')
-@never_cache
 def stale_relations(request):
     relations = PackageRelation.objects.select_related('user')
     pkgbases = Package.objects.all().values('pkgbase')

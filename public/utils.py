@@ -49,7 +49,7 @@ class RecentUpdate(object):
                 if package.arch not in arches and not arches.add(package.arch):
                     yield PackageStandin(package)
 
-@cache_function(300)
+@cache_function(62)
 def get_recent_updates(number=15):
     # This is a bit of magic. We are going to show 15 on the front page, but we
     # want to try and eliminate cross-architecture wasted space. Pull enough

@@ -18,7 +18,6 @@ from ..utils import (get_signoff_groups, approved_by_signoffs,
         PackageSignoffGroup)
 
 @permission_required('main.change_package')
-@never_cache
 def signoffs(request):
     signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
     for group in signoff_groups:
@@ -178,7 +177,6 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
         return super(SignoffJSONEncoder, self).default(obj)
 
 @permission_required('main.change_package')
-@never_cache
 def signoffs_json(request):
     signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
     data = {

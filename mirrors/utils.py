@@ -26,7 +26,7 @@ def annotate_url(url, delays):
         url.delay = None
         url.score = None
 
-@cache_function(300)
+@cache_function(123)
 def get_mirror_statuses(cutoff=default_cutoff):
     cutoff_time = datetime.datetime.utcnow() - cutoff
     protocols = list(MirrorProtocol.objects.filter(is_download=True))
@@ -80,7 +80,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
         'urls': urls,
     }
 
-@cache_function(300)
+@cache_function(117)
 def get_mirror_errors(cutoff=default_cutoff):
     cutoff_time = datetime.datetime.utcnow() - cutoff
     errors = MirrorLog.objects.filter(

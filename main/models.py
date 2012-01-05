@@ -201,14 +201,14 @@ class Package(models.Model):
     def maintainers(self, maintainers):
         self._maintainers = maintainers
 
-    @cache_function(300)
+    @cache_function(1800)
     def applicable_arches(self):
         '''The list of (this arch) + (available agnostic arches).'''
         arches = set(Arch.objects.filter(agnostic=True))
         arches.add(self.arch)
         return list(arches)
 
-    @cache_function(300)
+    @cache_function(119)
     def get_requiredby(self):
         """
         Returns a list of package objects. An attempt will be made to keep this
@@ -254,7 +254,7 @@ class Package(models.Model):
             trimmed.append(dep)
         return trimmed
 
-    @cache_function(300)
+    @cache_function(121)
     def get_depends(self):
         """
         Returns a list of dicts. Each dict contains ('dep', 'pkg', and
@@ -279,7 +279,7 @@ class Package(models.Model):
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         return deps
 
-    @cache_function(300)
+    @cache_function(125)
     def base_package(self):
         """
         Locate the base package for this package. It may be this very package,

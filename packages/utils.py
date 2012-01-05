@@ -11,7 +11,7 @@ from main.utils import cache_function, groupby_preserve_order, PackageStandin
 from .models import (PackageGroup, PackageRelation,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
 
-@cache_function(300)
+@cache_function(127)
 def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
@@ -92,7 +92,7 @@ class Difference(object):
         return False
 
 
-@cache_function(300)
+@cache_function(127)
 def get_differences_info(arch_a, arch_b):
     # This is a monster. Join packages against itself, looking for packages in
     # our non-'any' architectures only, and not having a corresponding package

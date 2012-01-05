@@ -47,7 +47,6 @@ def flag(request, list_id, pkg_id):
     return redirect(todolist)
 
 @login_required
-@never_cache
 def view(request, list_id):
     todolist = get_object_or_404(Todolist, id=list_id)
     svn_roots = Repo.objects.order_by().values_list(
@@ -71,7 +70,6 @@ def list_pkgbases(request, list_id, svn_root):
         mimetype='text/plain')
 
 @login_required
-@never_cache
 def todolist_list(request):
     lists = get_annotated_todolists()
     return direct_to_template(request, 'todolists/list.html', {'lists': lists})
