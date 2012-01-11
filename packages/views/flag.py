@@ -4,6 +4,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.mail import send_mail
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader, Context
 from django.views.generic.simple import direct_to_template
@@ -46,17 +47,31 @@ def flag(request, name, repo, arch):
         if form.is_valid() and form.cleaned_data['website'] == '':
             # save the package list for later use
             flagged_pkgs = list(pkgs)
-            pkgs.update(flag_date=datetime.utcnow())
 
-            # store our flag request
-            flag_request = FlagRequest(user_email=form.cleaned_data['email'],
-                    ip_address=request.META.get('REMOTE_ADDR', '127.0.0.1'),
-                    pkgbase=pkg.pkgbase, repo=pkg.repo,
-                    num_packages=len(flagged_pkgs),
-                    message=form.cleaned_data['message'])
-            if request.user.is_authenticated():
-                flag_request.user = request.user
-            flag_request.save()
+            # find a common version if there is one available to store
+            versions = set(pkg.full_version for pkg in flagged_pkgs)
+            if len(versions) == 1:
+                version = versions.pop()
+            else:
+                version = ''
+
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            ip_addr = request.META.get('REMOTE_ADDR')
+
+            @transaction.commit_on_success
+            def perform_updates():
+                pkgs.update(flag_date=datetime.utcnow())
+                # store our flag request
+                flag_request = FlagRequest(user_email=email, message=message,
+                        ip_address=ip_addr, pkgbase=pkg.pkgbase,
+                        version=version, repo=pkg.repo,
+                        num_packages=len(flagged_pkgs))
+                if request.user.is_authenticated():
+                    flag_request.user = request.user
+                flag_request.save()
+
+            perform_updates()
 
             maints = pkg.maintainers
             if not maints:
@@ -75,8 +90,8 @@ def flag(request, name, repo, arch):
                 # send notification email to the maintainers
                 tmpl = loader.get_template('packages/outofdate.txt')
                 ctx = Context({
-                    'email': form.cleaned_data['email'],
-                    'message': form.cleaned_data['message'],
+                    'email': email,
+                    'message': message,
                     'pkg': pkg,
                     'packages': flagged_pkgs,
                 })

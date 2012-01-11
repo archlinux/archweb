@@ -10,8 +10,8 @@ class PackageRelationAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
 
 class FlagRequestAdmin(admin.ModelAdmin):
-    list_display = ('pkgbase', 'created', 'who', 'is_spam', 'is_legitimate',
-            'message')
+    list_display = ('pkgbase', 'version', 'created', 'who', 'is_spam',
+            'is_legitimate', 'message')
     list_filter = ('is_spam', 'is_legitimate')
     search_fields = ('pkgbase', 'user_email', 'message')
     ordering = ('-created',)
