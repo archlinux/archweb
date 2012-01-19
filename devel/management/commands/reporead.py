@@ -118,7 +118,8 @@ class Pkg(object):
                         self.builddate = datetime.strptime(v[0],
                                 '%a %b %d %H:%M:%S %Y')
                     except ValueError:
-                        logger.warning('Package %s had unparsable build date %s',
+                        logger.warning(
+                                'Package %s had unparsable build date %s',
                                 self.name, v[0])
             elif k == 'files':
                 self.files = tuple(v)
@@ -290,7 +291,13 @@ def select_pkg_for_update(dbpkg):
 
 
 def update_common(archname, reponame, pkgs, sanity_check=True):
-    with transaction.commit_manually():
+    # If isolation level is repeatable-read, we need to ensure each package
+    # update starts a new transaction and re-queries the database as
+    # necessary to guard against simultaneous updates.
+    with transaction.commit_on_success():
+        # force the transaction dirty, even though we will only do reads
+        transaction.set_dirty()
+
         repository = Repo.objects.get(name__iexact=reponame)
         architecture = Arch.objects.get(name__iexact=archname)
         # no-arg order_by() removes even the default ordering; we don't need it
@@ -300,17 +307,16 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
         logger.info("%d packages in current web DB", len(dbpkgs))
         logger.info("%d packages in new updating DB", len(pkgs))
 
-        # Try to catch those random package deletions that make Eric so unhappy.
         if len(dbpkgs):
             dbpercent = 100.0 * len(pkgs) / len(dbpkgs)
         else:
             dbpercent = 0.0
         logger.info("DB package ratio: %.1f%%", dbpercent)
 
-        # Fewer than 20 packages makes the percentage check unreliable, but it also
-        # means we expect the repo to fluctuate a lot.
-        msg = "Package database has %.1f%% the number of packages in the " \
-                "web database" % dbpercent
+        # Fewer than 20 packages makes the percentage check unreliable, but it
+        # also means we expect the repo to fluctuate a lot.
+        msg = "Package database %s (%s) has %.1f%% the number of packages " \
+                "the web database"
         if not sanity_check:
             pass
         elif repository.testing or repository.staging:
@@ -318,15 +324,10 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
         elif len(dbpkgs) == 0 and len(pkgs) == 0:
             pass
         elif len(dbpkgs) > 20 and dbpercent < 50.0:
-            logger.error(msg)
-            raise Exception(msg)
+            logger.error(msg, reponame, archname, dbpercent)
+            raise Exception(msg % (reponame, archname, dbpercent))
         elif dbpercent < 75.0:
-            logger.warning(msg)
-
-        # If isolation level is repeatable-read, we need to ensure each package
-        # update starts a new transaction and re-queries the database as necessary
-        # to guard against simultaneous updates
-        transaction.commit()
+            logger.warning(msg, reponame, archname, dbpercent)
 
     return dbpkgs
 
