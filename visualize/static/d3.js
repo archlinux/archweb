@@ -10,7 +10,7 @@ try {
     d3_style_setProperty.call(this, name, value + "", priority);
   };
 }
-d3 = {version: "2.6.1"}; // semver
+d3 = {version: "2.7.2"}; // semver
 var d3_array = d3_arraySlice; // conversion for NodeLists
 
 function d3_arrayCopy(pseudoarray) {
@@ -424,9 +424,10 @@ d3.round = function(x, n) {
 };
 d3.xhr = function(url, mime, callback) {
   var req = new XMLHttpRequest;
-  if (arguments.length < 3) callback = mime;
+  if (arguments.length < 3) callback = mime, mime = null;
   else if (mime && req.overrideMimeType) req.overrideMimeType(mime);
   req.open("GET", url, true);
+  if (mime) req.setRequestHeader("Accept", mime);
   req.onreadystatechange = function() {
     if (req.readyState === 4) callback(req.status < 300 ? req : null);
   };
@@ -1346,12 +1347,16 @@ function d3_selection(groups) {
 }
 
 var d3_select = function(s, n) { return n.querySelector(s); },
-    d3_selectAll = function(s, n) { return n.querySelectorAll(s); };
+    d3_selectAll = function(s, n) { return n.querySelectorAll(s); },
+    d3_selectRoot = document.documentElement,
+    d3_selectMatcher = d3_selectRoot.matchesSelector || d3_selectRoot.webkitMatchesSelector || d3_selectRoot.mozMatchesSelector || d3_selectRoot.msMatchesSelector || d3_selectRoot.oMatchesSelector,
+    d3_selectMatches = function(n, s) { return d3_selectMatcher.call(n, s); };
 
 // Prefer Sizzle, if available.
 if (typeof Sizzle === "function") {
   d3_select = function(s, n) { return Sizzle(s, n)[0]; };
   d3_selectAll = function(s, n) { return Sizzle.uniqueSort(Sizzle(s, n)); };
+  d3_selectMatches = Sizzle.matchesSelector;
 }
 
 var d3_selectionPrototype = [];
@@ -1570,16 +1575,18 @@ d3_selectionPrototype.property = function(name, value) {
       ? propertyFunction : propertyConstant));
 };
 d3_selectionPrototype.text = function(value) {
-  return arguments.length < 1 ? this.node().textContent
-      : (this.each(typeof value === "function"
-      ? function() { this.textContent = value.apply(this, arguments); }
-      : function() { this.textContent = value; }));
+  return arguments.length < 1
+      ? this.node().textContent : this.each(typeof value === "function"
+      ? function() { var v = value.apply(this, arguments); this.textContent = v == null ? "" : v; } : value == null
+      ? function() { this.textContent = ""; }
+      : function() { this.textContent = value; });
 };
 d3_selectionPrototype.html = function(value) {
-  return arguments.length < 1 ? this.node().innerHTML
-      : (this.each(typeof value === "function"
-      ? function() { this.innerHTML = value.apply(this, arguments); }
-      : function() { this.innerHTML = value; }));
+  return arguments.length < 1
+      ? this.node().innerHTML : this.each(typeof value === "function"
+      ? function() { var v = value.apply(this, arguments); this.innerHTML = v == null ? "" : v; } : value == null
+      ? function() { this.innerHTML = ""; }
+      : function() { this.innerHTML = value; });
 };
 // TODO append(node)?
 // TODO append(function)?
@@ -1735,12 +1742,13 @@ d3_selectionPrototype.data = function(data, join) {
 function d3_selection_dataNode(data) {
   return {__data__: data};
 }
-// TODO preserve null elements to maintain index?
 d3_selectionPrototype.filter = function(filter) {
   var subgroups = [],
       subgroup,
       group,
       node;
+
+  if (typeof filter !== "function") filter = d3_selection_filter(filter);
 
   for (var j = 0, m = this.length; j < m; j++) {
     subgroups.push(subgroup = []);
@@ -1754,23 +1762,32 @@ d3_selectionPrototype.filter = function(filter) {
 
   return d3_selection(subgroups);
 };
+
+function d3_selection_filter(selector) {
+  return function() {
+    return d3_selectMatches(this, selector);
+  };
+}
 d3_selectionPrototype.map = function(map) {
   return this.each(function() {
     this.__data__ = map.apply(this, arguments);
   });
 };
-d3_selectionPrototype.sort = function(comparator) {
-  comparator = d3_selection_sortComparator.apply(this, arguments);
-  for (var j = 0, m = this.length; j < m; j++) {
-    for (var group = this[j].sort(comparator), i = 1, n = group.length, prev = group[0]; i < n; i++) {
-      var node = group[i];
-      if (node) {
-        if (prev) prev.parentNode.insertBefore(node, prev.nextSibling);
-        prev = node;
+d3_selectionPrototype.order = function() {
+  for (var j = -1, m = this.length; ++j < m;) {
+    for (var group = this[j], i = group.length - 1, next = group[i], node; --i >= 0;) {
+      if (node = group[i]) {
+        if (next && next !== node.nextSibling) next.parentNode.insertBefore(node, next);
+        next = node;
       }
     }
   }
   return this;
+};
+d3_selectionPrototype.sort = function(comparator) {
+  comparator = d3_selection_sortComparator.apply(this, arguments);
+  for (var j = -1, m = this.length; ++j < m;) this[j].sort(comparator);
+  return this.order();
 };
 
 function d3_selection_sortComparator(comparator) {
@@ -1863,7 +1880,7 @@ d3_selectionPrototype.transition = function() {
 };
 var d3_selectionRoot = d3_selection([[document]]);
 
-d3_selectionRoot[0].parentNode = document.documentElement;
+d3_selectionRoot[0].parentNode = d3_selectRoot;
 
 // TODO fast singleton implementation!
 // TODO select(function)
@@ -2262,9 +2279,13 @@ var d3_timer_frame = window.requestAnimationFrame
     || window.msRequestAnimationFrame
     || function(callback) { setTimeout(callback, 17); };
 d3.transform = function(string) {
-  d3_transformG.setAttribute("transform", string);
-  var t = d3_transformG.transform.baseVal.consolidate();
-  return new d3_transform(t ? t.matrix : d3_transformIdentity);
+  var g = document.createElementNS(d3.ns.prefix.svg, "g"),
+      identity = {a: 1, b: 0, c: 0, d: 1, e: 0, f: 0};
+  return (d3.transform = function(string) {
+    g.setAttribute("transform", string);
+    var t = g.transform.baseVal.consolidate();
+    return new d3_transform(t ? t.matrix : identity);
+  })(string);
 };
 
 // Compute x-scale and normalize the first row.
@@ -2316,9 +2337,7 @@ function d3_transformCombine(a, b, k) {
   return a;
 }
 
-var d3_transformG = document.createElementNS(d3.ns.prefix.svg, "g"),
-    d3_transformIdentity = {a: 1, b: 0, c: 0, d: 1, e: 0, f: 0},
-    d3_transformDegrees = 180 / Math.PI;
+var d3_transformDegrees = 180 / Math.PI;
 function d3_noop() {}
 d3.scale = {};
 
@@ -2559,11 +2578,11 @@ function d3_scale_log(linear, log) {
 var d3_scale_logFormat = d3.format(".0e");
 
 function d3_scale_logp(x) {
-  return Math.log(x) / Math.LN10;
+  return Math.log(x < 0 ? 0 : x) / Math.LN10;
 }
 
 function d3_scale_logn(x) {
-  return -Math.log(-x) / Math.LN10;
+  return -Math.log(x > 0 ? 0 : -x) / Math.LN10;
 }
 
 d3_scale_logp.pow = function(x) {
@@ -2702,7 +2721,7 @@ function d3_scale_ordinal(domain, ranger) {
   };
 
   scale.rangeExtent = function() {
-    return ranger.x;
+    return ranger.t === "range" ? d3_scaleExtent(ranger.x) : ranger.x;
   };
 
   scale.copy = function() {
@@ -3489,10 +3508,10 @@ d3.svg.chord = function() {
     var s = subgroup(this, source, d, i),
         t = subgroup(this, target, d, i);
     return "M" + s.p0
-      + arc(s.r, s.p1) + (equals(s, t)
+      + arc(s.r, s.p1, s.a1 - s.a0) + (equals(s, t)
       ? curve(s.r, s.p1, s.r, s.p0)
       : curve(s.r, s.p1, t.r, t.p0)
-      + arc(t.r, t.p1)
+      + arc(t.r, t.p1, t.a1 - t.a0)
       + curve(t.r, t.p1, s.r, s.p0))
       + "Z";
   }
@@ -3515,8 +3534,8 @@ d3.svg.chord = function() {
     return a.a0 == b.a0 && a.a1 == b.a1;
   }
 
-  function arc(r, p) {
-    return "A" + r + "," + r + " 0 0,1 " + p;
+  function arc(r, p, a) {
+    return "A" + r + "," + r + " 0 " + +(a > Math.PI) + ",1 " + p;
   }
 
   function curve(r0, p0, r1, p1) {
@@ -3836,7 +3855,10 @@ d3.svg.axis = function() {
       switch (orient) {
         case "bottom": {
           tickTransform = d3_svg_axisX;
+          subtickEnter.attr("y2", tickMinorSize);
           subtickUpdate.attr("x2", 0).attr("y2", tickMinorSize);
+          tickEnter.select("line").attr("y2", tickMajorSize);
+          tickEnter.select("text").attr("y", Math.max(tickMajorSize, 0) + tickPadding);
           tickUpdate.select("line").attr("x2", 0).attr("y2", tickMajorSize);
           tickUpdate.select("text").attr("x", 0).attr("y", Math.max(tickMajorSize, 0) + tickPadding).attr("dy", ".71em").attr("text-anchor", "middle");
           pathUpdate.attr("d", "M" + range[0] + "," + tickEndSize + "V0H" + range[1] + "V" + tickEndSize);
@@ -3844,7 +3866,10 @@ d3.svg.axis = function() {
         }
         case "top": {
           tickTransform = d3_svg_axisX;
+          subtickEnter.attr("y2", -tickMinorSize);
           subtickUpdate.attr("x2", 0).attr("y2", -tickMinorSize);
+          tickEnter.select("line").attr("y2", -tickMajorSize);
+          tickEnter.select("text").attr("y", -(Math.max(tickMajorSize, 0) + tickPadding));
           tickUpdate.select("line").attr("x2", 0).attr("y2", -tickMajorSize);
           tickUpdate.select("text").attr("x", 0).attr("y", -(Math.max(tickMajorSize, 0) + tickPadding)).attr("dy", "0em").attr("text-anchor", "middle");
           pathUpdate.attr("d", "M" + range[0] + "," + -tickEndSize + "V0H" + range[1] + "V" + -tickEndSize);
@@ -3852,7 +3877,10 @@ d3.svg.axis = function() {
         }
         case "left": {
           tickTransform = d3_svg_axisY;
+          subtickEnter.attr("x2", -tickMinorSize);
           subtickUpdate.attr("x2", -tickMinorSize).attr("y2", 0);
+          tickEnter.select("line").attr("x2", -tickMajorSize);
+          tickEnter.select("text").attr("x", -(Math.max(tickMajorSize, 0) + tickPadding));
           tickUpdate.select("line").attr("x2", -tickMajorSize).attr("y2", 0);
           tickUpdate.select("text").attr("x", -(Math.max(tickMajorSize, 0) + tickPadding)).attr("y", 0).attr("dy", ".32em").attr("text-anchor", "end");
           pathUpdate.attr("d", "M" + -tickEndSize + "," + range[0] + "H0V" + range[1] + "H" + -tickEndSize);
@@ -3860,7 +3888,10 @@ d3.svg.axis = function() {
         }
         case "right": {
           tickTransform = d3_svg_axisY;
+          subtickEnter.attr("x2", tickMinorSize);
           subtickUpdate.attr("x2", tickMinorSize).attr("y2", 0);
+          tickEnter.select("line").attr("x2", tickMajorSize);
+          tickEnter.select("text").attr("x", Math.max(tickMajorSize, 0) + tickPadding);
           tickUpdate.select("line").attr("x2", tickMajorSize).attr("y2", 0);
           tickUpdate.select("text").attr("x", Math.max(tickMajorSize, 0) + tickPadding).attr("y", 0).attr("dy", ".32em").attr("text-anchor", "start");
           pathUpdate.attr("d", "M" + tickEndSize + "," + range[0] + "H0V" + range[1] + "H" + tickEndSize);
