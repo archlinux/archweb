@@ -30,10 +30,10 @@ urlpatterns = patterns('packages.views',
 
     (r'^(?P<name>[A-z0-9\-+.]+)/$',
         'details'),
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<name>[A-z0-9\-+.]+)/$',
+    (r'^(?P<repo>[A-z0-9\-]+)/(?P<name>[^ /]+)/$',
         'details'),
     # canonical package url. subviews defined above
-    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[A-z0-9\-+.]+)/',
+    (r'^(?P<repo>[A-z0-9\-]+)/(?P<arch>[A-z0-9]+)/(?P<name>[^ /]+)/',
         include(package_patterns)),
 )
 
