@@ -24,9 +24,9 @@ class MasterKey(models.Model):
 
 
 class PGPSignature(models.Model):
-    signer = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+    signer = PGPKeyField(max_length=40, verbose_name="Signer key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
-    signee = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+    signee = PGPKeyField(max_length=40, verbose_name="Signee key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     created = models.DateField()
     expires = models.DateField(null=True, blank=True)
