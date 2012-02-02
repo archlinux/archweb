@@ -103,6 +103,28 @@ def update(request):
         messages.error(request, "Are you trying to adopt or disown?")
     return redirect('/packages/')
 
+def split_package_details(request, name='', repo='', arch=''):
+    arch = get_object_or_404(Arch, name=arch)
+    arches = [ arch ]
+    arches.extend(Arch.objects.filter(agnostic=True))
+    repo = get_object_or_404(Repo, name__iexact=repo)
+    pkgs = Package.objects.normal().filter(pkgbase=name,
+            repo__testing=repo.testing, repo__staging=repo.staging,
+            arch__in=arches).order_by('pkgname')
+    if len(pkgs) == 0:
+        raise Http404
+    # we have packages, but ensure at least one is in the given repo
+    if not any(True for pkg in pkgs if pkg.repo == repo):
+        raise Http404
+    context = {
+        'list_title': 'Split Package Details',
+        'name': name,
+        'arch': arch,
+        'packages': pkgs,
+    }
+    return direct_to_template(request, 'packages/packages_list.html',
+            context)
+
 def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
         try:
@@ -112,23 +134,7 @@ def details(request, name='', repo='', arch=''):
             return direct_to_template(request, 'packages/details.html',
                     {'pkg': pkg, })
         except Package.DoesNotExist:
-            arch = get_object_or_404(Arch, name=arch)
-            arches = [ arch ]
-            arches.extend(Arch.objects.filter(agnostic=True))
-            repo = get_object_or_404(Repo, name__iexact=repo)
-            pkgs = Package.objects.normal().filter(pkgbase=name,
-                    repo__testing=repo.testing, repo__staging=repo.staging,
-                    arch__in=arches).order_by('pkgname')
-            if len(pkgs) == 0:
-                raise Http404
-            context = {
-                'list_title': 'Split Package Details',
-                'name': name,
-                'arch': arch,
-                'packages': pkgs,
-            }
-            return direct_to_template(request, 'packages/packages_list.html',
-                    context)
+            return split_package_details(request, name, repo, arch)
     else:
         pkg_data = [
             ('arch', arch.lower()),
