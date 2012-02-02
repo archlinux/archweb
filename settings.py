@@ -117,6 +117,7 @@ INSTALLED_APPS = (
     'public',
     'releng',
     'visualize',
+    'retro',
 )
 
 ## Server used for linking to PGP keysearch results
