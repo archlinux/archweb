@@ -61,9 +61,11 @@ def flag(request, name, repo, arch):
 
             @transaction.commit_on_success
             def perform_updates():
-                pkgs.update(flag_date=datetime.utcnow())
+                now = datetime.utcnow()
+                pkgs.update(flag_date=now)
                 # store our flag request
-                flag_request = FlagRequest(user_email=email, message=message,
+                flag_request = FlagRequest(created=now,
+                        user_email=email, message=message,
                         ip_address=ip_addr, pkgbase=pkg.pkgbase,
                         version=version, repo=pkg.repo,
                         num_packages=len(flagged_pkgs))

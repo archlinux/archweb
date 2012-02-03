@@ -184,6 +184,9 @@ class FlagRequest(models.Model):
     is_legitimate = models.BooleanField(default=True,
             help_text="Is this actually an out-of-date flag request?")
 
+    class Meta:
+        get_latest_by = 'created'
+
     def who(self):
         if self.user:
             return self.user.get_full_name()
@@ -258,7 +261,7 @@ class Replacement(models.Model):
 
 
 # hook up some signals
-for sender in (PackageRelation, SignoffSpecification, Signoff, FlagRequest):
+for sender in (PackageRelation, SignoffSpecification, Signoff):
     pre_save.connect(set_created_field, sender=sender,
             dispatch_uid="packages.models")
 
