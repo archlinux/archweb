@@ -728,6 +728,11 @@ div#pkglist-about {
         padding: 0.25em 0 0.25em 1.5em;
     }
 
+    #pkgdetails #pkginfo .userdata {
+        font-size: 0.85em;
+        padding: 0.5em;
+    }
+
 /* pkgdetails: flag package */
 form#flag-pkg-form label {
     width: 10em;

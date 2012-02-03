@@ -312,6 +312,17 @@ class Package(models.Model):
                 repo__testing=self.repo.testing, repo__staging=self.repo.staging,
                 pkgbase=self.pkgbase).exclude(id=self.id)
 
+    def flag_request(self):
+        if not self.flag_date:
+            return None
+        from packages.models import FlagRequest
+        try:
+            request = FlagRequest.objects.filter(pkgbase=self.pkgbase,
+                    repo=self.repo).latest()
+            return request
+        except FlagRequest.DoesNotExist:
+            return None
+
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'
         return self.pkgname == other.pkgname \
