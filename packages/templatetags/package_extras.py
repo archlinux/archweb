@@ -117,7 +117,7 @@ def bug_report(package):
     data = {
         'project': package.repo.bugs_project,
         'product_category': package.repo.bugs_category,
-        'item_summary': '[%s]' % package.pkgname,
+        'item_summary': '[%s] PLEASE ENTER SUMMARY' % package.pkgname,
     }
     return link_encode(url, data)
 
