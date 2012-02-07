@@ -71,7 +71,7 @@
         </div>
         {% endif %}{% endwith %}
 
-    </div><!-- #actionlist -->
+    </div>
 
     {% cache 300 package-details-pkginfo pkg.id %}
     <table id="pkginfo">
@@ -167,40 +167,19 @@
 
         {% with pkg.get_depends as deps %}
         <div id="pkgdeps" class="listing">
-
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
                 Dependencies ({{deps|length}})</h3>
-
-            {% if deps %}
-            <ul>
-                {% for depend in deps %}
-                {% ifequal depend.pkg None %}
-                {% if depend.providers %}
-                <li>{{ depend.dep.depname }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span></li>
-                {% else %}<li>{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span></li>
-                {% endif %}
-                {% else %}
-                <li>{% pkg_details_link depend.pkg %}{{ depend.dep.depvcmp|default:"" }}
-                {% if depend.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
-                {% if depend.dep.optional %}<span class="opt-dep">(optional)</span>{% endif %}
-                {% if depend.dep.description %}- <span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
-                </li>
-                {% endifequal %}
-                {% endfor %}
-            </ul>
-            {% endif %}
-
-        </div><!-- #pkgdeps -->
+            {% if deps %}<ul>
+                {% for depend in deps %}{% include "packages/details_depend.html" %}{% endfor %}
+            </ul>{% endif %}
+        </div>
         {% endwith %}
 
         {% with pkg.get_requiredby as rqdby %}
         <div id="pkgreqs" class="listing">
-
             <h3 title="Packages that require {{ pkg.pkgname }}">
                 Required By ({{rqdby|length}})</h3>
-
-            {% if rqdby %}
-            <ul>
+            {% if rqdby %}<ul>
                 {% for req in rqdby %}
                 <li>{% pkg_details_link req.pkg %}
                 {% if req.depname != pkg.pkgname %}<span class="virtual-dep">(requires {{ req.depname }})</span>{% endif %}
@@ -208,29 +187,24 @@
                 {% if req.optional %}<span class="opt-dep">(optional)</span>{% endif %}
                 </li>
                 {% endfor %}
-            </ul>
-            {% endif %}
-
-        </div><!-- #pkgreqs -->
+            </ul>{% endif %}
+        </div>
         {% endwith %}
 
         <div id="pkgfiles" class="listing">
-
             <h3 title="Complete list of files contained within this package">
                 Package Contents</h3>
-
             <div id="pkgfilelist">
                 <p><a id="filelink" href="files/"
                     title="Click to view the complete file list for {{ pkg.pkgname }}">
                     View the file list for {{ pkg.pkgname }}</a></p>
             </div>
+        </div>
 
-        </div><!-- #pkgfiles -->
-
-    </div><!-- #metadata -->
+    </div>
     {% endcache %}
 
-</div><!-- #pkgdetails -->
+</div>
 
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>

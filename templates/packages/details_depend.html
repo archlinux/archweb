@@ -1,0 +1,15 @@
+{% load package_extras %}
+<li>
+{% ifequal depend.pkg None %}
+{% if depend.providers %}
+{{ depend.dep.depname }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span>
+{% else %}
+{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span>
+{% endif %}
+{% else %}
+{% pkg_details_link depend.pkg %}{{ depend.dep.depvcmp|default:"" }}
+{% if depend.pkg.repo.testing %} <span class="testing-dep">(testing)</span>{% endif %}
+{% endifequal %}
+{% if depend.dep.optional %} <span class="opt-dep">(optional)</span>{% endif %}
+{% if depend.dep.description %}- <span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
+</li>
