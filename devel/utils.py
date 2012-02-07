@@ -48,6 +48,7 @@ class UserFinder(object):
     def __init__(self):
         self.cache = {}
         self.username_cache = {}
+        self.email_cache = {}
 
     @staticmethod
     def user_email(name, email):
@@ -110,6 +111,7 @@ class UserFinder(object):
                 pass
 
         self.cache[userstring] = user
+        self.email_cache[email] = user
         return user
 
     def find_by_username(self, username):
@@ -126,8 +128,27 @@ class UserFinder(object):
         self.username_cache[username] = user
         return user
 
+    def find_by_email(self, email):
+        if not email:
+            return None
+        if email in self.email_cache:
+            return self.email_cache[email]
+
+        user = None
+        try:
+            user = self.user_email(None, email)
+        except User.DoesNotExist:
+            try:
+                user = self.profile_email(None, email)
+            except User.DoesNotExist:
+                pass
+
+        self.email_cache[email] = user
+        return user
+
     def clear_cache(self):
         self.cache = {}
         self.username_cache = {}
+        self.email_cache = {}
 
 # vim: set ts=4 sw=4 et:
