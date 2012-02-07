@@ -16,6 +16,7 @@
             <tr>
                 <th>Name</th>
                 <th>Version</th>
+                <th>Testing Version</th>
                 <th>Repo</th>
                 <th>Arch</th>
                 <th>Flagged</th>
@@ -27,6 +28,10 @@
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td>{% pkg_details_link pkg %}</td>
                     <td>{{ pkg.full_version }}</td>
+                    <td>{% with pkg.in_testing as tp %}{% if tp %}
+                        <a href="{{ tp.get_absolute_url }}"
+                            title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
+                        {% endif %}{% endwith %}</td>
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
