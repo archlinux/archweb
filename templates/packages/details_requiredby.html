@@ -1,0 +1,7 @@
+{% load package_extras %}
+<li>{% pkg_details_link req.pkg %}
+{% if req.depname != pkg.pkgname %}<span class="virtual-dep">(requires {{ req.depname }})</span>{% endif %}
+{% if req.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
+{% if req.pkg.repo.staging %}<span class="staging-dep">(staging)</span>{% endif %}
+{% if req.optional %}<span class="opt-dep">(optional)</span>{% endif %}
+</li>
