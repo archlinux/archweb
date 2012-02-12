@@ -191,6 +191,13 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
 finder = UserFinder()
 
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
+    # we reset the flag date only if the upstream version components change;
+    # e.g. epoch or pkgver, but not pkgrel
+    if dbpkg.epoch is None or dbpkg.epoch != repopkg.epoch:
+        dbpkg.flag_date = None
+    elif dbpkg.pkgver is None or dbpkg.pkgver != repopkg.ver:
+        dbpkg.flag_date = None
+
     if repopkg.base:
         dbpkg.pkgbase = repopkg.base
     else:
@@ -210,7 +217,6 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.pgp_signature = repopkg.pgpsig
 
     if timestamp:
-        dbpkg.flag_date = None
         dbpkg.last_update = timestamp
     dbpkg.save()
 
