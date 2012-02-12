@@ -31,9 +31,10 @@
     <table id="dev-todo-pkglist" class="results todo-table">
         <thead>
             <tr>
-                <th>Name</th>
                 <th>Arch</th>
-                <th>Repo</th>
+                <th>Repository</th>
+                <th>Name</th>
+                <th>Current Version</th>
                 <th>Maintainers</th>
                 <th>Status</th>
             </tr>
@@ -41,9 +42,14 @@
         <tbody>
             {% for pkg in list.packages %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td>{% pkg_details_link pkg.pkg %}</td>
                 <td>{{ pkg.pkg.arch.name }}</td>
                 <td>{{ pkg.pkg.repo.name|capfirst }}</td>
+                <td>{% pkg_details_link pkg.pkg %}</td>
+                {% if pkg.pkg.flag_date %}
+                <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
+                {% else %}
+                <td>{{ pkg.pkg.full_version }}</td>
+                {% endif %}
                 <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
                 <td>
                     {% if perms.main.change_todolistpkg %}
@@ -71,7 +77,7 @@ $(document).ready(function() {
     $('a.status-link').click(todolist_flag);
     $(".results").tablesorter({
         widgets: ['zebra'],
-        sortList: [[0,0], [1,0]],
+        sortList: [[2,0], [0,0]],
         headers: { 4: { sorter: 'todostatus' } }
     });
 });
