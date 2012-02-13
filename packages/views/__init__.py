@@ -142,7 +142,7 @@ def details(request, name='', repo='', arch=''):
             ('q',    name),
         ]
         # only include non-blank values in the query we generate
-        pkg_data = [(x, y) for x, y in pkg_data if y]
+        pkg_data = [(x, y.encode('utf-8')) for x, y in pkg_data if y]
         return redirect("/packages/?%s" % urlencode(pkg_data))
 
 def groups(request, arch=None):
