@@ -56,7 +56,9 @@ class MirrorRsyncInlineAdmin(admin.TabularInline):
 class MirrorAdminForm(forms.ModelForm):
     class Meta:
         model = Mirror
-    upstream = forms.ModelChoiceField(queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1), required=False)
+    upstream = forms.ModelChoiceField(
+            queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
+            required=False)
 
 class MirrorAdmin(admin.ModelAdmin):
     form = MirrorAdminForm
@@ -70,8 +72,8 @@ class MirrorAdmin(admin.ModelAdmin):
     ]
 
 class MirrorProtocolAdmin(admin.ModelAdmin):
-    list_display = ('protocol', 'is_download',)
-    list_filter = ('is_download',)
+    list_display = ('protocol', 'is_download', 'default')
+    list_filter = ('is_download', 'default')
 
 admin.site.register(Mirror, MirrorAdmin)
 admin.site.register(MirrorProtocol, MirrorProtocolAdmin)

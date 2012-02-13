@@ -54,6 +54,8 @@ class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
     is_download = models.BooleanField(default=True,
             help_text="Is protocol useful for end-users, e.g. FTP/HTTP")
+    default = models.BooleanField(default=True,
+            help_text="Included by default when building mirror list?")
 
     def __unicode__(self):
         return self.protocol

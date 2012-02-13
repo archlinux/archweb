@@ -4,6 +4,7 @@
         "model": "mirrors.mirrorprotocol", 
         "fields": {
             "is_download": true, 
+            "default": true, 
             "protocol": "http"
         }
     }, 
@@ -12,6 +13,7 @@
         "model": "mirrors.mirrorprotocol", 
         "fields": {
             "is_download": true, 
+            "default": false, 
             "protocol": "ftp"
         }
     }, 
@@ -20,6 +22,7 @@
         "model": "mirrors.mirrorprotocol", 
         "fields": {
             "is_download": false, 
+            "default": false, 
             "protocol": "rsync"
         }
     }

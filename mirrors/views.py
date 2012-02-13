@@ -29,8 +29,9 @@ class MirrorlistForm(forms.Form):
         self.fields['country'].initial = ['all']
         protos = make_choice(
                 MirrorProtocol.objects.filter(is_download=True))
+        initial = MirrorProtocol.objects.filter(is_download=True, default=True)
         self.fields['protocol'].choices = protos
-        self.fields['protocol'].initial = [t[0] for t in protos]
+        self.fields['protocol'].initial = [p.protocol for p in initial]
         self.fields['ip_version'].initial = ['4']
 
 @csrf_exempt
@@ -48,7 +49,8 @@ def generate_mirrorlist(request):
     else:
         form = MirrorlistForm()
 
-    return direct_to_template(request, 'mirrors/index.html', {'mirrorlist_form': form})
+    return direct_to_template(request, 'mirrors/index.html',
+            {'mirrorlist_form': form})
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
         ipv4_supported=True, ipv6_supported=True):
