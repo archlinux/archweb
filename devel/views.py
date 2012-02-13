@@ -209,8 +209,10 @@ def report(request, report_name, username=None):
     elif report_name == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
         # checking for all '.0'...'.9' + '.n' extensions
-        bad_files = PackageFile.objects.filter(directory__contains='/man/',
-                filename__regex=r'\.[0-9n]').exclude(filename__endswith='.gz')
+        bad_files = PackageFile.objects.filter(is_directory=False,
+                directory__contains='/man/',
+                filename__regex=r'\.[0-9n]').exclude(
+                filename__endswith='.gz').exclude(filename__endswith='.html')
         if username:
             pkg_ids = set(packages.values_list('id', flat=True))
             bad_files = bad_files.filter(pkg__in=pkg_ids)
@@ -220,8 +222,8 @@ def report(request, report_name, username=None):
         title = 'Packages with uncompressed infopages'
         # we don't worry about looking for '*.info-1', etc., given that an
         # uncompressed root page probably exists in the package anyway
-        bad_files = PackageFile.objects.filter(directory__endswith='/info/',
-                filename__endswith='.info')
+        bad_files = PackageFile.objects.filter(is_directory=False,
+                directory__endswith='/info/', filename__endswith='.info')
         if username:
             pkg_ids = set(packages.values_list('id', flat=True))
             bad_files = bad_files.filter(pkg__in=pkg_ids)
