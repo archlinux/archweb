@@ -18,9 +18,9 @@ def flaghelp(request):
     return direct_to_template(request, 'packages/flaghelp.html')
 
 class FlagForm(forms.Form):
-    email = forms.EmailField(label='* E-mail Address')
-    message = forms.CharField(label='Message To Dev',
-            widget=forms.Textarea, required=False)
+    email = forms.EmailField(label='E-mail Address')
+    message = forms.CharField(label='Message To Developer',
+            widget=forms.Textarea)
     # The field below is used to filter out bots that blindly fill out all
     # input elements
     website = forms.CharField(label='',
