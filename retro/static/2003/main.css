@@ -1,0 +1,273 @@
+a:visited {
+	color: #dddddd;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:link {
+	color: #dddddd;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #cccc00;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a.menu {
+  text-decoration: none;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 10pt;
+}
+
+a.menu:hover {
+	color: #cccc00;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a.row {
+	text-decoration: none;
+	color: #dddd00;
+	font-weight: normal;
+}
+
+a.row:hover {
+	color: #f2c011;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+body {
+	font-family: Arial;
+	font-size: 1.0em;
+	background: #222222 url('dblue071.jpg');
+}
+
+b {
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 1.0em;
+}
+
+b.normal {
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 0.9em;
+}
+
+.text {
+  font-family: Arial;
+  font-size: 0.9em;
+}
+
+.quote {
+  font-family: Arial;
+	font-style: italic;
+  font-size: 1.2em;
+}
+
+.technical {
+  font-family: Courier New;
+  color: #eeeeee;
+  font-size: 0.8em;
+}
+
+.fineprint {
+  font-family: Arial;
+  font-size: 0.75em;
+}
+
+.header {
+  color: #cccccc;
+  font-family: Arial;
+  font-size: 24pt;
+	font-weight: bolder;
+}
+
+.subheader {
+  color: #eeeeee;
+  font-family: Arial;
+  font-size: 1.7em;
+	font-weight: bold;
+}
+
+.headline {
+	color: #eeeeee;
+  font-family: Arial;
+	font-weight: bold;
+  font-size: 1.2em;
+}
+
+ul.plain {
+	list-style: none;
+  font-family: Arial;
+  font-size: 1.0em;
+}
+
+ul.list {
+	list-style: square;
+  font-family: Arial;
+  font-size: 1.0em;
+}
+
+input.button {
+	background: #404040 none;
+	border: #cccccc 1px solid;
+	color: #cccc00;
+	font-family: Verdana, Arial;
+	font-size: 10px;
+	font-weight: bold;
+	padding: 0px;
+}
+
+table.container {
+	width: 95%;
+	padding: 5px;
+}
+
+table.box {
+	background: #222222 url('dblue071.jpg');
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	width: 95%;
+	padding: 0px;
+}
+
+table.header {
+	background: #000000 url('bg.gif') no-repeat;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	width: 100%;
+	padding: 5px;
+}
+
+table.nav {
+	background-color: #000000;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	width: 100%;
+	padding: 5px;
+}
+
+table.content {
+	background-color: #000000;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	width: 100%;
+	padding: 5px;
+}
+
+table.menu {
+	background-image: none;
+	background-color: none;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Arial;
+	font-size: 0.9em;
+}
+
+table.normal {
+	border-bottom: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Arial;
+	font-size: 12pt;
+}
+
+table.technical {
+	border-bottom: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Courier;
+	font-size: 12pt;
+}
+
+table.row {
+	border: none;
+	background: none transparent;
+	padding: none;
+	font-family: Lucida, Verdana, Arial;
+}
+
+td.row1 {
+	background: #190866;
+	color: #dddd00;
+	border-top: #eeeeee 1px solid;
+	border-left: #eeeeee 1px solid;
+}
+
+td.row2 {
+	background: #636268;
+	color: #dddd00;
+	border-top: #eeeeee 1px solid;
+	border-left: #eeeeee 1px solid;
+}
+
+td {
+	color: #dddddd;
+	font-family: Arial;
+	font-size: 12px;
+}
+
+th {
+	color: #dddddd;
+	font-family: Arial;
+	font-size: 16px;
+}
+
+th.row {
+	background: url('grid.png');
+}
+
+th.rowhdr {
+	color: #f2c011;
+	background: #302d49;
+	border-top: #eeeeee 1px solid;
+	border-left: #eeeeee 1px solid;
+}
+
+td.box_headline {
+	color: #dddddd;
+	background: #000000 url('bg.gif') no-repeat;
+	border-bottom: #cccccc 1px solid;
+	padding: 0px;
+}
+
+td.trans_text {
+	color: #dddddd;
+	background: none;
+}
+
+td.box_content {
+	color: #dddddd;
+	background: #000000 none;
+	text-align: left;
+	border-top: #cccccc 1px solid;
+	padding: 2px;
+}
+
+td.menu {
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	color: #dddddd;
+	text-align: center;
+	white-space: nowrap;
+	font-family: Arial;
+	font-size: 10pt;
+}
+

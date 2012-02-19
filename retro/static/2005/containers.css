@@ -1,0 +1,199 @@
+	body,table,td,img
+	{
+		border:				0px;
+		margin:				0px;
+		padding:			0px;
+		font-family:		arial,verdana,tahoma;
+	}
+	
+/* Main Wrapper Data Format */
+	td.preHeader
+	{
+		background-color:	#000;
+		border-bottom:		1px solid rgb( 69, 84, 113 );
+		height:				16px;
+		text-align:			right;
+	}
+	td.headerFill
+	{
+		background-color:       rgb( 108, 131, 176 );
+		border-bottom:		1px solid #000;
+	}
+	td.headerDisplay
+	{
+		background-color:	rgb( 108, 131, 176 );
+		padding-left:		16px;
+	}
+	td.mainLinks
+	{
+		background-color:	#eee;
+		border-bottom:		1px solid #000;
+		height:				22px;
+		padding-left:		12px;
+	}
+	td.sideBar
+	{
+		background-color:	#fff;
+		text-align:			center;
+		vertical-align:		top;
+		width:				150px;
+	}
+	td.sideBarGrey
+	{
+		background-color:	#eee;
+		border-bottom:		1px solid #000;
+		text-align:			left;
+		vertical-align:		top;
+		width:				150px;
+	}
+	td.sideBarSmall
+	{
+		background-color:	rgb( 108, 131, 176 );
+		border-bottom:		1px solid #000;
+		height:				16px;
+		text-align:			right;
+		width:				150px;
+	}
+	td.sideBarSmallHeader
+	{
+		background-color:	rgb(108,131,176);
+		vertical-align: top;
+		height:				16px;
+		padding-top:		1px;
+		padding-bottom:		2px;
+		text-align:			right;
+		width:				150px;
+	}
+	td.subLinks
+	{
+		background-color:	rgb( 225, 228, 232 );
+		border-right:		1px solid #000;
+		color:				rgb( 120, 120, 120 );
+		padding-left:		12px;
+		height:				19px;
+	}
+	td.contentDisplay
+	{
+		background-color:	#ffffff;
+		border-right:		1px solid #000;
+		border-bottom:		1px solid #000;
+		text-align:			center;
+		vertical-align:		top;
+		padding: 10;
+	}
+
+	td.footerDisplay
+	{
+		background-color:	#eee;
+		border-bottom:		1px solid #000;
+		text-align:			center;
+	}
+
+/* Containers Used Globally */
+	table.boxSoft
+	{
+		width:				90%;
+		background-color:	#ddd;
+	}
+	td.boxSoft
+	{
+		background-color:	#fff;
+		padding: 10;
+	}
+	td.boxSoftColumn
+	{
+		padding-left:		16;
+		padding-right:		16;
+		text-align:			justify;
+		vertical-align:		top;
+		text-indent:		20px;
+	}
+	td.div
+	{
+		background-color:	#eee;
+		width:				3px;
+	}
+	td.boxSoftTitle
+	{
+		border-bottom:		1px solid #fff;
+		border-top:			1px solid #fff;
+		background-color:	rgb( 241, 242, 244 );
+		padding-left:		10;
+		padding-top:		1;
+		padding-bottom:		1;
+	}
+	table.boxSoftSmall
+	{
+		width:				94%;
+		background-color:	#ddd;
+	}
+	td.boxSoftSmall
+	{
+		background-color:	#fff;
+		text-align:			center;
+		padding-top:		2;
+		padding-bottom:		2;
+	}
+	td.boxSoftSmallTitle
+	{
+		border-bottom:		1px solid #ccc;
+		background-color:	rgb( 241, 242, 244 );
+		padding-left:		10;
+	}
+	td.ss /* ss = small space */
+	{
+		padding-left:		6px;
+		vertical-align:		top;
+	}
+	td.display
+	{
+		border-bottom:		1px solid #000;
+		padding-bottom:		6px;
+	}
+	td.features
+	{
+		padding:			4px;
+		text-align:			justify;
+		vertical-align:top;
+	}
+	td.formLeft
+	{
+		padding: 6px;
+		text-align: left;
+		vertical-align: top;
+	}
+	td.data1
+	{
+		background-color: #eee;
+		vertical-align: top;
+		padding-left: 5;
+	}
+	td.data2
+	{
+		background-color: #ddd;
+		vertical-align: top;
+		padding-left: 5;
+	}
+	th
+	{
+		text-align: left;
+	}
+
+	input,textarea,select
+	{
+		background-color: rgb(108,131,176);
+		font-family: courier;
+		font-size: 12px;
+		background-color: #ccc;
+		border: #000000 1px solid;
+		color: #111111;
+	}
+
+	input.button
+	{
+		background-color: #fff;
+		color: rgb(108,131,176);
+		border: 1px dashed rgb(108,131,176);
+		font-family: trebuchet ms, tahoma, verdana;
+		font-size: 12px;
+	}
