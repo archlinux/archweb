@@ -1,4 +1,5 @@
 from datetime import timedelta
+from itertools import groupby
 from operator import attrgetter, itemgetter
 
 from django import forms
@@ -79,8 +80,34 @@ def generate_mirrorlist(request):
             {'mirrorlist_form': form})
 
 
+def default_protocol_filter(original_urls):
+    key_func = attrgetter('real_country')
+    sorted_urls = sorted(original_urls, key=key_func)
+    urls = []
+    for _, group in groupby(sorted_urls, key=key_func):
+        cntry_urls = list(group)
+        if any(url.protocol.default for url in cntry_urls):
+            cntry_urls = [url for url in cntry_urls if url.protocol.default]
+        urls.extend(cntry_urls)
+    return urls
+
+
+def status_filter(original_urls):
+    status_info = get_mirror_statuses()
+    scores = dict((u.id, u.score) for u in status_info['urls'])
+    urls = []
+    for u in original_urls:
+        u.score = scores.get(u.id, None)
+        # also include mirrors that don't have an up to date score
+        # (as opposed to those that have been set with no score)
+        if (u.id not in scores) or (u.score and u.score < 100.0):
+            urls.append(u)
+    # if a url doesn't have a score, treat it as the highest possible
+    return sorted(urls, key=lambda x: x.score or 100.0)
+
+
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
-        ipv4_supported=True, ipv6_supported=True):
+        ipv4_supported=True, ipv6_supported=True, smart_protocol=False):
     if not protocols:
         protocols = MirrorProtocol.objects.filter(is_download=True)
     elif hasattr(protocols, 'model') and protocols.model == MirrorProtocol:
@@ -102,23 +129,17 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         ip_version |= Q(has_ipv6=True)
     qset = qset.filter(ip_version)
 
+    if smart_protocol:
+        urls = default_protocol_filter(qset)
+    else:
+        urls = qset
+
     if not use_status:
-        urls = qset.order_by('mirror__name', 'url')
-        urls = sorted(urls, key=attrgetter('real_country'))
+        sort_key = attrgetter('real_country', 'mirror.name', 'url')
+        urls = sorted(urls, key=sort_key)
         template = 'mirrors/mirrorlist.txt'
     else:
-        status_info = get_mirror_statuses()
-        scores = dict([(u.id, u.score) for u in status_info['urls']])
-        urls = []
-        for u in qset:
-            u.score = scores.get(u.id, None)
-            # also include mirrors that don't have an up to date score
-            # (as opposed to those that have been set with no score)
-            if (u.id not in scores) or \
-                    (u.score and u.score < 100.0):
-                urls.append(u)
-        # if a url doesn't have a score, treat it as the highest possible
-        urls = sorted(urls, key=lambda x: x.score or 100.0)
+        urls = status_filter(urls)
         template = 'mirrors/mirrorlist_status.txt'
 
     return direct_to_template(request, template, {
@@ -128,6 +149,10 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
 
 
 def find_mirrors_simple(request, protocol):
+    if protocol == 'smart':
+        # generate a 'smart' mirrorlist, one that only includes FTP mirrors if
+        # no HTTP mirror is available in that country.
+        return find_mirrors(request, smart_protocol=True)
     proto = get_object_or_404(MirrorProtocol, protocol=protocol)
     return find_mirrors(request, protocols=[proto])
 
