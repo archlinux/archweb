@@ -7,6 +7,7 @@ Import signatures from a given GPG keyring.
 Usage: ./manage.py generate_keyring <keyring_path>
 """
 
+from collections import namedtuple
 from datetime import datetime
 import logging
 import subprocess
@@ -42,6 +43,16 @@ class Command(BaseCommand):
 
         import_signatures(args[0])
 
+
+SignatureData = namedtuple('SignatureData',
+        ('signer', 'signee', 'created', 'expires', 'valid'))
+
+
+def get_date(epoch_string):
+    '''Convert a epoch string into a python 'date' object (not datetime).'''
+    return datetime.utcfromtimestamp(int(epoch_string)).date()
+
+
 def parse_sigdata(data):
     nodes = {}
     edges = []
@@ -60,12 +71,14 @@ def parse_sigdata(data):
             if nodes[current_pubkey] is None:
                 nodes[current_pubkey] = uid
         if parts[0] == 'sig':
-            created = datetime.utcfromtimestamp(int(parts[5]))
+            signer = parts[4]
+            created = get_date(parts[5])
             expires = None
             if parts[6]:
-                expires = datetime.utcfromtimestamp(int(parts[6]))
+                expires = get_date(parts[6])
             valid = parts[1] != '-'
-            edge = (parts[4], current_pubkey, created, expires, valid)
+            edge = SignatureData(signer, current_pubkey,
+                    created, expires, valid)
             edges.append(edge)
 
     return nodes, edges
@@ -86,19 +99,25 @@ def import_signatures(keyring):
     # now prune the data down to what we actually want.
     # prune edges not in nodes, remove duplicates, and self-sigs
     pruned_edges = set(edge for edge in edges
-            if edge[0] in nodes and edge[0] != edge[1])
+            if edge.signer in nodes and edge.signer != edge.signee)
 
     logger.info("creating or finding %d signatures", len(pruned_edges))
-    created_ct = 0
+    created_ct = updated_ct = 0
     with transaction.commit_on_success():
         for edge in pruned_edges:
-            _, created = PGPSignature.objects.get_or_create(
-                    signer=edge[0], signee=edge[1],
-                    created=edge[2], expires=edge[3],
-                    defaults={ 'valid': edge[4] })
+            sig, created = PGPSignature.objects.get_or_create(
+                    signer=edge.signer, signee=edge.signee,
+                    created=edge.created, expires=edge.expires,
+                    defaults={ 'valid': edge.valid })
+            if sig.valid != edge.valid:
+                sig.valid = edge.valid
+                sig.save()
+                updated_ct = 1
             if created:
                 created_ct += 1
 
-    logger.info("created %d signatures", created_ct)
+    sig_ct = PGPSignature.objects.all().count()
+    logger.info("%d total signatures in database", sig_ct)
+    logger.info("created %d, updated %d signatures", created_ct, updated_ct)
 
 # vim: set ts=4 sw=4 et:
