@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load cache %}
 {% load package_extras %}
 
 {% block title %}Arch Linux - {{ pkg.pkgname }} {{ pkg.full_version }} ({{ pkg.arch.name }}){% endblock %}
@@ -12,7 +11,6 @@
     <h2>Package Details: {{ pkg.pkgname }} {{ pkg.full_version }}</h2>
 
     <div id="detailslinks" class="listing">
-
         <div id="actionlist">
         <h4>Package Actions</h4>
             <ul class="small">
@@ -70,10 +68,8 @@
             </ul>
         </div>
         {% endif %}{% endwith %}
-
     </div>
 
-    {% cache 300 package-details-pkginfo pkg.id %}
     <table id="pkginfo">
         <tr>
             <th>Architecture:</th>
@@ -201,7 +197,6 @@
         </div>
 
     </div>
-    {% endcache %}
 
 </div>
 
