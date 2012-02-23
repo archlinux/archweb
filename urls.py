@@ -70,6 +70,10 @@ urlpatterns += patterns('public.views',
     (r'^master-keys/$',  'keys',     {}, 'page-keys'),
 )
 
+urlpatterns += patterns('retro.views',
+    (r'^retro/(?P<year>[0-9]{4})/$', 'retro_homepage', {}, 'retro-homepage'),
+)
+
 # Includes and other remaining stuff
 urlpatterns += patterns('',
     # cache this static JS resource for 1 week rather than default 5 minutes

@@ -1,0 +1,412 @@
+* { margin: 0; padding: 0; }
+* ul { padding: 10px 20px; }
+body {
+    min-width: 600px;
+    background: url("titlebar.png") repeat-x top left #fff;
+    padding: 0 30px;
+    color: #46494d;
+    font-size: 14px;
+    font-family: "DejaVu Sans", "Bitstream Vera Sans", "Lucida Grande", Arial, sans-serif;
+}
+/*
+ * Divs
+ */
+#head_container {
+    height: 220px;
+}
+#main_nav {
+    position: absolute;
+    top: 123px;
+    right: 30px;
+    width: 600px;
+    background: #333;
+}
+#dev_nav {
+    position: absolute;
+    top: 149px;
+    right: 30px;
+    width: 600px;
+    background: #1793d1;
+}
+#main_nav ul, #dev_nav ul {
+    list-style: none; 
+    margin: 0;
+    padding: 0;
+}
+#main_nav ul li, #dev_nav ul li {
+    display: block;
+    float: right;
+    margin: 0 3px;
+    padding: 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 26px;
+}
+#main_nav ul li.selected {
+    background: #1793d1;
+}
+#dev_nav ul li.selected {
+    background: #333;
+}
+#main_nav ul li a, #dev_nav ul li a {
+    display: block;
+    padding: 0 8px;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}
+#main_nav ul li a:hover {
+    background: #1793d1;
+}
+#updates {
+	font-size: small;
+	/*position: relative;*/
+	top: 0px;
+	background: #f6efe0;
+	border: 1px solid #eee4cb;
+	padding: 10px;
+}
+#updates a.testing {
+    font-style: italic;
+}
+#ads {
+  z-index: 0;
+  position: absolute;
+  top: 40px;
+  right: 10px;
+}
+#logo {
+  z-index: 1;
+	position: absolute;
+  top: 10px;
+  left: 25px;
+	width: 350px;
+}
+#logo h1#archtitle {
+  text-indent: -9999px;
+  margin: 0;
+  padding: 0;
+}
+#logo h1#archtitle a {
+  display: block;
+  background: transparent url("titlelogo.png") top left no-repeat;
+  width: 350px;
+  height: 103px;
+}
+#devlist {
+	width: 80%;
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	border-top: 1px dashed black;
+	border-bottom: 1px dashed black;
+	text-align: center;
+}
+.clear {
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+.right {
+	float: right;
+	width: 320px;
+	padding: 0 10px 10px 0;
+}
+.left {
+	padding: 10px;
+	margin: 0 360px 0 0;
+}
+.left p {
+	padding-bottom: 10px;
+}
+.box {
+	padding: 10px;
+	background: #f0f0f0;
+	border: 1px solid #d9d9d9;
+}
+.greybox {
+	padding: 10px;
+	background: #f6efe0;
+	border: 1px solid #eee4cb;
+}
+div.listing {
+	padding-right: 10px;
+}
+.error, .errorlist {
+	color: #dd0000;
+	font-size: small;
+}
+.foot {
+	clear: both;
+  padding: 2em 0;
+	text-align: center;
+	font-size: 0.75em;
+  line-height: 1.5em;
+}
+#search {
+	float: right;
+	position: relative;
+	top: -2em;
+	font-size: 0.8em;
+}
+#search input {
+	background: #f6efe0;
+	border: 1px solid #eee4cb;
+}
+.smalltext {
+	text-align: right;
+	font-size: x-small;
+}
+/*
+ * Headers
+ */
+h2 {
+	margin: 20px 0 10px 0;
+}
+h2.title {
+	border-bottom: 1px solid #46494d;
+}
+h3 {
+	margin-bottom: 10px;
+}
+h3.title {
+	text-align: right;
+	border-bottom: 1px solid #46494d;
+}
+h4.title {
+	text-align: left;
+	border-bottom: 1px solid #46494d;
+}
+h4.news {
+	border-bottom: 1px dotted #0771a6;
+  margin-bottom: .25em;
+  padding-bottom: .2em;
+}
+div.listing h4 {
+  color: #fff;
+	background: #0771a6;
+	padding: 3px;
+}
+/*
+ * Paragraphs, Anchors, Images
+ */
+p {
+	padding-bottom: 20px;
+}
+p.news {
+	font-size: small;
+}
+a {
+	color: #0771a6;
+	text-decoration: none;
+}
+a:hover {
+  color: #333;
+  text-decoration: underline;
+}
+#about {
+	position: relative;
+	top: -9px;
+}
+ol {
+	padding-left: 45px;
+}
+ul.small {
+	list-style: none;
+	font-size: x-small;
+}
+ul.links {
+	list-style: none;
+	font-size: small;
+	padding: 0px 0px 20px 20px;
+}
+img {
+	border: none;
+}
+hr {
+	border: none;
+	border-top: 1px solid #46494d;
+}
+.greybox input, button, textarea, select {
+	background: #e1e3e6;
+	border: 1px solid #8faecd;
+}
+.box input, button {
+	padding: 2px;
+	background: #c1c3f6;
+	font-size: x-small;
+	border: 1px solid #8faecd;
+}
+button#f_trigger {
+	background: #e1e3e6;
+}
+/*
+ * Table stuff
+ */
+table.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+table#releases {
+	font-size: small;
+	width: 100%;
+}
+table#releases td {
+	padding-right: 20px;
+}
+table#repolinks {
+	font-size: small;
+	width: 100%;
+}
+table#repolinks td {
+	text-align: right;
+}
+table#repolinks th {
+	text-align: left;
+}
+table#art {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+.devpic {
+	vertical-align: top;
+    padding-top: 10px;
+    padding-right: 15px;
+}
+table.deventry {
+	padding-bottom: 25px;
+}
+.deventry th {
+	text-align: left;
+	vertical-align: top;
+	white-space: nowrap;
+}
+.deventry td {
+	width: 100%;
+}
+table.results {
+	padding: 0px;
+	border-collapse: collapse;
+}
+.results th {
+	background: #e1e3e6;
+	border-bottom: 1px solid #46494d;
+	border-top: 1px solid #46494d;
+	text-align: left;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 5px;
+}
+.results th>a {
+	text-decoration: none;
+	color: #46494d;
+}
+.results td {
+	padding-right: 5px;
+	vertical-align: top;
+	font-size: 0.8em;
+}
+.listing th {
+	font-size: small;
+	vertical-align: top;
+	text-align: left;
+	padding: 2px;
+}
+.listing td {
+	font-size: small;
+	padding: 2px;
+}
+blockquote.code {
+	background: #d0d0d0;
+	border: 1px solid #bbb;
+	margin-left: auto;
+	margin-right: auto;
+	white-space: nowrap;
+	padding: 5px;
+	font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", Courier, "Courier New", Monospace;
+}
+/*
+ * Wiki Styles
+ */
+h1.wiki {
+	border-bottom: 1px solid #46494d;
+}
+div.wikifoot_l {
+	font-size: x-small;
+	text-align: left;
+	padding-top: 25px;
+}
+div.wikifoot_r {
+	font-size: x-small;
+	text-align: right;
+	float: right;
+	padding-top: 25px;
+}
+.wikibody {
+	padding-top: 15px;
+}
+.wikibody ol {
+	padding-left: 28px;
+	padding-top: 0px;
+}
+.wikibody ul {
+	padding-left: 25px;
+	padding-top: 0px;
+}
+.wikibody dd {
+	padding-left: 30px;
+}
+.wikibody pre code {
+	background: #c1c3f6;
+	border: 1px solid #8faecd;
+	margin-left: auto;
+	margin-right: auto;
+	white-space: nowrap;
+	padding: 5px;
+	font-family: "DejaVu Sans Mono", "Bitstream Vera Sans Mono", Courier, "Courier New", Monospace;
+}
+.wikibody blockquote {
+	padding-left: 30px;
+}
+.wikibody td {
+	padding: 5px;
+	border: 1px solid black;
+}
+
+/* Used by Django's FormWrappers */
+textarea.vLargeTextField {
+	width: 450px;
+	height: 250px;
+}
+.pkgr2 {
+	background-color: #eee4cb;
+}
+
+/* override some calendar attributes copied from admin */
+/* CALENDARS & CLOCKS */
+.calendarbox, .clockbox { margin:5px auto; font-size:11px; width:16em; text-align:center; background:white; position:relative; }
+.clockbox { width:9em; }
+.calendar { margin:0; padding: 0; }
+.calendar table { margin:0; padding:0; border-collapse:collapse; background:white; width:99%; }
+.calendar caption, .calendarbox h2 { margin: 0; font-size:11px; text-align:center; border-top:none; }
+.calendar th { font-size:10px; color:#666; padding:2px 3px; text-align:center; background:#e1e1e1 url(nav-bg.gif) 0 50% repeat-x; border-bottom:1px solid #ddd; }
+.calendar td { font-size:11px; text-align: center; padding: 0; border-top:1px solid #eee; border-bottom:none; }
+.calendar td.selected a { background: #C9DBED; }
+.calendar td.nonday { background:#efefef; }
+.calendar td.today a { background:#ffc; }
+.calendar td a, .timelist a { display: block; font-weight:bold; padding:4px; text-decoration: none; color:#444; }
+.calendar td a:hover, .timelist a:hover { background: #5b80b2; color:white; }
+.calendar td a:active, .timelist a:active { background: #036; color:white; }
+.calendarnav { font-size:10px; text-align: center; color:#ccc; margin:0; padding:1px 3px; }
+.calendarnav a:link, #calendarnav a:visited, #calendarnav a:hover { color: #999; }
+.calendar-shortcuts { background:white; font-size:10px; line-height:11px; border-top:1px solid #eee; padding:3px 0 4px; color:#ccc; }
+.calendarbox .calendarnav-previous, .calendarbox .calendarnav-next { display:block; position:absolute; font-weight:bold; font-size:12px; background:#C9DBED url(default-bg.gif) bottom left repeat-x; padding:1px 4px 2px 4px; color:white; }
+.calendarnav-previous:hover, .calendarnav-next:hover { background:#036; }
+.calendarnav-previous { top:0; left:0; }
+.calendarnav-next { top:0; right:0; }
+.calendar-cancel { margin:0 !important; padding:0; font-size:10px; background:#e1e1e1 url(nav-bg.gif) 0 50% repeat-x;  border-top:1px solid #ddd; }
+.calendar-cancel a { padding:2px; color:#999; }
+ul.timelist, .timelist li { list-style-type:none; margin:0; padding:0; }
+.timelist a { padding:2px; }
+

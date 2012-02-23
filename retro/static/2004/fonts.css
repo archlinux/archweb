@@ -1,0 +1,96 @@
+/* Standard Fonts */
+	span /* Applicable by default in all fonts */
+	{
+		color:				#666;
+		font-family:		verdana, trebuchet ms, tahoma, luxi sans;
+	}
+	span.f1 /* Important */
+	{
+		font-family:		verdana;
+		font-size:			20px;
+		letter-spacing:		1px;
+	}
+	span.f2 /* Title */
+	{
+		font-size:			14px;
+		color: rgb(108, 131, 176);
+		font-weight:		bold;
+	}
+	span.f3 /* Sub Title */
+	{
+		color:				#888;
+		font-size:			14px;
+		font-weight:		bold;
+	}
+	span.f4 /* Content Text */
+	{
+		color:				#444;
+		font-family:		verdana;
+		font-size:			12px;
+	}
+	span.f5 /* Content Small */
+	{
+		color:				#333;
+		font-family:		trebuchet ms, tahoma, verdana;
+		font-size:			11px;
+	}
+	
+/* Font Attribute Change (#6c83b0)*/
+	span.blue
+	{
+		color:				rgb( 108, 131, 176 );
+	}
+	span.white
+	{
+		color:				white;
+	}
+	span.black
+	{
+		color:				black;
+	}
+	span.link
+	{
+		color:				rgb( 108, 131, 176 );
+		font-weight:		bold;
+	}	
+
+/* Misc (c9d1e2) */
+	span.preHeader
+	{
+		color:				rgb( 201, 209, 226 );
+		font-weight:		bold;
+		font-size:			11px;
+		font-family:		tahoma, trebuchet ms, verdana;
+		padding-right:		8px;
+		word-spacing:		8px;
+	}
+	span.sideBarSmallHeader
+	{
+		color:				#fff;
+		font-weight:		bold;
+		font-size:			11px;
+		font-family:		tahoma, trebuchet ms, verdana;
+		padding-right:		8px;
+	}
+
+a:visited {
+	color: rgb(108,131,176);
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:link {
+	color: rgb(108,131,176);
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #990000;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+h1,h2,h3,h4 {
+	font-size: 16pt;
+}

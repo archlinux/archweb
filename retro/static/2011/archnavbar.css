@@ -1,0 +1,33 @@
+/*
+ * ARCH GLOBAL NAVBAR
+ *
+ * We're forcing all generic selectors with !important
+ * to help prevent other stylesheets from interfering.
+ *
+ */
+
+/* container for the entire bar */
+#archnavbar { height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+
+/* logo trickery -- GIF for IE6 and PNG for the rest */
+#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; }
+/* IE6 doesn't support alpha PNGs so we serve it a GIF */
+#archnavbarlogo { background: url('archlogo.gif') no-repeat !important; }
+/* and use a proper PNG for all other modern browsers */
+html > body #archnavbarlogo { background: url('archlogo.png') no-repeat !important; }
+
+/* move the heading/paragraph text offscreen */
+#archnavbarlogo p { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
+#archnavbarlogo h1 { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
+
+/* make the link the same size as the logo */
+#archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
+
+/* display the list inline, float it to the right and style it */
+#archnavbar ul { display: inline !important; float: right !important; list-style: none !important; margin: 0 !important; padding: 0 !important; }
+#archnavbar ul li { float: left !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 45px !important; padding-right: 15px !important; padding-left: 15px !important; }
+
+/* style the links */
+#archnavbar ul#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
+#archnavbar ul li a:hover { color: white !important; text-decoration: underline !important; }
+

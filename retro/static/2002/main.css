@@ -1,0 +1,145 @@
+a:visited {
+	color: #dddddd;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:link {
+	color: #dddddd;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+	color: #cccc00;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a.menu {
+  text-decoration: none;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 12pt;
+}
+
+body {
+	font-family: Arial;
+	background: #222222 none;
+}
+
+b {
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 13pt;
+}
+
+b.normal {
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 12pt;
+}
+
+.text {
+  font-family: Arial;
+  font-size: 12pt;
+}
+
+.quote {
+  font-family: Arial;
+	font-style: italic;
+  font-size: 11pt;
+}
+
+.technical {
+  font-family: Courier;
+  color: #eeeeee;
+  font-size: 10pt;
+}
+
+.fineprint {
+  font-family: Arial;
+  font-size: 10pt;
+}
+
+.header {
+  color: #cccccc;
+  font-family: Arial;
+  font-size: 28pt;
+	font-weight: bolder;
+}
+
+.subheader {
+  color: #eeeeee;
+  font-family: Arial;
+  font-size: 24pt;
+	font-weight: bold;
+}
+
+ul.plain {
+	list-style: none;
+  font-family: Arial;
+  font-size: 12pt;
+}
+
+ul.list {
+	list-style: square;
+  font-family: Arial;
+  font-size: 12pt;
+}
+
+table.border {
+	background-image: url('bg.gif');
+	background-repeat: no-repeat;
+	background-color: #000000;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	width: 93%;
+	padding: 5px;
+}
+
+table.menu {
+	background-image: none;
+	background-color: none;
+	border-bottom: #cccccc 1px solid;
+	border-left: #cccccc 1px solid;
+	border-right: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Arial;
+	font-size: 12pt;
+}
+
+table.normal {
+	border-bottom: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Arial;
+	font-size: 12pt;
+}
+
+table.technical {
+	border-bottom: #cccccc 1px solid;
+	border-top: #cccccc 1px solid;
+	padding: none;
+	font-family: Courier;
+	font-size: 10pt;
+}
+
+td {
+  color: #dddddd;
+  font-family: Arial;
+  font-size: 12pt;
+}
+
+td.menu {
+  border-left: #cccccc 1px solid;
+  border-right: #cccccc 1px solid;
+  color: #dddddd;
+	text-align: center;
+	white-space: nowrap;
+  font-family: Arial;
+  font-size: 10pt;
+}
