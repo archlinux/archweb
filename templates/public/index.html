@@ -34,7 +34,7 @@
     <p class="readmore"><a href="{% url page-about %}"
         title="Learn more about Arch Linux">Learn more...</a></p>
 
-</div><!-- #intro -->
+</div>
 
 <div id="news">
 
@@ -44,7 +44,7 @@
     </h3>
 
     <a href="/feeds/news/" title="Arch News RSS Feed"
-        class="rss-icon"><img src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
 
     {% for news in news_updates %}
     {% if forloop.counter0 < 5 %}
@@ -74,7 +74,7 @@
     {% endif %}
     {% endfor %}
 
-</div><!-- #news -->
+</div>
 {% endcache %}
 {% endblock %}
 
@@ -97,7 +97,7 @@
             title="Browse all of the latest packages">more</a>)</span></h3>
 
     <a href="/feeds/packages/" title="Arch Package Updates RSS Feed"
-        class="rss-icon"><img src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
 
     <table>
         {% for update in pkg_updates %}
@@ -159,7 +159,7 @@
             title="Check the status of all known mirrors">Mirror Status</a></li>
         <li><a href="/packages/differences/"
             title="See differences in packages between available architectures">Differences Reports</a>
-        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
     </ul>
 
     <h4>Development</h4>
@@ -179,7 +179,7 @@
             title="Releng Testbuild Feedback">Releng Testbuild Feedback</a></li>
         <li><a href="{% url visualize-index %}"
             title="View visualizations">Visualizations</a>
-        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
     </ul>
 
     <h4>More Resources</h4>
@@ -187,7 +187,7 @@
     <ul>
         <li><a href="{% url page-keys %}"
             title="Package/Database signing master keys">Signing Master Keys</a>
-        <img src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
         <li><a href="https://wiki.archlinux.org/index.php/Arch_Linux_Press_Review"
             title="Arch Linux in the media">Press Coverage</a></li>
         <li><a href="{% url page-art %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
@@ -198,24 +198,24 @@
         <li><a href="{% url page-fellows %}" title="Retired Developers">Fellows Profiles</a></li>
     </ul>
 
-</div><!-- #nav-sidebar -->
+</div>
 
 <div id="home-donate-button" class="widget">
     <a href="https://co.clickandpledge.com/Default.aspx?WID=47294">
-        <img src="{% cdnprefix %}/media/CP_EN_BK_S_001.gif" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
+        <img width="210" height="34" src="{% cdnprefix %}/media/CP_EN_BK_S_001.gif" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
     </a>
 </div>
 
 <div id="arch-sponsors" class="widget">
 
     <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network">
-        <img src="{% cdnprefix %}/media/vnet_button.png" alt="Velocity Network - It's about time" />
+        <img width="252" height="58" src="{% cdnprefix %}/media/vnet_button.png" alt="Velocity Network - It's about time" />
     </a>
     <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">
-        <img src="{% cdnprefix %}/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" />
+        <img width="252" height="58" src="{% cdnprefix %}/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" />
     </a>
     <a href="http://www.airvm.com/ArchLinux" title="AirVM.com - Your Green Technology Partner">
-        <img src="{% cdnprefix %}/media/airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" />
+        <img width="252" height="58" src="{% cdnprefix %}/media/airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" />
     </a>
 
 </div>
