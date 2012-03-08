@@ -6,6 +6,7 @@
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block head %}
+{% if is_paginated and page_obj.number > 1 %}<meta name="robots" content="noindex, nofollow"/>{% endif %}
 <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
 {% endblock %}
 
