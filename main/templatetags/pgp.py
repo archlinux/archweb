@@ -16,17 +16,28 @@ def format_key(key_id):
     return u'0x%s' % key_id
 
 @register.simple_tag
-def pgp_key_link(key_id):
+def pgp_key_link(key_id, link_text=None):
     if not key_id:
         return "Unknown"
+    if isinstance(key_id, (int, long)):
+        key_id = '%X' % key_id
+        # zero-fill to nearest 8, 16, or 40 chars if necessary
+        if len(key_id) <= 8:
+            key_id = key_id.zfill(8)
+        elif len(key_id) <= 16:
+            key_id = key_id.zfill(16)
+        elif len(key_id) <= 40:
+            key_id = key_id.zfill(40)
     # Something like 'pgp.mit.edu:11371'
     pgp_server = getattr(settings, 'PGP_SERVER', None)
     if not pgp_server:
         return format_key(key_id)
     url = 'http://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % \
             (pgp_server, key_id)
-    values = (url, format_key(key_id), key_id[-8:])
-    return '<a href="%s" title="PGP key search for %s">0x%s</a>' % values
+    if link_text is None:
+        link_text = '0x%s' % key_id[-8:]
+    values = (url, format_key(key_id), link_text)
+    return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
 @register.filter
 def pgp_fingerprint(key_id, autoescape=True):
