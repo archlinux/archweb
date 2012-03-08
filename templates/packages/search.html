@@ -52,31 +52,7 @@
 
 {% if package_list %}
 <div id="pkglist-results" class="box">
-
-    {% if paginator %}
-    <div id="pkglist-stats-top">
-
-        <p>{{paginator.count}} packages found.
-        Page {{page_obj.number}} of {{paginator.num_pages}}.</p>
-
-        <p class="pkglist-nav">
-            {% if page_obj.has_previous %}
-            <a class="prev" href="/packages/{{page_obj.previous_page_number}}/?{{current_query}}"
-                title="Go to previous page">&lt; Prev</a>
-            {% else %}
-            <span class="prev">&lt; Prev</span>
-            {% endif %}
-            {% if page_obj.has_next %}
-            <a class="next" href="/packages/{{page_obj.next_page_number}}/?{{current_query}}"
-                title="Go to next page">Next &gt;</a>
-            {% else %}
-            <span class="next">Next &gt;</span>
-            {% endif %}
-        </p>
-
-    </div>
-    {% endif %}
-
+    {% include "packages/search_paginator.html" %}
     <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
 
         <table class="results">
@@ -120,29 +96,7 @@
             {% endfor %}
             </tbody>
         </table>
-
-        {% if paginator %}
-        <div id="pkglist-stats-bottom">
-
-            <p>{{paginator.count}} packages found. Page {{page_obj.number}} of {{paginator.num_pages}}.</p>
-
-                <p class="pkglist-nav">
-                    {% if page_obj.has_previous %}
-                    <a class="prev" href="/packages/{{page_obj.previous_page_number}}/?{{current_query}}"
-                        title="Go to previous page">&lt; Prev</a>
-                    {% else %}
-                    <span class="prev">&lt; Prev</span>
-                    {% endif %}
-                    {% if page_obj.has_next %}
-                    <a class="next" href="/packages/{{page_obj.next_page_number}}/?{{current_query}}"
-                        title="Go to next page">Next &gt;</a>
-                    {% else %}
-                    <span class="next">Next &gt;</span>
-                    {% endif %}
-                </p>
-
-        </div>
-        {% endif %}
+        {% include "packages/search_paginator.html" %}
 
         {% if perms.main.change_package %}
         <p><input title="Adopt selected packages" type="submit" id="adopt-btn"

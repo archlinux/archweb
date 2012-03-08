@@ -1,0 +1,27 @@
+<div class="pkglist-stats">
+    {% if is_paginated %}
+    <p>{{paginator.count}} packages found.
+    Page {{page_obj.number}} of {{paginator.num_pages}}.</p>
+
+    <div class="pkglist-nav">
+    <span class="prev">
+        {% if page_obj.has_previous %}
+        <a href="/packages/{{page_obj.previous_page_number}}/?{{current_query}}"
+            title="Go to previous page">&lt; Prev</a>
+        {% else %}
+        &lt; Prev
+        {% endif %}
+    </span>
+    <span class="next">
+        {% if page_obj.has_next %}
+        <a href="/packages/{{page_obj.next_page_number}}/?{{current_query}}"
+            title="Go to next page">Next &gt;</a>
+        {% else %}
+        Next &gt;
+        {% endif %}
+    </span>
+    </div>
+    {% else %}
+    <p>{{ package_list.count }} packages found.</p>
+    {% endif %}
+</div>

@@ -645,8 +645,7 @@ div#pkglist-about {
 }
 
 /* pkglist: results navigation */
-#pkglist-stats-top,
-#pkglist-stats-bottom {
+.pkglist-stats {
     font-size: 0.85em;
 }
 
