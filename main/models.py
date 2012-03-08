@@ -1,13 +1,15 @@
+from base64 import b64decode
+from datetime import datetime
+from itertools import groupby
+from pgpdump import BinaryData
+import pytz
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from .fields import PositiveBigIntegerField, PGPKeyField
 from .utils import cache_function, make_choice, set_created_field
-
-from datetime import datetime
-from itertools import groupby
-import pytz
 
 
 class UserProfile(models.Model):
@@ -183,8 +185,29 @@ class Package(models.Model):
         domain = Site.objects.get_current().domain
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
-    def is_signed(self):
-        return bool(self.pgp_signature)
+    @property
+    @cache_function(15)
+    def signature(self):
+        try:
+            data = b64decode(self.pgp_signature)
+        except TypeError:
+            return None
+        data = BinaryData(data)
+        packets = list(data.packets())
+        return packets[0]
+
+    @property
+    @cache_function(15)
+    def signer(self):
+        sig = self.signature
+        if sig and sig.key_id:
+            try:
+                user = User.objects.get(
+                        userprofile__pgp_key__endswith=sig.key_id)
+            except User.DoesNotExist:
+                user = None
+            return user
+        return None
 
     _maintainers = None
 
