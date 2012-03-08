@@ -212,7 +212,10 @@ def report(request, report_name, username=None):
         bad_files = PackageFile.objects.filter(is_directory=False,
                 directory__contains='/man/',
                 filename__regex=r'\.[0-9n]').exclude(
-                filename__endswith='.gz').exclude(filename__endswith='.html')
+                filename__endswith='.gz').exclude(
+                filename__endswith='.xz').exclude(
+                filename__endswith='.bz2').exclude(
+                filename__endswith='.html')
         if username:
             pkg_ids = set(packages.values_list('id', flat=True))
             bad_files = bad_files.filter(pkg__in=pkg_ids)
