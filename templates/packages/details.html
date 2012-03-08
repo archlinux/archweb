@@ -108,26 +108,23 @@
         </tr><tr>
             <th>License(s):</th>
             <td>{{ pkg.licenses.all|join:", " }}</td>
-        </tr><tr>
+        </tr>
+        {% with pkg.groups.all as groups %}{% if groups %}
+        <tr>
             <th>Groups:</th>
-            {% with pkg.groups.all as groups %}
-            <td>{% if groups %}
-                {% for g in groups %}
+            <td>{% for g in groups %}
                 <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
                     title="Group details for {{ g.name }}">{{ g.name }}</a><br/>
                 {% endfor %}
-                {% else %}None{% endif %}
             </td>
-            {% endwith %}
         </tr>
-        {% with pkg.provides.all as provides %}
-        {% if provides %}
+        {% endif %}{% endwith %}
+        {% with pkg.provides.all as provides %}{% if provides %}
         <tr>
             <th>Provides:</th>
             <td>{% for p in provides %}{{ p.name }}{% if p.version %}={{ p.version }}{% endif %}<br/>{% endfor %}</td>
         </tr>
-        {% endif %}
-        {% endwith %}
+        {% endif %}{% endwith %}
         <tr>
             <th>Maintainers:</th>
             {% with pkg.maintainers as maints %}
