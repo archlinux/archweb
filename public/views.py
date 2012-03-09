@@ -49,6 +49,7 @@ def userlist(request, user_type='devs'):
     else:
         raise Http404
 
+    users = users.distinct()
     context = USER_LISTS[user_type].copy()
     context['users'] = users
     return direct_to_template(request, 'public/userlist.html', context)
