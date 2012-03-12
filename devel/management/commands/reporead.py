@@ -547,6 +547,12 @@ def read_repo(primary_arch, repo_file, options):
                     package.name, repo_file, package.arch))
     del packages
 
+    database = router.db_for_write(Package)
+    connection = connections[database]
+    if connection.vendor == 'sqlite':
+        cursor = connection.cursor()
+        cursor.execute('PRAGMA synchronous = NORMAL')
+
     logger.info('Starting database updates for %s.', repo_file)
     for arch in sorted(packages_arches.keys()):
         if filesonly:
