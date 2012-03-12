@@ -9,7 +9,6 @@
 {% block content_left %}
 {% cache 62 main-page-left secure %}
 <div id="intro" class="box">
-
     <h2>A simple, lightweight distribution</h2>
 
     <p>You've reached the website for <strong>Arch Linux</strong>, a
@@ -33,11 +32,9 @@
 
     <p class="readmore"><a href="{% url page-about %}"
         title="Learn more about Arch Linux">Learn more...</a></p>
-
 </div>
 
 <div id="news">
-
     <h3>
         <a href="{% url news-list %}" title="Browse the news archives">Latest News</a>
         <span class="arrow"></span>
@@ -53,7 +50,10 @@
             title="View full article: {{ news.title }}">{{ news.title }}</a>
     </h4>
     <p class="timestamp">{{ news.postdate|date }}</p>
-    <div class="article-content">{{ news.content|markdown|truncatewords_html:75 }}</div>
+    <div class="article-content">
+        {% if forloop.counter0 == 0 %}{{ news.content|markdown|truncatewords_html:300 }}
+        {% else %}{{ news.content|markdown|truncatewords_html:100 }}{% endif %}
+    </div>
     {% else %}
     {% if forloop.counter0 == 5 %}
     <h3>
@@ -73,7 +73,6 @@
     {% endif %}
     {% endif %}
     {% endfor %}
-
 </div>
 {% endcache %}
 {% endblock %}
@@ -81,7 +80,6 @@
 {% block content_right %}
 {% cache 59 main-page-right secure %}
 <div id="pkgsearch" class="widget">
-
     <form id="pkgsearch-form" method="get" action="/packages/">
         <fieldset>
             <label for="pkgsearch-field">Package Search:</label>
@@ -92,7 +90,6 @@
 </div>
 
 <div id="pkg-updates" class="widget box">
-
     <h3>Recent Updates <span class="more">(<a href="/packages/?sort=-last_update"
             title="Browse all of the latest packages">more</a>)</span></h3>
 
@@ -113,7 +110,6 @@
 </div>
 
 <div id="nav-sidebar" class="widget">
-
     <h4>Documentation</h4>
 
     <ul>
