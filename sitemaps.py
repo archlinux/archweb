@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import reverse
 
@@ -17,8 +19,8 @@ class PackagesSitemap(Sitemap):
 
 
 class PackageFilesSitemap(PackagesSitemap):
-    changefreq = "monthly"
-    priority = "0.3"
+    changefreq = "weekly"
+    priority = "0.2"
 
     def location(self, obj):
         return PackagesSitemap.location(self, obj) + 'files/'
@@ -57,14 +59,25 @@ class SplitPackagesSitemap(Sitemap):
 
 
 class NewsSitemap(Sitemap):
-    changefreq = "never"
     priority = "0.8"
+
+    def __init__(self):
+        now = datetime.utcnow()
+        self.one_day_ago = now - timedelta(days=1)
+        self.one_week_ago = now - timedelta(days=7)
 
     def items(self):
         return News.objects.all()
 
     def lastmod(self, obj):
         return obj.last_modified
+
+    def changefreq(self, obj):
+        if obj.last_modified > self.one_day_ago:
+            return 'daily'
+        if obj.last_modified > self.one_week_ago:
+            return 'weekly'
+        return 'yearly'
 
 
 class BaseSitemap(Sitemap):
