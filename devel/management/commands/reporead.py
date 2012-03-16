@@ -70,7 +70,7 @@ class Command(BaseCommand):
         return read_repo(arch, filename, options)
 
 
-class Pkg(object):
+class RepoPackage(object):
     """An interim 'container' object for holding Arch package data."""
     bare = ( 'name', 'base', 'arch', 'filename',
             'md5sum', 'sha256sum', 'url', 'packager' )
@@ -85,6 +85,7 @@ class Pkg(object):
         self.ver = None
         self.rel = None
         self.epoch = 0
+        self.desc = None
         self.pgpsig = None
         for k in self.bare + self.number:
             setattr(self, k, None)
@@ -458,7 +459,7 @@ def parse_info(iofile):
 
 def parse_repo(repopath):
     """
-    Parses an Arch repo db file, and returns a list of Pkg objects.
+    Parses an Arch repo db file, and returns a list of RepoPackage objects.
 
     Arguments:
      repopath -- The path of a repository db file.
@@ -480,7 +481,7 @@ def parse_repo(repopath):
     repodb = tarfile.open(repopath, "r")
     logger.debug("Starting package parsing")
     dbfiles = ('desc', 'depends', 'files')
-    newpkg = lambda: Pkg(reponame)
+    newpkg = lambda: RepoPackage(reponame)
     pkgs = defaultdict(newpkg)
     for tarinfo in repodb.getmembers():
         if tarinfo.isreg():
