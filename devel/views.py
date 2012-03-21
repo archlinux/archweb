@@ -101,8 +101,8 @@ def clock(request):
     response = direct_to_template(request, 'devel/clock.html', page_dict)
     if not response.has_header('Expires'):
         # why this works only with the non-UTC date I have no idea...
-        expire_time = now.replace(minute=utc_now.minute + 1,
-                second=0, microsecond=0)
+        expire_time = now.replace(second=0, microsecond=0)
+        expire_time += timedelta(minutes=1)
         expire_time = time.mktime(expire_time.timetuple())
         response['Expires'] = http_date(expire_time)
     return response
