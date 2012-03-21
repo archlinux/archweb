@@ -1,11 +1,12 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import Http404
 from django.views.decorators.cache import cache_control
 from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
-from devel.models import MasterKey
+from devel.models import MasterKey, PGPSignature
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
@@ -87,9 +88,17 @@ def feeds(request):
 
 @cache_control(max_age=300)
 def keys(request):
+    master_keys = MasterKey.objects.select_related('owner', 'revoker',
+            'owner__userprofile', 'revoker__userprofile').filter(
+            revoked__isnull=True)
+    sig_counts = PGPSignature.objects.filter(valid=True,
+            expires__isnull=True).values_list('signer').annotate(
+            Count('signer'))
+    sig_counts = dict((key_id[-16:], ct) for key_id, ct in sig_counts)
+    for key in master_keys:
+        key.signature_count = sig_counts.get(key.pgp_key[-16:], 0)
     context = {
-        'keys': MasterKey.objects.select_related('owner', 'revoker',
-            'owner__userprofile', 'revoker__userprofile').all(),
+        'keys': master_keys,
     }
     return direct_to_template(request, 'public/keys.html', context)
 

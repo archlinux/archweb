@@ -34,13 +34,14 @@
                 <th>Owner's Signing Key</th>
                 <th>Revoker</th>
                 <th>Revoker's Signing Key</th>
+                <th>Developer/TU Keys Signed</th>
             </tr>
         </thead>
         <tbody>
             {% for key in keys %}
             <tr>
                 <td>{% pgp_key_link key.pgp_key %}</td>
-                <td>{{ key.pgp_key|pgp_fingerprint }}</td>
+                <td><tt>{{ key.pgp_key|pgp_fingerprint }}</tt></td>
                 {% with key.owner.userprofile as owner_profile %}
                 <td><a href="{{ owner_profile.get_absolute_url }}">{{ key.owner.get_full_name }}</a></td>
                 <td>{% pgp_key_link owner_profile.pgp_key %}</td>
@@ -49,6 +50,7 @@
                 <td><a href="{{ revoker_profile.get_absolute_url }}">{{ key.revoker.get_full_name }}</a></td>
                 <td>{% pgp_key_link revoker_profile.pgp_key %}</td>
                 {% endwith %}
+                <td>{{ key.signature_count }}</td>
             </tr>
             {% endfor %}
         </tbody>
