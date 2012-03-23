@@ -4,9 +4,9 @@ except ImportError:
     import pickle
 
 from datetime import datetime
+import hashlib
 
 from django.core.cache import cache
-from django.utils.hashcompat import md5_constructor
 
 CACHE_TIMEOUT = 1800
 INVALIDATE_TIMEOUT = 10
@@ -15,7 +15,7 @@ CACHE_LATEST_PREFIX = 'cache_latest_'
 def cache_function_key(func, args, kwargs):
     raw = [func.__name__, func.__module__, args, kwargs]
     pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
-    key = md5_constructor(pickled).hexdigest()
+    key = hashlib.md5(pickled).hexdigest()
     return 'cache_function.' + func.__name__ + '.' + key
 
 def cache_function(length):
