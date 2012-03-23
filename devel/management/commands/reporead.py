@@ -286,17 +286,6 @@ def populate_files(dbpkg, repopkg, force=False):
         dbpkg.save()
 
 
-def select_pkg_for_update(dbpkg):
-    database = router.db_for_write(Package, instance=dbpkg)
-    connection = connections[database]
-    if 'sqlite' in connection.settings_dict['ENGINE'].lower():
-        return dbpkg
-    new_pkg = Package.objects.raw(
-            'SELECT * FROM packages WHERE id = %s FOR UPDATE',
-            [dbpkg.id])
-    return list(new_pkg)[0]
-
-
 def update_common(archname, reponame, pkgs, sanity_check=True):
     # If isolation level is repeatable-read, we need to ensure each package
     # update starts a new transaction and re-queries the database as
@@ -396,8 +385,7 @@ def db_update(archname, reponame, pkgs, force=False):
         # simultaneous updates don't happen on a package, causing
         # files/depends/all related items to be double-imported.
         with transaction.commit_on_success():
-            # TODO Django 1.4 select_for_update() will work once released
-            dbpkg = select_pkg_for_update(dbpkg)
+            dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
             if not force and pkg_same_version(pkg, dbpkg):
                 logger.debug("Package %s was already updated", pkg.name)
                 continue
@@ -428,8 +416,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
             elif not force and dbpkg.files_last_update > dbpkg.last_update:
                 logger.debug("Files for %s are up to date", pkg.name)
                 continue
-            # TODO Django 1.4 select_for_update() will work once released
-            dbpkg = select_pkg_for_update(dbpkg)
+            dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
             logger.debug("Checking files for package %s", pkg.name)
             populate_files(dbpkg, pkg, force=force)
 
