@@ -270,18 +270,17 @@ def populate_files(dbpkg, repopkg, force=False):
         delete_pkg_files(dbpkg)
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
+        pkg_files = []
         for f in repopkg.files:
             dirname, filename = f.rsplit('/', 1)
             if filename == '':
                 filename = None
-            # this is basically like calling dbpkg.packagefile_set.create(),
-            # but much faster as we can skip a lot of the repeated code paths
-            # TODO use Django 1.4 bulk_create
             pkgfile = PackageFile(pkg=dbpkg,
                     is_directory=(filename is None),
                     directory=dirname + '/',
                     filename=filename)
-            pkgfile.save(force_insert=True)
+            pkg_files.append(pkgfile)
+        PackageFile.objects.bulk_create(pkg_files)
         dbpkg.files_last_update = datetime.utcnow()
         dbpkg.save()
 
