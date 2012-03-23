@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import operator
 import pytz
 import random
@@ -28,7 +28,7 @@ from main.utils import utc_now
 from packages.models import PackageRelation
 from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
-from .utils import get_annotated_maintainers
+from .utils import get_annotated_maintainers, UserFinder
 
 
 @login_required
@@ -232,6 +232,25 @@ def report(request, report_name, username=None):
         # The two separate calls to exclude is required to do the right thing
         packages = packages.exclude(pkgbase__in=owned).exclude(
                 pkgname__in=required)
+    elif report_name == 'mismatched-signature':
+        title = 'Packages with mismatched signatures'
+        names = [ 'Signature Date', 'Signed By', 'Packager' ]
+        attrs = [ 'sig_date', 'sig_by', 'packager' ]
+        cutoff = timedelta(hours=24)
+        finder = UserFinder()
+        filtered = []
+        packages = packages.filter(pgp_signature__isnull=False)
+        for package in packages:
+            sig_date = package.signature.datetime.replace(tzinfo=pytz.utc)
+            package.sig_date = sig_date.date()
+            key_id = package.signature.key_id
+            signer = finder.find_by_pgp_key(key_id)
+            package.sig_by = signer or key_id
+            if signer is None or signer.id != package.packager_id:
+                filtered.append(package)
+            elif sig_date > package.build_date + cutoff:
+                filtered.append(package)
+        packages = filtered
     else:
         raise Http404
 

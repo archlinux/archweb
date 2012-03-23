@@ -49,6 +49,7 @@ class UserFinder(object):
         self.cache = {}
         self.username_cache = {}
         self.email_cache = {}
+        self.pgp_cache = {}
 
     @staticmethod
     def user_email(name, email):
@@ -146,9 +147,25 @@ class UserFinder(object):
         self.email_cache[email] = user
         return user
 
+    def find_by_pgp_key(self, pgp_key):
+        if not pgp_key:
+            return None
+        if pgp_key in self.pgp_cache:
+            return self.pgp_cache[pgp_key]
+
+        try:
+            user = User.objects.get(
+                    userprofile__pgp_key__endswith=pgp_key)
+        except User.DoesNotExist:
+            user = None
+
+        self.pgp_cache[pgp_key] = user
+        return user
+
     def clear_cache(self):
         self.cache = {}
         self.username_cache = {}
         self.email_cache = {}
+        self.pgp_cache = {}
 
 # vim: set ts=4 sw=4 et:

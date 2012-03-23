@@ -147,9 +147,6 @@
 
     <h3>Developer Reports</h3>
     <ul>
-        <li><a href="reports/big/">Big</a>:
-        All packages with compressed size &gt; 50 MiB
-        (<a href="reports/big/{{ user.username }}/">yours only</a>)</li>
         <li><a href="reports/old/">Old</a>:
         Packages last built more than two years ago
         (<a href="reports/old/{{ user.username }}/">yours only</a>)</li>
@@ -162,6 +159,12 @@
         <li><a href="reports/uncompressed-info/">Uncompressed Info Pages</a>:
         Self-explanatory
         (<a href="reports/uncompressed-info/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/mismatched-signature/">Mismatched Signatures</a>:
+        Packages where 1) signing key is unknown, 2) signer != packager, or 3) signature timestamp more than 24 hours after build timestamp
+        (<a href="reports/mismatched-signature/{{ user.username }}/">yours only</a>)</li>
+        <li><a href="reports/big/">Big</a>:
+        All packages with compressed size &gt; 50 MiB
+        (<a href="reports/big/{{ user.username }}/">yours only</a>)</li>
         <li><a href="reports/badcompression/">Bad Compression</a>:
         Packages with a compression ratio of less than 10%
         (<a href="reports/badcompression/{{ user.username }}/">yours only</a>)</li>
