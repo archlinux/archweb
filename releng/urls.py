@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import include, patterns
+from django.conf.urls import include, patterns
 
 feedback_patterns = patterns('releng.views',
     (r'^$',                              'test_results_overview', {}, 'releng-test-overview'),

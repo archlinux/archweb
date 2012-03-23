@@ -1,7 +1,7 @@
 import os.path
 
 # Stupid Django. Don't remove these "unused" handler imports
-from django.conf.urls.defaults import handler500, handler404, include, patterns
+from django.conf.urls import handler500, handler404, include, patterns
 from django.conf import settings
 from django.contrib import admin
 
