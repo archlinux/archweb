@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block title %}Arch Linux - Visualizations{% endblock %}
 
@@ -34,11 +35,11 @@
 <script type="text/javascript">
 $(document).ready(function() {
     var orderings = {
-        "repo": { url: "{% url visualize-byrepo %}", color_attr: "repo" },
-        "arch": { url: "{% url visualize-byarch %}", color_attr: "arch" },
+        "repo": { url: "{% url 'visualize-byrepo' %}", color_attr: "repo" },
+        "arch": { url: "{% url 'visualize-byarch' %}", color_attr: "arch" },
     };
     packages_treemap("#visualize-archrepo", orderings, "repo");
-    developer_keys("#visualize-keys", "{% url visualize-pgp_keys %}");
+    developer_keys("#visualize-keys", "{% url 'visualize-pgp_keys' %}");
 });
 </script>
 {% endblock %}

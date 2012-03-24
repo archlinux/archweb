@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 
 urlpatterns = patterns('visualize.views',
     (r'^$',          'index',     {}, 'visualize-index'),

@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
-{% load i18n %}
+{% load i18n admin_static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -36,19 +36,19 @@
         <caption><a href="{{ app.app_url }}" class="section">{% blocktrans with name=app.name %}{{ name }}{% endblocktrans %}</a></caption>
         {% for model in app.models %}
             <tr>
-            {% if model.perms.change %}
+            {% if model.admin_url %}
                 <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
             {% else %}
                 <th scope="row">{{ model.name }}</th>
             {% endif %}
 
-            {% if model.perms.add %}
+            {% if model.add_url %}
                 <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
             {% else %}
                 <td>&nbsp;</td>
             {% endif %}
 
-            {% if model.perms.change %}
+            {% if model.admin_url %}
                 <td><a href="{{ model.admin_url }}" class="changelink">{% trans 'Change' %}</a></td>
             {% else %}
                 <td>&nbsp;</td>

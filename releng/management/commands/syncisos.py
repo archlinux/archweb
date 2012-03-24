@@ -1,4 +1,3 @@
-from datetime import datetime
 import re
 import urllib
 from HTMLParser import HTMLParser, HTMLParseError
@@ -6,7 +5,9 @@ from HTMLParser import HTMLParser, HTMLParseError
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
+from main.utils import utc_now
 from releng.models import Iso
+
 
 class IsoListParser(HTMLParser):
     def __init__(self):
@@ -53,7 +54,7 @@ class Command(BaseCommand):
                     existing.active = True
                     existing.removed = None
                     existing.save()
-        now = datetime.utcnow()
+        now = utc_now()
         # and then mark all other names as no longer active
         Iso.objects.filter(active=True).exclude(name__in=active_isos).update(
                 active=False, removed=now)

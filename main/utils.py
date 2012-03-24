@@ -4,19 +4,23 @@ except ImportError:
     import pickle
 
 from datetime import datetime
+import hashlib
+from pytz import utc
 
 from django.core.cache import cache
-from django.utils.hashcompat import md5_constructor
+
 
 CACHE_TIMEOUT = 1800
 INVALIDATE_TIMEOUT = 10
 CACHE_LATEST_PREFIX = 'cache_latest_'
 
+
 def cache_function_key(func, args, kwargs):
     raw = [func.__name__, func.__module__, args, kwargs]
     pickled = pickle.dumps(raw, protocol=pickle.HIGHEST_PROTOCOL)
-    key = md5_constructor(pickled).hexdigest()
+    key = hashlib.md5(pickled).hexdigest()
     return 'cache_function.' + func.__name__ + '.' + key
+
 
 def cache_function(length):
     """
@@ -43,12 +47,14 @@ def cache_function(length):
         return inner_func
     return decorator
 
+
 def clear_cache_function(func, args, kwargs):
     key = cache_function_key(func, args, kwargs)
     cache.delete(key)
 
 # utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]
+
 
 # These are in here because we would be jumping around in some import circles
 # and hoops otherwise. The only thing currently using these keys is the feed
@@ -64,6 +70,7 @@ def refresh_latest(**kwargs):
     # Hopefully by the time it expires we will have committed, and the cache
     # will be valid again. See "Scaling Django" by Mike Malone, slide 30.
     cache.set(cache_key, None, INVALIDATE_TIMEOUT)
+
 
 def retrieve_latest(sender):
     # we could break this down based on the request url, but it would probably
@@ -84,12 +91,19 @@ def retrieve_latest(sender):
         pass
     return None
 
+
+def utc_now():
+    '''Returns a timezone-aware UTC date representing now.'''
+    return datetime.utcnow().replace(tzinfo=utc)
+
+
 def set_created_field(sender, **kwargs):
-    '''This will set the 'created' field on any object to datetime.utcnow() if
-    it is unset. For use as a pre_save signal handler.'''
+    '''This will set the 'created' field on any object to the current UTC time
+    if it is unset. For use as a pre_save signal handler.'''
     obj = kwargs['instance']
     if hasattr(obj, 'created') and not obj.created:
-        obj.created = datetime.utcnow()
+        obj.created = utc_now()
+
 
 def groupby_preserve_order(iterable, keyfunc):
     '''Take an iterable and regroup using keyfunc to determine whether items
@@ -111,6 +125,7 @@ def groupby_preserve_order(iterable, keyfunc):
         group.append(item)
 
     return result
+
 
 class PackageStandin(object):
     '''Resembles a Package object, and has a few of the same fields, but is

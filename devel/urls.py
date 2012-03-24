@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 
 urlpatterns = patterns('devel.views',
     (r'^admin_log/$','admin_log'),

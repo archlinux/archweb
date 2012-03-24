@@ -1,4 +1,3 @@
-from datetime import datetime
 from operator import attrgetter
 
 from django import forms
@@ -13,6 +12,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
 from main.models import Package, Arch, Repo
+from main.utils import utc_now
 from ..models import SignoffSpecification, Signoff
 from ..utils import (get_signoff_groups, approved_by_signoffs,
         PackageSignoffGroup)
@@ -45,7 +45,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
                     package, request.user, False)
         except Signoff.DoesNotExist:
             raise Http404
-        signoff.revoked = datetime.utcnow()
+        signoff.revoked = utc_now()
         signoff.save()
         created = False
     else:

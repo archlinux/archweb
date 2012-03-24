@@ -18,9 +18,13 @@ NOTIFICATIONS = ['arch-notifications@archlinux.org']
 # Full path to the data directory
 DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# Local time zone for this installation. All choices can be found here:
-# http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
-TIME_ZONE = 'US/Eastern'
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+TIME_ZONE = 'UTC'
 
 # Language code for this installation. All choices can be found here:
 # http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes

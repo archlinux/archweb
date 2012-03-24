@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load package_extras %}
-{% load adminmedia %}
+{% load admin_static %}
 
 {% block title %}Arch Linux - Package Database{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block head %}
 {% if is_paginated and page_obj.number > 1 %}<meta name="robots" content="noindex, nofollow"/>{% endif %}
-<link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/widgets.css" %}" />
 {% endblock %}
 
 {% block content %}
@@ -126,8 +126,12 @@
         title="AUR package database">Arch User Repository (AUR).</a></p>
 </div>
 
+{% load cdn %}{% jquery %}
 <script type="text/javascript" src="/jsi18n/"></script>
-<script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";</script>
-<script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
+<script type="text/javascript">
+	window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";
+	var django = {"jQuery": jQuery};
+</script>
+<script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
 {{search_form.media}}
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load markup cache cdn %}
+{% load url from future %}
 
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
@@ -30,13 +31,13 @@
         title="Arch Wiki">wiki</a>
     if you want to learn more about Arch.</p>
 
-    <p class="readmore"><a href="{% url page-about %}"
+    <p class="readmore"><a href="{% url 'page-about' %}"
         title="Learn more about Arch Linux">Learn more...</a></p>
 </div>
 
 <div id="news">
     <h3>
-        <a href="{% url news-list %}" title="Browse the news archives">Latest News</a>
+        <a href="{% url 'news-list' %}" title="Browse the news archives">Latest News</a>
         <span class="arrow"></span>
     </h3>
 
@@ -57,7 +58,7 @@
     {% else %}
     {% if forloop.counter0 == 5 %}
     <h3>
-        <a href="{% url news-list %}"
+        <a href="{% url 'news-list' %}"
             title="Browse the news archives">Older News</a>
         <span class="arrow"></span>
     </h3>
@@ -137,7 +138,7 @@
     <h4>Support</h4>
 
     <ul>
-        <li><a href="{% url page-donate %}" title="Help support Arch Linux">Donate</a></li>
+        <li><a href="{% url 'page-donate' %}" title="Help support Arch Linux">Donate</a></li>
         <li><a href="http://schwag.archlinux.ca/"
             title="USB keys, jewellery, case badges">Arch Schwag</a></li>
         <li><a href="http://www.zazzle.com/archlinux*"
@@ -149,9 +150,9 @@
     <h4>Tools</h4>
 
     <ul>
-        <li><a href="{% url mirrorlist %}"
+        <li><a href="{% url 'mirrorlist' %}"
             title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
-        <li><a href="{% url mirror-status %}"
+        <li><a href="{% url 'mirror-status' %}"
             title="Check the status of all known mirrors">Mirror Status</a></li>
         <li><a href="/packages/differences/"
             title="See differences in packages between available architectures">Differences Reports</a>
@@ -163,7 +164,7 @@
     <ul>
         <li><a href="http://projects.archlinux.org/"
             title="Official Arch projects (git)">Projects in Git</a></li>
-        <li><a href="{% url page-svn %}"
+        <li><a href="{% url 'page-svn' %}"
             title="View SVN entries for packages">SVN Repositories</a></li>
         <li><a href="https://wiki.archlinux.org/index.php/DeveloperWiki"
             title="Developer Wiki articles">Developer Wiki</a></li>
@@ -171,9 +172,9 @@
             title="View the available package groups">Package Groups</a></li>
         <li><a href="/todolists/"
             title="Developer Todo Lists">Todo Lists</a></li>
-        <li><a href="{% url releng-test-overview %}"
+        <li><a href="{% url 'releng-test-overview' %}"
             title="Releng Testbuild Feedback">Releng Testbuild Feedback</a></li>
-        <li><a href="{% url visualize-index %}"
+        <li><a href="{% url 'visualize-index' %}"
             title="View visualizations">Visualizations</a>
         <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
     </ul>
@@ -181,17 +182,17 @@
     <h4>More Resources</h4>
 
     <ul>
-        <li><a href="{% url page-keys %}"
+        <li><a href="{% url 'page-keys' %}"
             title="Package/Database signing master keys">Signing Master Keys</a>
         <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
         <li><a href="https://wiki.archlinux.org/index.php/Arch_Linux_Press_Review"
             title="Arch Linux in the media">Press Coverage</a></li>
-        <li><a href="{% url page-art %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
-        <li><a href="{% url news-list %}" title="News Archives">News Archives</a></li>
+        <li><a href="{% url 'page-art' %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
+        <li><a href="{% url 'news-list' %}" title="News Archives">News Archives</a></li>
         <li><a href="/feeds/" title="Various RSS Feeds">RSS Feeds</a></li>
-        <li><a href="{% url page-devs %}" title="Active developers">Developer Profiles</a></li>
-        <li><a href="{% url page-tus %}" title="Active Trusted Users (TUs)">Trusted User Profiles</a></li>
-        <li><a href="{% url page-fellows %}" title="Retired Developers">Fellows Profiles</a></li>
+        <li><a href="{% url 'page-devs' %}" title="Active developers">Developer Profiles</a></li>
+        <li><a href="{% url 'page-tus' %}" title="Active Trusted Users (TUs)">Trusted User Profiles</a></li>
+        <li><a href="{% url 'page-fellows' %}" title="Retired Developers">Fellows Profiles</a></li>
     </ul>
 
 </div>

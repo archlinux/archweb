@@ -22,6 +22,7 @@ import tarfile
 import logging
 from datetime import datetime
 from optparse import make_option
+from pytz import utc
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, router, transaction
@@ -29,7 +30,9 @@ from django.db.utils import IntegrityError
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
+from main.utils import utc_now
 from packages.models import Conflict, Provision, Replacement
+
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -113,7 +116,8 @@ class RepoPackage(object):
                     self.epoch = int(match.group(2))
             elif k == 'builddate':
                 try:
-                    self.builddate = datetime.utcfromtimestamp(int(v[0]))
+                    builddate = datetime.utcfromtimestamp(int(v[0]))
+                    self.builddate = builddate.replace(tzinfo=utc)
                 except ValueError:
                     try:
                         self.builddate = datetime.strptime(v[0],
@@ -270,31 +274,19 @@ def populate_files(dbpkg, repopkg, force=False):
         delete_pkg_files(dbpkg)
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
+        pkg_files = []
         for f in repopkg.files:
             dirname, filename = f.rsplit('/', 1)
             if filename == '':
                 filename = None
-            # this is basically like calling dbpkg.packagefile_set.create(),
-            # but much faster as we can skip a lot of the repeated code paths
-            # TODO use Django 1.4 bulk_create
             pkgfile = PackageFile(pkg=dbpkg,
                     is_directory=(filename is None),
                     directory=dirname + '/',
                     filename=filename)
-            pkgfile.save(force_insert=True)
-        dbpkg.files_last_update = datetime.utcnow()
+            pkg_files.append(pkgfile)
+        PackageFile.objects.bulk_create(pkg_files)
+        dbpkg.files_last_update = utc_now()
         dbpkg.save()
-
-
-def select_pkg_for_update(dbpkg):
-    database = router.db_for_write(Package, instance=dbpkg)
-    connection = connections[database]
-    if 'sqlite' in connection.settings_dict['ENGINE'].lower():
-        return dbpkg
-    new_pkg = Package.objects.raw(
-            'SELECT * FROM packages WHERE id = %s FOR UPDATE',
-            [dbpkg.id])
-    return list(new_pkg)[0]
 
 
 def update_common(archname, reponame, pkgs, sanity_check=True):
@@ -363,7 +355,7 @@ def db_update(archname, reponame, pkgs, force=False):
         dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
         try:
             with transaction.commit_on_success():
-                populate_pkg(dbpkg, pkg, timestamp=datetime.utcnow())
+                populate_pkg(dbpkg, pkg, timestamp=utc_now())
         except IntegrityError:
             logger.warning("Could not add package %s; "
                     "not fatal if another thread beat us to it.",
@@ -390,14 +382,13 @@ def db_update(archname, reponame, pkgs, force=False):
         if not force and pkg_same_version(pkg, dbpkg):
             continue
         elif not force:
-            timestamp = datetime.utcnow()
+            timestamp = utc_now()
 
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing
         # files/depends/all related items to be double-imported.
         with transaction.commit_on_success():
-            # TODO Django 1.4 select_for_update() will work once released
-            dbpkg = select_pkg_for_update(dbpkg)
+            dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
             if not force and pkg_same_version(pkg, dbpkg):
                 logger.debug("Package %s was already updated", pkg.name)
                 continue
@@ -428,8 +419,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
             elif not force and dbpkg.files_last_update > dbpkg.last_update:
                 logger.debug("Files for %s are up to date", pkg.name)
                 continue
-            # TODO Django 1.4 select_for_update() will work once released
-            dbpkg = select_pkg_for_update(dbpkg)
+            dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
             logger.debug("Checking files for package %s", pkg.name)
             populate_files(dbpkg, pkg, force=force)
 

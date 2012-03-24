@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from django.contrib.auth.decorators import permission_required
 
 from .views import DeleteTodolist

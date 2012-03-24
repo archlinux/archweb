@@ -1,5 +1,6 @@
 # encoding: utf-8
 import datetime
+from pytz import utc
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -9,7 +10,9 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         db.alter_column('packages', 'compressed_size', self.gf('main.models.PositiveBigIntegerField')(default=0))
         db.alter_column('packages', 'installed_size', self.gf('main.models.PositiveBigIntegerField')(default=0))
-        db.alter_column('packages', 'last_update', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2000, 1, 1)))
+        old_date = datetime.datetime(2000, 1, 1)
+        old_date = old_date.replace(tzinfo=utc)
+        db.alter_column('packages', 'last_update', self.gf('django.db.models.fields.DateTimeField')(default=old_date))
 
     def backwards(self, orm):
         db.alter_column('packages', 'compressed_size', self.gf('django.db.models.fields.BigIntegerField')(null=True))

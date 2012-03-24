@@ -1,10 +1,10 @@
+import hashlib
 import pytz
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.utils.feedgenerator import Rss201rev2Feed
-from django.utils.hashcompat import md5_constructor
 from django.views.decorators.http import condition
 
 from main.utils import retrieve_latest
@@ -32,7 +32,7 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
 def package_etag(request, *args, **kwargs):
     latest = retrieve_latest(Package)
     if latest:
-        return md5_constructor(str(kwargs) + str(latest)).hexdigest()
+        return hashlib.md5(str(kwargs) + str(latest)).hexdigest()
     return None
 
 def package_last_modified(request, *args, **kwargs):
@@ -108,7 +108,7 @@ class PackageFeed(Feed):
 def news_etag(request, *args, **kwargs):
     latest = retrieve_latest(News)
     if latest:
-        return md5_constructor(str(latest)).hexdigest()
+        return hashlib.md5(str(latest)).hexdigest()
     return None
 
 def news_last_modified(request, *args, **kwargs):

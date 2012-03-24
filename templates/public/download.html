@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load cache cdn %}
+{% load url from future %}
 
 {% block title %}Arch Linux - Downloads{% endblock %}
 {% block navbarclass %}anb-download{% endblock %}
@@ -43,7 +44,7 @@
 
     <p>If you are an existing Arch user, there is no need to download a new ISO
     to update your existing system. You may be looking for
-    <a href="{% url mirrorlist %}">an updated mirrorlist</a> instead.</p>
+    <a href="{% url 'mirrorlist' %}">an updated mirrorlist</a> instead.</p>
 
     <h3>BitTorrent Download (recommended)</h3>
 
@@ -125,7 +126,7 @@
         <li><a href="{{ releng_pxeboot_url }}"
             title="Arch Linux Netboot Live System">Boot latest snapshots over the network</a>
         <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
-        <li><a href="{% url releng-test-overview %}"
+        <li><a href="{% url 'releng-test-overview' %}"
             title="Release Engineering ISO feedback">Feedback</a></li>
     </ul>
 
