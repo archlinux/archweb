@@ -537,8 +537,9 @@ def read_repo(primary_arch, repo_file, options):
         if package.arch in packages_arches:
             packages_arches[package.arch].append(package)
         else:
-            # we don't include mis-arched packages
-            logger.warning("Package %s arch = %s", package.name, package.arch)
+            raise Exception(
+                    "Package %s in database %s had wrong architecture %s" % (
+                    package.name, repo_file, package.arch))
     del packages
 
     logger.info('Starting database updates for %s.', repo_file)
