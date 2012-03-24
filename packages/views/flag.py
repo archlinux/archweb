@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
@@ -12,6 +10,7 @@ from django.views.decorators.cache import never_cache
 
 from ..models import FlagRequest
 from main.models import Package
+from main.utils import utc_now
 
 
 def flaghelp(request):
@@ -61,7 +60,7 @@ def flag(request, name, repo, arch):
 
             @transaction.commit_on_success
             def perform_updates():
-                now = datetime.utcnow()
+                now = utc_now()
                 pkgs.update(flag_date=now)
                 # store our flag request
                 flag_request = FlagRequest(created=now,

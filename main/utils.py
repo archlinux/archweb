@@ -5,6 +5,7 @@ except ImportError:
 
 from datetime import datetime
 import hashlib
+from pytz import utc
 
 from django.core.cache import cache
 
@@ -91,12 +92,17 @@ def retrieve_latest(sender):
     return None
 
 
+def utc_now():
+    '''Returns a timezone-aware UTC date representing now.'''
+    return datetime.utcnow().replace(tzinfo=utc)
+
+
 def set_created_field(sender, **kwargs):
-    '''This will set the 'created' field on any object to datetime.utcnow() if
-    it is unset. For use as a pre_save signal handler.'''
+    '''This will set the 'created' field on any object to the current UTC time
+    if it is unset. For use as a pre_save signal handler.'''
     obj = kwargs['instance']
     if hasattr(obj, 'created') and not obj.created:
-        obj.created = datetime.utcnow()
+        obj.created = utc_now()
 
 
 def groupby_preserve_order(iterable, keyfunc):

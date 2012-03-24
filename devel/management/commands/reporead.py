@@ -22,6 +22,7 @@ import tarfile
 import logging
 from datetime import datetime
 from optparse import make_option
+from pytz import utc
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, router, transaction
@@ -29,7 +30,9 @@ from django.db.utils import IntegrityError
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageDepend, PackageFile, Repo
+from main.utils import utc_now
 from packages.models import Conflict, Provision, Replacement
+
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -113,7 +116,8 @@ class RepoPackage(object):
                     self.epoch = int(match.group(2))
             elif k == 'builddate':
                 try:
-                    self.builddate = datetime.utcfromtimestamp(int(v[0]))
+                    builddate = datetime.utcfromtimestamp(int(v[0]))
+                    self.builddate = builddate.replace(tzinfo=utc)
                 except ValueError:
                     try:
                         self.builddate = datetime.strptime(v[0],
@@ -281,7 +285,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     filename=filename)
             pkg_files.append(pkgfile)
         PackageFile.objects.bulk_create(pkg_files)
-        dbpkg.files_last_update = datetime.utcnow()
+        dbpkg.files_last_update = utc_now()
         dbpkg.save()
 
 
@@ -351,7 +355,7 @@ def db_update(archname, reponame, pkgs, force=False):
         dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
         try:
             with transaction.commit_on_success():
-                populate_pkg(dbpkg, pkg, timestamp=datetime.utcnow())
+                populate_pkg(dbpkg, pkg, timestamp=utc_now())
         except IntegrityError:
             logger.warning("Could not add package %s; "
                     "not fatal if another thread beat us to it.",
@@ -378,7 +382,7 @@ def db_update(archname, reponame, pkgs, force=False):
         if not force and pkg_same_version(pkg, dbpkg):
             continue
         elif not force:
-            timestamp = datetime.utcnow()
+            timestamp = utc_now()
 
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing

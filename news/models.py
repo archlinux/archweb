@@ -1,8 +1,9 @@
-from datetime import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+
+from main.utils import utc_now
+
 
 class News(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
@@ -28,7 +29,7 @@ class News(models.Model):
 
 def set_news_fields(sender, **kwargs):
     news = kwargs['instance']
-    now = datetime.utcnow()
+    now = utc_now()
     news.last_modified = now
     if not news.postdate:
         news.postdate = now

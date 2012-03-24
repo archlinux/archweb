@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pytz import utc
 
 from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import reverse
@@ -62,7 +63,7 @@ class NewsSitemap(Sitemap):
     priority = "0.8"
 
     def __init__(self):
-        now = datetime.utcnow()
+        now = datetime.utcnow().replace(tzinfo=utc)
         self.one_day_ago = now - timedelta(days=1)
         self.one_week_ago = now - timedelta(days=7)
 

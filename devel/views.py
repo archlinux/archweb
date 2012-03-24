@@ -1,3 +1,10 @@
+from datetime import datetime, timedelta
+import operator
+import pytz
+import random
+from string import ascii_letters, digits
+import time
+
 from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import \
@@ -16,19 +23,13 @@ from django.views.generic.simple import direct_to_template
 from django.utils.http import http_date
 
 from main.models import Package, PackageDepend, PackageFile, TodolistPkg
-from main.models import Arch, Repo
-from main.models import UserProfile
+from main.models import Arch, Repo, UserProfile
+from main.utils import utc_now
 from packages.models import PackageRelation
 from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers
 
-from datetime import datetime, timedelta
-import operator
-import pytz
-import random
-from string import ascii_letters, digits
-import time
 
 @login_required
 def index(request):
@@ -85,22 +86,14 @@ def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
             'first_name', 'last_name').select_related('userprofile')
 
-    now = datetime.now()
-    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    # now annotate each dev object with their current time
-    for dev in devs:
-        tz = pytz.timezone(dev.userprofile.time_zone)
-        dev.current_time = utc_now.astimezone(tz)
-
+    now = utc_now()
     page_dict = {
             'developers': devs,
-            'now': now,
-            'utc_now': utc_now,
+            'utc_now': now,
     }
 
     response = direct_to_template(request, 'devel/clock.html', page_dict)
     if not response.has_header('Expires'):
-        # why this works only with the non-UTC date I have no idea...
         expire_time = now.replace(second=0, microsecond=0)
         expire_time += timedelta(minutes=1)
         expire_time = time.mktime(expire_time.timetuple())
@@ -168,12 +161,12 @@ def report(request, report_name, username=None):
 
     if report_name == 'old':
         title = 'Packages last built more than two years ago'
-        cutoff = datetime.utcnow() - timedelta(days=365 * 2)
+        cutoff = utc_now() - timedelta(days=365 * 2)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
     elif report_name == 'long-out-of-date':
         title = 'Packages marked out-of-date more than 90 days ago'
-        cutoff = datetime.utcnow() - timedelta(days=90)
+        cutoff = utc_now() - timedelta(days=90)
         packages = packages.filter(
                 flag_date__lt=cutoff).order_by('flag_date')
     elif report_name == 'big':

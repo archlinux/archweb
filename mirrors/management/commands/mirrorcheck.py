@@ -21,9 +21,11 @@ import sys
 import time
 from threading import Thread
 import types
+from pytz import utc
 from Queue import Queue, Empty
 import urllib2
 
+from main.utils import utc_now
 from mirrors.models import MirrorUrl, MirrorLog
 
 logging.basicConfig(
@@ -50,7 +52,7 @@ class Command(NoArgsCommand):
 def check_mirror_url(mirror_url):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
-    log = MirrorLog(url=mirror_url, check_time=datetime.utcnow())
+    log = MirrorLog(url=mirror_url, check_time=utc_now())
     try:
         start = time.time()
         result = urllib2.urlopen(url, timeout=10)
@@ -61,6 +63,7 @@ def check_mirror_url(mirror_url):
         parsed_time = None
         try:
             parsed_time = datetime.utcfromtimestamp(int(data))
+            parsed_time = parsed_time.replace(tzinfo=utc)
         except ValueError:
             # it is bad news to try logging the lastsync value;
             # sometimes we get a crazy-encoded web page.

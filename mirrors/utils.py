@@ -1,11 +1,12 @@
+from datetime import timedelta
+
 from django.db.models import Avg, Count, Max, Min, StdDev
 
-from main.utils import cache_function
+from main.utils import cache_function, utc_now
 from .models import MirrorLog, MirrorProtocol, MirrorUrl
 
-import datetime
 
-default_cutoff = datetime.timedelta(hours=24)
+default_cutoff = timedelta(hours=24)
 
 def annotate_url(url, delays):
     '''Given a MirrorURL object, add a few more attributes to it regarding
@@ -13,7 +14,7 @@ def annotate_url(url, delays):
     url.completion_pct = float(url.success_count) / url.check_count
     if url.id in delays:
         url_delays = delays[url.id]
-        url.delay = sum(url_delays, datetime.timedelta()) / len(url_delays)
+        url.delay = sum(url_delays, timedelta()) / len(url_delays)
         hours = url.delay.days * 24.0 + url.delay.seconds / 3600.0
 
         if url.completion_pct > 0:
@@ -28,7 +29,7 @@ def annotate_url(url, delays):
 
 @cache_function(123)
 def get_mirror_statuses(cutoff=default_cutoff):
-    cutoff_time = datetime.datetime.utcnow() - cutoff
+    cutoff_time = utc_now() - cutoff
     protocols = list(MirrorProtocol.objects.filter(is_download=True))
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
@@ -82,7 +83,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
 
 @cache_function(117)
 def get_mirror_errors(cutoff=default_cutoff):
-    cutoff_time = datetime.datetime.utcnow() - cutoff
+    cutoff_time = utc_now() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from .fields import PositiveBigIntegerField, PGPKeyField
-from .utils import cache_function, make_choice, set_created_field
+from .utils import cache_function, make_choice, set_created_field, utc_now
 
 
 class UserProfile(models.Model):
@@ -515,7 +515,7 @@ class TodolistPkg(models.Model):
 def set_todolist_fields(sender, **kwargs):
     todolist = kwargs['instance']
     if not todolist.date_added:
-        todolist.date_added = datetime.utcnow()
+        todolist.date_added = utc_now()
 
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_latest
