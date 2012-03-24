@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load package_extras %}
 
 {% block title %}Arch Linux - Package Signoffs{% endblock %}
@@ -79,8 +80,8 @@
     </table>
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
+<script type="text/javascript" src="{% static "jquery.tablesorter.min.js" %}"></script>
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('a.signoff-link').click(signoff_package);

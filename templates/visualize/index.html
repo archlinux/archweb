@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load url from future %}
 
 {% block title %}Arch Linux - Visualizations{% endblock %}
@@ -29,9 +30,9 @@
     <div id="visualize-keys" class="visualize-chart"></div>
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{{ STATIC_URL }}d3.v2.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}visualize.js"></script>
+<script type="text/javascript" src="{% static "d3.v2.min.js" %}"></script>
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     var orderings = {

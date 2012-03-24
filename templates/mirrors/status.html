@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load mirror_status %}
 
 {% block title %}Arch Linux - Mirror Status{% endblock %}
@@ -102,8 +103,8 @@
 
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
+<script type="text/javascript" src="{% static "jquery.tablesorter.min.js" %}"></script>
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     var headers = { 5: { sorter: 'duration' }, 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } };

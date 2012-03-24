@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load cache %}
 {% load package_extras %}
 
@@ -293,8 +294,8 @@
 {% endcache %}
 
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{{ STATIC_URL }}jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}archweb.js"></script>
+<script type="text/javascript" src="{% static "jquery.tablesorter.min.js" %}"></script>
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#dash-myflagged:not(:has(tbody tr.empty))").tablesorter(
