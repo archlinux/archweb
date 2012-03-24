@@ -158,7 +158,6 @@ def create_depend(package, dep_str, optional=False):
         logger.warning('Package %s had unparsable depend string %s',
                 package.pkgname, dep_str)
         return None
-    depend.save(force_insert=True)
     return depend
 
 def create_related(model, package, rel_str, equals_only=False):
@@ -180,7 +179,6 @@ def create_related(model, package, rel_str, equals_only=False):
         logger.warning('Package %s had unparsable %s string %s',
                 package.pkgname, model.___name__, rel_str)
         return None
-    related.save(force_insert=True)
     return related
 
 def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
@@ -190,8 +188,12 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     done via getattr().'''
     collection = getattr(dbpkg, db_attr)
     collection.all().delete()
+    model = collection.model
+    new_items = []
     for name in getattr(repopkg, repo_attr):
-        collection.create(name=name)
+        new_items.append(model(pkg=dbpkg, name=name))
+    if new_items:
+        model.objects.bulk_create(new_items)
 
 finder = UserFinder()
 
@@ -228,20 +230,22 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     populate_files(dbpkg, repopkg, force=force)
 
     dbpkg.packagedepend_set.all().delete()
-    for y in repopkg.depends:
-        create_depend(dbpkg, y)
-    for y in repopkg.optdepends:
-        create_depend(dbpkg, y, True)
+    deps = [create_depend(dbpkg, y) for y in repopkg.depends]
+    deps += [create_depend(dbpkg, y, True) for y in repopkg.optdepends]
+    PackageDepend.objects.bulk_create(deps)
 
     dbpkg.conflicts.all().delete()
-    for y in repopkg.conflicts:
-        create_related(Conflict, dbpkg, y)
+    conflicts = [create_related(Conflict, dbpkg, y) for y in repopkg.conflicts]
+    Conflict.objects.bulk_create(conflicts)
+
     dbpkg.provides.all().delete()
-    for y in repopkg.provides:
-        create_related(Provision, dbpkg, y, equals_only=True)
+    provides = [create_related(Provision, dbpkg, y, equals_only=True)
+            for y in repopkg.provides]
+    Provision.objects.bulk_create(provides)
+
     dbpkg.replaces.all().delete()
-    for y in repopkg.replaces:
-        create_related(Replacement, dbpkg, y)
+    replaces = [create_related(Replacement, dbpkg, y) for y in repopkg.replaces]
+    Replacement.objects.bulk_create(replaces)
 
     create_multivalued(dbpkg, repopkg, 'groups', 'groups')
     create_multivalued(dbpkg, repopkg, 'licenses', 'license')
