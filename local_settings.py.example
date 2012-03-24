@@ -13,16 +13,15 @@ ADMINS = (
    # ('Joe Admin', 'joeadmin@example.com'),
 )
 
-## MySQL Database settings
+## PostgreSQL Database settings
 DATABASES = {
     'default': {
-        'ENGINE'  : 'django.db.backends.mysql',
+        'ENGINE'  : 'django.db.backends.postgresql_psycopg2',
         'NAME'    : 'archlinux',
         'USER'    : 'archlinux',
         'PASSWORD': 'archlinux',
         'HOST'    : '',
         'PORT'    : '',
-        'OPTIONS' : {'init_command': 'SET storage_engine=InnoDB'},
     },
 }
 

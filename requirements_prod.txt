@@ -1,8 +1,8 @@
 Django==1.4
 Markdown==2.1.1
-MySQL-python==1.2.3
 South==0.7.4
 pgpdump==1.1
+psycopg2=2.4.4
 pyinotify==0.9.3
 python-memcached==1.48
 pytz>=2012b
