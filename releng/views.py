@@ -81,6 +81,7 @@ def calculate_option_overview(field_name):
     is_rollback = field_name.startswith('rollback_')
     option = {
         'option': model,
+        'field_name': field_name,
         'name': model._meta.verbose_name,
         'is_rollback': is_rollback,
         'values': []

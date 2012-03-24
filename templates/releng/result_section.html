@@ -6,7 +6,7 @@
 {% for item in option.values %}
 <tr>
     <td>
-        <a href="{% url releng-results-for option.name|lower item.value.pk %}">
+        <a href="{% url releng-results-for option.field_name item.value.pk %}">
             {{ item.value.name|lower }}
         </a>
     </td>
