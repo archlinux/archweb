@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load cache %}
-{% load cdn %}
+{% load static from staticfiles %}
 
 {% block title %}Arch Linux - Donate{% endblock %}
 
@@ -31,7 +31,7 @@
     as <a href="http://www.spi-inc.org/donations/">how donations work</a>.</p>
 
     <a href="https://co.clickandpledge.com/Default.aspx?WID=47294">
-        <img width="210" height="34" src="{% cdnprefix %}/media/CP_EN_BK_S_001.gif" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
+        <img width="210" height="34" src="{% static "CP_EN_BK_S_001.gif" %}" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
     </a>
 
     <h3>Commercial sponsors and contributions</h3>
@@ -41,7 +41,7 @@
     in a server rack, bandwidth, and electricity for our main server.</p>
 
     <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux"
-        title="velocity network"><img width="252" height="58" src="{% cdnprefix %}/media/vnet_button.png" class="sponsor-btn-vnet"
+        title="velocity network"><img width="252" height="58" src="{% static "vnet_button.png" %}" class="sponsor-btn-vnet"
         title="" alt="velocity network - it's about time" /></a>
 
     <p>We also wish to extend a special Thank You to <a
@@ -52,7 +52,7 @@
     head over to their website for more details.</p>
 
     <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl"
-        title="SevenL Networks - Dedicated Arch Linux servers"><img width="252" height="58" src="{% cdnprefix %}/media/sevenl_button.png"
+        title="SevenL Networks - Dedicated Arch Linux servers"><img width="252" height="58" src="{% static "sevenl_button.png" %}"
         class="sponsor-btn-sevenl" title="A big Thank You to SevenL Networks for their generous contribution"
         alt="We would like to express our thanks to SevenL Networks for their generous contribution" /></a>
 
@@ -60,15 +60,15 @@
         title="AirVM.com">AirVM.com</a> for contributing a VMWare-based Virtual Machine.</p>
 
     <a href="http://www.airvm.com/ArchLinux"
-        title="AirVM.com - Your Green Technology Partner"><img width="252" height="58" src="{% cdnprefix %}/media/airvm_button.png"
+        title="AirVM.com - Your Green Technology Partner"><img width="252" height="58" src="{% static "airvm_button.png" %}"
         class="sponsor-btn-airvm" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" /></a>
 
     <h3>Past donors</h3>
 
     <div id="donor-list">
         <ul>
-            {% for donor in donors %}
-            <li>{{ donor.name }}</li>{% endfor %}
+{% for donor in donors %}
+<li>{{ donor.name }}</li>{% endfor %}
         </ul>
     </div>
     <div class="clear"></div>

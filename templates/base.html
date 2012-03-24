@@ -1,15 +1,15 @@
-{% load url from future %}<!DOCTYPE html>
+{% load url from future %}{% load static from staticfiles %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>{% block title %}Arch Linux{% endblock %}</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}archweb.css" media="screen, projection" />
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}archweb-print.css" media="print" />
-    <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}favicon.ico" />
-    <link rel="shortcut icon" type="image/x-icon" href="{{ STATIC_URL }}favicon.ico" />
-    <link rel="apple-touch-icon" href="{{ STATIC_URL }}logos/apple-touch-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ STATIC_URL }}logos/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ STATIC_URL }}logos/apple-touch-icon-114x114.png" />
+    <link rel="stylesheet" type="text/css" href="{% static "archweb.css" %}" media="screen, projection" />
+    <link rel="stylesheet" type="text/css" href="{% static "archweb-print.css" %}" media="print" />
+    <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
+    <link rel="apple-touch-icon" href="{% static "logos/apple-touch-icon-57x57.png" %}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static "logos/apple-touch-icon-72x72.png" %}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static "logos/apple-touch-icon-114x114.png" %}" />
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch-packages' as osp %}{{ osp }}" title="Arch Linux Packages" />
     {% block head %}{% endblock %}
 </head>

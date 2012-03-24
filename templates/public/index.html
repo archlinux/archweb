@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% load markup cache cdn %}
+{% load markup cache %}
 {% load url from future %}
+{% load static from staticfiles %}
 
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
@@ -42,7 +43,7 @@
     </h3>
 
     <a href="/feeds/news/" title="Arch News RSS Feed"
-        class="rss-icon"><img width="16" height="16" src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
 
     {% for news in news_updates %}
     {% if forloop.counter0 < 5 %}
@@ -95,7 +96,7 @@
             title="Browse all of the latest packages">more</a>)</span></h3>
 
     <a href="/feeds/packages/" title="Arch Package Updates RSS Feed"
-        class="rss-icon"><img width="16" height="16" src="{% cdnprefix %}/media/rss.png" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
 
     <table>
         {% for update in pkg_updates %}
@@ -156,7 +157,7 @@
             title="Check the status of all known mirrors">Mirror Status</a></li>
         <li><a href="/packages/differences/"
             title="See differences in packages between available architectures">Differences Reports</a>
-        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% static "new.png" %}" alt="New"/></li>
     </ul>
 
     <h4>Development</h4>
@@ -176,7 +177,7 @@
             title="Releng Testbuild Feedback">Releng Testbuild Feedback</a></li>
         <li><a href="{% url 'visualize-index' %}"
             title="View visualizations">Visualizations</a>
-        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% static "new.png" %}" alt="New"/></li>
     </ul>
 
     <h4>More Resources</h4>
@@ -184,7 +185,7 @@
     <ul>
         <li><a href="{% url 'page-keys' %}"
             title="Package/Database signing master keys">Signing Master Keys</a>
-        <img width="16" height="16" src="{% cdnprefix %}/media/new.png" alt="New"/></li>
+        <img width="16" height="16" src="{% static "new.png" %}" alt="New"/></li>
         <li><a href="https://wiki.archlinux.org/index.php/Arch_Linux_Press_Review"
             title="Arch Linux in the media">Press Coverage</a></li>
         <li><a href="{% url 'page-art' %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
@@ -199,20 +200,20 @@
 
 <div id="home-donate-button" class="widget">
     <a href="https://co.clickandpledge.com/Default.aspx?WID=47294">
-        <img width="210" height="34" src="{% cdnprefix %}/media/CP_EN_BK_S_001.gif" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
+        <img width="210" height="34" src="{% static "CP_EN_BK_S_001.gif" %}" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
     </a>
 </div>
 
 <div id="arch-sponsors" class="widget">
 
     <a href="http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network">
-        <img width="252" height="58" src="{% cdnprefix %}/media/vnet_button.png" alt="Velocity Network - It's about time" />
+        <img width="252" height="58" src="{% static "vnet_button.png" %}" alt="Velocity Network - It's about time" />
     </a>
     <a href="https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">
-        <img width="252" height="58" src="{% cdnprefix %}/media/sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" />
+        <img width="252" height="58" src="{% static "sevenl_button.png" %}" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution" />
     </a>
     <a href="http://www.airvm.com/ArchLinux" title="AirVM.com - Your Green Technology Partner">
-        <img width="252" height="58" src="{% cdnprefix %}/media/airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" />
+        <img width="252" height="58" src="{% static "airvm_button.png" %}" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner" />
     </a>
 
 </div>
