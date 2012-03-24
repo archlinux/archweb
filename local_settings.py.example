@@ -53,7 +53,5 @@ SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
 ## CDN settings
 CDN_ENABLED = False
-# Scheme-relative URL, should work for both http/https
-CDN_PATH = '//example.com/path/'
 
 # vim: set ts=4 sw=4 et:

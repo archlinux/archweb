@@ -15,16 +15,4 @@ def jquery():
         link = '%sjquery-%s.min.js' % (static_url, version)
     return '<script type="text/javascript" src="%s"></script>' % link
 
-@register.tag
-def cdnprefix(parser, token):
-    return CDNPrefixNode()
-
-class CDNPrefixNode(template.Node):
-    def render(self, context):
-        oncdn = getattr(settings, 'CDN_ENABLED', True)
-        if not oncdn:
-            return ''
-        # if left undefined, same behavior as if CDN is turned off
-        return getattr(settings, 'CDN_PATH', '')
-
 # vim: set ts=4 sw=4 et:
