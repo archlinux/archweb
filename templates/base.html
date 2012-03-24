@@ -14,7 +14,6 @@
     {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
-
     <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
         <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
         <div id="archnavbarmenu">
@@ -28,8 +27,7 @@
                 <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
             </ul>
         </div>
-    </div><!-- #archnavbar -->
-
+    </div>
     <div id="content">
         <div id="archdev-navbar">
             {% if user.is_authenticated %}
@@ -53,8 +51,7 @@
                     <li><a href="/logout/" title="Logout of the developer interface">Logout</a></li>
                 </ul>
             {% endif %}
-        </div><!-- #archdev-navbar -->
-
+        </div>
         {% if messages %}
             <div id="sys-message" class="box">
                 {% for message in messages %}
@@ -62,19 +59,16 @@
                 {% endfor %}
             </div>
         {% endif %}
-
         {% block content %}
             <div id="content-left-wrapper">
                 <div id="content-left">
                     {% block content_left %}{% endblock %}
-                </div><!-- #content_left -->
+                </div>
             </div>
-
             <div id="content-right">
                 {% block content_right %}{% endblock %}
-            </div><!-- #content_right -->
+            </div>
         {% endblock %}
-
         <div id="footer">
             <p>Copyright &copy; 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
                 title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
@@ -86,9 +80,7 @@
 
             <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,
             the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
-        </div><!-- #footer -->
-
-    </div><!-- #content -->
-
+        </div>
+    </div>
 </body>
 </html>
