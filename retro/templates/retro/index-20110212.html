@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load retro_static from retro %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
     <title>Arch Linux</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ RETRO_STATIC_URL }}archweb.css" media="screen, projection">
-    <link rel="stylesheet" type="text/css" href="{{ RETRO_STATIC_URL }}archweb-print.css" media="print">
-    <link rel="icon" type="image/x-icon" href="{{ RETRO_STATIC_URL }}favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ RETRO_STATIC_URL }}favicon.ico">
+    <link rel="stylesheet" type="text/css" href="{% retro_static year "archweb.css" %}" media="screen, projection">
+    <link rel="stylesheet" type="text/css" href="{% retro_static year "archweb-print.css" %}" media="print">
+    <link rel="icon" type="image/x-icon" href="{% retro_static year "favicon.ico" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% retro_static year "favicon.ico" %}">
     <link rel="search" type="application/opensearchdescription+xml" href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/opensearch/packages/" title="Arch Linux Packages">
     
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/feeds/news/">
@@ -71,7 +71,7 @@
 
     <h3>Latest News <span class="more">(<a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/news/" title="Browse the news archives">more</a>)</span></h3>
 
-    <a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/feeds/news/" title="Arch News RSS Feed" class="rss-icon"><img src="{{ RETRO_STATIC_URL }}rss.png" alt="RSS Feed"></a>
+    <a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/feeds/news/" title="Arch News RSS Feed" class="rss-icon"><img src="{% retro_static year "rss.png" %}" alt="RSS Feed"></a>
 
     
     <h4><a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/news/mysql-55-is-now-in-extra/" title="View full article: MySQL 5.5 is now in [extra]">MySQL 5.5 is now in [extra]</a></h4>
@@ -199,7 +199,7 @@ use the proper directories.</p></div>
 
     <h3>Recent Updates <span class="more">(<a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/packages/?sort=-last_update" title="Browse all of the latest packages">more</a>)</span></h3>
 
-    <a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/feeds/packages/" title="Arch Package Updates RSS Feed" class="rss-icon"><img src="{{ RETRO_STATIC_URL }}rss.png" alt="RSS Feed"></a>
+    <a href="http://web.archive.org/web/20110212035546/http://www.archlinux.org/feeds/packages/" title="Arch Package Updates RSS Feed" class="rss-icon"><img src="{% retro_static year "rss.png" %}" alt="RSS Feed"></a>
 
     <table>
         
@@ -413,13 +413,13 @@ use the proper directories.</p></div>
 <div id="arch-sponsors" class="widget">
 
     <a href="http://web.archive.org/web/20110212035546/http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="Velocity Network">
-        <img src="{{ RETRO_STATIC_URL }}vnet_button.png" alt="Velocity Network - It's about time">
+        <img src="{% retro_static year "vnet_button.png" %}" alt="Velocity Network - It's about time">
     </a>
     <a href="http://web.archive.org/web/20110212035546/https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers">
-        <img src="{{ RETRO_STATIC_URL }}sevenl_button.png" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution">
+        <img src="{% retro_static year "sevenl_button.png" %}" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution">
     </a>
     <a href="http://web.archive.org/web/20110212035546/http://www.airvm.com/ArchLinux" title="AirVM.com - Your Green Technology Partner">
-        <img src="{{ RETRO_STATIC_URL }}airvm_button.png" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner">
+        <img src="{% retro_static year "airvm_button.png" %}" title="AirVM.com - Your Green Technology Partner" alt="AirVM.com - Your Green Technology Partner">
     </a>
 
 </div>

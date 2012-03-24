@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import Http404
 from django.views.decorators.cache import cache_page
 from django.views.generic.simple import direct_to_template
@@ -24,9 +23,8 @@ def retro_homepage(request, year):
     template = RETRO_YEAR_MAP.get(year, None)
     if template is None:
         raise Http404
-    static_url = '%s%d/' % (settings.STATIC_URL, year)
     context = {
-        'RETRO_STATIC_URL': static_url,
+        'year': year,
     }
     return direct_to_template(request, 'retro/%s' % template, context)
 

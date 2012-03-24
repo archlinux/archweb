@@ -1,10 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load retro_static from retro %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
         <title>Arch Linux</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="{{ RETRO_STATIC_URL }}arch.css">
-        <link rel="icon" type="image/x-icon" href="{{ RETRO_STATIC_URL }}favicon.ico">
-        <link rel="shortcut icon" type="image/x-icon" href="{{ RETRO_STATIC_URL }}favicon.ico">
+        <link rel="stylesheet" type="text/css" href="{% retro_static year "arch.css" %}">
+        <link rel="icon" type="image/x-icon" href="{% retro_static year "favicon.ico" %}">
+        <link rel="shortcut icon" type="image/x-icon" href="{% retro_static year "favicon.ico" %}">
         
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/news/">
 <link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/packages/">
@@ -46,7 +46,7 @@
         <table width="100%">
             <tbody><tr>
                 <td><h3>Recent Updates</h3></td>
-                <td style="vertical-align: top; text-align: right;"><a href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/packages/"><img src="{{ RETRO_STATIC_URL }}rss.png" alt="RSS Feed"></a></td>
+                <td style="vertical-align: top; text-align: right;"><a href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/packages/"><img src="{% retro_static year "rss.png" %}" alt="RSS Feed"></a></td>
             </tr>
         
             <tr>
@@ -165,8 +165,8 @@
         <li><a href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/svn/">SVN</a></li>
         <li><a href="http://web.archive.org/web/20100208061823/http://projects.archlinux.org/">Projects</a></li>
     </ul>
-    <a href="http://web.archive.org/web/20100208061823/http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network"><img src="{{ RETRO_STATIC_URL }}vnet_button.png" class="" title="" alt="velocity network - it's about time"></a>
-    <a href="http://web.archive.org/web/20100208061823/https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="{{ RETRO_STATIC_URL }}sevenl_button.png" class="" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution"></a>
+    <a href="http://web.archive.org/web/20100208061823/http://www.velocitynetwork.net/?hosting_by=ArchLinux" title="velocity network"><img src="{% retro_static year "vnet_button.png" %}" class="" title="" alt="velocity network - it's about time"></a>
+    <a href="http://web.archive.org/web/20100208061823/https://www.sevenl.net/?utm_source=archlinux-org&amp;utm_medium=sponsored-banner&amp;utm_campaign=thanks-to-sevenl" title="SevenL Networks - Dedicated Arch Linux servers"><img src="{% retro_static year "sevenl_button.png" %}" class="" title="A big Thank You to SevenL Networks for their generous contribution" alt="We would like to express our thanks to SevenL Networks for their generous contribution"></a>
 
             </div>
             <div class="left">
@@ -194,7 +194,7 @@
     </div>
     <br><br>
     <div style="float:right;position:relative;bottom:-25px">
-        <a href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/news/"><img src="{{ RETRO_STATIC_URL }}rss.png" alt="RSS Feed"></a>
+        <a href="http://web.archive.org/web/20100208061823/http://www.archlinux.org/feeds/news/"><img src="{% retro_static year "rss.png" %}" alt="RSS Feed"></a>
     </div>
     <h2 class="title">Latest News</h2>
     <div>

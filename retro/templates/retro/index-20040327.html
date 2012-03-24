@@ -1,10 +1,10 @@
-<html><head>
+{% load retro_static from retro %}<html><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>Arch Linux</title>
 <meta name="keywords" content="linux, linux distribution, arch, pacman, i686-optimized, distribution, open source, free, packages, server, daemon, network, systems">
-<link rel="stylesheet" type="text/css" href="{{ RETRO_STATIC_URL }}fonts.css">
-<link rel="stylesheet" type="text/css" href="{{ RETRO_STATIC_URL }}containers.css">
-<link rel="shortcut icon" href="{{ RETRO_STATIC_URL }}favicon.ico">
+<link rel="stylesheet" type="text/css" href="{% retro_static year "fonts.css" %}">
+<link rel="stylesheet" type="text/css" href="{% retro_static year "containers.css" %}">
+<link rel="shortcut icon" href="{% retro_static year "favicon.ico" %}">
 </head>
 <body>
 <table style="background-color: rgb(0, 0, 0); width: 100%;" cellspacing="0">
@@ -15,7 +15,7 @@
 		<td class="headerFill" colspan="2">
 			<table width="100%">
 				<tbody><tr>
-					<td class="headerDisplay"><img src="{{ RETRO_STATIC_URL }}logoTop.gif"></td>
+					<td class="headerDisplay"><img src="{% retro_static year "logoTop.gif" %}"></td>
 					<td class="headerDisplay" align="right">
 					</td>					
 				</tr>
@@ -212,13 +212,13 @@
 				</tr>
 				<tr>
 					<td style="background-color: rgb(238, 238, 238);" align="center"><br>
-<a href="http://web.archive.org/web/20040327023505/http://sourceforge.net/"><img src="{{ RETRO_STATIC_URL }}sflogo.png" alt="SourceForge Logo" border="0" height="31" width="105"></a>
+<a href="http://web.archive.org/web/20040327023505/http://sourceforge.net/"><img src="{% retro_static year "sflogo.png" %}" alt="SourceForge Logo" border="0" height="31" width="105"></a>
 					</td>
 				</tr>
 				<tr>
 					<td style="background-color: rgb(238, 238, 238);" align="center"><br>
 <!-- paypal code -->
-<img src="{{ RETRO_STATIC_URL }}x-click-butcc-donate.gif" alt="Make payments with PayPal - it's fast, free and secure!" style="background: none repeat scroll 0% 0% transparent; border: medium none;" border="0">
+<img src="{% retro_static year "x-click-butcc-donate.gif" %}" alt="Make payments with PayPal - it's fast, free and secure!" style="background: none repeat scroll 0% 0% transparent; border: medium none;" border="0">
 <br>
 <span class="f4">All money goes directly to server costs</span>
 					</td>
@@ -243,7 +243,7 @@
 		<td class="boxSoft">
 			<table style="width: 100%;" cellspacing="4">
 				<tbody><tr>
-					<td colspan="2" style="text-align: center; width: 50%;"><img src="{{ RETRO_STATIC_URL }}frontComponents.gif" height="30" width="179"><br><img src="{{ RETRO_STATIC_URL }}pad.gif" height="50"></td>
+					<td colspan="2" style="text-align: center; width: 50%;"><img src="{% retro_static year "frontComponents.gif" %}" height="30" width="179"><br><img src="{% retro_static year "pad.gif" %}" height="50"></td>
 					<td colspan="2" style="text-align: center; width: 100%;" align="right" valign="top">
 						<table class="boxSoftSmall" style="width: 250px;" align="right" cellspacing="3">
 							<tbody><tr>
@@ -330,7 +330,7 @@ March 26 20:54									</span></td>
 								</tr>
 							</tbody></table>
 						</td></tr><tr><td>
-							<img src="{{ RETRO_STATIC_URL }}pad.gif" height="30"><br>
+							<img src="{% retro_static year "pad.gif" %}" height="30"><br>
 							<span class="f3">Release Package Lists</span>
 							<table style="width: 90%;" align="right">
 								<tbody><tr>
@@ -360,7 +360,7 @@ March 26 20:54									</span></td>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4"><img src="{{ RETRO_STATIC_URL }}pad.gif" height="10" width="1"></td>
+					<td colspan="4"><img src="{% retro_static year "pad.gif" %}" height="10" width="1"></td>
 				</tr>
 			</tbody></table>
 		</td>
@@ -378,7 +378,7 @@ March 26 20:54									</span></td>
 		<td class="boxSoft">
 			<table style="width: 100%;" cellspacing="4">
 				<tbody><tr>
-					<td colspan="2" style="text-align: center; width: 50%;"><img src="{{ RETRO_STATIC_URL }}frontNews.gif" height="30" width="179"><br><img src="{{ RETRO_STATIC_URL }}pad.gif" height="50"></td>
+					<td colspan="2" style="text-align: center; width: 50%;"><img src="{% retro_static year "frontNews.gif" %}" height="30" width="179"><br><img src="{% retro_static year "pad.gif" %}" height="50"></td>
 					<td colspan="2" style="text-align: center; width: 50%;" align="right" valign="top">
 						<table class="boxSoftSmall" style="width: 250px;" align="right" cellspacing="3">
 							<tbody><tr>
@@ -455,7 +455,7 @@ March 26 20:54									</span></td>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4"><img src="{{ RETRO_STATIC_URL }}pad.gif" height="10" width="1"></td>
+					<td colspan="4"><img src="{% retro_static year "pad.gif" %}" height="10" width="1"></td>
 				</tr>
 			</tbody></table>
 		</td>
