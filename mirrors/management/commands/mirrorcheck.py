@@ -137,8 +137,7 @@ class MirrorCheckPool(object):
         logger.debug("joining on all threads")
         self.tasks.join()
         logger.debug("processing log entries")
-        for log in self.logs:
-            log.save()
+        MirrorLog.objects.bulk_create(self.logs)
         logger.debug("log entries saved")
 
 def check_current_mirrors():
