@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load url from future %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>{% block title %}Arch Linux{% endblock %}</title>
@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="{{ STATIC_URL }}logos/apple-touch-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="72x72" href="{{ STATIC_URL }}logos/apple-touch-icon-72x72.png" />
     <link rel="apple-touch-icon" sizes="114x114" href="{{ STATIC_URL }}logos/apple-touch-icon-114x114.png" />
-    <link rel="search" type="application/opensearchdescription+xml" href="{% url opensearch-packages as osp %}{{ osp }}" title="Arch Linux Packages" />
+    <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch-packages' as osp %}{{ osp }}" title="Arch Linux Packages" />
     {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
@@ -25,7 +25,7 @@
                 <li id="anb-wiki"><a href="https://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
                 <li id="anb-bugs"><a href="https://bugs.archlinux.org/" title="Report and track bugs">Bugs</a></li>
                 <li id="anb-aur"><a href="https://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
-                <li id="anb-download"><a href="{% url page-download as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
+                <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
             </ul>
         </div>
     </div><!-- #archnavbar -->
@@ -34,20 +34,20 @@
         <div id="archdev-navbar">
             {% if user.is_authenticated %}
                 <ul>
-                    <li><a href="{% url devel-index %}" title="Developer Dashboard">Dashboard</a></li>
+                    <li><a href="{% url 'devel-index' %}" title="Developer Dashboard">Dashboard</a></li>
                     <li><a href="https://wiki.archlinux.org/index.php/DeveloperWiki"
                         title="Developer Wiki">DevWiki</a></li>
-                    <li><a href="{% url news-list as newsl %}{{ newsl }}" title="Manage news articles">News</a></li>
+                    <li><a href="{% url 'news-list' as newsl %}{{ newsl }}" title="Manage news articles">News</a></li>
                     <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
                     <li><a href="/todo/" title="Developer todo lists">Todos</a></li>
-                    <li><a href="{% url devel-clocks %}" title="Developer world clocks">Dev Clocks</a></li>
+                    <li><a href="{% url 'devel-clocks' %}" title="Developer world clocks">Dev Clocks</a></li>
                     <li><a href="https://mailman.archlinux.org/mailman/private/arch-dev/"
                         title="arch-dev mailing list archives">Archives</a></li>
                     <li><a href="/mirrors/" title="Mirror server statistics">Mirrors</a></li>
                     <li><a href="https://stats.archlinux.org/munin/"
                         title="Arch server monitoring">Server Monitoring</a></li>
                     {% if user.is_staff %}
-                    <li><a href="{% url admin:index %}" title="Django Admin Interface">Django Admin</a></li>
+                    <li><a href="{% url 'admin:index' %}" title="Django Admin Interface">Django Admin</a></li>
                     {% endif %}
                     <li><a href="/devel/profile/" title="Modify your account profile">Profile</a></li>
                     <li><a href="/logout/" title="Logout of the developer interface">Logout</a></li>

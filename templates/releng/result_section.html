@@ -1,3 +1,4 @@
+{% load url from future %}
 <tr>
     <th>{% if option.is_rollback %}Rollback: {% endif %}{{ option.name|title }}</td>
     <th>Last Success</th>
@@ -6,20 +7,20 @@
 {% for item in option.values %}
 <tr>
     <td>
-        <a href="{% url releng-results-for option.name|lower item.value.pk %}">
+        <a href="{% url 'releng-results-for' option.name|lower item.value.pk %}">
             {{ item.value.name|lower }}
         </a>
     </td>
     <td>
         {% if item.success %}
-        <a href="{% url releng-results-iso item.success.pk %}">
+        <a href="{% url 'releng-results-iso' item.success.pk %}">
             {{ item.success.name }}
         </a>
         {% else %}Never succeeded{% endif %}
     </td>
     <td>
         {% if item.failure %}
-        <a href="{% url releng-results-iso item.failure.pk %}">
+        <a href="{% url 'releng-results-iso' item.failure.pk %}">
             {{ item.failure.name }}
         </a>
         {% else %}Never failed{% endif %}
