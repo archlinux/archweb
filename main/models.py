@@ -74,10 +74,6 @@ class PackageManager(models.Manager):
         """Used by dev dashboard."""
         return self.filter(flag_date__isnull=False)
 
-    def signed(self):
-        """Used by dev dashboard."""
-        return self.filter(pgp_signature__isnull=False)
-
     def normal(self):
         return self.select_related('arch', 'repo')
 
