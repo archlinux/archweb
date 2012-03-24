@@ -135,7 +135,7 @@ PXEBOOT_URL = 'http://releng.archlinux.org/pxeboot/'
 
 # URL for SVN access for fetching commit messages (note absence of packages or
 # community bit on the end, repo.svn_root is appended)
-SVN_BASE_URL = 'svn+ssh://svn.archlinux.org/srv/svn-'
+SVN_BASE_URL = 'svn://svn.archlinux.org/'
 
 ## Import local settings
 from local_settings import *
