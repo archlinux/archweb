@@ -31,7 +31,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             'installed_size', 'build_date', 'last_update', 'flag_date',
             'maintainers', 'packager' ]
     pkg_list_attributes = [ 'groups', 'licenses', 'conflicts',
-            'provides', 'replaces', 'packagedepend_set' ]
+            'provides', 'replaces', 'depends' ]
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -41,11 +41,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             data = dict((attr, getattr(obj, attr))
                     for attr in self.pkg_attributes)
             for attr in self.pkg_list_attributes:
-                values = getattr(obj, attr).all()
-                # TODO: temporary rename becuase the name sucks
-                if attr == 'packagedepend_set':
-                    attr = 'depends'
-                data[attr] = values
+                data[attr] = getattr(obj, attr).all()
             return data
         if isinstance(obj, PackageFile):
             filename = obj.filename or ''

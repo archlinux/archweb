@@ -288,7 +288,7 @@ class Package(models.Model):
         if not self.arch.agnostic:
             arches = self.applicable_arches()
         # TODO: we can use list comprehension and an 'in' query to make this more effective
-        for dep in self.packagedepend_set.order_by('optional', 'depname'):
+        for dep in self.depends.order_by('optional', 'depname'):
             pkg = dep.get_best_satisfier(arches, testing=self.repo.testing,
                     staging=self.repo.staging)
             providers = None
@@ -391,7 +391,7 @@ class PackageFile(models.Model):
         db_table = 'package_files'
 
 class PackageDepend(models.Model):
-    pkg = models.ForeignKey(Package)
+    pkg = models.ForeignKey(Package, related_name='depends')
     depname = models.CharField(max_length=255, db_index=True)
     depvcmp = models.CharField(max_length=255, default='')
     optional = models.BooleanField(default=False)

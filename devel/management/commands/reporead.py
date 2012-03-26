@@ -229,7 +229,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 
     populate_files(dbpkg, repopkg, force=force)
 
-    dbpkg.packagedepend_set.all().delete()
+    dbpkg.depends.all().delete()
     deps = [create_depend(dbpkg, y) for y in repopkg.depends]
     deps += [create_depend(dbpkg, y, True) for y in repopkg.optdepends]
     PackageDepend.objects.bulk_create(deps)
