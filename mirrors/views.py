@@ -169,7 +169,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
 def status_json(request):
     status_info = get_mirror_statuses()
     data = status_info.copy()
-    data['version'] = 1
+    data['version'] = 2
     to_json = simplejson.dumps(data, ensure_ascii=False,
             cls=MirrorStatusJSONEncoder)
     response = HttpResponse(to_json, mimetype='application/json')

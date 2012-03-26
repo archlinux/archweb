@@ -180,7 +180,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
 def signoffs_json(request):
     signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
     data = {
-        'version': 1,
+        'version': 2,
         'signoff_groups': signoff_groups,
     }
     to_json = simplejson.dumps(data, ensure_ascii=False,
