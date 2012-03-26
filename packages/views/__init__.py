@@ -1,3 +1,6 @@
+from string import Template
+from urllib import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
@@ -9,12 +12,10 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.simple import direct_to_template
 
-from string import Template
-from urllib import urlencode
-
-from main.models import Package, PackageFile, Arch, Repo
+from main.models import Package, PackageFile, PackageDepend, Arch, Repo
 from mirrors.models import MirrorUrl
-from ..models import PackageRelation, PackageGroup
+from ..models import (PackageRelation, PackageGroup, License,
+        Conflict, Provision, Replacement)
 from ..utils import (get_group_info, get_differences_info,
         multilib_differences, get_wrong_permissions)
 
@@ -29,6 +30,8 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
             'installed_size', 'build_date', 'last_update', 'flag_date',
             'maintainers', 'packager' ]
+    pkg_list_attributes = [ 'groups', 'licenses', 'conflicts',
+            'provides', 'replaces', 'packagedepend_set' ]
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -37,13 +40,22 @@ class PackageJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, Package):
             data = dict((attr, getattr(obj, attr))
                     for attr in self.pkg_attributes)
-            data['groups'] = obj.groups.all()
+            for attr in self.pkg_list_attributes:
+                values = getattr(obj, attr).all()
+                # TODO: temporary rename becuase the name sucks
+                if attr == 'packagedepend_set':
+                    attr = 'depends'
+                data[attr] = values
             return data
         if isinstance(obj, PackageFile):
             filename = obj.filename or ''
             return obj.directory + filename
-        if isinstance(obj, (Repo, Arch, PackageGroup)):
+        if isinstance(obj, (Repo, Arch)):
             return obj.name.lower()
+        if isinstance(obj, (PackageGroup, License)):
+            return obj.name
+        if isinstance(obj, (Conflict, Provision, Replacement, PackageDepend)):
+            return unicode(obj)
         elif isinstance(obj, User):
             return obj.username
         return super(PackageJSONEncoder, self).default(obj)
