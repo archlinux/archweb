@@ -107,9 +107,4 @@ for old_url, new_url in legacy_urls:
     urlpatterns += patterns('django.views.generic.simple',
             (old_url, 'redirect_to', {'url': new_url}))
 
-if settings.DEBUG == True:
-    urlpatterns += patterns('',
-        (r'^media/(.*)$', 'django.views.static.serve',
-            {'document_root': os.path.join(settings.DEPLOY_PATH, 'media')}))
-
 # vim: set ts=4 sw=4 et:
