@@ -1,4 +1,3 @@
-{% spaceless %}
 {% if group.signoffs %}
 <ul class="signoff-list">
     {% for signoff in group.signoffs %}
@@ -22,4 +21,3 @@
     <a class="signoff-options" href="{{ group.package.get_absolute_url }}signoff/options/">Signoff Options</a>
 </div>
 {% endif %}
-{% endspaceless %}

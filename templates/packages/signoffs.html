@@ -52,6 +52,7 @@
         <tbody id="tbody_signoffs">
             {% for group in signoff_groups %}
             <tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }} {{ group.target_repo|lower }}">
+                {% spaceless %}
                 <td>{% pkg_details_link group.package %} {{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
@@ -68,12 +69,13 @@
                 {% endif %}
                 {% endif %}
                 <td>{% include "packages/signoff_cell.html" %}</td>
-                <td class="wrap">{% if not group.default_spec %}{% with group.specification as spec %}
-                    {% if spec.required != 2 %}Required signoffs: {{ spec.required }}<br/>{% endif %}
-                    {% if not spec.enabled %}Signoffs are not currently enabled<br/>{% endif %}
-                    {% if spec.known_bad %}Package is known to be bad<br/>{% endif %}
-                    {{ spec.comments|default:""|linebreaksbr }}
+                <td class="wrap">{% if not group.default_spec %}{% with group.specification as spec %}{% comment %}
+                    {% endcomment %}{% if spec.required != 2 %}Required signoffs: {{ spec.required }}<br/>{% endif %}{% comment %}
+                    {% endcomment %}{% if not spec.enabled %}Signoffs are not currently enabled<br/>{% endif %}{% comment %}
+                    {% endcomment %}{% if spec.known_bad %}Package is known to be bad<br/>{% endif %}{% comment %}
+                    {% endcomment %}{{ spec.comments|default:""|linebreaksbr }}
                 {% endwith %}{% endif %}</td>
+                {% endspaceless %}
             </tr>
             {% endfor %}
         </tbody>
