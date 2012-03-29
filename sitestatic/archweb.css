@@ -957,6 +957,14 @@ ul.signoff-list {
     color: red;
 }
 
+#key-status .signed-yes {
+    color: green;
+}
+
+#key-status .signed-no {
+    color: red;
+}
+
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a,
 #archnavbar.anb-packages ul li#anb-packages a,

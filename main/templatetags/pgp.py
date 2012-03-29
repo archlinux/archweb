@@ -50,4 +50,12 @@ def pgp_fingerprint(key_id, autoescape=True):
     return mark_safe(format_key(esc(key_id)))
 pgp_fingerprint.needs_autoescape = True
 
+
+@register.assignment_tag
+def signature_exists(signatures, signer, signee):
+    if not signer or not signee:
+        return False
+    lookup = (signer[-16:], signee[-16:])
+    return lookup in signatures
+
 # vim: set ts=4 sw=4 et:

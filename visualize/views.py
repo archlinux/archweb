@@ -102,7 +102,7 @@ def pgp_keys(request):
         'group': 'cacert',
     })
 
-    not_expired = Q(expires__gt=datetime.now) | Q(expires__isnull=True)
+    not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
     signatures = PGPSignature.objects.filter(not_expired, valid=True)
     edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }
             for sig in signatures]

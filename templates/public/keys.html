@@ -15,15 +15,6 @@
     <p>The {{ keys|length }} key{{ keys|pluralize }} listed below should be
     regarded as the current set of master keys. They are available on public
     keyservers and should be signed by the owner of the key.</p>
-    <p>All official Arch Linux developers and trusted users should have their
-    key signed by at least three of these master keys. This is in accordance
-    with the PGP <em>web of trust</em> concept. If a user is willing to
-    marginally trust all of the master keys, three signatures from different
-    master keys will consider a given developer's key as valid. For more
-    information on trust, please consult the
-    <a href="http://www.gnupg.org/gph/en/manual.html">GNU Privacy Handbook</a>
-    and <a href="http://www.gnupg.org/gph/en/manual.html#AEN385">Using trust to
-    validate keys</a>.</p>
 
     <table class="pretty2">
         <thead>
@@ -51,6 +42,53 @@
                 <td>{% pgp_key_link revoker_profile.pgp_key %}</td>
                 {% endwith %}
                 <td>{{ key.signature_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>The following table shows all active developers and trusted users along
+    with the status of their personal signing key. A 'Yes' indicates that the
+    personal key of the developer is signed by the given master key. A 'No'
+    indicates it has not been signed; however, this does not necessarily mean
+    the key should not be trusted.</p>
+    <p>All official Arch Linux developers and trusted users should have their
+    key signed by at least three master keys if they are responsible for
+    packaging software in the repositories. This is in accordance with the PGP
+    <em>web of trust</em> concept. If a user is willing to marginally trust all
+    of the master keys, three signatures from different master keys will
+    consider a given developer's key as valid. For more information on trust,
+    please consult the
+    <a href="http://www.gnupg.org/gph/en/manual.html">GNU Privacy Handbook</a>
+    and <a href="http://www.gnupg.org/gph/en/manual.html#AEN385">Using trust to
+    validate keys</a>.</p>
+
+    <table class="pretty2" id="key-status">
+        <thead>
+            <tr>
+                <th></th>
+                <th>PGP Key</th>
+                {% for key in keys %}
+                <th>{{ key.owner.get_full_name }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                {% for key in keys %}
+                <th>{% pgp_key_link key.pgp_key %}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in active_users %}
+            <tr>
+                <th>{{ user.get_full_name }}</th>
+                <td>{% pgp_key_link user.userprofile.pgp_key %}</td>
+                {% spaceless %}{% for key in keys %}
+                {% signature_exists signatures key.pgp_key user.userprofile.pgp_key as signed %}
+                <td class="signed-{{ signed|yesno }}">{{ signed|yesno|capfirst }}</td>
+                {% endfor %}{% endspaceless %}
             </tr>
             {% endfor %}
         </tbody>
