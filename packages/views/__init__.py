@@ -185,7 +185,8 @@ def group_details(request, arch, name):
 def files(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('directory', 'filename')
+    # files are inserted in sorted order, so preserve that
+    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
     dir_count = sum(1 for f in fileslist if f.is_directory)
     files_count = len(fileslist) - dir_count
     context = {
@@ -209,7 +210,8 @@ def details_json(request, name, repo, arch):
 def files_json(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('directory', 'filename')
+    # files are inserted in sorted order, so preserve that
+    fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
     data = {
         'pkgname': pkg.pkgname,
         'repo': pkg.repo.name.lower(),
