@@ -15,7 +15,7 @@
     </thead>
     <tbody>
         {% for m_url in urls %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        {% spaceless %}<tr class="{% cycle 'odd' 'even' %}">
             <td>{{ m_url.url }}</td>
             <td>{{ m_url.protocol }}</td>
             <td>{{ m_url.real_country }}</td>
@@ -26,6 +26,6 @@
             <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
             <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
         </tr>
-        {% endfor %}
+        {% endspaceless %}{% endfor %}
     </tbody>
 </table>
