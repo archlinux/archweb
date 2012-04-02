@@ -101,7 +101,7 @@ def parse_form(form, packages):
 
     if form.cleaned_data['name']:
         name = form.cleaned_data['name']
-        packages = packages.filter(pkgname__icontains=name)
+        packages = packages.filter(pkgname=name)
 
     if form.cleaned_data['desc']:
         desc = form.cleaned_data['desc']
