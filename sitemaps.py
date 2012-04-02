@@ -13,7 +13,7 @@ class PackagesSitemap(Sitemap):
     priority = "0.5"
 
     def items(self):
-        return Package.objects.normal()
+        return Package.objects.all().order_by()
 
     def lastmod(self, obj):
         return obj.last_update
@@ -68,7 +68,7 @@ class NewsSitemap(Sitemap):
         self.one_week_ago = now - timedelta(days=7)
 
     def items(self):
-        return News.objects.all()
+        return News.objects.all().order_by()
 
     def lastmod(self, obj):
         return obj.last_modified
