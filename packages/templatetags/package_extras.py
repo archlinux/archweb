@@ -93,7 +93,7 @@ def packager_link(user):
 def scm_link(package, operation):
     parts = (package.repo.svn_root, operation, package.pkgbase)
     linkbase = (
-        "http://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
+        "https://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
         "h=packages/%s")
     return linkbase % tuple(urlquote(part) for part in parts)
 
