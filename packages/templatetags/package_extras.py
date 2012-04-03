@@ -110,6 +110,7 @@ def bugs_list(package):
     url = "https://bugs.archlinux.org/"
     data = {
         'project': package.repo.bugs_project,
+        'cat[]': package.repo.bugs_category,
         'string': package.pkgname,
     }
     return link_encode(url, data)

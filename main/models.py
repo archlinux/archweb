@@ -115,7 +115,7 @@ class Repo(models.Model):
             help_text="Is this repo meant for package staging?")
     bugs_project = models.SmallIntegerField(default=1,
             help_text="Flyspray project ID for this repository.")
-    bugs_category = models.SmallIntegerField(default=0,
+    bugs_category = models.SmallIntegerField(default=2,
             help_text="Flyspray category ID for this repository.")
     svn_root = models.CharField(max_length=64,
             help_text="SVN root (e.g. path) for this repository.")
