@@ -151,7 +151,7 @@
             <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
         </tr>{% if pkg.signature %}<tr>
             <th>Signed By:</th>
-            <td>{% with pkg.signer as signer %}{% if signer %}{% pgp_key_link pkg.signature.key_id signer.get_full_name %}{% else %}Unknown{% endif %}{% endwith %}</td>
+            <td>{% with pkg.signer as signer %}{% if signer %}{% pgp_key_link pkg.signature.key_id signer.get_full_name %}{% else %}Unknown ({% pgp_key_link pkg.signature.key_id %}){% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Signature Date:</th>
             <td>{{ pkg.signature.datetime|date:"DATETIME_FORMAT" }} UTC</td>
