@@ -258,6 +258,23 @@ table.pretty2 {
         border: 1px solid #bbb;
     }
 
+        /* additional styles for JS sorting */
+        table.pretty2 th.header {
+            padding-right: 20px;
+            background-image: url(nosort.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+        table.pretty2 th.headerSortDown {
+            background-image: url(desc.gif);
+        }
+
+        table.pretty2 th.headerSortUp {
+            background-image: url(asc.gif);
+        }
+
     table.pretty2 td {
         padding: 0.35em;
         border: 1px dotted #bbb;

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load pgp %}
 
 {% block title %}Arch Linux - Master Signing Keys{% endblock %}
@@ -66,17 +67,11 @@
     <table class="pretty2" id="key-status">
         <thead>
             <tr>
-                <th></th>
+                <th>Developer</th>
                 <th>PGP Key</th>
                 {% for key in keys %}
-                <th>{{ key.owner.get_full_name }}</th>
-                {% endfor %}
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                {% for key in keys %}
-                <th>{% pgp_key_link key.pgp_key %}</th>
+                <th>{{ key.owner.get_full_name }}<br/>
+                {% pgp_key_link key.pgp_key %}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -94,4 +89,14 @@
         </tbody>
     </table>
 </div>
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="{% static "jquery.tablesorter.min.js" %}"></script>
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#key-status").tablesorter({
+        headers: { 1: { sorter: false } }
+    });
+});
+</script>
 {% endblock %}
