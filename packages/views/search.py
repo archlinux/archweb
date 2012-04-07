@@ -4,11 +4,14 @@ from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponse
 from django.views.generic import list_detail
+from django.utils import simplejson
 
 from main.models import Package, Arch, Repo
 from main.utils import make_choice
 from ..models import PackageRelation
+from ..utils import PackageJSONEncoder
 
 
 def coerce_limit_value(value):
@@ -156,5 +159,28 @@ def search(request, page=None):
             paginate_by=limit,
             template_object_name="package",
             extra_context=page_dict)
+
+
+def search_json(request):
+    limit = 250
+
+    container = {
+        'version': 2,
+        'limit': limit,
+        'valid': False,
+        'results': [],
+    }
+
+    if request.GET:
+        form = PackageSearchForm(data=request.GET)
+        if form.is_valid():
+            packages = Package.objects.normal()
+            packages = parse_form(form, packages)[:limit]
+            container['results'] = packages
+            container['valid'] = True
+
+    to_json = simplejson.dumps(container, ensure_ascii=False,
+            cls=PackageJSONEncoder)
+    return HttpResponse(to_json, mimetype='application/json')
 
 # vim: set ts=4 sw=4 et:

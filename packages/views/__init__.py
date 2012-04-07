@@ -20,7 +20,7 @@ from ..utils import (get_group_info, get_differences_info,
 
 # make other views available from this same package
 from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
-from .search import search
+from .search import search, search_json
 from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 
 
