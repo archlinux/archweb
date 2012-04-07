@@ -2,13 +2,15 @@ from collections import defaultdict
 from itertools import chain
 from operator import itemgetter
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 from django.db.models import Count, Max, F
 from django.contrib.auth.models import User
 
-from main.models import Package, Arch, Repo
+from main.models import Package, PackageDepend, PackageFile, Arch, Repo
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
 from .models import (PackageGroup, PackageRelation,
+        License, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
 
 @cache_function(127)
@@ -421,5 +423,38 @@ def get_signoff_groups(repos=None, user=None):
         signoff_groups.append(signoff_group)
 
     return signoff_groups
+
+
+class PackageJSONEncoder(DjangoJSONEncoder):
+    pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
+            'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
+            'installed_size', 'build_date', 'last_update', 'flag_date',
+            'maintainers', 'packager' ]
+    pkg_list_attributes = [ 'groups', 'licenses', 'conflicts',
+            'provides', 'replaces', 'depends' ]
+
+    def default(self, obj):
+        if hasattr(obj, '__iter__'):
+            # mainly for queryset serialization
+            return list(obj)
+        if isinstance(obj, Package):
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.pkg_attributes)
+            for attr in self.pkg_list_attributes:
+                data[attr] = getattr(obj, attr).all()
+            return data
+        if isinstance(obj, PackageFile):
+            filename = obj.filename or ''
+            return obj.directory + filename
+        if isinstance(obj, (Repo, Arch)):
+            return obj.name.lower()
+        if isinstance(obj, (PackageGroup, License)):
+            return obj.name
+        if isinstance(obj, (Conflict, Provision, Replacement, PackageDepend)):
+            return unicode(obj)
+        elif isinstance(obj, User):
+            return obj.username
+        return super(PackageJSONEncoder, self).default(obj)
+
 
 # vim: set ts=4 sw=4 et:

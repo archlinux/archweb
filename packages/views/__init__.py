@@ -4,7 +4,6 @@ from urllib import urlencode
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
-from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import simplejson
@@ -12,50 +11,18 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.simple import direct_to_template
 
-from main.models import Package, PackageFile, PackageDepend, Arch, Repo
+from main.models import Package, PackageFile, Arch, Repo
 from mirrors.models import MirrorUrl
 from mirrors.utils import get_mirror_url_for_download
-from ..models import (PackageRelation, PackageGroup, License,
-        Conflict, Provision, Replacement)
+from ..models import PackageRelation
 from ..utils import (get_group_info, get_differences_info,
-        multilib_differences, get_wrong_permissions)
+        multilib_differences, get_wrong_permissions, PackageJSONEncoder)
 
 # make other views available from this same package
 from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
 from .search import search
 from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 
-
-class PackageJSONEncoder(DjangoJSONEncoder):
-    pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
-            'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
-            'installed_size', 'build_date', 'last_update', 'flag_date',
-            'maintainers', 'packager' ]
-    pkg_list_attributes = [ 'groups', 'licenses', 'conflicts',
-            'provides', 'replaces', 'depends' ]
-
-    def default(self, obj):
-        if hasattr(obj, '__iter__'):
-            # mainly for queryset serialization
-            return list(obj)
-        if isinstance(obj, Package):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.pkg_attributes)
-            for attr in self.pkg_list_attributes:
-                data[attr] = getattr(obj, attr).all()
-            return data
-        if isinstance(obj, PackageFile):
-            filename = obj.filename or ''
-            return obj.directory + filename
-        if isinstance(obj, (Repo, Arch)):
-            return obj.name.lower()
-        if isinstance(obj, (PackageGroup, License)):
-            return obj.name
-        if isinstance(obj, (Conflict, Provision, Replacement, PackageDepend)):
-            return unicode(obj)
-        elif isinstance(obj, User):
-            return obj.username
-        return super(PackageJSONEncoder, self).default(obj)
 
 def opensearch(request):
     if request.is_secure():
