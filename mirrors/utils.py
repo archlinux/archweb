@@ -27,6 +27,7 @@ def annotate_url(url, delays):
         url.delay = None
         url.score = None
 
+
 @cache_function(123)
 def get_mirror_statuses(cutoff=default_cutoff):
     cutoff_time = utc_now() - cutoff
@@ -81,6 +82,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
         'urls': urls,
     }
 
+
 @cache_function(117)
 def get_mirror_errors(cutoff=default_cutoff):
     cutoff_time = utc_now() - cutoff
@@ -95,5 +97,37 @@ def get_mirror_errors(cutoff=default_cutoff):
     for err in errors:
         err['country'] = err['url__country'] or err['url__mirror__country']
     return errors
+
+
+@cache_function(295)
+def get_mirror_url_for_download(cutoff=default_cutoff):
+    '''Find a good mirror URL to use for package downloads. If we have mirror
+    status data available, it is used to determine a good choice by looking at
+    the last batch of status rows.'''
+    cutoff_time = utc_now() - cutoff
+    status_data = MirrorLog.objects.filter(
+            check_time__gte=cutoff_time).aggregate(
+            Max('check_time'), Max('last_sync'))
+    if status_data:
+        min_check_time = status_data['check_time__max'] - timedelta(minutes=5)
+        min_sync_time = status_data['last_sync__max'] - timedelta(minutes=30)
+        best_logs = MirrorLog.objects.filter(is_success=True,
+                check_time__gte=min_check_time, last_sync__gte=min_sync_time,
+                url__mirror__public=True, url__mirror__active=True,
+                url__protocol__protocol__iexact='HTTP').order_by(
+                'duration')[:1]
+        if best_logs:
+            return MirrorUrl.objects.get(id=best_logs[0].url_id)
+
+    mirror_urls = MirrorUrl.objects.filter(
+            mirror__public=True, mirror__active=True,
+            protocol__protocol__iexact='HTTP')
+    # look first for an 'Any' URL, then fall back to any HTTP URL
+    filtered_urls = mirror_urls.filter(mirror__country='Any')[:1]
+    if not filtered_urls:
+        filtered_urls = mirror_urls[:1]
+    if not filtered_urls:
+        return None
+    return filtered_urls[0]
 
 # vim: set ts=4 sw=4 et:

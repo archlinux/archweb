@@ -14,6 +14,7 @@ from django.views.generic.simple import direct_to_template
 
 from main.models import Package, PackageFile, PackageDepend, Arch, Repo
 from mirrors.models import MirrorUrl
+from mirrors.utils import get_mirror_url_for_download
 from ..models import (PackageRelation, PackageGroup, License,
         Conflict, Provision, Replacement)
 from ..utils import (get_group_info, get_differences_info,
@@ -225,21 +226,15 @@ def files_json(request, name, repo, arch):
 def download(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    mirror_urls = MirrorUrl.objects.filter(
-            mirror__public=True, mirror__active=True,
-            protocol__protocol__iexact='HTTP')
-    # look first for an 'Any' URL, then fall back to any HTTP URL
-    filtered_urls = mirror_urls.filter(mirror__country='Any')[:1]
-    if not filtered_urls:
-        filtered_urls = mirror_urls[:1]
-    if not filtered_urls:
+    url = get_mirror_url_for_download()
+    if not url:
         raise Http404
     arch = pkg.arch.name
     if pkg.arch.agnostic:
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
     values = {
-        'host': filtered_urls[0].url,
+        'host': url.url,
         'arch': arch,
         'repo': pkg.repo.name.lower(),
         'file': pkg.filename,
