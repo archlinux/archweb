@@ -108,7 +108,7 @@ def get_mirror_url_for_download(cutoff=default_cutoff):
     status_data = MirrorLog.objects.filter(
             check_time__gte=cutoff_time).aggregate(
             Max('check_time'), Max('last_sync'))
-    if status_data:
+    if status_data['check_time__max'] is not None:
         min_check_time = status_data['check_time__max'] - timedelta(minutes=5)
         min_sync_time = status_data['last_sync__max'] - timedelta(minutes=30)
         best_logs = MirrorLog.objects.filter(is_success=True,
