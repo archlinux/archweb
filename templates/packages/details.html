@@ -124,7 +124,19 @@
         {% with pkg.provides.all as provides %}{% if provides %}
         <tr>
             <th>Provides:</th>
-            <td>{% for p in provides %}{{ p.name }}{% if p.version %}={{ p.version }}{% endif %}<br/>{% endfor %}</td>
+            <td>{% for item in provides %}{{ item }}<br/>{% endfor %}</td>
+        </tr>
+        {% endif %}{% endwith %}
+        {% with pkg.conflicts.all as conflicts %}{% if conflicts %}
+        <tr>
+            <th>Conflicts:</th>
+            <td>{% for item in conflicts %}{{ item }}<br/>{% endfor %}</td>
+        </tr>
+        {% endif %}{% endwith %}
+        {% with pkg.replaces.all as replaces %}{% if replaces %}
+        <tr>
+            <th>Replaces:</th>
+            <td>{% for item in replaces %}{{ item }}<br/>{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>
