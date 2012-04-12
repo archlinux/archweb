@@ -86,7 +86,7 @@
         {% with pkg.split_packages as splits %}{% if splits %}
         <tr>
             <th>Split Packages:</th>
-            <td>{% for s in splits %}{% pkg_details_link s %}<br/>{% endfor %}</td>
+            <td class="wrap">{% for s in splits %}{% pkg_details_link s %}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% else %}
@@ -109,34 +109,33 @@
                     title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url|url_unquote }}</a>{% endif %}</td>
         </tr><tr>
             <th>License(s):</th>
-            <td>{{ pkg.licenses.all|join:", " }}</td>
+            <td class="wrap">{{ pkg.licenses.all|join:", " }}</td>
         </tr>
         {% with pkg.groups.all as groups %}{% if groups %}
         <tr>
             <th>Groups:</th>
-            <td>{% for g in groups %}
+            <td class="wrap">{% for g in groups %}
                 <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
-                    title="Group details for {{ g.name }}">{{ g.name }}</a><br/>
-                {% endfor %}
+                    title="Group details for {{ g.name }}">{{ g.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
             </td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.provides.all as provides %}{% if provides %}
         <tr>
             <th>Provides:</th>
-            <td>{% for item in provides %}{{ item }}<br/>{% endfor %}</td>
+            <td class="wrap">{{ provides|join:", " }}</td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.conflicts.all as conflicts %}{% if conflicts %}
         <tr>
             <th>Conflicts:</th>
-            <td>{% for item in conflicts %}{{ item }}<br/>{% endfor %}</td>
+            <td class="wrap">{{ conflicts|join:", " }}</td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.replaces.all as replaces %}{% if replaces %}
         <tr>
             <th>Replaces:</th>
-            <td>{% for item in replaces %}{{ item }}<br/>{% endfor %}</td>
+            <td class="wrap">{{ replaces|join:", " }}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>
