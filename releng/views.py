@@ -177,11 +177,17 @@ def submit_test_thanks(request):
 
 def iso_overview(request):
     isos = Iso.objects.all().order_by('-pk')
-    successes = dict(Iso.objects.values_list('pk').filter(test__success=True).annotate(ct=Count('test')))
-    failures = dict(Iso.objects.values_list('pk').filter(test__success=False).annotate(ct=Count('test')))
+    successes = dict(Iso.objects.values_list('pk').filter(
+        test__success=True).annotate(ct=Count('test')))
+    failures = dict(Iso.objects.values_list('pk').filter(
+        test__success=False).annotate(ct=Count('test')))
     for iso in isos:
         iso.successes = successes.get(iso.pk, 0)
         iso.failures = failures.get(iso.pk, 0)
+
+    # only show "useful" rows, currently active ISOs or those with results
+    isos = [iso for iso in isos if
+            iso.active == True or iso.successes > 0 or iso.failures > 0]
 
     context = {
         'isos': isos
