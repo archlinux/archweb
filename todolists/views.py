@@ -49,8 +49,8 @@ def flag(request, list_id, pkg_id):
 @login_required
 def view(request, list_id):
     todolist = get_object_or_404(Todolist, id=list_id)
-    svn_roots = Repo.objects.order_by().values_list(
-            'svn_root', flat=True).distinct()
+    svn_roots = Repo.objects.values_list(
+            'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(tp.pkg for tp in todolist.packages)

@@ -13,7 +13,8 @@ from .models import News
 
 def find_unique_slug(newsitem):
     '''Attempt to find a unique slug for this news item.'''
-    existing = list(News.objects.values_list('slug', flat=True).distinct())
+    existing = list(News.objects.values_list(
+        'slug', flat=True).order_by().distinct())
 
     suffixed = slug = slugify(newsitem.title)
     suffix = 0

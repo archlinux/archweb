@@ -218,7 +218,8 @@ def attach_maintainers(packages):
     packages = list(packages)
     pkgbases = set(p.pkgbase for p in packages)
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
-            pkgbase__in=pkgbases).values_list('pkgbase', 'user_id').distinct()
+            pkgbase__in=pkgbases).values_list(
+            'pkgbase', 'user_id').order_by().distinct()
 
     # get all the user objects we will need
     user_ids = set(rel[1] for rel in rels)

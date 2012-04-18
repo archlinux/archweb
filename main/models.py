@@ -13,7 +13,7 @@ from .utils import cache_function, set_created_field, utc_now
 
 class TodolistManager(models.Manager):
     def incomplete(self):
-        return self.filter(todolistpkg__complete=False).distinct()
+        return self.filter(todolistpkg__complete=False).order_by().distinct()
 
 class PackageManager(models.Manager):
     def flagged(self):
@@ -378,7 +378,7 @@ class PackageDepend(models.Model):
         '''Return providers of this dep. Does *not* include exact matches as it
         checks the Provision names only, use get_best_satisfier() instead.'''
         pkgs = Package.objects.normal().filter(
-                provides__name=self.depname).distinct()
+                provides__name=self.depname).order_by().distinct()
         if arches is not None:
             pkgs = pkgs.filter(arch__in=arches)
 
@@ -432,7 +432,8 @@ class Todolist(models.Model):
     @property
     def package_names(self):
         # depends on packages property returning a queryset
-        return self.packages.values_list('pkg__pkgname', flat=True).distinct()
+        return self.packages.values_list(
+                'pkg__pkgname', flat=True).order_by().distinct()
 
     class Meta:
         db_table = 'todolists'

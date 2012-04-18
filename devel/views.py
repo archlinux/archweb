@@ -249,7 +249,8 @@ def report(request, report_name, username=None):
         if username:
             pkg_ids = set(packages.values_list('id', flat=True))
             bad_files = bad_files.filter(pkg__in=pkg_ids)
-        bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
+        bad_files = bad_files.values_list(
+                'pkg_id', flat=True).order_by().distinct()
         packages = packages.filter(id__in=set(bad_files))
     elif report_name == 'uncompressed-info':
         title = 'Packages with uncompressed infopages'
@@ -260,7 +261,8 @@ def report(request, report_name, username=None):
         if username:
             pkg_ids = set(packages.values_list('id', flat=True))
             bad_files = bad_files.filter(pkg__in=pkg_ids)
-        bad_files = bad_files.values_list('pkg_id', flat=True).distinct()
+        bad_files = bad_files.values_list(
+                'pkg_id', flat=True).order_by().distinct()
         packages = packages.filter(id__in=set(bad_files))
     elif report_name == 'unneeded-orphans':
         title = 'Orphan packages required by no other packages'
