@@ -5,31 +5,15 @@ from south.v2 import DataMigration
 from django.db import models
 
 class Migration(DataMigration):
-
-    depends_on = (
-        ('mirrors', '0002_rename_model_tables'),
-        ('news', '0002_move_news_in'),
-    )
-
-    mirror_apps = [ 'mirror', 'mirrorprotocol', 'mirrorurl', 'mirrorrsync' ]
+    '''This is a defunct migration now, things have been moved to their proper
+    places, but removing it would cause all existing setups migrated past this
+    to complain.'''
 
     def forwards(self, orm):
-        ct = orm['contenttypes.ContentType'].objects
-
-        # somehow these got in there already; remove them in favor of the old
-        ct.filter(app_label='news').delete()
-        ct.filter(app_label='mirrors').delete()
-
-        ct.filter(app_label='main', model='news').update(app_label='news')
-        ct.filter(app_label='main', model__in=self.mirror_apps).update(
-                app_label='mirrors')
+        pass
 
     def backwards(self, orm):
-        ct = orm['contenttypes.ContentType'].objects
-
-        ct.filter(app_label='mirrors', model__in=self.mirror_apps).update(
-                app_label='main')
-        ct.filter(app_label='news', model='news').update(app_label='main')
+        pass
 
     models = {
         'auth.group': {

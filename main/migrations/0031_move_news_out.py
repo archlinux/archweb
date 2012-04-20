@@ -6,10 +6,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-        ('news', '0002_move_news_in'),
-    )
-
     def forwards(self, orm):
         pass
 

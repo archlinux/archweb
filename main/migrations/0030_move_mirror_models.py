@@ -6,10 +6,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-        ('mirrors', '0002_rename_model_tables'),
-    )
-
     def forwards(self, orm):
         pass
 

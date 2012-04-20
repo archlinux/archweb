@@ -7,8 +7,10 @@ from django.db import models
 class Migration(SchemaMigration):
 
     depends_on = (
-        ('main', '0014_mirror_notes_rsync_optional'),
+        ('main', '0030_move_mirror_models'),
     )
+
+    mirror_apps = [ 'mirror', 'mirrorprotocol', 'mirrorurl', 'mirrorrsync' ]
 
     def forwards(self, orm):
         db.rename_table('main_mirror', 'mirrors_mirror')
@@ -16,11 +18,21 @@ class Migration(SchemaMigration):
         db.rename_table('main_mirrorrsync', 'mirrors_mirrorrsync')
         db.rename_table('main_mirrorprotocol', 'mirrors_mirrorprotocol')
 
+        if not db.dry_run:
+            ct = orm['contenttypes.ContentType'].objects
+            ct.filter(app_label='main', model__in=self.mirror_apps).update(
+                    app_label='mirrors')
+
     def backwards(self, orm):
         db.rename_table('mirrors_mirror', 'main_mirror')
         db.rename_table('mirrors_mirrorurl', 'main_mirrorurl')
         db.rename_table('mirrors_mirrorrsync', 'main_mirrorrsync')
         db.rename_table('mirrors_mirrorprotocol', 'main_mirrorprotocol')
+
+        if not db.dry_run:
+            ct = orm['contenttypes.ContentType'].objects
+            ct.filter(app_label='mirrors', model__in=self.mirror_apps).update(
+                    app_label='main')
 
     models = {
         'mirrors.mirror': {
@@ -55,6 +67,13 @@ class Migration(SchemaMigration):
             'mirror': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'urls'", 'to': "orm['mirrors.Mirror']"}),
             'protocol': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'urls'", 'to': "orm['mirrors.MirrorProtocol']"}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+        },
+        'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 

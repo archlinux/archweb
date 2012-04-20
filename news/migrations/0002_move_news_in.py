@@ -7,14 +7,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     depends_on = (
-        ('main', '0001_initial'),
+        ('main', '0031_move_news_out'),
     )
 
     def forwards(self, orm):
-        pass
+        db.send_create_signal('news', ['News'])
+        if not db.dry_run:
+            ct = orm['contenttypes.ContentType'].objects
+            ct.filter(app_label='main', model='news').update(app_label='news')
 
     def backwards(self, orm):
-        pass
+        if not db.dry_run:
+            ct = orm['contenttypes.ContentType'].objects
+            ct.filter(app_label='news', model='news').update(app_label='main')
 
     models = {
         'auth.group': {
