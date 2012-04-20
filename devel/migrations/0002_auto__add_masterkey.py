@@ -15,7 +15,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('owner', self.gf('django.db.models.fields.related.ForeignKey')(related_name='masterkey_owner', to=orm['auth.User'])),
             ('revoker', self.gf('django.db.models.fields.related.ForeignKey')(related_name='masterkey_revoker', to=orm['auth.User'])),
-            ('pgp_key', self.gf('main.fields.PGPKeyField')(max_length=40)),
+            ('pgp_key', self.gf('devel.fields.PGPKeyField')(max_length=40)),
             ('created', self.gf('django.db.models.fields.DateTimeField')()),
             ('revoked', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
@@ -67,7 +67,7 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'masterkey_owner'", 'to': "orm['auth.User']"}),
-            'pgp_key': ('main.fields.PGPKeyField', [], {'max_length': '40'}),
+            'pgp_key': ('devel.fields.PGPKeyField', [], {'max_length': '40'}),
             'revoked': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'revoker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'masterkey_revoker'", 'to': "orm['auth.User']"})
         }

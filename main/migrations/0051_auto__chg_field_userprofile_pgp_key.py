@@ -7,7 +7,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.alter_column('user_profiles', 'pgp_key', self.gf('main.models.PGPKeyField')(max_length=40, null=True))
+        db.alter_column('user_profiles', 'pgp_key', self.gf('devel.fields.PGPKeyField')(max_length=40, null=True))
 
 
     def backwards(self, orm):
@@ -146,7 +146,7 @@ class Migration(SchemaMigration):
             'notify': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'occupation': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'other_contact': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'pgp_key': ('main.models.PGPKeyField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
+            'pgp_key': ('devel.fields.PGPKeyField', [], {'max_length': '40', 'null': 'True', 'blank': 'True'}),
             'picture': ('django.db.models.fields.files.FileField', [], {'default': "'devs/silhouette.png'", 'max_length': '100'}),
             'public_email': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'roles': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),

@@ -422,12 +422,12 @@
                 ], 
                 [
                     "add_userprofile", 
-                    "main", 
+                    "devel", 
                     "userprofile"
                 ], 
                 [
                     "change_userprofile", 
-                    "main", 
+                    "devel", 
                     "userprofile"
                 ]
             ]

@@ -1,8 +1,8 @@
+from django.contrib.auth.models import User
 from django.test import TestCase
 
-from django.contrib.auth.models import User
-from devel.utils import UserFinder
-from main.models import UserProfile
+from .utils import UserFinder
+from .models import UserProfile
 
 class DevelTest(TestCase):
     def test_index(self):

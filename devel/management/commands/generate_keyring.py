@@ -13,8 +13,7 @@ import logging
 import subprocess
 import sys
 
-from devel.models import MasterKey
-from main.models import UserProfile
+from devel.models import MasterKey, UserProfile
 
 logging.basicConfig(
     level=logging.INFO,

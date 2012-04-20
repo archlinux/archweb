@@ -22,8 +22,9 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 from django.utils.http import http_date
 
+from .models import UserProfile
 from main.models import Package, PackageDepend, PackageFile, TodolistPkg
-from main.models import Arch, Repo, UserProfile
+from main.models import Arch, Repo
 from main.utils import utc_now
 from packages.models import PackageRelation
 from packages.utils import get_signoff_groups

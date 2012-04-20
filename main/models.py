@@ -2,68 +2,14 @@ from base64 import b64decode
 from datetime import datetime
 from itertools import groupby
 from pgpdump import BinaryData
-import pytz
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from .fields import PositiveBigIntegerField, PGPKeyField
-from .utils import cache_function, make_choice, set_created_field, utc_now
+from .fields import PositiveBigIntegerField
+from .utils import cache_function, set_created_field, utc_now
 
-
-class UserProfile(models.Model):
-    notify = models.BooleanField(
-        "Send notifications",
-        default=True,
-        help_text="When enabled, send user 'flag out-of-date' notifications")
-    time_zone = models.CharField(
-        max_length=100,
-        choices=make_choice(pytz.common_timezones),
-        default="UTC",
-        help_text="Used for developer clock page")
-    alias = models.CharField(
-        max_length=50,
-        help_text="Required field")
-    public_email = models.CharField(
-        max_length=50,
-        help_text="Required field")
-    other_contact = models.CharField(max_length=100, null=True, blank=True)
-    pgp_key = PGPKeyField(max_length=40, null=True, blank=True,
-        verbose_name="PGP key fingerprint",
-        help_text="consists of 40 hex digits; use `gpg --fingerprint`")
-    website = models.CharField(max_length=200, null=True, blank=True)
-    yob = models.IntegerField("Year of birth", null=True, blank=True)
-    location = models.CharField(max_length=50, null=True, blank=True)
-    languages = models.CharField(max_length=50, null=True, blank=True)
-    interests = models.CharField(max_length=255, null=True, blank=True)
-    occupation = models.CharField(max_length=50, null=True, blank=True)
-    roles = models.CharField(max_length=255, null=True, blank=True)
-    favorite_distros = models.CharField(max_length=255, null=True, blank=True)
-    picture = models.FileField(upload_to='devs', default='devs/silhouette.png',
-        help_text="Ideally 125px by 125px")
-    user = models.OneToOneField(User, related_name='userprofile')
-    allowed_repos = models.ManyToManyField('Repo', blank=True)
-    latin_name = models.CharField(max_length=255, null=True, blank=True,
-        help_text="Latin-form name; used only for non-Latin full names")
-
-    class Meta:
-        db_table = 'user_profiles'
-        verbose_name = 'Additional Profile Data'
-        verbose_name_plural = 'Additional Profile Data'
-
-    def get_absolute_url(self):
-        # TODO: this is disgusting. find a way to consolidate this logic with
-        # public.views.userlist among other places, and make some constants or
-        # something so we aren't using copies of string names everywhere.
-        group_names = self.user.groups.values_list('name', flat=True)
-        if "Developers" in group_names:
-            prefix = "developers"
-        elif "Trusted Users" in group_names:
-            prefix = "trustedusers"
-        else:
-            prefix = "fellows"
-        return '/%s/#%s' % (prefix, self.user.username)
 
 class TodolistManager(models.Manager):
     def incomplete(self):

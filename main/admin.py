@@ -1,7 +1,5 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin
-from main.models import Arch, Donor, Package, Repo, Todolist, UserProfile
+from main.models import Arch, Donor, Package, Repo, Todolist
 
 class DonorAdmin(admin.ModelAdmin):
     list_display = ('name', 'visible', 'created')
@@ -31,17 +29,7 @@ class TodolistAdmin(admin.ModelAdmin):
     list_display = ('name', 'date_added', 'creator', 'description')
     search_fields = ('name', 'description')
 
-admin.site.unregister(User)
-class UserProfileInline(admin.StackedInline):
-    model = UserProfile
 
-class UserProfileAdmin(UserAdmin):
-    inlines = [UserProfileInline]
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
-    list_filter = ('is_staff', 'is_superuser', 'is_active')
-
-
-admin.site.register(User, UserProfileAdmin)
 admin.site.register(Donor, DonorAdmin)
 
 admin.site.register(Package, PackageAdmin)

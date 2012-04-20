@@ -56,7 +56,7 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'masterkey_owner'", 'to': "orm['auth.User']"}),
-            'pgp_key': ('main.fields.PGPKeyField', [], {'max_length': '40'}),
+            'pgp_key': ('devel.fields.PGPKeyField', [], {'max_length': '40'}),
             'revoked': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'revoker': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'masterkey_revoker'", 'to': "orm['auth.User']"})
         },
@@ -65,8 +65,8 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateField', [], {}),
             'expires': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'signee': ('main.fields.PGPKeyField', [], {'max_length': '40'}),
-            'signer': ('main.fields.PGPKeyField', [], {'max_length': '40'}),
+            'signee': ('devel.fields.PGPKeyField', [], {'max_length': '40'}),
+            'signer': ('devel.fields.PGPKeyField', [], {'max_length': '40'}),
             'valid': ('django.db.models.fields.BooleanField', [], {'default': 'True'})
         }
     }
