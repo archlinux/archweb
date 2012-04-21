@@ -93,7 +93,7 @@ class Package(models.Model):
     compressed_size = PositiveBigIntegerField()
     installed_size = PositiveBigIntegerField()
     build_date = models.DateTimeField(null=True)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(db_index=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     packager_str = models.CharField(max_length=255)
     packager = models.ForeignKey(User, null=True,
