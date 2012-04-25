@@ -802,6 +802,16 @@ table td.country {
     white-space: normal;
 }
 
+form#list-generator div ul {
+    list-style: none;
+    display: inline;
+    padding-left: 0;
+}
+
+    form#list-generator div ul li {
+        display: inline;
+    }
+
 /* dev/TU biographies */
 div#arch-bio-toc {
     width: 75%;

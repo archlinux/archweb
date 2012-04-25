@@ -2,6 +2,7 @@ import datetime
 from operator import attrgetter, itemgetter
 
 from django import forms
+from django.forms.widgets import CheckboxSelectMultiple
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import Http404, HttpResponse
@@ -19,9 +20,11 @@ COUNTRY_LOOKUP = dict(COUNTRIES)
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
-    protocol = forms.MultipleChoiceField(required=False)
+    protocol = forms.MultipleChoiceField(required=False,
+            widget=CheckboxSelectMultiple)
     ip_version = forms.MultipleChoiceField(required=False,
-            label="IP version", choices=(('4','IPv4'), ('6','IPv6')))
+            label="IP version", choices=(('4','IPv4'), ('6','IPv6')),
+            widget=CheckboxSelectMultiple)
     use_mirror_status = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
@@ -47,6 +50,15 @@ class MirrorlistForm(forms.Form):
         countries = [(code, COUNTRY_LOOKUP[code]) for code in country_codes]
         return sorted(countries, key=itemgetter(1))
 
+    def as_div(self):
+        "Returns this form rendered as HTML <divs>s."
+        return self._html_output(
+            normal_row = u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
+            error_row = u'%s',
+            row_ender = '</div>',
+            help_text_html = u' <span class="helptext">%s</span>',
+            errors_on_separate_row = True)
+
 
 @csrf_exempt
 def generate_mirrorlist(request):
@@ -63,7 +75,7 @@ def generate_mirrorlist(request):
     else:
         form = MirrorlistForm()
 
-    return direct_to_template(request, 'mirrors/index.html',
+    return direct_to_template(request, 'mirrors/mirrorlist_generate.html',
             {'mirrorlist_form': form})
 
 
