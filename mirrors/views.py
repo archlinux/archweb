@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta
 from operator import attrgetter, itemgetter
 
 from django import forms
@@ -152,7 +152,7 @@ def mirror_details(request, name):
 
 
 def status(request):
-    bad_timedelta = datetime.timedelta(days=3)
+    bad_timedelta = timedelta(days=3)
     status_info = get_mirror_statuses()
 
     urls = status_info['urls']
@@ -167,8 +167,8 @@ def status(request):
 
     context = status_info.copy()
     context.update({
-        'good_urls': good_urls,
-        'bad_urls': bad_urls,
+        'good_urls': sorted(good_urls, key=attrgetter('score')),
+        'bad_urls': sorted(bad_urls, key=lambda u: u.delay or timedelta.max),
         'error_logs': get_mirror_errors(),
     })
     return direct_to_template(request, 'mirrors/status.html', context)
@@ -181,7 +181,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             'delay', 'duration_avg', 'duration_stddev', 'score']
 
     def default(self, obj):
-        if isinstance(obj, datetime.timedelta):
+        if isinstance(obj, timedelta):
             # always returned as integer seconds
             return obj.days * 24 * 3600 + obj.seconds
         if hasattr(obj, '__iter__'):

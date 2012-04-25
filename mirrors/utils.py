@@ -43,8 +43,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
             duration_avg=Avg('logs__duration'),
-            duration_stddev=StdDev('logs__duration')
-            ).order_by('-last_sync', '-duration_avg')
+            duration_stddev=StdDev('logs__duration'))
 
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
@@ -112,7 +111,7 @@ def get_mirror_url_for_download(cutoff=default_cutoff):
             Max('check_time'), Max('last_sync'))
     if status_data['check_time__max'] is not None:
         min_check_time = status_data['check_time__max'] - timedelta(minutes=5)
-        min_sync_time = status_data['last_sync__max'] - timedelta(minutes=30)
+        min_sync_time = status_data['last_sync__max'] - timedelta(minutes=20)
         best_logs = MirrorLog.objects.filter(is_success=True,
                 check_time__gte=min_check_time, last_sync__gte=min_sync_time,
                 url__mirror__public=True, url__mirror__active=True,
