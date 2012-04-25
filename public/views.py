@@ -1,11 +1,11 @@
 from datetime import datetime
+from operator import attrgetter
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.http import Http404
 from django.views.decorators.cache import cache_control
-from django.views.generic import list_detail
 from django.views.generic.simple import direct_to_template
 
 from devel.models import MasterKey, PGPSignature
@@ -66,19 +66,17 @@ def donate(request):
 
 @cache_control(max_age=300)
 def download(request):
-    qset = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
-            protocol__is_download=True,
-            mirror__public=True, mirror__active=True, mirror__isos=True
-    )
+    mirror_urls = MirrorUrl.objects.select_related('mirror').filter(
+            protocol__default=True,
+            mirror__public=True, mirror__active=True, mirror__isos=True)
+    sort_by = attrgetter('real_country.name', 'mirror.name')
+    mirror_urls = sorted(mirror_urls, key=sort_by)
     context = {
         'releng_iso_url': settings.ISO_LIST_URL,
         'releng_pxeboot_url': settings.PXEBOOT_URL,
+        'mirror_urls': mirror_urls,
     }
-    return list_detail.object_list(request, 
-            qset.order_by('mirror__country_old', 'mirror__name', 'protocol'),
-            template_name="public/download.html",
-            template_object_name="mirror_url",
-            extra_context=context)
+    return direct_to_template(request, 'public/download.html', context)
 
 @cache_control(max_age=300)
 def feeds(request):

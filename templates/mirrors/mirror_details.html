@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <th>Country:</th>
-            <td>{{ mirror.country_old }}</td>
+            <td>{{ mirror.country.name|default:'Worldwide' }}</td>
         </tr>
         <tr>
             <th>Has ISOs:</th>

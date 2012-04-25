@@ -1,3 +1,6 @@
+import datetime
+from operator import attrgetter, itemgetter
+
 from django import forms
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
@@ -6,12 +9,13 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 from django.utils import simplejson
+from django_countries.countries import COUNTRIES
 
-from main.utils import make_choice
 from .models import Mirror, MirrorUrl, MirrorProtocol
 from .utils import get_mirror_statuses, get_mirror_errors
 
-import datetime
+COUNTRY_LOOKUP = dict(COUNTRIES)
+
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
@@ -22,17 +26,27 @@ class MirrorlistForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
-        countries = Mirror.objects.filter(active=True).values_list(
-                'country_old', flat=True).distinct().order_by('country_old')
-        self.fields['country'].choices = [('all','All')] + make_choice(
-                countries)
-        self.fields['country'].initial = ['all']
-        protos = make_choice(
-                MirrorProtocol.objects.filter(is_download=True))
+        fields = self.fields
+        fields['country'].choices = [('all','All')] + self.get_countries()
+        fields['country'].initial = ['all']
+        protos = [(p.protocol, p.protocol) for p in
+                MirrorProtocol.objects.filter(is_download=True)]
         initial = MirrorProtocol.objects.filter(is_download=True, default=True)
-        self.fields['protocol'].choices = protos
-        self.fields['protocol'].initial = [p.protocol for p in initial]
-        self.fields['ip_version'].initial = ['4']
+        fields['protocol'].choices = protos
+        fields['protocol'].initial = [p.protocol for p in initial]
+        fields['ip_version'].initial = ['4']
+
+    def get_countries(self):
+        country_codes = set()
+        country_codes.update(Mirror.objects.filter(active=True).exclude(
+                country='').values_list(
+                'country', flat=True).order_by().distinct())
+        country_codes.update(MirrorUrl.objects.filter(
+                mirror__active=True).exclude(country='').values_list(
+                'country', flat=True).order_by().distinct())
+        countries = [(code, COUNTRY_LOOKUP[code]) for code in country_codes]
+        return sorted(countries, key=itemgetter(1))
+
 
 @csrf_exempt
 def generate_mirrorlist(request):
@@ -52,6 +66,7 @@ def generate_mirrorlist(request):
     return direct_to_template(request, 'mirrors/index.html',
             {'mirrorlist_form': form})
 
+
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
         ipv4_supported=True, ipv6_supported=True):
     if not protocols:
@@ -62,8 +77,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             mirror__public=True, mirror__active=True,
     )
     if countries and 'all' not in countries:
-        qset = qset.filter(Q(country_old__in=countries) |
-                Q(mirror__country_old__in=countries))
+        qset = qset.filter(Q(country__in=countries) |
+                Q(mirror__country__in=countries))
 
     ip_version = Q()
     if ipv4_supported:
@@ -74,7 +89,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
 
     if not use_status:
         urls = qset.order_by('mirror__name', 'url')
-        urls = sorted(urls, key=lambda x: x.real_country)
+        urls = sorted(urls, key=attrgetter('real_country'))
         template = 'mirrors/mirrorlist.txt'
     else:
         status_info = get_mirror_statuses()
@@ -96,12 +111,14 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             },
             mimetype='text/plain')
 
+
 def mirrors(request):
-    mirror_list = Mirror.objects.select_related().order_by('tier', 'country_old')
+    mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
     return direct_to_template(request, 'mirrors/mirrors.html',
             {'mirror_list': mirror_list})
+
 
 def mirror_details(request, name):
     mirror = get_object_or_404(Mirror, name=name)
@@ -116,10 +133,11 @@ def mirror_details(request, name):
     # get each item from checked_urls and supplement with anything in all_urls
     # if it wasn't there
     all_urls = set(checked_urls).union(all_urls)
-    all_urls = sorted(all_urls, key=lambda x: x.url)
+    all_urls = sorted(all_urls, key=attrgetter('url'))
 
     return direct_to_template(request, 'mirrors/mirror_details.html',
             {'mirror': mirror, 'urls': all_urls})
+
 
 def status(request):
     bad_timedelta = datetime.timedelta(days=3)
@@ -143,6 +161,7 @@ def status(request):
     })
     return direct_to_template(request, 'mirrors/status.html', context)
 
+
 class MirrorStatusJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle datetime.timedelta and MirrorUrl
     serialization. The base class takes care of datetime.datetime types.'''
@@ -159,17 +178,20 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, MirrorUrl):
             data = dict((attr, getattr(obj, attr))
                     for attr in self.url_attributes)
-            # separate because it isn't on the URL directly
-            data['country'] = obj.real_country
+            # get any override on the country attribute first
+            country = obj.real_country
+            data['country'] = unicode(country.name)
+            data['country_code'] = country.code
             return data
         if isinstance(obj, MirrorProtocol):
             return unicode(obj)
         return super(MirrorStatusJSONEncoder, self).default(obj)
 
+
 def status_json(request):
     status_info = get_mirror_statuses()
     data = status_info.copy()
-    data['version'] = 2
+    data['version'] = 3
     to_json = simplejson.dumps(data, ensure_ascii=False,
             cls=MirrorStatusJSONEncoder)
     response = HttpResponse(to_json, mimetype='application/json')

@@ -588,25 +588,6 @@ table#download-torrents .cpu-arch {
     text-align: center;
 }
 
-table#download-mirrors {
-    width: auto;
-    margin-bottom: 1em;
-}
-
-    table#download-mirrors td.mirror-country {
-        padding-top: 1em;
-    }
-
-    table#download-mirrors td.mirror-server {
-        padding-right: 1em;
-    }
-
-    table#download-mirrors a {
-        display: block;
-        float: right;
-        width: 4em;
-    }
-
 /* pkglists/devlists */
 table.results {
     font-size: 0.846em;

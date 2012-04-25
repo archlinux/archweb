@@ -77,7 +77,7 @@
                     <a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-dual.iso.torrent" 
                     title="Download for both architectures">Download</a>
                 </td><td class="wrap">
-                    Downloads and installs packages versions via FTP for absolute freshness.
+                    Downloads and installs packages versions via mirrors for absolute freshness.
                 </td>
             </tr><tr>
                 <td>
@@ -131,10 +131,10 @@
             title="Release Engineering ISO feedback">Feedback</a></li>
     </ul>
 
-    <h3>HTTP/FTP Direct Downloads</h3>
+    <h3>HTTP Direct Downloads</h3>
 
     <p>In addition to the BitTorrent links above, install images can also be
-    downloaded via HTTP or FTP from the mirror sites listed below. Please
+    downloaded via HTTP from the mirror sites listed below. Please
     ensure the download image matches the checksum from the md5sums.txt or
     sha1sums.txt file in the same directory as the image.</p>
 
@@ -150,30 +150,19 @@
     </ul>
 
     {% cache 600 download-mirrors %}
-    <table id="download-mirrors">
-        <thead>
-            <tr>
-                <th><h4>Server Location</h4></th>
-                <th><h4>Download</h4></th>
-            </tr>
-        </thead> 
-        <tbody>
-            <tr><td colspan="2">
-                    {% for mirror_url in mirror_url_list %}
-                    {% ifchanged mirror_url.mirror.country_old %}
-            </td></tr>
-            <tr><td class="mirror-country" colspan="2"><strong>{{mirror_url.mirror.country_old}}</strong>
-                    {% endifchanged %}
-                    {% ifchanged mirror_url.mirror.name %}
-            </td></tr>
-            <tr><td class="mirror-server">{{mirror_url.mirror.name}}</td><td>
-                    {% endifchanged %}
-                    <a href="{{mirror_url.url}}iso/{{ version }}/"
-                        title="Download from {{mirror_url.url}}">{{mirror_url.protocol.protocol|upper}}</a>
-                    {% endfor %}
-            </td></tr>
-        </tbody>
-    </table>
+    <div id="download-mirrors">
+        {% regroup mirror_urls by real_country as grouped_urls %}
+        {% for country in grouped_urls %}
+        {% if country.grouper %}<h5><img src="{{ country.grouper.flag }}"/> {{ country.grouper.name }}</h5>
+        {% else %}<h5>Worldwide</h5>{% endif %}
+        <ul>
+            {% for mirror_url in country.list %}
+            <li><a href="{{ mirror_url.url }}iso/{{ version }}/"
+                title="Download from {{ mirror_url.url }}iso/{{ version }}/">{{ mirror_url.mirror.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </div>
     {% endcache %}
     {% endwith %}
 
