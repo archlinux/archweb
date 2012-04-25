@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <th>Country:</th>
-            <td>{{ mirror.country.name|default:'Worldwide' }}</td>
+            <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}"/> {% endif %}{{ mirror.country.name|default:'Worldwide' }}</td>
         </tr>
         <tr>
             <th>Has ISOs:</th>
