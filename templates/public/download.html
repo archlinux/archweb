@@ -160,9 +160,9 @@
         <tbody>
             <tr><td colspan="2">
                     {% for mirror_url in mirror_url_list %}
-                    {% ifchanged mirror_url.mirror.country %}
+                    {% ifchanged mirror_url.mirror.country_old %}
             </td></tr>
-            <tr><td class="mirror-country" colspan="2"><strong>{{mirror_url.mirror.country}}</strong>
+            <tr><td class="mirror-country" colspan="2"><strong>{{mirror_url.mirror.country_old}}</strong>
                     {% endifchanged %}
                     {% ifchanged mirror_url.mirror.name %}
             </td></tr>

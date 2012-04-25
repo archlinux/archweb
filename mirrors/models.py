@@ -24,7 +24,7 @@ class Mirror(models.Model):
     name = models.CharField(max_length=255, unique=True)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
     upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
-    country = models.CharField(max_length=255, db_index=True)
+    country_old = models.CharField(max_length=255, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
@@ -34,7 +34,7 @@ class Mirror(models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
-        ordering = ('country', 'name')
+        ordering = ('country_old', 'name')
 
     def __unicode__(self):
         return self.name
@@ -68,7 +68,7 @@ class MirrorUrl(models.Model):
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls")
-    country = NullCharField(max_length=255, null=True, blank=True,
+    country_old = NullCharField(max_length=255, null=True, blank=True,
             db_index=True)
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
@@ -87,7 +87,7 @@ class MirrorUrl(models.Model):
 
     @property
     def real_country(self):
-        return self.country or self.mirror.country
+        return self.country_old or self.mirror.country_old
 
     def clean(self):
         try:

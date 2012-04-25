@@ -75,7 +75,7 @@ def download(request):
         'releng_pxeboot_url': settings.PXEBOOT_URL,
     }
     return list_detail.object_list(request, 
-            qset.order_by('mirror__country', 'mirror__name', 'protocol'),
+            qset.order_by('mirror__country_old', 'mirror__name', 'protocol'),
             template_name="public/download.html",
             template_object_name="mirror_url",
             extra_context=context)

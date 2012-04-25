@@ -89,13 +89,13 @@ def get_mirror_errors(cutoff=default_cutoff):
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(
-            'url__url', 'url__country', 'url__protocol__protocol',
-            'url__mirror__country', 'error').annotate(
+            'url__url', 'url__country_old', 'url__protocol__protocol',
+            'url__mirror__country_old', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
     errors = list(errors)
     for err in errors:
-        err['country'] = err['url__country'] or err['url__mirror__country']
+        err['country'] = err['url__country_old'] or err['url__mirror__country_old']
     return errors
 
 
@@ -123,7 +123,7 @@ def get_mirror_url_for_download(cutoff=default_cutoff):
             mirror__public=True, mirror__active=True,
             protocol__protocol__iexact='HTTP')
     # look first for an 'Any' URL, then fall back to any HTTP URL
-    filtered_urls = mirror_urls.filter(mirror__country='Any')[:1]
+    filtered_urls = mirror_urls.filter(mirror__country_old='Any')[:1]
     if not filtered_urls:
         filtered_urls = mirror_urls[:1]
     if not filtered_urls:

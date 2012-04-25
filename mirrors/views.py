@@ -23,7 +23,7 @@ class MirrorlistForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
         countries = Mirror.objects.filter(active=True).values_list(
-                'country', flat=True).distinct().order_by('country')
+                'country_old', flat=True).distinct().order_by('country_old')
         self.fields['country'].choices = [('all','All')] + make_choice(
                 countries)
         self.fields['country'].initial = ['all']
@@ -62,8 +62,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             mirror__public=True, mirror__active=True,
     )
     if countries and 'all' not in countries:
-        qset = qset.filter(Q(country__in=countries) |
-                Q(mirror__country__in=countries))
+        qset = qset.filter(Q(country_old__in=countries) |
+                Q(mirror__country_old__in=countries))
 
     ip_version = Q()
     if ipv4_supported:
@@ -97,7 +97,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             mimetype='text/plain')
 
 def mirrors(request):
-    mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
+    mirror_list = Mirror.objects.select_related().order_by('tier', 'country_old')
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
     return direct_to_template(request, 'mirrors/mirrors.html',

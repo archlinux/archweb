@@ -62,9 +62,9 @@ class MirrorAdminForm(forms.ModelForm):
 
 class MirrorAdmin(admin.ModelAdmin):
     form = MirrorAdminForm
-    list_display = ('name', 'tier', 'country', 'active', 'public',
+    list_display = ('name', 'tier', 'country_old', 'active', 'public',
             'isos', 'admin_email')
-    list_filter = ('tier', 'active', 'public', 'country') 
+    list_filter = ('tier', 'active', 'public', 'country_old')
     search_fields = ('name',)
     inlines = [
             MirrorUrlInlineAdmin,
