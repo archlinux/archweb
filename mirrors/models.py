@@ -3,6 +3,7 @@ from urlparse import urlparse
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from django_countries import CountryField
 
 class NullCharField(models.CharField):
     description = "String (up to %(max_length)s), NULL if value is empty"
@@ -25,6 +26,7 @@ class Mirror(models.Model):
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
     upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
     country_old = models.CharField(max_length=255, db_index=True)
+    country = CountryField(blank=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
@@ -34,7 +36,7 @@ class Mirror(models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
-        ordering = ('country_old', 'name')
+        ordering = ('country', 'name')
 
     def __unicode__(self):
         return self.name
@@ -70,6 +72,7 @@ class MirrorUrl(models.Model):
     mirror = models.ForeignKey(Mirror, related_name="urls")
     country_old = NullCharField(max_length=255, null=True, blank=True,
             db_index=True)
+    country = CountryField(blank=True)
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
     has_ipv6 = models.BooleanField("IPv6 capable", default=False,

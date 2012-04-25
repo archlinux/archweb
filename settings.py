@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.staticfiles',
     'south',
+    'django_countries',
 
     'main',
     'mirrors',

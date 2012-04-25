@@ -1,5 +1,6 @@
 Django==1.4
 Markdown==2.1.1
 South==0.7.4
+django-countries==1.2
 pgpdump==1.1
 pytz>=2012b
