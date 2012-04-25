@@ -18,10 +18,6 @@
     <ul>
         <li><em>Mirror URL:</em> Mirrors are checked on a per-URL basis. If
         both FTP and HTTP access are provided, both will be listed here.</li>
-        <li><em>Last Sync:</em> The timestamp retrieved from the
-        <tt>lastsync</tt> file on the mirror. If this file could not be
-        retrieved or contained data we didn't recognize, this column will show
-        'unknown'.</li>
         <li><em>Completion %:</em> The number of mirror checks that have
         successfully connected and disconnected from the given URL. If this is
         below 100%, the mirror may be unreliable.</li>
@@ -92,8 +88,8 @@
             {% spaceless %}<tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ log.url__url }}</td>
                 <td>{{ log.url__protocol__protocol }}</td>
-                <td>{% if log.country %}<img src="{{ log.country.flag }}"/> {% endif %}{{ log.country.name }}</td>
-                <td>{{ log.error }}</td>
+                <td class="country">{% if log.country %}<img src="{{ log.country.flag }}"/> {% endif %}{{ log.country.name }}</td>
+                <td class="wrap">{{ log.error }}</td>
                 <td>{{ log.last_occurred|date:'Y-m-d H:i' }}</td>
                 <td>{{ log.error_count }}</td>
             </tr>
@@ -107,11 +103,11 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    var headers = { 5: { sorter: 'duration' }, 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } };
+    var headers = { 4: { sorter: 'duration' }, 5: { sorter: 'mostlydigit' }, 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' } };
     $("#outofsync_mirrors:has(tbody tr)").tablesorter(
-        {widgets: ['zebra'], sortList: [[3,1]], headers: headers });
+        {widgets: ['zebra'], sortList: [[4,0]], headers: headers });
     $("#successful_mirrors:has(tbody tr)").tablesorter(
-        {widgets: ['zebra'], sortList: [[8,0]], headers: headers });
+        {widgets: ['zebra'], sortList: [[7,0]], headers: headers });
     $("#errorlog_mirrors:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[4,1], [5,1]]});
 });
