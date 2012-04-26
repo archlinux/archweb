@@ -51,7 +51,7 @@
                     <td>{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
                 </tr><tr>
                     <th>Location:</th>
-                    <td>{{ prof.location }}</td>
+                    <td>{% if dev.userprofile.country %}<img src="{{ dev.userprofile.country.flag }}" alt="{{ dev.userprofile.country.name }}"/> {% endif %}{{ prof.location }}</td>
                 </tr><tr>
                     <th>Languages:</th>
                     <td>{{ prof.languages }}</td>
