@@ -823,32 +823,45 @@ div#arch-bio-toc {
         white-space: nowrap;
     }
 
-table.arch-bio-entry td.pic {
-    vertical-align: top;
-    padding-right: 15px;
-    padding-top: 10px;
+table.arch-bio-entry {
+    width: 75%;
+    min-width: 640px;
+    margin: 0 auto;
 }
 
-    table.arch-bio-entry td.pic img {
-        padding: 4px;
-        border: 1px solid #ccc;
-    }
-
-table.arch-bio-entry table.bio {
-    margin-bottom: 2em;
-}
-
-    table.arch-bio-entry table.bio th {
-        text-align: left;
-        padding-right: 0.5em;
+    table.arch-bio-entry td.pic {
         vertical-align: top;
-        white-space: nowrap;
+        padding-right: 15px;
+        padding-top: 2.25em;
     }
 
-    table.arch-bio-entry table.bio td {
-        width: 100%;
-        padding-bottom: 0.25em;
+        table.arch-bio-entry td.pic img {
+            padding: 4px;
+            border: 1px solid #ccc;
+        }
+
+    table.arch-bio-entry td h3 {
+        border-bottom: 1px dotted #ccc;
+        margin-bottom: 0.5em;
     }
+
+    table.arch-bio-entry table.bio {
+        margin-bottom: 2em;
+    }
+
+        table.arch-bio-entry table.bio th {
+            color: #666;
+            font-weight: normal;
+            text-align: right;
+            padding-right: 0.5em;
+            vertical-align: top;
+            white-space: nowrap;
+        }
+
+        table.arch-bio-entry table.bio td {
+            width: 100%;
+            padding-bottom: 0.25em;
+        }
 
 /* dev: login/out */
 table#dev-login {

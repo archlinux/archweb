@@ -18,11 +18,9 @@
         </td>
         <td>
             <a name="{{ dev.username }}"></a>
+            <h3>{{ dev.get_full_name }}{% if prof.latin_name %} ({{ prof.latin_name}}){% endif %}</h3>
             <table class="bio bio-{{ dev.username }}">
                 <tr>
-                    <th>Name:</th>
-                    <td>{{ dev.get_full_name }}{% if prof.latin_name %} ({{ prof.latin_name}}){% endif %}</td>
-                </tr><tr>
                     <th>Alias:</th>
                     <td>{{ prof.alias }}</td>
                 </tr><tr>
