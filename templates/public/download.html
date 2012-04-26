@@ -153,7 +153,7 @@
     <div id="download-mirrors">
         {% regroup mirror_urls by real_country as grouped_urls %}
         {% for country in grouped_urls %}
-        {% if country.grouper %}<h5><img src="{{ country.grouper.flag }}"/> {{ country.grouper.name }}</h5>
+        {% if country.grouper %}<h5><img src="{{ country.grouper.flag }}" alt=""/> {{ country.grouper.name }}</h5>
         {% else %}<h5>Worldwide</h5>{% endif %}
         <ul>
             {% for mirror_url in country.list %}

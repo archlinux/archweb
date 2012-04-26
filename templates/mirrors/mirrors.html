@@ -27,7 +27,7 @@
                 <td><a href="{{ mirror.get_absolute_url }}"
                         title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
                 <td>{{ mirror.get_tier_display }}</td>
-                <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}"/> {% endif %}{{ mirror.country.name }}</td>
+                <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}" alt=""/> {% endif %}{{ mirror.country.name }}</td>
                 <td>{{ mirror.isos|yesno|capfirst }}</td>
                 <td class="wrap">{{ mirror.supported_protocols|join:", " }}</td>
                 {% if user.is_authenticated %}
