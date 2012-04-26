@@ -1,34 +1,18 @@
-
+# encoding: utf-8
 from south.db import db
+from south.v2 import SchemaMigration
 from django.db import models
-from main.models import *
 
-class Migration:
+class Migration(SchemaMigration):
     
     def forwards(self, orm):
-        
-        # Changing field 'Package.maintainer'
-        # (to signature: django.db.models.fields.related.ForeignKey(blank=True, null=True, to=orm['auth.User']))
         db.alter_column('packages', 'maintainer_id', orm['main.package:maintainer'])
-        
-        # Changing field 'Package.pkgname'
-        # (to signature: django.db.models.fields.CharField(max_length=255, db_index=True))
         db.alter_column('packages', 'pkgname', orm['main.package:pkgname'])
-        
-        db.create_index('packages', ['pkgname'])
     
     
     def backwards(self, orm):
-        
-        # Changing field 'Package.maintainer'
-        # (to signature: django.db.models.fields.related.ForeignKey(null=True, to=orm['auth.User']))
         db.alter_column('packages', 'maintainer_id', orm['main.package:maintainer'])
-        
-        # Changing field 'Package.pkgname'
-        # (to signature: django.db.models.fields.CharField(max_length=255))
         db.alter_column('packages', 'pkgname', orm['main.package:pkgname'])
-        
-        db.delete_index('packages', ['pkgname'])
     
     
     models = {
