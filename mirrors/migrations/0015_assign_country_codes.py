@@ -79,7 +79,7 @@ class Migration(DataMigration):
         'mirrors.mirrorurl': {
             'Meta': {'object_name': 'MirrorUrl'},
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2', 'blank': 'True'}),
-            'country_old': ('mirrors.models.NullCharField', [], {'db_index': 'True', 'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'country_old': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'has_ipv4': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'has_ipv6': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

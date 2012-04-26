@@ -19,7 +19,7 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.CharField')(default='Any', max_length=255, db_index=True),
                       keep_default=False)
         db.add_column('mirrors_mirrorurl', 'country_old',
-                      self.gf('mirrors.models.NullCharField')(blank=True, max_length=255, null=True, db_index=True),
+                      self.gf('django.db.models.fields.CharField')(blank=True, max_length=255, null=True, db_index=True),
                       keep_default=False)
 
     models = {

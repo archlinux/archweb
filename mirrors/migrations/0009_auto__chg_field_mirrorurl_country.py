@@ -7,11 +7,11 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.alter_column('mirrors_mirrorurl', 'country', self.gf('mirrors.models.NullCharField')(max_length=255, null=True))
+        pass
 
 
     def backwards(self, orm):
-        db.alter_column('mirrors_mirrorurl', 'country', self.gf('django.db.models.fields.CharField')(max_length=255, null=True))
+        pass
 
     models = {
         'mirrors.mirror': {
@@ -53,7 +53,7 @@ class Migration(SchemaMigration):
         },
         'mirrors.mirrorurl': {
             'Meta': {'object_name': 'MirrorUrl'},
-            'country': ('mirrors.models.NullCharField', [], {'db_index': 'True', 'max_length': '255', 'null': 'True', 'blank': 'True'}),
+            'country': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'has_ipv4': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'has_ipv6': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

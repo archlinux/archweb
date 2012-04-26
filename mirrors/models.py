@@ -5,14 +5,6 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django_countries import CountryField
 
-class NullCharField(models.CharField):
-    description = "String (up to %(max_length)s), NULL if value is empty"
-    _south_introspects = True
-
-    def get_prep_value(self, value):
-        if value == '':
-            return None
-        return self.to_python(value)
 
 TIER_CHOICES = (
     (0, 'Tier 0'),
@@ -20,6 +12,7 @@ TIER_CHOICES = (
     (2, 'Tier 2'),
     (-1, 'Untiered'),
 )
+
 
 class Mirror(models.Model):
     name = models.CharField(max_length=255, unique=True)
