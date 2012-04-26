@@ -5,12 +5,12 @@
 {% block content %}
 <div id="pkgdetails" class="box">
 
-    <h2>Package File List: {{ pkg.pkgname }} {{ pkg.full_version }}</h2>
-    <div id="metadata">
-        <p><a href="{{ pkg.get_absolute_url }}">Back to Package</a></p>
+    <h2>{{ pkg.pkgname }} {{ pkg.full_version }} File List</h2>
+    <div id="metadata"><div id="pkgfiles">
         <p>Package has {{ files_count }} file{{ files_count|pluralize }} and {{ dir_count }} director{{ dir_count|pluralize:"y,ies" }}.</p>
+        <p><a href="{{ pkg.get_absolute_url }}">Back to Package</a></p>
         {% include "packages/files_list.html" %}
-    </div>
+    </div></div>
 
 </div>
 {% endblock %}
