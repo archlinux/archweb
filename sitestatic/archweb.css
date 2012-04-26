@@ -122,6 +122,16 @@ a {
         color: #e90;
     }
 
+/* special anchor elements */
+a.headerlink {
+    visibility: hidden;
+    padding-left: 0.5em;
+}
+
+h3:hover > a.headerlink {
+    visibility: visible;
+}
+
 /* headings */
 h2 {
     font-size: 1.5em;
