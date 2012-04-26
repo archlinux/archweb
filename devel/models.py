@@ -3,6 +3,7 @@ import pytz
 
 from django.db import models
 from django.contrib.auth.models import User
+from django_countries import CountryField
 
 from .fields import PGPKeyField
 from main.utils import make_choice
@@ -30,6 +31,7 @@ class UserProfile(models.Model):
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     website = models.CharField(max_length=200, null=True, blank=True)
     yob = models.IntegerField("Year of birth", null=True, blank=True)
+    country = CountryField(blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)
     languages = models.CharField(max_length=50, null=True, blank=True)
     interests = models.CharField(max_length=255, null=True, blank=True)
