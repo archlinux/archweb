@@ -35,19 +35,23 @@
     <table class="pretty2">
         <thead>
             <tr>
-                <th>Architecture</th>
-                <th>All Repos</th>
-                {% for repo in repos %}
-                <th>{{ repo }}</th>
+                <th></th>
+                {% for arch in arches %}
+                <th>{{ arch }}</th>
                 {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for arch in arches %}
             <tr>
-                <td><strong>{{ arch }}</strong></td>
+                <td><strong>All Repos</strong></td>
+                {% for arch in arches %}
                 <td><a href="/feeds/packages/{{ arch }}/" class="rss">Feed</a></td>
-                {% for repo in repos %}
+                {% endfor %}
+            </tr>
+            {% for repo in repos %}
+            <tr>
+                <td><strong>{{ repo }}</strong></td>
+                {% for arch in arches %}
                 <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
                 {% endfor %}
             </tr>
