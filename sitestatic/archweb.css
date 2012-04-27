@@ -1046,11 +1046,3 @@ ul.signoff-list {
     width: 100%;
     height: 100%;
 }
-
-    #visualize-keys circle {
-        stroke-width: 1.5px;
-    }
-
-    #visualize-keys line {
-        stroke: #888;
-    }

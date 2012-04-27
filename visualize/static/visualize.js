@@ -65,7 +65,9 @@ function packages_treemap(chart_id, orderings, default_order) {
                 .style("display", function(d) { return d.children ? "none" : null; })
                 .html(cell_html);
             nodes.transition().duration(1500)
-                .style("background-color", function(d) { return d.children ? null : color(d[order.color_attr]); })
+                .style("background-color", function(d) {
+                    return d.children ? null : color(d[order.color_attr]);
+                })
                 .call(cell);
             nodes.exit().transition().duration(1500).remove();
         });
@@ -133,9 +135,9 @@ function developer_keys(chart_id, data_url) {
         r = 10;
 
     var force = d3.layout.force()
+        .friction(0.5)
         .gravity(0.1)
-        .charge(-200)
-        .linkStrength(0.2)
+        .charge(-500)
         .size([jq_div.width(), jq_div.height()]);
 
     var svg = d3.select(chart_id)
@@ -162,10 +164,13 @@ function developer_keys(chart_id, data_url) {
             return d.source >= 0 && d.target >= 0;
         });
 
-        jQuery.map(json.nodes, function(d, i) { d.master_sigs = 0; });
+        jQuery.map(json.nodes, function(d, i) { d.master_sigs = 0; d.other_sigs = 0; });
         jQuery.map(edges, function(d, i) {
+            /* only the target gets credit in either case, as it is their key that was signed */
             if (json.nodes[d.source].group === "master") {
                 json.nodes[d.target].master_sigs += 1;
+            } else {
+                json.nodes[d.target].other_sigs += 1;
             }
         });
         jQuery.map(json.nodes, function(d, i) {
@@ -179,7 +184,11 @@ function developer_keys(chart_id, data_url) {
         var link = svg.selectAll("line")
             .data(edges)
             .enter()
-            .append("line");
+            .append("line")
+            .style("stroke", "#888");
+
+        /* anyone with more than 7 - 1 == 6 signatures gets the top value */
+        var stroke_color_scale = d3.scale.log().domain([1, 7]).range(["white", "green"]).clamp(true);
 
         var node = svg.selectAll("circle")
             .data(json.nodes)
@@ -201,21 +210,47 @@ function developer_keys(chart_id, data_url) {
                 if (d.approved === null) {
                     return d3.rgb(fill(d.group)).darker();
                 } else if (d.approved) {
-                    return "green";
+                    /* add 1 so we don't blow up the logarithm-based scale */
+                    return stroke_color_scale(d.other_sigs + 1);
                 } else {
                     return "red";
                 }
             })
+            .style("stroke-width", "1.5px")
             .call(force.drag);
         node.append("title").text(function(d) { return d.name; });
+
+        var nodeover = function(d, i) {
+            d3.select(this).transition().duration(500).style("stroke-width", "3px");
+            link.filter(function(d_link, i) {
+                return d_link.source === d || d_link.target === d;
+            }).transition().duration(500).style("stroke", "#800");
+        };
+        var nodeout = function(d, i) {
+            d3.select(this).transition().duration(500).style("stroke-width", "1.5px");
+            link.transition().duration(500).style("stroke", "#888");
+        };
+
+        node.on("mouseover", nodeover)
+            .on("mouseout", nodeout);
 
         var distance = function(d, i) {
             /* place a long line between all master keys and other keys.
              * however, other connected clusters should be close together. */
-            if (d.source.group === "master" || d.target.group === "master") {
+            if (d.source.group === "master" || d.target.group === "master" ||
+                    d.source.group === "cacert" || d.target.group === "cacert") {
                 return 200;
             } else {
-                return 50;
+                return 40;
+            }
+        };
+
+        var strength = function(d, i) {
+            if (d.source.group === "master" || d.target.group === "master" ||
+                    d.source.group === "cacert" || d.target.group === "cacert") {
+                return 0.2;
+            } else {
+                return 0.8;
             }
         };
 
@@ -235,6 +270,7 @@ function developer_keys(chart_id, data_url) {
         force.nodes(json.nodes)
             .links(edges)
             .linkDistance(distance)
+            .linkStrength(strength)
             .on("tick", tick)
             .start();
     });
