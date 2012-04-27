@@ -13,7 +13,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
@@ -54,6 +54,11 @@ def index(request):
     signoffs = sorted(get_signoff_groups(user=request.user),
             key=operator.attrgetter('pkgbase'))
 
+    arches = Arch.objects.all().annotate(
+            total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
+    repos = Repo.objects.all().annotate(
+            total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
+
     maintainers = get_annotated_maintainers()
 
     maintained = PackageRelation.objects.filter(
@@ -70,12 +75,12 @@ def index(request):
 
     page_dict = {
             'todos': todolists,
-            'repos': Repo.objects.all(),
-            'arches': Arch.objects.all(),
+            'arches': arches,
+            'repos': repos,
             'maintainers': maintainers,
             'orphan': orphan,
-            'flagged' : flagged,
-            'todopkgs' : todopkgs,
+            'flagged': flagged,
+            'todopkgs': todopkgs,
             'signoffs': signoffs
     }
 

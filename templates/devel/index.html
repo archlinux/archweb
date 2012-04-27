@@ -194,10 +194,10 @@
                     <td>{{ arch.name }}</td>
                     <td><a href="/packages/?arch={{ arch.name }}"
                             title="View all packages for the {{ arch.name }} architecture">
-                            <strong>{{ arch.packages.count }}</strong> packages</a></td>
+                            <strong>{{ arch.total_ct }}</strong> packages</a></td>
                     <td><a href="/packages/?arch={{ arch.name }}&amp;flagged=Flagged"
                             title="View all flagged packages for the {{ arch.name }} architecture">
-                            <strong>{{ arch.packages.flagged.count }}</strong> packages</a></td>
+                            <strong>{{ arch.flagged_ct }}</strong> packages</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -224,10 +224,10 @@
                     <td>{{ repo.name }}</td>
                     <td><a href="/packages/?repo={{ repo.name }}"
                             title="View all packages in the {{ repo.name }} repository">
-                            <strong>{{ repo.packages.count }}</strong> packages</a></td>
+                            <strong>{{ repo.total_ct }}</strong> packages</a></td>
                     <td><a href="/packages/?repo={{ repo.name }}&amp;flagged=Flagged"
                             title="View all flagged packages in the {{ repo.name }} repository">
-                            <strong>{{ repo.packages.flagged.count }}</strong> packages</a></td>
+                            <strong>{{ repo.flagged_ct }}</strong> packages</a></td>
                 </tr>
             {% endfor %}
         </tbody>
