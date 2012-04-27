@@ -85,6 +85,10 @@ input[type=submit] {
     clear: both;
 }
 
+.hide {
+    display: none;
+}
+
 hr {
     border: none;
     border-top: 1px solid #888;

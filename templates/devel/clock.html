@@ -34,7 +34,7 @@
                 <td>{{ dev.userprofile.alias }}</td>
                 <td>{% if dev.userprofile.country %}<img src="{{ dev.userprofile.country.flag }}" alt="{{ dev.userprofile.country.name }}"/> {% endif %}{{ dev.userprofile.location }}</td>
                 <td>{{ dev.userprofile.time_zone }}</td>
-                <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}</td>
+                <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}<span class="hide"> {{ dev.userprofile.time_zone }}</span></td>
             </tr>
             {% endfor %}
         </tbody>
