@@ -49,8 +49,7 @@ def index(request):
     todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by(
             'list__name', 'pkg__pkgname')
 
-    todolists = get_annotated_todolists()
-    todolists = [todolist for todolist in todolists if todolist.incomplete_count > 0]
+    todolists = get_annotated_todolists(incomplete_only=True)
 
     signoffs = sorted(get_signoff_groups(user=request.user),
             key=operator.attrgetter('pkgbase'))
