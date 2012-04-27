@@ -68,8 +68,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
-# This bug is a real bummer:
-# http://code.djangoproject.com/ticket/14105
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
