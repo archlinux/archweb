@@ -41,13 +41,19 @@ def resolve_mirrors():
     logger.debug("requesting list of mirror URLs")
     for mirrorurl in MirrorUrl.objects.filter(mirror__active=True):
         try:
+            # save old values, we can skip no-op updates this way
+            oldvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             logger.debug("resolving %3i (%s)", mirrorurl.id, mirrorurl.hostname)
             families = mirrorurl.address_families()
             mirrorurl.has_ipv4 = socket.AF_INET in families
             mirrorurl.has_ipv6 = socket.AF_INET6 in families
             logger.debug("%s: v4: %s v6: %s", mirrorurl.hostname,
                     mirrorurl.has_ipv4, mirrorurl.has_ipv6)
-            mirrorurl.save(force_update=True)
+            # now check new values, only update if new != old
+            newvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)
+            if newvals != oldvals:
+                logger.debug("values changed for %s", mirrorurl)
+                mirrorurl.save(force_update=True)
         except socket.error, e:
             logger.warn("error resolving %s: %s", mirrorurl.hostname, e)
 
