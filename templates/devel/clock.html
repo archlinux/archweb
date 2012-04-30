@@ -11,8 +11,18 @@
     <p>This page helps prevent you from waking a sleeping developer. It also
     depends on developers keeping the time zone information up to date, so if
     you see 'UTC' listed, pester them to update their settings.</p>
+    <p>The "Last Action" column shows the last time this developer has done
+    something we know about. Considered dates for each developer include:</p>
+    <ul>
+        <li>Build date of a package in the repositories</li>
+        <li>Last login to the developer side of this site</li>
+        <li>Admin log entry on this site (e.g., adding a donor, modifying a
+        mirror)</li>
+        <li>Post date of a news item</li>
+        <li>Signing off on a package</li>
+    </ul>
     <p>
-    UTC Time: {{ utc_now|date:"Y-m-d H:i T" }}
+    Current UTC Time: {{ utc_now|date:"Y-m-d H:i T" }}
     </p>
 
     <table id="clocks-table" class="results">
@@ -21,6 +31,7 @@
                 <th>Developer</th>
                 <th>Username</th>
                 <th>Alias</th>
+                <th>Last Action</th>
                 <th>Location</th>
                 <th>Time Zone</th>
                 <th>Current Time</th>
@@ -32,6 +43,7 @@
                 <td><a href="mailto:{{ dev.email }}">{{ dev.get_full_name }}</a></td>
                 <td>{{ dev.username }}</td>
                 <td>{{ dev.userprofile.alias }}</td>
+                <td>{{ dev.last_action }}</td>
                 <td>{% if dev.userprofile.country %}<img src="{{ dev.userprofile.country.flag }}" alt="{{ dev.userprofile.country.name }}"/> {% endif %}{{ dev.userprofile.location }}</td>
                 <td>{{ dev.userprofile.time_zone }}</td>
                 <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}<span class="hide"> {{ dev.userprofile.time_zone }}</span></td>
@@ -45,8 +57,11 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#clocks-table:has(tbody tr)").tablesorter(
-        {widgets: ['zebra'], sortList: [[0,0]]});
+    $("#clocks-table:has(tbody tr)").tablesorter({
+        widgets: ['zebra'],
+        sortList: [[0,0]],
+        headers: { 4: { sorter: false } }
+    });
 });
 </script>
 {% endblock %}

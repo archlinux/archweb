@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import timedelta
 import operator
 import pytz
 import random
@@ -9,24 +9,28 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import \
         login_required, permission_required, user_passes_test
+from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.db import transaction
-from django.db.models import F, Count
+from django.db.models import F, Count, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template import loader, Context
 from django.template.defaultfilters import filesizeformat
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
+from django.utils.encoding import force_unicode
 from django.utils.http import http_date
 
 from .models import UserProfile
 from main.models import Package, PackageDepend, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from main.utils import utc_now
-from packages.models import PackageRelation
+from news.models import News
+from packages.models import PackageRelation, Signoff
 from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers, UserFinder
@@ -91,6 +95,33 @@ def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
             'first_name', 'last_name').select_related('userprofile')
 
+    latest_news = dict(News.objects.filter(
+            author__is_active=True).values_list('author').order_by(
+            ).annotate(last_post=Max('postdate')))
+    latest_package = dict(Package.objects.filter(
+            packager__is_active=True).values_list('packager').order_by(
+            ).annotate(last_build=Max('build_date')))
+    latest_signoff = dict(Signoff.objects.filter(
+            user__is_active=True).values_list('user').order_by(
+            ).annotate(last_signoff=Max('created')))
+    latest_log = dict(LogEntry.objects.filter(
+            user__is_active=True).values_list('user').order_by(
+            ).annotate(last_log=Max('action_time')))
+
+    for dev in devs:
+        dates = [
+            latest_news.get(dev.id, None),
+            latest_package.get(dev.id, None),
+            latest_signoff.get(dev.id, None),
+            latest_log.get(dev.id, None),
+            dev.last_login,
+        ]
+        dates = [d for d in dates if d is not None]
+        if dates:
+            dev.last_action = max(dates)
+        else:
+            dev.last_action = None
+
     now = utc_now()
     page_dict = {
             'developers': devs,
@@ -135,7 +166,8 @@ class UserProfileForm(forms.ModelForm):
 def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
-        profile_form = UserProfileForm(request.POST, request.FILES, instance=request.user.get_profile())
+        profile_form = UserProfileForm(request.POST, request.FILES,
+                instance=request.user.get_profile())
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
@@ -331,9 +363,6 @@ class NewUserForm(forms.ModelForm):
 
 def log_addition(request, obj):
     """Cribbed from ModelAdmin.log_addition."""
-    from django.contrib.admin.models import LogEntry, ADDITION
-    from django.contrib.contenttypes.models import ContentType
-    from django.utils.encoding import force_unicode
     LogEntry.objects.log_action(
         user_id         = request.user.pk,
         content_type_id = ContentType.objects.get_for_model(obj).pk,
