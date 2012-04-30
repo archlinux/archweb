@@ -35,6 +35,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(NoArgsCommand):
     help = "Runs a check on all known mirror URLs to determine their up-to-date status."
 
@@ -49,13 +50,16 @@ class Command(NoArgsCommand):
 
         return check_current_mirrors()
 
+
 def check_mirror_url(mirror_url):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
     log = MirrorLog(url=mirror_url, check_time=utc_now())
+    headers = {'User-Agent': 'archweb/1.0'}
+    req = urllib2.Request(url, None, headers)
     try:
         start = time.time()
-        result = urllib2.urlopen(url, timeout=10)
+        result = urllib2.urlopen(req, timeout=10)
         data = result.read()
         result.close()
         end = time.time()
@@ -104,6 +108,7 @@ def check_mirror_url(mirror_url):
 
     return log
 
+
 def mirror_url_worker(work, output):
     while True:
         try:
@@ -116,11 +121,12 @@ def mirror_url_worker(work, output):
         except Empty:
             return 0
 
+
 class MirrorCheckPool(object):
-    def __init__(self, work, num_threads=10):
+    def __init__(self, urls, num_threads=10):
         self.tasks = Queue()
         self.logs = deque()
-        for i in list(work):
+        for i in list(urls):
             self.tasks.put(i)
         self.threads = []
         for i in range(num_threads):
@@ -140,6 +146,7 @@ class MirrorCheckPool(object):
         MirrorLog.objects.bulk_create(self.logs)
         logger.debug("log entries saved")
 
+
 def check_current_mirrors():
     urls = MirrorUrl.objects.filter(
             protocol__is_download=True,
@@ -148,9 +155,5 @@ def check_current_mirrors():
     pool = MirrorCheckPool(urls)
     pool.run()
     return 0
-
-# For lack of a better place to put it, here is a query to get latest check
-# result joined with mirror details:
-# SELECT mu.*, m.*, ml.* FROM mirrors_mirrorurl mu JOIN mirrors_mirror m ON mu.mirror_id = m.id JOIN mirrors_mirrorlog ml ON mu.id = ml.url_id LEFT JOIN mirrors_mirrorlog ml2 ON ml.url_id = ml2.url_id AND ml.id < ml2.id WHERE ml2.id IS NULL AND m.active = 1 AND m.public = 1;
 
 # vim: set ts=4 sw=4 et:
