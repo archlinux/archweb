@@ -4,9 +4,11 @@ from urllib import urlencode
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import simplejson
+from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.simple import direct_to_template
@@ -25,6 +27,7 @@ from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 
 
 @require_GET
+@cache_control(public=True, max_age=86400)
 def opensearch(request):
     if request.is_secure():
         domain = "https://%s" % request.META['HTTP_HOST']
@@ -37,16 +40,21 @@ def opensearch(request):
 
 
 @require_GET
+@cache_control(public=True, max_age=300)
 def opensearch_suggest(request):
     search_term = request.GET.get('q', '')
     if search_term == '':
         return HttpResponse('', mimetype='application/x-suggestions+json')
 
-    names = Package.objects.filter(
-            pkgname__startswith=search_term).values_list(
-            'pkgname', flat=True).order_by('pkgname').distinct()[:10]
-    results = [search_term, list(names)]
-    to_json = simplejson.dumps(results, ensure_ascii=False)
+    cache_key = 'opensearch:packages:' + search_term
+    to_json = cache.get(cache_key, None)
+    if to_json is None:
+        names = Package.objects.filter(
+                pkgname__startswith=search_term).values_list(
+                'pkgname', flat=True).order_by('pkgname').distinct()[:10]
+        results = [search_term, list(names)]
+        to_json = simplejson.dumps(results, ensure_ascii=False)
+        cache.set('opensearch:packages:%s' % search_term, to_json, 300)
     return HttpResponse(to_json, mimetype='application/x-suggestions+json')
 
 
