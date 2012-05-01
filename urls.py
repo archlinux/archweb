@@ -91,6 +91,8 @@ urlpatterns += patterns('',
     (r'^visualize/', include('visualize.urls')),
     (r'^opensearch/packages/$', 'packages.views.opensearch',
         {}, 'opensearch-packages'),
+    (r'^opensearch/packages/suggest$', 'packages.views.opensearch_suggest',
+        {}, 'opensearch-packages-suggest'),
     (r'^todolists/$','todolists.views.public_list'),
 )
 
