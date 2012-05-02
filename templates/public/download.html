@@ -7,11 +7,11 @@
 {% block navbarclass %}anb-download{% endblock %}
 
 {% block content %}
+{% with "2011.08.19" as version %}
 <div id="arch-downloads" class="box">
 
     <h2>Arch Linux Downloads</h2>
 
-    {% with "2011.08.19" as version %}
     <h3>Release Info</h3>
 
     <p>All available images can be burned to a CD, mounted as an ISO file,
@@ -164,10 +164,10 @@
         {% endfor %}
     </div>
     {% endcache %}
-    {% endwith %}
 
     <p>If you want to become an Official Arch Linux Mirror please follow the
     instructions listed <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:NewMirrors">here</a>.</p>
 
 </div>
+{% endwith %}
 {% endblock %}
