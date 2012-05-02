@@ -6,15 +6,12 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader, Context
 from django.views.generic.simple import direct_to_template
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_page, never_cache
 
 from ..models import FlagRequest
 from main.models import Package
 from main.utils import utc_now
 
-
-def flaghelp(request):
-    return direct_to_template(request, 'packages/flaghelp.html')
 
 class FlagForm(forms.Form):
     email = forms.EmailField(label='E-mail Address')
@@ -25,6 +22,20 @@ class FlagForm(forms.Form):
     website = forms.CharField(label='',
             widget=forms.TextInput(attrs={'style': 'display:none;'}),
             required=False)
+
+    def __init__(self, *args, **kwargs):
+        # we remove the 'email' field if this form is being shown to a
+        # logged-in user, e.g., a developer.
+        auth = kwargs.pop('authenticated', False)
+        super(FlagForm, self).__init__(*args, **kwargs)
+        if auth:
+            del self.fields['email']
+
+
+@cache_page(3600)
+def flaghelp(request):
+    return direct_to_template(request, 'packages/flaghelp.html')
+
 
 @never_cache
 def flag(request, name, repo, arch):
@@ -41,8 +52,10 @@ def flag(request, name, repo, arch):
             repo__staging=pkg.repo.staging).order_by(
             'pkgname', 'repo__name', 'arch__name')
 
+    authenticated = request.user.is_authenticated()
+
     if request.POST:
-        form = FlagForm(request.POST)
+        form = FlagForm(request.POST, authenticated=authenticated)
         if form.is_valid() and form.cleaned_data['website'] == '':
             # save the package list for later use
             flagged_pkgs = list(pkgs)
@@ -54,9 +67,12 @@ def flag(request, name, repo, arch):
             else:
                 version = ''
 
-            email = form.cleaned_data['email']
             message = form.cleaned_data['message']
             ip_addr = request.META.get('REMOTE_ADDR')
+            if authenticated:
+                email = request.user.email
+            else:
+                email = form.cleaned_data['email']
 
             @transaction.commit_on_success
             def perform_updates():
@@ -68,7 +84,7 @@ def flag(request, name, repo, arch):
                         ip_address=ip_addr, pkgbase=pkg.pkgbase,
                         version=version, repo=pkg.repo,
                         num_packages=len(flagged_pkgs))
-                if request.user.is_authenticated():
+                if authenticated:
                     flag_request.user = request.user
                 flag_request.save()
 
@@ -106,9 +122,7 @@ def flag(request, name, repo, arch):
                     arch=arch)
     else:
         initial = {}
-        if request.user.is_authenticated():
-            initial['email'] = request.user.email
-        form = FlagForm(initial=initial)
+        form = FlagForm(authenticated=authenticated)
 
     context = {
         'package': pkg,
