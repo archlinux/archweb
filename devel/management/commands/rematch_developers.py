@@ -46,52 +46,51 @@ class Command(NoArgsCommand):
 
 @transaction.commit_on_success
 def match_packager(finder):
-    logger.info("getting all unmatched packages")
+    logger.info("getting all unmatched packager strings")
     package_count = matched_count = 0
-    unknown = set()
+    mapping = {}
 
-    for package in Package.objects.filter(packager__isnull=True):
-        if package.packager_str in unknown:
-            continue
-        logger.debug("package %s, packager string %s",
-                package.pkgname, package.packager_str)
-        package_count += 1
-        user = finder.find(package.packager_str)
+    unmatched = Package.objects.filter(packager__isnull=True).values_list(
+            'packager_str', flat=True).order_by().distinct()
+
+    for packager in unmatched:
+        logger.debug("packager string %s", packager)
+        user = finder.find(packager)
         if user:
-            package.packager = user
+            mapping[packager] = user
             logger.debug("  found user %s" % user.username)
-            package.save()
             matched_count += 1
-        else:
-            unknown.add(package.packager_str)
 
-    logger.info("%d packager strings checked, %d newly matched",
+    for packager_str, user in mapping.items():
+        package_count += Package.objects.filter(packager__isnull=True,
+                packager_str=packager_str).update(packager=user)
+
+    logger.info("%d packages updated, %d packager strings matched",
             package_count, matched_count)
-    logger.debug("unknown packagers:\n%s",
-            "\n".join(unknown))
 
 
 @transaction.commit_on_success
 def match_flagrequest(finder):
-    logger.info("getting all non-user flag requests")
+    logger.info("getting all flag requests emails from unknown users")
     req_count = matched_count = 0
-    unknown = set()
+    mapping = {}
 
-    for request in FlagRequest.objects.filter(user__isnull=True):
-        if request.user_email in unknown:
-            continue
-        logger.debug("email %s", request.user_email)
-        req_count += 1
-        user = finder.find_by_email(request.user_email)
+    unmatched = FlagRequest.objects.filter(user__isnull=True).values_list(
+            'user_email', flat=True).order_by().distinct()
+    
+    for user_email in unmatched:
+        logger.debug("email %s", user_email)
+        user = finder.find_by_email(user_email)
         if user:
-            request.user = user
+            mapping[user_email] = user
             logger.debug("  found user %s" % user.username)
-            request.save()
             matched_count += 1
-        else:
-            unknown.add(request.user_email)
 
-    logger.info("%d request emails checked, %d newly matched",
+    for user_email, user in mapping.items():
+        req_count += FlagRequest.objects.filter(user__isnull=True,
+                user_email=user_email).update(user=user)
+
+    logger.info("%d request emails updated, %d emails matched",
             req_count, matched_count)
 
 # vim: set ts=4 sw=4 et:
