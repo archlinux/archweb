@@ -82,12 +82,15 @@ def generate_mirrorlist(request):
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
         ipv4_supported=True, ipv6_supported=True):
     if not protocols:
-        protocols = MirrorProtocol.objects.filter(
-                is_download=True).values_list('protocol', flat=True)
+        protocols = MirrorProtocol.objects.filter(is_download=True)
+    elif hasattr(protocols, 'model') and protocols.model == MirrorProtocol:
+        # we already have a queryset, no need to query again
+        pass
+    else:
+        protocols = MirrorProtocol.objects.filter(protocol__in=protocols)
     qset = MirrorUrl.objects.select_related().filter(
-            protocol__protocol__in=protocols,
-            mirror__public=True, mirror__active=True,
-    )
+            protocol__in=protocols,
+            mirror__public=True, mirror__active=True)
     if countries and 'all' not in countries:
         qset = qset.filter(Q(country__in=countries) |
                 Q(mirror__country__in=countries))
@@ -122,6 +125,11 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
                 'mirror_urls': urls,
             },
             mimetype='text/plain')
+
+
+def find_mirrors_simple(request, protocol):
+    proto = get_object_or_404(MirrorProtocol, protocol=protocol)
+    return find_mirrors(request, protocols=[proto])
 
 
 def mirrors(request):
