@@ -1,3 +1,4 @@
+import hashlib
 from string import Template
 from urllib import urlencode
 
@@ -46,7 +47,7 @@ def opensearch_suggest(request):
     if search_term == '':
         return HttpResponse('', mimetype='application/x-suggestions+json')
 
-    cache_key = 'opensearch:packages:' + search_term
+    cache_key = 'opensearch:packages:' + hashlib.md5(search_term).hexdigest()
     to_json = cache.get(cache_key, None)
     if to_json is None:
         names = Package.objects.filter(
@@ -54,7 +55,7 @@ def opensearch_suggest(request):
                 'pkgname', flat=True).order_by('pkgname').distinct()[:10]
         results = [search_term, list(names)]
         to_json = simplejson.dumps(results, ensure_ascii=False)
-        cache.set('opensearch:packages:%s' % search_term, to_json, 300)
+        cache.set(cache_key, to_json, 300)
     return HttpResponse(to_json, mimetype='application/x-suggestions+json')
 
 
