@@ -47,7 +47,8 @@ def opensearch_suggest(request):
     if search_term == '':
         return HttpResponse('', mimetype='application/x-suggestions+json')
 
-    cache_key = 'opensearch:packages:' + hashlib.md5(search_term).hexdigest()
+    cache_key = 'opensearch:packages:' + \
+            hashlib.md5(search_term.encode('utf-8')).hexdigest()
     to_json = cache.get(cache_key, None)
     if to_json is None:
         names = Package.objects.filter(
