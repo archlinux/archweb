@@ -280,7 +280,7 @@ def report(request, report_name, username=None):
         filtered = []
         packages = packages.filter(pgp_signature__isnull=False)
         for package in packages:
-            sig_date = package.signature.datetime.replace(tzinfo=pytz.utc)
+            sig_date = package.signature.creation_time.replace(tzinfo=pytz.utc)
             package.sig_date = sig_date.date()
             key_id = package.signature.key_id
             signer = finder.find_by_pgp_key(key_id)
