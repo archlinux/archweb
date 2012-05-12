@@ -1,9 +1,9 @@
 from datetime import datetime
+import json
 
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum, Q
 from django.http import HttpResponse
-from django.utils import simplejson
 from django.views.decorators.cache import cache_page
 from django.views.generic.simple import direct_to_template
 
@@ -61,13 +61,13 @@ def arch_repo_data():
 @cache_page(1800)
 def by_arch(request):
     data = arch_repo_data()
-    to_json = simplejson.dumps(data['by_arch'], ensure_ascii=False)
+    to_json = json.dumps(data['by_arch'], ensure_ascii=False)
     return HttpResponse(to_json, mimetype='application/json')
 
 @cache_page(1800)
 def by_repo(request):
     data = arch_repo_data()
-    to_json = simplejson.dumps(data['by_repo'], ensure_ascii=False)
+    to_json = json.dumps(data['by_repo'], ensure_ascii=False)
     return HttpResponse(to_json, mimetype='application/json')
 
 
@@ -109,7 +109,7 @@ def pgp_keys(request):
 
     data = { 'nodes': node_list, 'edges': edge_list }
 
-    to_json = simplejson.dumps(data, ensure_ascii=False)
+    to_json = json.dumps(data, ensure_ascii=False)
     return HttpResponse(to_json, mimetype='application/json')
 
 # vim: set ts=4 sw=4 et:

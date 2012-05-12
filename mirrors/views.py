@@ -1,5 +1,6 @@
 from datetime import timedelta
 from itertools import groupby
+import json
 from operator import attrgetter, itemgetter
 
 from django import forms
@@ -10,7 +11,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
-from django.utils import simplejson
 from django_countries.countries import COUNTRIES
 
 from .models import Mirror, MirrorUrl, MirrorProtocol
@@ -237,8 +237,7 @@ def status_json(request):
     status_info = get_mirror_statuses()
     data = status_info.copy()
     data['version'] = 3
-    to_json = simplejson.dumps(data, ensure_ascii=False,
-            cls=MirrorStatusJSONEncoder)
+    to_json = json.dumps(data, ensure_ascii=False, cls=MirrorStatusJSONEncoder)
     response = HttpResponse(to_json, mimetype='application/json')
     return response
 

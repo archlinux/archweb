@@ -1,5 +1,6 @@
-from django import forms
+import json
 
+from django import forms
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect
@@ -9,7 +10,6 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.views.generic.simple import direct_to_template
 from django.template import Context, loader
-from django.utils import simplejson
 
 from main.models import Todolist, TodolistPkg, Package, Repo
 from packages.utils import attach_maintainers
@@ -42,7 +42,7 @@ def flag(request, list_id, pkg_id):
     pkg.save()
     if request.is_ajax():
         return HttpResponse(
-            simplejson.dumps({'complete': pkg.complete}),
+            json.dumps({'complete': pkg.complete}),
             mimetype='application/json')
     return redirect(todolist)
 

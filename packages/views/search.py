@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
@@ -6,7 +7,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
 from django.views.generic import list_detail
-from django.utils import simplejson
 
 from main.models import Package, Arch, Repo
 from main.utils import make_choice
@@ -179,8 +179,7 @@ def search_json(request):
             container['results'] = packages
             container['valid'] = True
 
-    to_json = simplejson.dumps(container, ensure_ascii=False,
-            cls=PackageJSONEncoder)
+    to_json = json.dumps(container, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, mimetype='application/json')
 
 # vim: set ts=4 sw=4 et:

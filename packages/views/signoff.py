@@ -1,3 +1,4 @@
+import json
 from operator import attrgetter
 
 from django import forms
@@ -7,7 +8,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_list_or_404, redirect, render
-from django.utils import simplejson
 from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 
@@ -67,7 +67,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
             'known_bad': spec.known_bad,
             'user': str(request.user),
         }
-        return HttpResponse(simplejson.dumps(data, ensure_ascii=False),
+        return HttpResponse(json.dumps(data, ensure_ascii=False),
                 mimetype='application/json')
 
     return redirect('package-signoffs')
@@ -183,8 +183,7 @@ def signoffs_json(request):
         'version': 2,
         'signoff_groups': signoff_groups,
     }
-    to_json = simplejson.dumps(data, ensure_ascii=False,
-            cls=SignoffJSONEncoder)
+    to_json = json.dumps(data, ensure_ascii=False, cls=SignoffJSONEncoder)
     response = HttpResponse(to_json, mimetype='application/json')
     return response
 

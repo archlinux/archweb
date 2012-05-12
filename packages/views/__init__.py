@@ -1,4 +1,5 @@
 import hashlib
+import json
 from string import Template
 from urllib import urlencode
 
@@ -8,7 +9,6 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
-from django.utils import simplejson
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.vary import vary_on_headers
@@ -55,7 +55,7 @@ def opensearch_suggest(request):
                 pkgname__startswith=search_term).values_list(
                 'pkgname', flat=True).order_by('pkgname').distinct()[:10]
         results = [search_term, list(names)]
-        to_json = simplejson.dumps(results, ensure_ascii=False)
+        to_json = json.dumps(results, ensure_ascii=False)
         cache.set(cache_key, to_json, 300)
     return HttpResponse(to_json, mimetype='application/x-suggestions+json')
 
@@ -197,8 +197,7 @@ def files(request, name, repo, arch):
 def details_json(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    to_json = simplejson.dumps(pkg, ensure_ascii=False,
-            cls=PackageJSONEncoder)
+    to_json = json.dumps(pkg, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, mimetype='application/json')
 
 def files_json(request, name, repo, arch):
@@ -212,8 +211,7 @@ def files_json(request, name, repo, arch):
         'arch': pkg.arch.name.lower(),
         'files': fileslist,
     }
-    to_json = simplejson.dumps(data, ensure_ascii=False,
-            cls=PackageJSONEncoder)
+    to_json = json.dumps(data, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, mimetype='application/json')
 
 def download(request, name, repo, arch):
