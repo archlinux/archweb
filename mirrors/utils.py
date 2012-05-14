@@ -32,11 +32,9 @@ def annotate_url(url, delays):
 @cache_function(123)
 def get_mirror_statuses(cutoff=default_cutoff):
     cutoff_time = utc_now() - cutoff
-    protocols = list(MirrorProtocol.objects.filter(is_download=True))
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             mirror__active=True, mirror__public=True,
-            protocol__in=protocols,
             logs__check_time__gte=cutoff_time).annotate(
             check_count=Count('logs'),
             success_count=Count('logs__duration'),
