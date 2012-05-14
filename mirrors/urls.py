@@ -4,6 +4,7 @@ urlpatterns = patterns('mirrors.views',
     (r'^$',                     'mirrors', {}, 'mirror-list'),
     (r'^status/$',              'status',  {}, 'mirror-status'),
     (r'^status/json/$',         'status_json',  {}, 'mirror-status-json'),
+    (r'^status/tier/(?P<tier>\d+)/$', 'status', {}, 'mirror-status-tier'),
     (r'^(?P<name>[\.\-\w]+)/$', 'mirror_details'),
 )
 

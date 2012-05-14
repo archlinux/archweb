@@ -2,11 +2,11 @@
 {% load static from staticfiles %}
 {% load mirror_status %}
 
-{% block title %}Arch Linux - Mirror Status{% endblock %}
+{% block title %}Arch Linux - Mirror Status{% if tier != None %} - Tier {{ tier }}{% endif %}{% endblock %}
 
 {% block content %}
 <div id="mirrorstatus" class="box">
-    <h2>Mirror Status</h2>
+    <h2>Mirror Status{% if tier != None %} - Tier {{ tier }}{% endif %}</h2>
     <p>This page reports the status of all known, public, and active Arch Linux
     mirrors. All data on this page reflects the status of the mirrors within
     the <em>last {{ cutoff|hours }}</em>. All listed times are UTC. The check script runs

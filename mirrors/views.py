@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.simple import direct_to_template
 from django_countries.countries import COUNTRIES
 
-from .models import Mirror, MirrorUrl, MirrorProtocol
+from .models import Mirror, MirrorUrl, MirrorProtocol, TIER_CHOICES
 from .utils import get_mirror_statuses, get_mirror_errors
 
 COUNTRY_LOOKUP = dict(COUNTRIES)
@@ -184,7 +184,11 @@ def mirror_details(request, name):
             {'mirror': mirror, 'urls': all_urls})
 
 
-def status(request):
+def status(request, tier=None):
+    if tier is not None:
+        tier = int(tier)
+        if tier not in [t[0] for t in TIER_CHOICES]:
+            raise Http404
     bad_timedelta = timedelta(days=3)
     status_info = get_mirror_statuses()
 
@@ -192,17 +196,26 @@ def status(request):
     good_urls = []
     bad_urls = []
     for url in urls:
+        # screen by tier if we were asked to
+        if tier is not None and url.mirror.tier != tier:
+            continue
         # split them into good and bad lists based on delay
         if not url.delay or url.delay > bad_timedelta:
             bad_urls.append(url)
         else:
             good_urls.append(url)
 
+    error_logs = get_mirror_errors()
+    if tier is not None:
+        error_logs = [log for log in error_logs
+                if log['url__mirror__tier'] == tier]
+
     context = status_info.copy()
     context.update({
         'good_urls': sorted(good_urls, key=attrgetter('score')),
         'bad_urls': sorted(bad_urls, key=lambda u: u.delay or timedelta.max),
-        'error_logs': get_mirror_errors(),
+        'error_logs': error_logs,
+        'tier': tier,
     })
     return direct_to_template(request, 'mirrors/status.html', context)
 

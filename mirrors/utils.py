@@ -88,7 +88,7 @@ def get_mirror_errors(cutoff=default_cutoff):
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(
             'url__url', 'url__country', 'url__protocol__protocol',
-            'url__mirror__country', 'error').annotate(
+            'url__mirror__country', 'url__mirror__tier', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
     errors = list(errors)
