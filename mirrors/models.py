@@ -44,6 +44,7 @@ class Mirror(models.Model):
     def get_absolute_url(self):
         return '/mirrors/%s/' % self.name
 
+
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
     is_download = models.BooleanField(default=True,
@@ -56,6 +57,7 @@ class MirrorProtocol(models.Model):
 
     class Meta:
         ordering = ('protocol',)
+
 
 class MirrorUrl(models.Model):
     url = models.CharField("URL", max_length=255, unique=True)
@@ -104,6 +106,7 @@ class MirrorUrl(models.Model):
     class Meta:
         verbose_name = 'mirror URL'
 
+
 class MirrorRsync(models.Model):
     ip = models.CharField("IP", max_length=24)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
@@ -114,13 +117,14 @@ class MirrorRsync(models.Model):
     class Meta:
         verbose_name = 'mirror rsync IP'
 
+
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
     check_time = models.DateTimeField(db_index=True)
     last_sync = models.DateTimeField(null=True)
     duration = models.FloatField(null=True)
     is_success = models.BooleanField(default=True)
-    error = models.CharField(max_length=255, blank=True, default='')
+    error = models.TextField(blank=True, default='')
 
     def __unicode__(self):
         return "Check of %s at %s" % (self.url.url, self.check_time)
