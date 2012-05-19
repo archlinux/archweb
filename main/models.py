@@ -231,16 +231,12 @@ class Package(models.Model):
         """
         deps = []
         arches = None
-        if not self.arch.agnostic:
-            arches = self.applicable_arches()
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.depends.order_by('optional', 'depname'):
-            pkg = dep.get_best_satisfier(arches, testing=self.repo.testing,
-                    staging=self.repo.staging)
+            pkg = dep.get_best_satisfier()
             providers = None
             if not pkg:
-                providers = dep.get_providers(arches,
-                        testing=self.repo.testing, staging=self.repo.staging)
+                providers = dep.get_providers()
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         return deps
 
@@ -343,13 +339,14 @@ class PackageDepend(models.Model):
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
 
-    def get_best_satisfier(self, arches=None, testing=None, staging=None):
+    def get_best_satisfier(self):
         '''Find a satisfier for this dependency that best matches the given
         criteria. It will not search provisions, but will find packages named
         and matching repo characteristics if possible.'''
         pkgs = Package.objects.normal().filter(pkgname=self.depname)
-        if arches is not None:
+        if not self.pkg.arch.agnostic:
             # make sure we match architectures if possible
+            arches = self.pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
         if len(pkgs) == 0:
             # couldn't find a package in the DB
@@ -362,42 +359,42 @@ class PackageDepend(models.Model):
         pkg = pkgs[0]
         # prevents yet more DB queries, these lists should be short;
         # after each grab the best available in case we remove all entries
-        if staging is not None:
-            pkgs = [p for p in pkgs if p.repo.staging == staging]
+        pkgs = [p for p in pkgs if p.repo.staging == self.pkg.repo.staging]
         if len(pkgs) > 0:
             pkg = pkgs[0]
 
-        if testing is not None:
-            pkgs = [p for p in pkgs if p.repo.testing == testing]
+        pkgs = [p for p in pkgs if p.repo.testing == self.pkg.repo.testing]
         if len(pkgs) > 0:
             pkg = pkgs[0]
 
         return pkg
 
-    def get_providers(self, arches=None, testing=None, staging=None):
+    def get_providers(self):
         '''Return providers of this dep. Does *not* include exact matches as it
         checks the Provision names only, use get_best_satisfier() instead.'''
         pkgs = Package.objects.normal().filter(
                 provides__name=self.depname).order_by().distinct()
-        if arches is not None:
+        if not self.pkg.arch.agnostic:
+            # make sure we match architectures if possible
+            arches = self.pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
 
         # Logic here is to filter out packages that are in multiple repos if
         # they are not requested. For example, if testing is False, only show a
         # testing package if it doesn't exist in a non-testing repo.
-        if staging is not None:
-            filtered = {}
-            for p in pkgs:
-                if p.pkgname not in filtered or p.repo.staging == staging:
-                    filtered[p.pkgname] = p
-            pkgs = filtered.values()
+        filtered = {}
+        for package in pkgs:
+            if package.pkgname not in filtered or \
+                    package.repo.staging == self.pkg.repo.staging:
+                filtered[package.pkgname] = package
+        pkgs = filtered.values()
 
-        if testing is not None:
-            filtered = {}
-            for p in pkgs:
-                if p.pkgname not in filtered or p.repo.testing == testing:
-                    filtered[p.pkgname] = p
-            pkgs = filtered.values()
+        filtered = {}
+        for package in pkgs:
+            if package.pkgname not in filtered or \
+                    package.repo.testing == self.pkg.repo.testing:
+                filtered[package.pkgname] = package
+        pkgs = filtered.values()
 
         return pkgs
 
