@@ -268,6 +268,13 @@ class RelatedToBase(models.Model):
         ordering = ['name']
 
 
+class Depend(RelatedToBase):
+    pkg = models.ForeignKey('main.Package', related_name='depends_new')
+    comparison = models.CharField(max_length=255, default='')
+    optional = models.BooleanField(default=False)
+    description = models.TextField(null=True, blank=True)
+
+
 class Conflict(RelatedToBase):
     pkg = models.ForeignKey('main.Package', related_name='conflicts')
     comparison = models.CharField(max_length=255, default='')
