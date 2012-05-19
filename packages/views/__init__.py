@@ -136,6 +136,16 @@ def details(request, name='', repo='', arch=''):
             return direct_to_template(request, 'packages/details.html',
                     {'pkg': pkg, })
         except Package.DoesNotExist:
+            arch_obj = get_object_or_404(Arch, name=arch)
+            # for arch='any' packages, we can issue a redirect to them if we
+            # have a single non-ambiguous option by changing the arch to match
+            # any arch-agnostic package
+            if not arch_obj.agnostic:
+                pkgs = Package.objects.select_related(
+                    'arch', 'repo', 'packager').filter(pkgname=name,
+                    repo__name__iexact=repo, arch__agnostic=True)
+                if len(pkgs) == 1:
+                    return redirect(pkgs[0], permanent=True)
             return split_package_details(request, name, repo, arch)
     else:
         pkg_data = [
