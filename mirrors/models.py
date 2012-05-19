@@ -20,6 +20,7 @@ class Mirror(models.Model):
     upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
     country = CountryField(blank=True, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
+    alternate_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
     active = models.BooleanField(default=True)
     isos = models.BooleanField("ISOs", default=True)
