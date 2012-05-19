@@ -8,6 +8,7 @@
 {% block head %}
 {% if is_paginated and page_obj.number > 1 %}<meta name="robots" content="noindex, nofollow"/>{% endif %}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/widgets.css" %}" />
+<link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="/feeds/packages/" />
 {% endblock %}
 
 {% block content %}

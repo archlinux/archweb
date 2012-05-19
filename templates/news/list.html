@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Arch Linux - News{% endblock %}
 
+{% block head %}
+<link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
+{% endblock %}
+
 {% block content %}
 <div id="news-article-list" class="box">
 
