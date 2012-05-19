@@ -29,9 +29,9 @@ from django.db import connections, router, transaction
 from django.db.utils import IntegrityError
 
 from devel.utils import UserFinder
-from main.models import Arch, Package, PackageDepend, PackageFile, Repo
+from main.models import Arch, Package, PackageFile, Repo
 from main.utils import utc_now
-from packages.models import Conflict, Provision, Replacement
+from packages.models import Depend, Conflict, Provision, Replacement
 
 
 logging.basicConfig(
@@ -141,19 +141,21 @@ class RepoPackage(object):
         return u'%s-%s' % (self.ver, self.rel)
 
 
-DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.*))?$")
+DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")
 
 def create_depend(package, dep_str, optional=False):
-    depend = PackageDepend(pkg=package, optional=optional)
+    depend = Depend(pkg=package, optional=optional)
     # lop off any description first
     parts = dep_str.split(':', 1)
     if len(parts) > 1:
         depend.description = parts[1].strip()
     match = DEPEND_RE.match(parts[0].strip())
     if match:
-        depend.depname = match.group(1)
-        if match.group(2):
-            depend.depvcmp = match.group(2)
+        depend.name = match.group(1)
+        if match.group(3):
+            depend.comparison = match.group(3)
+        if match.group(4):
+            related.version = match.group(4)
     else:
         logger.warning('Package %s had unparsable depend string %s',
                 package.pkgname, dep_str)
@@ -232,7 +234,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.depends.all().delete()
     deps = [create_depend(dbpkg, y) for y in repopkg.depends]
     deps += [create_depend(dbpkg, y, True) for y in repopkg.optdepends]
-    PackageDepend.objects.bulk_create(deps)
+    Depend.objects.bulk_create(deps)
 
     dbpkg.conflicts.all().delete()
     conflicts = [create_related(Conflict, dbpkg, y) for y in repopkg.conflicts]

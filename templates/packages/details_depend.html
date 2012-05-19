@@ -2,12 +2,12 @@
 <li>
 {% ifequal depend.pkg None %}
 {% if depend.providers %}
-{{ depend.dep.depname }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span>
+{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span>
 {% else %}
-{{ depend.dep.depname }} <span class="virtual-dep">(virtual)</span>
+{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">(virtual)</span>
 {% endif %}
 {% else %}
-{% pkg_details_link depend.pkg %}{{ depend.dep.depvcmp|default:"" }}
+{% pkg_details_link depend.pkg %}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }}
 {% if depend.pkg.repo.testing %} <span class="testing-dep">(testing)</span>{% endif %}
 {% if depend.pkg.repo.staging %} <span class="staging-dep">(staging)</span>{% endif %}
 {% endifequal %}

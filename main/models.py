@@ -180,11 +180,12 @@ class Package(models.Model):
         list slim by including the corresponding package in the same testing
         category as this package if that check makes sense.
         """
+        from packages.models import Depend
         provides = set(self.provides.values_list('name', flat=True))
         provides.add(self.pkgname)
-        requiredby = PackageDepend.objects.select_related('pkg',
+        requiredby = Depend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').filter(
-                depname__in=provides).order_by(
+                name__in=provides).order_by(
                 'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
@@ -232,7 +233,7 @@ class Package(models.Model):
         deps = []
         arches = None
         # TODO: we can use list comprehension and an 'in' query to make this more effective
-        for dep in self.depends.order_by('optional', 'depname'):
+        for dep in self.depends.order_by('optional', 'name'):
             pkg = dep.get_best_satisfier()
             providers = None
             if not pkg:

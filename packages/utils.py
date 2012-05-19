@@ -7,10 +7,10 @@ from django.db import connection
 from django.db.models import Count, Max, F
 from django.contrib.auth.models import User
 
-from main.models import Package, PackageDepend, PackageFile, Arch, Repo
+from main.models import Package, PackageFile, Arch, Repo
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
 from .models import (PackageGroup, PackageRelation,
-        License, Conflict, Provision, Replacement,
+        License, Depend, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
 
 @cache_function(127)
@@ -451,7 +451,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             return obj.name.lower()
         if isinstance(obj, (PackageGroup, License)):
             return obj.name
-        if isinstance(obj, (Conflict, Provision, Replacement, PackageDepend)):
+        if isinstance(obj, (Depend, Conflict, Provision, Replacement)):
             return unicode(obj)
         elif isinstance(obj, User):
             return obj.username

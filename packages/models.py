@@ -228,10 +228,6 @@ class RelatedToBase(models.Model):
         '''Find a satisfier for this related package that best matches the
         given criteria. It will not search provisions, but will find packages
         named and matching repo characteristics if possible.'''
-        # NOTE: this is cribbed directly from the PackageDepend method of the
-        # same name. Really, all of these things could use the same method if
-        # the PackageDepend class was moved here and field names were changed
-        # to match the layout we use here.
         pkgs = Package.objects.normal().filter(pkgname=self.name)
         if not self.pkg.arch.agnostic:
             # make sure we match architectures if possible
@@ -257,6 +253,36 @@ class RelatedToBase(models.Model):
             pkg = pkgs[0]
 
         return pkg
+
+    def get_providers(self):
+        '''Return providers of this related package. Does *not* include exact
+        matches as it checks the Provision names only, use get_best_satisfier()
+        instead for exact matches.'''
+        pkgs = Package.objects.normal().filter(
+                provides__name=self.name).order_by().distinct()
+        if not self.pkg.arch.agnostic:
+            # make sure we match architectures if possible
+            arches = self.pkg.applicable_arches()
+            pkgs = pkgs.filter(arch__in=arches)
+
+        # Logic here is to filter out packages that are in multiple repos if
+        # they are not requested. For example, if testing is False, only show a
+        # testing package if it doesn't exist in a non-testing repo.
+        filtered = {}
+        for package in pkgs:
+            if package.pkgname not in filtered or \
+                    package.repo.staging == self.pkg.repo.staging:
+                filtered[package.pkgname] = package
+        pkgs = filtered.values()
+
+        filtered = {}
+        for package in pkgs:
+            if package.pkgname not in filtered or \
+                    package.repo.testing == self.pkg.repo.testing:
+                filtered[package.pkgname] = package
+        pkgs = filtered.values()
+
+        return pkgs
 
     def __unicode__(self):
         if self.version:

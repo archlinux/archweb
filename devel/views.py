@@ -26,11 +26,11 @@ from django.utils.encoding import force_unicode
 from django.utils.http import http_date
 
 from .models import UserProfile
-from main.models import Package, PackageDepend, PackageFile, TodolistPkg
+from main.models import Package, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from main.utils import utc_now
 from news.models import News
-from packages.models import PackageRelation, Signoff
+from packages.models import PackageRelation, Signoff, Depend
 from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers, UserFinder
@@ -267,7 +267,7 @@ def report(request, report_name, username=None):
     elif report_name == 'unneeded-orphans':
         title = 'Orphan packages required by no other packages'
         owned = PackageRelation.objects.all().values('pkgbase')
-        required = PackageDepend.objects.all().values('depname')
+        required = Depend.objects.all().values('name')
         # The two separate calls to exclude is required to do the right thing
         packages = packages.exclude(pkgbase__in=owned).exclude(
                 pkgname__in=required)
