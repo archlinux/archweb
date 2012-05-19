@@ -218,48 +218,41 @@ class License(models.Model):
     class Meta:
         ordering = ['name']
 
-class Conflict(models.Model):
+
+class RelatedToBase(models.Model):
+    '''A base class for conflicts/provides/replaces/etc.'''
+    name = models.CharField(max_length=255, db_index=True)
+    version = models.CharField(max_length=255, default='')
+
+    def __unicode__(self):
+        if self.version:
+            return u'%s%s%s' % (self.name, self.comparison, self.version)
+        return self.name
+
+    class Meta:
+        abstract = True
+        ordering = ['name']
+
+
+class Conflict(RelatedToBase):
     pkg = models.ForeignKey('main.Package', related_name='conflicts')
-    name = models.CharField(max_length=255, db_index=True)
     comparison = models.CharField(max_length=255, default='')
-    version = models.CharField(max_length=255, default='')
 
-    def __unicode__(self):
-        if self.version:
-            return u'%s%s%s' % (self.name, self.comparison, self.version)
-        return self.name
 
-    class Meta:
-        ordering = ['name']
-
-class Provision(models.Model):
+class Provision(RelatedToBase):
     pkg = models.ForeignKey('main.Package', related_name='provides')
-    name = models.CharField(max_length=255, db_index=True)
     # comparison must be '=' for provides
-    comparison = '='
-    version = models.CharField(max_length=255, default='')
 
-    def __unicode__(self):
-        if self.version:
-            return u'%s=%s' % (self.name, self.version)
-        return self.name
+    @property
+    def comparison(self):
+        if self.version is not None and self.version != '':
+            return '='
+        return None
 
-    class Meta:
-        ordering = ['name']
 
-class Replacement(models.Model):
+class Replacement(RelatedToBase):
     pkg = models.ForeignKey('main.Package', related_name='replaces')
-    name = models.CharField(max_length=255, db_index=True)
     comparison = models.CharField(max_length=255, default='')
-    version = models.CharField(max_length=255, default='')
-
-    def __unicode__(self):
-        if self.version:
-            return u'%s%s%s' % (self.name, self.comparison, self.version)
-        return self.name
-
-    class Meta:
-        ordering = ['name']
 
 
 # hook up some signals
