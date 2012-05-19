@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 
-from main.models import Arch, Repo
+from main.models import Arch, Repo, Package
 from main.utils import set_created_field
 
 class PackageRelation(models.Model):
@@ -223,6 +223,40 @@ class RelatedToBase(models.Model):
     '''A base class for conflicts/provides/replaces/etc.'''
     name = models.CharField(max_length=255, db_index=True)
     version = models.CharField(max_length=255, default='')
+
+    def get_best_satisfier(self):
+        '''Find a satisfier for this related package that best matches the
+        given criteria. It will not search provisions, but will find packages
+        named and matching repo characteristics if possible.'''
+        # NOTE: this is cribbed directly from the PackageDepend method of the
+        # same name. Really, all of these things could use the same method if
+        # the PackageDepend class was moved here and field names were changed
+        # to match the layout we use here.
+        pkgs = Package.objects.normal().filter(pkgname=self.name)
+        if not self.pkg.arch.agnostic:
+            # make sure we match architectures if possible
+            arches = self.pkg.applicable_arches()
+            pkgs = pkgs.filter(arch__in=arches)
+        if len(pkgs) == 0:
+            # couldn't find a package in the DB
+            # it should be a virtual depend (or a removed package)
+            return None
+        if len(pkgs) == 1:
+            return pkgs[0]
+        # more than one package, see if we can't shrink it down
+        # grab the first though in case we fail
+        pkg = pkgs[0]
+        # prevents yet more DB queries, these lists should be short;
+        # after each grab the best available in case we remove all entries
+        pkgs = [p for p in pkgs if p.repo.staging == self.pkg.repo.staging]
+        if len(pkgs) > 0:
+            pkg = pkgs[0]
+
+        pkgs = [p for p in pkgs if p.repo.testing == self.pkg.repo.testing]
+        if len(pkgs) > 0:
+            pkg = pkgs[0]
+
+        return pkg
 
     def __unicode__(self):
         if self.version:
