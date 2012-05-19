@@ -120,22 +120,22 @@
             </td>
         </tr>
         {% endif %}{% endwith %}
-        {% with pkg.provides.all as provides %}{% if provides %}
+        {% with pkg.provides.all as all_related %}{% if all_related %}
         <tr>
             <th>Provides:</th>
-            <td class="wrap">{{ provides|join:", " }}</td>
+            <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with pkg.conflicts.all as conflicts %}{% if conflicts %}
+        {% with pkg.conflicts.all as all_related %}{% if all_related %}
         <tr>
             <th>Conflicts:</th>
-            <td class="wrap">{{ conflicts|join:", " }}</td>
+            <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with pkg.replaces.all as replaces %}{% if replaces %}
+        {% with pkg.replaces.all as all_related %}{% if all_related %}
         <tr>
             <th>Replaces:</th>
-            <td class="wrap">{{ replaces|join:", " }}</td>
+            <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>
