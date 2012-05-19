@@ -155,7 +155,7 @@ def create_depend(package, dep_str, optional=False):
         if match.group(3):
             depend.comparison = match.group(3)
         if match.group(4):
-            related.version = match.group(4)
+            depend.version = match.group(4)
     else:
         logger.warning('Package %s had unparsable depend string %s',
                 package.pkgname, dep_str)
