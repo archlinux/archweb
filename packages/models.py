@@ -295,7 +295,7 @@ class RelatedToBase(models.Model):
 
 
 class Depend(RelatedToBase):
-    pkg = models.ForeignKey('main.Package', related_name='depends_new')
+    pkg = models.ForeignKey('main.Package', related_name='depends')
     comparison = models.CharField(max_length=255, default='')
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
