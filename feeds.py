@@ -106,13 +106,13 @@ class PackageFeed(Feed):
 
 
 def news_etag(request, *args, **kwargs):
-    latest = retrieve_latest(News)
+    latest = retrieve_latest(News, 'last_modified')
     if latest:
         return hashlib.md5(str(latest)).hexdigest()
     return None
 
 def news_last_modified(request, *args, **kwargs):
-    return retrieve_latest(News)
+    return retrieve_latest(News, 'last_modified')
 
 class NewsFeed(Feed):
     feed_type = GuidNotPermalinkFeed

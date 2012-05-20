@@ -72,7 +72,7 @@ def refresh_latest(**kwargs):
     cache.set(cache_key, None, INVALIDATE_TIMEOUT)
 
 
-def retrieve_latest(sender):
+def retrieve_latest(sender, latest_by=None):
     # we could break this down based on the request url, but it would probably
     # cost us more in query time to do so.
     cache_key = CACHE_LATEST_PREFIX + sender.__name__
@@ -80,8 +80,9 @@ def retrieve_latest(sender):
     if latest:
         return latest
     try:
-        latest_by = sender._meta.get_latest_by
-        latest = sender.objects.values(latest_by).latest()[latest_by]
+        if latest_by is None:
+            latest_by = sender._meta.get_latest_by
+        latest = sender.objects.values(latest_by).latest(latest_by)[latest_by]
         # Using add means "don't overwrite anything in there". What could be in
         # there is an explicit None value that our refresh signal set, which
         # means we want to avoid race condition possibilities for a bit.
