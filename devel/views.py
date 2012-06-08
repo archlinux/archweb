@@ -234,7 +234,7 @@ def report(request, report_name, username=None):
             package.installed_size_pretty = filesizeformat(
                 package.installed_size)
             ratio = package.compressed_size / float(package.installed_size)
-            package.ratio = '%.2f' % ratio
+            package.ratio = '%.3f' % ratio
             package.compress_type = package.filename.split('.')[-1]
     elif report_name == 'uncompressed-man':
         title = 'Packages with uncompressed manpages'
