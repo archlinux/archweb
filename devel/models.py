@@ -2,11 +2,12 @@
 import pytz
 
 from django.db import models
+from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 from django_countries import CountryField
 
 from .fields import PGPKeyField
-from main.utils import make_choice
+from main.utils import make_choice, utc_now
 
 
 class UserProfile(models.Model):
@@ -44,6 +45,7 @@ class UserProfile(models.Model):
     allowed_repos = models.ManyToManyField('main.Repo', blank=True)
     latin_name = models.CharField(max_length=255, null=True, blank=True,
         help_text="Latin-form name; used only for non-Latin full names")
+    last_modified = models.DateTimeField(editable=False)
 
     class Meta:
         db_table = 'user_profiles'
@@ -95,5 +97,19 @@ class PGPSignature(models.Model):
 
     def __unicode__(self):
         return u'%s → %s' % (self.signer, self.signee)
+
+
+def set_last_modified(sender, **kwargs):
+    '''This will set the 'last_modified' field on the user profile to the
+    current UTC time when either the profile is updated.  For use as a pre_save
+    signal handler.'''
+    obj = kwargs['instance']
+    if hasattr(obj, 'last_modified'):
+        obj.last_modified = utc_now()
+
+
+# connect signals needed to keep cache in line with reality
+pre_save.connect(set_last_modified, sender=UserProfile,
+        dispatch_uid="devel.models")
 
 # vim: set ts=4 sw=4 et:
