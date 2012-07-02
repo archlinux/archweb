@@ -138,7 +138,7 @@ class Signoff(models.Model):
     arch = models.ForeignKey(Arch)
     repo = models.ForeignKey(Repo)
     user = models.ForeignKey(User, related_name="package_signoffs")
-    created = models.DateTimeField(editable=False)
+    created = models.DateTimeField(editable=False, db_index=True)
     revoked = models.DateTimeField(null=True)
     comments = models.TextField(null=True, blank=True)
 
@@ -170,7 +170,7 @@ class FlagRequest(models.Model):
     '''
     user = models.ForeignKey(User, blank=True, null=True)
     user_email = models.EmailField('email address')
-    created = models.DateTimeField(editable=False)
+    created = models.DateTimeField(editable=False, db_index=True)
     # Great work, Django... https://code.djangoproject.com/ticket/18212
     ip_address = models.GenericIPAddressField(verbose_name='IP address',
             unpack_ipv4=True)
@@ -246,7 +246,7 @@ class Update(models.Model):
     pkgbase = models.CharField(max_length=255)
     action_flag = models.PositiveSmallIntegerField('action flag',
             choices=UPDATE_ACTION_CHOICES)
-    created = models.DateTimeField(editable=False)
+    created = models.DateTimeField(editable=False, db_index=True)
 
     old_pkgver = models.CharField(max_length=255, null=True)
     old_pkgrel = models.CharField(max_length=255, null=True)
