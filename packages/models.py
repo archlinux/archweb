@@ -26,8 +26,6 @@ class PackageRelation(models.Model):
     created = models.DateTimeField(editable=False)
 
     def get_associated_packages(self):
-        # TODO: delayed import to avoid circular reference
-        from main.models import Package
         return Package.objects.normal().filter(pkgbase=self.pkgbase)
 
     def repositories(self):
@@ -146,8 +144,6 @@ class Signoff(models.Model):
 
     @property
     def packages(self):
-        # TODO: delayed import to avoid circular reference
-        from main.models import Package
         return Package.objects.normal().filter(pkgbase=self.pkgbase,
                 pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=self.epoch,
                 arch=self.arch, repo=self.repo)
@@ -202,14 +198,15 @@ class PackageGroup(models.Model):
     Represents a group a package is in. There is no actual group entity,
     only names that link to given packages.
     '''
-    pkg = models.ForeignKey('main.Package', related_name='groups')
+    pkg = models.ForeignKey(Package, related_name='groups')
     name = models.CharField(max_length=255, db_index=True)
 
     def __unicode__(self):
         return "%s: %s" % (self.name, self.pkg)
 
+
 class License(models.Model):
-    pkg = models.ForeignKey('main.Package', related_name='licenses')
+    pkg = models.ForeignKey(Package, related_name='licenses')
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -295,19 +292,19 @@ class RelatedToBase(models.Model):
 
 
 class Depend(RelatedToBase):
-    pkg = models.ForeignKey('main.Package', related_name='depends')
+    pkg = models.ForeignKey(Package, related_name='depends')
     comparison = models.CharField(max_length=255, default='')
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
 
 
 class Conflict(RelatedToBase):
-    pkg = models.ForeignKey('main.Package', related_name='conflicts')
+    pkg = models.ForeignKey(Package, related_name='conflicts')
     comparison = models.CharField(max_length=255, default='')
 
 
 class Provision(RelatedToBase):
-    pkg = models.ForeignKey('main.Package', related_name='provides')
+    pkg = models.ForeignKey(Package, related_name='provides')
     # comparison must be '=' for provides
 
     @property
@@ -318,7 +315,7 @@ class Provision(RelatedToBase):
 
 
 class Replacement(RelatedToBase):
-    pkg = models.ForeignKey('main.Package', related_name='replaces')
+    pkg = models.ForeignKey(Package, related_name='replaces')
     comparison = models.CharField(max_length=255, default='')
 
 
