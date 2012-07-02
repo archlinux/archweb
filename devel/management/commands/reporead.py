@@ -14,6 +14,7 @@ Example:
 """
 
 from collections import defaultdict
+from copy import copy
 import io
 import os
 import re
@@ -31,7 +32,7 @@ from django.db.utils import IntegrityError
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
 from main.utils import utc_now
-from packages.models import Depend, Conflict, Provision, Replacement
+from packages.models import Depend, Conflict, Provision, Replacement, Update
 
 
 logging.basicConfig(
@@ -362,6 +363,7 @@ def db_update(archname, reponame, pkgs, force=False):
         try:
             with transaction.commit_on_success():
                 populate_pkg(dbpkg, pkg, timestamp=utc_now())
+                Update.objects.log_update(None, dbpkg)
         except IntegrityError:
             logger.warning("Could not add package %s; "
                     "not fatal if another thread beat us to it.",
@@ -372,6 +374,7 @@ def db_update(archname, reponame, pkgs, force=False):
         logger.info("Removing package %s", pkgname)
         dbpkg = dbdict[pkgname]
         with transaction.commit_on_success():
+            Update.objects.log_update(dbpkg, None)
             # no race condition here as long as simultaneous threads both
             # issue deletes; second delete will be a no-op
             delete_pkg_files(dbpkg)
@@ -399,7 +402,9 @@ def db_update(archname, reponame, pkgs, force=False):
                 logger.debug("Package %s was already updated", pkg.name)
                 continue
             logger.info("Updating package %s", pkg.name)
+            prevpkg = copy(dbpkg)
             populate_pkg(dbpkg, pkg, force=force, timestamp=timestamp)
+            Update.objects.log_update(prevpkg, dbpkg)
 
     logger.info('Finished updating arch: %s', archname)
 

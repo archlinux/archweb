@@ -203,6 +203,40 @@ UPDATE_ACTION_CHOICES = (
 )
 
 
+class UpdateManager(models.Manager):
+    def log_update(self, old_pkg, new_pkg):
+        '''Utility method to help log an update. This will determine the type
+        based on how many packages are passed in, and will pull the relevant
+        necesary fields off the given packages.'''
+        update = Update()
+        if new_pkg:
+            update.action_flag = ADDITION
+            update.package = new_pkg
+            update.arch = new_pkg.arch
+            update.repo = new_pkg.repo
+            update.pkgname = new_pkg.pkgname
+            update.pkgbase = new_pkg.pkgbase
+            update.new_pkgver = new_pkg.pkgver
+            update.new_pkgrel = new_pkg.pkgrel
+            update.new_epoch = new_pkg.epoch
+        if old_pkg:
+            if new_pkg:
+                update.action_flag = CHANGE
+            else:
+                update.action_flag = DELETION
+                update.arch = old_pkg.arch
+                update.repo = old_pkg.repo
+                update.pkgname = old_pkg.pkgname
+                update.pkgbase = old_pkg.pkgbase
+
+            update.old_pkgver = old_pkg.pkgver
+            update.old_pkgrel = old_pkg.pkgrel
+            update.old_epoch = old_pkg.epoch
+
+        update.save(force_insert=True)
+        return update
+
+
 class Update(models.Model):
     package = models.ForeignKey(Package, related_name="updates",
             null=True, on_delete=models.SET_NULL)
@@ -221,6 +255,8 @@ class Update(models.Model):
     new_pkgver = models.CharField(max_length=255, null=True)
     new_pkgrel = models.CharField(max_length=255, null=True)
     new_epoch = models.PositiveIntegerField(null=True)
+
+    objects = UpdateManager()
 
     class Meta:
         get_latest_by = 'created'
