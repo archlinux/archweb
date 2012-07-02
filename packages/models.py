@@ -2,10 +2,12 @@ from collections import namedtuple
 
 from django.db import models
 from django.db.models.signals import pre_save
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import User
 
 from main.models import Arch, Repo, Package
 from main.utils import set_created_field
+
 
 class PackageRelation(models.Model):
     '''
@@ -193,6 +195,66 @@ class FlagRequest(models.Model):
     def __unicode__(self):
         return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
+
+UPDATE_ACTION_CHOICES = (
+    (ADDITION, 'Addition'),
+    (CHANGE, 'Change'),
+    (DELETION, 'Deletion'),
+)
+
+
+class Update(models.Model):
+    package = models.ForeignKey(Package, related_name="updates",
+            null=True, on_delete=models.SET_NULL)
+    repo = models.ForeignKey(Repo, related_name="updates")
+    arch = models.ForeignKey(Arch, related_name="updates")
+    pkgname = models.CharField(max_length=255)
+    pkgbase = models.CharField(max_length=255)
+    action_flag = models.PositiveSmallIntegerField('action flag',
+            choices=UPDATE_ACTION_CHOICES)
+    created = models.DateTimeField(editable=False)
+
+    old_pkgver = models.CharField(max_length=255, null=True)
+    old_pkgrel = models.CharField(max_length=255, null=True)
+    old_epoch = models.PositiveIntegerField(null=True)
+
+    new_pkgver = models.CharField(max_length=255, null=True)
+    new_pkgrel = models.CharField(max_length=255, null=True)
+    new_epoch = models.PositiveIntegerField(null=True)
+
+    class Meta:
+        get_latest_by = 'created'
+
+    def is_addition(self):
+        return self.action_flag == ADDITION
+
+    def is_change(self):
+        return self.action_flag == CHANGE
+
+    def is_deletion(self):
+        return self.action_flag == DELETION
+
+    @property
+    def old_version(self):
+        if self.action_flag == ADDITION:
+            return None
+        if self.old_epoch > 0:
+            return u'%d:%s-%s' % (self.old_epoch, self.old_pkgver, self.old_pkgrel)
+        return u'%s-%s' % (self.old_pkgver, self.old_pkgrel)
+
+    @property
+    def new_version(self):
+        if self.action_flag == DELETION:
+            return None
+        if self.new_epoch > 0:
+            return u'%d:%s-%s' % (self.new_epoch, self.new_pkgver, self.new_pkgrel)
+        return u'%s-%s' % (self.new_pkgver, self.new_pkgrel)
+
+    def __unicode__(self):
+        return u'%s of %s on %s' % (self.get_action_flag_display(),
+                self.pkgname, self.created)
+
+
 class PackageGroup(models.Model):
     '''
     Represents a group a package is in. There is no actual group entity,
@@ -320,7 +382,7 @@ class Replacement(RelatedToBase):
 
 
 # hook up some signals
-for sender in (PackageRelation, SignoffSpecification, Signoff):
+for sender in (PackageRelation, SignoffSpecification, Signoff, Update):
     pre_save.connect(set_created_field, sender=sender,
             dispatch_uid="packages.models")
 
