@@ -186,7 +186,7 @@
         <div id="pkgdeps" class="listing">
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
                 Dependencies ({{deps|length}})</h3>
-            {% if deps %}<ul>
+            {% if deps %}<ul id="pkgdepslist">
                 {% for depend in deps %}{% include "packages/details_depend.html" %}{% endfor %}
             </ul>{% endif %}
         </div>
@@ -196,7 +196,7 @@
         <div id="pkgreqs" class="listing">
             <h3 title="Packages that require {{ pkg.pkgname }}">
                 Required By ({{rqdby|length}})</h3>
-            {% if rqdby %}<ul>
+            {% if rqdby %}<ul id="pkgreqslist">
                 {% for req in rqdby %}{% include "packages/details_requiredby.html" %}{% endfor %}
             </ul>{% endif %}
         </div>
@@ -219,6 +219,10 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
-$(document).ready(ajaxifyFiles);
+$(document).ready(function() {
+        ajaxifyFiles();
+        collapseDependsList("#pkgdepslist");
+        collapseDependsList("#pkgreqslist");
+});
 </script>
 {% endblock %}

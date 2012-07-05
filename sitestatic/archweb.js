@@ -126,9 +126,9 @@ if (typeof $.tablesorter !== 'undefined') {
 (function($) {
   $.fn.enableCheckboxRangeSelection = function() {
     var lastCheckbox = null;
-	var lastElement = null;
+    var lastElement = null;
 
-	var spec = this;
+    var spec = this;
     spec.unbind("click.checkboxrange");
     spec.bind("click.checkboxrange", function(e) {
       if (lastCheckbox != null && e.shiftKey) {
@@ -167,6 +167,28 @@ function ajaxifyFiles() {
         $.get(this.href, function(data) {
             $('#pkgfilelist').html(data);
         });
+    });
+}
+
+function collapseDependsList(list) {
+    var limit = 20;
+    // hide everything past a given limit, but don't do anything if we don't
+    // enough items that it is worth adding the link
+    list = $(list);
+    var items = list.find('li').slice(limit);
+    if (items.length == 0) {
+        return;
+    }
+    items.hide();
+    var linkid = list.attr('id') + 'link';
+    list.after('<p><a id="' + linkid + '" href="#">Show More…</a></p>');
+
+    // add links and wire them up to show the hidden items
+    $('#' + linkid).click(function(event) {
+        event.preventDefault();
+        list.find('li').show();
+        // remove the full <p/> node from the DOM
+        $(this).parent().remove();
     });
 }
 
