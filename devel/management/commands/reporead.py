@@ -283,7 +283,10 @@ def populate_files(dbpkg, repopkg, force=False):
                 len(repopkg.files), dbpkg.pkgname)
         pkg_files = []
         for f in repopkg.files:
-            dirname, filename = f.rsplit('/', 1)
+            if '/' in f:
+                dirname, filename = f.rsplit('/', 1)
+            else:
+                dirname, filename = '', f
             if filename == '':
                 filename = None
             pkgfile = PackageFile(pkg=dbpkg,
