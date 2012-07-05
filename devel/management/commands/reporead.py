@@ -285,13 +285,14 @@ def populate_files(dbpkg, repopkg, force=False):
         for f in repopkg.files:
             if '/' in f:
                 dirname, filename = f.rsplit('/', 1)
+                dirname += '/'
             else:
                 dirname, filename = '', f
             if filename == '':
                 filename = None
             pkgfile = PackageFile(pkg=dbpkg,
                     is_directory=(filename is None),
-                    directory=dirname + '/',
+                    directory=dirname,
                     filename=filename)
             pkg_files.append(pkgfile)
         PackageFile.objects.bulk_create(pkg_files)
