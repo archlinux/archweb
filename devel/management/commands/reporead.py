@@ -273,7 +273,7 @@ def populate_files(dbpkg, repopkg, force=False):
             return
         if not dbpkg.files_last_update or not dbpkg.last_update:
             pass
-        elif dbpkg.files_last_update > dbpkg.last_update:
+        elif dbpkg.files_last_update >= dbpkg.last_update:
             return
 
     # only delete files if we are reading a DB that contains them
@@ -427,7 +427,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
         with transaction.commit_on_success():
             if not dbpkg.files_last_update or not dbpkg.last_update:
                 pass
-            elif not force and dbpkg.files_last_update > dbpkg.last_update:
+            elif not force and dbpkg.files_last_update >= dbpkg.last_update:
                 logger.debug("Files for %s are up to date", pkg.name)
                 continue
             dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
