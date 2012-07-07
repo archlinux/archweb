@@ -6,7 +6,7 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import User
 
 from main.models import Arch, Repo, Package
-from main.utils import set_created_field
+from main.utils import set_created_field, database_vendor
 
 
 class PackageRelation(models.Model):
@@ -207,7 +207,12 @@ class UpdateManager(models.Manager):
     def log_update(self, old_pkg, new_pkg):
         '''Utility method to help log an update. This will determine the type
         based on how many packages are passed in, and will pull the relevant
-        necesary fields off the given packages.'''
+        necesary fields off the given packages.
+        Note that in some cases, this is a no-op if we know this database type
+        supports triggers to add these rows instead.'''
+        if database_vendor(Package, 'write') in ('sqlite', 'postgresql'):
+            # we log updates using database triggers for these backends
+            return
         update = Update()
         if new_pkg:
             update.action_flag = ADDITION
@@ -222,6 +227,12 @@ class UpdateManager(models.Manager):
         if old_pkg:
             if new_pkg:
                 update.action_flag = CHANGE
+                # ensure we should even be logging this
+                if (old_pkg.pkgver == new_pkg.pkgver and
+                        old_pkg.pkgrel == new_pkg.pkgrel and
+                        old_pkg.epoch == new_pkg.epoch):
+                    # all relevant fields were the same; e.g. a force update
+                    return
             else:
                 update.action_flag = DELETION
                 update.arch = old_pkg.arch

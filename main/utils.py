@@ -8,6 +8,7 @@ import hashlib
 from pytz import utc
 
 from django.core.cache import cache
+from django.db import connections, router
 
 
 CACHE_TIMEOUT = 1800
@@ -104,6 +105,16 @@ def set_created_field(sender, **kwargs):
     obj = kwargs['instance']
     if hasattr(obj, 'created') and not obj.created:
         obj.created = utc_now()
+
+
+def database_vendor(model, mode='read'):
+    if mode == 'read':
+        database = router.db_for_read(model)
+    elif mode == 'write':
+        database = router.db_for_write(model)
+    else:
+        raise Exception('Invalid database mode specified')
+    return connections[database].vendor
 
 
 def groupby_preserve_order(iterable, keyfunc):
