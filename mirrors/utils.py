@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.db.models import Avg, Count, Max, Min, StdDev
 from django_countries.fields import Country
 
-from main.utils import cache_function, utc_now
+from main.utils import cache_function, utc_now, database_vendor
 from .models import MirrorLog, MirrorProtocol, MirrorUrl
 
 
@@ -40,8 +40,11 @@ def get_mirror_statuses(cutoff=default_cutoff):
             success_count=Count('logs__duration'),
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
-            duration_avg=Avg('logs__duration'),
-            duration_stddev=StdDev('logs__duration'))
+            duration_avg=Avg('logs__duration'))
+
+    vendor = database_vendor(MirrorUrl)
+    if vendor != 'sqlite':
+        urls.annotate(duration_stddev=StdDev('logs__duration'))
 
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
@@ -70,6 +73,9 @@ def get_mirror_statuses(cutoff=default_cutoff):
         check_frequency = None
 
     for url in urls:
+        # fake the standard deviation for local testing setups
+        if vendor == 'sqlite':
+            setattr(url, 'duration_stddev', 0.0)
         annotate_url(url, delays)
 
     return {
