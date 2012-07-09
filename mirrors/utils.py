@@ -44,7 +44,7 @@ def get_mirror_statuses(cutoff=default_cutoff):
 
     vendor = database_vendor(MirrorUrl)
     if vendor != 'sqlite':
-        urls.annotate(duration_stddev=StdDev('logs__duration'))
+        urls = urls.annotate(duration_stddev=StdDev('logs__duration'))
 
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
