@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.simple_tag
 def jquery():
-    version = '1.4.4'
+    version = '1.7.2'
     oncdn = getattr(settings, 'CDN_ENABLED', True)
     if oncdn:
         link = 'https://ajax.googleapis.com/ajax/libs/jquery/' \
@@ -20,7 +20,8 @@ def jquery():
 
 @register.simple_tag
 def jquery_tablesorter():
-    filename = 'jquery.tablesorter.min.js'
+    version = '2.3.11'
+    filename = 'jquery.tablesorter-%s.min.js' % version
     link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
 

@@ -58,6 +58,7 @@
 $(document).ready(function() {
     $("#clocks-table:has(tbody tr)").tablesorter({
         widgets: ['zebra'],
+        sortLocaleCompare: true,
         sortList: [[0,0]],
         headers: { 4: { sorter: false } }
     });

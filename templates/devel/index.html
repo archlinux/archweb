@@ -306,11 +306,14 @@ $(document).ready(function() {
             sortList: [[0,0]],
             headers: { 6: {sorter: false } }
     });
-    $(".dash-stats").tablesorter({
+    var settings = {
         widgets: ['zebra'],
         sortList: [[0,0]],
         headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' }, 3: { sorter: 'pkgcount' } }
-    });
+    };
+    $(".dash-stats").not($("#stats-by-maintainer")).tablesorter(settings);
+    settings['sortLocaleCompare'] = true;
+    $("#stats-by-maintainer").tablesorter(settings);
 });
 </script>
 {% endblock %}

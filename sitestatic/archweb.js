@@ -26,11 +26,11 @@ if (typeof $.tablesorter !== 'undefined') {
             var c = table.config;
             return ($.inArray(s, this.special) > -1) || $.tablesorter.isDigit(s, c);
         },
-        format: function(s) {
+        format: function(s, t) {
             if ($.inArray(s, this.special) > -1) {
                 return Number.MAX_VALUE;
             }
-            return $.tablesorter.formatFloat(s);
+            return $.tablesorter.formatFloat(s, t);
         },
         type: 'numeric'
     });
@@ -73,7 +73,7 @@ if (typeof $.tablesorter !== 'undefined') {
         is: function(s) {
             return this.re.test(s);
         },
-        format: function(s) {
+        format: function(s, t) {
             var matches = this.re.exec(s);
             if (!matches) {
                 return 0;
@@ -86,7 +86,7 @@ if (typeof $.tablesorter !== 'undefined') {
              * between 0-11, because things have to be difficult. */
             var date = new Date(matches[1], matches[2] - 1, matches[3],
                 matches[4], matches[5], matches[7]);
-            return $.tablesorter.formatFloat(date.getTime());
+            return $.tablesorter.formatFloat(date.getTime(), t);
         },
         type: 'numeric'
     });
@@ -253,7 +253,7 @@ function filter_packages() {
     all_rows.hide();
     rows.show();
     /* make sure we update the odd/even styling from sorting */
-    $('.results').trigger('applyWidgets');
+    $('.results').trigger('applyWidgets', [false]);
 }
 function filter_packages_reset() {
     $('#id_archonly').val('both');
@@ -274,7 +274,7 @@ function todolist_flag() {
                 'incomplete').removeClass('complete');
         }
         /* let tablesorter know the cell value has changed */
-        $('.results').trigger('updateCell', $(link).closest('td'));
+        $('.results').trigger('updateCell', [$(link).closest('td')[0], false, null]);
     });
     return false;
 }
@@ -303,7 +303,7 @@ function filter_todolist() {
     rows.show();
     $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
-    $('.results').trigger('applyWidgets');
+    $('.results').trigger('applyWidgets', [false]);
 }
 function filter_todolist_reset() {
     $('#id_incomplete').removeAttr('checked');
@@ -360,7 +360,8 @@ function signoff_package() {
             link.text('Revoke Signoff');
             link.attr('href', base_href + '/signoff/revoke/');
         }
-        $('.results').trigger('updateCell', approved);
+        /* let tablesorter know the cell value has changed */
+        $('.results').trigger('updateCell', [approved[0], false, null]);
     });
     return false;
 }
@@ -385,7 +386,7 @@ function filter_signoffs() {
     rows.show();
     $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
-    $('.results').trigger('applyWidgets');
+    $('.results').trigger('applyWidgets', [false]);
 }
 function filter_signoffs_reset() {
     $('#signoffs_filter .arch_filter').attr('checked', 'checked');

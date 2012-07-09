@@ -273,7 +273,7 @@ table.pretty2 {
     }
 
         /* additional styles for JS sorting */
-        table.pretty2 th.header {
+        table.pretty2 th.tablesorter-header {
             padding-right: 20px;
             background-image: url(nosort.gif);
             background-repeat: no-repeat;
@@ -281,11 +281,11 @@ table.pretty2 {
             cursor: pointer;
         }
 
-        table.pretty2 th.headerSortDown {
+        table.pretty2 th.tablesorter-headerSortDown {
             background-image: url(desc.gif);
         }
 
-        table.pretty2 th.headerSortUp {
+        table.pretty2 th.tablesorter-headerSortUp {
             background-image: url(asc.gif);
         }
 
@@ -617,7 +617,7 @@ table.results {
     }
 
         /* additional styles for JS sorting */
-        table.results th.header {
+        table.results th.tablesorter-header {
             padding-right: 20px;
             background-image: url(nosort.gif);
             background-repeat: no-repeat;
@@ -625,12 +625,12 @@ table.results {
             cursor: pointer;
         }
 
-        table.results th.headerSortDown {
+        table.results th.tablesorter-headerSortDown {
             background-color: #e4eeff;
             background-image: url(desc.gif);
         }
 
-        table.results th.headerSortUp {
+        table.results th.tablesorter-headerSortUp {
             background-color: #e4eeff;
             background-image: url(asc.gif);
         }
