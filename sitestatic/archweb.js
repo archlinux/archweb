@@ -288,7 +288,7 @@ function signoff_package() {
         }
         /* update the approved column to reflect reality */
         var approved = link.closest('tr').children('.approval');
-        approved.attr('class', '');
+        approved.attr('class', 'approval');
         if (data.known_bad) {
             approved.text('Bad').addClass('signoff-bad');
         } else if (!data.enabled) {
