@@ -17,4 +17,11 @@ def jquery():
         link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
 
+
+@register.simple_tag
+def jquery_tablesorter():
+    filename = 'jquery.tablesorter.min.js'
+    link = staticfiles_storage.url(filename)
+    return '<script type="text/javascript" src="%s"></script>' % link
+
 # vim: set ts=4 sw=4 et:

@@ -65,8 +65,7 @@
     {% endfor %}
 </div>
 {% endif %}
-{% load cdn %}{% jquery %}
-<script type="text/javascript" src="{% static "jquery.tablesorter.min.js" %}"></script>
+{% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
