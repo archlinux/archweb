@@ -123,7 +123,7 @@ SELECT p.id, q.id
     cursor.execute(sql, [arch_a.id, arch_b.id])
     results = cursor.fetchall()
     # column A will always have a value, column B might be NULL
-    to_fetch = [row[0] for row in results]
+    to_fetch = set(row[0] for row in results)
     # fetch all of the necessary packages
     pkgs = Package.objects.normal().in_bulk(to_fetch)
     # now build a list of tuples containing differences
