@@ -30,7 +30,7 @@ import urllib2
 from django.core.management.base import NoArgsCommand
 from django.db import transaction
 
-from main.utils import utc_now
+from main.utils import utc_now, database_vendor
 from mirrors.models import MirrorUrl, MirrorLog
 
 logging.basicConfig(
@@ -207,7 +207,11 @@ class MirrorCheckPool(object):
         logger.debug("joining on all threads")
         self.tasks.join()
         logger.debug("processing %d log entries", len(self.logs))
-        MirrorLog.objects.bulk_create(self.logs)
+        if database_vendor(MirrorLog, mode='write') == 'sqlite':
+            for log in self.logs:
+                log.save(force_insert=True)
+        else:
+            MirrorLog.objects.bulk_create(self.logs)
         logger.debug("log entries saved")
 
 # vim: set ts=4 sw=4 et:
