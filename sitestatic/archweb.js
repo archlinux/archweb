@@ -172,18 +172,18 @@ function ajaxifyFiles() {
 
 function collapseDependsList(list) {
     var limit = 20;
-    // hide everything past a given limit, but don't do anything if we don't
-    // enough items that it is worth adding the link
     list = $(list);
+	// Hide everything past a given limit. Don't do anything if we don't have
+	// enough items, or the link already exists.
+    var linkid = list.attr('id') + 'link';
     var items = list.find('li').slice(limit);
-    if (items.length == 0) {
+    if (items.length == 0 || $('#' + linkid).length > 0) {
         return;
     }
     items.hide();
-    var linkid = list.attr('id') + 'link';
     list.after('<p><a id="' + linkid + '" href="#">Show More…</a></p>');
 
-    // add links and wire them up to show the hidden items
+    // add link and wire it up to show the hidden items
     $('#' + linkid).click(function(event) {
         event.preventDefault();
         list.find('li').show();
