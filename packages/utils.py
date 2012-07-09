@@ -8,7 +8,8 @@ from django.db.models import Count, Max, F
 from django.contrib.auth.models import User
 
 from main.models import Package, PackageFile, Arch, Repo
-from main.utils import cache_function, groupby_preserve_order, PackageStandin
+from main.utils import (cache_function, database_vendor,
+        groupby_preserve_order, PackageStandin)
 from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
@@ -150,12 +151,18 @@ SELECT p.id, q.id
 
 def multilib_differences():
     # Query for checking multilib out of date-ness
-    sql = """
-SELECT ml.id, reg.id
-    FROM packages ml
-    JOIN packages reg
-    ON (
-        reg.pkgname = (
+    if database_vendor(Package) == 'sqlite':
+        pkgname_sql = """
+            CASE WHEN ml.pkgname LIKE %s
+                THEN SUBSTR(ml.pkgname, 7)
+            WHEN ml.pkgname LIKE %s
+                THEN SUBSTR(ml.pkgname, 1, LENGTH(ml.pkgname) - 9)
+            ELSE
+                ml.pkgname
+            END
+        """
+    else:
+        pkgname_sql = """
             CASE WHEN ml.pkgname LIKE %s
                 THEN SUBSTRING(ml.pkgname, 7)
             WHEN ml.pkgname LIKE %s
@@ -163,7 +170,13 @@ SELECT ml.id, reg.id
             ELSE
                 ml.pkgname
             END
-        )
+        """
+    sql = """
+SELECT ml.id, reg.id
+    FROM packages ml
+    JOIN packages reg
+    ON (
+        reg.pkgname = (""" + pkgname_sql + """)
         AND reg.pkgver != ml.pkgver
     )
     JOIN repos r ON reg.repo_id = r.id
@@ -172,7 +185,7 @@ SELECT ml.id, reg.id
     AND r.staging = %s
     AND reg.arch_id = %s
     ORDER BY ml.last_update
-"""
+    """
     multilib = Repo.objects.get(name__iexact='multilib')
     i686 = Arch.objects.get(name='i686')
     params = ['lib32-%', '%-multilib', multilib.id, False, False, i686.id]
