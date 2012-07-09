@@ -11,6 +11,7 @@ Usage: ./manage.py mirrorcheck
 
 from collections import deque
 from datetime import datetime
+from httplib import HTTPException
 import logging
 import os
 from optparse import make_option
@@ -114,6 +115,11 @@ def check_mirror_url(mirror_url, timeout):
             log.error = "Connection timed out."
         elif isinstance(e.reason, socket.error):
             log.error = e.reason.args[1]
+        logger.debug("failed: %s, %s", url, log.error)
+    except HTTPException as e:
+        # e.g., BadStatusLine
+        log.is_success = False
+        log.error = "Exception in processing HTTP request."
         logger.debug("failed: %s, %s", url, log.error)
     except socket.timeout as e:
         log.is_success = False
