@@ -103,6 +103,7 @@ legacy_urls = (
     ('^index.php',     '/'),
     ('^logos.php',     '/art/'),
     ('^news.php',      '/news/'),
+    ('^packages.php',  '/packages/'),
 )
 
 for old_url, new_url in legacy_urls:
