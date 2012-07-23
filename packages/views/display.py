@@ -1,18 +1,21 @@
+import datetime
 import json
 from string import Template
 from urllib import urlencode
 
 from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.timezone import now
 from django.views.generic.simple import direct_to_template
 from django.views.decorators.vary import vary_on_headers
 
 from main.models import Package, PackageFile, Arch, Repo
 from mirrors.utils import get_mirror_url_for_download
+from ..models import Update
 from ..utils import get_group_info, PackageJSONEncoder
 
 
-def split_package_details(request, name='', repo='', arch=''):
+def split_package_details(request, name, repo, arch):
     arch = get_object_or_404(Arch, name=arch)
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
@@ -21,10 +24,10 @@ def split_package_details(request, name='', repo='', arch=''):
             repo__testing=repo.testing, repo__staging=repo.staging,
             arch__in=arches).order_by('pkgname')
     if len(pkgs) == 0:
-        raise Http404
+        return None
     # we have packages, but ensure at least one is in the given repo
     if not any(True for pkg in pkgs if pkg.repo == repo):
-        raise Http404
+        return None
     context = {
         'list_title': 'Split Package Details',
         'name': name,
@@ -33,6 +36,30 @@ def split_package_details(request, name='', repo='', arch=''):
     }
     return direct_to_template(request, 'packages/packages_list.html',
             context)
+
+
+CUTOFF = datetime.timedelta(days=60)
+
+
+def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
+    '''We're just steps away from raising a 404, but check our packages update
+    table first to see if this package has existed in this repo before. If so,
+    we can show a 410 Gone page and point the requester in the right
+    direction.'''
+    arch = get_object_or_404(Arch, name=arch)
+    arches = [ arch ]
+    arches.extend(Arch.objects.filter(agnostic=True))
+    match = Update.objects.select_related('arch', 'repo').filter(
+            pkgname=name, repo__name__iexact=repo, arch__in=arches)
+    if cutoff is not None:
+        when = now() - cutoff
+        match = match.filter(created__gte=when)
+    try:
+        match = match.latest()
+        return render(request, 'packages/removed.html',
+                {'update': match, }, status=410)
+    except Update.DoesNotExist:
+        return None
 
 
 def details(request, name='', repo='', arch=''):
@@ -54,7 +81,16 @@ def details(request, name='', repo='', arch=''):
                     repo__name__iexact=repo, arch__agnostic=True)
                 if len(pkgs) == 1:
                     return redirect(pkgs[0], permanent=True)
-            return split_package_details(request, name, repo, arch)
+            # do we have a split package matching this criteria?
+            ret = split_package_details(request, name, repo, arch)
+            if ret is None:
+                # maybe we have a recently-removed package?
+                ret = recently_removed_package(request, name, repo, arch)
+            if ret is not None:
+                return ret
+            else:
+                # we've tried everything at this point, nothing to see
+                raise Http404
     else:
         pkg_data = [
             ('arch', arch.lower()),

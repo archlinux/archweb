@@ -297,6 +297,9 @@ class Update(models.Model):
             return u'%d:%s-%s' % (self.new_epoch, self.new_pkgver, self.new_pkgrel)
         return u'%s-%s' % (self.new_pkgver, self.new_pkgrel)
 
+    def elsewhere(self):
+        return Package.objects.filter(pkgname=self.pkgname, arch=self.arch)
+
     def __unicode__(self):
         return u'%s of %s on %s' % (self.get_action_flag_display(),
                 self.pkgname, self.created)
