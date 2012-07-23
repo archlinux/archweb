@@ -115,7 +115,7 @@
     using different criteria, or try
     {% if search_form.q.data %}
     <a href="https://aur.archlinux.org/packages.php?K={{ search_form.q.data|urlencode }}">searching the AUR</a>
-    {% else %}searching the AUR{% endif %}
+    {% else %}searching the <a href="https://aur.archlinux.org/">AUR</a>{% endif %}
     to see if the package can be found there.</p>
 </div>
 {% endif %}

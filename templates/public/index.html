@@ -155,7 +155,7 @@
             title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
         <li><a href="{% url 'mirror-status' %}"
             title="Check the status of all known mirrors">Mirror Status</a></li>
-        <li><a href="/packages/differences/"
+        <li><a href="{% url 'packages-differences' %}"
             title="See differences in packages between available architectures">Differences Reports</a>
         <img width="16" height="16" src="{% static "new.png" %}" alt="New"/></li>
     </ul>
