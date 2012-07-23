@@ -7,21 +7,22 @@
 {% block navbarclass %}anb-download{% endblock %}
 
 {% block content %}
-{% with "2011.08.19" as version %}
+{% with version="2012.07.15" kernel_version="3.4.4" %}
 <div id="arch-downloads" class="box">
 
     <h2>Arch Linux Downloads</h2>
 
     <h3>Release Info</h3>
 
-    <p>All available images can be burned to a CD, mounted as an ISO file,
-    or be directly written to a USB stick using a utility like `dd`. These
-    are intended for new installations only; an existing Arch Linux system
+    <p>The image can be burned to a CD, mounted as an ISO file,
+    or be directly written to a USB stick using a utility like `dd`. It
+    is intended for new installations only; an existing Arch Linux system
     can always be updated with `pacman -Syu`.</p>
 
     <ul>
-        <li><strong>Current Release:</strong> <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:{{ version }}">{{ version }}</a></li>
-        <li><strong>Included Kernel:</strong> 3.0.3</li>
+        <li><strong>Current Release:</strong> {{ version }}</li>
+		<li><strong>Included Kernel:</strong> {{ kernel_version }}</li>
+        <li><a href="https://wiki.archlinux.org/index.php/Arch_Install_Scripts">Arch Install Scripts</a></li>
         <li><strong>Resources:</strong>
             <ul>
                 <li><a href="https://bugs.archlinux.org/index.php?project=6"
@@ -30,15 +31,6 @@
                     title="Arch Linux Release Engineering mailing list">Mailing List</a></li>
             </ul>
         </li>
-    </ul>
-
-    <p><strong>Links and Instructions:</strong></p>
-
-    <ul id="download-help">
-        <li><a href="https://www.archlinux.org/iso/{{ version }}/README"
-            title="Official download instructions">Readme and Instructions</a></li>
-        <li><a href="https://wiki.archlinux.org/index.php/Official_Arch_Linux_Install_Guide"
-            title="Official Installation Guide">Arch Linux Install Guide</a></li>
     </ul>
 
     <h3>Existing Arch Users</h3>
