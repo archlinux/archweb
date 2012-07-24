@@ -253,7 +253,7 @@ class Update(models.Model):
             null=True, on_delete=models.SET_NULL)
     repo = models.ForeignKey(Repo, related_name="updates")
     arch = models.ForeignKey(Arch, related_name="updates")
-    pkgname = models.CharField(max_length=255)
+    pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255)
     action_flag = models.PositiveSmallIntegerField('action flag',
             choices=UPDATE_ACTION_CHOICES)
