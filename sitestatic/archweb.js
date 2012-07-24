@@ -164,8 +164,13 @@ function enablePreview() {
 function ajaxifyFiles() {
     $('#filelink').click(function(event) {
         event.preventDefault();
-        $.get(this.href, function(data) {
-            $('#pkgfilelist').html(data);
+        $.getJSON(this.href + 'json/', function(data) {
+            // Map each file item into an <li/> with the correct class
+            var list_items = $.map(data.files, function(value, i) {
+                var cls = value.match(/\/$/) ? 'd' : 'f';
+                return ['<li class="', cls, '">', value, '</li>'];
+            });
+            $('#pkgfilelist').html('<ul>' + list_items.join('') + '</ul>');
         });
     });
 }
@@ -173,8 +178,8 @@ function ajaxifyFiles() {
 function collapseDependsList(list) {
     var limit = 20;
     list = $(list);
-	// Hide everything past a given limit. Don't do anything if we don't have
-	// enough items, or the link already exists.
+    // Hide everything past a given limit. Don't do anything if we don't have
+    // enough items, or the link already exists.
     var linkid = list.attr('id') + 'link';
     var items = list.find('li').slice(limit);
     if (items.length == 0 || $('#' + linkid).length > 0) {
