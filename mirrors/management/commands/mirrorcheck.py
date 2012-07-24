@@ -29,8 +29,9 @@ import urllib2
 
 from django.core.management.base import NoArgsCommand
 from django.db import transaction
+from django.utils.timezone import now
 
-from main.utils import utc_now, database_vendor
+from main.utils import database_vendor
 from mirrors.models import MirrorUrl, MirrorLog
 
 logging.basicConfig(
@@ -83,7 +84,7 @@ def parse_lastsync(log, data):
 def check_mirror_url(mirror_url, timeout):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
-    log = MirrorLog(url=mirror_url, check_time=utc_now())
+    log = MirrorLog(url=mirror_url, check_time=now())
     headers = {'User-Agent': 'archweb/1.0'}
     req = urllib2.Request(url, None, headers)
     try:
@@ -136,7 +137,7 @@ def check_mirror_url(mirror_url, timeout):
 def check_rsync_url(mirror_url, timeout):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
-    log = MirrorLog(url=mirror_url, check_time=utc_now())
+    log = MirrorLog(url=mirror_url, check_time=now())
 
     tempdir = tempfile.mkdtemp()
     lastsync_path = os.path.join(tempdir, 'lastsync')

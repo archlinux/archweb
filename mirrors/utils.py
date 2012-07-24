@@ -1,13 +1,14 @@
 from datetime import timedelta
 
 from django.db.models import Avg, Count, Max, Min, StdDev
+from django.utils.timezone import now
 from django_countries.fields import Country
 
-from main.utils import cache_function, utc_now, database_vendor
+from main.utils import cache_function, database_vendor
 from .models import MirrorLog, MirrorProtocol, MirrorUrl
 
 
-default_cutoff = timedelta(hours=24)
+DEFAULT_CUTOFF = timedelta(hours=24)
 
 def annotate_url(url, delays):
     '''Given a MirrorURL object, add a few more attributes to it regarding
@@ -30,8 +31,8 @@ def annotate_url(url, delays):
 
 
 @cache_function(123)
-def get_mirror_statuses(cutoff=default_cutoff):
-    cutoff_time = utc_now() - cutoff
+def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
+    cutoff_time = now() - cutoff
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             mirror__active=True, mirror__public=True,
@@ -88,8 +89,8 @@ def get_mirror_statuses(cutoff=default_cutoff):
 
 
 @cache_function(117)
-def get_mirror_errors(cutoff=default_cutoff):
-    cutoff_time = utc_now() - cutoff
+def get_mirror_errors(cutoff=DEFAULT_CUTOFF):
+    cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(
@@ -105,11 +106,11 @@ def get_mirror_errors(cutoff=default_cutoff):
 
 
 @cache_function(295)
-def get_mirror_url_for_download(cutoff=default_cutoff):
+def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
     '''Find a good mirror URL to use for package downloads. If we have mirror
     status data available, it is used to determine a good choice by looking at
     the last batch of status rows.'''
-    cutoff_time = utc_now() - cutoff
+    cutoff_time = now() - cutoff
     status_data = MirrorLog.objects.filter(
             check_time__gte=cutoff_time).aggregate(
             Max('check_time'), Max('last_sync'))

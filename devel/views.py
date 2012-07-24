@@ -24,11 +24,11 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.simple import direct_to_template
 from django.utils.encoding import force_unicode
 from django.utils.http import http_date
+from django.utils.timezone import now
 
 from .models import UserProfile
 from main.models import Package, PackageFile, TodolistPkg
 from main.models import Arch, Repo
-from main.utils import utc_now
 from news.models import News
 from packages.models import PackageRelation, Signoff, Depend
 from packages.utils import get_signoff_groups
@@ -122,15 +122,15 @@ def clock(request):
         else:
             dev.last_action = None
 
-    now = utc_now()
+    current_time = now()
     page_dict = {
             'developers': devs,
-            'utc_now': now,
+            'utc_now': current_time,
     }
 
     response = direct_to_template(request, 'devel/clock.html', page_dict)
     if not response.has_header('Expires'):
-        expire_time = now.replace(second=0, microsecond=0)
+        expire_time = current_time.replace(second=0, microsecond=0)
         expire_time += timedelta(minutes=1)
         expire_time = time.mktime(expire_time.timetuple())
         response['Expires'] = http_date(expire_time)
@@ -198,12 +198,12 @@ def report(request, report_name, username=None):
 
     if report_name == 'old':
         title = 'Packages last built more than one year ago'
-        cutoff = utc_now() - timedelta(days=365)
+        cutoff = now() - timedelta(days=365)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
     elif report_name == 'long-out-of-date':
         title = 'Packages marked out-of-date more than 90 days ago'
-        cutoff = utc_now() - timedelta(days=90)
+        cutoff = now() - timedelta(days=90)
         packages = packages.filter(
                 flag_date__lt=cutoff).order_by('flag_date')
     elif report_name == 'big':

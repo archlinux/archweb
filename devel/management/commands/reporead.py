@@ -28,10 +28,11 @@ from pytz import utc
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, router, transaction
 from django.db.utils import IntegrityError
+from django.utils.timezone import now
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
-from main.utils import utc_now, database_vendor
+from main.utils import database_vendor
 from packages.models import Depend, Conflict, Provision, Replacement, Update
 
 
@@ -318,7 +319,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     filename=filename)
             pkg_files.append(pkgfile)
         batched_bulk_create(PackageFile, pkg_files)
-        dbpkg.files_last_update = utc_now()
+        dbpkg.files_last_update = now()
         dbpkg.save()
 
 
@@ -388,7 +389,7 @@ def db_update(archname, reponame, pkgs, force=False):
         dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
         try:
             with transaction.commit_on_success():
-                populate_pkg(dbpkg, pkg, timestamp=utc_now())
+                populate_pkg(dbpkg, pkg, timestamp=now())
                 Update.objects.log_update(None, dbpkg)
         except IntegrityError:
             logger.warning("Could not add package %s; "
@@ -417,7 +418,7 @@ def db_update(archname, reponame, pkgs, force=False):
         if not force and pkg_same_version(pkg, dbpkg):
             continue
         elif not force:
-            timestamp = utc_now()
+            timestamp = now()
 
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing

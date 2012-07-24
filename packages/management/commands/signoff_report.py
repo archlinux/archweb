@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db.models import Count
 from django.template import loader, Context
+from django.utils.timezone import now
 
 from collections import namedtuple
 from datetime import timedelta
@@ -23,7 +24,6 @@ from operator import attrgetter
 import sys
 
 from main.models import Repo
-from main.utils import utc_now
 from packages.models import Signoff
 from packages.utils import get_signoff_groups
 
@@ -66,9 +66,9 @@ def generate_report(email, repo_name):
 
     new_hours = 24
     old_days = 14
-    now = utc_now()
-    new_cutoff = now - timedelta(hours=new_hours)
-    old_cutoff = now - timedelta(days=old_days)
+    current_time = now()
+    new_cutoff = current_time - timedelta(hours=new_hours)
+    old_cutoff = current_time - timedelta(days=old_days)
 
     if len(signoff_groups) == 0:
         # no need to send an email at all

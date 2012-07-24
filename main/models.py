@@ -6,9 +6,10 @@ from pgpdump import BinaryData
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.utils.timezone import now
 
 from .fields import PositiveBigIntegerField
-from .utils import cache_function, set_created_field, utc_now
+from .utils import cache_function, set_created_field
 
 
 class TodolistManager(models.Manager):
@@ -385,7 +386,7 @@ class TodolistPkg(models.Model):
 def set_todolist_fields(sender, **kwargs):
     todolist = kwargs['instance']
     if not todolist.date_added:
-        todolist.date_added = utc_now()
+        todolist.date_added = now()
 
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_latest

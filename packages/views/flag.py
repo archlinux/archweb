@@ -5,12 +5,12 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader, Context
+from django.utils.timezone import now
 from django.views.generic.simple import direct_to_template
 from django.views.decorators.cache import cache_page, never_cache
 
 from ..models import FlagRequest
 from main.models import Package
-from main.utils import utc_now
 
 
 class FlagForm(forms.Form):
@@ -76,10 +76,10 @@ def flag(request, name, repo, arch):
 
             @transaction.commit_on_success
             def perform_updates():
-                now = utc_now()
-                pkgs.update(flag_date=now)
+                current_time = now()
+                pkgs.update(flag_date=current_time)
                 # store our flag request
-                flag_request = FlagRequest(created=now,
+                flag_request = FlagRequest(created=current_time,
                         user_email=email, message=message,
                         ip_address=ip_addr, pkgbase=pkg.pkgbase,
                         version=version, repo=pkg.repo,

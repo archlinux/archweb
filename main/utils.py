@@ -5,10 +5,10 @@ except ImportError:
 
 from datetime import datetime
 import hashlib
-from pytz import utc
 
 from django.core.cache import cache
 from django.db import connections, router
+from django.utils.timezone import now
 
 
 CACHE_TIMEOUT = 1800
@@ -94,17 +94,12 @@ def retrieve_latest(sender, latest_by=None):
     return None
 
 
-def utc_now():
-    '''Returns a timezone-aware UTC date representing now.'''
-    return datetime.utcnow().replace(tzinfo=utc)
-
-
 def set_created_field(sender, **kwargs):
     '''This will set the 'created' field on any object to the current UTC time
     if it is unset. For use as a pre_save signal handler.'''
     obj = kwargs['instance']
     if hasattr(obj, 'created') and not obj.created:
-        obj.created = utc_now()
+        obj.created = now()
 
 
 def database_vendor(model, mode='read'):

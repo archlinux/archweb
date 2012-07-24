@@ -4,10 +4,11 @@ import pytz
 from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 from django_countries import CountryField
 
 from .fields import PGPKeyField
-from main.utils import make_choice, utc_now
+from main.utils import make_choice
 
 
 class UserProfile(models.Model):
@@ -105,7 +106,7 @@ def set_last_modified(sender, **kwargs):
     signal handler.'''
     obj = kwargs['instance']
     if hasattr(obj, 'last_modified'):
-        obj.last_modified = utc_now()
+        obj.last_modified = now()
 
 
 # connect signals needed to keep cache in line with reality
