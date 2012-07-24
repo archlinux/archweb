@@ -279,6 +279,29 @@ function todolist_flag() {
     return false;
 }
 
+function filter_todolist() {
+    /* start with all rows, and then remove ones we shouldn't show */
+    var rows = $('#dev-todo-pkglist tbody').children();
+    var all_rows = rows;
+    /* apply the filters, cheaper ones first */
+    if ($('#id_mine_only').is(':checked')) {
+        rows = rows.filter('.mine');
+    }
+    if ($('#id_incomplete').is(':checked')) {
+        rows = rows.has('.incomplete');
+    }
+    /* hide all rows, then show the set we care about */
+    all_rows.hide();
+    rows.show();
+    /* make sure we update the odd/even styling from sorting */
+    $('.results').trigger('applyWidgets');
+}
+function filter_todolist_reset() {
+    $('#id_incomplete').removeAttr('checked');
+    $('#id_mine_only').removeAttr('checked');
+    filter_todolist();
+}
+
 /* signoffs.html */
 function signoff_package() {
     var link = this;

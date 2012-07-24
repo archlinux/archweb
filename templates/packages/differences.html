@@ -8,7 +8,7 @@
 {% if differences %}
 <div class="box">
     <h2>Package Differences by Architecture</h2>
-    <div id="differences-filter" class="filter-criteria">
+    <div class="filter-criteria">
         <h3>Filter Differences View</h3>
         <form id="diff_filter" method="post" action=".">
         <fieldset>
@@ -29,7 +29,6 @@
         </fieldset>
         </form>
     </div>
-    {# TODO some sort of spacing here #}
 
     <table id="table_differences" class="results">
         <thead>

@@ -29,6 +29,20 @@
         <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
     {% endfor %}</ul>
 
+    <div class="filter-criteria">
+        <h3>Filter Todolist Packages</h3>
+        <form id="todolist_filter" method="post" action=".">
+        <fieldset>
+            <legend>Select filter criteria</legend>
+            <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
+                <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
+            <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
+                <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
+            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+        </fieldset>
+        </form>
+    </div>
+
     <table id="dev-todo-pkglist" class="results todo-table">
         <thead>
             <tr>
@@ -42,7 +56,7 @@
         </thead>
         <tbody>
             {% for pkg in list.packages %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.pkg.maintainers %} mine{% endif %}">
                 <td>{{ pkg.pkg.arch.name }}</td>
                 <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg.pkg %}</td>
@@ -74,12 +88,16 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('a.status-link').click(todolist_flag);
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[2,0], [0,0]],
         headers: { 5: { sorter: 'todostatus' } }
     });
+    $('a.status-link').click(todolist_flag);
+    $('#todolist_filter input').change(filter_todolist);
+    $('#criteria_reset').click(filter_todolist_reset);
+    // fire function on page load to ensure the current form selections take effect
+    filter_todolist();
 });
 </script>
 {% endblock %}
