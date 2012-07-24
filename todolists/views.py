@@ -88,6 +88,7 @@ def add(request):
 
     page_dict = {
             'title': 'Add Todo List',
+            'description': '',
             'form': form,
             'submit_text': 'Create List'
     }
@@ -110,6 +111,7 @@ def edit(request, list_id):
 
     page_dict = {
             'title': 'Edit Todo List: %s' % todo_list.name,
+            'description': '',
             'form': form,
             'submit_text': 'Save List'
     }
