@@ -160,10 +160,16 @@ def files_json(request, name, repo, arch):
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
+    dir_count = sum(1 for f in fileslist if f.is_directory)
+    files_count = len(fileslist) - dir_count
     data = {
         'pkgname': pkg.pkgname,
         'repo': pkg.repo.name.lower(),
         'arch': pkg.arch.name.lower(),
+        'pkg_last_update': pkg.last_update,
+        'files_last_update': pkg.files_last_update,
+        'files_count': files_count,
+        'dir_count': dir_count,
         'files': fileslist,
     }
     to_json = json.dumps(data, ensure_ascii=False, cls=PackageJSONEncoder)

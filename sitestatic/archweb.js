@@ -170,7 +170,17 @@ function ajaxifyFiles() {
                 var cls = value.match(/\/$/) ? 'd' : 'f';
                 return ['<li class="', cls, '">', value, '</li>'];
             });
-            $('#pkgfilelist').html('<ul>' + list_items.join('') + '</ul>');
+            $('#pkgfilelist').empty();
+            if (data.pkg_last_update > data.files_last_update) {
+                $('#pkgfilelist').append('<p class="message">Note: This file list was generated from a previous version of the package; it may be out of date.</p>');
+            }
+            if (list_items.length > 0) {
+                $('#pkgfilelist').append('<ul>' + list_items.join('') + '</ul>');
+            } else if (data.files_last_update == null) {
+                $('#pkgfilelist').append('<p class="message">No file list available.</p>');
+            } else {
+                $('#pkgfilelist').append('<p class="message">Package has no files.</p>');
+            }
         });
     });
 }
