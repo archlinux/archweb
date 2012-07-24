@@ -7,7 +7,6 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 from django.views.generic.simple import direct_to_template
-from django.views.decorators.vary import vary_on_headers
 
 from main.models import Package, PackageFile, Arch, Repo
 from mirrors.utils import get_mirror_url_for_download
@@ -132,7 +131,6 @@ def group_details(request, arch, name):
     return direct_to_template(request, 'packages/packages_list.html', context)
 
 
-@vary_on_headers('X-Requested-With')
 def files(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
@@ -147,8 +145,6 @@ def files(request, name, repo, arch):
         'dir_count': dir_count,
     }
     template = 'packages/files.html'
-    if request.is_ajax():
-        template = 'packages/files_list.html'
     return direct_to_template(request, template, context)
 
 
