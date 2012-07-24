@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.http import Http404
+from django.shortcuts import render
 from django.views.decorators.cache import cache_control
-from django.views.generic.simple import direct_to_template
 
 from devel.models import MasterKey, PGPSignature
 from main.models import Arch, Repo, Donor
@@ -21,7 +21,7 @@ def index(request):
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': pkgs,
     }
-    return direct_to_template(request, 'public/index.html', context)
+    return render(request, 'public/index.html', context)
 
 USER_LISTS = {
     'devs': {
@@ -55,14 +55,14 @@ def userlist(request, user_type='devs'):
     users = users.distinct()
     context = USER_LISTS[user_type].copy()
     context['users'] = users
-    return direct_to_template(request, 'public/userlist.html', context)
+    return render(request, 'public/userlist.html', context)
 
 @cache_control(max_age=300)
 def donate(request):
     context = {
         'donors': Donor.objects.filter(visible=True).order_by('name'),
     }
-    return direct_to_template(request, 'public/donate.html', context)
+    return render(request, 'public/donate.html', context)
 
 @cache_control(max_age=300)
 def download(request):
@@ -76,7 +76,7 @@ def download(request):
         'releng_pxeboot_url': settings.PXEBOOT_URL,
         'mirror_urls': mirror_urls,
     }
-    return direct_to_template(request, 'public/download.html', context)
+    return render(request, 'public/download.html', context)
 
 @cache_control(max_age=300)
 def feeds(request):
@@ -84,7 +84,7 @@ def feeds(request):
         'arches': Arch.objects.all(),
         'repos': Repo.objects.all(),
     }
-    return direct_to_template(request, 'public/feeds.html', context)
+    return render(request, 'public/feeds.html', context)
 
 @cache_control(max_age=300)
 def keys(request):
@@ -113,6 +113,6 @@ def keys(request):
         'active_users': users,
         'signatures': signatures,
     }
-    return direct_to_template(request, 'public/keys.html', context)
+    return render(request, 'public/keys.html', context)
 
 # vim: set ts=4 sw=4 et:

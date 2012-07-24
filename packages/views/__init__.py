@@ -6,10 +6,9 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET, require_POST
-from django.views.generic.simple import direct_to_template
 
 from main.models import Package, Arch
 from ..models import PackageRelation
@@ -32,9 +31,9 @@ def opensearch(request):
     else:
         domain = "http://%s" % request.META['HTTP_HOST']
 
-    return direct_to_template(request, 'packages/opensearch.xml',
+    return render(request, 'packages/opensearch.xml',
             {'domain': domain},
-            mimetype='application/opensearchdescription+xml')
+            content_type='application/opensearchdescription+xml')
 
 
 @require_GET
@@ -115,7 +114,7 @@ def arch_differences(request):
             'differences': differences,
             'multilib_differences': multilib_diffs
     }
-    return direct_to_template(request, 'packages/differences.html', context)
+    return render(request, 'packages/differences.html', context)
 
 @permission_required('main.change_package')
 def stale_relations(request):
@@ -132,7 +131,7 @@ def stale_relations(request):
             'missing_pkgbase': missing_pkgbase,
             'wrong_permissions': wrong_permissions,
     }
-    return direct_to_template(request, 'packages/stale_relations.html', context)
+    return render(request, 'packages/stale_relations.html', context)
 
 @permission_required('packages.delete_packagerelation')
 @require_POST

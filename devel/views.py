@@ -17,11 +17,10 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import F, Count, Max
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template import loader, Context
 from django.template.defaultfilters import filesizeformat
 from django.views.decorators.cache import never_cache
-from django.views.generic.simple import direct_to_template
 from django.utils.encoding import force_unicode
 from django.utils.http import http_date
 from django.utils.timezone import now
@@ -88,7 +87,7 @@ def index(request):
             'signoffs': signoffs
     }
 
-    return direct_to_template(request, 'devel/index.html', page_dict)
+    return render(request, 'devel/index.html', page_dict)
 
 @login_required
 def clock(request):
@@ -128,7 +127,7 @@ def clock(request):
             'utc_now': current_time,
     }
 
-    response = direct_to_template(request, 'devel/clock.html', page_dict)
+    response = render(request, 'devel/clock.html', page_dict)
     if not response.has_header('Expires'):
         expire_time = current_time.replace(second=0, microsecond=0)
         expire_time += timedelta(minutes=1)
@@ -178,7 +177,7 @@ def change_profile(request):
     else:
         form = ProfileForm(initial={'email': request.user.email})
         profile_form = UserProfileForm(instance=request.user.get_profile())
-    return direct_to_template(request, 'devel/profile.html',
+    return render(request, 'devel/profile.html',
             {'form': form, 'profile_form': profile_form})
 
 @login_required
@@ -301,7 +300,7 @@ def report(request, report_name, username=None):
         'column_names': names,
         'column_attrs': attrs,
     }
-    return direct_to_template(request, 'devel/packages.html', context)
+    return render(request, 'devel/packages.html', context)
 
 
 class NewUserForm(forms.ModelForm):
@@ -399,7 +398,7 @@ def new_user_form(request):
         'title': 'Create User',
         'submit_text': 'Create User'
     }
-    return direct_to_template(request, 'general_form.html', context)
+    return render(request, 'general_form.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_log(request, username=None):
@@ -410,6 +409,6 @@ def admin_log(request, username=None):
         'title': "Admin Action Log",
         'log_user':  user,
     }
-    return direct_to_template(request, 'devel/admin_log.html', context)
+    return render(request, 'devel/admin_log.html', context)
 
 # vim: set ts=4 sw=4 et:

@@ -4,14 +4,14 @@ import json
 from django.contrib.auth.models import User
 from django.db.models import Count, Sum, Q
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
-from django.views.generic.simple import direct_to_template
 
 from main.models import Package, Arch, Repo
 from devel.models import MasterKey, PGPSignature
 
 def index(request):
-    return direct_to_template(request, 'visualize/index.html', {})
+    return render(request, 'visualize/index.html')
 
 def arch_repo_data():
     qs = Package.objects.select_related().values(

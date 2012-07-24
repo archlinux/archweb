@@ -10,7 +10,6 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import get_list_or_404, redirect, render
 from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
-from django.views.generic.simple import direct_to_template
 
 from main.models import Package, Arch, Repo
 from ..models import SignoffSpecification, Signoff
@@ -28,7 +27,7 @@ def signoffs(request):
         'arches': Arch.objects.all(),
         'repo_names': sorted(set(g.target_repo for g in signoff_groups)),
     }
-    return direct_to_template(request, 'packages/signoffs.html', context)
+    return render(request, 'packages/signoffs.html', context)
 
 @permission_required('main.change_package')
 @never_cache
@@ -144,7 +143,7 @@ def signoff_options(request, name, repo, arch):
         'package': package,
         'form': form,
     }
-    return direct_to_template(request, 'packages/signoff_options.html', context)
+    return render(request, 'packages/signoff_options.html', context)
 
 class SignoffJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle all serialization of all classes

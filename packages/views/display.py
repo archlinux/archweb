@@ -6,7 +6,6 @@ from urllib import urlencode
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
-from django.views.generic.simple import direct_to_template
 
 from main.models import Package, PackageFile, Arch, Repo
 from mirrors.utils import get_mirror_url_for_download
@@ -33,8 +32,7 @@ def split_package_details(request, name, repo, arch):
         'arch': arch,
         'packages': pkgs,
     }
-    return direct_to_template(request, 'packages/packages_list.html',
-            context)
+    return render(request, 'packages/packages_list.html', context)
 
 
 CUTOFF = datetime.timedelta(days=60)
@@ -67,8 +65,7 @@ def details(request, name='', repo='', arch=''):
             pkg = Package.objects.select_related(
                     'arch', 'repo', 'packager').get(pkgname=name,
                     repo__name__iexact=repo, arch__name=arch)
-            return direct_to_template(request, 'packages/details.html',
-                    {'pkg': pkg, })
+            return render(request, 'packages/details.html', {'pkg': pkg})
         except Package.DoesNotExist:
             arch_obj = get_object_or_404(Arch, name=arch)
             # for arch='any' packages, we can issue a redirect to them if we
@@ -111,7 +108,7 @@ def groups(request, arch=None):
         'groups': grps,
         'arch': arch,
     }
-    return direct_to_template(request, 'packages/groups.html', context)
+    return render(request, 'packages/groups.html', context)
 
 
 def group_details(request, arch, name):
@@ -128,7 +125,7 @@ def group_details(request, arch, name):
         'arch': arch,
         'packages': pkgs,
     }
-    return direct_to_template(request, 'packages/packages_list.html', context)
+    return render(request, 'packages/packages_list.html', context)
 
 
 def files(request, name, repo, arch):
@@ -153,7 +150,7 @@ def files(request, name, repo, arch):
         'dir_count': dir_count,
     }
     template = 'packages/files.html'
-    return direct_to_template(request, template, context)
+    return render(request, template, context)
 
 
 def details_json(request, name, repo, arch):

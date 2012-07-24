@@ -3,10 +3,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.mail import send_mail
 from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader, Context
 from django.utils.timezone import now
-from django.views.generic.simple import direct_to_template
 from django.views.decorators.cache import cache_page, never_cache
 
 from ..models import FlagRequest
@@ -34,7 +33,7 @@ class FlagForm(forms.Form):
 
 @cache_page(3600)
 def flaghelp(request):
-    return direct_to_template(request, 'packages/flaghelp.html')
+    return render(request, 'packages/flaghelp.html')
 
 
 @never_cache
@@ -43,8 +42,7 @@ def flag(request, name, repo, arch):
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     if pkg.flag_date is not None:
         # already flagged. do nothing.
-        return direct_to_template(request, 'packages/flagged.html',
-                {'pkg': pkg})
+        return render(request, 'packages/flagged.html', {'pkg': pkg})
     # find all packages from (hopefully) the same PKGBUILD
     pkgs = Package.objects.normal().filter(
             pkgbase=pkg.pkgbase, flag_date__isnull=True,
@@ -129,7 +127,7 @@ def flag(request, name, repo, arch):
         'packages': pkgs,
         'form': form
     }
-    return direct_to_template(request, 'packages/flag.html', context)
+    return render(request, 'packages/flag.html', context)
 
 def flag_confirmed(request, name, repo, arch):
     pkg = get_object_or_404(Package,
@@ -142,7 +140,7 @@ def flag_confirmed(request, name, repo, arch):
 
     context = {'package': pkg, 'packages': pkgs}
 
-    return direct_to_template(request, 'packages/flag_confirmed.html', context)
+    return render(request, 'packages/flag_confirmed.html', context)
 
 @permission_required('main.change_package')
 def unflag(request, name, repo, arch):

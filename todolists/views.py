@@ -3,12 +3,11 @@ import json
 from django import forms
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
-from django.views.generic.simple import direct_to_template
 from django.template import Context, loader
 
 from main.models import Todolist, TodolistPkg, Package, Repo
@@ -54,7 +53,7 @@ def view(request, list_id):
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(tp.pkg for tp in todolist.packages)
-    return direct_to_template(request, 'todolists/view.html', {
+    return render(request, 'todolists/view.html', {
         'list': todolist,
         'svn_roots': svn_roots,
     })
@@ -72,7 +71,7 @@ def list_pkgbases(request, list_id, svn_root):
 @login_required
 def todolist_list(request):
     lists = get_annotated_todolists()
-    return direct_to_template(request, 'todolists/list.html', {'lists': lists})
+    return render(request, 'todolists/list.html', {'lists': lists})
 
 @permission_required('main.add_todolist')
 @never_cache
@@ -92,7 +91,7 @@ def add(request):
             'form': form,
             'submit_text': 'Create List'
     }
-    return direct_to_template(request, 'general_form.html', page_dict)
+    return render(request, 'general_form.html', page_dict)
 
 # TODO: this calls for transaction management and async emailing
 @permission_required('main.change_todolist')
@@ -115,7 +114,7 @@ def edit(request, list_id):
             'form': form,
             'submit_text': 'Save List'
     }
-    return direct_to_template(request, 'general_form.html', page_dict)
+    return render(request, 'general_form.html', page_dict)
 
 class DeleteTodolist(DeleteView):
     model = Todolist
@@ -185,7 +184,7 @@ def public_list(request):
     # total hackjob, but it makes this a lot less query-intensive.
     all_pkgs = [tp for tl in todo_lists for tp in tl.packages]
     attach_maintainers([tp.pkg for tp in all_pkgs])
-    return direct_to_template(request, "todolists/public_list.html",
+    return render(request, "todolists/public_list.html",
             {"todo_lists": todo_lists})
 
 # vim: set ts=4 sw=4 et:

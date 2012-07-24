@@ -8,9 +8,8 @@ from django.forms.widgets import CheckboxSelectMultiple
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import Http404, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.simple import direct_to_template
 from django_countries.countries import COUNTRIES
 
 from .models import Mirror, MirrorUrl, MirrorProtocol, TIER_CHOICES
@@ -76,7 +75,7 @@ def generate_mirrorlist(request):
     else:
         form = MirrorlistForm()
 
-    return direct_to_template(request, 'mirrors/mirrorlist_generate.html',
+    return render(request, 'mirrors/mirrorlist_generate.html',
             {'mirrorlist_form': form})
 
 
@@ -142,10 +141,10 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         urls = status_filter(urls)
         template = 'mirrors/mirrorlist_status.txt'
 
-    return direct_to_template(request, template, {
-                'mirror_urls': urls,
-            },
-            mimetype='text/plain')
+    context = {
+        'mirror_urls': urls,
+    }
+    return render(request, template, context, content_type='text/plain')
 
 
 def find_mirrors_simple(request, protocol):
@@ -161,7 +160,7 @@ def mirrors(request):
     mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
-    return direct_to_template(request, 'mirrors/mirrors.html',
+    return render(request, 'mirrors/mirrors.html',
             {'mirror_list': mirror_list})
 
 
@@ -180,7 +179,7 @@ def mirror_details(request, name):
     all_urls = set(checked_urls).union(all_urls)
     all_urls = sorted(all_urls, key=attrgetter('url'))
 
-    return direct_to_template(request, 'mirrors/mirror_details.html',
+    return render(request, 'mirrors/mirror_details.html',
             {'mirror': mirror, 'urls': all_urls})
 
 
@@ -217,7 +216,7 @@ def status(request, tier=None):
         'error_logs': error_logs,
         'tier': tier,
     })
-    return direct_to_template(request, 'mirrors/status.html', context)
+    return render(request, 'mirrors/status.html', context)
 
 
 class MirrorStatusJSONEncoder(DjangoJSONEncoder):

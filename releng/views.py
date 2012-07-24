@@ -2,8 +2,7 @@ from django import forms
 from django.conf import settings
 from django.db.models import Count, Max
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
@@ -73,7 +72,7 @@ def submit_test_result(request):
         form = TestForm()
 
     context = {'form': form}
-    return direct_to_template(request, 'releng/add.html', context)
+    return render(request, 'releng/add.html', context)
 
 def calculate_option_overview(field_name):
     field = Test._meta.get_field(field_name)
@@ -145,7 +144,7 @@ def test_results_overview(request):
             'options': all_options,
             'iso_url': settings.ISO_LIST_URL,
     }
-    return direct_to_template(request, 'releng/results.html', context)
+    return render(request, 'releng/results.html', context)
 
 def test_results_iso(request, iso_id):
     iso = get_object_or_404(Iso, pk=iso_id)
@@ -154,7 +153,7 @@ def test_results_iso(request, iso_id):
         'iso_name': iso.name,
         'test_list': test_list
     }
-    return direct_to_template(request, 'releng/result_list.html', context)
+    return render(request, 'releng/result_list.html', context)
 
 def test_results_for(request, option, value):
     if option not in Test._meta.get_all_field_names():
@@ -170,10 +169,10 @@ def test_results_for(request, option, value):
         'value_id': value,
         'test_list': test_list
     }
-    return direct_to_template(request, 'releng/result_list.html', context)
+    return render(request, 'releng/result_list.html', context)
 
 def submit_test_thanks(request):
-    return direct_to_template(request, "releng/thanks.html", None)
+    return render(request, "releng/thanks.html", None)
 
 def iso_overview(request):
     isos = Iso.objects.all().order_by('-pk')
@@ -192,6 +191,6 @@ def iso_overview(request):
     context = {
         'isos': isos
     }
-    return direct_to_template(request, 'releng/iso_overview.html', context)
+    return render(request, 'releng/iso_overview.html', context)
 
 # vim: set ts=4 sw=4 et:

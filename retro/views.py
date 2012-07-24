@@ -1,6 +1,6 @@
 from django.http import Http404
+from django.shortcuts import render
 from django.views.decorators.cache import cache_page
-from django.views.generic.simple import direct_to_template
 
 
 RETRO_YEAR_MAP = {
@@ -26,6 +26,6 @@ def retro_homepage(request, year):
     context = {
         'year': year,
     }
-    return direct_to_template(request, 'retro/%s' % template, context)
+    return render(request, 'retro/%s' % template, context)
 
 # vim: set ts=4 sw=4 et:
