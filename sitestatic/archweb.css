@@ -811,12 +811,12 @@ form#flag-pkg-form input[type=text] {
     padding-top: 1em;
 }
 
-    #pkgdetails #pkgfiles li.d {
-        color: #666;
-    }
+#pkgfilelist li.d {
+    color: #666;
+}
 
-    #pkgdetails #pkgfiles li.f {
-    }
+#pkgfilelist li.f {
+}
 
 /* mirror stuff */
 table td.country {
