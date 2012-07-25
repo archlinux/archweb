@@ -53,9 +53,13 @@ def view(request, list_id):
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(tp.pkg for tp in todolist.packages)
+    arches = set(tp.pkg.arch for tp in todolist.packages)
+    repos = set(tp.pkg.repo for tp in todolist.packages)
     return render(request, 'todolists/view.html', {
         'list': todolist,
         'svn_roots': svn_roots,
+        'arches': sorted(arches),
+        'repos': sorted(repos),
     })
 
 # really no need for login_required on this one...

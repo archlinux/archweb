@@ -287,12 +287,21 @@ function filter_todolist() {
     if ($('#id_mine_only').is(':checked')) {
         rows = rows.filter('.mine');
     }
+    /* apply arch and repo filters */
+    $('#todolist_filter .arch_filter').add(
+            '#todolist_filter .repo_filter').each(function() {
+        if (!$(this).is(':checked')) {
+            rows = rows.not('.' + $(this).val());
+        }
+    });
+    /* more expensive filter because of 'has' call */
     if ($('#id_incomplete').is(':checked')) {
         rows = rows.has('.incomplete');
     }
     /* hide all rows, then show the set we care about */
     all_rows.hide();
     rows.show();
+    $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets');
 }

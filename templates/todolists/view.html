@@ -29,16 +29,28 @@
         <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
     {% endfor %}</ul>
 
-    <div class="filter-criteria">
+    <p>{{ list.packages|length }} total todolist package{{ list.packages|pluralize }} found.</p>
+
+    <div class="box filter-criteria">
         <h3>Filter Todolist Packages</h3>
         <form id="todolist_filter" method="post" action=".">
         <fieldset>
             <legend>Select filter criteria</legend>
+            {% for arch in arches %}
+            <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
+                <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
+            {% endfor %}
+            {% for repo in repos %}
+            <div><label for="id_repo_{{ repo.name|lower }}" title="Target Repository {{ repo.name }}">[{{ repo.name|lower }}]</label>
+                <input type="checkbox" name="repo_{{ repo.name|lower }}" id="id_repo_{{ repo.name|lower }}" class="repo_filter" value="{{ repo.name|lower }}" checked="checked"/></div>
+            {% endfor %}
             <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
                 <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
             <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
                 <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
             <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+            <div class="clear"></div>
+            <div id="filter-info"><span id="filter-count">{{ list.packages|length }}</span> todolist packages displayed.</div>
         </fieldset>
         </form>
     </div>
@@ -56,7 +68,7 @@
         </thead>
         <tbody>
             {% for pkg in list.packages %}
-            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.pkg.maintainers %} mine{% endif %}">
+            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.pkg.maintainers %} mine{% endif %} {{ pkg.pkg.arch.name }} {{ pkg.pkg.repo.name|lower }}">
                 <td>{{ pkg.pkg.arch.name }}</td>
                 <td>{{ pkg.pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg.pkg %}</td>
