@@ -1,11 +1,8 @@
-import os.path
-
-from django.conf.urls import include, patterns
-from django.conf import settings
+from django.conf.urls import include, patterns, url
 from django.contrib import admin
 
-from django.views.generic import TemplateView
 from django.views.decorators.cache import cache_page
+from django.views.generic import TemplateView, RedirectView
 from django.views.i18n import null_javascript_catalog
 
 from feeds import PackageFeed, NewsFeed
@@ -105,8 +102,7 @@ legacy_urls = (
     ('^packages.php',  '/packages/'),
 )
 
-for old_url, new_url in legacy_urls:
-    urlpatterns += patterns('django.views.generic.simple',
-            (old_url, 'redirect_to', {'url': new_url}))
+urlpatterns += [url(old_url, RedirectView.as_view(url=new_url))
+        for old_url, new_url in legacy_urls]
 
 # vim: set ts=4 sw=4 et:
