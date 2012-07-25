@@ -1,5 +1,7 @@
 from django.conf.urls import include, patterns
 
+from .views.search import SearchListView
+
 package_patterns = patterns('packages.views',
     (r'^$',            'details'),
     (r'^json/$',       'details_json'),
@@ -21,9 +23,9 @@ urlpatterns = patterns('packages.views',
     (r'^signoffs/json/$', 'signoffs_json', {}, 'package-signoffs-json'),
     (r'^update/$',   'update'),
 
-    (r'^$',                      'search', {}, 'packages-search'),
-    (r'^search/json/$',          'search_json'),
-    (r'^(?P<page>\d+)/$',        'search'),
+    (r'^$', SearchListView.as_view(), {}, 'packages-search'),
+    (r'^(?P<page>\d+)/$', SearchListView.as_view()),
+    (r'^search/json/$', 'search_json'),
 
     (r'^differences/$',          'arch_differences', {}, 'packages-differences'),
     (r'^stale_relations/$',      'stale_relations'),

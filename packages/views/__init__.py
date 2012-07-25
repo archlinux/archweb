@@ -19,7 +19,7 @@ from ..utils import (get_differences_info,
 from .display import (details, groups, group_details, files, details_json,
         files_json, download)
 from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
-from .search import search, search_json
+from .search import search_json
 from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 
 

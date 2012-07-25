@@ -6,7 +6,7 @@ from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
-from django.views.generic import list_detail
+from django.views.generic import ListView
 
 from main.models import Package, Arch, Repo
 from main.utils import make_choice
@@ -32,6 +32,7 @@ class LimitTypedChoiceField(forms.TypedChoiceField):
             return True
         except (ValueError, TypeError):
             return False
+
 
 class PackageSearchForm(forms.Form):
     repo = forms.MultipleChoiceField(required=False)
@@ -68,6 +69,7 @@ class PackageSearchForm(forms.Form):
         self.fields['packager'].choices = \
                 [('', 'All'), ('unknown', 'Unknown')] + \
                 [(m.username, m.get_full_name()) for m in maints]
+
 
 def parse_form(form, packages):
     if form.cleaned_data['repo']:
@@ -117,48 +119,47 @@ def parse_form(form, packages):
 
     return packages
 
-def search(request, page=None):
-    limit = 50
-    sort = None
-    packages = Package.objects.normal()
 
-    if request.GET:
-        form = PackageSearchForm(data=request.GET)
-        if form.is_valid():
-            packages = parse_form(form, packages)
-            asked_limit = form.cleaned_data['limit']
+class SearchListView(ListView):
+    template_name = "packages/search.html"
+
+    sort_fields = ("arch", "repo", "pkgname", "pkgbase", "compressed_size",
+            "installed_size", "build_date", "last_update", "flag_date")
+    allowed_sort = list(sort_fields) + ["-" + s for s in sort_fields]
+
+    def get(self, request, *args, **kwargs):
+        self.form = PackageSearchForm(data=request.GET)
+        return super(SearchListView, self).get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        packages = Package.objects.normal()
+        if self.form.is_valid():
+            packages = parse_form(self.form, packages)
+            sort = self.form.cleaned_data['sort']
+            if sort in self.allowed_sort:
+                packages = packages.order_by(sort)
+            else:
+                packages = packages.order_by('pkgname')
+            return packages
+
+        # Form had errors so don't return any results
+        return Package.objects.none()
+
+    def get_paginate_by(self, queryset):
+        limit = 50
+        if self.form.is_valid():
+            asked_limit = self.form.cleaned_data['limit']
             if asked_limit and asked_limit < 0:
                 limit = None
             elif asked_limit:
                 limit = asked_limit
-            sort = form.cleaned_data['sort']
-        else:
-            # Form had errors, don't return any results, just the busted form
-            packages = Package.objects.none()
-    else:
-        form = PackageSearchForm()
+        return limit
 
-    current_query = request.GET.urlencode()
-    page_dict = {
-            'search_form': form,
-            'current_query': current_query
-    }
-    allowed_sort = ["arch", "repo", "pkgname", "pkgbase",
-            "compressed_size", "installed_size",
-            "build_date", "last_update", "flag_date"]
-    allowed_sort += ["-" + s for s in allowed_sort]
-    if sort in allowed_sort:
-        packages = packages.order_by(sort)
-        page_dict['sort'] = sort
-    else:
-        packages = packages.order_by('pkgname')
-
-    return list_detail.object_list(request, packages,
-            template_name="packages/search.html",
-            page=page,
-            paginate_by=limit,
-            template_object_name="package",
-            extra_context=page_dict)
+    def get_context_data(self, **kwargs):
+        context = super(SearchListView, self).get_context_data(**kwargs)
+        context['current_query'] = self.request.GET.urlencode()
+        context['search_form'] = self.form
+        return context
 
 
 def search_json(request):
