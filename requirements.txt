@@ -1,5 +1,5 @@
 Django==1.4
-Markdown==2.1.1
+Markdown==2.2.0
 South==0.7.5
 django-countries==1.2
 pgpdump==1.3
