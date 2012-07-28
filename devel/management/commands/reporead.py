@@ -332,7 +332,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
         transaction.set_dirty()
 
         repository = Repo.objects.get(name__iexact=reponame)
-        architecture = Arch.objects.get(name__iexact=archname)
+        architecture = Arch.objects.get(name=archname)
         # no-arg order_by() removes even the default ordering; we don't need it
         dbpkgs = Package.objects.filter(
                 arch=architecture, repo=repository).order_by()
@@ -371,7 +371,7 @@ def db_update(archname, reponame, pkgs, force=False):
     logger.info('Updating %s (%s)', reponame, archname)
     dbpkgs = update_common(archname, reponame, pkgs, True)
     repository = Repo.objects.get(name__iexact=reponame)
-    architecture = Arch.objects.get(name__iexact=archname)
+    architecture = Arch.objects.get(name=archname)
 
     # This makes our inner loop where we find packages by name *way* more
     # efficient by not having to go to the database for each package to
@@ -538,7 +538,7 @@ def locate_arch(arch):
     if isinstance(arch, Arch):
         return arch
     try:
-        return Arch.objects.get(name__iexact=arch)
+        return Arch.objects.get(name=arch)
     except Arch.DoesNotExist:
         raise CommandError(
                 'Specified architecture %s is not currently known.' % arch)
