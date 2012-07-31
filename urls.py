@@ -27,6 +27,8 @@ feeds_patterns = patterns('',
     (r'^packages/$', cache_page(300)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/$',
         cache_page(300)(PackageFeed())),
+    (r'^packages/all/(?P<repo>[A-z0-9\-]+)/$',
+        cache_page(300)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
         cache_page(300)(PackageFeed())),
 )

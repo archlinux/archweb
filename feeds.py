@@ -71,8 +71,10 @@ class PackageFeed(Feed):
 
     def title(self, obj):
         s = 'Arch Linux: Recent package updates'
-        if 'repo' in obj:
+        if 'repo' in obj and 'arch' in obj:
             s += ' (%s [%s])' % (obj['arch'].name, obj['repo'].name.lower())
+        elif 'repo' in obj:
+            s += ' [%s]' % (obj['repo'].name.lower())
         elif 'arch' in obj:
             s += ' (%s)' % (obj['arch'].name)
         return s

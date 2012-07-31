@@ -36,6 +36,7 @@
         <thead>
             <tr>
                 <th></th>
+                <th>All Arches</th>
                 {% for arch in arches %}
                 <th>{{ arch }}</th>
                 {% endfor %}
@@ -44,6 +45,7 @@
         <tbody>
             <tr>
                 <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/" class="rss">Feed</a></td>
                 {% for arch in arches %}
                 <td><a href="/feeds/packages/{{ arch }}/" class="rss">Feed</a></td>
                 {% endfor %}
@@ -51,6 +53,7 @@
             {% for repo in repos %}
             <tr>
                 <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/all/{{ repo|lower }}/" class="rss">Feed</a></td>
                 {% for arch in arches %}
                 <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
                 {% endfor %}
