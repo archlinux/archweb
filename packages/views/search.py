@@ -40,7 +40,7 @@ class PackageSearchForm(forms.Form):
     name = forms.CharField(required=False)
     desc = forms.CharField(required=False)
     q = forms.CharField(required=False)
-    sort = forms.CharField(required=False)
+    sort = forms.CharField(required=False, widget=forms.HiddenInput())
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
     last_update = forms.DateField(required=False, widget=AdminDateWidget(),

@@ -19,7 +19,7 @@
     <h3>Package Search</h3>
 
     <form id="pkg-search" method="get" action="/packages/">
-        <p><input type="hidden" name="sort" value='{{sort}}' /></p>
+        <p>{{ search_form.sort }}</p>
         {{ search_form.non_field_errors }}
         <fieldset>
             <legend>Enter search criteria</legend>
