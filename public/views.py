@@ -16,7 +16,10 @@ from .utils import get_recent_updates
 
 @cache_control(max_age=300)
 def index(request):
-    pkgs = get_recent_updates()
+    if request.user.is_authenticated():
+        pkgs = get_recent_updates(testing=True, staging=True)
+    else:
+        pkgs = get_recent_updates()
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': pkgs,

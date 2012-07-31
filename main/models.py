@@ -4,6 +4,7 @@ from itertools import groupby
 from pgpdump import BinaryData
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.timezone import now
@@ -23,6 +24,12 @@ class PackageManager(models.Manager):
 
     def normal(self):
         return self.select_related('arch', 'repo')
+
+    def restricted(self, user=None):
+        qs = self.normal()
+        if user is not None and user.is_authenticated:
+            return qs
+        return qs.filter(repo__staging=False)
 
 class Donor(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -193,22 +200,26 @@ class Package(models.Model):
             requiredby = requiredby.filter(
                     pkg__arch__in=self.applicable_arches())
         # sort out duplicate packages; this happens if something has a double
-        # versioned dep such as a kernel module
+        # versioned depend such as a kernel module
         requiredby = [list(vals)[0] for _, vals in
                 groupby(requiredby, lambda x: x.pkg.id)]
+        if len(requiredby) == 0:
+            return requiredby
 
-        # find another package by this name in the opposite testing setup
-        # TODO: figure out staging exclusions too
-        if not Package.objects.filter(pkgname=self.pkgname,
-                arch=self.arch).exclude(id=self.id).exclude(
-                repo__testing=self.repo.testing).exists():
+        # find another package by this name in a different testing or staging
+        # repo; if we can't, we can short-circuit some checks
+        repo_q = (Q(repo__testing=(not self.repo.testing)) |
+                Q(repo__staging=(not self.repo.staging)))
+        if not Package.objects.filter(
+                repo_q, pkgname=self.pkgname, arch=self.arch
+                ).exclude(id=self.id).exists():
             # there isn't one? short circuit, all required by entries are fine
             return requiredby
 
         trimmed = []
         # for each unique package name, try to screen our package list down to
-        # those packages in the same testing category (yes or no) iff there is
-        # a package in the same testing category.
+        # those packages in the same testing and staging category (yes or no)
+        # iff there is a package in the same testing and staging category.
         for _, dep_pkgs in groupby(requiredby, lambda x: x.pkg.pkgname):
             dep_pkgs = list(dep_pkgs)
             dep = dep_pkgs[0]
@@ -254,7 +265,7 @@ class Package(models.Model):
             return Package.objects.normal().get(arch=self.arch,
                     repo=self.repo, pkgname=self.pkgbase)
         except Package.DoesNotExist:
-            # this package might be split across repos? just find one
+            # this package might be split across repos? find one
             # that matches the correct [testing] repo flag
             pkglist = Package.objects.normal().filter(arch=self.arch,
                     repo__testing=self.repo.testing,
@@ -271,8 +282,10 @@ class Package(models.Model):
         repo.testing and repo.staging flags. For any non-split packages, the
         return value will be an empty list.
         """
-        return Package.objects.normal().filter(arch__in=self.applicable_arches(),
-                repo__testing=self.repo.testing, repo__staging=self.repo.staging,
+        return Package.objects.normal().filter(
+                arch__in=self.applicable_arches(),
+                repo__testing=self.repo.testing,
+                repo__staging=self.repo.staging,
                 pkgbase=self.pkgbase).exclude(id=self.id)
 
     def flag_request(self):

@@ -38,6 +38,7 @@ def package_etag(request, *args, **kwargs):
 def package_last_modified(request, *args, **kwargs):
     return retrieve_latest(Package)
 
+
 class PackageFeed(Feed):
     feed_type = GuidNotPermalinkFeed
 
@@ -51,8 +52,7 @@ class PackageFeed(Feed):
 
     def get_object(self, request, arch='', repo=''):
         obj = dict()
-        qs = Package.objects.normal().order_by(
-                '-last_update')
+        qs = Package.objects.normal().order_by('-last_update')
 
         if arch != '':
             # feed for a single arch, also include 'any' packages everywhere
@@ -64,6 +64,8 @@ class PackageFeed(Feed):
             r = Repo.objects.get(name__iexact=repo)
             qs = qs.filter(repo=r)
             obj['repo'] = r
+        else:
+            qs = qs.filter(repo__staging=False)
         obj['qs'] = qs[:50]
         return obj
 
@@ -113,6 +115,7 @@ def news_etag(request, *args, **kwargs):
 
 def news_last_modified(request, *args, **kwargs):
     return retrieve_latest(News, 'last_modified')
+
 
 class NewsFeed(Feed):
     feed_type = GuidNotPermalinkFeed

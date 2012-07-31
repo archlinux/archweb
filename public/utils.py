@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from main.models import Arch, Package
+from main.models import Arch, Repo, Package
 from main.utils import cache_function, groupby_preserve_order, PackageStandin
 
 class RecentUpdate(object):
@@ -50,7 +50,13 @@ class RecentUpdate(object):
                     yield PackageStandin(package)
 
 @cache_function(62)
-def get_recent_updates(number=15):
+def get_recent_updates(number=15, testing=True, staging=False):
+    repos = Repo.objects.all()
+    if not testing:
+        repos = repos.exclude(testing=True)
+    if not staging:
+        repos = repos.exclude(staging=True)
+
     # This is a bit of magic. We are going to show 15 on the front page, but we
     # want to try and eliminate cross-architecture wasted space. Pull enough
     # packages that we can later do some screening and trim out the fat.
@@ -59,7 +65,7 @@ def get_recent_updates(number=15):
     fetch = number * 6
     for arch in Arch.objects.all():
         pkgs += list(Package.objects.normal().filter(
-            arch=arch).order_by('-last_update')[:fetch])
+            arch=arch, repo__in=repos).order_by('-last_update')[:fetch])
     pkgs.sort(key=attrgetter('last_update'), reverse=True)
 
     same_pkgbase_key = lambda x: (x.repo.name, x.pkgbase)
