@@ -91,30 +91,38 @@ def feeds(request):
 
 @cache_control(max_age=300)
 def keys(request):
+    users = User.objects.filter(is_active=True).select_related(
+            'userprofile__pgp_key').order_by('first_name', 'last_name')
+    user_key_ids = frozenset(user.userprofile.pgp_key[-16:] for user in users
+            if user.userprofile.pgp_key)
+
     not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
     master_keys = MasterKey.objects.select_related('owner', 'revoker',
             'owner__userprofile', 'revoker__userprofile').filter(
             revoked__isnull=True)
+    master_key_ids = frozenset(key.pgp_key[-16:] for key in master_keys)
 
-    sig_counts = PGPSignature.objects.filter(
-            not_expired, valid=True).values_list('signer').annotate(
+    sig_counts = PGPSignature.objects.filter(not_expired, valid=True,
+            signee__in=user_key_ids).values_list('signer').annotate(
             Count('signer'))
     sig_counts = dict((key_id[-16:], ct) for key_id, ct in sig_counts)
 
     for key in master_keys:
         key.signature_count = sig_counts.get(key.pgp_key[-16:], 0)
 
-    users = User.objects.filter(is_active=True).select_related(
-            'userprofile__pgp_key').order_by('first_name', 'last_name')
-
     # frozenset because we are going to do lots of __contains__ lookups
     signatures = frozenset(PGPSignature.objects.filter(
             not_expired, valid=True).values_list('signer', 'signee'))
+
+    restrict = Q(signer__in=user_key_ids) & Q(signee__in=user_key_ids)
+    cross_signatures = PGPSignature.objects.filter(restrict,
+            not_expired, valid=True).order_by('created')
 
     context = {
         'keys': master_keys,
         'active_users': users,
         'signatures': signatures,
+        'cross_signatures': cross_signatures,
     }
     return render(request, 'public/keys.html', context)
 

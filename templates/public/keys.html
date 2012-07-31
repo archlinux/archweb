@@ -89,6 +89,33 @@
         </tbody>
     </table>
 </div>
+
+<div class="box">
+    <h2>Developer Cross-Signatures</h2>
+
+    <p>This table lists signatures directly between developer keys.</p>
+
+    <table class="pretty2" id="cross-signatures">
+        <thead>
+            <tr>
+                <th>Signer</th>
+                <th>Signee</th>
+                <th>Created</th>
+                <th>Expires</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sig in cross_signatures %}
+            <tr>
+                <td>{% user_pgp_key_link active_users sig.signer %}</td>
+                <td>{% user_pgp_key_link active_users sig.signee %}</td>
+                <td>{{ sig.created }}</td>
+                <td>{{ sig.expires|default:"" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
@@ -96,6 +123,9 @@ $(document).ready(function() {
     $("#key-status").tablesorter({
         sortLocaleCompare: true,
         headers: { 1: { sorter: false } }
+    });
+    $("#cross-signatures").tablesorter({
+        sortLocaleCompare: true
     });
 });
 </script>

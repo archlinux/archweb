@@ -48,7 +48,7 @@ def generate_keyring(keyserver, keyring):
     logger.info("getting all known key IDs")
 
     # Screw you Django, for not letting one natively do value != <empty string>
-    key_ids = UserProfile.objects.filter(user__is_active=True,
+    key_ids = UserProfile.objects.filter(
             pgp_key__isnull=False).extra(where=["pgp_key != ''"]).values_list(
             "pgp_key", flat=True)
     logger.info("%d keys fetched from user profiles", len(key_ids))

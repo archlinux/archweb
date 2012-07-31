@@ -39,6 +39,14 @@ def pgp_key_link(key_id, link_text=None):
     values = (url, format_key(key_id), link_text)
     return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
+@register.simple_tag
+def user_pgp_key_link(users, key_id):
+    matched = [user for user in users if user.userprofile.pgp_key and
+            user.userprofile.pgp_key[-16:] == key_id[-16:]]
+    if matched and len(matched) == 1:
+        return pgp_key_link(key_id, matched[0].get_full_name())
+    return pgp_key_link(key_id)
+
 @register.filter
 def pgp_fingerprint(key_id, autoescape=True):
     if not key_id:
