@@ -51,10 +51,22 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
         match = match.filter(created__gte=when)
     try:
         match = match.latest()
+        elsewhere = match.elsewhere()
+        if len(elsewhere) == 1:
+            return redirect(elsewhere[0])
         return render(request, 'packages/removed.html',
                 {'update': match, }, status=410)
     except Update.DoesNotExist:
         return None
+
+
+def replaced_package(request, name, repo, arch):
+    '''Check our package replacements to see if this is a package we used to
+    have but no longer do.'''
+    match = Package.objects.filter(replaces__name=name, repo=repo, arch=arch)
+    if len(match) == 1:
+        return redirect(match[0], permanent=True)
+    return None
 
 
 def redirect_agnostic(request, name, repo, arch):
@@ -95,7 +107,7 @@ def details(request, name='', repo='', arch=''):
         except Package.DoesNotExist:
             # attempt a variety of fallback options before 404ing
             options = (redirect_agnostic, split_package_details,
-                    recently_removed_package)
+                    recently_removed_package, replaced_package)
             for method in options:
                 ret = method(request, name, repo_obj, arch_obj)
                 if ret:
