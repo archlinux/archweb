@@ -44,6 +44,7 @@ class UpdateAdmin(admin.ModelAdmin):
     search_fields = ('pkgname',)
     ordering = ('-created',)
     date_hierarchy = 'created'
+    raw_id_fields = ('package',)
 
 
 admin.site.register(PackageRelation, PackageRelationAdmin)
