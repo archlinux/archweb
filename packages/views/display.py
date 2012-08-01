@@ -50,12 +50,19 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
         when = now() - cutoff
         match = match.filter(created__gte=when)
     try:
-        match = match.latest()
-        elsewhere = match.elsewhere()
+        update = match.latest()
+        elsewhere = update.elsewhere()
         if len(elsewhere) == 1:
             return redirect(elsewhere[0])
-        return render(request, 'packages/removed.html',
-                {'update': match, }, status=410)
+        context = {
+            'update': update,
+            'elsewhere': elsewhere,
+            'name': name,
+            'version': update.old_version,
+            'arch': arch,
+            'repo': repo,
+        }
+        return render(request, 'packages/removed.html', context, status=410)
     except Update.DoesNotExist:
         return None
 
@@ -66,6 +73,15 @@ def replaced_package(request, name, repo, arch):
     match = Package.objects.filter(replaces__name=name, repo=repo, arch=arch)
     if len(match) == 1:
         return redirect(match[0], permanent=True)
+    elif len(match) > 1:
+        context = {
+            'elsewhere': match,
+            'name': name,
+            'version': '',
+            'arch': arch,
+            'repo': repo,
+        }
+        return render(request, 'packages/removed.html', context, status=410)
     return None
 
 

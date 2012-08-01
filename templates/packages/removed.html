@@ -2,17 +2,17 @@
 {% load url from future %}
 {% load package_extras %}
 
-{% block title %}Arch Linux - Not Available - {{ update.pkgname }} {{ update.old_version }} ({{ update.arch.name }}){% endblock %}
+{% block title %}Arch Linux - Not Available - {{ name }} {{ version }} ({{ arch.name }}){% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
 <div id="pkg-gone" class="box">
-    <h2>{{ update.pkgname }} {{ update.old_version }} is no longer available</h2>
+    <h2>{{ name }} {{ version }} is no longer available</h2>
 
-    <p>{{ update.pkgname }} {{ update.old_version }} has been removed from the [{{ update.repo.name|lower }}] repository.</p>
+    <p>{{ name }} {{ version }} has been removed from the [{{ repo.name|lower }}] repository.</p>
 
-    {% with update.elsewhere as elsewhere %}{% if elsewhere %}
-    <p>However, this package is available in other repositories:</p>
+    {% if elsewhere %}
+    <p>However, this package or replacements are available elsewhere:</p>
     <ul>
         {% for pkg in elsewhere %}
         <li>{% pkg_details_link pkg %} {{ pkg.full_version }} [{{ pkg.repo.name|lower }}] ({{ pkg.arch.name }})</li>
@@ -23,6 +23,6 @@
     Try using the <a href="{% url 'packages-search' %}?name={{ update.pkgname|urlencode }}">package search page</a>,
     or try <a href="https://aur.archlinux.org/packages.php?K={{ update.pkgname|urlencode }}">searching the AUR</a>
     to see if the package can be found there.</p>
-    {% endif %}{% endwith %}
+    {% endif %}
 </div>
 {% endblock %}
