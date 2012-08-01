@@ -165,16 +165,8 @@ def group_details(request, arch, name):
 
 
 def files(request, name, repo, arch):
-    try:
-        pkg = Package.objects.get(pkgname=name,
-                repo__name__iexact=repo, arch__name=arch)
-    except Package.DoesNotExist:
-        # this may have been deleted recently, so follow the same logic as we
-        # do on the package details page if possible
-        ret = recently_removed_package(request, name, repo, arch)
-        if ret is not None:
-            return ret
-        raise Http404
+    pkg = get_object_or_404(Package,
+            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
     dir_count = sum(1 for f in fileslist if f.is_directory)
