@@ -403,10 +403,19 @@ class RelatedToBase(models.Model):
 
 
 class Depend(RelatedToBase):
+    DEPTYPE_CHOICES = (
+        ('D', 'Depend'),
+        ('O', 'Optional Depend'),
+        ('M', 'Make Depend'),
+        ('C', 'Check Depend'),
+    )
+
     pkg = models.ForeignKey(Package, related_name='depends')
     comparison = models.CharField(max_length=255, default='')
     optional = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
+    deptype = models.CharField(max_length=1, default='D',
+            choices=DEPTYPE_CHOICES)
 
 
 class Conflict(RelatedToBase):
