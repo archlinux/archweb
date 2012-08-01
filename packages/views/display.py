@@ -14,10 +14,10 @@ from ..utils import get_group_info, PackageJSONEncoder
 
 
 def split_package_details(request, name, repo, arch):
-    arch = get_object_or_404(Arch, name=arch)
+    '''Check if we have a split package (e.g. pkgbase) value matching this
+    name. If so, we can show a listing page for the entire set of packages.'''
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
-    repo = get_object_or_404(Repo, name__iexact=repo)
     pkgs = Package.objects.normal().filter(pkgbase=name,
             repo__testing=repo.testing, repo__staging=repo.staging,
             arch__in=arches).order_by('pkgname')
@@ -39,15 +39,13 @@ CUTOFF = datetime.timedelta(days=60)
 
 
 def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
-    '''We're just steps away from raising a 404, but check our packages update
-    table first to see if this package has existed in this repo before. If so,
-    we can show a 410 Gone page and point the requester in the right
-    direction.'''
-    arch = get_object_or_404(Arch, name=arch)
+    '''Check our packages update table to see if this package has existed in
+    this repo before. If so, we can show a 410 Gone page and point the
+    requester in the right direction.'''
     arches = [ arch ]
     arches.extend(Arch.objects.filter(agnostic=True))
     match = Update.objects.select_related('arch', 'repo').filter(
-            pkgname=name, repo__name__iexact=repo, arch__in=arches)
+            pkgname=name, repo=repo, arch__in=arches)
     if cutoff is not None:
         when = now() - cutoff
         match = match.filter(created__gte=when)
@@ -59,43 +57,53 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
         return None
 
 
+def redirect_agnostic(request, name, repo, arch):
+    '''For arch='any' packages, we can issue a redirect to them if we have a
+    single non-ambiguous option by changing the arch to match any arch-agnostic
+    package.'''
+    if not arch.agnostic:
+        # limit to 2 results, we only need to know whether there is anything
+        # except only one matching result
+        pkgs = Package.objects.select_related(
+            'arch', 'repo', 'packager').filter(pkgname=name,
+                    repo=repo, arch__agnostic=True)[:2]
+        if len(pkgs) == 1:
+            return redirect(pkgs[0], permanent=True)
+    return None
+
+
+def redirect_to_search(request, name, repo, arch):
+    pkg_data = [
+        ('arch', arch.lower()),
+        ('repo', repo.lower()),
+        ('q',    name),
+    ]
+    # only include non-blank values in the query we generate
+    pkg_data = [(x, y.encode('utf-8')) for x, y in pkg_data if y]
+    return redirect("/packages/?%s" % urlencode(pkg_data))
+
+
 def details(request, name='', repo='', arch=''):
     if all([name, repo, arch]):
+        arch_obj = get_object_or_404(Arch, name=arch)
+        repo_obj = get_object_or_404(Repo, name__iexact=repo)
         try:
             pkg = Package.objects.select_related(
                     'arch', 'repo', 'packager').get(pkgname=name,
-                    repo__name__iexact=repo, arch__name=arch)
+                    repo=repo_obj, arch=arch_obj)
             return render(request, 'packages/details.html', {'pkg': pkg})
         except Package.DoesNotExist:
-            arch_obj = get_object_or_404(Arch, name=arch)
-            # for arch='any' packages, we can issue a redirect to them if we
-            # have a single non-ambiguous option by changing the arch to match
-            # any arch-agnostic package
-            if not arch_obj.agnostic:
-                pkgs = Package.objects.select_related(
-                    'arch', 'repo', 'packager').filter(pkgname=name,
-                    repo__name__iexact=repo, arch__agnostic=True)
-                if len(pkgs) == 1:
-                    return redirect(pkgs[0], permanent=True)
-            # do we have a split package matching this criteria?
-            ret = split_package_details(request, name, repo, arch)
-            if ret is None:
-                # maybe we have a recently-removed package?
-                ret = recently_removed_package(request, name, repo, arch)
-            if ret is not None:
-                return ret
-            else:
-                # we've tried everything at this point, nothing to see
-                raise Http404
+            # attempt a variety of fallback options before 404ing
+            options = (redirect_agnostic, split_package_details,
+                    recently_removed_package)
+            for method in options:
+                ret = method(request, name, repo_obj, arch_obj)
+                if ret:
+                    return ret
+            # we've tried everything at this point, nothing to see
+            raise Http404
     else:
-        pkg_data = [
-            ('arch', arch.lower()),
-            ('repo', repo.lower()),
-            ('q',    name),
-        ]
-        # only include non-blank values in the query we generate
-        pkg_data = [(x, y.encode('utf-8')) for x, y in pkg_data if y]
-        return redirect("/packages/?%s" % urlencode(pkg_data))
+        return redirect_to_search(request, name, repo, arch)
 
 
 def groups(request, arch=None):
