@@ -145,8 +145,8 @@ class RepoPackage(object):
 
 DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")
 
-def create_depend(package, dep_str, optional=False):
-    depend = Depend(pkg=package, optional=optional)
+def create_depend(package, dep_str, deptype='D'):
+    depend = Depend(pkg=package, deptype=deptype)
     # lop off any description first
     parts = dep_str.split(':', 1)
     if len(parts) > 1:
@@ -257,7 +257,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 
     dbpkg.depends.all().delete()
     deps = [create_depend(dbpkg, y) for y in repopkg.depends]
-    deps += [create_depend(dbpkg, y, True) for y in repopkg.optdepends]
+    deps += [create_depend(dbpkg, y, 'O') for y in repopkg.optdepends]
     batched_bulk_create(Depend, deps)
 
     dbpkg.conflicts.all().delete()
