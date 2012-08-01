@@ -80,8 +80,9 @@ class RepoPackage(object):
     bare = ( 'name', 'base', 'arch', 'filename',
             'md5sum', 'sha256sum', 'url', 'packager' )
     number = ( 'csize', 'isize' )
-    collections = ( 'depends', 'optdepends', 'conflicts',
-            'provides', 'replaces', 'groups', 'license', 'files' )
+    collections = ( 'depends', 'optdepends', 'makedepends', 'checkdepends',
+            'conflicts', 'provides', 'replaces', 'groups', 'license',
+            'files' )
 
     version_re = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 
@@ -258,6 +259,8 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.depends.all().delete()
     deps = [create_depend(dbpkg, y) for y in repopkg.depends]
     deps += [create_depend(dbpkg, y, 'O') for y in repopkg.optdepends]
+    deps += [create_depend(dbpkg, y, 'M') for y in repopkg.makedepends]
+    deps += [create_depend(dbpkg, y, 'C') for y in repopkg.checkdepends]
     batched_bulk_create(Depend, deps)
 
     dbpkg.conflicts.all().delete()
