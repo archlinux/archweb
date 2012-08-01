@@ -6,15 +6,14 @@ from django.core.exceptions import ValidationError
 from django_countries import CountryField
 
 
-TIER_CHOICES = (
-    (0, 'Tier 0'),
-    (1, 'Tier 1'),
-    (2, 'Tier 2'),
-    (-1, 'Untiered'),
-)
-
-
 class Mirror(models.Model):
+    TIER_CHOICES = (
+        (0, 'Tier 0'),
+        (1, 'Tier 1'),
+        (2, 'Tier 2'),
+        (-1, 'Untiered'),
+    )
+
     name = models.CharField(max_length=255, unique=True)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
     upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)

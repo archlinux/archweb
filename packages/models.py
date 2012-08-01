@@ -196,13 +196,6 @@ class FlagRequest(models.Model):
         return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
 
-UPDATE_ACTION_CHOICES = (
-    (ADDITION, 'Addition'),
-    (CHANGE, 'Change'),
-    (DELETION, 'Deletion'),
-)
-
-
 class UpdateManager(models.Manager):
     def log_update(self, old_pkg, new_pkg):
         '''Utility method to help log an update. This will determine the type
@@ -249,6 +242,12 @@ class UpdateManager(models.Manager):
 
 
 class Update(models.Model):
+    UPDATE_ACTION_CHOICES = (
+        (ADDITION, 'Addition'),
+        (CHANGE, 'Change'),
+        (DELETION, 'Deletion'),
+    )
+
     package = models.ForeignKey(Package, related_name="updates",
             null=True, on_delete=models.SET_NULL)
     repo = models.ForeignKey(Repo, related_name="updates")

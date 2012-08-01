@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries.countries import COUNTRIES
 
-from .models import Mirror, MirrorUrl, MirrorProtocol, TIER_CHOICES
+from .models import Mirror, MirrorUrl, MirrorProtocol
 from .utils import get_mirror_statuses, get_mirror_errors
 
 COUNTRY_LOOKUP = dict(COUNTRIES)
@@ -186,7 +186,7 @@ def mirror_details(request, name):
 def status(request, tier=None):
     if tier is not None:
         tier = int(tier)
-        if tier not in [t[0] for t in TIER_CHOICES]:
+        if tier not in [t[0] for t in Mirror.TIER_CHOICES]:
             raise Http404
     bad_timedelta = timedelta(days=3)
     status_info = get_mirror_statuses()
