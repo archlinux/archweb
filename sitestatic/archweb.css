@@ -799,6 +799,8 @@ form#flag-pkg-form input[type=text] {
 #pkgdetails #metadata .testing-dep,
 #pkgdetails #metadata .staging-dep,
 #pkgdetails #metadata .opt-dep,
+#pkgdetails #metadata .make-dep,
+#pkgdetails #metadata .check-dep,
 #pkgdetails #metadata .dep-desc {
     font-style: italic;
 }

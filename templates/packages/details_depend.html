@@ -12,5 +12,7 @@
 {% if depend.pkg.repo.staging %} <span class="staging-dep">(staging)</span>{% endif %}
 {% endifequal %}
 {% if depend.dep.deptype == 'O' %} <span class="opt-dep">(optional)</span>{% endif %}
+{% if depend.dep.deptype == 'M' %} <span class="make-dep">(make)</span>{% endif %}
+{% if depend.dep.deptype == 'C' %} <span class="check-dep">(check)</span>{% endif %}
 {% if depend.dep.description %}- <span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}
 </li>

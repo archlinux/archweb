@@ -4,4 +4,6 @@
 {% if req.pkg.repo.testing %}<span class="testing-dep">(testing)</span>{% endif %}
 {% if req.pkg.repo.staging %}<span class="staging-dep">(staging)</span>{% endif %}
 {% if req.deptype == 'O' %}<span class="opt-dep">(optional)</span>{% endif %}
+{% if req.deptype == 'M' %}<span class="make-dep">(make)</span>{% endif %}
+{% if req.deptype == 'C' %}<span class="check-dep">(check)</span>{% endif %}
 </li>
