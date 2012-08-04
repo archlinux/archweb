@@ -416,6 +416,13 @@ class Depend(RelatedToBase):
     deptype = models.CharField(max_length=1, default='D',
             choices=DEPTYPE_CHOICES)
 
+    def __unicode__(self):
+        '''For depends, we may also have a description and a modifier.'''
+        to_str = super(Depend, self).__unicode__()
+        if self.description:
+            return u'%s: %s' % (to_str, self.description)
+        return to_str
+
 
 class Conflict(RelatedToBase):
     pkg = models.ForeignKey(Package, related_name='conflicts')
