@@ -92,7 +92,7 @@ if (typeof $.tablesorter !== 'undefined') {
     });
     $.tablesorter.addParser({
         id: 'filesize',
-        re: /^(\d+(?:\.\d+)?) (bytes?|KB|MB|GB|TB|PB)$/,
+        re: /^(\d+(?:\.\d+)?) (bytes?|[KMGTPEZY]i?B)$/,
         is: function(s) {
             return this.re.test(s);
         },
@@ -106,15 +106,29 @@ if (typeof $.tablesorter !== 'undefined') {
 
             switch(suffix) {
                 /* intentional fall-through at each level */
+                case 'YB':
+                case 'YiB':
+                    size *= 1024;
+                case 'ZB':
+                case 'ZiB':
+                    size *= 1024;
+                case 'EB':
+                case 'EiB':
+                    size *= 1024;
                 case 'PB':
+                case 'PiB':
                     size *= 1024;
                 case 'TB':
+                case 'TiB':
                     size *= 1024;
                 case 'GB':
+                case 'GiB':
                     size *= 1024;
                 case 'MB':
+                case 'MiB':
                     size *= 1024;
                 case 'KB':
+                case 'KiB':
                     size *= 1024;
             }
             return size;
