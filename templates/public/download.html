@@ -7,7 +7,7 @@
 {% block navbarclass %}anb-download{% endblock %}
 
 {% block content %}
-{% with version="2012.07.15" kernel_version="3.4.4" %}
+{% with version="2012.08.04" kernel_version="3.4.7" %}
 <div id="arch-downloads" class="box">
 
     <h2>Arch Linux Downloads</h2>
@@ -21,8 +21,8 @@
 
     <ul>
         <li><strong>Current Release:</strong> {{ version }}</li>
-		<li><strong>Included Kernel:</strong> {{ kernel_version }}</li>
-        <li><a href="https://wiki.archlinux.org/index.php/Arch_Install_Scripts">Arch Install Scripts</a></li>
+        <li><strong>Included Kernel:</strong> {{ kernel_version }}</li>
+        <li><a href="https://wiki.archlinux.org/index.php/Installation_Guide">Installation Guide</a></li>
         <li><strong>Resources:</strong>
             <ul>
                 <li><a href="https://bugs.archlinux.org/index.php?project=6"
@@ -45,8 +45,8 @@
     download is finished, so you can seed it back to others.
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
     <ul>
-        <li><a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-dual.iso.torrent"
-                    title="Download for both architectures">Download archlinux-{{version}}-netinstall-dual.iso.torrent</a></li>
+        <li><a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-dual.iso.torrent"
+                    title="Download for both architectures">Download archlinux-{{version}}-dual.iso.torrent</a></li>
     </ul>
 
     <h3>Test ISO Info</h3>
@@ -75,7 +75,7 @@
     <p>File integrity checksums for the latest releases can be found below:</p>
 
     <ul>
-        <li><a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-netinstall-dual.iso.sig"
+        <li><a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-dual.iso.sig"
             title="Get the latest PGP signature">PGP signature</a></li>
         <li><a href="https://www.archlinux.org/iso/{{version}}/sha1sums.txt"
             title="Get the latest SHA1 checksums">SHA1 checksums</a></li>
