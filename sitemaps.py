@@ -60,8 +60,6 @@ class SplitPackagesSitemap(Sitemap):
 
 
 class NewsSitemap(Sitemap):
-    priority = "0.8"
-
     def __init__(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         self.one_day_ago = now - timedelta(days=1)
@@ -73,6 +71,11 @@ class NewsSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_modified
 
+    def priority(self, obj):
+        if obj.last_modified > self.one_week_ago:
+            return "0.9"
+        return "0.8"
+
     def changefreq(self, obj):
         if obj.last_modified > self.one_day_ago:
             return 'daily'
@@ -82,9 +85,12 @@ class NewsSitemap(Sitemap):
 
 
 class BaseSitemap(Sitemap):
+    DEFAULT_PRIORITY = 0.7
+
     base_viewnames = (
             ('index', 1.0, 'hourly'),
             ('packages-search', 0.8, 'hourly'),
+            ('page-download', 0.8, 'monthly'),
             ('page-keys', 0.8, 'weekly'),
             ('news-list', 0.7, 'weekly'),
             ('groups-list', 0.5, 'weekly'),
@@ -96,7 +102,6 @@ class BaseSitemap(Sitemap):
             'page-tus',
             'page-fellows',
             'page-donate',
-            'page-download',
             'feeds-list',
             'mirror-list',
             'mirrorlist',
@@ -117,7 +122,7 @@ class BaseSitemap(Sitemap):
     def priority(self, obj):
         if isinstance(obj, tuple):
             return obj[1]
-        return 0.7
+        return self.DEFAULT_PRIORITY
 
     def changefreq(self, obj):
         if isinstance(obj, tuple):
