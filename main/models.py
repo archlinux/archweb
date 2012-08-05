@@ -336,8 +336,16 @@ class Package(models.Model):
     def elsewhere(self):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
+        names = [self.pkgname]
+        if self.pkgname.startswith('lib32-'):
+            names.append(self.pkgname[6:])
+        elif self.pkgname.endswith('-multilib'):
+            names.append(self.pkgname[:-9])
+        else:
+            names.append('lib32-' + self.pkgname)
+            names.append(self.pkgname + '-multilib')
         return Package.objects.normal().filter(
-                pkgname=self.pkgname).exclude(id=self.id).order_by(
+                pkgname__in=names).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')
 
 class PackageFile(models.Model):
