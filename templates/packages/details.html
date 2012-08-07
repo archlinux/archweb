@@ -126,16 +126,23 @@
             <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
+        {% with pkg.replaces.all as all_related %}{% if all_related %}
+        <tr>
+            <th>Replaces:</th>
+            <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
+        </tr>
+        {% endif %}{% endwith %}
         {% with pkg.conflicts.all as all_related %}{% if all_related %}
         <tr>
             <th>Conflicts:</th>
             <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with pkg.replaces.all as all_related %}{% if all_related %}
+        {% with pkg.reverse_conflicts as rev_conflicts %}{% if rev_conflicts %}
         <tr>
-            <th>Replaces:</th>
-            <td class="wrap">{% include "packages/details_relatedto.html" %}</td>
+            <th>Reverse Conflicts:</th>
+            <td class="wrap">{% for conflict in rev_conflicts %}
+                {% pkg_details_link conflict %}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>

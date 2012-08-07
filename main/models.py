@@ -258,6 +258,16 @@ class Package(models.Model):
             return (sort_order.get(dep.deptype, 1000), dep.name)
         return sorted(deps, key=sort_key)
 
+    @cache_function(123)
+    def reverse_conflicts(self):
+        """
+        Returns a list of packages with conflicts against this package.
+        """
+        # TODO: fix this; right now we cheat since we can't do proper version
+        # number checking without using alpm or vercmp directly.
+        return Package.objects.filter(conflicts__name=self.pkgname,
+                conflicts__comparison='').distinct()
+
     @cache_function(125)
     def base_package(self):
         """
