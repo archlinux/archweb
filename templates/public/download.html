@@ -49,6 +49,14 @@
                     title="Download for both architectures">Download archlinux-{{version}}-dual.iso.torrent</a></li>
     </ul>
 
+    <h3>Netboot</h3>
+
+    <p>If you have a wired connection, you can boot the latest release directly over the network.</p>
+    <ul>
+      <li><a href="{{ releng_pxeboot_url }}"
+          title="Arch Linux Netboot Live System">Arch Linux Netboot</a></li>
+    </ul>
+
     <h3>Test ISO Info</h3>
 
     <p>We provide daily snapshot ISOs. Those are largely untested,
@@ -57,8 +65,7 @@
         <li><a href="{{ releng_iso_url }}"
             title="Release Engineering ISO download">Download snapshots</a></li>
         <li><a href="{{ releng_pxeboot_url }}"
-            title="Arch Linux Netboot Live System">Boot latest snapshots over the network</a>
-        <img width="16" height="16" src="{% static "new.png" %}" alt="New"/></li>
+            title="Arch Linux Netboot Live System">Boot latest snapshots over the network</a></li>
         <li><a href="{% url 'releng-test-overview' %}"
             title="Release Engineering ISO feedback">Feedback</a></li>
     </ul>
