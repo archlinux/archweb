@@ -7,7 +7,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.add_column('repos', 'staging', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        db.add_column('repos', 'staging', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=True)
 
     def backwards(self, orm):
         db.delete_column('repos', 'staging')

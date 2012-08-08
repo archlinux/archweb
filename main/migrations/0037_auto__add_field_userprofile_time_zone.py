@@ -8,7 +8,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'UserProfile.time_zone'
-        db.add_column('user_profiles', 'time_zone', self.gf('django.db.models.fields.CharField')(default='UTC', max_length=100), keep_default=False)
+        db.add_column('user_profiles', 'time_zone', self.gf('django.db.models.fields.CharField')(default='UTC', max_length=100), keep_default=True)
 
     def backwards(self, orm):
         # Deleting field 'UserProfile.time_zone'

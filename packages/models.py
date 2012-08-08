@@ -176,7 +176,7 @@ class FlagRequest(models.Model):
     ip_address = models.GenericIPAddressField(verbose_name='IP address',
             unpack_ipv4=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
-    version = models.CharField(max_length=255, default='')
+    version = models.CharField(max_length=255)
     repo = models.ForeignKey(Repo)
     num_packages = models.PositiveIntegerField('number of packages', default=1)
     message = models.TextField('message to developer', blank=True)

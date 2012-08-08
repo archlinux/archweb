@@ -7,7 +7,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.alter_column('mirrors_mirrorlog', 'error', self.gf('django.db.models.fields.TextField')())
+        db.alter_column('mirrors_mirrorlog', 'error', self.gf('django.db.models.fields.TextField')(default=''))
 
     def backwards(self, orm):
         db.alter_column('mirrors_mirrorlog', 'error', self.gf('django.db.models.fields.CharField')(max_length=255))

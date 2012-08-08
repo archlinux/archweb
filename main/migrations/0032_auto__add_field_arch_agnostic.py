@@ -8,7 +8,7 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'Arch.agnostic'
-        db.add_column('arches', 'agnostic', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=False)
+        db.add_column('arches', 'agnostic', self.gf('django.db.models.fields.BooleanField')(default=False), keep_default=True)
 
     def backwards(self, orm):
         # Deleting field 'Arch.agnostic'

@@ -6,7 +6,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.add_column('mirrors_mirrorprotocol', 'default', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
+        db.add_column('mirrors_mirrorprotocol', 'default', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=True)
 
     def backwards(self, orm):
         db.delete_column('mirrors_mirrorprotocol', 'default')

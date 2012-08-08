@@ -7,7 +7,7 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.add_column('repos', 'bugs_category', self.gf('django.db.models.fields.SmallIntegerField')(default=0), keep_default=False)
+        db.add_column('repos', 'bugs_category', self.gf('django.db.models.fields.SmallIntegerField')(default=2), keep_default=False)
 
     def backwards(self, orm):
         db.delete_column('repos', 'bugs_category')
