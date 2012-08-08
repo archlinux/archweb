@@ -11,6 +11,7 @@ from django.utils.timezone import now
 
 from .fields import PositiveBigIntegerField
 from .utils import cache_function, set_created_field
+from packages.alpm import AlpmAPI
 
 
 class TodolistManager(models.Manager):
@@ -189,16 +190,42 @@ class Package(models.Model):
         category as this package if that check makes sense.
         """
         from packages.models import Depend
-        provides = set(self.provides.values_list('name', flat=True))
-        provides.add(self.pkgname)
+        provides = self.provides.all()
+        provide_names = set(provide.name for provide in provides)
+        provide_names.add(self.pkgname)
         requiredby = Depend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').filter(
-                name__in=provides).order_by(
+                name__in=provide_names).order_by(
                 'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
             requiredby = requiredby.filter(
                     pkg__arch__in=self.applicable_arches())
+
+        # if we can use ALPM, ensure our returned Depend objects abide by the
+        # version comparison operators they may specify
+        alpm = AlpmAPI()
+        if alpm.available:
+            new_rqd = []
+            for dep in requiredby:
+                if not dep.comparison or not dep.version:
+                    # no comparisson/version, so always let it through
+                    new_rqd.append(dep)
+                elif self.pkgname == dep.name:
+                    # depends on this package, so check it directly
+                    if alpm.compare_versions(self.full_version,
+                            dep.comparison, dep.version):
+                        new_rqd.append(dep)
+                else:
+                    # it must be a provision of ours at this point
+                    for provide in (p for p in provides if p.name == dep.name):
+                        print(provide.version, dep.comparison, dep.version)
+                        if alpm.compare_versions(provide.version,
+                                dep.comparison, dep.version):
+                            new_rqd.append(dep)
+                            break
+            requiredby = new_rqd
+
         # sort out duplicate packages; this happens if something has a double
         # versioned depend such as a kernel module
         requiredby = [list(vals)[0] for _, vals in
@@ -263,10 +290,24 @@ class Package(models.Model):
         """
         Returns a list of packages with conflicts against this package.
         """
-        # TODO: fix this; right now we cheat since we can't do proper version
-        # number checking without using alpm or vercmp directly.
-        return Package.objects.filter(conflicts__name=self.pkgname,
-                conflicts__comparison='').distinct()
+        pkgs = Package.objects.filter(conflicts__name=self.pkgname)
+        alpm = AlpmAPI()
+        if not alpm.available:
+            return pkgs
+
+        # If we can use ALPM, we can filter out items that don't actually
+        # conflict due to the version specification.
+        pkgs = pkgs.prefetch_related('conflicts')
+        new_pkgs = []
+        for package in pkgs:
+            for conflict in package.conflicts.all():
+                if conflict.name != self.pkgname:
+                    continue
+                if not conflict.comparison or not conflict.version \
+                        or alpm.compare_versions(self.full_version,
+                        conflict.comparison, conflict.version):
+                    new_pkgs.append(package)
+        return new_pkgs
 
     @cache_function(125)
     def base_package(self):

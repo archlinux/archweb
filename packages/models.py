@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 from main.models import Arch, Repo, Package
 from main.utils import set_created_field, database_vendor
+from packages.alpm import AlpmAPI
 
 
 class PackageRelation(models.Model):
@@ -341,6 +342,13 @@ class RelatedToBase(models.Model):
             # make sure we match architectures if possible
             arches = self.pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
+        # if we have a comparison operation, make sure the packages we grab
+        # actually satisfy the requirements
+        if self.comparison and self.version:
+            alpm = AlpmAPI()
+            pkgs = [pkg for pkg in pkgs if not alpm.available or
+                    alpm.compare_versions(pkg.full_version, self.comparison,
+                        self.version)]
         if len(pkgs) == 0:
             # couldn't find a package in the DB
             # it should be a virtual depend (or a removed package)
@@ -372,6 +380,21 @@ class RelatedToBase(models.Model):
             # make sure we match architectures if possible
             arches = self.pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
+
+        # If we have a comparison operation, make sure the packages we grab
+        # actually satisfy the requirements.
+        alpm = AlpmAPI()
+        if alpm.available and self.comparison and self.version:
+            pkgs = pkgs.prefetch_related('provides')
+            new_pkgs = []
+            for package in pkgs:
+                for provide in package.provides.all():
+                    if provide.name != self.name:
+                        continue
+                    if alpm.compare_versions(provide.version,
+                            self.comparison, self.version):
+                        new_pkgs.append(package)
+            pkgs = new_pkgs
 
         # Logic here is to filter out packages that are in multiple repos if
         # they are not requested. For example, if testing is False, only show a
