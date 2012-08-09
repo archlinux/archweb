@@ -36,7 +36,7 @@ def parse_version(version):
 def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
-             cnt=Count('pkg'), last_update=Max('pkg__last_update'))
+            cnt=Count('pkg'), last_update=Max('pkg__last_update'))
     # now for post_processing. we need to seperate things out and add
     # the count in for 'any' to all of the other architectures.
     group_mapping = {}
@@ -70,6 +70,7 @@ def get_group_info(include_arches=None):
         if not include_arches or key in include_arches:
             groups.extend(val.itervalues())
     return sorted(groups, key=itemgetter('name', 'arch'))
+
 
 def get_split_packages_info():
     '''Return info on split packages that do not have an actual package name
@@ -276,6 +277,7 @@ def approved_by_signoffs(signoffs, spec):
         return good_signoffs >= spec.required
     return False
 
+
 class PackageSignoffGroup(object):
     '''Encompasses all packages in testing with the same pkgbase.'''
     def __init__(self, packages):
@@ -375,6 +377,7 @@ SELECT DISTINCT s.id
     AND p.repo_id IN (%s)
 """
 
+
 def get_current_signoffs(repos):
     '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
     cursor = connection.cursor()
@@ -389,6 +392,7 @@ def get_current_signoffs(repos):
     signoffs = Signoff.objects.select_related('user').in_bulk(to_fetch)
     return signoffs.values()
 
+
 def get_current_specifications(repos):
     '''Returns a mapping of pkgbase -> signoff specification objects for the
     given repos.'''
@@ -400,6 +404,7 @@ def get_current_specifications(repos):
     results = cursor.fetchall()
     to_fetch = [row[0] for row in results]
     return SignoffSpecification.objects.in_bulk(to_fetch).values()
+
 
 def get_target_repo_map(repos):
     sql = """
@@ -420,6 +425,7 @@ SELECT DISTINCT p1.pkgbase, r.name
     cursor = connection.cursor()
     cursor.execute(sql, params)
     return dict(cursor.fetchall())
+
 
 def get_signoff_groups(repos=None, user=None):
     if repos is None:
@@ -458,12 +464,12 @@ def get_signoff_groups(repos=None, user=None):
 
 
 class PackageJSONEncoder(DjangoJSONEncoder):
-    pkg_attributes = [ 'pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
+    pkg_attributes = ['pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
             'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
             'installed_size', 'build_date', 'last_update', 'flag_date',
-            'maintainers', 'packager' ]
-    pkg_list_attributes = [ 'groups', 'licenses', 'conflicts',
-            'provides', 'replaces', 'depends' ]
+            'maintainers', 'packager']
+    pkg_list_attributes = ['groups', 'licenses', 'conflicts',
+            'provides', 'replaces', 'depends']
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -487,6 +493,5 @@ class PackageJSONEncoder(DjangoJSONEncoder):
         elif isinstance(obj, User):
             return obj.username
         return super(PackageJSONEncoder, self).default(obj)
-
 
 # vim: set ts=4 sw=4 et:
