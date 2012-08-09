@@ -176,7 +176,6 @@ class FlagRequest(models.Model):
     ip_address = models.GenericIPAddressField(verbose_name='IP address',
             unpack_ipv4=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
-    version = models.CharField(max_length=255)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
