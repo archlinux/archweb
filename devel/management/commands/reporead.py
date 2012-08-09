@@ -34,6 +34,7 @@ from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
 from main.utils import database_vendor
 from packages.models import Depend, Conflict, Provision, Replacement, Update
+from packages.utils import parse_version
 
 
 logging.basicConfig(
@@ -84,8 +85,6 @@ class RepoPackage(object):
             'conflicts', 'provides', 'replaces', 'groups', 'license',
             'files' )
 
-    version_re = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
-
     def __init__(self, repo):
         self.repo = repo
         self.ver = None
@@ -112,11 +111,7 @@ class RepoPackage(object):
                 # do NOT prune these values at all
                 setattr(self, k, v[0])
             elif k == 'version':
-                match = self.version_re.match(v[0])
-                self.ver = match.group(3)
-                self.rel = match.group(4)
-                if match.group(2):
-                    self.epoch = int(match.group(2))
+                self.ver, self.rel, self.epoch = parse_version(v[0])
             elif k == 'builddate':
                 try:
                     builddate = datetime.utcfromtimestamp(int(v[0]))

@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import chain
 from operator import itemgetter
+import re
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
@@ -13,6 +14,23 @@ from main.utils import (cache_function, database_vendor,
 from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
+
+
+VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
+
+
+def parse_version(version):
+    match = VERSION_RE.match(version)
+    if not match:
+        return None, None, 0
+    ver = match.group(3)
+    rel = match.group(4)
+    if match.group(2):
+        epoch = int(match.group(2))
+    else:
+        epoch = 0
+    return ver, rel, epoch
+
 
 @cache_function(127)
 def get_group_info(include_arches=None):
