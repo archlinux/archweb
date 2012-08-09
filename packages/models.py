@@ -177,6 +177,9 @@ class FlagRequest(models.Model):
             unpack_ipv4=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
     version = models.CharField(max_length=255)
+    pkgver = models.CharField(max_length=255)
+    pkgrel = models.CharField(max_length=255)
+    epoch = models.PositiveIntegerField(default=0)
     repo = models.ForeignKey(Repo)
     num_packages = models.PositiveIntegerField('number of packages', default=1)
     message = models.TextField('message to developer', blank=True)
@@ -192,6 +195,17 @@ class FlagRequest(models.Model):
         if self.user:
             return self.user.get_full_name()
         return self.user_email
+
+    @property
+    def full_version(self):
+        # Difference here from other implementations at the moment: we need to
+        # handle the case of pkgver and pkgrel being null as this table didn't
+        # originally have version columns.
+        if self.pkgver == '' and self.pkgrel == '':
+            return u''
+        if self.epoch > 0:
+            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return u'%s-%s' % (self.pkgver, self.pkgrel)
 
     def __unicode__(self):
         return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
