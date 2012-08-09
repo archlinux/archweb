@@ -5,16 +5,23 @@ import operator
 
 def load_alpm(name=None):
     # Load the alpm library and set up some of the functions we might use
-    if name == None:
+    if name is None:
         name = find_library('alpm')
+    if name is None:
+        # couldn't locate the correct library
+        return None
     try:
         alpm = ctypes.cdll.LoadLibrary(name)
     except OSError:
         return None
-    alpm.alpm_version.argtypes = ()
-    alpm.alpm_version.restype = ctypes.c_char_p
-    alpm.alpm_pkg_vercmp.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
-    alpm.alpm_pkg_vercmp.restype = ctypes.c_int
+    try:
+        alpm.alpm_version.argtypes = ()
+        alpm.alpm_version.restype = ctypes.c_char_p
+        alpm.alpm_pkg_vercmp.argtypes = (ctypes.c_char_p, ctypes.c_char_p)
+        alpm.alpm_pkg_vercmp.restype = ctypes.c_int
+    except AttributeError:
+        return None
+
     return alpm
 
 
