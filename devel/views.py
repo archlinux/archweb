@@ -29,7 +29,7 @@ from .models import UserProfile
 from main.models import Package, PackageFile, TodolistPkg
 from main.models import Arch, Repo
 from news.models import News
-from packages.models import PackageRelation, Signoff, Depend
+from packages.models import PackageRelation, Signoff, FlagRequest, Depend
 from packages.utils import get_signoff_groups
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers, UserFinder
@@ -103,6 +103,11 @@ def clock(request):
     latest_signoff = dict(Signoff.objects.filter(
             user__is_active=True).values_list('user').order_by(
             ).annotate(last_signoff=Max('created')))
+    # The extra() bit ensures we can use our 'user_id IS NOT NULL' index
+    latest_flagreq = dict(FlagRequest.objects.filter(
+            user__is_active=True).extra(
+            where=['user_id IS NOT NULL']).values_list('user_id').order_by(
+            ).annotate(last_flagrequest=Max('created')))
     latest_log = dict(LogEntry.objects.filter(
             user__is_active=True).values_list('user').order_by(
             ).annotate(last_log=Max('action_time')))
@@ -112,6 +117,7 @@ def clock(request):
             latest_news.get(dev.id, None),
             latest_package.get(dev.id, None),
             latest_signoff.get(dev.id, None),
+            latest_flagreq.get(dev.id, None),
             latest_log.get(dev.id, None),
             dev.last_login,
         ]
