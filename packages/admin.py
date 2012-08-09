@@ -12,8 +12,8 @@ class PackageRelationAdmin(admin.ModelAdmin):
 
 
 class FlagRequestAdmin(admin.ModelAdmin):
-    list_display = ('pkgbase', 'version', 'repo', 'created', 'who', 'is_spam',
-            'is_legitimate', 'message')
+    list_display = ('pkgbase', 'full_version', 'repo', 'created', 'who',
+            'is_spam', 'is_legitimate', 'message')
     list_filter = ('is_spam', 'is_legitimate', 'repo')
     search_fields = ('pkgbase', 'user_email', 'message')
     ordering = ('-created',)

@@ -345,12 +345,16 @@ class Package(models.Model):
                 pkgbase=self.pkgbase).exclude(id=self.id)
 
     def flag_request(self):
-        if not self.flag_date:
+        if self.flag_date is None:
             return None
         from packages.models import FlagRequest
         try:
+            # Note that we don't match on pkgrel here; this is because a pkgrel
+            # bump does not unflag a package so we can still show the same flag
+            # request from a different pkgrel.
             request = FlagRequest.objects.filter(pkgbase=self.pkgbase,
-                    repo=self.repo).latest()
+                    repo=self.repo, pkgver=self.pkgver,
+                    epoch=self.epoch).latest()
             return request
         except FlagRequest.DoesNotExist:
             return None

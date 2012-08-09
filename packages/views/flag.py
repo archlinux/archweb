@@ -59,11 +59,12 @@ def flag(request, name, repo, arch):
             flagged_pkgs = list(pkgs)
 
             # find a common version if there is one available to store
-            versions = set(pkg.full_version for pkg in flagged_pkgs)
+            versions = set((pkg.pkgver, pkg.pkgrel, pkg.epoch)
+                    for pkg in flagged_pkgs)
             if len(versions) == 1:
                 version = versions.pop()
             else:
-                version = ''
+                version = ('', '', 0)
 
             message = form.cleaned_data['message']
             ip_addr = request.META.get('REMOTE_ADDR')
@@ -77,11 +78,12 @@ def flag(request, name, repo, arch):
                 current_time = now()
                 pkgs.update(flag_date=current_time)
                 # store our flag request
+                # TODO
                 flag_request = FlagRequest(created=current_time,
                         user_email=email, message=message,
                         ip_address=ip_addr, pkgbase=pkg.pkgbase,
-                        version=version, repo=pkg.repo,
-                        num_packages=len(flagged_pkgs))
+                        repo=pkg.repo, pkgver=version[0], pkgrel=version[1],
+                        epoch=version[2], num_packages=len(flagged_pkgs))
                 if authenticated:
                     flag_request.user = request.user
                 flag_request.save()
