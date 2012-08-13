@@ -8,10 +8,12 @@ from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test)
 
+
 def standard_field(model, empty_label=None, help_text=None, required=True):
     return forms.ModelChoiceField(queryset=model.objects.all(),
         widget=forms.RadioSelect(), empty_label=empty_label,
         help_text=help_text, required=required)
+
 
 class TestForm(forms.ModelForm):
     iso = forms.ModelChoiceField(queryset=Iso.objects.filter(
@@ -24,29 +26,34 @@ class TestForm(forms.ModelForm):
     source = standard_field(Source)
     clock_choice = standard_field(ClockChoice)
     filesystem = standard_field(Filesystem,
-            help_text="Verify /etc/fstab, `df -hT` output and commands like " \
+            help_text="Verify /etc/fstab, `df -hT` output and commands like "
             "lvdisplay for special modules.")
     modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="", widget=forms.CheckboxSelectMultiple(), required=False)
+            widget=forms.CheckboxSelectMultiple(), required=False)
     bootloader = standard_field(Bootloader,
-            help_text="Verify that the entries in the bootloader config looks OK.")
+            help_text="Verify that the entries in the bootloader config "
+            "looks OK.")
     rollback_filesystem = standard_field(Filesystem,
-            help_text="If you did a rollback followed by a new attempt to setup " \
-            "your blockdevices/filesystems, select which option you took here.",
+            help_text="If you did a rollback followed by a new attempt to "
+            "setup your blockdevices/filesystems, select which option you "
+            "took here.",
             empty_label="N/A (did not rollback)", required=False)
-    rollback_modules = forms.ModelMultipleChoiceField(queryset=Module.objects.all(),
-            help_text="If you did a rollback followed by a new attempt to setup " \
-            "your blockdevices/filesystems, select which option you took here.",
+    rollback_modules = forms.ModelMultipleChoiceField(
+            queryset=Module.objects.all(),
+            help_text="If you did a rollback followed by a new attempt to "
+            "setup your blockdevices/filesystems, select which option you "
+            "took here.",
             widget=forms.CheckboxSelectMultiple(), required=False)
     success = forms.BooleanField(
-            help_text="Only check this if everything went fine. " \
-            "If you ran into problems please create a ticket on <a " \
-            "href=\"https://bugs.archlinux.org/index.php?project=6\">the " \
-            "bugtracker</a> (or check that one already exists) and link to " \
+            help_text="Only check this if everything went fine. "
+            "If you ran into problems please create a ticket on <a "
+            "href=\"https://bugs.archlinux.org/index.php?project=6\">the "
+            "bugtracker</a> (or check that one already exists) and link to "
             "it in the comments.",
             required=False)
     website = forms.CharField(label='',
-            widget=forms.TextInput(attrs={'style': 'display:none;'}), required=False)
+            widget=forms.TextInput(attrs={'style': 'display:none;'}),
+            required=False)
 
     class Meta:
         model = Test
@@ -58,6 +65,7 @@ class TestForm(forms.ModelForm):
         widgets = {
             "modules": forms.CheckboxSelectMultiple(),
         }
+
 
 def submit_test_result(request):
     if request.POST:
@@ -73,6 +81,7 @@ def submit_test_result(request):
 
     context = {'form': form}
     return render(request, 'releng/add.html', context)
+
 
 def calculate_option_overview(field_name):
     field = Test._meta.get_field(field_name)
@@ -108,6 +117,7 @@ def calculate_option_overview(field_name):
 
     return option
 
+
 def options_fetch_iso(options):
     '''Replaces the Iso PK with a full Iso model object in a list of options
     used on the overview page. We do it this way to only have to query the Iso
@@ -128,13 +138,19 @@ def options_fetch_iso(options):
 
     return options
 
+
 def test_results_overview(request):
     # data structure produced:
-    # [ { option, name, is_rollback, values: [ { value, success, failure } ... ] } ... ]
+    # [ {
+    #     option, name, is_rollback,
+    #     values: [ { value, success, failure } ... ]
+    #   }
+    #   ...
+    # ]
     all_options = []
-    fields = [ 'architecture', 'iso_type', 'boot_type', 'hardware_type',
+    fields = ['architecture', 'iso_type', 'boot_type', 'hardware_type',
             'install_type', 'source', 'clock_choice', 'filesystem', 'modules',
-            'bootloader', 'rollback_filesystem', 'rollback_modules' ]
+            'bootloader', 'rollback_filesystem', 'rollback_modules']
     for field in fields:
         all_options.append(calculate_option_overview(field))
 
@@ -146,6 +162,7 @@ def test_results_overview(request):
     }
     return render(request, 'releng/results.html', context)
 
+
 def test_results_iso(request, iso_id):
     iso = get_object_or_404(Iso, pk=iso_id)
     test_list = iso.test_set.select_related()
@@ -154,6 +171,7 @@ def test_results_iso(request, iso_id):
         'test_list': test_list
     }
     return render(request, 'releng/result_list.html', context)
+
 
 def test_results_for(request, option, value):
     if option not in Test._meta.get_all_field_names():
@@ -171,8 +189,10 @@ def test_results_for(request, option, value):
     }
     return render(request, 'releng/result_list.html', context)
 
+
 def submit_test_thanks(request):
     return render(request, "releng/thanks.html", None)
+
 
 def iso_overview(request):
     isos = Iso.objects.all().order_by('-pk')
@@ -186,7 +206,7 @@ def iso_overview(request):
 
     # only show "useful" rows, currently active ISOs or those with results
     isos = [iso for iso in isos if
-            iso.active == True or iso.successes > 0 or iso.failures > 0]
+            iso.active is True or iso.successes > 0 or iso.failures > 0]
 
     context = {
         'isos': isos
