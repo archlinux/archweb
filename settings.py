@@ -78,6 +78,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
 )
 
+# Base of the URL hierarchy
 ROOT_URLCONF = 'urls'
 
 # URL to serve static files
@@ -122,6 +123,31 @@ INSTALLED_APPS = (
     'visualize',
     'retro',
 )
+
+# Logging configuration for not getting overspammed
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'ratelimit': {
+            '()': 'main.log.RateLimitFilter',
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['ratelimit'],
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
 
 ## Server used for linking to PGP keysearch results
 PGP_SERVER = 'pgp.mit.edu:11371'
