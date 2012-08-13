@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
@@ -29,6 +31,15 @@ class FlagForm(forms.Form):
         super(FlagForm, self).__init__(*args, **kwargs)
         if auth:
             del self.fields['email']
+
+    def clean_message(self):
+        data = self.cleaned_data['message']
+        # make sure the message isn't garbage (only punctuation or whitespace)
+        # and ensure a certain minimum length
+        if re.match(r'^[^0-9A-Za-z]+$', data) or len(data) < 3:
+            raise forms.ValidationError(
+                    "Enter a valid and useful out-of-date message.")
+        return data
 
 
 @cache_page(3600)
@@ -78,7 +89,6 @@ def flag(request, name, repo, arch):
                 current_time = now()
                 pkgs.update(flag_date=current_time)
                 # store our flag request
-                # TODO
                 flag_request = FlagRequest(created=current_time,
                         user_email=email, message=message,
                         ip_address=ip_addr, pkgbase=pkg.pkgbase,
