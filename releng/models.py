@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 
 from main.utils import set_created_field
 
+
 class IsoOption(models.Model):
     name = models.CharField(max_length=200)
 
@@ -13,9 +14,11 @@ class IsoOption(models.Model):
     class Meta:
         abstract = True
 
+
 class RollbackOption(IsoOption):
     class Meta:
         abstract = True
+
 
 class Iso(models.Model):
     name = models.CharField(max_length=255)
@@ -32,36 +35,47 @@ class Iso(models.Model):
     class Meta:
         verbose_name = 'ISO'
 
+
 class Architecture(IsoOption):
     pass
+
 
 class IsoType(IsoOption):
     class Meta:
         verbose_name = 'ISO type'
 
+
 class BootType(IsoOption):
     pass
+
 
 class HardwareType(IsoOption):
     pass
 
+
 class InstallType(IsoOption):
     pass
+
 
 class Source(IsoOption):
     pass
 
+
 class ClockChoice(IsoOption):
     pass
+
 
 class Filesystem(RollbackOption):
     pass
 
+
 class Module(RollbackOption):
     pass
 
+
 class Bootloader(IsoOption):
     pass
+
 
 class Test(models.Model):
     user_name = models.CharField(max_length=500)
