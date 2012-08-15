@@ -53,6 +53,7 @@ def match_packager(finder):
     unmatched = Package.objects.filter(packager__isnull=True).values_list(
             'packager_str', flat=True).order_by().distinct()
 
+    logger.info("%d packager strings retrieved", len(unmatched))
     for packager in unmatched:
         logger.debug("packager string %s", packager)
         user = finder.find(packager)
@@ -71,13 +72,14 @@ def match_packager(finder):
 
 @transaction.commit_on_success
 def match_flagrequest(finder):
-    logger.info("getting all flag requests emails from unknown users")
+    logger.info("getting all flag request email addresses from unknown users")
     req_count = matched_count = 0
     mapping = {}
 
     unmatched = FlagRequest.objects.filter(user__isnull=True).values_list(
             'user_email', flat=True).order_by().distinct()
     
+    logger.info("%d email addresses retrieved", len(unmatched))
     for user_email in unmatched:
         logger.debug("email %s", user_email)
         user = finder.find_by_email(user_email)

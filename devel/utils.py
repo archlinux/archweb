@@ -1,6 +1,7 @@
 import re
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import connection
 from django.db.models import Count, Q
 
@@ -44,6 +45,15 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
     return maintainers
 
 
+def ignore_does_not_exist(func):
+    def new_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            return None
+    return new_func
+
+
 class UserFinder(object):
     def __init__(self):
         self.cache = {}
@@ -52,18 +62,33 @@ class UserFinder(object):
         self.pgp_cache = {}
 
     @staticmethod
+    @ignore_does_not_exist
     def user_email(name, email):
         if email:
             return User.objects.get(email=email)
         return None
 
     @staticmethod
+    @ignore_does_not_exist
+    def username_email(name, email):
+        if email and '@' in email:
+            # split email addr at '@' symbol, ensure domain matches
+            # or is a subdomain of archlinux.org
+            # TODO: configurable domain/regex somewhere?
+            username, domain = email.split('@', 1)
+            if re.match(r'^(.+\.)?archlinux.org$', domain):
+                return User.objects.get(username=username)
+        return None
+
+    @staticmethod
+    @ignore_does_not_exist
     def profile_email(name, email):
         if email:
             return User.objects.get(userprofile__public_email=email)
         return None
 
     @staticmethod
+    @ignore_does_not_exist
     def user_name(name, email):
         # yes, a bit odd but this is the easiest way since we can't always be
         # sure how to split the name. Ensure every 'token' appears in at least
@@ -102,14 +127,12 @@ class UserFinder(object):
             email = matches.group(2)
 
         user = None
-        find_methods = (self.user_email, self.profile_email, self.user_name)
+        find_methods = (self.user_email, self.profile_email,
+                self.username_email, self.user_name)
         for matcher in find_methods:
-            try:
-                user = matcher(name, email)
-                if user != None:
-                    break
-            except (User.DoesNotExist, User.MultipleObjectsReturned):
-                pass
+            user = matcher(name, email)
+            if user != None:
+                break
 
         self.cache[userstring] = user
         self.email_cache[email] = user
@@ -135,14 +158,11 @@ class UserFinder(object):
         if email in self.email_cache:
             return self.email_cache[email]
 
-        user = None
-        try:
-            user = self.user_email(None, email)
-        except User.DoesNotExist:
-            try:
-                user = self.profile_email(None, email)
-            except User.DoesNotExist:
-                pass
+        user = self.user_email(None, email)
+        if user is None:
+            user = self.profile_email(None, email)
+            if user is None:
+                user = self.username_email(None, email)
 
         self.email_cache[email] = user
         return user
