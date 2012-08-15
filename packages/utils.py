@@ -363,6 +363,7 @@ class PackageSignoffGroup(object):
         return u'%s-%s (%s): %d' % (
                 self.pkgbase, self.version, self.arch, len(self.signoffs))
 
+
 _SQL_SPEC_OR_SIGNOFF = """
 SELECT DISTINCT s.id
     FROM %s s
@@ -374,7 +375,7 @@ SELECT DISTINCT s.id
         AND s.arch_id = p.arch_id
         AND s.repo_id = p.repo_id
     )
-    AND p.repo_id IN (%s)
+    WHERE p.repo_id IN (%s)
 """
 
 
