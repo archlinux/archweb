@@ -482,7 +482,8 @@ class Replacement(RelatedToBase):
 
 
 # hook up some signals
-for sender in (PackageRelation, SignoffSpecification, Signoff, Update):
+for sender in (FlagRequest, PackageRelation,
+        SignoffSpecification, Signoff, Update):
     pre_save.connect(set_created_field, sender=sender,
             dispatch_uid="packages.models")
 
