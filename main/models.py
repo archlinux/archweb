@@ -291,6 +291,10 @@ class Package(models.Model):
         Returns a list of packages with conflicts against this package.
         """
         pkgs = Package.objects.filter(conflicts__name=self.pkgname)
+        if not self.arch.agnostic:
+            # make sure we match architectures if possible
+            pkgs = pkgs.filter(arch__in=self.applicable_arches())
+
         alpm = AlpmAPI()
         if not alpm.available:
             return pkgs
