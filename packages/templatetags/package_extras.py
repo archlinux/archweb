@@ -103,7 +103,7 @@ def scm_link(package, operation):
     linkbase = (
         "https://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
         "h=packages/%s")
-    return linkbase % tuple(urlquote(part) for part in parts)
+    return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
 
 
 @register.simple_tag
