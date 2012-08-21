@@ -9,12 +9,14 @@ from django.utils.html import escape
 
 register = template.Library()
 
+
 def link_encode(url, query):
     # massage the data into all utf-8 encoded strings first, so urlencode
     # doesn't barf at the data we pass it
     query = dict((k, unicode(v).encode('utf-8')) for k, v in query.items())
     data = urlencode(query).replace('&', '&amp;')
     return "%s?%s" % (url, data)
+
 
 @register.filter
 def url_unquote(original_url):
@@ -27,6 +29,7 @@ def url_unquote(original_url):
     except UnicodeError:
         return original_url
 
+
 class BuildQueryStringNode(template.Node):
     def __init__(self, sortfield):
         self.sortfield = sortfield
@@ -34,7 +37,7 @@ class BuildQueryStringNode(template.Node):
 
     def render(self, context):
         qs = parse_qs(context['current_query'])
-        if qs.has_key('sort') and self.sortfield in qs['sort']:
+        if 'sort' in qs and self.sortfield in qs['sort']:
             if self.sortfield.startswith('-'):
                 qs['sort'] = [self.sortfield[1:]]
             else:
@@ -42,6 +45,7 @@ class BuildQueryStringNode(template.Node):
         else:
             qs['sort'] = [self.sortfield]
         return urlencode(qs, True).replace('&', '&amp;')
+
 
 @register.tag(name='buildsortqs')
 def do_buildsortqs(parser, token):
@@ -55,14 +59,17 @@ def do_buildsortqs(parser, token):
                 "%r tag's argument should be in quotes" % tagname)
     return BuildQueryStringNode(sortfield[1:-1])
 
+
 @register.simple_tag
 def pkg_details_link(pkg):
     link = '<a href="%s" title="View package details for %s">%s</a>'
     return link % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
 
+
 @register.simple_tag
 def multi_pkg_details(pkgs):
     return ', '.join([pkg_details_link(pkg) for pkg in pkgs])
+
 
 @register.simple_tag
 def maintainer_link(user):
@@ -75,6 +82,7 @@ def maintainer_link(user):
                 user.get_full_name(),
         )
     return ''
+
 
 @register.simple_tag
 def packager_link(user):
@@ -97,6 +105,7 @@ def scm_link(package, operation):
         "h=packages/%s")
     return linkbase % tuple(urlquote(part) for part in parts)
 
+
 @register.simple_tag
 def get_wiki_link(package):
     url = "https://wiki.archlinux.org/index.php/Special:Search"
@@ -104,6 +113,7 @@ def get_wiki_link(package):
         'search': package.pkgname,
     }
     return link_encode(url, data)
+
 
 @register.simple_tag
 def bugs_list(package):
@@ -114,6 +124,7 @@ def bugs_list(package):
         'string': package.pkgname,
     }
     return link_encode(url, data)
+
 
 @register.simple_tag
 def bug_report(package):
