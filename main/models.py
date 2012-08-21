@@ -143,6 +143,8 @@ class Package(models.Model):
             data = b64decode(self.pgp_signature)
         except TypeError:
             return None
+        if not data:
+            return None
         data = BinaryData(data)
         packets = list(data.packets())
         return packets[0]
