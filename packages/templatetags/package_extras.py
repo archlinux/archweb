@@ -91,12 +91,11 @@ def packager_link(user):
 
 @register.simple_tag
 def scm_link(package, operation):
-    parts = (package.repo.svn_root, operation)
-    url = "https://projects.archlinux.org/svntogit/%s.git/%s/trunk" % parts
-    data = {
-        'h': 'packages/%s' % package.pkgbase
-    }
-    return link_encode(url, data)
+    parts = (package.repo.svn_root, operation, package.pkgbase)
+    linkbase = (
+        "https://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
+        "h=packages/%s")
+    return linkbase % tuple(urlquote(part) for part in parts)
 
 @register.simple_tag
 def get_wiki_link(package):
