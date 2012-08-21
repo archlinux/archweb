@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
@@ -47,8 +48,13 @@ def opensearch_suggest(request):
             hashlib.md5(search_term.encode('utf-8')).hexdigest()
     to_json = cache.get(cache_key, None)
     if to_json is None:
-        names = Package.objects.filter(
-                pkgname__startswith=search_term).values_list(
+        q = Q(pkgname__startswith=search_term)
+        lookup = search_term.lower()
+        if search_term != lookup:
+            # package names are lowercase by convention, so include that in
+            # search if original wasn't lowercase already
+            q |= Q(pkgname__startswith=lookup)
+        names = Package.objects.filter(q).values_list(
                 'pkgname', flat=True).order_by('pkgname').distinct()[:10]
         results = [search_term, list(names)]
         to_json = json.dumps(results, ensure_ascii=False)
