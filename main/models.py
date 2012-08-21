@@ -105,10 +105,10 @@ class Package(models.Model):
     last_update = models.DateTimeField(db_index=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     packager_str = models.CharField(max_length=255)
-    packager = models.ForeignKey(User, null=True,
+    packager = models.ForeignKey(User, null=True, blank=True,
             on_delete=models.SET_NULL)
     pgp_signature = models.TextField(null=True, blank=True)
-    flag_date = models.DateTimeField(null=True)
+    flag_date = models.DateTimeField(null=True, blank=True)
 
     objects = PackageManager()
 
