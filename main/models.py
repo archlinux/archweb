@@ -360,7 +360,7 @@ class Package(models.Model):
             # request from a different pkgrel.
             request = FlagRequest.objects.filter(pkgbase=self.pkgbase,
                     repo=self.repo, pkgver=self.pkgver,
-                    epoch=self.epoch).latest()
+                    epoch=self.epoch, is_spam=False).latest()
             return request
         except FlagRequest.DoesNotExist:
             return None
