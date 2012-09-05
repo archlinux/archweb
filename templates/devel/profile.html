@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
+
 {% block title %}Arch Linux - Edit Profile{% endblock %}
 
 {% block content %}
@@ -22,4 +24,16 @@
     </form>
 
 </div>
+
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript">
+    modify_attributes({
+        '#id_email': {type: 'email'},
+        '#id_alias': {autocorrect: 'off', autocapitalize: 'off'},
+        '#id_public_email': {autocorrect: 'off', autocapitalize: 'off'},
+        '#id_website': {type: 'url'},
+        '#id_yob': {pattern: '[0-9]*'}
+    });
+</script>
 {% endblock %}
