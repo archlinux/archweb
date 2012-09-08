@@ -72,6 +72,17 @@
         {% endif %}{% endwith %}
     </div>
 
+    <div itemscope itemtype="http://schema.org/SoftwareApplication">
+    <meta itemprop="name" content="{{ pkg.pkgname|escape }}"/>
+    <meta itemprop="version" content="{{ pkg.full_version|escape }}"/>
+    <meta itemprop="softwareVersion" content="{{ pkg.full_version|escape }}"/>
+    <meta itemprop="fileSize" content="{{ pkg.compressed_size }}"/>
+    <meta itemprop="dateCreated" content="{{ pkg.build_date|date:"Y-m-d" }}"/>
+    <meta itemprop="datePublished" content="{{ pkg.last_update|date:"Y-m-d" }}"/>
+    <meta itemprop="operatingSystem" content="Linux"/>
+    <div style="display:none" itemprop="provider" itemscope itemtype="http://schema.org/Person">
+        <meta itemprop="name" content="{{ pkg.packager.get_full_name|escape }}"/>
+    </div>
     <table id="pkginfo">
         <tr>
             <th>Architecture:</th>
@@ -102,10 +113,10 @@
         {% endifequal %}
         <tr>
             <th>Description:</th>
-            <td class="wrap">{{ pkg.pkgdesc|default:"" }}</td>
+            <td class="wrap" itemprop="description">{{ pkg.pkgdesc|default:"" }}</td>
         </tr><tr>
             <th>Upstream URL:</th>
-            <td>{% if pkg.url %}<a href="{{ pkg.url }}"
+            <td>{% if pkg.url %}<a itemprop="url" href="{{ pkg.url }}"
                     title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url|url_unquote }}</a>{% endif %}</td>
         </tr><tr>
             <th>License(s):</th>
@@ -186,9 +197,9 @@
                 <div class="userdata">{{ flag_request.message|linebreaksbr|default:"{no message}" }}</div></td>
         </tr>{% endif %}{% endwith %}{% endif %}
     </table>
+    </div>
 
     <div id="metadata">
-
         {% with pkg.get_depends as deps %}
         <div id="pkgdeps" class="listing">
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
@@ -198,7 +209,6 @@
             </ul>{% endif %}
         </div>
         {% endwith %}
-
         {% with pkg.get_requiredby as rqdby %}
         <div id="pkgreqs" class="listing">
             <h3 title="Packages that require {{ pkg.pkgname }}">
@@ -208,7 +218,6 @@
             </ul>{% endif %}
         </div>
         {% endwith %}
-
         <div id="pkgfiles" class="listing">
             <h3 title="Complete list of files contained within this package">
                 Package Contents</h3>
@@ -218,9 +227,7 @@
                     View the file list for {{ pkg.pkgname }}</a></p>
             </div>
         </div>
-
     </div>
-
 </div>
 
 {% load cdn %}{% jquery %}
