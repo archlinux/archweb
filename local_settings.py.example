@@ -14,14 +14,22 @@ ADMINS = (
 )
 
 ## PostgreSQL Database settings
+#DATABASES = {
+#    'default': {
+#        'ENGINE'  : 'django.db.backends.postgresql_psycopg2',
+#        'NAME'    : 'archlinux',
+#        'USER'    : 'archlinux',
+#        'PASSWORD': 'archlinux',
+#        'HOST'    : '',
+#        'PORT'    : '',
+#    },
+#}
+
+## Sqlite Database settings
 DATABASES = {
     'default': {
-        'ENGINE'  : 'django.db.backends.postgresql_psycopg2',
-        'NAME'    : 'archlinux',
-        'USER'    : 'archlinux',
-        'PASSWORD': 'archlinux',
-        'HOST'    : '',
-        'PORT'    : '',
+        'ENGINE'  : 'django.db.backends.sqlite3',
+        'NAME'    : 'database.db',
     },
 }
 
