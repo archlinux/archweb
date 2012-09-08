@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader, Context
@@ -122,11 +122,13 @@ def flag(request, name, repo, arch):
                     'pkg': pkg,
                     'packages': flagged_pkgs,
                 })
-                send_mail(subject,
+                msg = EmailMessage(subject,
                         tmpl.render(ctx),
                         'Arch Website Notification <nobody@archlinux.org>',
                         toemail,
-                        fail_silently=True)
+                        headers={"Reply-To": email }
+                )
+                msg.send(fail_silently=True)
 
             return redirect('package-flag-confirmed', name=name, repo=repo,
                     arch=arch)
