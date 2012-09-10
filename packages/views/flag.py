@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader, Context
