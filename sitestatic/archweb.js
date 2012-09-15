@@ -293,17 +293,17 @@ function todolist_flag() {
     return false;
 }
 
-function filter_todolist() {
+function filter_pkgs_list(filter_ele, tbody_ele) {
     /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $('#dev-todo-pkglist tbody').children();
+    var rows = $(tbody_ele).children();
     var all_rows = rows;
     /* apply the filters, cheaper ones first */
     if ($('#id_mine_only').is(':checked')) {
         rows = rows.filter('.mine');
     }
     /* apply arch and repo filters */
-    $('#todolist_filter .arch_filter').add(
-            '#todolist_filter .repo_filter').each(function() {
+    $(filter_ele + ' .arch_filter').add(
+            filter_ele + ' .repo_filter').each(function() {
         if (!$(this).is(':checked')) {
             rows = rows.not('.' + $(this).val());
         }
@@ -319,10 +319,12 @@ function filter_todolist() {
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets', [false]);
 }
-function filter_todolist_reset() {
+function filter_pkgs_reset(callback) {
     $('#id_incomplete').removeAttr('checked');
     $('#id_mine_only').removeAttr('checked');
-    filter_todolist();
+    $('.arch_filter').attr('checked', 'checked');
+    $('.repo_filter').attr('checked', 'checked');
+    callback();
 }
 
 /* signoffs.html */

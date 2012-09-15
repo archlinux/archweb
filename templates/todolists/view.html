@@ -106,10 +106,11 @@ $(document).ready(function() {
         headers: { 5: { sorter: 'todostatus' } }
     });
     $('a.status-link').click(todolist_flag);
-    $('#todolist_filter input').change(filter_todolist);
-    $('#criteria_reset').click(filter_todolist_reset);
+    filter_func = function() { filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody'); };
+    $('#todolist_filter input').change(filter_func);
+    $('#criteria_reset').click(function() { filter_pkgs_reset(filter_func); });
     // fire function on page load to ensure the current form selections take effect
-    filter_todolist();
+    filter_func();
 });
 </script>
 {% endblock %}
