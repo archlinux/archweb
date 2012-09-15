@@ -13,7 +13,28 @@
     {% if maintainer %}This report only includes packages maintained by
     {{ maintainer.get_full_name }} ({{ maintainer.username }}).{% endif %}
     </p>
-    <table class="results">
+
+    <div class="box filter-criteria">
+        <h3>Filter Packages</h3>
+        <form id="report_filter" method="post" action=".">
+        <fieldset>
+            <legend>Select filter criteria</legend>
+            {% for arch in arches %}
+            <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
+                <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
+            {% endfor %}
+            {% for repo in repos %}
+            <div><label for="id_repo_{{ repo.name|lower }}" title="Target Repository {{ repo.name }}">[{{ repo.name|lower }}]</label>
+                <input type="checkbox" name="repo_{{ repo.name|lower }}" id="id_repo_{{ repo.name|lower }}" class="repo_filter" value="{{ repo.name|lower }}" checked="checked"/></div>
+            {% endfor %}
+            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
+            <div class="clear"></div>
+            <div id="filter-info"><span id="filter-count">{{ packages|length }}</span> packages displayed.</div>
+        </fieldset>
+        </form>
+    </div>
+
+    <table id="dev-report-results" class="results">
         <thead>
             <tr>
                 <th>Arch</th>
@@ -31,7 +52,7 @@
         </thead>
         <tbody>
             {% for pkg in packages %}
-            <tr class="{% cycle pkgr2,pkgr1 %}">
+            <tr class="{% cycle pkgr2,pkgr1 %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
@@ -57,6 +78,11 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $(".results").tablesorter({widgets: ['zebra']});
+    filter_func = function() { filter_pkgs_list('#report_filter', '#dev-report-results tbody'); };
+    $('#report_filter input').change(filter_func);
+    $('#criteria_reset').click(function() { filter_pkgs_reset(filter_func); });
+    // fire function on page load to ensure the current form selections take effect
+    filter_func();
 });
 </script>
 {% endblock %}

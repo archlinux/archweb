@@ -271,11 +271,15 @@ def report(request, report_name, username=None):
     else:
         raise Http404
 
+    arches = set(pkg.arch for pkg in packages)
+    repos = set(pkg.repo for pkg in packages)
     context = {
         'all_maintainers': maints,
         'title': title,
         'maintainer': user,
         'packages': packages,
+        'arches': sorted(arches),
+        'repos': sorted(repos),
         'column_names': names,
         'column_attrs': attrs,
     }
