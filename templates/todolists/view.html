@@ -29,10 +29,10 @@
         <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
     {% endfor %}</ul>
 
-    <p>{{ list.packages|length }} total todolist package{{ list.packages|pluralize }} found.</p>
+    <p>{{ list.packages|length }} total todo list package{{ list.packages|pluralize }} found.</p>
 
     <div class="box filter-criteria">
-        <h3>Filter Todolist Packages</h3>
+        <h3>Filter Todo List Packages</h3>
         <form id="todolist_filter" method="post" action=".">
         <fieldset>
             <legend>Select filter criteria</legend>
@@ -50,7 +50,7 @@
                 <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
             <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
             <div class="clear"></div>
-            <div id="filter-info"><span id="filter-count">{{ list.packages|length }}</span> todolist packages displayed.</div>
+            <div id="filter-info"><span id="filter-count">{{ list.packages|length }}</span> todo list packages displayed.</div>
         </fieldset>
         </form>
     </div>
