@@ -4,12 +4,12 @@
 
 {% block content %}
 <div itemscope itemtype="http://schema.org/Article" class="news-article box">
-
     <h2 itemprop="headline">{{ news.title }}</h2>
     <meta itemprop="dateCreated" content="{{ news.postdate|date:"Y-m-d" }}"/>
     <meta itemprop="datePublished" content="{{ news.postdate|date:"Y-m-d" }}"/>
     <meta itemprop="dateModified" content="{{ news.last_modified|date:"Y-m-d" }}"/>
     <meta itemprop="inLanguage" content="en"/>
+    <meta itemprop="wordCount" content="{{ news.content|wordcount }}"/>
     <div style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <meta itemprop="name" content="{{ news.author.get_full_name|escape }}"/>
     </div>
@@ -28,7 +28,6 @@
 
     <p class="article-info">{{ news.postdate|date }} - {{ news.author.get_full_name }}</p>
 
-    <div class="article-content">{{ news.content|markdown }}</div>
-
+    <div class="article-content" itemprop="articleBody">{{ news.content|markdown }}</div>
 </div>
 {% endblock %}
