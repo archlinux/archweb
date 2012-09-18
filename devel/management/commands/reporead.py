@@ -303,7 +303,10 @@ def populate_files(dbpkg, repopkg, force=False):
         logger.info("adding %d files for package %s",
                 len(repopkg.files), dbpkg.pkgname)
         pkg_files = []
-        for f in repopkg.files:
+        # sort in normal alpha-order that pacman uses, rather than makepkg's
+        # default breadth-first, directory-first ordering
+        files = sorted(repopkg.files)
+        for f in files:
             if '/' in f:
                 dirname, filename = f.rsplit('/', 1)
                 dirname += '/'
