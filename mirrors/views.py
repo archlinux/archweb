@@ -134,7 +134,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         urls = qset
 
     if not use_status:
-        sort_key = attrgetter('real_country', 'mirror.name', 'url')
+        sort_key = attrgetter('real_country.name', 'mirror.name', 'url')
         urls = sorted(urls, key=sort_key)
         template = 'mirrors/mirrorlist.txt'
     else:
