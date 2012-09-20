@@ -584,6 +584,7 @@ def read_repo(primary_arch, repo_file, options):
         else:
             db_update(arch, repo, packages_arches[arch], force)
     logger.info('Finished database updates for %s.', repo_file)
+    connection.close()
     return 0
 
 # vim: set ts=4 sw=4 et:
