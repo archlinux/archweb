@@ -68,7 +68,7 @@ class Command(BaseCommand):
         and passes these on to the various pyinotify pieces as necessary and
         finally builds and returns a notifier object.'''
         arches = Arch.objects.filter(agnostic=False)
-        repos = Repo.objects.all()
+        repos = Repo.objects.filter(staging=False)
         arch_path_map = dict((arch, None) for arch in arches)
         all_paths = set()
         total_paths = 0
