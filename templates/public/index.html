@@ -215,4 +215,22 @@
 
 </div>
 {% endcache %}
+
+{% load cdn %}{% jquery %}
+<script type="text/javascript" src="{% static "bootstrap-typeahead.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#pkgsearch-field').typeahead({
+        source: function(query, callback) {
+            $.getJSON('/opensearch/packages/suggest', {q: query}, function(data) {
+                callback(data[1]);
+            });
+        },
+        matcher: function(item) { return true; },
+        sorter: function(items) { return items; },
+        menu: '<ul class="pkgsearch-typeahead"></ul>',
+        items: 10
+    }).attr('autocomplete', 'off');
+});
+</script>
 {% endblock %}
