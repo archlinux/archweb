@@ -56,7 +56,8 @@ def index(request):
     repos = Repo.objects.all().annotate(
             total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
     # the join is huge unless we do this separately, so merge the result here
-    repo_maintainers = dict(Repo.objects.all().values_list('id').annotate(
+    repo_maintainers = dict(Repo.objects.order_by().filter(
+            userprofile__user__is_active=True).values_list('id').annotate(
             Count('userprofile')))
     for repo in repos:
         repo.maintainer_ct = repo_maintainers.get(repo.id, 0)
