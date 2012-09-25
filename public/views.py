@@ -86,9 +86,12 @@ def download(request):
 
 @cache_control(max_age=300)
 def feeds(request):
+    repos = Repo.objects.all()
+    if not request.user.is_authenticated():
+        repos = repos.filter(staging=False)
     context = {
         'arches': Arch.objects.all(),
-        'repos': Repo.objects.all(),
+        'repos': repos,
     }
     return render(request, 'public/feeds.html', context)
 
