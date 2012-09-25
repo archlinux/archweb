@@ -12,6 +12,18 @@
         }
     }, 
     {
+        "pk": 11, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 41, 
+            "staging": true, 
+            "name": "Community-Staging", 
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": false
+        }
+    }, 
+    {
         "pk": 6, 
         "model": "main.repo", 
         "fields": {
@@ -48,12 +60,48 @@
         }
     }, 
     {
+        "pk": 13, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 10, 
+            "staging": true, 
+            "name": "Gnome-Unstable", 
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 10, 
+            "staging": true, 
+            "name": "KDE-Unstable", 
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
+        }
+    }, 
+    {
         "pk": 7, 
         "model": "main.repo", 
         "fields": {
             "bugs_category": 46, 
             "staging": false, 
             "name": "Multilib", 
+            "bugs_project": 5, 
+            "svn_root": "community", 
+            "testing": false
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 46, 
+            "staging": true, 
+            "name": "Multilib-Staging", 
             "bugs_project": 5, 
             "svn_root": "community", 
             "testing": false
@@ -69,6 +117,18 @@
             "bugs_project": 5, 
             "svn_root": "community", 
             "testing": true
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 10, 
+            "staging": true, 
+            "name": "Staging", 
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
         }
     }, 
     {
