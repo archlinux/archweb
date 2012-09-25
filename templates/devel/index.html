@@ -216,6 +216,7 @@
                 <th class="key">Repository</th>
                 <th># Packages</th>
                 <th># Flagged</th>
+                <th># Maintainers</th>
             </tr>
         </thead>
         <tbody>
@@ -228,6 +229,8 @@
                     <td><a href="/packages/?repo={{ repo.name }}&amp;flagged=Flagged"
                             title="View all flagged packages in the {{ repo.name }} repository">
                             <strong>{{ repo.flagged_ct }}</strong> packages</a></td>
+                    <td><strong>{{ repo.maintainer_ct }}</strong> maintainers</td>
+                </tr>
                 </tr>
             {% endfor %}
         </tbody>
