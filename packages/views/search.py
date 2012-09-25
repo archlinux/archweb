@@ -56,8 +56,9 @@ class PackageSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(PackageSearchForm, self).__init__(*args, **kwargs)
+        repos = Repo.objects.filter(staging=False)
         self.fields['repo'].choices = make_choice(
-                        [repo.name for repo in Repo.objects.all()])
+                        [repo.name for repo in repos])
         self.fields['arch'].choices = make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
