@@ -61,9 +61,13 @@ def do_buildsortqs(parser, token):
 
 
 @register.simple_tag
-def pkg_details_link(pkg):
+def pkg_details_link(pkg, link_title=None):
+    if not pkg:
+        return ''
+    if link_title is None:
+        link_title = pkg.pkgname
     link = '<a href="%s" title="View package details for %s">%s</a>'
-    return link % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname)
+    return link % (pkg.get_absolute_url(), pkg.pkgname, link_title)
 
 
 @register.simple_tag
