@@ -13,7 +13,8 @@ class PackagesSitemap(Sitemap):
     priority = "0.5"
 
     def items(self):
-        return Package.objects.all().order_by()
+        return Package.objects.normal().filter(repo__staging=False).only(
+                'pkgname', 'last_update', 'repo__name', 'arch__name').order_by()
 
     def lastmod(self, obj):
         return obj.last_update
