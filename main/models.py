@@ -18,6 +18,7 @@ class TodolistManager(models.Manager):
     def incomplete(self):
         return self.filter(todolistpkg__complete=False).order_by().distinct()
 
+
 class PackageManager(models.Manager):
     def flagged(self):
         """Used by dev dashboard."""
@@ -32,6 +33,7 @@ class PackageManager(models.Manager):
             return qs
         return qs.filter(repo__staging=False)
 
+
 class Donor(models.Model):
     name = models.CharField(max_length=255, unique=True)
     visible = models.BooleanField(default=True,
@@ -45,6 +47,7 @@ class Donor(models.Model):
         db_table = 'donors'
         ordering = ('name',)
         get_latest_by = 'when'
+
 
 class Arch(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -61,6 +64,7 @@ class Arch(models.Model):
         db_table = 'arches'
         ordering = ['name']
         verbose_name_plural = 'arches'
+
 
 class Repo(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -85,6 +89,7 @@ class Repo(models.Model):
         db_table = 'repos'
         ordering = ['name']
         verbose_name_plural = 'repos'
+
 
 class Package(models.Model):
     repo = models.ForeignKey(Repo, related_name="packages",
@@ -409,6 +414,7 @@ class Package(models.Model):
                 pkgname__in=names).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')
 
+
 class PackageFile(models.Model):
     pkg = models.ForeignKey(Package)
     is_directory = models.BooleanField(default=False)
@@ -461,6 +467,7 @@ class Todolist(models.Model):
         domain = Site.objects.get_current().domain
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
+
 class TodolistPkg(models.Model):
     list = models.ForeignKey(Todolist)
     pkg = models.ForeignKey(Package)
@@ -470,10 +477,12 @@ class TodolistPkg(models.Model):
         db_table = 'todolist_pkgs'
         unique_together = (('list','pkg'),)
 
+
 def set_todolist_fields(sender, **kwargs):
     todolist = kwargs['instance']
     if not todolist.date_added:
         todolist.date_added = now()
+
 
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_latest
