@@ -226,7 +226,6 @@ class Package(models.Model):
                 else:
                     # it must be a provision of ours at this point
                     for provide in (p for p in provides if p.name == dep.name):
-                        print(provide.version, dep.comparison, dep.version)
                         if alpm.compare_versions(provide.version,
                                 dep.comparison, dep.version):
                             new_rqd.append(dep)
