@@ -206,7 +206,7 @@ function collapseDependsList(list) {
     // enough items, or the link already exists.
     var linkid = list.attr('id') + 'link';
     var items = list.find('li').slice(limit);
-    if (items.length == 0 || $('#' + linkid).length > 0) {
+    if (items.length <= 1 || $('#' + linkid).length > 0) {
         return;
     }
     items.hide();
@@ -218,6 +218,28 @@ function collapseDependsList(list) {
         list.find('li').show();
         // remove the full <p/> node from the DOM
         $(this).parent().remove();
+    });
+}
+
+function collapseRelatedTo(elements) {
+    var limit = 5;
+    $(elements).each(function(idx, ele) {
+        ele = $(ele);
+        // Hide everything past a given limit. Don't do anything if we don't
+        // have enough items, or the link already exists.
+        var items = ele.find('span.related').slice(limit);
+        if (items.length <= 1 || ele.find('a.morelink').length > 0) {
+            return;
+        }
+        items.hide();
+        ele.append('<a class="morelink" href="#">More…</a>');
+
+        // add link and wire it up to show the hidden items
+        ele.find('a.morelink').click(function(event) {
+            event.preventDefault();
+            ele.find('span.related').show();
+            $(this).remove();
+        });
     });
 }
 
