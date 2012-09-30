@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+from pytz import utc
 
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
@@ -105,8 +106,9 @@ def parse_form(form, packages):
 
     if form.cleaned_data['last_update']:
         lu = form.cleaned_data['last_update']
-        packages = packages.filter(last_update__gte=
-                datetime(lu.year, lu.month, lu.day, 0, 0))
+        cutoff = datetime(lu.year, lu.month, lu.day, 0, 0)
+        cutoff = cutoff.replace(tzinfo=utc)
+        packages = packages.filter(last_update__gte=cutoff)
 
     if form.cleaned_data['name']:
         name = form.cleaned_data['name']
