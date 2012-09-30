@@ -189,7 +189,7 @@
             <td>Unsigned</td>
         </tr>{% endif %}<tr>
             <th>Last Updated:</th>
-            <td>{{ pkg.last_update|date }}</td>
+            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC</td>
         </tr>
         {% if user.is_authenticated %}{% with pkg.flag_request as flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
