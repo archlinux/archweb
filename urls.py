@@ -1,5 +1,6 @@
 from django.conf.urls import include, patterns, url
 from django.contrib import admin
+from django.contrib.sitemaps import views as sitemap_views
 
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, RedirectView
@@ -34,13 +35,13 @@ feeds_patterns = patterns('',
 )
 
 # Sitemaps
-urlpatterns += patterns('django.contrib.sitemaps.views',
-    # Thanks Django, we can't cache these longer because of
-    # https://code.djangoproject.com/ticket/2713
-    (r'^sitemap.xml$', 'index',
-        {'sitemaps': our_sitemaps}),
-    (r'^sitemap-(?P<section>.+)\.xml$', 'sitemap',
-        {'sitemaps': our_sitemaps}),
+urlpatterns += patterns('',
+    (r'^sitemap.xml$',
+        cache_page(1800)(sitemap_views.index),
+        {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
+    (r'^sitemap-(?P<section>.+)\.xml$',
+        cache_page(1800)(sitemap_views.sitemap),
+        {'sitemaps': our_sitemaps}, 'sitemaps'),
 )
 
 # Authentication / Admin
