@@ -55,8 +55,11 @@ class PackageSearchForm(forms.Form):
             initial=50)
 
     def __init__(self, *args, **kwargs):
+        show_staging = kwargs.pop('show_staging', False)
         super(PackageSearchForm, self).__init__(*args, **kwargs)
-        repos = Repo.objects.filter(staging=False)
+        repos = Repo.objects.all()
+        if not show_staging:
+            repos = repos.filter(staging=False)
         self.fields['repo'].choices = make_choice(
                         [repo.name for repo in repos])
         self.fields['arch'].choices = make_choice(
@@ -129,11 +132,14 @@ class SearchListView(ListView):
     allowed_sort = list(sort_fields) + ["-" + s for s in sort_fields]
 
     def get(self, request, *args, **kwargs):
-        self.form = PackageSearchForm(data=request.GET)
+        self.form = PackageSearchForm(data=request.GET,
+                show_staging=self.request.user.is_authenticated())
         return super(SearchListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
         packages = Package.objects.normal()
+        if not self.request.user.is_authenticated():
+            packages = packages.filter(repo__staging=False)
         if self.form.is_valid():
             packages = parse_form(self.form, packages)
             sort = self.form.cleaned_data['sort']
@@ -174,9 +180,12 @@ def search_json(request):
     }
 
     if request.GET:
-        form = PackageSearchForm(data=request.GET)
+        form = PackageSearchForm(data=request.GET,
+                show_staging=request.user.is_authenticated())
         if form.is_valid():
             packages = Package.objects.normal()
+            if not request.user.is_authenticated():
+                packages = packages.filter(repo__staging=False)
             packages = parse_form(form, packages)[:limit]
             container['results'] = packages
             container['valid'] = True
