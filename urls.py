@@ -98,11 +98,21 @@ urlpatterns += patterns('',
 legacy_urls = (
     ('^about.php',     '/about/'),
     ('^changelog.php', '/packages/?sort=-last_update'),
+    ('^devs.php',      '/developers/'),
+    ('^donations.php', '/donate/'),
     ('^download.php',  '/download/'),
     ('^index.php',     '/'),
     ('^logos.php',     '/art/'),
     ('^news.php',      '/news/'),
     ('^packages.php',  '/packages/'),
+    ('^people.php',    '/developers/'),
+
+    ('^docs/en/guide/install/arch-install-guide.html',
+        'https://wiki.archlinux.org/index.php/Installation_Guide'),
+    ('^docs/en/',
+        'https://wiki.archlinux.org/'),
+    ('^docs/',
+        'https://wiki.archlinux.org/'),
 )
 
 urlpatterns += [url(old_url, RedirectView.as_view(url=new_url))
