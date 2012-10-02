@@ -1,6 +1,7 @@
+/*'use strict';*/
 /* tablesorter custom parsers for various pages:
  * devel/index.html, mirrors/status.html, todolists/view.html */
-if (typeof $.tablesorter !== 'undefined') {
+if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
     $.tablesorter.addParser({
         id: 'pkgcount',
         is: function(s) { return false; },
@@ -60,7 +61,7 @@ if (typeof $.tablesorter !== 'undefined') {
         format: function(s, t, c) {
             /* TODO: this assumes our magic class is the only one */
             var epoch = $(c).attr('class');
-            if (!epoch.indexOf('epoch-') == 0) {
+            if (epoch.indexOf('epoch-') !== 0) {
                 return 0;
             }
             return epoch.slice(6);
@@ -101,8 +102,8 @@ if (typeof $.tablesorter !== 'undefined') {
             if (!matches) {
                 return 0;
             }
-            var size = parseFloat(matches[1]);
-            var suffix = matches[2];
+            var size = parseFloat(matches[1]),
+                suffix = matches[2];
 
             switch(suffix) {
                 /* intentional fall-through at each level */
@@ -139,13 +140,13 @@ if (typeof $.tablesorter !== 'undefined') {
 
 (function($) {
   $.fn.enableCheckboxRangeSelection = function() {
-    var lastCheckbox = null;
-    var lastElement = null;
+    var lastCheckbox = null,
+        lastElement = null,
+        spec = this;
 
-    var spec = this;
     spec.unbind("click.checkboxrange");
     spec.bind("click.checkboxrange", function(e) {
-      if (lastCheckbox != null && e.shiftKey) {
+      if (lastCheckbox !== null && e.shiftKey) {
         spec.slice(
           Math.min(spec.index(lastCheckbox), spec.index(e.target)),
           Math.max(spec.index(lastCheckbox), spec.index(e.target)) + 1
@@ -190,7 +191,7 @@ function ajaxifyFiles() {
             }
             if (list_items.length > 0) {
                 $('#pkgfilelist').append('<ul>' + list_items.join('') + '</ul>');
-            } else if (data.files_last_update == null) {
+            } else if (data.files_last_update === null) {
                 $('#pkgfilelist').append('<p class="message">No file list available.</p>');
             } else {
                 $('#pkgfilelist').append('<p class="message">Package has no files.</p>');
@@ -200,12 +201,12 @@ function ajaxifyFiles() {
 }
 
 function collapseDependsList(list) {
-    var limit = 20;
     list = $(list);
     // Hide everything past a given limit. Don't do anything if we don't have
     // enough items, or the link already exists.
-    var linkid = list.attr('id') + 'link';
-    var items = list.find('li').slice(limit);
+    var limit = 20,
+        linkid = list.attr('id') + 'link',
+        items = list.find('li').slice(limit);
     if (items.length <= 1 || $('#' + linkid).length > 0) {
         return;
     }
@@ -246,8 +247,8 @@ function collapseRelatedTo(elements) {
 /* packages/differences.html */
 function filter_packages() {
     /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $('#tbody_differences').children();
-    var all_rows = rows;
+    var rows = $('#tbody_differences').children(),
+        all_rows = rows;
     if (!$('#id_multilib').is(':checked')) {
         rows = rows.not('.multilib').not('.multilib-testing');
     }
@@ -300,6 +301,7 @@ function filter_packages_reset() {
 
 /* todolists/view.html */
 function todolist_flag() {
+	// TODO: fix usage of this
     var link = this;
     $.getJSON(link.href, function(data) {
         if (data.complete) {
@@ -317,8 +319,8 @@ function todolist_flag() {
 
 function filter_pkgs_list(filter_ele, tbody_ele) {
     /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $(tbody_ele).children();
-    var all_rows = rows;
+    var rows = $(tbody_ele).children(),
+        all_rows = rows;
     /* apply the filters, cheaper ones first */
     if ($('#id_mine_only').is(':checked')) {
         rows = rows.filter('.mine');
@@ -351,15 +353,16 @@ function filter_pkgs_reset(callback) {
 
 /* signoffs.html */
 function signoff_package() {
+	// TODO: fix usage of this
     var link = this;
     $.getJSON(link.href, function(data) {
         link = $(link);
-        var signoff = null;
-        var cell = link.closest('td');
+        var signoff = null,
+            cell = link.closest('td');
         if (data.created) {
             signoff = $('<li>').addClass('signed-username').text(data.user);
             var list = cell.children('ul.signoff-list');
-            if (list.size() == 0) {
+            if (list.size() === 0) {
                 list = $('<ul class="signoff-list">').prependTo(cell);
             }
             list.append(signoff);
@@ -406,16 +409,14 @@ function signoff_package() {
 
 function filter_signoffs() {
     /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $('#tbody_signoffs').children();
-    var all_rows = rows;
+    var rows = $('#tbody_signoffs').children(),
+        all_rows = rows;
     /* apply arch and repo filters */
     $('#signoffs_filter .arch_filter').add(
             '#signoffs_filter .repo_filter').each(function() {
         if (!$(this).is(':checked')) {
             rows = rows.not('.' + $(this).val());
         }
-    });
-    /* and then the slightly more expensive pending check */
     if ($('#id_pending').is(':checked')) {
         rows = rows.has('td.signoff-no');
     }
@@ -436,8 +437,8 @@ function filter_signoffs_reset() {
 /* visualizations */
 function format_filesize(size, decimals) {
     /*var labels = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];*/
-    var labels = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    var label = 0;
+    var labels = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
+        label = 0;
 
     while (size > 2048.0 && label < labels.length - 1) {
         label++;
