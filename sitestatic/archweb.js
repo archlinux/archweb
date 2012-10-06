@@ -417,6 +417,8 @@ function filter_signoffs() {
         if (!$(this).is(':checked')) {
             rows = rows.not('.' + $(this).val());
         }
+    });
+    /* and then the slightly more expensive pending check */
     if ($('#id_pending').is(':checked')) {
         rows = rows.has('td.signoff-no');
     }
