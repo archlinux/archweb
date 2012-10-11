@@ -50,12 +50,14 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
     # results here.
-    times = MirrorLog.objects.filter(is_success=True, last_sync__isnull=False,
+    times = MirrorLog.objects.values_list(
+            'url_id', 'check_time', 'last_sync').filter(
+            is_success=True, last_sync__isnull=False,
             check_time__gte=cutoff_time)
     delays = {}
-    for log in times:
-        delay = log.check_time - log.last_sync
-        delays.setdefault(log.url_id, []).append(delay)
+    for url_id, check_time, last_sync in times:
+        delay = check_time - last_sync
+        delays.setdefault(url_id, []).append(delay)
 
     if urls:
         last_check = max([u.last_check for u in urls])
