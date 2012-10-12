@@ -393,9 +393,12 @@ def db_update(archname, reponame, pkgs, force=False):
                 populate_pkg(dbpkg, pkg, timestamp=now())
                 Update.objects.log_update(None, dbpkg)
         except IntegrityError:
-            logger.warning("Could not add package %s; "
-                    "not fatal if another thread beat us to it.",
-                    pkg.name, exc_info=True)
+            if architecture.agnostic:
+                logger.warning("Could not add package %s; "
+                        "not fatal if another thread beat us to it.",
+                        pkg.name)
+            else:
+                logger.exception("Could not add package %s", pkg.name)
 
     # packages in database and not in syncdb (remove from database)
     for pkgname in (dbset - syncset):
