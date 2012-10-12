@@ -228,12 +228,13 @@ SELECT DISTINCT id
         FROM packages p
         JOIN packages_packagerelation pr ON p.pkgbase = pr.pkgbase
         WHERE pr.type = %s
-        ) pkgs
-    WHERE pkgs.repo_id NOT IN (
-        SELECT repo_id FROM user_profiles_allowed_repos ar
+    ) mp
+    LEFT JOIN (
+        SELECT user_id, repo_id FROM user_profiles_allowed_repos ar
         INNER JOIN user_profiles up ON ar.userprofile_id = up.id
-        WHERE up.user_id = pkgs.user_id
-    )
+    ) ur
+    ON mp.user_id = ur.user_id AND mp.repo_id = ur.repo_id
+    WHERE ur.user_id IS NULL;
 """
     cursor = connection.cursor()
     cursor.execute(sql, [PackageRelation.MAINTAINER])
