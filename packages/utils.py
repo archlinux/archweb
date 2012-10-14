@@ -365,7 +365,8 @@ class PackageSignoffGroup(object):
                 self.pkgbase, self.version, self.arch, len(self.signoffs))
 
 
-_SQL_SPEC_OR_SIGNOFF = """
+def signoffs_id_query(model, repos):
+    sql = """
 SELECT DISTINCT s.id
     FROM %s s
     JOIN packages p ON (
@@ -377,34 +378,29 @@ SELECT DISTINCT s.id
         AND s.repo_id = p.repo_id
     )
     WHERE p.repo_id IN (%s)
-"""
+    AND s.repo_id IN (%s)
+    """
+    cursor = connection.cursor()
+    # query pre-process- fill in table name and placeholders for IN
+    repo_sql = ','.join(['%s' for r in repos])
+    sql = sql % (model._meta.db_table, repo_sql, repo_sql)
+    repo_ids = [r.pk for r in repos]
+	# repo_ids are needed twice, so double the array
+    cursor.execute(sql, repo_ids * 2)
+
+    results = cursor.fetchall()
+    return [row[0] for row in results]
 
 
 def get_current_signoffs(repos):
-    '''Returns a mapping of pkgbase -> signoff objects for the given repos.'''
-    cursor = connection.cursor()
-    # query pre-process- fill in table name and placeholders for IN
-    sql = _SQL_SPEC_OR_SIGNOFF % ('packages_signoff',
-            ','.join(['%s' for r in repos]))
-    cursor.execute(sql, [r.pk for r in repos])
-
-    results = cursor.fetchall()
-    # fetch all of the returned signoffs by ID
-    to_fetch = [row[0] for row in results]
-    signoffs = Signoff.objects.select_related('user').in_bulk(to_fetch)
-    return signoffs.values()
+    '''Returns a list of signoff objects for the given repos.'''
+    to_fetch = signoffs_id_query(Signoff, repos)
+    return Signoff.objects.select_related('user').in_bulk(to_fetch).values()
 
 
 def get_current_specifications(repos):
-    '''Returns a mapping of pkgbase -> signoff specification objects for the
-    given repos.'''
-    cursor = connection.cursor()
-    sql = _SQL_SPEC_OR_SIGNOFF % ('packages_signoffspecification',
-            ','.join(['%s' for r in repos]))
-    cursor.execute(sql, [r.pk for r in repos])
-
-    results = cursor.fetchall()
-    to_fetch = [row[0] for row in results]
+    '''Returns a list of signoff specification objects for the given repos.'''
+    to_fetch = signoffs_id_query(SignoffSpecification, repos)
     return SignoffSpecification.objects.in_bulk(to_fetch).values()
 
 
