@@ -7,12 +7,12 @@ class Migration(SchemaMigration):
     
     def forwards(self, orm):
         db.alter_column('packages', 'maintainer_id', orm['main.package:maintainer'])
-        db.alter_column('packages', 'pkgname', orm['main.package:pkgname'])
+        db.create_index('packages', ['pkgname'])
     
     
     def backwards(self, orm):
         db.alter_column('packages', 'maintainer_id', orm['main.package:maintainer'])
-        db.alter_column('packages', 'pkgname', orm['main.package:pkgname'])
+        db.delete_index('packages', ['pkgname'])
     
     
     models = {
