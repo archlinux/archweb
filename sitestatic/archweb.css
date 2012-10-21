@@ -180,22 +180,22 @@ h5 {
 }
 
 /* general layout */
-div#content {
+#content {
     width: 95%;
     margin: 0 auto;
     text-align: left;
 }
 
-div#content-left-wrapper {
+#content-left-wrapper {
     float: left;
     width: 100%; /* req to keep content above sidebar in source code */
 }
 
-div#content-left {
+#content-left {
     margin: 0 340px 0 0;
 }
 
-div#content-right {
+#content-right {
     float: left;
     width: 300px;
     margin-left: -300px;
@@ -208,12 +208,12 @@ div.box {
     border: 1px solid #bcd;
 }
 
-div#footer {
+#footer {
     clear: both;
     margin: 2em 0 1em;
 }
 
-    div#footer p {
+    #footer p {
         margin: 0;
         text-align: center;
         font-size: 0.85em;
@@ -369,24 +369,24 @@ form.general-form textarea {
 }
 
 /* archdev navbar */
-div#archdev-navbar {
+#archdev-navbar {
     margin: 1.5em 0;
 }
 
-    div#archdev-navbar ul {
+    #archdev-navbar ul {
         list-style: none;
         margin: -0.5em 0;
         padding: 0;
     }
 
-    div#archdev-navbar li {
+    #archdev-navbar li {
         display: inline;
         margin: 0;
         padding: 0;
         font-size: 0.9em;
     }
 
-        div#archdev-navbar li a {
+        #archdev-navbar li a {
             padding: 0 0.5em;
             color: #07b;
         }
@@ -568,14 +568,14 @@ h3 span.arrow {
     }
 
 /* home: sidebar navigation */
-div#nav-sidebar ul {
+#nav-sidebar ul {
     list-style: none;
     margin: 0.5em 0 0.5em 1em;
     padding: 0;
 }
 
 /* home: sponsor banners */
-div#arch-sponsors img {
+#arch-sponsors img {
     padding: 0.3em 0;
 }
 
@@ -619,21 +619,21 @@ div.news-article .article-info {
 }
 
 /* news: add/edit article */
-form#newsform {
+#newsform {
     width: 60em;
 }
 
-    form#newsform input[type=text],
-    form#newsform textarea {
+    #newsform input[type=text],
+    #newsform textarea {
         width: 75%;
     }
 
 /* donate: donor list */
-div#donor-list ul {
+#donor-list ul {
     width: 100%;
 }
     /* max 4 columns, but possibly fewer if screen size doesn't allow for more */
-    div#donor-list li {
+    #donor-list li {
         float: left;
         width: 25%;
         min-width: 20em;
@@ -698,7 +698,7 @@ table.results {
     }
 
 /* pkglist: layout */
-div#pkglist-about {
+#pkglist-about {
     margin-top: 1.5em;
 }
 
@@ -791,12 +791,12 @@ div#pkglist-about {
     }
 
 /* pkgdetails: flag package */
-form#flag-pkg-form label {
+#flag-pkg-form label {
     width: 10em;
 }
 
-form#flag-pkg-form textarea,
-form#flag-pkg-form input[type=text] {
+#flag-pkg-form textarea,
+#flag-pkg-form input[type=text] {
     width: 45%;
 }
 
@@ -872,24 +872,24 @@ table td.country {
     white-space: normal;
 }
 
-form#list-generator div ul {
+#list-generator div ul {
     list-style: none;
     display: inline;
     padding-left: 0;
 }
 
-    form#list-generator div ul li {
+    #list-generator div ul li {
         display: inline;
     }
 
 /* dev/TU biographies */
-div#arch-bio-toc {
+#arch-bio-toc {
     width: 75%;
     margin: 0 auto;
     text-align: center;
 }
 
-    div#arch-bio-toc a {
+    #arch-bio-toc a {
         white-space: nowrap;
     }
 
@@ -934,12 +934,12 @@ table.arch-bio-entry {
         }
 
 /* dev: login/out */
-table#dev-login {
+#dev-login {
     width: auto;
 }
 
 /* dev dashboard: flagged packages */
-form#dash-pkg-notify {
+#dash-pkg-notify {
     text-align: right;
     padding: 1em 0 0;
     margin-top: 1em;
@@ -947,21 +947,21 @@ form#dash-pkg-notify {
     border-top: 1px dotted #bbb;
 }
 
-    form#dash-pkg-notify label {
+    #dash-pkg-notify label {
         width: auto;
         font-weight: normal;
     }
 
-    form#dash-pkg-notify input {
+    #dash-pkg-notify input {
         vertical-align: middle;
         margin: 0 0.25em;
     }
 
-        form#dash-pkg-notify input[type=submit] {
+        #dash-pkg-notify input[type=submit] {
             margin-top: -0.25em;
         }
 
-    form#dash-pkg-notify p {
+    #dash-pkg-notify p {
         margin: 0;
     }
 
