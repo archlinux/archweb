@@ -20,7 +20,7 @@ def jquery():
 
 @register.simple_tag
 def jquery_tablesorter():
-    version = '2.3.11'
+    version = '2.4.5'
     filename = 'jquery.tablesorter-%s.min.js' % version
     link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
