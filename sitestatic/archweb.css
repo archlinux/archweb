@@ -14,7 +14,7 @@
 
 /* container for the entire bar */
 #archnavbar { height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { background: url('archlogo.png') no-repeat !important; }
+#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 
 /* move the heading/paragraph text offscreen */
 #archnavbarlogo p { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
