@@ -888,33 +888,33 @@ table td.country {
         white-space: nowrap;
     }
 
-table.arch-bio-entry {
+.arch-bio-entry {
     width: 75%;
     min-width: 640px;
     margin: 0 auto;
 }
 
-    table.arch-bio-entry td.pic {
+    .arch-bio-entry td.pic {
         vertical-align: top;
         padding-right: 15px;
         padding-top: 2.25em;
     }
 
-        table.arch-bio-entry td.pic img {
+        .arch-bio-entry td.pic img {
             padding: 4px;
             border: 1px solid #ccc;
         }
 
-    table.arch-bio-entry td h3 {
+    .arch-bio-entry td h3 {
         border-bottom: 1px dotted #ccc;
         margin-bottom: 0.5em;
     }
 
-    table.arch-bio-entry table.bio {
+    .arch-bio-entry table.bio {
         margin-bottom: 2em;
     }
 
-        table.arch-bio-entry table.bio th {
+        .arch-bio-entry table.bio th {
             color: #666;
             font-weight: normal;
             text-align: right;
@@ -923,7 +923,7 @@ table.arch-bio-entry {
             white-space: nowrap;
         }
 
-        table.arch-bio-entry table.bio td {
+        .arch-bio-entry table.bio td {
             width: 100%;
             padding-bottom: 0.25em;
         }
