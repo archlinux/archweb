@@ -1,3 +1,3 @@
 {% load markup %}
 <p>{{obj.author.get_full_name}} wrote:</p>
-{{ obj.content|markdown }}
+{{ obj.content|markdown:'safe' }}

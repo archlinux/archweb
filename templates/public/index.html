@@ -53,8 +53,8 @@
     </h4>
     <p class="timestamp">{{ news.postdate|date }}</p>
     <div class="article-content">
-        {% if forloop.counter0 == 0 %}{{ news.content|markdown|truncatewords_html:300 }}
-        {% else %}{{ news.content|markdown|truncatewords_html:100 }}{% endif %}
+        {% if forloop.counter0 == 0 %}{{ news.content|markdown:'safe'|truncatewords_html:300 }}
+        {% else %}{{ news.content|markdown:'safe'|truncatewords_html:100 }}{% endif %}
     </div>
     {% else %}
     {% if forloop.counter0 == 5 %}
