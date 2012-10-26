@@ -13,11 +13,16 @@ from ..models import Update
 from ..utils import get_group_info, PackageJSONEncoder
 
 
+def arch_plus_agnostic(arch):
+    arches = [ arch ]
+    arches.extend(Arch.objects.filter(agnostic=True).order_by())
+    return arches
+
+
 def split_package_details(request, name, repo, arch):
     '''Check if we have a split package (e.g. pkgbase) value matching this
     name. If so, we can show a listing page for the entire set of packages.'''
-    arches = [ arch ]
-    arches.extend(Arch.objects.filter(agnostic=True))
+    arches = arch_plus_agnostic(arch)
     pkgs = Package.objects.normal().filter(pkgbase=name,
             repo__testing=repo.testing, repo__staging=repo.staging,
             arch__in=arches).order_by('pkgname')
@@ -42,8 +47,7 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
     '''Check our packages update table to see if this package has existed in
     this repo before. If so, we can show a 410 Gone page and point the
     requester in the right direction.'''
-    arches = [ arch ]
-    arches.extend(Arch.objects.filter(agnostic=True))
+    arches = arch_plus_agnostic(arch)
     match = Update.objects.select_related('arch', 'repo').filter(
             pkgname=name, repo=repo, arch__in=arches)
     if cutoff is not None:
@@ -149,8 +153,7 @@ def groups(request, arch=None):
 
 def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
-    arches = [ arch ]
-    arches.extend(Arch.objects.filter(agnostic=True))
+    arches = arch_plus_agnostic(arch)
     pkgs = Package.objects.normal().filter(
             groups__name=name, arch__in=arches).order_by('pkgname')
     if len(pkgs) == 0:
