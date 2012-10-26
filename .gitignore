@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 *.swo
+.DS_Store
 local_settings.py
 archweb.db
 archweb.db-*
