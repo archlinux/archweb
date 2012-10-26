@@ -329,6 +329,9 @@ class PackageGroup(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.name, self.pkg)
 
+    class Meta:
+        ordering = ('name',)
+
 
 class License(models.Model):
     pkg = models.ForeignKey(Package, related_name='licenses')
@@ -338,7 +341,7 @@ class License(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class RelatedToBase(models.Model):
@@ -435,7 +438,7 @@ class RelatedToBase(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class Depend(RelatedToBase):

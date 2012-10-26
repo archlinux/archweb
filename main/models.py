@@ -62,7 +62,7 @@ class Arch(models.Model):
 
     class Meta:
         db_table = 'arches'
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name_plural = 'arches'
 
 
@@ -87,8 +87,7 @@ class Repo(models.Model):
 
     class Meta:
         db_table = 'repos'
-        ordering = ['name']
-        verbose_name_plural = 'repos'
+        ordering = ('name',)
 
 
 class Package(models.Model):

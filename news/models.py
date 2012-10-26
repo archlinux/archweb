@@ -24,7 +24,7 @@ class News(models.Model):
         db_table = 'news'
         verbose_name_plural = 'news'
         get_latest_by = 'postdate'
-        ordering = ['-postdate']
+        ordering = ('-postdate',)
 
 def set_news_fields(sender, **kwargs):
     news = kwargs['instance']
