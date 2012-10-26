@@ -1,6 +1,9 @@
+import markdown
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 
 
@@ -16,6 +19,10 @@ class News(models.Model):
 
     def get_absolute_url(self):
         return '/news/%s/' % self.slug
+
+    def html(self):
+        return mark_safe(markdown.markdown(
+            self.content, safe_mode=True, enable_attributes=False))
 
     def __unicode__(self):
         return self.title

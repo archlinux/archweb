@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load markup %}
 {% block title %}Arch Linux - News: {{ news.title }}{% endblock %}
 
 {% block content %}
@@ -28,6 +27,6 @@
 
     <p class="article-info">{{ news.postdate|date }} - {{ news.author.get_full_name }}</p>
 
-    <div class="article-content" itemprop="articleBody">{{ news.content|markdown:'safe' }}</div>
+    <div class="article-content" itemprop="articleBody">{{ news.html }}</div>
 </div>
 {% endblock %}

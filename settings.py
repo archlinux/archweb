@@ -107,7 +107,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.admin',
-    'django.contrib.markup',
     'django.contrib.staticfiles',
     'south',
     'django_countries',

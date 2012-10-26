@@ -76,7 +76,7 @@ def view_redirect(request, object_id):
 @require_POST
 def preview(request):
     data = request.POST.get('data', '')
-    markup = markdown.markdown(data, safe_mode=True)
+    markup = markdown.markdown(data, safe_mode=True, enable_attributes=False)
     return HttpResponse(markup)
 
 # vim: set ts=4 sw=4 et:
