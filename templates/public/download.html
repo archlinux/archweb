@@ -7,7 +7,7 @@
 {% block navbarclass %}anb-download{% endblock %}
 
 {% block content %}
-{% with version="2012.10.06" kernel_version="3.5.5" %}
+{% with version="2012.10.06" kernel_version="3.5.5" torrent_infohash="b4865374f39a2b34f4c9517ec4b532f65094a28d" %}
 <div id="arch-downloads" class="box">
 
     <h2>Arch Linux Downloads</h2>
@@ -46,7 +46,8 @@
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
     <ul>
         <li><a href="https://www.archlinux.org/iso/{{version}}/archlinux-{{version}}-dual.iso.torrent"
-                    title="Download for both architectures">Download archlinux-{{version}}-dual.iso.torrent</a></li>
+                    title="Download for both architectures">Download archlinux-{{version}}-dual.iso.torrent</a>
+            (<a href="magnet:?xt=urn:btih:{{torrent_infohash}}&amp;dn=archlinux-{{version}}-dual.iso&amp;tr=udp://tracker.archlinux.org:6969&amp;tr=http://tracker.archlinux.org:6969/announce">Magnet</a>)</li>
     </ul>
 
     <h3>Netboot</h3>
