@@ -16,13 +16,14 @@ class News(models.Model):
     title = models.CharField(max_length=255)
     guid = models.CharField(max_length=255, editable=False)
     content = models.TextField()
+    safe_mode = models.BooleanField(default=True, editable=False)
 
     def get_absolute_url(self):
         return '/news/%s/' % self.slug
 
     def html(self):
         return mark_safe(markdown.markdown(
-            self.content, safe_mode=False, enable_attributes=False))
+            self.content, safe_mode=self.safe_mode, enable_attributes=False))
 
     def __unicode__(self):
         return self.title
