@@ -22,7 +22,7 @@ class News(models.Model):
 
     def html(self):
         return mark_safe(markdown.markdown(
-            self.content, safe_mode=True, enable_attributes=False))
+            self.content, safe_mode=False, enable_attributes=False))
 
     def __unicode__(self):
         return self.title
