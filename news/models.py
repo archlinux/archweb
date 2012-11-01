@@ -16,7 +16,7 @@ class News(models.Model):
     title = models.CharField(max_length=255)
     guid = models.CharField(max_length=255, editable=False)
     content = models.TextField()
-    safe_mode = models.BooleanField(default=True, editable=False)
+    safe_mode = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return '/news/%s/' % self.slug
@@ -33,6 +33,7 @@ class News(models.Model):
         verbose_name_plural = 'news'
         get_latest_by = 'postdate'
         ordering = ('-postdate',)
+
 
 def set_news_fields(sender, **kwargs):
     news = kwargs['instance']
