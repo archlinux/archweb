@@ -104,9 +104,9 @@ class Test(models.Model):
     success = models.BooleanField()
     comments = models.TextField(null=True, blank=True)
 
-pre_save.connect(set_created_field, sender=Iso,
-        dispatch_uid="releng.models")
-pre_save.connect(set_created_field, sender=Test,
-        dispatch_uid="releng.models")
+
+for model in (Iso, Test):
+    pre_save.connect(set_created_field, sender=model,
+            dispatch_uid="releng.models")
 
 # vim: set ts=4 sw=4 et:
