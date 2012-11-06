@@ -1,5 +1,4 @@
 import hashlib
-import pytz
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
@@ -106,7 +105,7 @@ class PackageFeed(Feed):
                 date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
-        return item.last_update.replace(tzinfo=pytz.utc)
+        return item.last_update
 
     def item_categories(self, item):
         return (item.repo.name, item.arch.name)
@@ -144,7 +143,7 @@ class NewsFeed(Feed):
         return item.guid
 
     def item_pubdate(self, item):
-        return item.postdate.replace(tzinfo=pytz.utc)
+        return item.postdate
 
     def item_author_name(self, item):
         return item.author.get_full_name()
