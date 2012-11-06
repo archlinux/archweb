@@ -11,21 +11,24 @@ from main.utils import retrieve_latest
 from main.models import Arch, Repo, Package
 from news.models import News
 
-def check_for_unique_id(f):
-    def wrapper(name, contents=None, attrs=None):
-        if attrs is None:
-            attrs = {}
-        if name == 'guid':
-            attrs['isPermaLink'] = 'false'
-        return f(name, contents, attrs)
-    return wrapper
 
 class GuidNotPermalinkFeed(Rss201rev2Feed):
+    @staticmethod
+    def check_for_unique_id(f):
+        def wrapper(name, contents=None, attrs=None):
+            if attrs is None:
+                attrs = {}
+            if name == 'guid':
+                attrs['isPermaLink'] = 'false'
+            return f(name, contents, attrs)
+        return wrapper
+
     def write_items(self, handler):
         # Totally disgusting. Monkey-patch the hander so if it sees a
         # 'unique-id' field come through, add an isPermalink="false" attribute.
         # Workaround for http://code.djangoproject.com/ticket/9800
-        handler.addQuickElement = check_for_unique_id(handler.addQuickElement)
+        handler.addQuickElement = self.check_for_unique_id(
+                handler.addQuickElement)
         super(GuidNotPermalinkFeed, self).write_items(handler)
 
 
