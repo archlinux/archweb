@@ -267,7 +267,8 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
         if isinstance(obj, MirrorUrl):
             data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
             cutoff = now() - DEFAULT_CUTOFF
-            data['logs'] = obj.logs.filter(check_time__gte=cutoff)
+            data['logs'] = obj.logs.filter(
+                    check_time__gte=cutoff).order_by('check_time')
             return data
         if isinstance(obj, MirrorLog):
             data = dict((attr, getattr(obj, attr))

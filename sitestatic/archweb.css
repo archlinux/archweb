@@ -884,8 +884,13 @@ table td.country {
     shape-rendering: crispEdges;
 }
 
-#visualize-mirror .dot {
+#visualize-mirror .url-dot {
     stroke: #000;
+}
+
+#visualize-mirror .url-line {
+    fill: none;
+    stroke-width: 1.5px;
 }
 
 /* dev/TU biographies */

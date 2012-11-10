@@ -6,7 +6,7 @@ function mirror_status(chart_id, data_url) {
             width = jq_div.width() - margin.left - margin.right,
             height = jq_div.height() - margin.top - margin.bottom;
 
-        var color = d3.scale.category20(),
+        var color = d3.scale.category10(),
             x = d3.time.scale.utc().range([0, width]),
             y = d3.scale.linear().range([height, 0]),
             x_axis = d3.svg.axis().scale(x).orient("bottom"),
@@ -20,8 +20,14 @@ function mirror_status(chart_id, data_url) {
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        x.domain(d3.extent(data, function(d) { return d.check_time; })).nice(d3.time.hour);
-        y.domain(d3.extent(data, function(d) { return d.duration; })).nice();
+        x.domain([
+                d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.check_time; }); }),
+                d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.check_time; }); })
+        ]);
+        y.domain([
+                d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.duration; }); }),
+                d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.duration; }); })
+        ]);
 
         /* build the axis lines... */
         svg.append("g")
@@ -46,12 +52,32 @@ function mirror_status(chart_id, data_url) {
             .style("text-anchor", "end")
             .text("Duration (seconds)");
 
-        /* ...then the points themselves. */
-        svg.selectAll(".dot")
+        var line = d3.svg.line()
+            .interpolate("basis")
+            .x(function(d) { return x(d.check_time); })
+            .y(function(d) { return y(d.duration); });
+
+        /* ...then the points and lines between them. */
+        var urls = svg.selectAll(".url")
             .data(data)
             .enter()
+            .append("g")
+            .attr("class", "url");
+
+        urls.append("path")
+            .attr("class", "url-line")
+            .attr("d", function(d) { return line(d.logs); })
+            .style("stroke", function(d) { return color(d.url); });
+
+        urls.selectAll("circle")
+            .data(function(u) {
+                return jQuery.map(u.logs, function(l, i) {
+                    return {url: u.url, check_time: l.check_time, duration: l.duration};
+                });
+            })
+            .enter()
             .append("circle")
-            .attr("class", "dot")
+            .attr("class", "url-dot")
             .attr("r", 3.5)
             .attr("cx", function(d) { return x(d.check_time); })
             .attr("cy", function(d) { return y(d.duration); })
@@ -81,16 +107,16 @@ function mirror_status(chart_id, data_url) {
     /* invoke the data-fetch + first draw */
     var cached_data = null;
     d3.json(data_url, function(json) {
-        cached_data = jQuery.map(json['urls'],
-            function(url, i) {
-                return jQuery.map(url['logs'],
-                    function(log, j) {
-                        return {
-                            url: url['url'],
-                            duration: log['duration'],
-                            check_time: new Date(log['check_time'])
-                        };
-                });
+        cached_data = jQuery.map(json.urls, function(url, i) {
+            return {
+                url: url.url,
+                logs: jQuery.map(url.logs, function(log, j) {
+                    return {
+                        duration: log.duration,
+                        check_time: new Date(log.check_time)
+                    };
+                })
+            };
         });
         draw_graph(cached_data);
     });
