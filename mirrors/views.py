@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django_countries.countries import COUNTRIES
 
 from .models import Mirror, MirrorUrl, MirrorProtocol, MirrorLog
-from .utils import get_mirror_statuses, get_mirror_errors
+from .utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
 
 COUNTRY_LOOKUP = dict(COUNTRIES)
 
@@ -171,7 +171,7 @@ def mirror_details(request, name):
             (not mirror.public or not mirror.active):
         raise Http404
 
-    status_info = get_mirror_statuses()
+    status_info = get_mirror_statuses(mirror_ids=[mirror.id])
     checked_urls = [url for url in status_info['urls'] \
             if url.mirror_id == mirror.id]
     all_urls = mirror.urls.select_related('protocol')
@@ -186,7 +186,7 @@ def mirror_details(request, name):
 
 def mirror_details_json(request, name):
     mirror = get_object_or_404(Mirror, name=name)
-    status_info = get_mirror_statuses()
+    status_info = get_mirror_statuses(mirror_ids=[mirror.id])
     data = status_info.copy()
     data['version'] = 3
     # include only URLs for this particular mirror
@@ -266,7 +266,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
     def default(self, obj):
         if isinstance(obj, MirrorUrl):
             data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
-            cutoff = now() - timedelta(hours=24)
+            cutoff = now() - DEFAULT_CUTOFF
             data['logs'] = obj.logs.filter(check_time__gte=cutoff)
             return data
         if isinstance(obj, MirrorLog):

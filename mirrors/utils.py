@@ -31,7 +31,7 @@ def annotate_url(url, delays):
 
 
 @cache_function(123)
-def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
+def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
     cutoff_time = now() - cutoff
     # I swear, this actually has decent performance...
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
@@ -42,6 +42,9 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
             duration_avg=Avg('logs__duration'))
+
+    if mirror_ids:
+        urls = urls.filter(mirror_id__in=mirror_ids)
 
     vendor = database_vendor(MirrorUrl)
     if vendor != 'sqlite':
@@ -54,6 +57,8 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
             'url_id', 'check_time', 'last_sync').filter(
             is_success=True, last_sync__isnull=False,
             check_time__gte=cutoff_time)
+    if mirror_ids:
+        times = times.filter(url__mirror_id__in=mirror_ids)
     delays = {}
     for url_id, check_time, last_sync in times:
         delay = check_time - last_sync
@@ -62,8 +67,10 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
     if urls:
         last_check = max([u.last_check for u in urls])
         num_checks = max([u.check_count for u in urls])
-        check_info = MirrorLog.objects.filter(
-                check_time__gte=cutoff_time).aggregate(
+        check_info = MirrorLog.objects.filter(check_time__gte=cutoff_time)
+        if mirror_ids:
+            check_info = check_info.filter(url__mirror_id__in=mirror_ids)
+        check_info = check_info.aggregate(
                 mn=Min('check_time'), mx=Max('check_time'))
         if num_checks > 1:
             check_frequency = (check_info['mx'] - check_info['mn']) \
@@ -91,7 +98,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF):
 
 
 @cache_function(117)
-def get_mirror_errors(cutoff=DEFAULT_CUTOFF):
+def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
@@ -100,6 +107,10 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF):
             'url__mirror__country', 'url__mirror__tier', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
+
+    if mirror_ids:
+        urls = urls.filter(mirror_id__in=mirror_ids)
+
     errors = list(errors)
     for err in errors:
         ctry_code = err['url__country'] or err['url__mirror__country']
