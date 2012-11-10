@@ -23,11 +23,11 @@ function mirror_status(chart_id, data_url) {
         x.domain([
                 d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.check_time; }); }),
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.check_time; }); })
-        ]);
+        ]).nice(d3.time.hour);
         y.domain([
                 d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.duration; }); }),
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.duration; }); })
-        ]);
+        ]).nice();
 
         /* build the axis lines... */
         svg.append("g")
