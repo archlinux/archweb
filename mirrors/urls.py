@@ -6,6 +6,7 @@ urlpatterns = patterns('mirrors.views',
     (r'^status/json/$',         'status_json',  {}, 'mirror-status-json'),
     (r'^status/tier/(?P<tier>\d+)/$', 'status', {}, 'mirror-status-tier'),
     (r'^(?P<name>[\.\-\w]+)/$', 'mirror_details'),
+    (r'^(?P<name>[\.\-\w]+)/json/$', 'mirror_details_json'),
 )
 
 # vim: set ts=4 sw=4 et:

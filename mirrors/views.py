@@ -9,10 +9,11 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django_countries.countries import COUNTRIES
 
-from .models import Mirror, MirrorUrl, MirrorProtocol
+from .models import Mirror, MirrorUrl, MirrorProtocol, MirrorLog
 from .utils import get_mirror_statuses, get_mirror_errors
 
 COUNTRY_LOOKUP = dict(COUNTRIES)
@@ -183,6 +184,19 @@ def mirror_details(request, name):
             {'mirror': mirror, 'urls': all_urls})
 
 
+def mirror_details_json(request, name):
+    mirror = get_object_or_404(Mirror, name=name)
+    status_info = get_mirror_statuses()
+    data = status_info.copy()
+    data['version'] = 3
+    # include only URLs for this particular mirror
+    data['urls'] = [url for url in data['urls'] if url.mirror_id == mirror.id]
+    to_json = json.dumps(data, ensure_ascii=False,
+            cls=ExtendedMirrorStatusJSONEncoder)
+    response = HttpResponse(to_json, mimetype='application/json')
+    return response
+
+
 def status(request, tier=None):
     if tier is not None:
         tier = int(tier)
@@ -222,8 +236,8 @@ def status(request, tier=None):
 class MirrorStatusJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle datetime.timedelta and MirrorUrl
     serialization. The base class takes care of datetime.datetime types.'''
-    url_attributes = ['url', 'protocol', 'last_sync', 'completion_pct',
-            'delay', 'duration_avg', 'duration_stddev', 'score']
+    url_attributes = ('url', 'protocol', 'last_sync', 'completion_pct',
+            'delay', 'duration_avg', 'duration_stddev', 'score')
 
     def default(self, obj):
         if isinstance(obj, timedelta):
@@ -243,6 +257,23 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, MirrorProtocol):
             return unicode(obj)
         return super(MirrorStatusJSONEncoder, self).default(obj)
+
+
+class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
+    '''Adds URL check history information.'''
+    log_attributes = ('check_time', 'last_sync', 'duration', 'is_success')
+
+    def default(self, obj):
+        if isinstance(obj, MirrorUrl):
+            data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
+            cutoff = now() - timedelta(hours=24)
+            data['logs'] = obj.logs.filter(check_time__gte=cutoff)
+            return data
+        if isinstance(obj, MirrorLog):
+            data = dict((attr, getattr(obj, attr))
+                    for attr in self.log_attributes)
+            return data
+        return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 
 def status_json(request):
