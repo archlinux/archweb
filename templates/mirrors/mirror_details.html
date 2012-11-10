@@ -104,14 +104,21 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h3>Mirror Status Chart</h3>
+
+    <div id="visualize-mirror" class="visualize-chart"></div>
 </div>
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
+<script type="text/javascript" src="{% static "d3.v2.min.js" %}"></script>
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript" src="{% static "mirror_status.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#available_urls:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[0,0]],
         headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+    mirror_status("#visualize-mirror", "./json/");
 });
 </script>
 {% endblock %}

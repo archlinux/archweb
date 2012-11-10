@@ -877,6 +877,17 @@ table td.country {
         display: inline;
     }
 
+#visualize-mirror .axis path,
+#visualize-mirror .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+#visualize-mirror .dot {
+    stroke: #000;
+}
+
 /* dev/TU biographies */
 #arch-bio-toc {
     width: 75%;
