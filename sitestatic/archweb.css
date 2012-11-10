@@ -881,6 +881,7 @@ table td.country {
 #visualize-mirror .axis line {
     fill: none;
     stroke: #000;
+    stroke-width: 3px;
     shape-rendering: crispEdges;
 }
 
