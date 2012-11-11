@@ -81,7 +81,9 @@ function mirror_status(chart_id, data_url) {
             .attr("r", 3.5)
             .attr("cx", function(d) { return x(d.check_time); })
             .attr("cy", function(d) { return y(d.duration); })
-            .style("fill", function(d) { return color(d.url); });
+            .style("fill", function(d) { return color(d.url); })
+            .append("title")
+            .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
 
         /* add a legend for good measure */
         var legend = svg.selectAll(".legend")
