@@ -28,7 +28,7 @@ def find_unique_slug(newsitem):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        exclude = ('id', 'slug', 'author', 'postdate')
+        exclude = ('id', 'slug', 'author', 'postdate', 'safe_mode')
 
 
 class NewsDetailView(DetailView):
