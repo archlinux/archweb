@@ -41,7 +41,8 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
             success_count=Count('logs__duration'),
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
-            duration_avg=Avg('logs__duration'))
+            duration_avg=Avg('logs__duration')).order_by(
+            'mirror', 'url')
 
     if mirror_ids:
         urls = urls.filter(mirror_id__in=mirror_ids)

@@ -25,7 +25,7 @@ function mirror_status(chart_id, data_url) {
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.check_time; }); })
         ]).nice(d3.time.hour);
         y.domain([
-                d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.duration; }); }),
+                0,
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.duration; }); })
         ]).nice();
 
@@ -111,6 +111,9 @@ function mirror_status(chart_id, data_url) {
             return {
                 url: url.url,
                 logs: jQuery.map(url.logs, function(log, j) {
+                    if (!log.is_success) {
+                        return null;
+                    }
                     return {
                         duration: log.duration,
                         check_time: new Date(log.check_time)

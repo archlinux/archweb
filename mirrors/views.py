@@ -189,8 +189,6 @@ def mirror_details_json(request, name):
     status_info = get_mirror_statuses(mirror_ids=[mirror.id])
     data = status_info.copy()
     data['version'] = 3
-    # include only URLs for this particular mirror
-    data['urls'] = [url for url in data['urls'] if url.mirror_id == mirror.id]
     to_json = json.dumps(data, ensure_ascii=False,
             cls=ExtendedMirrorStatusJSONEncoder)
     response = HttpResponse(to_json, mimetype='application/json')
