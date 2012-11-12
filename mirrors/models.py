@@ -131,5 +131,6 @@ class MirrorLog(models.Model):
 
     class Meta:
         verbose_name = 'mirror check log'
+        get_latest_by = 'check_time'
 
 # vim: set ts=4 sw=4 et:
