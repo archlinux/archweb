@@ -115,6 +115,7 @@ function packages_treemap(chart_id, orderings, default_order) {
         make_group_button(k, v);
     });
 
+    /* adapt the chart size when the browser resizes */
     var resize_timeout = null;
     var real_resize = function() {
         resize_timeout = null;
@@ -275,6 +276,7 @@ function developer_keys(chart_id, data_url) {
             .start();
     });
 
+    /* adapt the chart size when the browser resizes */
     var resize_timeout = null;
     var real_resize = function() {
         resize_timeout = null;
