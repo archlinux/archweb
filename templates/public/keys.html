@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
+{% load url from future %}
 {% load pgp %}
 
 {% block title %}Arch Linux - Master Signing Keys{% endblock %}
@@ -47,10 +48,16 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <ul>
+        <li><a href="#master-sigs">Master Key Signatures</a></li>
+        <li><a href="#visualization">Visualization of PGP Master and Developer Keys</a></li>
+        <li><a href="#cross-sigs">Developer Cross-Signatures</a></li>
+    </ul>
 </div>
 
 <div class="box">
-    <h2>Master Key Signatures</h2>
+    <h2 id="master-sigs">Master Key Signatures</h2>
 
     <p>The following table shows all active developers and trusted users along
     with the status of their personal signing key. A 'Yes' indicates that the
@@ -95,7 +102,13 @@
 </div>
 
 <div class="box">
-    <h2>Developer Cross-Signatures</h2>
+    <h2 id="visualization">Visualization of PGP Master and Developer Keys</h2>
+
+    <div id="visualize-keys" class="visualize-chart"></div>
+</div>
+
+<div class="box">
+    <h2 id="cross-sigs">Developer Cross-Signatures</h2>
 
     <p>This table lists signatures directly between developer keys.</p>
 
@@ -120,8 +133,11 @@
         </tbody>
     </table>
 </div>
+
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
+<script type="text/javascript" src="{% static "d3.v2.min.js" %}"></script>
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#key-status").tablesorter({
@@ -131,6 +147,9 @@ $(document).ready(function() {
     $("#cross-signatures").tablesorter({
         sortLocaleCompare: true
     });
+});
+$(document).ready(function() {
+    developer_keys("#visualize-keys", "{% url 'visualize-pgp_keys' %}");
 });
 </script>
 {% endblock %}

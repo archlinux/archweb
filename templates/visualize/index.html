@@ -24,11 +24,7 @@
     </div>
     <div id="visualize-archrepo" class="visualize-chart"></div>
 </div>
-<div class="box">
-    <h2>Visualization of PGP Master and Signing Keys</h2>
 
-    <div id="visualize-keys" class="visualize-chart"></div>
-</div>
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{% static "d3.v2.min.js" %}"></script>
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
@@ -40,7 +36,6 @@ $(document).ready(function() {
         "arch": { url: "{% url 'visualize-byarch' %}", color_attr: "arch" },
     };
     packages_treemap("#visualize-archrepo", orderings, "repo");
-    developer_keys("#visualize-keys", "{% url 'visualize-pgp_keys' %}");
 });
 </script>
 {% endblock %}
