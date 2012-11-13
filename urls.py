@@ -67,6 +67,7 @@ urlpatterns += patterns('public.views',
     (r'^donate/$',       'donate',   {}, 'page-donate'),
     (r'^download/$',     'download', {}, 'page-download'),
     (r'^master-keys/$',  'keys',     {}, 'page-keys'),
+    (r'^master-keys/json/$', 'keys_json', {}, 'pgp-keys-json'),
 )
 
 urlpatterns += patterns('retro.views',

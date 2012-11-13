@@ -1,18 +1,20 @@
 from datetime import datetime
+import json
 from operator import attrgetter
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, cache_page
 
 from devel.models import MasterKey, PGPSignature
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
 from .utils import get_recent_updates
+
 
 @cache_control(max_age=300)
 def index(request):
@@ -44,6 +46,7 @@ USER_LISTS = {
     },
 }
 
+
 @cache_control(max_age=300)
 def userlist(request, user_type='devs'):
     users = User.objects.order_by(
@@ -63,12 +66,14 @@ def userlist(request, user_type='devs'):
     context['users'] = users
     return render(request, 'public/userlist.html', context)
 
+
 @cache_control(max_age=300)
 def donate(request):
     context = {
         'donors': Donor.objects.filter(visible=True).order_by('name'),
     }
     return render(request, 'public/donate.html', context)
+
 
 @cache_control(max_age=300)
 def download(request):
@@ -84,6 +89,7 @@ def download(request):
     }
     return render(request, 'public/download.html', context)
 
+
 @cache_control(max_age=300)
 def feeds(request):
     repos = Repo.objects.all()
@@ -94,6 +100,7 @@ def feeds(request):
         'repos': repos,
     }
     return render(request, 'public/feeds.html', context)
+
 
 @cache_control(max_age=300)
 def keys(request):
@@ -131,5 +138,47 @@ def keys(request):
         'cross_signatures': cross_signatures,
     }
     return render(request, 'public/keys.html', context)
+
+
+@cache_page(1800)
+def keys_json(request):
+    node_list = []
+
+    users = User.objects.filter(is_active=True).select_related('userprofile')
+    node_list.extend({
+            'name': dev.get_full_name(),
+            'key': dev.userprofile.pgp_key,
+            'group': 'dev'
+        } for dev in users.filter(groups__name='Developers'))
+    node_list.extend({
+            'name': tu.get_full_name(),
+            'key': tu.userprofile.pgp_key,
+            'group': 'tu'
+        } for tu in users.filter(groups__name='Trusted Users').exclude(
+            groups__name='Developers'))
+
+    master_keys = MasterKey.objects.select_related('owner').filter(
+            revoked__isnull=True)
+    node_list.extend({
+            'name': 'Master Key (%s)' % key.owner.get_full_name(),
+            'key': key.pgp_key,
+            'group': 'master'
+        } for key in master_keys)
+
+    node_list.append({
+        'name': 'CA Cert Signing Authority',
+        'key': 'A31D4F81EF4EBD07B456FA04D2BB0D0165D0FD58',
+        'group': 'cacert',
+    })
+
+    not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
+    signatures = PGPSignature.objects.filter(not_expired, valid=True)
+    edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }
+            for sig in signatures]
+
+    data = { 'nodes': node_list, 'edges': edge_list }
+
+    to_json = json.dumps(data, ensure_ascii=False)
+    return HttpResponse(to_json, mimetype='application/json')
 
 # vim: set ts=4 sw=4 et:
