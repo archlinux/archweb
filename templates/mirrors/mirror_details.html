@@ -5,12 +5,11 @@
 {% block title %}Arch Linux - {{ mirror.name }} - Mirror Details{% endblock %}
 
 {% block content %}
-<!-- TODO: ids and classes -->
-<div id="pkgdetails" class="box">
+<div class="box">
 
     <h2>Mirror Details: {{ mirror.name }}</h2>
 
-    <table id="pkginfo">
+    <table class="compact">
         <tr>
             <th>Name:</th>
             <td>{{ mirror.name }}</td>
@@ -118,6 +117,8 @@ $(document).ready(function() {
     $("#available_urls:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[0,0]],
         headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+});
+$(document).ready(function() {
     mirror_status("#visualize-mirror", "./json/");
 });
 </script>
