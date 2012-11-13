@@ -159,8 +159,16 @@ def find_mirrors_simple(request, protocol):
 
 def mirrors(request):
     mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
+    protos = MirrorUrl.objects.values_list(
+            'mirror_id', 'protocol__protocol').order_by(
+            'mirror__id', 'protocol__protocol')
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
+        protos = protos.filter(mirror__public=True, mirror__active=True)
+    protos = dict((k, list(v)) for k, v in groupby(protos, key=itemgetter(0)))
+    for mirror in mirror_list:
+        items = protos.get(mirror.id, [])
+        mirror.protocols = [item[1] for item in items]
     return render(request, 'mirrors/mirrors.html',
             {'mirror_list': mirror_list})
 

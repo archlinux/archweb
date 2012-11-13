@@ -33,11 +33,6 @@ class Mirror(models.Model):
     def __unicode__(self):
         return self.name
 
-    def supported_protocols(self):
-        protocols = MirrorProtocol.objects.filter(
-                urls__mirror=self).order_by('protocol').distinct()
-        return sorted(protocols)
-
     def downstream(self):
         return Mirror.objects.filter(upstream=self).order_by('name')
 

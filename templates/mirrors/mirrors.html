@@ -29,7 +29,7 @@
                 <td>{{ mirror.get_tier_display }}</td>
                 <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}" alt=""/> {% endif %}{{ mirror.country.name }}</td>
                 <td>{{ mirror.isos|yesno|capfirst }}</td>
-                <td class="wrap">{{ mirror.supported_protocols|join:", " }}</td>
+                <td class="wrap">{{ mirror.protocols|join:", " }}</td>
                 {% if user.is_authenticated %}
                 <td>{{ mirror.public|yesno|capfirst }}</td>
                 <td>{{ mirror.active|yesno|capfirst }}</td>
