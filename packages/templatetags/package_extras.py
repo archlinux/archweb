@@ -13,7 +13,7 @@ register = template.Library()
 def link_encode(url, query):
     # massage the data into all utf-8 encoded strings first, so urlencode
     # doesn't barf at the data we pass it
-    query = dict((k, unicode(v).encode('utf-8')) for k, v in query.items())
+    query = {k: unicode(v).encode('utf-8') for k, v in query.items()}
     data = urlencode(query).replace('&', '&amp;')
     return "%s?%s" % (url, data)
 

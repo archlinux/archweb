@@ -385,7 +385,7 @@ SELECT DISTINCT s.id
     repo_sql = ','.join(['%s' for r in repos])
     sql = sql % (model._meta.db_table, repo_sql, repo_sql)
     repo_ids = [r.pk for r in repos]
-	# repo_ids are needed twice, so double the array
+    # repo_ids are needed twice, so double the array
     cursor.execute(sql, repo_ids * 2)
 
     results = cursor.fetchall()
@@ -474,8 +474,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             # mainly for queryset serialization
             return list(obj)
         if isinstance(obj, Package):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.pkg_attributes)
+            data = {attr: getattr(obj, attr) for attr in self.pkg_attributes}
             for attr in self.pkg_list_attributes:
                 data[attr] = getattr(obj, attr).all()
             return data

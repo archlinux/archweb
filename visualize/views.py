@@ -33,8 +33,8 @@ def arch_repo_data():
 
     # now transform these results into two mappings: one ordered (repo, arch),
     # and one ordered (arch, repo).
-    arch_groups = dict((a, build_map(a, a, None)) for a in arches)
-    repo_groups = dict((r, build_map(r, None, r)) for r in repos)
+    arch_groups = {a: build_map(a, a, None) for a in arches}
+    repo_groups = {r: build_map(r, None, r) for r in repos}
     for row in qs:
         arch = row['arch__name']
         repo = row['repo__name']

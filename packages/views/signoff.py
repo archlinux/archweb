@@ -155,8 +155,8 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, PackageSignoffGroup):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.signoff_group_attrs)
+            data = {attr: getattr(obj, attr)
+                    for attr in self.signoff_group_attrs}
             data['pkgnames'] = [p.pkgname for p in obj.packages]
             data['package_count'] = len(obj.packages)
             data['approved'] = obj.approved()
@@ -164,9 +164,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
                     for attr in self.signoff_spec_attrs)
             return data
         elif isinstance(obj, Signoff):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.signoff_attrs)
-            return data
+            return {attr: getattr(obj, attr) for attr in self.signoff_attrs}
         elif isinstance(obj, Arch) or isinstance(obj, Repo):
             return unicode(obj)
         elif isinstance(obj, User):

@@ -94,7 +94,7 @@ def default_protocol_filter(original_urls):
 
 def status_filter(original_urls):
     status_info = get_mirror_statuses()
-    scores = dict((u.id, u.score) for u in status_info['urls'])
+    scores = {u.id: u.score for u in status_info['urls']}
     urls = []
     for u in original_urls:
         u.score = scores.get(u.id, None)
@@ -165,7 +165,7 @@ def mirrors(request):
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
         protos = protos.filter(mirror__public=True, mirror__active=True)
-    protos = dict((k, list(v)) for k, v in groupby(protos, key=itemgetter(0)))
+    protos = {k: list(v) for k, v in groupby(protos, key=itemgetter(0))}
     for mirror in mirror_list:
         items = protos.get(mirror.id, [])
         mirror.protocols = [item[1] for item in items]
@@ -253,8 +253,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             # mainly for queryset serialization
             return list(obj)
         if isinstance(obj, MirrorUrl):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.url_attributes)
+            data = {attr: getattr(obj, attr) for attr in self.url_attributes}
             # get any override on the country attribute first
             country = obj.real_country
             data['country'] = unicode(country.name)
@@ -277,9 +276,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
                     check_time__gte=cutoff).order_by('check_time')
             return data
         if isinstance(obj, MirrorLog):
-            data = dict((attr, getattr(obj, attr))
-                    for attr in self.log_attributes)
-            return data
+            return {attr: getattr(obj, attr) for attr in self.log_attributes}
         return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 

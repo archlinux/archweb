@@ -69,7 +69,7 @@ class Command(BaseCommand):
         finally builds and returns a notifier object.'''
         arches = Arch.objects.filter(agnostic=False)
         repos = Repo.objects.all()
-        arch_path_map = dict((arch, None) for arch in arches)
+        arch_path_map = {arch: None for arch in arches}
         all_paths = set()
         total_paths = 0
         for arch in arches:

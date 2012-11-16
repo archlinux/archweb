@@ -377,7 +377,7 @@ def db_update(archname, reponame, pkgs, force=False):
     # This makes our inner loop where we find packages by name *way* more
     # efficient by not having to go to the database for each package to
     # SELECT them by name.
-    dbdict = dict((dbpkg.pkgname, dbpkg) for dbpkg in dbpkgs)
+    dbdict = {dbpkg.pkgname: dbpkg for dbpkg in dbpkgs}
 
     dbset = set(dbdict.keys())
     syncset = set([pkg.name for pkg in pkgs])
@@ -446,7 +446,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
     """
     logger.info('Updating files for %s (%s)', reponame, archname)
     dbpkgs = update_common(archname, reponame, pkgs, False)
-    dbdict = dict((dbpkg.pkgname, dbpkg) for dbpkg in dbpkgs)
+    dbdict = {dbpkg.pkgname: dbpkg for dbpkg in dbpkgs}
     dbset = set(dbdict.keys())
 
     for pkg in (pkg for pkg in pkgs if pkg.name in dbset):
