@@ -33,23 +33,26 @@ def annotate_url(url, delays):
 @cache_function(123)
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
     cutoff_time = now() - cutoff
-    # I swear, this actually has decent performance...
-    urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
+    url_data = MirrorUrl.objects.values('id', 'mirror_id').filter(
             mirror__active=True, mirror__public=True,
             logs__check_time__gte=cutoff_time).annotate(
             check_count=Count('logs'),
             success_count=Count('logs__duration'),
             last_sync=Max('logs__last_sync'),
             last_check=Max('logs__check_time'),
-            duration_avg=Avg('logs__duration')).order_by(
-            'mirror', 'url')
-
-    if mirror_ids:
-        urls = urls.filter(mirror_id__in=mirror_ids)
+            duration_avg=Avg('logs__duration'))
 
     vendor = database_vendor(MirrorUrl)
     if vendor != 'sqlite':
-        urls = urls.annotate(duration_stddev=StdDev('logs__duration'))
+        url_data = url_data.annotate(duration_stddev=StdDev('logs__duration'))
+
+    urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
+            mirror__active=True, mirror__public=True,
+            logs__check_time__gte=cutoff_time).order_by('mirror__id', 'url')
+
+    if mirror_ids:
+        url_data = url_data.filter(mirror_id__in=mirror_ids)
+        urls = urls.filter(mirror_id__in=mirror_ids)
 
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
@@ -66,6 +69,11 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
         delays.setdefault(url_id, []).append(delay)
 
     if urls:
+        url_data = dict((item['id'], item) for item in url_data)
+        for url in urls:
+            for k, v in url_data.get(url.id, {}).items():
+                if k not in ('id', 'mirror_id'):
+                    setattr(url, k, v)
         last_check = max([u.last_check for u in urls])
         num_checks = max([u.check_count for u in urls])
         check_info = MirrorLog.objects.filter(check_time__gte=cutoff_time)
