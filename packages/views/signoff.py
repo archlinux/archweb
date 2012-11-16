@@ -25,7 +25,7 @@ def signoffs(request):
     context = {
         'signoff_groups': signoff_groups,
         'arches': Arch.objects.all(),
-        'repo_names': sorted(set(g.target_repo for g in signoff_groups)),
+        'repo_names': sorted({g.target_repo for g in signoff_groups}),
     }
     return render(request, 'packages/signoffs.html', context)
 

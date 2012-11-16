@@ -98,8 +98,8 @@ def import_signatures(keyring):
 
     # now prune the data down to what we actually want.
     # prune edges not in nodes, remove duplicates, and self-sigs
-    pruned_edges = set(edge for edge in edges
-            if edge.signer in nodes and edge.signer != edge.signee)
+    pruned_edges = {edge for edge in edges
+            if edge.signer in nodes and edge.signer != edge.signee}
 
     logger.info("creating or finding %d signatures", len(pruned_edges))
     created_ct = updated_ct = 0

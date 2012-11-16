@@ -77,7 +77,7 @@ class Command(BaseCommand):
                     for repo in repos)
             # take a python format string and generate all unique combinations
             # of directories from it; using set() ensures we filter it down
-            paths = set(self.path_template % values for values in combos)
+            paths = {self.path_template % values for values in combos}
             total_paths += len(paths)
             all_paths |= paths
             arch_path_map[arch] = paths

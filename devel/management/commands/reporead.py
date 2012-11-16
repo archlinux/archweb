@@ -380,7 +380,7 @@ def db_update(archname, reponame, pkgs, force=False):
     dbdict = {dbpkg.pkgname: dbpkg for dbpkg in dbpkgs}
 
     dbset = set(dbdict.keys())
-    syncset = set([pkg.name for pkg in pkgs])
+    syncset = {pkg.name for pkg in pkgs}
 
     in_sync_not_db = syncset - dbset
     logger.info("%d packages in sync not db", len(in_sync_not_db))

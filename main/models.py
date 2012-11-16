@@ -197,7 +197,7 @@ class Package(models.Model):
         """
         from packages.models import Depend
         provides = self.provides.all()
-        provide_names = set(provide.name for provide in provides)
+        provide_names = {provide.name for provide in provides}
         provide_names.add(self.pkgname)
         requiredby = Depend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').filter(

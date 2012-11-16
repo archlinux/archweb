@@ -79,8 +79,8 @@ def get_split_packages_info():
     split_pkgs = Package.objects.exclude(pkgname=F('pkgbase')).exclude(
             pkgbase__in=pkgnames).values('pkgbase', 'repo', 'arch').annotate(
             last_update=Max('last_update'))
-    all_arches = Arch.objects.in_bulk(set(s['arch'] for s in split_pkgs))
-    all_repos = Repo.objects.in_bulk(set(s['repo'] for s in split_pkgs))
+    all_arches = Arch.objects.in_bulk({s['arch'] for s in split_pkgs})
+    all_repos = Repo.objects.in_bulk({s['repo'] for s in split_pkgs})
     for split in split_pkgs:
         split['arch'] = all_arches[split['arch']]
         split['repo'] = all_repos[split['repo']]
@@ -143,7 +143,7 @@ SELECT p.id, q.id
     cursor.execute(sql, [arch_a.id, arch_b.id])
     results = cursor.fetchall()
     # column A will always have a value, column B might be NULL
-    to_fetch = set(row[0] for row in results)
+    to_fetch = {row[0] for row in results}
     # fetch all of the necessary packages
     pkgs = Package.objects.normal().in_bulk(to_fetch)
     # now build a list of tuples containing differences
@@ -249,13 +249,13 @@ def attach_maintainers(packages):
     the maintainers and attach them to the packages to prevent N+1 query
     cascading.'''
     packages = list(packages)
-    pkgbases = set(p.pkgbase for p in packages)
+    pkgbases = {p.pkgbase for p in packages}
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
             pkgbase__in=pkgbases).values_list(
             'pkgbase', 'user_id').order_by().distinct()
 
     # get all the user objects we will need
-    user_ids = set(rel[1] for rel in rels)
+    user_ids = {rel[1] for rel in rels}
     users = User.objects.in_bulk(user_ids)
 
     # now build a pkgbase -> [maintainers...] map

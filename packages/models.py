@@ -33,7 +33,7 @@ class PackageRelation(models.Model):
 
     def repositories(self):
         packages = self.get_associated_packages()
-        return sorted(set([p.repo for p in packages]))
+        return sorted({p.repo for p in packages})
 
     def __unicode__(self):
         return u'%s: %s (%s)' % (

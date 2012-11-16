@@ -53,8 +53,8 @@ def view(request, list_id):
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(tp.pkg for tp in todolist.packages)
-    arches = set(tp.pkg.arch for tp in todolist.packages)
-    repos = set(tp.pkg.repo for tp in todolist.packages)
+    arches = {tp.pkg.arch for tp in todolist.packages}
+    repos = {tp.pkg.repo for tp in todolist.packages}
     return render(request, 'todolists/view.html', {
         'list': todolist,
         'svn_roots': svn_roots,
@@ -67,8 +67,8 @@ def list_pkgbases(request, list_id, svn_root):
     '''Used to make bulk moves of packages a lot easier.'''
     todolist = get_object_or_404(Todolist, id=list_id)
     repos = get_list_or_404(Repo, svn_root=svn_root)
-    pkgbases = set(tp.pkg.pkgbase for tp in todolist.packages
-            if tp.pkg.repo in repos)
+    pkgbases = {tp.pkg.pkgbase for tp in todolist.packages
+            if tp.pkg.repo in repos}
     return HttpResponse('\n'.join(sorted(pkgbases)),
         mimetype='text/plain')
 
