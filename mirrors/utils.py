@@ -48,7 +48,8 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
 
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             mirror__active=True, mirror__public=True,
-            logs__check_time__gte=cutoff_time).order_by('mirror__id', 'url')
+            logs__check_time__gte=cutoff_time).distinct().order_by(
+            'mirror__id', 'url')
 
     if mirror_ids:
         url_data = url_data.filter(mirror_id__in=mirror_ids)
