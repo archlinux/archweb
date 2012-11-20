@@ -1,26 +1,37 @@
+from django.db import connections, router
 from django.db.models import Count
 
-from main.models import Todolist
+from main.models import Todolist, TodolistPkg
+
+
+def todo_counts():
+    sql = """
+SELECT list_id, count(*), sum(CASE WHEN complete THEN 1 ELSE 0 END)
+    FROM todolist_pkgs
+    GROUP BY list_id
+    """
+    database = router.db_for_write(TodolistPkg)
+    connection = connections[database]
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    return {row[0]: (row[1], row[2]) for row in results}
 
 
 def get_annotated_todolists(incomplete_only=False):
-    qs = Todolist.objects.all()
-    lists = qs.select_related('creator').defer(
-            'creator__email', 'creator__password', 'creator__is_staff',
-            'creator__is_active', 'creator__is_superuser',
-            'creator__last_login', 'creator__date_joined').annotate(
-            pkg_count=Count('todolistpkg')).order_by('-date_added')
-    incomplete = qs.filter(todolistpkg__complete=False).annotate(
-            Count('todolistpkg')).values_list('id', 'todolistpkg__count')
+    lists = Todolist.objects.all().select_related(
+            'creator').order_by('-date_added')
+    lookup = todo_counts()
 
-    lookup = dict(incomplete)
+    # tag each list with package counts
+    for todolist in lists:
+        counts = lookup.get(todolist.id, (0, 0))
+        todolist.pkg_count = counts[0]
+        todolist.complete_count = counts[1]
+        todolist.incomplete_count = counts[0] - counts[1]
 
     if incomplete_only:
-        lists = lists.filter(id__in=lookup.keys())
-
-    # tag each list with an incomplete package count
-    for todolist in lists:
-        todolist.incomplete_count = lookup.get(todolist.id, 0)
+        lists = [l for l in lists if l.incomplete_count > 0]
 
     return lists
 
