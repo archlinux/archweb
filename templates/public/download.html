@@ -32,6 +32,12 @@
         </li>
     </ul>
 
+    {% if release.info %}
+    <h3>Release Notes</h3>
+
+    <div class="article-content">{{ release.info_html }}</div>
+    {% endif %}
+
     <h3>Existing Arch Users</h3>
 
     <p>If you are an existing Arch user, there is no need to download a new ISO

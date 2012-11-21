@@ -1,8 +1,10 @@
+import markdown
 from urllib import urlencode
 
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
+from django.utils.safestring import mark_safe
 
 from main.utils import set_created_field
 
@@ -138,6 +140,10 @@ class Release(models.Model):
         if self.torrent_infohash:
             query['xt'] = "urn:btih:%s" % self.torrent_infohash
         return "magnet:?%s" % urlencode(query, doseq=True)
+
+    def info_html(self):
+        return mark_safe(markdown.markdown(
+            self.info, safe_mode=True, enable_attributes=False))
 
 
 for model in (Iso, Test, Release):
