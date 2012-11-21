@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
-        Test)
+        Test, Release)
 
 class IsoAdmin(admin.ModelAdmin):
     list_display = ('name', 'created', 'active', 'removed')
@@ -14,19 +14,20 @@ class TestAdmin(admin.ModelAdmin):
             'iso', 'success')
     list_filter = ('success', 'iso')
 
+class ReleaseAdmin(admin.ModelAdmin):
+    list_display = ('version', 'release_date', 'kernel_version', 'available',
+            'created')
+    list_filter = ('available', 'release_date')
 
-admin.site.register(Architecture)
-admin.site.register(BootType)
-admin.site.register(Bootloader)
-admin.site.register(ClockChoice)
-admin.site.register(Filesystem)
-admin.site.register(HardwareType)
-admin.site.register(InstallType)
-admin.site.register(IsoType)
-admin.site.register(Module)
-admin.site.register(Source)
+
+SIMPLE_MODELS = (Architecture, BootType, Bootloader, ClockChoice, Filesystem,
+        HardwareType, InstallType, IsoType, Module, Source)
+
+for model in SIMPLE_MODELS:
+    admin.site.register(model)
 
 admin.site.register(Iso, IsoAdmin)
 admin.site.register(Test, TestAdmin)
+admin.site.register(Release, ReleaseAdmin)
 
 # vim: set ts=4 sw=4 et:

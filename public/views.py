@@ -13,6 +13,7 @@ from devel.models import MasterKey, PGPSignature
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
+from releng.models import Release
 from .utils import get_recent_updates
 
 
@@ -77,12 +78,17 @@ def donate(request):
 
 @cache_control(max_age=300)
 def download(request):
+    try:
+        release = Release.objects.filter(available=True).latest()
+    except Release.DoesNotExist:
+        release = None
     mirror_urls = MirrorUrl.objects.select_related('mirror').filter(
             protocol__default=True,
             mirror__public=True, mirror__active=True, mirror__isos=True)
     sort_by = attrgetter('real_country.name', 'mirror.name')
     mirror_urls = sorted(mirror_urls, key=sort_by)
     context = {
+        'release': release,
         'releng_iso_url': settings.ISO_LIST_URL,
         'releng_pxeboot_url': settings.PXEBOOT_URL,
         'mirror_urls': mirror_urls,

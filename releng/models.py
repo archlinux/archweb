@@ -105,7 +105,24 @@ class Test(models.Model):
     comments = models.TextField(null=True, blank=True)
 
 
-for model in (Iso, Test):
+class Release(models.Model):
+    release_date = models.DateField(db_index=True)
+    version = models.CharField(max_length=50)
+    kernel_version = models.CharField(max_length=50, blank=True)
+    torrent_infohash = models.CharField(max_length=64, blank=True)
+    created = models.DateTimeField(editable=False)
+    available = models.BooleanField(default=True)
+    info = models.TextField('Public information', blank=True)
+
+    class Meta:
+        get_latest_by = 'release_date'
+        ordering = ('-release_date', '-version')
+
+    def __unicode__(self):
+        return self.version
+
+
+for model in (Iso, Test, Release):
     pre_save.connect(set_created_field, sender=model,
             dispatch_uid="releng.models")
 
