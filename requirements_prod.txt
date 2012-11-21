@@ -1,7 +1,7 @@
 Django==1.4.2
 Markdown==2.2.1
 South==0.7.6
-django-countries==1.4
+django-countries==1.5
 pgpdump==1.4
 psycopg2==2.4.5
 pyinotify==0.9.4
