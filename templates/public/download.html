@@ -44,9 +44,9 @@
     download is finished, so you can seed it back to others.
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
     <ul>
-        <li><a href="https://www.archlinux.org/iso/{{ release.version }}/archlinux-{{ release.version }}-dual.iso.torrent"
-                    title="Download for both architectures">Download archlinux-{{ release.version }}-dual.iso.torrent</a>
-                (<a href="magnet:?{% if release.torrent_infohash %}xt=urn:btih:{{ release.torrent_infohash }}&amp;{% endif %}dn=archlinux-{{ release.version }}-dual.iso&amp;tr=udp://tracker.archlinux.org:6969&amp;tr=http://tracker.archlinux.org:6969/announce">Magnet</a>)</li>
+        <li><a href="https://www.archlinux.org/{{ release.iso_url }}.torrent"
+                    title="Download for both architectures">Download torrent for {{ release.version }}</a>
+                (<a href="{{ release.magnet_uri }}">Magnet</a>)</li>
     </ul>
 
     <h3>Netboot</h3>
@@ -69,11 +69,11 @@
     <p>File integrity checksums for the latest releases can be found below:</p>
 
     <ul>
-        <li><a href="https://www.archlinux.org/iso/{{ release.version }}/archlinux-{{ release.version }}-dual.iso.sig"
+        <li><a href="https://www.archlinux.org/{{ release.iso_url }}.sig"
             title="Get the latest PGP signature">PGP signature</a></li>
-        <li><a href="https://www.archlinux.org/iso/{{ release.version }}/sha1sums.txt"
+        <li><a href="https://www.archlinux.org/{{ release.dir_path }}sha1sums.txt"
             title="Get the latest SHA1 checksums">SHA1 checksums</a></li>
-        <li><a href="https://www.archlinux.org/iso/{{ release.version }}/md5sums.txt"
+        <li><a href="https://www.archlinux.org/{{ release.dir_path }}md5sums.txt"
             title="Get the latest MD5 checksums">MD5 checksums</a></li>
     </ul>
 
@@ -85,8 +85,8 @@
         {% else %}<h5>Worldwide</h5>{% endif %}
         <ul>
             {% for mirror_url in country.list %}
-            <li><a href="{{ mirror_url.url }}iso/{{ release.version }}/"
-                title="Download from {{ mirror_url.url }}iso/{{ release.version }}/">{{ mirror_url.mirror.name }}</a></li>
+            <li><a href="{{ mirror_url.url }}{{ release.dir_path }}"
+                title="Download from {{ mirror_url.url }}">{{ mirror_url.mirror.name }}</a></li>
             {% endfor %}
         </ul>
         {% endfor %}
