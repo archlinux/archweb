@@ -1,5 +1,4 @@
 import markdown
-from urllib import urlencode
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -132,14 +131,14 @@ class Release(models.Model):
         return "iso/%s/archlinux-%s-dual.iso" % (self.version, self.version)
 
     def magnet_uri(self):
-        query = {
-            'dn': "archlinux-%s-dual.iso" % self.version,
-            'tr': ("udp://tracker.archlinux.org:6969",
-                "http://tracker.archlinux.org:6969/announce"),
-        }
+        query = [
+            ('dn', "archlinux-%s-dual.iso" % self.version),
+            ('tr', "udp://tracker.archlinux.org:6969"),
+            ('tr', "http://tracker.archlinux.org:6969/announce"),
+        ]
         if self.torrent_infohash:
-            query['xt'] = "urn:btih:%s" % self.torrent_infohash
-        return "magnet:?%s" % urlencode(query, doseq=True)
+            query.insert(0, ('xt', "urn:btih:%s" % self.torrent_infohash))
+        return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
 
     def info_html(self):
         return mark_safe(markdown.markdown(
