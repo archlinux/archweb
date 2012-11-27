@@ -103,12 +103,12 @@
         {% else %}
         <tr>
             <th>Base Package:</th>
-            {% if pkg.base_package %}
-            <td>{% pkg_details_link pkg.base_package %}</td>
+            {% with pkg.base_package as base %}{% if base %}
+            <td>{% pkg_details_link base %}</td>
             {% else %}
             <td><a href="../{{ pkg.pkgbase }}/"
                     title="Split package details for {{ pkg.pkgbase }}">{{ pkg.pkgbase }}</a></td>
-            {% endif %}
+            {% endif %}{% endwith %}
         </tr>
         {% endifequal %}
         <tr>

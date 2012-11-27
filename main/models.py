@@ -141,7 +141,6 @@ class Package(models.Model):
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
     @property
-    @cache_function(15)
     def signature(self):
         try:
             data = b64decode(self.pgp_signature)
@@ -154,7 +153,6 @@ class Package(models.Model):
         return packets[0]
 
     @property
-    @cache_function(15)
     def signer(self):
         sig = self.signature
         if sig and sig.key_id:
@@ -318,7 +316,6 @@ class Package(models.Model):
                     new_pkgs.append(package)
         return new_pkgs
 
-    @cache_function(125)
     def base_package(self):
         """
         Locate the base package for this package. It may be this very package,
