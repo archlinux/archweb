@@ -4,7 +4,8 @@ from .models import News
 
 class NewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'postdate', 'last_modified', 'safe_mode')
-    list_filter = ('postdate', 'author')
+    list_filter = ('postdate', 'author', 'safe_mode')
     search_fields = ('title', 'content')
+    date_hierarchy = 'postdate'
 
 admin.site.register(News, NewsAdmin)
