@@ -46,7 +46,7 @@ class Donor(models.Model):
     class Meta:
         db_table = 'donors'
         ordering = ('name',)
-        get_latest_by = 'when'
+        get_latest_by = 'created'
 
 
 class Arch(models.Model):

@@ -50,6 +50,7 @@ class UserProfile(models.Model):
 
     class Meta:
         db_table = 'user_profiles'
+        get_latest_by = 'last_modified'
         verbose_name = 'Additional Profile Data'
         verbose_name_plural = 'Additional Profile Data'
 
@@ -80,6 +81,7 @@ class MasterKey(models.Model):
 
     class Meta:
         ordering = ('created',)
+        get_latest_by = 'created'
 
     def __unicode__(self):
         return u'%s, created %s' % (
@@ -94,6 +96,8 @@ class PGPSignature(models.Model):
     valid = models.BooleanField(default=True)
 
     class Meta:
+        ordering = ('signer', 'signee')
+        get_latest_by = 'created'
         verbose_name = 'PGP signature'
 
     def __unicode__(self):
