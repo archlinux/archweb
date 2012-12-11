@@ -85,9 +85,11 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('a.signoff-link').click(signoff_package);
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[0,0]],
+    $('.results').tablesorter({widgets: ['zebra'], sortList: [[0,0]],
         headers: { 5: { sorter: 'epochdate' }, 7: { sorter: false }, 8: {sorter: false } } });
+});
+$(document).ready(function() {
+    $('a.signoff-link').click(signoff_package);
     $('#signoffs_filter input').change(filter_signoffs);
     $('#criteria_reset').click(filter_signoffs_reset);
     // fire function on page load to ensure the current form selections take effect

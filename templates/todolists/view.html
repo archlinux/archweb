@@ -105,8 +105,10 @@ $(document).ready(function() {
         sortList: [[2,0], [0,0]],
         headers: { 5: { sorter: 'todostatus' } }
     });
+});
+$(document).ready(function() {
     $('a.status-link').click(todolist_flag);
-    filter_func = function() { filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody'); };
+    var filter_func = function() { filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody'); };
     $('#todolist_filter input').change(filter_func);
     $('#criteria_reset').click(function() { filter_pkgs_reset(filter_func); });
     // fire function on page load to ensure the current form selections take effect
