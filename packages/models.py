@@ -412,24 +412,12 @@ class RelatedToBase(models.Model):
                         new_pkgs.append(package)
             pkgs = new_pkgs
 
-        # Logic here is to filter out packages that are in multiple repos if
-        # they are not requested. For example, if testing is False, only show a
-        # testing package if it doesn't exist in a non-testing repo.
-        filtered = {}
-        for package in pkgs:
-            if package.pkgname not in filtered or \
-                    package.repo.staging == self.pkg.repo.staging:
-                filtered[package.pkgname] = package
-        pkgs = filtered.values()
-
-        filtered = {}
-        for package in pkgs:
-            if package.pkgname not in filtered or \
-                    package.repo.testing == self.pkg.repo.testing:
-                filtered[package.pkgname] = package
-        pkgs = filtered.values()
-
-        return pkgs
+        # Sort providers by preference. We sort those in same staging/testing
+        # combination first, followed by others. We sort by a (staging,
+        # testing) match tuple that will be (True, True) in the best case.
+        key_func = lambda x: (x.repo.staging == self.pkg.repo.staging,
+                x.repo.testing == self.pkg.repo.testing)
+        return sorted(pkgs, key=key_func, reverse=True)
 
     def __unicode__(self):
         if self.version:
