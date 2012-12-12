@@ -69,7 +69,7 @@
                 {% endif %}
                 {% endif %}
                 <td>{% include "packages/signoff_cell.html" %}</td>
-                <td class="wrap">{% if not group.default_spec %}{% with group.specification as spec %}{% comment %}
+                <td class="wrap note">{% if not group.default_spec %}{% with group.specification as spec %}{% comment %}
                     {% endcomment %}{% if spec.required != 2 %}Required signoffs: {{ spec.required }}<br/>{% endif %}{% comment %}
                     {% endcomment %}{% if not spec.enabled %}Signoffs are not currently enabled<br/>{% endif %}{% comment %}
                     {% endcomment %}{% if spec.known_bad %}Package is known to be bad<br/>{% endif %}{% comment %}
@@ -94,6 +94,9 @@ $(document).ready(function() {
     $('#criteria_reset').click(filter_signoffs_reset);
     // fire function on page load to ensure the current form selections take effect
     filter_signoffs();
+});
+$(document).ready(function() {
+    collapseNotes('.note');
 });
 </script>
 {% endblock %}

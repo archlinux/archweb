@@ -301,7 +301,7 @@ function filter_packages_reset() {
 
 /* todolists/view.html */
 function todolist_flag() {
-	// TODO: fix usage of this
+    // TODO: fix usage of this
     var link = this;
     $.getJSON(link.href, function(data) {
         if (data.complete) {
@@ -353,7 +353,7 @@ function filter_pkgs_reset(callback) {
 
 /* signoffs.html */
 function signoff_package() {
-	// TODO: fix usage of this
+    // TODO: fix usage of this
     var link = this;
     $.getJSON(link.href, function(data) {
         link = $(link);
@@ -434,6 +434,33 @@ function filter_signoffs_reset() {
     $('#signoffs_filter .repo_filter').attr('checked', 'checked');
     $('#id_pending').removeAttr('checked');
     filter_signoffs();
+}
+
+function collapseNotes(elements) {
+    // Remove any trailing <br/> tags from the note contents
+    $(elements).children('br').filter(':last-child').filter(function(i, e) { return !e.nextSibling; }).remove();
+
+    var maxElements = 8;
+    $(elements).each(function(idx, ele) {
+        ele = $(ele);
+        // Hide everything past a given limit. Don't do anything if we don't
+        // have enough items, or the link already exists.
+        var contents = ele.contents();
+        if (contents.length <= maxElements || ele.find('a.morelink').length > 0) {
+            return;
+        }
+        contents.slice(maxElements).wrapAll('<div class="hide"/>');
+        ele.append('<br/><a class="morelink" href="#">Show More…</a>');
+
+        // add link and wire it up to show the hidden items
+        ele.find('a.morelink').click(function(event) {
+            event.preventDefault();
+            ele.find('div.hide').show();
+            $(this).remove();
+            // remove trailing line break between text and our link
+            $(this).contents().last().filter('br').remove();
+        });
+    });
 }
 
 /* visualizations */
