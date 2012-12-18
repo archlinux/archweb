@@ -952,6 +952,7 @@ table td.country {
         .arch-bio-entry table.bio td {
             width: 100%;
             padding-bottom: 0.25em;
+            white-space: normal;
         }
 
 /* dev: login/out */
