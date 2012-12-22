@@ -49,6 +49,10 @@ class RecentUpdate(object):
                 if package.arch not in arches and not arches.add(package.arch):
                     yield PackageStandin(package)
 
+    def __unicode__(self):
+        return "RecentUpdate '%s %s' <%d packages>" % (
+                self.pkgbase, self.version, len(self.packages))
+
 @cache_function(62)
 def get_recent_updates(number=15, testing=True, staging=False):
     repos = Repo.objects.all()
