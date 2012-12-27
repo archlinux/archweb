@@ -3,12 +3,14 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from pytz import utc
 
 
 class Migration(SchemaMigration):
     def forwards(self, orm):
+        default = datetime.datetime(2000, 1, 1, 0, 0).replace(tzinfo=utc)
         db.add_column('user_profiles', 'last_modified',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2000, 1, 1, 0, 0)),
+                      self.gf('django.db.models.fields.DateTimeField')(default=default),
                       keep_default=False)
 
     def backwards(self, orm):

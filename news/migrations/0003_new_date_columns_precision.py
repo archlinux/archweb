@@ -1,14 +1,14 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.utils.timezone import now
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'News.last_modified'
-        db.add_column('news', 'last_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, default=datetime.datetime.now(), db_index=True, blank=True), keep_default=False)
+        db.add_column('news', 'last_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, default=now(), db_index=True, blank=True), keep_default=False)
         # Changing field 'News.postdate'
         db.alter_column('news', 'postdate', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True))
         # Adding index on 'News', fields ['postdate']

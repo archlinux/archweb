@@ -1,14 +1,14 @@
 # encoding: utf-8
-import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.utils.timezone import now
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
         orm.Package.objects.filter(needupdate=False).update(flag_date=None)
-        orm.Package.objects.filter(needupdate=True).update(flag_date=datetime.datetime.now())
+        orm.Package.objects.filter(needupdate=True).update(flag_date=now())
 
     def backwards(self, orm):
         orm.Package.objects.filter(flag_date__isnull=True).update(needupdate=False)
