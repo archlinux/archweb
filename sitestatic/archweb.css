@@ -292,23 +292,6 @@ table.pretty2 {
         border: 1px solid #bbb;
     }
 
-        /* additional styles for JS sorting */
-        table.pretty2 th.tablesorter-header {
-            padding-right: 20px;
-            background-image: url(nosort.gif);
-            background-repeat: no-repeat;
-            background-position: center right;
-            cursor: pointer;
-        }
-
-        table.pretty2 th.tablesorter-headerSortDown {
-            background-image: url(desc.gif);
-        }
-
-        table.pretty2 th.tablesorter-headerSortUp {
-            background-image: url(asc.gif);
-        }
-
     table.pretty2 td {
         padding: 0.35em;
         border: 1px dotted #bbb;
@@ -415,6 +398,30 @@ form.general-form textarea {
 
 ul.errorlist {
     color: red;
+}
+
+/* JS sorting via tablesorter */
+table th.tablesorter-header {
+    padding-right: 20px;
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+}
+
+table thead th.tablesorter-headerAsc {
+    background-color: #e4eeff;
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+}
+
+table thead th.tablesorter-headerDesc {
+    background-color: #e4eeff;
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+}
+
+table thead th.sorter-false {
+    background-image: url();
+    cursor: default;
 }
 
 /**
@@ -665,25 +672,6 @@ table.results {
         white-space: nowrap;
         background-color:#fff;
     }
-
-        /* additional styles for JS sorting */
-        table.results th.tablesorter-header {
-            padding-right: 20px;
-            background-image: url(nosort.gif);
-            background-repeat: no-repeat;
-            background-position: center right;
-            cursor: pointer;
-        }
-
-        table.results th.tablesorter-headerSortDown {
-            background-color: #e4eeff;
-            background-image: url(desc.gif);
-        }
-
-        table.results th.tablesorter-headerSortUp {
-            background-color: #e4eeff;
-            background-image: url(asc.gif);
-        }
 
     table.results td {
         padding: .3em 1em .3em 3px;
