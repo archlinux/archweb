@@ -16,6 +16,7 @@ class TodolistManager(models.Manager):
 
 
 class Todolist(models.Model):
+    slug = models.SlugField(max_length=255, null=True, unique=True)
     old_id = models.IntegerField(null=True, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
