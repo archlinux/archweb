@@ -1,26 +1,26 @@
 from django.db import connections, router
 from django.db.models import Count
 
-from main.models import Todolist, TodolistPkg
+from .models import Todolist, TodolistPackage
 
 
 def todo_counts():
     sql = """
-SELECT list_id, count(*), sum(CASE WHEN complete THEN 1 ELSE 0 END)
-    FROM todolist_pkgs
-    GROUP BY list_id
+SELECT todolist_id, count(*), sum(CASE WHEN status = %s THEN 1 ELSE 0 END)
+    FROM todolists_todolistpackage
+    GROUP BY todolist_id
     """
-    database = router.db_for_write(TodolistPkg)
+    database = router.db_for_write(TodolistPackage)
     connection = connections[database]
     cursor = connection.cursor()
-    cursor.execute(sql)
+    cursor.execute(sql, [TodolistPackage.COMPLETE])
     results = cursor.fetchall()
     return {row[0]: (row[1], row[2]) for row in results}
 
 
 def get_annotated_todolists(incomplete_only=False):
     lists = Todolist.objects.all().select_related(
-            'creator').order_by('-date_added')
+            'creator').order_by('-created')
     lookup = todo_counts()
 
     # tag each list with package counts

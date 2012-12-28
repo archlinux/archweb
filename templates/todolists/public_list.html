@@ -30,7 +30,7 @@
         <div class="todo-list">
             <a name="{{ list.id }}"></a>
             <h4>{{ list.name }}</h4>
-            <p class="todo-info">{{ list.date_added|date }} - {{ list.creator.get_full_name }}</p>
+            <p class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</p>
             <div>{{ list.description|urlize|linebreaks }}</div>
             <table id="todo-pkglist-{{ list.id }}" class="results todo-table">
                 <thead>
@@ -45,17 +45,11 @@
                 <tbody>
                     {% for pkg in list.packages %}
                     <tr class="{% cycle 'odd' 'even' %}">
-                        <td>{% pkg_details_link pkg.pkg %}</td>
-                        <td>{{ pkg.pkg.arch.name }}</td>
-                        <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                        <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
-                        <td>
-                            {% if pkg.complete %}
-                            <span class="complete">Complete</span>
-                            {% else %}
-                            <span class="incomplete">Incomplete</span>
-                            {% endif %}
-                        </td>
+                        <td>{% pkg_details_link pkg.pkg pkg.pkgname %}</td>
+                        <td>{{ pkg.arch.name }}</td>
+                        <td>{{ pkg.repo.name|capfirst }}</td>
+                        <td>{{ pkg.maintainers|join:', ' }}</td>
+                        <td><span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span></td>
                     </tr>
                     {% endfor %}
                 </tbody>

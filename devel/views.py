@@ -20,11 +20,12 @@ from django.utils.http import http_date
 from django.utils.timezone import now
 
 from .forms import ProfileForm, UserProfileForm, NewUserForm
-from main.models import Package, PackageFile, TodolistPkg
+from main.models import Package, PackageFile
 from main.models import Arch, Repo
 from news.models import News
 from packages.models import PackageRelation, Signoff, FlagRequest, Depend
 from packages.utils import get_signoff_groups
+from todolists.models import TodolistPackage
 from todolists.utils import get_annotated_todolists
 from .utils import get_annotated_maintainers, UserFinder
 
@@ -41,10 +42,11 @@ def index(request):
     flagged = Package.objects.normal().filter(
             flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
 
-    todopkgs = TodolistPkg.objects.select_related(
-            'pkg', 'pkg__arch', 'pkg__repo').filter(complete=False)
-    todopkgs = todopkgs.filter(pkg__pkgbase__in=inner_q).order_by(
-            'list__name', 'pkg__pkgname')
+    todopkgs = TodolistPackage.objects.select_related(
+            'todolist', 'pkg', 'arch', 'repo').exclude(
+            status=TodolistPackage.COMPLETE)
+    todopkgs = todopkgs.filter(pkgbase__in=inner_q).order_by(
+            'todolist__name', 'pkgname')
 
     todolists = get_annotated_todolists(incomplete_only=True)
 

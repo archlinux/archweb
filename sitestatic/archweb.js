@@ -15,7 +15,12 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         id: 'todostatus',
         is: function(s) { return false; },
         format: function(s) {
-            return s.match(/incomplete/i) ? 1 : 0;
+            if (s.match(/incomplete/i)) {
+                return 1;
+            } else if (s.match(/in-progress/i)) {
+                return 0.5;
+            }
+            return 0;
         },
         type: 'numeric'
     });
@@ -304,13 +309,9 @@ function todolist_flag() {
     // TODO: fix usage of this
     var link = this;
     $.getJSON(link.href, function(data) {
-        if (data.complete) {
-            $(link).text('Complete').addClass(
-                'complete').removeClass('incomplete');
-        } else {
-            $(link).text('Incomplete').addClass(
-                'incomplete').removeClass('complete');
-        }
+        $(link).text(data.status).removeClass(
+            'complete inprogress incomplete').addClass(
+            data.css_class.toLowerCase());
         /* let tablesorter know the cell value has changed */
         $('.results').trigger('updateCell', [$(link).closest('td')[0], false, null]);
     });

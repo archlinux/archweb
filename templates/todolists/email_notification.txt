@@ -1,7 +1,7 @@
 {% autoescape off %}The todo list "{{ todolist.name }}" has had the following packages added to it for which you are a maintainer:
 
 {% for tpkg in todo_packages %}
-* {{ tpkg.pkg.repo.name|lower }}/{{ tpkg.pkg.pkgname }} ({{ tpkg.pkg.arch.name }}) - {{ tpkg.pkg.get_full_url }}{% endfor %}
+* {{ tpkg.repo.name|lower }}/{{ tpkg.pkgname }} ({{ tpkg.arch.name }}) - {{ tpkg.pkg.get_full_url }}{% endfor %}
 
 Todo list information:
 Name: {{ todolist.name }}

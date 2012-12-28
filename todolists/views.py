@@ -10,39 +10,45 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.template import Context, loader
 
-from main.models import Todolist, TodolistPkg, Package, Repo
+from main.models import Package, Repo
 from packages.utils import attach_maintainers
+from .models import Todolist, TodolistPackage
 from .utils import get_annotated_todolists
 
+
 class TodoListForm(forms.ModelForm):
-    packages = forms.CharField(required=False,
+    raw = forms.CharField(label='Packages', required=False,
             help_text='(one per line)',
             widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
 
-    def clean_packages(self):
-        package_names = [s.strip() for s in
-                self.cleaned_data['packages'].split("\n")]
-        package_names = set(package_names)
-        packages = Package.objects.filter(pkgname__in=package_names).filter(
-                repo__testing=False, repo__staging=False).select_related(
-                        'arch', 'repo').order_by('arch')
-        return packages
+    def packages(self):
+        package_names = {s.strip() for s in
+                self.cleaned_data['raw'].split("\n")}
+        return Package.objects.normal().filter(pkgname__in=package_names,
+                repo__testing=False, repo__staging=False).order_by('arch')
 
     class Meta:
         model = Todolist
-        fields = ('name', 'description')
+        fields = ('name', 'description', 'raw')
 
-@permission_required('main.change_todolistpkg')
+
+@permission_required('todolists.change_todolistpackage')
 @never_cache
 def flag(request, list_id, pkg_id):
     todolist = get_object_or_404(Todolist, id=list_id)
-    pkg = get_object_or_404(TodolistPkg, id=pkg_id)
-    pkg.complete = not pkg.complete
-    pkg.save()
+    tlpkg = get_object_or_404(TodolistPackage, id=pkg_id)
+    # TODO: none of this; require absolute value on submit
+    if tlpkg.status == TodolistPackage.INCOMPLETE:
+        tlpkg.status = TodolistPackage.COMPLETE
+    else:
+        tlpkg.status = TodolistPackage.INCOMPLETE
+    tlpkg.save()
     if request.is_ajax():
-        return HttpResponse(
-            json.dumps({'complete': pkg.complete}),
-            mimetype='application/json')
+        data = {
+            'status': tlpkg.get_status_display(),
+            'css_class': tlpkg.status_css_class(),
+        }
+        return HttpResponse(json.dumps(data), mimetype='application/json')
     return redirect(todolist)
 
 @login_required
@@ -52,9 +58,9 @@ def view(request, list_id):
             'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
-    attach_maintainers(tp.pkg for tp in todolist.packages)
-    arches = {tp.pkg.arch for tp in todolist.packages}
-    repos = {tp.pkg.repo for tp in todolist.packages}
+    attach_maintainers(todolist.packages())
+    arches = {tp.arch for tp in todolist.packages()}
+    repos = {tp.repo for tp in todolist.packages()}
     return render(request, 'todolists/view.html', {
         'list': todolist,
         'svn_roots': svn_roots,
@@ -67,9 +73,9 @@ def list_pkgbases(request, list_id, svn_root):
     '''Used to make bulk moves of packages a lot easier.'''
     todolist = get_object_or_404(Todolist, id=list_id)
     repos = get_list_or_404(Repo, svn_root=svn_root)
-    pkgbases = {tp.pkg.pkgbase for tp in todolist.packages
-            if tp.pkg.repo in repos}
-    return HttpResponse('\n'.join(sorted(pkgbases)),
+    pkgbases = TodolistPackage.objects.values_list('pkgbase', flat=True).filter(
+            todolist=todolist, repo__in=repos).distinct().order_by('pkgbase')
+    return HttpResponse('\n'.join(pkgbases),
         mimetype='text/plain')
 
 @login_required
@@ -77,7 +83,7 @@ def todolist_list(request):
     lists = get_annotated_todolists()
     return render(request, 'todolists/list.html', {'lists': lists})
 
-@permission_required('main.add_todolist')
+@permission_required('todolists.add_todolist')
 @never_cache
 def add(request):
     if request.POST:
@@ -98,7 +104,7 @@ def add(request):
     return render(request, 'general_form.html', page_dict)
 
 # TODO: this calls for transaction management and async emailing
-@permission_required('main.change_todolist')
+@permission_required('todolists.change_todolist')
 @never_cache
 def edit(request, list_id):
     todo_list = get_object_or_404(Todolist, id=list_id)
@@ -110,7 +116,7 @@ def edit(request, list_id):
             return redirect(todo_list)
     else:
         form = TodoListForm(instance=todo_list,
-                initial={ 'packages': '\n'.join(todo_list.package_names) })
+                initial={ 'packages': todo_list.raw })
 
     page_dict = {
             'title': 'Edit Todo List: %s' % todo_list.name,
@@ -128,7 +134,7 @@ class DeleteTodolist(DeleteView):
 
 @transaction.commit_on_success
 def create_todolist_packages(form, creator=None):
-    packages = form.cleaned_data['packages']
+    packages = form.packages()
     if creator:
         # todo list is new
         todolist = form.save(commit=False)
@@ -140,18 +146,22 @@ def create_todolist_packages(form, creator=None):
         # todo list already existed
         form.save()
         todolist = form.instance
+
         # first delete any packages not in the new list
-        for todo_pkg in todolist.packages:
+        for todo_pkg in todolist.packages():
             if todo_pkg.pkg not in packages:
                 todo_pkg.delete()
 
         # save the old package list so we know what to add
-        old_packages = [p.pkg for p in todolist.packages]
+        old_packages = [todo_pkg.pkg for todo_pkg in todolist.packages()]
 
     todo_pkgs = []
     for package in packages:
         if package not in old_packages:
-            todo_pkg = TodolistPkg.objects.create(list=todolist, pkg=package)
+            todo_pkg = TodolistPackage.objects.create(todolist=todolist,
+                    pkg=package, pkgname=package.pkgname,
+                    pkgbase=package.pkgbase,
+                    arch=package.arch, repo=package.repo)
             todo_pkgs.append(todo_pkg)
 
     return todo_pkgs
@@ -186,8 +196,8 @@ def send_todolist_emails(todo_list, new_packages):
 def public_list(request):
     todo_lists = Todolist.objects.incomplete()
     # total hackjob, but it makes this a lot less query-intensive.
-    all_pkgs = [tp for tl in todo_lists for tp in tl.packages]
-    attach_maintainers([tp.pkg for tp in all_pkgs])
+    all_pkgs = [tp for tl in todo_lists for tp in tl.packages()]
+    attach_maintainers(all_pkgs)
     return render(request, "todolists/public_list.html",
             {"todo_lists": todo_lists})
 

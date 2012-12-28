@@ -999,6 +999,11 @@ ul.admin-actions {
 .todo-table .incomplete {
     color: red;
 }
+
+.todo-table .inprogress {
+    color: darkorange;
+}
+
 .todo-info {
     margin: 0; color: #999;
 }

@@ -8,7 +8,7 @@
 
     <h2>Package Todo Lists</h2>
 
-    {% if perms.main.add_todolist %}
+    {% if perms.todolists.add_todolist %}
     <ul class="admin-actions">
         <li><a href="/todo/add/" title="Add new todo list">Add Todo List</a></li>
     </ul>
@@ -31,7 +31,7 @@
             <tr class="{% cycle 'odd' 'even' %}">
                 <td><a href="{{ list.get_absolute_url }}"
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
-                <td>{{ list.date_added|date }}</td>
+                <td>{{ list.created|date }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
                 <td class="wrap">{{ list.description|urlize }}</td>
                 <td>{{ list.pkg_count }}</td>

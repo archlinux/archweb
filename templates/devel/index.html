@@ -59,11 +59,11 @@
         <tbody>
             {% for todopkg in todopkgs %}
                 <tr class="{% cycle 'odd' 'even' %}">
-                    <td><a href="{{ todopkg.list.get_absolute_url }}"
-                            title="View todo list: {{ todopkg.list.name }}">{{ todopkg.list.name }}</a></td>
+                    <td><a href="{{ todopkg.todolist.get_absolute_url }}"
+                            title="View todo list: {{ todopkg.todolist.name }}">{{ todopkg.todolist.name }}</a></td>
                     <td>{% pkg_details_link todopkg.pkg %}</td>
-                    <td>{{ todopkg.pkg.repo.name }}</td>
-                    <td>{{ todopkg.pkg.arch.name }}</td>
+                    <td>{{ todopkg.repo.name }}</td>
+                    <td>{{ todopkg.arch.name }}</td>
                     <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>
                 </tr>
             {% empty %}
@@ -90,7 +90,7 @@
             <tr class="{% cycle 'odd' 'even' %}">
                 <td><a href="{{ todo.get_absolute_url }}"
                         title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                <td>{{ todo.date_added|date }}</td>
+                <td>{{ todo.created|date }}</td>
                 <td>{{ todo.creator.get_full_name }}</td>
                 <td class="wrap">{{ todo.description|urlize }}</td>
                 <td>{{ todo.pkg_count }}</td>

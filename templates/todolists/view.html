@@ -10,17 +10,17 @@
     <h2>Todo List: {{ list.name }}</h2>
 
     <ul class="admin-actions">
-        {% if perms.main.delete_todolist %}
+        {% if perms.todolists.delete_todolist %}
         <li><a href="/todo/delete/{{list.id}}/"
             title="Delete this todo list">Delete Todo List</a></li>
         {% endif %}
-        {% if perms.main.change_todolist %}
+        {% if perms.todolists.change_todolist %}
         <li><a href="/todo/edit/{{list.id}}/"
             title="Edit this todo list">Edit Todo List</a></li>
         {% endif %}
     </ul>
 
-    <p class="todo-info">{{ list.date_added|date }} - {{ list.creator.get_full_name }}</p>
+    <p class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</p>
 
     <div>{{list.description|urlize|linebreaks}}</div>
 
@@ -68,27 +68,22 @@
         </thead>
         <tbody>
             {% for pkg in list.packages %}
-            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.pkg.maintainers %} mine{% endif %} {{ pkg.pkg.arch.name }} {{ pkg.pkg.repo.name|lower }}">
-                <td>{{ pkg.pkg.arch.name }}</td>
-                <td>{{ pkg.pkg.repo.name|capfirst }}</td>
-                <td>{% pkg_details_link pkg.pkg %}</td>
+            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
+                <td>{{ pkg.arch.name }}</td>
+                <td>{{ pkg.repo.name|capfirst }}</td>
+                <td>{% pkg_details_link pkg.pkg pkg.pkgname %}</td>
                 {% if pkg.pkg.flag_date %}
                 <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
                 {% else %}
                 <td>{{ pkg.pkg.full_version }}</td>
                 {% endif %}
-                <td>{{ pkg.pkg.maintainers|join:', ' }}</td>
+                <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
-                    {% if perms.main.change_todolistpkg %}
-                    {% if pkg.complete %}
+                    {% if perms.todolist.change_todolistpackage %}
                     <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
-                        class="status-link complete" title="Toggle completion status">Complete</a>
+                        class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
                     {% else %}
-                    <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
-                        class="status-link incomplete" title="Toggle completion status">Incomplete</a>
-                    {% endif %}
-                    {% else %}
-                    {% if pkg.complete %}<span class="complete">Complete</span>{% else %}<span class="incomplete">Incomplete</span>{% endif %}
+                    <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
                     {% endif %}
                 </td>
             </tr>
