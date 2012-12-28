@@ -4,7 +4,6 @@ from django import forms
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
@@ -32,10 +31,9 @@ class TodoListForm(forms.ModelForm):
         fields = ('name', 'description', 'raw')
 
 
-@permission_required('todolists.change_todolistpackage')
 @never_cache
-def flag(request, list_id, pkg_id):
-    todolist = get_object_or_404(Todolist, old_id=list_id)
+def flag(request, slug, pkg_id):
+    todolist = get_object_or_404(Todolist, slug=slug)
     tlpkg = get_object_or_404(TodolistPackage, id=pkg_id)
     # TODO: none of this; require absolute value on submit
     if tlpkg.status == TodolistPackage.INCOMPLETE:
@@ -51,9 +49,14 @@ def flag(request, list_id, pkg_id):
         return HttpResponse(json.dumps(data), mimetype='application/json')
     return redirect(todolist)
 
-@login_required
-def view(request, list_id):
-    todolist = get_object_or_404(Todolist, old_id=list_id)
+
+def view_redirect(request, old_id):
+    todolist = get_object_or_404(Todolist, old_id=old_id)
+    return redirect(todolist, permanent=True)
+
+
+def view(request, slug):
+    todolist = get_object_or_404(Todolist, slug=slug)
     svn_roots = Repo.objects.values_list(
             'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
@@ -68,22 +71,23 @@ def view(request, list_id):
         'repos': sorted(repos),
     })
 
+
 # really no need for login_required on this one...
-def list_pkgbases(request, list_id, svn_root):
+def list_pkgbases(request, slug, svn_root):
     '''Used to make bulk moves of packages a lot easier.'''
-    todolist = get_object_or_404(Todolist, old_id=list_id)
+    todolist = get_object_or_404(Todolist, slug=slug)
     repos = get_list_or_404(Repo, svn_root=svn_root)
     pkgbases = TodolistPackage.objects.values_list('pkgbase', flat=True).filter(
             todolist=todolist, repo__in=repos).distinct().order_by('pkgbase')
     return HttpResponse('\n'.join(pkgbases),
         mimetype='text/plain')
 
-@login_required
+
 def todolist_list(request):
     lists = get_annotated_todolists()
     return render(request, 'todolists/list.html', {'lists': lists})
 
-@permission_required('todolists.add_todolist')
+
 @never_cache
 def add(request):
     if request.POST:
@@ -103,11 +107,11 @@ def add(request):
     }
     return render(request, 'general_form.html', page_dict)
 
+
 # TODO: this calls for transaction management and async emailing
-@permission_required('todolists.change_todolist')
 @never_cache
-def edit(request, list_id):
-    todo_list = get_object_or_404(Todolist, old_id=list_id)
+def edit(request, slug):
+    todo_list = get_object_or_404(Todolist, slug=slug)
     if request.POST:
         form = TodoListForm(request.POST, instance=todo_list)
         if form.is_valid():
@@ -126,11 +130,13 @@ def edit(request, list_id):
     }
     return render(request, 'general_form.html', page_dict)
 
+
 class DeleteTodolist(DeleteView):
     model = Todolist
     # model in main == assumes name 'main/todolist_confirm_delete.html'
     template_name = 'todolists/todolist_confirm_delete.html'
     success_url = '/todo/'
+
 
 @transaction.commit_on_success
 def create_todolist_packages(form, creator=None):
@@ -166,6 +172,7 @@ def create_todolist_packages(form, creator=None):
 
     return todo_pkgs
 
+
 def send_todolist_emails(todo_list, new_packages):
     '''Sends emails to package maintainers notifying them that packages have
     been added to a todo list.'''
@@ -192,6 +199,7 @@ def send_todolist_emails(todo_list, new_packages):
                 'Arch Website Notification <nobody@archlinux.org>',
                 [maint],
                 fail_silently=True)
+
 
 def public_list(request):
     todo_lists = Todolist.objects.incomplete()

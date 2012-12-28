@@ -11,11 +11,11 @@
 
     <ul class="admin-actions">
         {% if perms.todolists.delete_todolist %}
-        <li><a href="/todo/delete/{{list.id}}/"
+        <li><a href="/todo/{{ list.slug }}/delete/"
             title="Delete this todo list">Delete Todo List</a></li>
         {% endif %}
         {% if perms.todolists.change_todolist %}
-        <li><a href="/todo/edit/{{list.id}}/"
+        <li><a href="/todo/{{ list.slug }}/edit/"
             title="Edit this todo list">Edit Todo List</a></li>
         {% endif %}
     </ul>
@@ -80,7 +80,7 @@
                 <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
                     {% if perms.todolist.change_todolistpackage %}
-                    <a href="/todo/flag/{{ list.id }}/{{ pkg.id }}/"
+                    <a href="/todo/{{ list.slug }}/flag/{{ pkg.id }}/"
                         class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
                     {% else %}
                     <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
