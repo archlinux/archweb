@@ -122,7 +122,7 @@ def keys(request):
     master_key_ids = frozenset(key.pgp_key[-16:] for key in master_keys)
 
     sig_counts = PGPSignature.objects.filter(not_expired, valid=True,
-            signee__in=user_key_ids).values_list('signer').annotate(
+            signee__in=user_key_ids).order_by().values_list('signer').annotate(
             Count('signer'))
     sig_counts = {key_id[-16:]: ct for key_id, ct in sig_counts}
 
