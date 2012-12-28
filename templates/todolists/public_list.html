@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
-{% load package_extras %}
+{% load todolists %}
 
 {% block title %}Arch Linux - Todo Lists{% endblock %}
 
@@ -45,7 +45,7 @@
                 <tbody>
                     {% for pkg in list.packages %}
                     <tr class="{% cycle 'odd' 'even' %}">
-                        <td>{% pkg_details_link pkg.pkg pkg.pkgname %}</td>
+                        <td>{% todopkg_details_link pkg %}</td>
                         <td>{{ pkg.arch.name }}</td>
                         <td>{{ pkg.repo.name|capfirst }}</td>
                         <td>{{ pkg.maintainers|join:', ' }}</td>

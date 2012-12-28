@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load cache %}
 {% load package_extras %}
+{% load todolists %}
 
 {% block title %}Arch Linux - Developer Dashboard{% endblock %}
 
@@ -61,7 +62,7 @@
                 <tr class="{% cycle 'odd' 'even' %}">
                     <td><a href="{{ todopkg.todolist.get_absolute_url }}"
                             title="View todo list: {{ todopkg.todolist.name }}">{{ todopkg.todolist.name }}</a></td>
-                    <td>{% pkg_details_link todopkg.pkg %}</td>
+                    <td>{% todopkg_details_link todopkg %}</td>
                     <td>{{ todopkg.repo.name }}</td>
                     <td>{{ todopkg.arch.name }}</td>
                     <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
-{% load package_extras %}
+{% load todolists %}
 
 {% block title %}Arch Linux - Todo: {{ list.name }}{% endblock %}
 
@@ -71,7 +71,7 @@
             <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
-                <td>{% pkg_details_link pkg.pkg pkg.pkgname %}</td>
+                <td>{% todopkg_details_link pkg %}</td>
                 {% if pkg.pkg.flag_date %}
                 <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
                 {% else %}
