@@ -3,26 +3,12 @@ import markdown
 from django import forms
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.template.defaultfilters import slugify
 from django.views.decorators.http import require_POST
 from django.views.generic import (DetailView, ListView,
         CreateView, UpdateView, DeleteView)
 
 from .models import News
-
-
-def find_unique_slug(newsitem):
-    '''Attempt to find a unique slug for this news item.'''
-    existing = list(News.objects.values_list(
-        'slug', flat=True).order_by().distinct())
-
-    suffixed = slug = slugify(newsitem.title)
-    suffix = 0
-    while suffixed in existing:
-        suffix += 1
-        suffixed = "%s-%d" % (slug, suffix)
-
-    return suffixed
+from main.utils import find_unique_slug
 
 
 class NewsForm(forms.ModelForm):
@@ -51,7 +37,7 @@ class NewsCreateView(CreateView):
         # special logic, we auto-fill the author and slug fields
         newsitem = form.save(commit=False)
         newsitem.author = self.request.user
-        newsitem.slug = find_unique_slug(newsitem)
+        newsitem.slug = find_unique_slug(News, newsitem.title)
         newsitem.save()
         return super(NewsCreateView, self).form_valid(form)
 

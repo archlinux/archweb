@@ -9,6 +9,7 @@ import hashlib
 from django.core.cache import cache
 from django.db import connections, router
 from django.utils.timezone import now
+from django.template.defaultfilters import slugify
 
 
 CACHE_TIMEOUT = 1800
@@ -116,6 +117,20 @@ def set_created_field(sender, **kwargs):
         obj.created = time
     if hasattr(obj, 'last_modified'):
         obj.last_modified = time
+
+
+def find_unique_slug(model, title):
+    '''Attempt to find a unique slug for this model with given title.'''
+    existing = set(model.objects.values_list(
+        'slug', flat=True).order_by().distinct())
+
+    suffixed = slug = slugify(title)
+    suffix = 0
+    while suffixed in existing:
+        suffix += 1
+        suffixed = "%s-%d" % (slug, suffix)
+
+    return suffixed
 
 
 def database_vendor(model, mode='read'):
