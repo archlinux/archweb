@@ -271,10 +271,10 @@ class Package(models.Model):
         arches = None
         # TODO: we can use list comprehension and an 'in' query to make this more effective
         for dep in self.depends.all():
-            pkg = dep.get_best_satisfier()
+            pkg = dep.get_best_satisfier(self)
             providers = None
             if not pkg:
-                providers = dep.get_providers()
+                providers = dep.get_providers(self)
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         # sort the list; deptype sorting makes this tricker than expected
         sort_order = {'D': 0, 'O': 1, 'M': 2, 'C': 3}

@@ -349,14 +349,16 @@ class RelatedToBase(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     version = models.CharField(max_length=255, default='')
 
-    def get_best_satisfier(self):
+    def get_best_satisfier(self, main_pkg=None):
         '''Find a satisfier for this related package that best matches the
         given criteria. It will not search provisions, but will find packages
         named and matching repo characteristics if possible.'''
+        if main_pkg is None:
+            main_pkg = self.pkg
         pkgs = Package.objects.normal().filter(pkgname=self.name)
-        if not self.pkg.arch.agnostic:
+        if not main_pkg.arch.agnostic:
             # make sure we match architectures if possible
-            arches = self.pkg.applicable_arches()
+            arches = main_pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
         # if we have a comparison operation, make sure the packages we grab
         # actually satisfy the requirements
@@ -376,25 +378,27 @@ class RelatedToBase(models.Model):
         pkg = pkgs[0]
         # prevents yet more DB queries, these lists should be short;
         # after each grab the best available in case we remove all entries
-        pkgs = [p for p in pkgs if p.repo.staging == self.pkg.repo.staging]
+        pkgs = [p for p in pkgs if p.repo.staging == main_pkg.repo.staging]
         if len(pkgs) > 0:
             pkg = pkgs[0]
 
-        pkgs = [p for p in pkgs if p.repo.testing == self.pkg.repo.testing]
+        pkgs = [p for p in pkgs if p.repo.testing == main_pkg.repo.testing]
         if len(pkgs) > 0:
             pkg = pkgs[0]
 
         return pkg
 
-    def get_providers(self):
+    def get_providers(self, main_pkg=None):
         '''Return providers of this related package. Does *not* include exact
         matches as it checks the Provision names only, use get_best_satisfier()
         instead for exact matches.'''
+        if main_pkg is None:
+            main_pkg = self.pkg
         pkgs = Package.objects.normal().filter(
                 provides__name=self.name).order_by().distinct()
-        if not self.pkg.arch.agnostic:
+        if not main_pkg.arch.agnostic:
             # make sure we match architectures if possible
-            arches = self.pkg.applicable_arches()
+            arches = main_pkg.applicable_arches()
             pkgs = pkgs.filter(arch__in=arches)
 
         # If we have a comparison operation, make sure the packages we grab
