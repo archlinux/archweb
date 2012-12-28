@@ -41,6 +41,12 @@ class Todolist(models.Model):
         domain = Site.objects.get_current().domain
         return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
+    def packages(self):
+        if not hasattr(self, '_packages'):
+            self._packages = self.todolistpackage_set.select_related(
+                    'pkg', 'repo', 'arch').order_by('pkgname', 'arch')
+        return self._packages
+
 
 class TodolistPackage(models.Model):
     INCOMPLETE = 0
