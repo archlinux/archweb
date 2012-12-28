@@ -3,13 +3,16 @@ import json
 from django import forms
 from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import (get_list_or_404, get_object_or_404,
+        redirect, render)
 from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.template import Context, loader
+from django.template.defaultfilters import slugify
 
 from main.models import Package, Repo
+from main.utils import find_unique_slug
 from packages.utils import attach_maintainers
 from .models import Todolist, TodolistPackage
 from .utils import get_annotated_todolists
@@ -142,9 +145,10 @@ class DeleteTodolist(DeleteView):
 def create_todolist_packages(form, creator=None):
     packages = form.packages()
     if creator:
-        # todo list is new
+        # todo list is new, populate creator and slug fields
         todolist = form.save(commit=False)
         todolist.creator = creator
+        todolist.slug = find_unique_slug(Todolist, todolist.name)
         todolist.save()
 
         old_packages = []
