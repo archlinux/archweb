@@ -249,7 +249,7 @@ def attach_maintainers(packages):
     the maintainers and attach them to the packages to prevent N+1 query
     cascading.'''
     packages = list(packages)
-    pkgbases = {p.pkgbase for p in packages}
+    pkgbases = {p.pkgbase for p in packages if p is not None}
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
             pkgbase__in=pkgbases).values_list(
             'pkgbase', 'user_id').order_by().distinct()
@@ -266,6 +266,8 @@ def attach_maintainers(packages):
     annotated = []
     # and finally, attach the maintainer lists on the original packages
     for package in packages:
+        if package is None:
+            continue
         package.maintainers = maintainers[package.pkgbase]
         annotated.append(package)
 
