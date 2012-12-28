@@ -267,13 +267,13 @@ table.pretty1 {
     border: 1px solid #bcd;
 }
 
-    table.pretty1 th {
+    .pretty1 th {
         padding: 0.35em;
         background: #e4eeff;
         border: 1px solid #bcd;
     }
 
-    table.pretty1 td {
+    .pretty1 td {
         padding: 0.35em;
         border: 1px dotted #bcd;
     }
@@ -286,13 +286,13 @@ table.pretty2 {
     border: 1px solid #bbb;
 }
 
-    table.pretty2 th {
+    .pretty2 th {
         padding: 0.35em;
         background: #eee;
         border: 1px solid #bbb;
     }
 
-    table.pretty2 td {
+    .pretty2 td {
         padding: 0.35em;
         border: 1px dotted #bbb;
     }
@@ -301,7 +301,7 @@ table.compact {
     width: auto;
 }
 
-    table.compact td {
+    .compact td {
         padding: 0.25em 0 0.25em 1.5em;
     }
 
@@ -666,26 +666,26 @@ table.results {
     border-bottom: 1px dotted #999;
 }
 
-    table.results th {
+    .results th {
         padding: 0.5em 1em 0.25em 0.25em;
         border-bottom: 1px solid #999;
         white-space: nowrap;
         background-color:#fff;
     }
 
-    table.results td {
+    .results td {
         padding: .3em 1em .3em 3px;
     }
 
-    table.results tr.odd {
+    .results tr.odd {
         background: #fff;
     }
 
-    table.results tr.even {
+    .results tr.even {
         background: #e4eeff;
     }
 
-    table.results .flagged {
+    .results .flagged {
         color: red;
     }
 
