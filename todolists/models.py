@@ -34,7 +34,7 @@ class Todolist(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return '/todo/%i/' % self.id
+        return '/todo/%i/' % self.old_id
 
     def get_full_url(self, proto='https'):
         '''get a URL suitable for things like email including the domain'''

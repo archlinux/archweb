@@ -35,7 +35,7 @@ class TodoListForm(forms.ModelForm):
 @permission_required('todolists.change_todolistpackage')
 @never_cache
 def flag(request, list_id, pkg_id):
-    todolist = get_object_or_404(Todolist, id=list_id)
+    todolist = get_object_or_404(Todolist, old_id=list_id)
     tlpkg = get_object_or_404(TodolistPackage, id=pkg_id)
     # TODO: none of this; require absolute value on submit
     if tlpkg.status == TodolistPackage.INCOMPLETE:
@@ -53,7 +53,7 @@ def flag(request, list_id, pkg_id):
 
 @login_required
 def view(request, list_id):
-    todolist = get_object_or_404(Todolist, id=list_id)
+    todolist = get_object_or_404(Todolist, old_id=list_id)
     svn_roots = Repo.objects.values_list(
             'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
@@ -71,7 +71,7 @@ def view(request, list_id):
 # really no need for login_required on this one...
 def list_pkgbases(request, list_id, svn_root):
     '''Used to make bulk moves of packages a lot easier.'''
-    todolist = get_object_or_404(Todolist, id=list_id)
+    todolist = get_object_or_404(Todolist, old_id=list_id)
     repos = get_list_or_404(Repo, svn_root=svn_root)
     pkgbases = TodolistPackage.objects.values_list('pkgbase', flat=True).filter(
             todolist=todolist, repo__in=repos).distinct().order_by('pkgbase')
@@ -107,7 +107,7 @@ def add(request):
 @permission_required('todolists.change_todolist')
 @never_cache
 def edit(request, list_id):
-    todo_list = get_object_or_404(Todolist, id=list_id)
+    todo_list = get_object_or_404(Todolist, old_id=list_id)
     if request.POST:
         form = TodoListForm(request.POST, instance=todo_list)
         if form.is_valid():
