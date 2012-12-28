@@ -14,11 +14,6 @@ from .utils import cache_function, set_created_field
 from packages.alpm import AlpmAPI
 
 
-class TodolistManager(models.Manager):
-    def incomplete(self):
-        return self.filter(todolistpkg__complete=False).order_by().distinct()
-
-
 class PackageManager(models.Manager):
     def flagged(self):
         """Used by dev dashboard."""
@@ -423,69 +418,11 @@ class PackageFile(models.Model):
         db_table = 'package_files'
 
 
-class Todolist(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
-    description = models.TextField()
-    date_added = models.DateTimeField(db_index=True)
-    objects = TodolistManager()
-
-    def __unicode__(self):
-        return self.name
-
-    _packages = None
-
-    @property
-    def packages(self):
-        if not self._packages:
-            # select_related() does not use LEFT OUTER JOIN for nullable
-            # ForeignKey fields. That is why we need to explicitly list the
-            # ones we want.
-            self._packages = TodolistPkg.objects.select_related(
-                'pkg__repo', 'pkg__arch').filter(list=self).order_by('pkg')
-        return self._packages
-
-    @property
-    def package_names(self):
-        # depends on packages property returning a queryset
-        return self.packages.values_list(
-                'pkg__pkgname', flat=True).order_by().distinct()
-
-    class Meta:
-        db_table = 'todolists'
-
-    def get_absolute_url(self):
-        return '/todo/%i/' % self.id
-
-    def get_full_url(self, proto='https'):
-        '''get a URL suitable for things like email including the domain'''
-        domain = Site.objects.get_current().domain
-        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
-
-
-class TodolistPkg(models.Model):
-    list = models.ForeignKey(Todolist)
-    pkg = models.ForeignKey(Package)
-    complete = models.BooleanField(default=False)
-
-    class Meta:
-        db_table = 'todolist_pkgs'
-        unique_together = (('list','pkg'),)
-
-
-def set_todolist_fields(sender, **kwargs):
-    todolist = kwargs['instance']
-    if not todolist.date_added:
-        todolist.date_added = now()
-
-
 # connect signals needed to keep cache in line with reality
 from main.utils import refresh_latest
 from django.db.models.signals import pre_save, post_save
 
 post_save.connect(refresh_latest, sender=Package,
-        dispatch_uid="main.models")
-pre_save.connect(set_todolist_fields, sender=Todolist,
         dispatch_uid="main.models")
 pre_save.connect(set_created_field, sender=Donor,
         dispatch_uid="main.models")

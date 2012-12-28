@@ -1,5 +1,5 @@
 from django.contrib import admin
-from main.models import Arch, Donor, Package, Repo, Todolist
+from main.models import Arch, Donor, Package, Repo
 
 class DonorAdmin(admin.ModelAdmin):
     list_display = ('name', 'visible', 'created')
@@ -25,17 +25,11 @@ class PackageAdmin(admin.ModelAdmin):
     search_fields = ('pkgname', 'pkgbase', 'pkgdesc')
     date_hierarchy = 'build_date'
 
-class TodolistAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date_added', 'creator', 'description')
-    search_fields = ('name', 'description')
-
 
 admin.site.register(Donor, DonorAdmin)
 
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Arch, ArchAdmin)
 admin.site.register(Repo, RepoAdmin)
-
-admin.site.register(Todolist, TodolistAdmin)
 
 # vim: set ts=4 sw=4 et:
