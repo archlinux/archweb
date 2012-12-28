@@ -8,7 +8,7 @@ from django.utils.timezone import now
 from django_countries import CountryField
 
 from .fields import PGPKeyField
-from main.utils import make_choice
+from main.utils import make_choice, set_created_field
 
 
 class UserProfile(models.Model):
@@ -104,17 +104,7 @@ class PGPSignature(models.Model):
         return u'%s → %s' % (self.signer, self.signee)
 
 
-def set_last_modified(sender, **kwargs):
-    '''This will set the 'last_modified' field on the user profile to the
-    current UTC time when either the profile is updated.  For use as a pre_save
-    signal handler.'''
-    obj = kwargs['instance']
-    if hasattr(obj, 'last_modified'):
-        obj.last_modified = now()
-
-
-# connect signals needed to keep cache in line with reality
-pre_save.connect(set_last_modified, sender=UserProfile,
+pre_save.connect(set_created_field, sender=UserProfile,
         dispatch_uid="devel.models")
 
 # vim: set ts=4 sw=4 et:

@@ -106,10 +106,16 @@ def retrieve_latest(sender, latest_by=None):
 
 def set_created_field(sender, **kwargs):
     '''This will set the 'created' field on any object to the current UTC time
-    if it is unset. For use as a pre_save signal handler.'''
+    if it is unset.
+    Additionally, this will set the 'last_modified' field on any object to the
+    current UTC time on any save of the object.
+    For use as a pre_save signal handler.'''
     obj = kwargs['instance']
+    time = now()
     if hasattr(obj, 'created') and not obj.created:
-        obj.created = now()
+        obj.created = time
+    if hasattr(obj, 'last_modified'):
+        obj.last_modified = time
 
 
 def database_vendor(model, mode='read'):
