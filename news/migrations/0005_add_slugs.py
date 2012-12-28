@@ -11,7 +11,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         existing = list(orm.News.objects.values_list(
             'slug', flat=True).distinct())
-        for item in orm.News.objects.all():
+        for item in orm.News.objects.defer('content').filter(slug=None):
             suffixed = slug = slugify(item.title)
             suffix = 1
             while suffixed in existing:
@@ -24,7 +24,7 @@ class Migration(DataMigration):
             item.save()
 
     def backwards(self, orm):
-        orm.News.obects.all.update(slug=None)
+        orm.News.objects.all.update(slug=None)
 
     models = {
         'auth.group': {
