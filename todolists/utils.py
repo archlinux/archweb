@@ -19,7 +19,7 @@ SELECT todolist_id, count(*), sum(CASE WHEN status = %s THEN 1 ELSE 0 END)
 
 
 def get_annotated_todolists(incomplete_only=False):
-    lists = Todolist.objects.all().select_related(
+    lists = Todolist.objects.all().defer('raw').select_related(
             'creator').order_by('-created')
     lookup = todo_counts()
 

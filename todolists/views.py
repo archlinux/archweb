@@ -206,7 +206,7 @@ def send_todolist_emails(todo_list, new_packages):
 
 
 def public_list(request):
-    todo_lists = Todolist.objects.incomplete()
+    todo_lists = Todolist.objects.incomplete().defer('raw')
     # total hackjob, but it makes this a lot less query-intensive.
     all_pkgs = [tp for tl in todo_lists for tp in tl.packages()]
     attach_maintainers(all_pkgs)
