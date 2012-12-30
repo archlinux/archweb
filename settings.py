@@ -74,6 +74,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.doc.XViewMiddleware',
 )
@@ -98,6 +99,9 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # Session configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_HTTPONLY = True
+
+# Clickjacking protection
+X_FRAME_OPTIONS = 'DENY'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
