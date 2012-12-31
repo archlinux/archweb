@@ -11,31 +11,6 @@
                     "package"
                 ], 
                 [
-                    "add_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "change_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "add_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "change_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "delete_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
                     "add_news", 
                     "news", 
                     "news"
@@ -103,31 +78,6 @@
                     "change_package", 
                     "main", 
                     "package"
-                ], 
-                [
-                    "add_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "change_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "add_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "change_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "delete_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
                 ], 
                 [
                     "add_signoff", 
