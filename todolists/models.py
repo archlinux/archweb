@@ -66,12 +66,15 @@ class TodolistPackage(models.Model):
     arch = models.ForeignKey(Arch)
     repo = models.ForeignKey(Repo)
     created = models.DateTimeField()
-    status = models.SmallIntegerField(default=0, choices=STATUS_CHOICES)
+    removed = models.DateTimeField(null=True, blank=True)
+    status = models.SmallIntegerField(default=INCOMPLETE,
+            choices=STATUS_CHOICES)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     comments = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = (('todolist','pkgname', 'arch'),)
+        get_latest_by = 'created'
 
     def __unicode__(self):
         return self.pkgname
