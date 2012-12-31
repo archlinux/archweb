@@ -79,7 +79,7 @@
                 {% endif %}
                 <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
-                    {% if perms.todolist.change_todolistpackage %}
+                    {% if perms.todolists.change_todolistpackage %}
                     <a href="/todo/{{ list.slug }}/flag/{{ pkg.id }}/"
                         class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
                     {% else %}
