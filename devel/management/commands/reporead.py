@@ -387,10 +387,12 @@ def db_update(archname, reponame, pkgs, force=False):
     # packages in syncdb and not in database (add to database)
     for pkg in (pkg for pkg in pkgs if pkg.name in in_sync_not_db):
         logger.info("Adding package %s", pkg.name)
-        dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository)
+        timestamp = now()
+        dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository,
+                created=timestamp)
         try:
             with transaction.commit_on_success():
-                populate_pkg(dbpkg, pkg, timestamp=now())
+                populate_pkg(dbpkg, pkg, timestamp=timestamp)
                 Update.objects.log_update(None, dbpkg)
         except IntegrityError:
             if architecture.agnostic:

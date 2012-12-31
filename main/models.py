@@ -103,6 +103,7 @@ class Package(models.Model):
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(db_index=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
+    created = models.DateTimeField()
     packager_str = models.CharField(max_length=255)
     packager = models.ForeignKey(User, null=True, blank=True,
             on_delete=models.SET_NULL)
@@ -424,6 +425,8 @@ from django.db.models.signals import pre_save, post_save
 
 post_save.connect(refresh_latest, sender=Package,
         dispatch_uid="main.models")
+# note: reporead sets the 'created' field on Package objects, so no signal
+# listener is set up here to do so
 pre_save.connect(set_created_field, sender=Donor,
         dispatch_uid="main.models")
 
