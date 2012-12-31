@@ -26,18 +26,18 @@ packages, you will probably want the following:
 - django
 - python2-psycopg2
 - python2-markdown
-- python-south
-- python-memcached
+- python2-south
+- python2-memcached
 
 # Testing Installation
 
 1. Run `virtualenv2`.
 
-        $ cd /path/to/archweb && virtualenv2 ../archweb-env
+        $ cd /path/to/archweb && virtualenv2 ./env/
 
 2. Activate the virtualenv.
 
-        $ source ../archweb-env/bin/activate
+        $ source ./env/bin/activate
 
 2. Install dependencies through `pip`.
 
