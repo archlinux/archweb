@@ -8,6 +8,7 @@ def todo_counts():
     sql = """
 SELECT todolist_id, count(*), sum(CASE WHEN status = %s THEN 1 ELSE 0 END)
     FROM todolists_todolistpackage
+    WHERE removed IS NULL
     GROUP BY todolist_id
     """
     database = router.db_for_write(TodolistPackage)

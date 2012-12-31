@@ -10,6 +10,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.template import Context, loader
 from django.template.defaultfilters import slugify
+from django.utils.timezone import now
 
 from main.models import Package, Repo
 from main.utils import find_unique_slug
@@ -23,10 +24,12 @@ class TodoListForm(forms.ModelForm):
             help_text='(one per line)',
             widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
 
+    def package_names(self):
+        return {s.strip() for s in self.cleaned_data['raw'].split("\n")}
+
     def packages(self):
-        package_names = {s.strip() for s in
-                self.cleaned_data['raw'].split("\n")}
-        return Package.objects.normal().filter(pkgname__in=package_names,
+        return Package.objects.normal().filter(
+                pkgname__in=self.package_names(),
                 repo__testing=False, repo__staging=False).order_by('arch')
 
     class Meta:
@@ -37,7 +40,7 @@ class TodoListForm(forms.ModelForm):
 @never_cache
 def flag(request, slug, pkg_id):
     todolist = get_object_or_404(Todolist, slug=slug)
-    tlpkg = get_object_or_404(TodolistPackage, id=pkg_id)
+    tlpkg = get_object_or_404(TodolistPackage, id=pkg_id, removed__isnull=True)
     # TODO: none of this; require absolute value on submit
     if tlpkg.status == TodolistPackage.INCOMPLETE:
         tlpkg.status = TodolistPackage.COMPLETE
@@ -75,13 +78,14 @@ def view(request, slug):
     })
 
 
-# really no need for login_required on this one...
 def list_pkgbases(request, slug, svn_root):
     '''Used to make bulk moves of packages a lot easier.'''
     todolist = get_object_or_404(Todolist, slug=slug)
     repos = get_list_or_404(Repo, svn_root=svn_root)
-    pkgbases = TodolistPackage.objects.values_list('pkgbase', flat=True).filter(
-            todolist=todolist, repo__in=repos).distinct().order_by('pkgbase')
+    pkgbases = TodolistPackage.objects.values_list(
+            'pkgbase', flat=True).filter(
+            todolist=todolist, repo__in=repos, removed__isnull=True).order_by(
+            'pkgbase').distinct()
     return HttpResponse('\n'.join(pkgbases),
         mimetype='text/plain')
 
@@ -143,36 +147,44 @@ class DeleteTodolist(DeleteView):
 
 @transaction.commit_on_success
 def create_todolist_packages(form, creator=None):
+    package_names = form.package_names()
     packages = form.packages()
+    timestamp = now()
     if creator:
         # todo list is new, populate creator and slug fields
         todolist = form.save(commit=False)
         todolist.creator = creator
         todolist.slug = find_unique_slug(Todolist, todolist.name)
         todolist.save()
-
-        old_packages = []
     else:
         # todo list already existed
         form.save()
         todolist = form.instance
 
-        # first delete any packages not in the new list
+        # first mark removed any packages not in the new list
+        to_remove = set()
         for todo_pkg in todolist.packages():
-            if todo_pkg.pkg not in packages:
-                todo_pkg.delete()
+            if todo_pkg.pkg and todo_pkg.pkg not in packages:
+                to_remove.add(todo_pkg.pk)
+            elif todo_pkg.pkgname not in package_names:
+                to_remove.add(todo_pkg.pk)
 
-        # save the old package list so we know what to add
-        old_packages = [todo_pkg.pkg for todo_pkg in todolist.packages()]
+        TodolistPackage.objects.filter(
+                pk__in=to_remove).update(removed=timestamp)
 
+    # Add (or mark unremoved) any packages in the new packages list
     todo_pkgs = []
     for package in packages:
-        if package not in old_packages:
-            todo_pkg = TodolistPackage.objects.create(todolist=todolist,
-                    pkg=package, pkgname=package.pkgname,
-                    pkgbase=package.pkgbase,
-                    arch=package.arch, repo=package.repo)
+        todo_pkg, created = TodolistPackage.objects.get_or_create(
+                todolist=todolist,
+                pkg=package, pkgname=package.pkgname,
+                pkgbase=package.pkgbase,
+                arch=package.arch, repo=package.repo)
+        if created:
             todo_pkgs.append(todo_pkg)
+        elif todo_pkg.removed is not None:
+            todo_pkg.removed = None
+            todo_pkg.save()
 
     return todo_pkgs
 

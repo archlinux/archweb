@@ -10,8 +10,9 @@ from main.utils import set_created_field
 
 class TodolistManager(models.Manager):
     def incomplete(self):
-        not_done = (Q(todolistpackage__status=TodolistPackage.INCOMPLETE) |
-                Q(todolistpackage__status=TodolistPackage.IN_PROGRESS))
+        not_done = ((Q(todolistpackage__status=TodolistPackage.INCOMPLETE) |
+                Q(todolistpackage__status=TodolistPackage.IN_PROGRESS)) &
+                Q(todolistpackage__removed__isnull=True))
         return self.order_by().filter(not_done).distinct()
 
 
@@ -44,7 +45,8 @@ class Todolist(models.Model):
 
     def packages(self):
         if not hasattr(self, '_packages'):
-            self._packages = self.todolistpackage_set.select_related(
+            self._packages = self.todolistpackage_set.filter(
+                    removed__isnull=True).select_related(
                     'pkg', 'repo', 'arch').order_by('pkgname', 'arch')
         return self._packages
 

@@ -44,7 +44,7 @@ def index(request):
 
     todopkgs = TodolistPackage.objects.select_related(
             'todolist', 'pkg', 'arch', 'repo').exclude(
-            status=TodolistPackage.COMPLETE)
+            status=TodolistPackage.COMPLETE).filter(removed__isnull=True)
     todopkgs = todopkgs.filter(pkgbase__in=inner_q).order_by(
             'todolist__name', 'pkgname')
 
