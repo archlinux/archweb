@@ -46,6 +46,7 @@ def flag(request, slug, pkg_id):
         tlpkg.status = TodolistPackage.COMPLETE
     else:
         tlpkg.status = TodolistPackage.INCOMPLETE
+    tlpkg.user = request.user
     tlpkg.save()
     if request.is_ajax():
         data = {
