@@ -51,8 +51,8 @@ class UserProfile(models.Model):
     class Meta:
         db_table = 'user_profiles'
         get_latest_by = 'last_modified'
-        verbose_name = 'Additional Profile Data'
-        verbose_name_plural = 'Additional Profile Data'
+        verbose_name = 'additional profile data'
+        verbose_name_plural = 'additional profile data'
 
     def get_absolute_url(self):
         # TODO: this is disgusting. find a way to consolidate this logic with
