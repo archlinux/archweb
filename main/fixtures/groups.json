@@ -64,6 +64,115 @@
                     "change_signoffspecification", 
                     "packages", 
                     "signoffspecification"
+                ], 
+                [
+                    "add_todolist", 
+                    "todolists", 
+                    "todolist"
+                ], 
+                [
+                    "change_todolist", 
+                    "todolists", 
+                    "todolist"
+                ], 
+                [
+                    "add_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
+                ], 
+                [
+                    "change_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
+                ], 
+                [
+                    "delete_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
+                ]
+            ]
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.group", 
+        "fields": {
+            "name": "Trusted Users", 
+            "permissions": [
+                [
+                    "change_package", 
+                    "main", 
+                    "package"
+                ], 
+                [
+                    "add_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "change_todolist", 
+                    "main", 
+                    "todolist"
+                ], 
+                [
+                    "add_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "change_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "delete_todolistpkg", 
+                    "main", 
+                    "todolistpkg"
+                ], 
+                [
+                    "add_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "change_signoff", 
+                    "packages", 
+                    "signoff"
+                ], 
+                [
+                    "add_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
+                ], 
+                [
+                    "change_signoffspecification", 
+                    "packages", 
+                    "signoffspecification"
+                ], 
+                [
+                    "add_todolist", 
+                    "todolists", 
+                    "todolist"
+                ], 
+                [
+                    "change_todolist", 
+                    "todolists", 
+                    "todolist"
+                ], 
+                [
+                    "add_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
+                ], 
+                [
+                    "change_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
+                ], 
+                [
+                    "delete_todolistpackage", 
+                    "todolists", 
+                    "todolistpackage"
                 ]
             ]
         }
@@ -133,25 +242,30 @@
         }
     }, 
     {
-        "pk": 6, 
+        "pk": 4, 
         "model": "auth.group", 
         "fields": {
-            "name": "Package Relation Maintainers", 
+            "name": "User Admins", 
             "permissions": [
                 [
-                    "add_packagerelation", 
-                    "packages", 
-                    "packagerelation"
+                    "add_user", 
+                    "auth", 
+                    "user"
                 ], 
                 [
-                    "change_packagerelation", 
-                    "packages", 
-                    "packagerelation"
+                    "change_user", 
+                    "auth", 
+                    "user"
                 ], 
                 [
-                    "delete_packagerelation", 
-                    "packages", 
-                    "packagerelation"
+                    "add_userprofile", 
+                    "devel", 
+                    "userprofile"
+                ], 
+                [
+                    "change_userprofile", 
+                    "devel", 
+                    "userprofile"
                 ]
             ]
         }
@@ -313,6 +427,21 @@
                     "module"
                 ], 
                 [
+                    "add_release", 
+                    "releng", 
+                    "release"
+                ], 
+                [
+                    "change_release", 
+                    "releng", 
+                    "release"
+                ], 
+                [
+                    "delete_release", 
+                    "releng", 
+                    "release"
+                ], 
+                [
                     "add_source", 
                     "releng", 
                     "source"
@@ -346,89 +475,49 @@
         }
     }, 
     {
-        "pk": 2, 
+        "pk": 6, 
         "model": "auth.group", 
         "fields": {
-            "name": "Trusted Users", 
+            "name": "Package Relation Maintainers", 
             "permissions": [
                 [
-                    "change_package", 
-                    "main", 
-                    "package"
-                ], 
-                [
-                    "add_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "change_todolist", 
-                    "main", 
-                    "todolist"
-                ], 
-                [
-                    "add_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "change_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "delete_todolistpkg", 
-                    "main", 
-                    "todolistpkg"
-                ], 
-                [
-                    "add_signoff", 
+                    "add_packagerelation", 
                     "packages", 
-                    "signoff"
+                    "packagerelation"
                 ], 
                 [
-                    "change_signoff", 
+                    "change_packagerelation", 
                     "packages", 
-                    "signoff"
+                    "packagerelation"
                 ], 
                 [
-                    "add_signoffspecification", 
+                    "delete_packagerelation", 
                     "packages", 
-                    "signoffspecification"
-                ], 
-                [
-                    "change_signoffspecification", 
-                    "packages", 
-                    "signoffspecification"
+                    "packagerelation"
                 ]
             ]
         }
     }, 
     {
-        "pk": 4, 
+        "pk": 8, 
         "model": "auth.group", 
         "fields": {
-            "name": "User Admins", 
+            "name": "Download Page Releases", 
             "permissions": [
                 [
-                    "add_user", 
-                    "auth", 
-                    "user"
+                    "add_release", 
+                    "releng", 
+                    "release"
                 ], 
                 [
-                    "change_user", 
-                    "auth", 
-                    "user"
+                    "change_release", 
+                    "releng", 
+                    "release"
                 ], 
                 [
-                    "add_userprofile", 
-                    "devel", 
-                    "userprofile"
-                ], 
-                [
-                    "change_userprofile", 
-                    "devel", 
-                    "userprofile"
+                    "delete_release", 
+                    "releng", 
+                    "release"
                 ]
             ]
         }
