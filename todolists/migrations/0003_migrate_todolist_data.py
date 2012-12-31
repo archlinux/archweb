@@ -8,6 +8,7 @@ class Migration(DataMigration):
 
     depends_on = (
         ('main', '0045_add_todolist_date_added_index'),
+        ('main', '0053_auto__add_field_package_pgp_signature'),
     )
 
     def forwards(self, orm):
