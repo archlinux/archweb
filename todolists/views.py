@@ -123,7 +123,7 @@ def edit(request, slug):
             return redirect(todo_list)
     else:
         form = TodoListForm(instance=todo_list,
-                initial={ 'packages': todo_list.raw })
+                initial={'packages': todo_list.raw})
 
     page_dict = {
             'title': 'Edit Todo List: %s' % todo_list.name,

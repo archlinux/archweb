@@ -270,7 +270,8 @@ class Package(models.Model):
         """
         deps = []
         arches = None
-        # TODO: we can use list comprehension and an 'in' query to make this more effective
+        # TODO: we can use list comprehension and an 'in' query to make this
+        # more effective
         for dep in self.depends.all():
             pkg = dep.get_best_satisfier(self)
             providers = None
@@ -279,6 +280,7 @@ class Package(models.Model):
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         # sort the list; deptype sorting makes this tricker than expected
         sort_order = {'D': 0, 'O': 1, 'M': 2, 'C': 3}
+
         def sort_key(val):
             dep = val['dep']
             return (sort_order.get(dep.deptype, 1000), dep.name)

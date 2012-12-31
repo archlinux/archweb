@@ -73,7 +73,7 @@ class TodolistPackage(models.Model):
     comments = models.TextField(null=True, blank=True)
 
     class Meta:
-        unique_together = (('todolist','pkgname', 'arch'),)
+        unique_together = (('todolist', 'pkgname', 'arch'),)
         get_latest_by = 'created'
 
     def __unicode__(self):
