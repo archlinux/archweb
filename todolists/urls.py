@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     (r'^(?P<slug>[-\w]+)/flag/(?P<pkg_id>\d+)/$',
         permission_required('todolists.change_todolistpackage')(flag)),
     (r'^(?P<slug>[-\w]+)/pkgbases/(?P<svn_root>[a-z]+)/$',
-        'list_pkgbases'),
+        list_pkgbases),
 )
 
 # vim: set ts=4 sw=4 et:
