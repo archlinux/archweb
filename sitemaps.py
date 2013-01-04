@@ -105,6 +105,7 @@ class BaseSitemap(Sitemap):
             'page-donate',
             'feeds-list',
             'mirror-list',
+            'mirror-status',
             'mirrorlist',
             'packages-differences',
             'releng-test-overview',
