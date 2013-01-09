@@ -206,6 +206,13 @@ class FlagRequest(models.Model):
             return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
         return u'%s-%s' % (self.pkgver, self.pkgrel)
 
+    def get_associated_packages(self):
+        return Package.objects.normal().filter(
+                pkgbase=self.pkgbase,
+                repo__testing=self.repo.testing,
+                repo__staging=self.repo.staging).order_by(
+                'pkgname', 'repo__name', 'arch__name')
+
     def __unicode__(self):
         return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
