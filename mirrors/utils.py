@@ -33,9 +33,16 @@ def annotate_url(url, delays):
 @cache_function(123)
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
     cutoff_time = now() - cutoff
-    url_data = MirrorUrl.objects.values('id', 'mirror_id').filter(
+
+    valid_urls = MirrorUrl.objects.filter(
             mirror__active=True, mirror__public=True,
-            logs__check_time__gte=cutoff_time).annotate(
+            logs__check_time__gte=cutoff_time).distinct()
+
+    if mirror_ids:
+        valid_urls = valid_urls.filter(mirror_id__in=mirror_ids)
+
+    url_data = MirrorUrl.objects.values('id', 'mirror_id').filter(
+            id__in=valid_urls, logs__check_time__gte=cutoff_time).annotate(
             check_count=Count('logs'),
             success_count=Count('logs__duration'),
             last_sync=Max('logs__last_sync'),
@@ -47,13 +54,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
         url_data = url_data.annotate(duration_stddev=StdDev('logs__duration'))
 
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
-            mirror__active=True, mirror__public=True,
-            logs__check_time__gte=cutoff_time).distinct().order_by(
-            'mirror__id', 'url')
-
-    if mirror_ids:
-        url_data = url_data.filter(mirror_id__in=mirror_ids)
-        urls = urls.filter(mirror_id__in=mirror_ids)
+            id__in=valid_urls).order_by('mirror__id', 'url')
 
     # The Django ORM makes it really hard to get actual average delay in the
     # above query, so run a seperate query for it and we will process the
