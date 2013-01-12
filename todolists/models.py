@@ -67,7 +67,8 @@ class TodolistPackage(models.Model):
     pkgbase = models.CharField(max_length=255)
     arch = models.ForeignKey(Arch)
     repo = models.ForeignKey(Repo)
-    created = models.DateTimeField()
+    created = models.DateTimeField(editable=False)
+    last_modified = models.DateTimeField(editable=False)
     removed = models.DateTimeField(null=True, blank=True)
     status = models.SmallIntegerField(default=INCOMPLETE,
             choices=STATUS_CHOICES)
