@@ -12,7 +12,7 @@ from django.views.generic import ListView
 from main.models import Package, Arch, Repo
 from main.utils import make_choice
 from ..models import PackageRelation
-from ..utils import PackageJSONEncoder
+from ..utils import attach_maintainers, PackageJSONEncoder
 
 
 def coerce_limit_value(value):
@@ -185,10 +185,14 @@ def search_json(request):
         form = PackageSearchForm(data=request.GET,
                 show_staging=request.user.is_authenticated())
         if form.is_valid():
-            packages = Package.objects.normal()
+            packages = Package.objects.select_related('arch', 'repo',
+                    'packager')
             if not request.user.is_authenticated():
                 packages = packages.filter(repo__staging=False)
             packages = parse_form(form, packages)[:limit]
+            packages = packages.prefetch_related('groups', 'licenses',
+                    'conflicts', 'provides', 'replaces', 'depends')
+            attach_maintainers(packages)
             container['results'] = packages
             container['valid'] = True
 
