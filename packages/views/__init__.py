@@ -42,7 +42,7 @@ def opensearch(request):
 def opensearch_suggest(request):
     search_term = request.GET.get('q', '')
     if search_term == '':
-        return HttpResponse('', mimetype='application/x-suggestions+json')
+        return HttpResponse('', content_type='application/x-suggestions+json')
 
     cache_key = 'opensearch:packages:' + \
             hashlib.md5(search_term.encode('utf-8')).hexdigest()
@@ -59,7 +59,7 @@ def opensearch_suggest(request):
         results = [search_term, list(names)]
         to_json = json.dumps(results, ensure_ascii=False)
         cache.set(cache_key, to_json, 300)
-    return HttpResponse(to_json, mimetype='application/x-suggestions+json')
+    return HttpResponse(to_json, content_type='application/x-suggestions+json')
 
 
 @permission_required('main.change_package')

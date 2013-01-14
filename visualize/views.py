@@ -62,13 +62,13 @@ def arch_repo_data():
 def by_arch(request):
     data = arch_repo_data()
     to_json = json.dumps(data['by_arch'], ensure_ascii=False)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 
 @cache_page(1800)
 def by_repo(request):
     data = arch_repo_data()
     to_json = json.dumps(data['by_repo'], ensure_ascii=False)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 # vim: set ts=4 sw=4 et:

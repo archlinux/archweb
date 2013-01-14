@@ -53,7 +53,7 @@ def flag(request, slug, pkg_id):
             'status': tlpkg.get_status_display(),
             'css_class': tlpkg.status_css_class(),
         }
-        return HttpResponse(json.dumps(data), mimetype='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
     return redirect(todolist)
 
 
@@ -87,8 +87,7 @@ def list_pkgbases(request, slug, svn_root):
             'pkgbase', flat=True).filter(
             todolist=todolist, repo__in=repos, removed__isnull=True).order_by(
             'pkgbase').distinct()
-    return HttpResponse('\n'.join(pkgbases),
-        mimetype='text/plain')
+    return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
 
 def todolist_list(request):

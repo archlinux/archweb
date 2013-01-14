@@ -185,6 +185,6 @@ def keys_json(request):
     data = { 'nodes': node_list, 'edges': edge_list }
 
     to_json = json.dumps(data, ensure_ascii=False)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 # vim: set ts=4 sw=4 et:

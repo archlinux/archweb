@@ -197,6 +197,6 @@ def search_json(request):
             container['valid'] = True
 
     to_json = json.dumps(container, ensure_ascii=False, cls=PackageJSONEncoder)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 # vim: set ts=4 sw=4 et:

@@ -199,7 +199,7 @@ def mirror_details_json(request, name):
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False,
             cls=ExtendedMirrorStatusJSONEncoder)
-    response = HttpResponse(to_json, mimetype='application/json')
+    response = HttpResponse(to_json, content_type='application/json')
     return response
 
 
@@ -285,7 +285,7 @@ def status_json(request):
     data = status_info.copy()
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False, cls=MirrorStatusJSONEncoder)
-    response = HttpResponse(to_json, mimetype='application/json')
+    response = HttpResponse(to_json, content_type='application/json')
     return response
 
 # vim: set ts=4 sw=4 et:

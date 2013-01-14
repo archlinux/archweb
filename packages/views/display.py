@@ -188,7 +188,7 @@ def details_json(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     to_json = json.dumps(pkg, ensure_ascii=False, cls=PackageJSONEncoder)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 
 def files_json(request, name, repo, arch):
@@ -209,7 +209,7 @@ def files_json(request, name, repo, arch):
         'files': fileslist,
     }
     to_json = json.dumps(data, ensure_ascii=False, cls=PackageJSONEncoder)
-    return HttpResponse(to_json, mimetype='application/json')
+    return HttpResponse(to_json, content_type='application/json')
 
 
 def download(request, name, repo, arch):

@@ -67,7 +67,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
             'user': str(request.user),
         }
         return HttpResponse(json.dumps(data, ensure_ascii=False),
-                mimetype='application/json')
+                content_type='application/json')
 
     return redirect('package-signoffs')
 
@@ -181,7 +181,7 @@ def signoffs_json(request):
         'signoff_groups': signoff_groups,
     }
     to_json = json.dumps(data, ensure_ascii=False, cls=SignoffJSONEncoder)
-    response = HttpResponse(to_json, mimetype='application/json')
+    response = HttpResponse(to_json, content_type='application/json')
     return response
 
 # vim: set ts=4 sw=4 et:
