@@ -176,13 +176,17 @@ def mirror_details(request, name):
         raise Http404
 
     status_info = get_mirror_statuses(mirror_ids=[mirror.id])
-    checked_urls = [url for url in status_info['urls'] \
-            if url.mirror_id == mirror.id]
-    all_urls = mirror.urls.select_related('protocol')
-    # get each item from checked_urls and supplement with anything in all_urls
-    # if it wasn't there
-    all_urls = set(checked_urls).union(all_urls)
-    all_urls = sorted(all_urls, key=attrgetter('url'))
+    checked_urls = {url for url in status_info['urls'] \
+            if url.mirror_id == mirror.id}
+    all_urls = set(mirror.urls.select_related('protocol'))
+    # Add dummy data for URLs that we haven't checked recently
+    other_urls = all_urls.difference(checked_urls)
+    print other_urls
+    for url in other_urls:
+        for attr in ('last_sync', 'completion_pct', 'delay', 'duration_avg',
+                'duration_stddev', 'score'):
+            setattr(url, attr, None)
+    all_urls = sorted(checked_urls.union(other_urls), key=attrgetter('url'))
 
     return render(request, 'mirrors/mirror_details.html',
             {'mirror': mirror, 'urls': all_urls})
