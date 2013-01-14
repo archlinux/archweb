@@ -52,6 +52,8 @@ class PackageFeed(Feed):
         wrapper = condition(etag_func=package_etag, last_modified_func=package_last_modified)
         return wrapper(super(PackageFeed, self).__call__)(request, *args, **kwargs)
 
+    __name__ = 'package_feed'
+
     def get_object(self, request, arch='', repo=''):
         obj = dict()
         qs = Package.objects.normal().order_by('-last_update')
@@ -134,6 +136,8 @@ class NewsFeed(Feed):
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(etag_func=news_etag, last_modified_func=news_last_modified)
         return wrapper(super(NewsFeed, self).__call__)(request, *args, **kwargs)
+
+    __name__ = 'news_feed'
 
     def items(self):
         return News.objects.select_related('author').order_by(
