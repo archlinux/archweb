@@ -279,9 +279,15 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
         return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 
-def status_json(request):
+def status_json(request, tier=None):
+    if tier is not None:
+        tier = int(tier)
+        if tier not in [t[0] for t in Mirror.TIER_CHOICES]:
+            raise Http404
     status_info = get_mirror_statuses()
     data = status_info.copy()
+    if tier is not None:
+        data['urls'] = [url for url in data['urls'] if url.mirror.tier == tier]
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False, cls=MirrorStatusJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
