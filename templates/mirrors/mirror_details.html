@@ -19,10 +19,6 @@
             <td>{{ mirror.get_tier_display }}</td>
         </tr>
         <tr>
-            <th>Country:</th>
-            <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}" alt=""/> {% endif %}{{ mirror.country.name|default:'Worldwide' }}</td>
-        </tr>
-        <tr>
             <th>Has ISOs:</th>
             <td>{{ mirror.isos|yesno|capfirst }}</td>
         </tr>
@@ -77,6 +73,8 @@
         <thead>
             <tr>
                 <th>Mirror URL</th>
+                <th>Protocol</th>
+                <th>Country</th>
                 <th>IPv4</th>
                 <th>IPv6</th>
                 <th>Last Sync</th>
@@ -91,6 +89,8 @@
             {% for m_url in urls %}
             <tr class="{% cycle 'odd' 'even' %}">
                 <td>{% if m_url.protocol.is_download %}<a href="{{ m_url.url }}">{{ m_url.url }}</a>{% else %}{{ m_url.url }}{% endif %}</td>
+                <td>{{ m_url.protocol }}</td>
+                <td class="country">{% if m_url.country %}<img src="{{ m_url.country.flag }}" alt=""/> {% endif %}{{ m_url.country.name }}</td>
                 <td>{{ m_url.has_ipv4|yesno|capfirst }}</td>
                 <td>{{ m_url.has_ipv6|yesno|capfirst }}</td>
                 <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
@@ -115,8 +115,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $("#available_urls:has(tbody tr)").tablesorter(
-        {widgets: ['zebra'], sortList: [[0,0]],
-        headers: { 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' }, 8: { sorter: 'mostlydigit' } } });
+        {widgets: ['zebra'], sortList: [[1,0], [2,0]],
+        headers: { 8: { sorter: 'mostlydigit' }, 9: { sorter: 'mostlydigit' }, 10: { sorter: 'mostlydigit' } } });
 });
 $(document).ready(function() {
     mirror_status("#visualize-mirror", "./json/");

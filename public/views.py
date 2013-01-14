@@ -85,7 +85,7 @@ def download(request):
     mirror_urls = MirrorUrl.objects.select_related('mirror').filter(
             protocol__default=True,
             mirror__public=True, mirror__active=True, mirror__isos=True)
-    sort_by = attrgetter('real_country.name', 'mirror.name')
+    sort_by = attrgetter('country.name', 'mirror.name')
     mirror_urls = sorted(mirror_urls, key=sort_by)
     context = {
         'release': release,

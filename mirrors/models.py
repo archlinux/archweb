@@ -17,7 +17,6 @@ class Mirror(models.Model):
     name = models.CharField(max_length=255, unique=True)
     tier = models.SmallIntegerField(default=2, choices=TIER_CHOICES)
     upstream = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
-    country = CountryField(blank=True, db_index=True)
     admin_email = models.EmailField(max_length=255, blank=True)
     alternate_email = models.EmailField(max_length=255, blank=True)
     public = models.BooleanField(default=True)
@@ -28,7 +27,7 @@ class Mirror(models.Model):
     notes = models.TextField(blank=True)
 
     class Meta:
-        ordering = ('country', 'name')
+        ordering = ('name',)
 
     def __unicode__(self):
         return self.name
@@ -74,10 +73,6 @@ class MirrorUrl(models.Model):
     @property
     def hostname(self):
         return urlparse(self.url).hostname
-
-    @property
-    def real_country(self):
-        return self.country or self.mirror.country
 
     def clean(self):
         try:

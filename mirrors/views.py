@@ -42,9 +42,6 @@ class MirrorlistForm(forms.Form):
 
     def get_countries(self):
         country_codes = set()
-        country_codes.update(Mirror.objects.filter(active=True).exclude(
-                country='').values_list(
-                'country', flat=True).order_by().distinct())
         country_codes.update(MirrorUrl.objects.filter(
                 mirror__active=True).exclude(country='').values_list(
                 'country', flat=True).order_by().distinct())
@@ -81,7 +78,7 @@ def generate_mirrorlist(request):
 
 
 def default_protocol_filter(original_urls):
-    key_func = attrgetter('real_country')
+    key_func = attrgetter('country')
     sorted_urls = sorted(original_urls, key=key_func)
     urls = []
     for _, group in groupby(sorted_urls, key=key_func):
@@ -119,8 +116,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
             protocol__in=protocols,
             mirror__public=True, mirror__active=True)
     if countries and 'all' not in countries:
-        qset = qset.filter(Q(country__in=countries) |
-                Q(mirror__country__in=countries))
+        qset = qset.filter(country__in=countries)
 
     ip_version = Q()
     if ipv4_supported:
@@ -135,7 +131,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         urls = qset
 
     if not use_status:
-        sort_key = attrgetter('real_country.name', 'mirror.name', 'url')
+        sort_key = attrgetter('country.name', 'mirror.name', 'url')
         urls = sorted(urls, key=sort_key)
         template = 'mirrors/mirrorlist.txt'
     else:
@@ -158,7 +154,7 @@ def find_mirrors_simple(request, protocol):
 
 
 def mirrors(request):
-    mirror_list = Mirror.objects.select_related().order_by('tier', 'country')
+    mirror_list = Mirror.objects.select_related().order_by('tier', 'name')
     protos = MirrorUrl.objects.values_list(
             'mirror_id', 'protocol__protocol').order_by(
             'mirror__id', 'protocol__protocol').distinct()
@@ -254,8 +250,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             return list(obj)
         if isinstance(obj, MirrorUrl):
             data = {attr: getattr(obj, attr) for attr in self.url_attributes}
-            # get any override on the country attribute first
-            country = obj.real_country
+            country = obj.country
             data['country'] = unicode(country.name)
             data['country_code'] = country.code
             return data

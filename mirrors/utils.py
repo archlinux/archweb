@@ -115,7 +115,7 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
             is_success=False, check_time__gte=cutoff_time,
             url__mirror__active=True, url__mirror__public=True).values(
             'url__url', 'url__country', 'url__protocol__protocol',
-            'url__mirror__country', 'url__mirror__tier', 'error').annotate(
+            'url__mirror__tier', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
 
@@ -124,8 +124,7 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
 
     errors = list(errors)
     for err in errors:
-        ctry_code = err['url__country'] or err['url__mirror__country']
-        err['country'] = Country(ctry_code)
+        err['country'] = Country(err['url__country'])
     return errors
 
 
@@ -152,7 +151,7 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
     mirror_urls = MirrorUrl.objects.filter(
             mirror__public=True, mirror__active=True, protocol__default=True)
     # look first for a country-agnostic URL, then fall back to any HTTP URL
-    filtered_urls = mirror_urls.filter(mirror__country='')[:1]
+    filtered_urls = mirror_urls.filter(country='')[:1]
     if not filtered_urls:
         filtered_urls = mirror_urls[:1]
     if not filtered_urls:

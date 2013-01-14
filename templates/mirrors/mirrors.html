@@ -10,7 +10,6 @@
             <tr>
                 <th>Server</th>
                 <th>Tier</th>
-                <th>Country</th>
                 <th>ISOs</th>
                 <th>Protocols</th>
                 {% if user.is_authenticated %}
@@ -27,7 +26,6 @@
                 <td><a href="{{ mirror.get_absolute_url }}"
                         title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
                 <td>{{ mirror.get_tier_display }}</td>
-                <td>{% if mirror.country %}<img src="{{ mirror.country.flag }}" alt=""/> {% endif %}{{ mirror.country.name }}</td>
                 <td>{{ mirror.isos|yesno|capfirst }}</td>
                 <td class="wrap">{{ mirror.protocols|join:", " }}</td>
                 {% if user.is_authenticated %}
@@ -45,7 +43,7 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [2,0]]});
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
 });
 </script>
 {% endblock %}

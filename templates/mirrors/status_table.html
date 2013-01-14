@@ -17,7 +17,7 @@
         {% spaceless %}<tr class="{% cycle 'odd' 'even' %}">
             <td>{{ m_url.url }}</td>
             <td>{{ m_url.protocol }}</td>
-            <td class="country">{% if m_url.real_country %}<img src="{{ m_url.real_country.flag }}" alt=""/> {% endif %}{{ m_url.real_country.name }}</td>
+            <td class="country">{% if m_url.country %}<img src="{{ m_url.country.flag }}" alt=""/> {% endif %}{{ m_url.country.name }}</td>
             <td>{{ m_url.completion_pct|percentage:1 }}</td>
             <td>{{ m_url.delay|duration|default:'unknown' }}</td>
             <td>{{ m_url.duration_avg|floatformat:2 }}</td>
