@@ -5,6 +5,7 @@
 local_settings.py
 archweb.db
 archweb.db-*
+newrelic.key
 tags
 collected_static/
 testing/

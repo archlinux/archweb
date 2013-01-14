@@ -14,14 +14,15 @@ os.chdir(base_path)
 
 using_newrelic = False
 try:
+    key_path = os.path.join(base_path, "newrelic.key")
+    if os.path.exists(key_path):
+        with open(key_path) as keyfile:
+            key = keyfile.read().strip()
+        os.environ["NEW_RELIC_LICENSE_KEY"] = key
+
     import newrelic.agent
     from newrelic.api.exceptions import ConfigurationError
     try:
-        key_path = os.path.join(base_path, "newrelic.key")
-        if os.path.exists(key_path):
-            with open(key_path) as keyfile:
-                key = keyfile.read().strip()
-            os.environ["NEW_RELIC_LICENSE_KEY"] = key
         newrelic.agent.initialize(os.path.join(base_path, "newrelic.ini"))
         using_newrelic = True
     except ConfigurationError:
