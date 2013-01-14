@@ -28,4 +28,9 @@ import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
 
 if using_newrelic:
-    application = application = newrelic.agent.wsgi_application()(application)
+    _application = application
+    def application(environ, start_response):
+        os.environ["NEW_RELIC_LICENSE_KEY"] = environ.get("NEW_RELIC_LICENSE_KEY", None)
+        return _application(environ, start_response)
+
+    application = newrelic.agent.wsgi_application()(application)
