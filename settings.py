@@ -73,7 +73,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    'django.middleware.doc.XViewMiddleware',
 )
 
 # Base of the URL hierarchy
