@@ -23,7 +23,7 @@ import threading
 import time
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import connection
+from django.db import connection, transaction
 
 from main.models import Arch, Repo
 from .reporead import read_repo
@@ -53,6 +53,11 @@ class Command(BaseCommand):
         self.path_template = path_template
 
         notifier = self.setup_notifier()
+        # this thread is done using the database; all future access is done in
+        # the spawned read_repo() processes, so close the otherwise completely
+        # idle connection.
+        connection.close()
+
         logger.info('Entering notifier loop')
         notifier.loop()
 
@@ -61,14 +66,17 @@ class Command(BaseCommand):
             if hasattr(thread, 'cancel'):
                 thread.cancel()
 
+    @transaction.commit_on_success
     def setup_notifier(self):
         '''Set up and configure the inotify machinery and logic.
         This takes the provided or default path_template and builds a list of
         directories we need to watch for database updates. It then validates
         and passes these on to the various pyinotify pieces as necessary and
         finally builds and returns a notifier object.'''
+        transaction.commit_manually()
         arches = Arch.objects.filter(agnostic=False)
         repos = Repo.objects.all()
+        transaction.set_dirty()
         arch_path_map = {arch: None for arch in arches}
         all_paths = set()
         total_paths = 0
@@ -90,11 +98,6 @@ class Command(BaseCommand):
         if total_paths != len(all_paths):
             raise CommandError('path template did not uniquely '
                     'determine architecture for each file')
-
-        # this thread is done using the database; all future access is done in
-        # the spawned read_repo() processes, so close the otherwise completely
-        # idle connection.
-        connection.close()
 
         # A proper atomic replacement of the database as done by rsync is type
         # IN_MOVED_TO. repo-add/remove will finish with a IN_CLOSE_WRITE.
