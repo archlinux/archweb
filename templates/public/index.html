@@ -211,9 +211,14 @@
     </a>
 </div>
 {% endcache %}
+{% endblock %}
+
+{% block content_after %}
+<div id="konami" style="display:none;"></div>
 
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{% static "bootstrap-typeahead.min.js" %}"></script>
+<script type="text/javascript" src="{% static "konami.pack.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#pkgsearch-field').typeahead({
@@ -227,6 +232,17 @@ $(document).ready(function() {
         menu: '<ul class="pkgsearch-typeahead"></ul>',
         items: 10
     }).attr('autocomplete', 'off');
+});
+$(document).ready(function() {
+    var konami = new Konami();
+    konami.code = function() {
+        $('#konami').html('<img src="{% static "vector_tux.png" %}" alt=""/>');
+        setTimeout(function() {
+            $('#konami').fadeIn(500);
+        }, 500);
+    };
+    konami.iphone.code = konami.code;
+    konami.load();
 });
 </script>
 {% endblock %}
