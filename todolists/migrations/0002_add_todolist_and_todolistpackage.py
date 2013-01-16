@@ -6,6 +6,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ('main', '0024_set_initial_flag_date'),
+    )
+
     def forwards(self, orm):
         db.create_table('todolists_todolist', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),

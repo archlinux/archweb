@@ -1,11 +1,9 @@
-
+# -*- coding: utf-8 -*-
 from south.db import db
+from south.v2 import DataMigration
 from django.db import models
-from main.models import *
 
-class Migration:
-
-    no_dry_run = True
+class Migration(DataMigration):
 
     def forwards(self, orm):
         orm.Package.objects.filter(maintainer=0).update(maintainer=None)

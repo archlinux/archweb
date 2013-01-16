@@ -2,11 +2,16 @@
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.db.utils import DatabaseError
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.delete_index('packages', ['pkgname'])
+        try:
+            db.delete_index('packages', ['pkgname'])
+        except DatabaseError as e:
+            if not 'no such index' in str(e):
+                raise e
         db.create_unique('packages', ['pkgname', 'repo_id', 'arch_id'])
 
     def backwards(self, orm):

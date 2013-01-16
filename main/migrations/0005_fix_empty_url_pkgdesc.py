@@ -1,14 +1,11 @@
-
+# -*- coding: utf-8 -*-
 from south.db import db
+from south.v2 import DataMigration
 from django.db import models
-from main.models import *
 
-class Migration:
+class Migration(DataMigration):
 
-    no_dry_run = True
-    
     def forwards(self, orm):
-        "Write your forwards migration here"
         for p in orm.Package.objects.filter(pkgdesc=''):
             p.pkgdesc = None
             p.save()
@@ -24,7 +21,6 @@ class Migration:
     
     
     def backwards(self, orm):
-        "Write your backwards migration here"
         for p in orm.Package.objects.filter(pkgdesc=None):
             p.pkgdesc = ''
             p.save()
