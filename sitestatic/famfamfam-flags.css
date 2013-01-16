@@ -2,14 +2,13 @@
  * fam flag icons CSS.
  */
 
-[class^="fam-flag"] {
+.fam-flag {
   display: inline-block;
   width: 16px;
   height: 11px;
   line-height: 11px;
-  /* vertical-align: text-top; */
   background-image: url("famfamfam-flags.png");
-  background-position: 0 0;
+  background-position: -208px -188px;
   background-repeat: no-repeat;
 }
 
