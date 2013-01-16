@@ -181,7 +181,6 @@ def mirror_details(request, name):
     all_urls = set(mirror.urls.select_related('protocol'))
     # Add dummy data for URLs that we haven't checked recently
     other_urls = all_urls.difference(checked_urls)
-    print other_urls
     for url in other_urls:
         for attr in ('last_sync', 'completion_pct', 'delay', 'duration_avg',
                 'duration_stddev', 'score'):
