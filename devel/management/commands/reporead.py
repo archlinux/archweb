@@ -32,7 +32,6 @@ from django.utils.timezone import now
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
-from main.utils import database_vendor
 from packages.models import Depend, Conflict, Provision, Replacement, Update
 from packages.utils import parse_version
 
@@ -182,27 +181,6 @@ def create_related(model, package, rel_str, equals_only=False):
     return related
 
 
-def batched_bulk_create(model, all_objects):
-    # for short lists, just bulk_create as we should be fine
-    if len(all_objects) < 20:
-        return model.objects.bulk_create(all_objects)
-
-    if database_vendor(model, mode='write') == 'sqlite':
-        # 999 max variables in each SQL statement
-        incr = 999 // len(model._meta.fields)
-    else:
-        incr = 1000
-
-    def chunks():
-        offset = 0
-        while offset < len(all_objects):
-            yield all_objects[offset:offset + incr]
-            offset += incr
-
-    for items in chunks():
-        model.objects.bulk_create(items)
-
-
 def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     '''Populate the simplest of multivalued attributes. These are those that
     only deal with a 'name' attribute, such as licenses, groups, etc. The input
@@ -256,20 +234,20 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     deps += [create_depend(dbpkg, y, 'O') for y in repopkg.optdepends]
     deps += [create_depend(dbpkg, y, 'M') for y in repopkg.makedepends]
     deps += [create_depend(dbpkg, y, 'C') for y in repopkg.checkdepends]
-    batched_bulk_create(Depend, deps)
+    Depend.objects.bulk_create(deps)
 
     dbpkg.conflicts.all().delete()
     conflicts = [create_related(Conflict, dbpkg, y) for y in repopkg.conflicts]
-    batched_bulk_create(Conflict, conflicts)
+    Conflict.objects.bulk_create(conflicts)
 
     dbpkg.provides.all().delete()
     provides = [create_related(Provision, dbpkg, y, equals_only=True)
             for y in repopkg.provides]
-    batched_bulk_create(Provision, provides)
+    Provision.objects.bulk_create(provides)
 
     dbpkg.replaces.all().delete()
     replaces = [create_related(Replacement, dbpkg, y) for y in repopkg.replaces]
-    batched_bulk_create(Replacement, replaces)
+    Replacement.objects.bulk_create(replaces)
 
     create_multivalued(dbpkg, repopkg, 'groups', 'groups')
     create_multivalued(dbpkg, repopkg, 'licenses', 'license')
@@ -319,7 +297,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     directory=dirname,
                     filename=filename)
             pkg_files.append(pkgfile)
-        batched_bulk_create(PackageFile, pkg_files)
+        PackageFile.objects.bulk_create(pkg_files)
         dbpkg.files_last_update = now()
         dbpkg.save()
 
