@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
+{% load flags %}
 {% load tz %}
 
 {% block title %}Arch Linux - Developer World Clocks{% endblock %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{% static "flags/fam.css" %}" media="screen, projection" />{% endblock %}
 
 {% block content %}
 <div id="dev-clocks-box" class="box">
@@ -45,7 +48,7 @@
                 <td>{{ dev.username }}</td>
                 <td>{{ dev.userprofile.alias }}</td>
                 <td>{{ dev.last_action }}</td>
-                <td>{% if dev.userprofile.country %}<img src="{{ dev.userprofile.country.flag }}" alt="{{ dev.userprofile.country.name }}"/> {% endif %}{{ dev.userprofile.location }}</td>
+                <td>{% country_flag dev.userprofile.country %}{{ dev.userprofile.location }}</td>
                 <td>{{ dev.userprofile.time_zone }}</td>
                 <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}<span class="hide"> {{ dev.userprofile.time_zone }}</span></td>
             </tr>

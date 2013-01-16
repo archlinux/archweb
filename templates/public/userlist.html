@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 {% load cache %}
 
 {% block title %}Arch Linux - {{ user_type }}{% endblock %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{% static "flags/fam.css" %}" media="screen, projection" />{% endblock %}
 
 {% block content %}
 {% cache 600 dev-tu-profiles user_type %}

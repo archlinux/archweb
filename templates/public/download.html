@@ -2,8 +2,12 @@
 {% load cache %}
 {% load url from future %}
 {% load static from staticfiles %}
+{% load flags %}
 
 {% block title %}Arch Linux - Downloads{% endblock %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{% static "flags/fam.css" %}" media="screen, projection" />{% endblock %}
+
 {% block navbarclass %}anb-download{% endblock %}
 
 {% block content %}
@@ -83,7 +87,7 @@
     <div id="download-mirrors">
         {% regroup mirror_urls by country as grouped_urls %}
         {% for country in grouped_urls %}
-        {% if country.grouper %}<h5><img src="{{ country.grouper.flag }}" alt=""/> {{ country.grouper.name }}</h5>
+        {% if country.grouper %}<h5>{% country_flag country.grouper %}{{ country.grouper.name }}</h5>
         {% else %}<h5>Worldwide</h5>{% endif %}
         <ul>
             {% for mirror_url in country.list %}

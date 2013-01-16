@@ -1,3 +1,4 @@
+{% load flags %}
 {% load pgp %}
 
 <div id="arch-bio-toc">
@@ -56,7 +57,7 @@
                     <td itemprop="birthDate">{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
                 </tr><tr>
                     <th>Location:</th>
-                    <td>{% if dev.userprofile.country %}<img src="{{ dev.userprofile.country.flag }}" alt="{{ dev.userprofile.country.name }}"/> {% endif %}{{ prof.location }}</td>
+                    <td>{% country_flag dev.userprofile.country %}{{ prof.location }}</td>
                 </tr><tr>
                     <th>Languages:</th>
                     <td>{{ prof.languages }}</td>
