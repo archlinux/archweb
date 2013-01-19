@@ -1,9 +1,10 @@
 Django==1.4.3
 Markdown==2.2.1
 South==0.7.6
+bencode==1.0
 django-countries==1.5
 pgpdump==1.4
 psycopg2==2.4.6
 pyinotify==0.9.4
 python-memcached==1.48
-pytz>=2012h
+pytz>=2012j

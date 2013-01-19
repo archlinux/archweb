@@ -1,4 +1,9 @@
+from base64 import b64decode
+from bencode import bdecode, bencode
+from datetime import datetime
+import hashlib
 import markdown
+from pytz import utc
 
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -149,6 +154,34 @@ class Release(models.Model):
     def info_html(self):
         return mark_safe(markdown.markdown(
             self.info, safe_mode=True, enable_attributes=False))
+
+    def torrent(self):
+        try:
+            data = b64decode(self.torrent_data)
+        except TypeError:
+            return None
+        data = bdecode(data)
+        # transform the data into a template-friendly dict
+        info = data.get('info', {})
+        metadata = {
+            'comment': data.get('comment', None),
+            'created_by': data.get('created by', None),
+            'creation_date': None,
+            'announce': data.get('announce', None),
+            'file_name': info.get('name', None),
+            'file_length': info.get('length', None),
+            'piece_count': len(info.get('pieces', '')) / 20,
+            'piece_length': info.get('piece length', None),
+            'url_list': data.get('url-list', []),
+            'info_hash': None,
+        }
+        if 'creation date' in data:
+            created= datetime.utcfromtimestamp(data['creation date'])
+            metadata['creation_date'] = created.replace(tzinfo=utc)
+        if info:
+            metadata['info_hash'] = hashlib.sha1(bencode(info)).hexdigest()
+
+        return metadata
 
 
 for model in (Iso, Test, Release):
