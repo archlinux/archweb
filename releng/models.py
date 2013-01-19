@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
 
+from main.fields import PositiveBigIntegerField
 from main.utils import set_created_field
 
 
@@ -113,9 +114,11 @@ class Release(models.Model):
     version = models.CharField(max_length=50)
     kernel_version = models.CharField(max_length=50, blank=True)
     torrent_infohash = models.CharField(max_length=64, blank=True)
+    file_size = PositiveBigIntegerField(null=True, blank=True)
     created = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
     info = models.TextField('Public information', blank=True)
+    torrent_data = models.TextField(blank=True)
 
     class Meta:
         get_latest_by = 'release_date'

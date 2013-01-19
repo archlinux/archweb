@@ -58,7 +58,9 @@
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
     <p><a href="https://www.archlinux.org/{{ release.iso_url }}.torrent"
         title="Download for both architectures">Download torrent for {{ release.version }}</a>
-    (<a href="{{ release.magnet_uri }}">Magnet</a>)</p>
+    (<a href="{{ release.magnet_uri }}">Magnet</a>)
+    {% if release.file_size %}({{ release.file_size|filesizeformat }}){% endif %}
+    </p>
 
     <h3>Netboot</h3>
 

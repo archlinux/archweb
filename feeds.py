@@ -192,7 +192,9 @@ class ReleaseFeed(Feed):
         proto = 'https'
         return "%s://%s/%s.torrent" % (proto, domain, item.iso_url())
 
+    def item_enclosure_length(self, item):
+        return item.file_size or ""
+
     item_enclosure_mime_type = 'application/x-bittorrent'
-    item_enclosure_length = 0
 
 # vim: set ts=4 sw=4 et:
