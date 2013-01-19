@@ -175,9 +175,6 @@ class ReleaseFeed(Feed):
     def item_description(self, item):
         return item.info_html()
 
-    # TODO: individual release pages
-    item_link = '/download/'
-
     def item_pubdate(self, item):
         return datetime.combine(item.release_date, time()).replace(tzinfo=utc)
 
@@ -185,7 +182,7 @@ class ReleaseFeed(Feed):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.release_date
         return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
-                date.strftime('%Y-%m-%d'), item.iso_url())
+                date.strftime('%Y-%m-%d'), item.get_absolute_url())
 
     def item_enclosure_url(self, item):
         domain = Site.objects.get_current().domain

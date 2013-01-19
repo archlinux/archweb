@@ -127,6 +127,9 @@ class Release(models.Model):
     def __unicode__(self):
         return self.version
 
+    def get_absolute_url(self):
+        return reverse('releng-release-detail', args=[self.version])
+
     def dir_path(self):
         return "iso/%s/" % self.version
 

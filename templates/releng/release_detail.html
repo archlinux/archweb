@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Release: {{ release.version }}{% endblock %}
+
+{% block content %}
+<div class="release box">
+    <h2>{{ release.version }}</h2>
+
+    <ul>
+        <li><strong>Release Date:</strong> {{ release.release_date|date }}</li>
+        {% if release.kernel_version %}<li><strong>Kernel Version:</strong> {{ release.kernel_version }}</li>{% endif %}
+        <li><strong>Available:</strong> {{ release.available|yesno }}</li>
+        {% if release.available %}<li><a href="https://www.archlinux.org/{{ release.iso_url }}.torrent"
+                title="Download torrent for {{ release.version }}">Torrent</a></li>{% endif %}
+        {% if release.available %}<li><a href="{{ release.magnet_uri }}">Magnet</a></li>{% endif %}
+        <li><strong>Download Size:</strong> {% if release.file_size %}{{ release.file_size|filesizeformat }}{% else %}Unknown{% endif %}</li>
+    </ul>
+
+    {% if release.info %}
+    <h3>Release Notes</h3>
+
+    <div class="article-content">{{ release.info_html }}</div>
+    {% endif %}
+</div>
+{% endblock %}

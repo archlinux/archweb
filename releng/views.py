@@ -3,10 +3,11 @@ from django.conf import settings
 from django.db.models import Count, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import DetailView, ListView
 
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
-        Test)
+        Test, Release)
 
 
 def standard_field(model, empty_label=None, help_text=None, required=True):
@@ -212,5 +213,15 @@ def iso_overview(request):
         'isos': isos
     }
     return render(request, 'releng/iso_overview.html', context)
+
+
+class ReleaseListView(ListView):
+    model = Release
+
+
+class ReleaseDetailView(DetailView):
+    model = Release
+    slug_field = 'version'
+    slug_url_kwarg = 'version'
 
 # vim: set ts=4 sw=4 et:

@@ -1,5 +1,7 @@
 from django.conf.urls import include, patterns
 
+from .views import ReleaseListView, ReleaseDetailView
+
 feedback_patterns = patterns('releng.views',
     (r'^$',                              'test_results_overview', {}, 'releng-test-overview'),
     (r'^submit/$',                       'submit_test_result', {}, 'releng-test-submit'),
@@ -11,5 +13,9 @@ feedback_patterns = patterns('releng.views',
 
 urlpatterns = patterns('',
     (r'^feedback/', include(feedback_patterns)),
+    (r'^releases/$',
+        ReleaseListView.as_view(), {}, 'releng-release-list'),
+    (r'^releases/(?P<version>[-.\w]+)/$',
+        ReleaseDetailView.as_view(), {}, 'releng-release-detail'),
 )
 # vim: set ts=4 sw=4 et:

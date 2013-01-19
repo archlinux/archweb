@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block title %}Arch Linux - Releases{% endblock %}
+
+{% block head %}
+<link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/releases/" />
+{% endblock %}
+
+{% block content %}
+<div id="release-list" class="box">
+
+    <h2>Releases</h2>
+
+    <table id="release-table" class="results">
+        <thead>
+            <tr>
+                <th>Release Date</th>
+                <th>Version</th>
+                <th>Kernel Version</th>
+                <th>Available?</th>
+                <th>Torrent</th>
+                <th>Magnet</th>
+                <th>Download Size</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in release_list %}
+            <tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ item.release_date|date }}</td>
+				<td><a href="{{ item.get_absolute_url }}" title="Release details for {{ item.version }}">{{ item.version }}</a></td>
+                <td>{{ item.kernel_version|default:"" }}</td>
+                <td>{{ item.available|yesno }}</td>
+                <td>{% if item.available %}<a href="https://www.archlinux.org/{{ item.iso_url }}.torrent"
+                        title="Download torrent for {{ item.version }}">Torrent</a>{% endif %}</td>
+                <td>{% if item.available %}<a href="{{ item.magnet_uri }}">Magnet</a>{% endif %}</td>
+                <td>{% if item.file_size %}{{ item.file_size|filesizeformat }}{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}
