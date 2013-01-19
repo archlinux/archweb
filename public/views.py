@@ -76,6 +76,16 @@ def donate(request):
     return render(request, 'public/donate.html', context)
 
 
+def _mirror_urls():
+    '''In order to ensure this is lazily evaluated since we can't do
+    sorting at the database level, make it a callable.'''
+    urls = MirrorUrl.objects.select_related('mirror').filter(
+            protocol__default=True,
+            mirror__public=True, mirror__active=True, mirror__isos=True)
+    sort_by = attrgetter('country.name', 'mirror.name')
+    return sorted(urls, key=sort_by)
+
+
 @cache_control(max_age=300)
 def download(request):
     try:
@@ -83,20 +93,11 @@ def download(request):
     except Release.DoesNotExist:
         release = None
 
-    def mirror_urls():
-        '''In order to ensure this is lazily evaluated since we can't do
-        sorting at the database level, make it a callable.'''
-        urls = MirrorUrl.objects.select_related('mirror').filter(
-                protocol__default=True,
-                mirror__public=True, mirror__active=True, mirror__isos=True)
-        sort_by = attrgetter('country.name', 'mirror.name')
-        return sorted(urls, key=sort_by)
-
     context = {
         'release': release,
         'releng_iso_url': settings.ISO_LIST_URL,
         'releng_pxeboot_url': settings.PXEBOOT_URL,
-        'mirror_urls': mirror_urls,
+        'mirror_urls': _mirror_urls,
     }
     return render(request, 'public/download.html', context)
 
