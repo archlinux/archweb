@@ -1,6 +1,6 @@
 from collections import defaultdict
 from itertools import chain
-from operator import itemgetter
+from operator import attrgetter, itemgetter
 import re
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -108,10 +108,15 @@ class Difference(object):
             css_classes.append(self.pkg_b.arch.name)
         return ' '.join(css_classes)
 
-    def __cmp__(self, other):
-        if isinstance(other, Difference):
-            return cmp(self.__dict__, other.__dict__)
-        return False
+    def __key(self):
+        return (self.pkgname, hash(self.repo),
+                hash(self.pkg_a), hash(self.pkg_b))
+
+    def __eq__(self, other):
+        return self.__key() == other.__key()
+
+    def __hash__(self):
+        return hash(self.__key())
 
 
 @cache_function(127)
@@ -146,8 +151,8 @@ SELECT p.id, q.id
     to_fetch = {row[0] for row in results}
     # fetch all of the necessary packages
     pkgs = Package.objects.normal().in_bulk(to_fetch)
-    # now build a list of tuples containing differences
-    differences = []
+    # now build a set containing differences
+    differences = set()
     for row in results:
         pkg_a = pkgs.get(row[0])
         pkg_b = pkgs.get(row[1])
@@ -160,11 +165,11 @@ SELECT p.id, q.id
             name = pkg_a.pkgname if pkg_a else pkg_b.pkgname
             repo = pkg_a.repo if pkg_a else pkg_b.repo
             item = Difference(name, repo, pkg_b, pkg_a)
-        if item not in differences:
-            differences.append(item)
+        differences.add(item)
 
     # now sort our list by repository, package name
-    differences.sort(key=lambda a: (a.repo.name, a.pkgname))
+    key_func = attrgetter('repo.name', 'pkgname')
+    differences = sorted(differences, key=key_func)
     return differences
 
 
