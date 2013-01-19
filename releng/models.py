@@ -116,7 +116,7 @@ class Test(models.Model):
 
 class Release(models.Model):
     release_date = models.DateField(db_index=True)
-    version = models.CharField(max_length=50)
+    version = models.CharField(max_length=50, unique=True)
     kernel_version = models.CharField(max_length=50, blank=True)
     torrent_infohash = models.CharField(max_length=64, blank=True)
     file_size = PositiveBigIntegerField(null=True, blank=True)
