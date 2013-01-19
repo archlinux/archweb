@@ -82,11 +82,16 @@ def download(request):
         release = Release.objects.filter(available=True).latest()
     except Release.DoesNotExist:
         release = None
-    mirror_urls = MirrorUrl.objects.select_related('mirror').filter(
-            protocol__default=True,
-            mirror__public=True, mirror__active=True, mirror__isos=True)
-    sort_by = attrgetter('country.name', 'mirror.name')
-    mirror_urls = sorted(mirror_urls, key=sort_by)
+
+    def mirror_urls():
+        '''In order to ensure this is lazily evaluated since we can't do
+        sorting at the database level, make it a callable.'''
+        urls = MirrorUrl.objects.select_related('mirror').filter(
+                protocol__default=True,
+                mirror__public=True, mirror__active=True, mirror__isos=True)
+        sort_by = attrgetter('country.name', 'mirror.name')
+        return sorted(urls, key=sort_by)
+
     context = {
         'release': release,
         'releng_iso_url': settings.ISO_LIST_URL,
