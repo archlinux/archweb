@@ -11,11 +11,18 @@ feedback_patterns = patterns('releng.views',
     (r'^iso/overview/$',                 'iso_overview', {}, 'releng-iso-overview'),
 )
 
+releases_patterns = patterns('releng.views',
+    (r'^$',
+        ReleaseListView.as_view(), {}, 'releng-release-list'),
+    (r'^(?P<version>[-.\w]+)/$',
+        ReleaseDetailView.as_view(), {}, 'releng-release-detail'),
+    (r'^(?P<version>[-.\w]+)/torrent/$',
+        'release_torrent', {}, 'releng-release-torrent'),
+)
+
 urlpatterns = patterns('',
     (r'^feedback/', include(feedback_patterns)),
-    (r'^releases/$',
-        ReleaseListView.as_view(), {}, 'releng-release-list'),
-    (r'^releases/(?P<version>[-.\w]+)/$',
-        ReleaseDetailView.as_view(), {}, 'releng-release-detail'),
+    (r'^releases/', include(releases_patterns)),
 )
+
 # vim: set ts=4 sw=4 et:

@@ -1,7 +1,9 @@
+from base64 import b64decode
+
 from django import forms
 from django.conf import settings
 from django.db.models import Count, Max
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, ListView
 
@@ -223,5 +225,17 @@ class ReleaseDetailView(DetailView):
     model = Release
     slug_field = 'version'
     slug_url_kwarg = 'version'
+
+
+def release_torrent(request, version):
+    release = get_object_or_404(Release, version=version)
+    if not release.torrent_data:
+        raise Http404
+    data = b64decode(release.torrent_data)
+    response = HttpResponse(data, content_type='application/x-bittorrent')
+    # TODO: this is duplicated from Release.iso_url()
+    filename = 'archlinux-%s-dual.iso.torrent' % release.version
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
 
 # vim: set ts=4 sw=4 et:
