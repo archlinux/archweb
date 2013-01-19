@@ -14,7 +14,8 @@ class PackagesSitemap(Sitemap):
 
     def items(self):
         return Package.objects.normal().filter(repo__staging=False).only(
-                'pkgname', 'last_update', 'repo__name', 'arch__name').order_by()
+                'pkgname', 'last_update', 'files_last_update',
+                'repo__name', 'arch__name').order_by()
 
     def lastmod(self, obj):
         return obj.last_update
