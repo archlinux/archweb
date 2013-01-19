@@ -6,7 +6,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, RedirectView
 from django.views.i18n import null_javascript_catalog
 
-from feeds import PackageFeed, NewsFeed
+from feeds import PackageFeed, NewsFeed, ReleaseFeed
 import sitemaps
 
 our_sitemaps = {
@@ -32,6 +32,7 @@ feeds_patterns = patterns('',
         cache_page(300)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
         cache_page(300)(PackageFeed())),
+    (r'^releases/$', cache_page(300)(ReleaseFeed())),
 )
 
 # Sitemaps

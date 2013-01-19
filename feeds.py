@@ -1,4 +1,6 @@
+from datetime import datetime, time
 import hashlib
+from pytz import utc
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
@@ -9,6 +11,7 @@ from django.views.decorators.http import condition
 from main.utils import retrieve_latest
 from main.models import Arch, Repo, Package
 from news.models import News
+from releng.models import Release
 
 
 class GuidNotPermalinkFeed(Rss201rev2Feed):
@@ -151,5 +154,45 @@ class NewsFeed(Feed):
 
     def item_author_name(self, item):
         return item.author.get_full_name()
+
+
+class ReleaseFeed(Feed):
+    feed_type = GuidNotPermalinkFeed
+
+    title = 'Arch Linux: Releases'
+    link = '/download/'
+    description = 'Release ISOs'
+    subtitle = description
+
+    __name__ = 'release_feed'
+
+    def items(self):
+        return Release.objects.filter(available=True)[:10]
+
+    def item_title(self, item):
+        return item.version
+
+    def item_description(self, item):
+        return item.info_html()
+
+    # TODO: individual release pages
+    item_link = '/download/'
+
+    def item_pubdate(self, item):
+        return datetime.combine(item.release_date, time()).replace(tzinfo=utc)
+
+    def item_guid(self, item):
+        # http://diveintomark.org/archives/2004/05/28/howto-atom-id
+        date = item.release_date
+        return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
+                date.strftime('%Y-%m-%d'), item.iso_url())
+
+    def item_enclosure_url(self, item):
+        domain = Site.objects.get_current().domain
+        proto = 'https'
+        return "%s://%s/%s.torrent" % (proto, domain, item.iso_url())
+
+    item_enclosure_mime_type = 'application/x-bittorrent'
+    item_enclosure_length = 0
 
 # vim: set ts=4 sw=4 et:
