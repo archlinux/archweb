@@ -98,11 +98,12 @@ class MirrorUrl(models.Model):
 
 
 class MirrorRsync(models.Model):
-    ip = models.CharField("IP", max_length=24)
+    # max length is 40 chars for full-form IPv6 addr + subnet
+    ip = models.CharField("IP", max_length=44)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
 
     def __unicode__(self):
-        return "%s" % (self.ip)
+        return self.ip
 
     class Meta:
         verbose_name = 'mirror rsync IP'
