@@ -207,6 +207,7 @@ class Package(models.Model):
         # version comparison operators they may specify
         alpm = AlpmAPI()
         if alpm.available:
+            provides = self.provides.all()
             new_rqd = []
             for dep in requiredby:
                 if not dep.comparison or not dep.version:
