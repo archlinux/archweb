@@ -190,12 +190,13 @@ class Package(models.Model):
         category as this package if that check makes sense.
         """
         from packages.models import Depend
-        provides = self.provides.all()
-        provide_names = {provide.name for provide in provides}
-        provide_names.add(self.pkgname)
+        name_clause = '''packages_depend.name IN (
+        SELECT %s UNION ALL
+        SELECT z.name FROM packages_provision z WHERE z.pkg_id = %s
+        )'''
         requiredby = Depend.objects.select_related('pkg',
-                'pkg__arch', 'pkg__repo').filter(
-                name__in=provide_names).order_by(
+                'pkg__arch', 'pkg__repo').extra(
+                 where=[name_clause], params=[self.pkgname, self.id]).order_by(
                 'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
