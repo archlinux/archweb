@@ -177,12 +177,15 @@ class Package(models.Model):
     def maintainers(self, maintainers):
         self._maintainers = maintainers
 
-    @cache_function(1800)
+    _applicable_arches = None
+
     def applicable_arches(self):
         '''The list of (this arch) + (available agnostic arches).'''
-        arches = set(Arch.objects.filter(agnostic=True))
-        arches.add(self.arch)
-        return list(arches)
+        if self._applicable_arches is None:
+            arches = set(Arch.objects.filter(agnostic=True))
+            arches.add(self.arch)
+            self._applicable_arches = list(arches)
+        return self._applicable_arches
 
     @cache_function(119)
     def get_requiredby(self):
