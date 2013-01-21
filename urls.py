@@ -21,38 +21,6 @@ our_sitemaps = {
 admin.autodiscover()
 urlpatterns = []
 
-# Feeds patterns, used later
-feeds_patterns = patterns('',
-    (r'^$',          'public.views.feeds', {}, 'feeds-list'),
-    (r'^news/$',     cache_page(300)(NewsFeed())),
-    (r'^packages/$', cache_page(300)(PackageFeed())),
-    (r'^packages/(?P<arch>[A-z0-9]+)/$',
-        cache_page(300)(PackageFeed())),
-    (r'^packages/all/(?P<repo>[A-z0-9\-]+)/$',
-        cache_page(300)(PackageFeed())),
-    (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
-        cache_page(300)(PackageFeed())),
-    (r'^releases/$', cache_page(300)(ReleaseFeed())),
-)
-
-# Sitemaps
-urlpatterns += patterns('',
-    (r'^sitemap.xml$',
-        cache_page(1800)(sitemap_views.index),
-        {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
-    (r'^sitemap-(?P<section>.+)\.xml$',
-        cache_page(1800)(sitemap_views.sitemap),
-        {'sitemaps': our_sitemaps}, 'sitemaps'),
-)
-
-# Authentication / Admin
-urlpatterns += patterns('django.contrib.auth.views',
-    (r'^login/$',           'login',  {
-        'template_name': 'registration/login.html'}),
-    (r'^logout/$',          'logout', {
-        'template_name': 'registration/logout.html'}),
-)
-
 # Public pages
 urlpatterns += patterns('public.views',
     (r'^$', 'index', {}, 'index'),
@@ -71,8 +39,18 @@ urlpatterns += patterns('public.views',
     (r'^master-keys/json/$', 'keys_json', {}, 'pgp-keys-json'),
 )
 
-urlpatterns += patterns('retro.views',
-    (r'^retro/(?P<year>[0-9]{4})/$', 'retro_homepage', {}, 'retro-homepage'),
+# Feeds patterns, used below
+feeds_patterns = patterns('',
+    (r'^$',          'public.views.feeds', {}, 'feeds-list'),
+    (r'^news/$',     cache_page(300)(NewsFeed())),
+    (r'^packages/$', cache_page(300)(PackageFeed())),
+    (r'^packages/(?P<arch>[A-z0-9]+)/$',
+        cache_page(300)(PackageFeed())),
+    (r'^packages/all/(?P<repo>[A-z0-9\-]+)/$',
+        cache_page(300)(PackageFeed())),
+    (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
+        cache_page(300)(PackageFeed())),
+    (r'^releases/$', cache_page(300)(ReleaseFeed())),
 )
 
 # Includes and other remaining stuff
@@ -97,6 +75,30 @@ urlpatterns += patterns('',
     (r'^todolists/$','todolists.views.public_list'),
 )
 
+# Retro home page views
+urlpatterns += patterns('retro.views',
+    (r'^retro/(?P<year>[0-9]{4})/$', 'retro_homepage', {}, 'retro-homepage'),
+)
+
+# Sitemaps
+urlpatterns += patterns('',
+    (r'^sitemap.xml$',
+        cache_page(1800)(sitemap_views.index),
+        {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
+    (r'^sitemap-(?P<section>.+)\.xml$',
+        cache_page(1800)(sitemap_views.sitemap),
+        {'sitemaps': our_sitemaps}, 'sitemaps'),
+)
+
+# Authentication / Admin
+urlpatterns += patterns('django.contrib.auth.views',
+    (r'^login/$',           'login',  {
+        'template_name': 'registration/login.html'}),
+    (r'^logout/$',          'logout', {
+        'template_name': 'registration/logout.html'}),
+)
+
+# Redirects for older known pages we see in the logs
 legacy_urls = (
     ('^about.php',     '/about/'),
     ('^changelog.php', '/packages/?sort=-last_update'),
@@ -119,5 +121,12 @@ legacy_urls = (
 
 urlpatterns += [url(old_url, RedirectView.as_view(url=new_url))
         for old_url, new_url in legacy_urls]
+
+
+def show_urls(urllist=urlpatterns, depth=0):
+    for entry in urllist:
+        print "  " * depth, entry.regex.pattern
+        if hasattr(entry, 'url_patterns'):
+            show_urls(entry.url_patterns, depth + 1)
 
 # vim: set ts=4 sw=4 et:
