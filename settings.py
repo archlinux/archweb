@@ -89,6 +89,9 @@ STATICFILES_DIRS = (
     os.path.join(DEPLOY_PATH, 'sitestatic'),
 )
 
+# Static files backend that allows us to use far future Expires headers
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
+
 # Configure where messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

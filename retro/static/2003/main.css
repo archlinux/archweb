@@ -140,7 +140,7 @@ table.box {
 }
 
 table.header {
-	background: #000000 url('bg.gif') no-repeat;
+	background: #000000;
 	border-bottom: #cccccc 1px solid;
 	border-left: #cccccc 1px solid;
 	border-right: #cccccc 1px solid;
@@ -231,7 +231,6 @@ th {
 }
 
 th.row {
-	background: url('grid.png');
 }
 
 th.rowhdr {
@@ -243,7 +242,7 @@ th.rowhdr {
 
 td.box_headline {
 	color: #dddddd;
-	background: #000000 url('bg.gif') no-repeat;
+	background: #000000;
 	border-bottom: #cccccc 1px solid;
 	padding: 0px;
 }

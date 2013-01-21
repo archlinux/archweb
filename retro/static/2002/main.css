@@ -89,7 +89,6 @@ ul.list {
 }
 
 table.border {
-	background-image: url('bg.gif');
 	background-repeat: no-repeat;
 	background-color: #000000;
 	border-bottom: #cccccc 1px solid;
