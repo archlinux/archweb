@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
+{% load package_extras %}
 {% load todolists %}
 
 {% block title %}Arch Linux - Todo: {{ list.name }}{% endblock %}
@@ -62,6 +63,7 @@
                 <th>Repository</th>
                 <th>Name</th>
                 <th>Current Version</th>
+                <th>Staging Version</th>
                 <th>Maintainers</th>
                 <th>Status</th>
             </tr>
@@ -77,6 +79,9 @@
                 {% else %}
                 <td>{{ pkg.pkg.full_version }}</td>
                 {% endif %}
+                {% with staging=pkg.staging %}
+                <td>{% pkg_details_link staging staging.full_version %}</td>
+                {% endwith %}
                 <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
                     {% if perms.todolists.change_todolistpackage %}

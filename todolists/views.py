@@ -16,7 +16,7 @@ from main.models import Package, Repo
 from main.utils import find_unique_slug
 from packages.utils import attach_maintainers
 from .models import Todolist, TodolistPackage
-from .utils import get_annotated_todolists
+from .utils import get_annotated_todolists, attach_staging
 
 
 class TodoListForm(forms.ModelForm):
@@ -69,6 +69,7 @@ def view(request, slug):
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(todolist.packages())
+    attach_staging(todolist.packages(), todolist.pk)
     arches = {tp.arch for tp in todolist.packages()}
     repos = {tp.repo for tp in todolist.packages()}
     return render(request, 'todolists/view.html', {
