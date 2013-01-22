@@ -6,6 +6,7 @@ import re
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 from django.db.models import Count, Max, F
+from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 
 from main.models import Package, PackageFile, Arch, Repo
@@ -253,8 +254,11 @@ def attach_maintainers(packages):
     '''Given a queryset or something resembling it of package objects, find all
     the maintainers and attach them to the packages to prevent N+1 query
     cascading.'''
-    packages = list(packages)
-    pkgbases = {p.pkgbase for p in packages if p is not None}
+    if isinstance(packages, QuerySet):
+        pkgbases = packages.values('pkgbase')
+    else:
+        packages = list(packages)
+        pkgbases = {p.pkgbase for p in packages if p is not None}
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
             pkgbase__in=pkgbases).values_list(
             'pkgbase', 'user_id').order_by().distinct()
