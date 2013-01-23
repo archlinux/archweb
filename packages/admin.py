@@ -3,6 +3,7 @@ from django.contrib import admin
 from .models import (PackageRelation, FlagRequest,
         Signoff, SignoffSpecification, Update)
 
+
 class PackageRelationAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'user', 'type', 'created')
     list_filter = ('type', 'user')
@@ -19,6 +20,10 @@ class FlagRequestAdmin(admin.ModelAdmin):
     ordering = ('-created',)
     date_hierarchy = 'created'
 
+    def queryset(self, request):
+        qs = super(FlagRequestAdmin, self).queryset(request)
+        return qs.select_related('repo', 'user')
+
 
 class SignoffAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
@@ -28,6 +33,7 @@ class SignoffAdmin(admin.ModelAdmin):
     ordering = ('-created',)
     date_hierarchy = 'created'
 
+
 class SignoffSpecificationAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
             'user', 'created', 'comments')
@@ -35,6 +41,10 @@ class SignoffSpecificationAdmin(admin.ModelAdmin):
     search_fields = ('pkgbase', 'user__username')
     ordering = ('-created',)
     date_hierarchy = 'created'
+
+    def queryset(self, request):
+        qs = super(SignoffSpecificationAdmin, self).queryset(request)
+        return qs.select_related('arch', 'repo', 'user')
 
 
 class UpdateAdmin(admin.ModelAdmin):
