@@ -1,6 +1,5 @@
 import datetime
 import json
-from string import Template
 from urllib import urlencode
 
 from django.http import HttpResponse, Http404
@@ -223,12 +222,9 @@ def download(request, name, repo, arch):
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
     values = {
-        'host': url.url,
-        'arch': arch,
-        'repo': pkg.repo.name.lower(),
-        'file': pkg.filename,
     }
-    url = Template('${host}${repo}/os/${arch}/${file}').substitute(values)
+    url = '{host}{repo}/os/{arch}/{filename}'.format(host=url.url,
+            repo=pkg.repo.name.lower(), arch=arch, filename=pkg.filename)
     return redirect(url)
 
 # vim: set ts=4 sw=4 et:
