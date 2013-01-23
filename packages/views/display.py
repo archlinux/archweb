@@ -168,7 +168,7 @@ def group_details(request, arch, name):
 
 
 def files(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
@@ -185,14 +185,14 @@ def files(request, name, repo, arch):
 
 
 def details_json(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     to_json = json.dumps(pkg, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, content_type='application/json')
 
 
 def files_json(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
@@ -213,7 +213,7 @@ def files_json(request, name, repo, arch):
 
 
 def download(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     url = get_mirror_url_for_download()
     if not url:

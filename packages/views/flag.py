@@ -49,7 +49,7 @@ def flaghelp(request):
 
 @never_cache
 def flag(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     if pkg.flag_date is not None:
         # already flagged. do nothing.
@@ -158,7 +158,7 @@ def flag_confirmed(request, name, repo, arch):
 
 @permission_required('main.change_package')
 def unflag(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     pkg.flag_date = None
     pkg.save()
@@ -166,7 +166,7 @@ def unflag(request, name, repo, arch):
 
 @permission_required('main.change_package')
 def unflag_all(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # find all packages from (hopefully) the same PKGBUILD
     pkgs = Package.objects.filter(pkgbase=pkg.pkgbase,
