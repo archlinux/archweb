@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load url from future %}
+{% load static from staticfiles %}
 
 {% block title %}Arch Linux - Releases{% endblock %}
 
@@ -9,7 +10,6 @@
 
 {% block content %}
 <div id="release-list" class="box">
-
     <h2>Releases</h2>
 
     <table id="release-table" class="results">
@@ -28,9 +28,9 @@
             {% for item in release_list %}
             <tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ item.release_date|date }}</td>
-				<td><a href="{{ item.get_absolute_url }}" title="Release details for {{ item.version }}">{{ item.version }}</a></td>
+                <td><a href="{{ item.get_absolute_url }}" title="Release details for {{ item.version }}">{{ item.version }}</a></td>
                 <td>{{ item.kernel_version|default:"" }}</td>
-                <td>{{ item.available|yesno }}</td>
+                <td class="available-{{ item.available|yesno }}">{{ item.available|yesno|capfirst }}</td>
                 <td>{% if item.available %}<a href="https://www.archlinux.org/{{ item.iso_url }}.torrent"
                         title="Download torrent for {{ item.version }}">Torrent</a>{% endif %}</td>
                 <td>{% if item.available %}<a href="{{ item.magnet_uri }}">Magnet</a>{% endif %}</td>
@@ -39,6 +39,17 @@
             {% endfor %}
         </tbody>
     </table>
-
 </div>
+
+{% load cdn %}{% jquery %}{% jquery_tablesorter %}
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".results").tablesorter({
+        widgets: ['zebra'],
+        sortList: [[0,1], [1,1]],
+        headers: { 4: { sorter: false }, 5: { sorter: false } }
+    });
+});
+</script>
 {% endblock %}
