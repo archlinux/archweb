@@ -1079,6 +1079,14 @@ ul.signoff-list {
     color: red;
 }
 
+#release-list .available-yes {
+    color: green;
+}
+
+#release-list .available-no {
+    color: red;
+}
+
 #key-status .signed-yes {
     color: green;
 }

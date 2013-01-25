@@ -1,6 +1,5 @@
 import datetime
 import json
-from string import Template
 from urllib import urlencode
 
 from django.http import HttpResponse, Http404
@@ -168,7 +167,7 @@ def group_details(request, arch, name):
 
 
 def files(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
@@ -185,14 +184,14 @@ def files(request, name, repo, arch):
 
 
 def details_json(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     to_json = json.dumps(pkg, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, content_type='application/json')
 
 
 def files_json(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
@@ -213,7 +212,7 @@ def files_json(request, name, repo, arch):
 
 
 def download(request, name, repo, arch):
-    pkg = get_object_or_404(Package,
+    pkg = get_object_or_404(Package.objects.normal(),
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     url = get_mirror_url_for_download()
     if not url:
@@ -223,12 +222,9 @@ def download(request, name, repo, arch):
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
     values = {
-        'host': url.url,
-        'arch': arch,
-        'repo': pkg.repo.name.lower(),
-        'file': pkg.filename,
     }
-    url = Template('${host}${repo}/os/${arch}/${file}').substitute(values)
+    url = '{host}{repo}/os/{arch}/{filename}'.format(host=url.url,
+            repo=pkg.repo.name.lower(), arch=arch, filename=pkg.filename)
     return redirect(url)
 
 # vim: set ts=4 sw=4 et:
