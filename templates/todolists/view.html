@@ -80,7 +80,7 @@
                 <td>{{ pkg.pkg.full_version }}</td>
                 {% endif %}
                 {% with staging=pkg.staging %}
-                <td>{% pkg_details_link staging staging.full_version %}</td>
+                <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
                 {% endwith %}
                 <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
@@ -103,7 +103,7 @@ $(document).ready(function() {
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[2,0], [0,0]],
-        headers: { 5: { sorter: 'todostatus' } }
+        headers: { 6: { sorter: 'todostatus' } }
     });
 });
 $(document).ready(function() {
