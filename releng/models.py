@@ -160,6 +160,8 @@ class Release(models.Model):
             data = b64decode(self.torrent_data)
         except TypeError:
             return None
+        if not data:
+            return None
         data = bdecode(data)
         # transform the data into a template-friendly dict
         info = data.get('info', {})
