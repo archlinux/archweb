@@ -164,6 +164,12 @@ PXEBOOT_URL = 'https://releng.archlinux.org/pxeboot/'
 # community bit on the end, repo.svn_root is appended)
 SVN_BASE_URL = 'svn://svn.archlinux.org/'
 
+# Trackers used for ISO download magnet links
+TORRENT_TRACKERS = (
+    'udp://tracker.archlinux.org:6969',
+    'http://tracker.archlinux.org:6969/announce',
+)
+
 ## Import local settings
 from local_settings import *
 

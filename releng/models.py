@@ -5,6 +5,7 @@ import hashlib
 import markdown
 from pytz import utc
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
@@ -146,9 +147,9 @@ class Release(models.Model):
     def magnet_uri(self):
         query = [
             ('dn', "archlinux-%s-dual.iso" % self.version),
-            ('tr', "udp://tracker.archlinux.org:6969"),
-            ('tr', "http://tracker.archlinux.org:6969/announce"),
         ]
+        if settings.TORRENT_TRACKERS:
+            query.extend(('tr', uri) for uri in settings.TORRENT_TRACKERS)
         if self.torrent_infohash:
             query.insert(0, ('xt', "urn:btih:%s" % self.torrent_infohash))
         return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
