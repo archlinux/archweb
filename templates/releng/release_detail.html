@@ -13,6 +13,8 @@
                 title="Download torrent for {{ release.version }}">Torrent</a>,
             <a href="{{ release.magnet_uri }}">Magnet</a></li>{% endif %}
         {% if release.torrent_infohash %}<li><strong>Torrent Info Hash:</strong> {{ release.torrent_infohash }}</li>{% endif %}
+        {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
+        {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
         <li><strong>Download Size:</strong> {% if release.file_size %}{{ release.file_size|filesizeformat }}{% else %}Unknown{% endif %}</li>
     </ul>
 
