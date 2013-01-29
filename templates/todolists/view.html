@@ -76,8 +76,10 @@
                 <td>{% todopkg_details_link pkg %}</td>
                 {% if pkg.pkg.flag_date %}
                 <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
-                {% else %}
+                {% elif pkg.pkg %}
                 <td>{{ pkg.pkg.full_version }}</td>
+                {% else %}
+                <td></td>
                 {% endif %}
                 {% with staging=pkg.staging %}
                 <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
