@@ -28,6 +28,7 @@
     <ul>
         <li><strong>Current Release:</strong> {{ release.version }}</li>
         {% if release.kernel_version %}<li><strong>Included Kernel:</strong> {{ release.kernel_version }}</li>{% endif %}
+        {% if release.file_size %}<li><strong>ISO Size:</strong> {{ release.file_size|filesizeformat }}</li>{% endif %}
         <li><a href="https://wiki.archlinux.org/index.php/Installation_Guide">Installation Guide</a></li>
         <li><strong>Resources:</strong>
             <ul>
@@ -56,17 +57,21 @@
     <p>If you can spare the bytes, please leave the client open after your
     download is finished, so you can seed it back to others.
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
-    <p><a href="https://www.archlinux.org/{{ release.iso_url }}.torrent"
-        title="Download for both architectures">Download torrent for {{ release.version }}</a>
-    (<a href="{{ release.magnet_uri }}">Magnet</a>)
-    {% if release.file_size %}({{ release.file_size|filesizeformat }}){% endif %}
-    </p>
+
+    <ul>
+        <li><a href="{{ release.magnet_uri }}"
+            title="Magnet link">Magnet link for {{ release.version }}</a></li>
+        <li><a href="{% url 'releng-release-torrent' release.version %}"
+            title="Download torrent">Torrent for {{ release.version }}</a></li>
+    </ul>
 
     <h3>Netboot</h3>
 
     <p>If you have a wired connection, you can boot the latest release directly over the network.</p>
-    <p><a href="{{ releng_pxeboot_url }}"
-        title="Arch Linux Netboot Live System">Arch Linux Netboot</a></p>
+    <ul>
+        <li><a href="{{ releng_pxeboot_url }}"
+            title="Arch Linux Netboot Live System">Arch Linux Netboot</a></li>
+    </ul>
 
     <h3>HTTP Direct Downloads</h3>
 
@@ -81,11 +86,9 @@
 
     <ul>
         <li><a href="https://www.archlinux.org/{{ release.iso_url }}.sig"
-            title="Get the latest PGP signature">PGP signature</a></li>
-        <li><a href="https://www.archlinux.org/{{ release.dir_path }}sha1sums.txt"
-            title="Get the latest SHA1 checksums">SHA1 checksums</a></li>
-        <li><a href="https://www.archlinux.org/{{ release.dir_path }}md5sums.txt"
-            title="Get the latest MD5 checksums">MD5 checksums</a></li>
+            title="PGP signature">PGP signature</a></li>
+        {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
+        {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
     </ul>
 
     {% cache 600 download-mirrors %}

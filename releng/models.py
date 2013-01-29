@@ -5,6 +5,7 @@ import hashlib
 import markdown
 from pytz import utc
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
@@ -118,7 +119,9 @@ class Release(models.Model):
     release_date = models.DateField(db_index=True)
     version = models.CharField(max_length=50, unique=True)
     kernel_version = models.CharField(max_length=50, blank=True)
-    torrent_infohash = models.CharField(max_length=64, blank=True)
+    torrent_infohash = models.CharField(max_length=40, blank=True)
+    md5_sum = models.CharField('MD5 digest', max_length=32, blank=True)
+    sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
     file_size = PositiveBigIntegerField(null=True, blank=True)
     created = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
@@ -144,9 +147,9 @@ class Release(models.Model):
     def magnet_uri(self):
         query = [
             ('dn', "archlinux-%s-dual.iso" % self.version),
-            ('tr', "udp://tracker.archlinux.org:6969"),
-            ('tr', "http://tracker.archlinux.org:6969/announce"),
         ]
+        if settings.TORRENT_TRACKERS:
+            query.extend(('tr', uri) for uri in settings.TORRENT_TRACKERS)
         if self.torrent_infohash:
             query.insert(0, ('xt', "urn:btih:%s" % self.torrent_infohash))
         return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
@@ -159,6 +162,8 @@ class Release(models.Model):
         try:
             data = b64decode(self.torrent_data)
         except TypeError:
+            return None
+        if not data:
             return None
         data = bdecode(data)
         # transform the data into a template-friendly dict
