@@ -45,8 +45,7 @@
     <a href="/feeds/news/" title="Arch News RSS Feed"
         class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
 
-    {% for news in news_updates %}
-    {% if forloop.counter0 < 5 %}
+    {% for news in news_updates %}{% if forloop.counter0 < 5 %}
     <h4>
         <a href="{{ news.get_absolute_url }}"
             title="View full article: {{ news.title }}">{{ news.title }}</a>
@@ -56,8 +55,7 @@
         {% if forloop.counter0 == 0 %}{{ news.html|truncatewords_html:300 }}
         {% else %}{{ news.html|truncatewords_html:100 }}{% endif %}
     </div>
-    {% else %}
-    {% if forloop.counter0 == 5 %}
+    {% else %}{% if forloop.counter0 == 5 %}
     <h3>
         <a href="{% url 'news-list' %}"
             title="Browse the news archives">Older News</a>
@@ -70,11 +68,8 @@
             <a href="{{ news.get_absolute_url }}"
                 title="View full article: {{ news.title }}">{{ news.title }}</a>
         </dd>
-    {% if forloop.last %}
-    </dl>
-    {% endif %}
-    {% endif %}
-    {% endfor %}
+    {% if forloop.last %}</dl>{% endif %}
+    {% endif %}{% endfor %}
 </div>
 {% endcache %}
 {% endblock %}
