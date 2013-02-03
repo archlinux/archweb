@@ -68,7 +68,6 @@
                 {% block content_right %}{% endblock %}
             </div>
         {% endblock %}
-        {% block content_after %}{% endblock %}
         <div id="footer">
             <p>Copyright &copy; 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
                 title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
@@ -82,5 +81,6 @@
             the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
         </div>
     </div>
+    {% block script_block %}{% endblock %}
 </body>
 </html>
