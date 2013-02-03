@@ -68,7 +68,6 @@ class UserProfile(models.Model):
         return '/%s/#%s' % (prefix, self.user.username)
 
 
-
 class MasterKey(models.Model):
     owner = models.ForeignKey(User, related_name='masterkey_owner',
         help_text="The developer holding this master key")
@@ -86,6 +85,20 @@ class MasterKey(models.Model):
     def __unicode__(self):
         return u'%s, created %s' % (
                 self.owner.get_full_name(), self.created)
+
+
+class DeveloperKey(models.Model):
+    owner = models.ForeignKey(User, related_name='all_keys', null=True,
+        help_text="The developer this key belongs to")
+    key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+			unique=True)
+    created = models.DateTimeField()
+    expires = models.DateTimeField(null=True, blank=True)
+    revoked = models.DateTimeField(null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
+
+    def __unicode__(self):
+        return self.key
 
 
 class PGPSignature(models.Model):
