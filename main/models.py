@@ -11,6 +11,7 @@ from django.utils.timezone import now
 
 from .fields import PositiveBigIntegerField
 from .utils import cache_function, set_created_field
+from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
 
 
@@ -153,8 +154,9 @@ class Package(models.Model):
         sig = self.signature
         if sig and sig.key_id:
             try:
-                user = User.objects.get(
-                        userprofile__pgp_key__endswith=sig.key_id)
+                matching_key = DeveloperKey.objects.select_related(
+                        'owner').get(key=sig.key_id, owner_id__isnull=False)
+                user = matching_key.owner
             except User.DoesNotExist:
                 user = None
             return user

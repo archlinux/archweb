@@ -20,6 +20,7 @@ from django.utils.http import http_date
 from django.utils.timezone import now
 
 from .forms import ProfileForm, UserProfileForm, NewUserForm
+from .models import DeveloperKey
 from main.models import Package, PackageFile
 from main.models import Arch, Repo
 from news.models import News
@@ -27,7 +28,7 @@ from packages.models import PackageRelation, Signoff, FlagRequest, Depend
 from packages.utils import get_signoff_groups
 from todolists.models import TodolistPackage
 from todolists.utils import get_annotated_todolists
-from .utils import get_annotated_maintainers, UserFinder
+from .utils import get_annotated_maintainers
 
 
 @login_required
@@ -262,18 +263,30 @@ def report(request, report_name, username=None):
         names = [ 'Signature Date', 'Signed By', 'Packager' ]
         attrs = [ 'sig_date', 'sig_by', 'packager' ]
         cutoff = timedelta(hours=24)
-        finder = UserFinder()
         filtered = []
-        packages = packages.filter(pgp_signature__isnull=False)
+        packages = packages.select_related(
+                'arch', 'repo', 'packager').filter(pgp_signature__isnull=False)
+        known_keys = DeveloperKey.objects.select_related(
+                'owner').filter(owner__isnull=False)
+        known_keys = {dk.key: dk for dk in known_keys}
         for package in packages:
-            sig_date = package.signature.creation_time.replace(tzinfo=pytz.utc)
+            bad = False
+            sig = package.signature
+            sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
             package.sig_date = sig_date.date()
-            key_id = package.signature.key_id
-            signer = finder.find_by_pgp_key(key_id)
-            package.sig_by = signer or key_id
-            if signer is None or signer.id != package.packager_id:
-                filtered.append(package)
-            elif sig_date > package.build_date + cutoff:
+            dev_key = known_keys.get(sig.key_id, None)
+            if dev_key:
+                package.sig_by = dev_key.owner
+                if dev_key.owner_id != package.packager_id:
+                    bad = True
+            else:
+                package.sig_by = sig.key_id
+                bad = True
+
+            if sig_date > package.build_date + cutoff:
+                bad = True
+
+            if bad:
                 filtered.append(package)
         packages = filtered
     else:
