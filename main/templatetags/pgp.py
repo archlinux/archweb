@@ -3,7 +3,10 @@ from django.conf import settings
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
+from devel.models import DeveloperKey
+
 register = template.Library()
+
 
 def format_key(key_id):
     if len(key_id) in (8, 20):
@@ -40,12 +43,14 @@ def pgp_key_link(key_id, link_text=None):
     return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
 @register.simple_tag
-def user_pgp_key_link(users, key_id):
-    matched = [user for user in users if user.userprofile.pgp_key and
-            user.userprofile.pgp_key[-16:] == key_id[-16:]]
-    if matched and len(matched) == 1:
-        return pgp_key_link(key_id, matched[0].get_full_name())
-    return pgp_key_link(key_id)
+def user_pgp_key_link(key_id):
+    normalized = key_id[-16:]
+    try:
+        matching_key = DeveloperKey.objects.select_related(
+                'owner').get(key=normalized, owner_id__isnull=False)
+    except DeveloperKey.DoesNotExist:
+        return pgp_key_link(key_id)
+    return pgp_key_link(key_id, matching_key.owner.get_full_name())
 
 
 @register.filter(needs_autoescape=True)

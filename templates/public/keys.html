@@ -124,8 +124,8 @@
         <tbody>
             {% for sig in cross_signatures %}
             <tr>
-                <td>{% user_pgp_key_link active_users sig.signer %}</td>
-                <td>{% user_pgp_key_link active_users sig.signee %}</td>
+                <td>{% user_pgp_key_link sig.signer %}</td>
+                <td>{% user_pgp_key_link sig.signee %}</td>
                 <td>{{ sig.created }}</td>
                 <td>{{ sig.expires|default:"" }}</td>
             </tr>
