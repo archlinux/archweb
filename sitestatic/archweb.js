@@ -451,15 +451,17 @@ function collapseNotes(elements) {
             return;
         }
         contents.slice(maxElements).wrapAll('<div class="hide"/>');
-        ele.append('<br/><a class="morelink" href="#">Show More…</a>');
+        ele.append('<br class="morelink-spacer"/><a class="morelink" href="#">Show More…</a>');
 
         // add link and wire it up to show the hidden items
         ele.find('a.morelink').click(function(event) {
             event.preventDefault();
-            ele.find('div.hide').show();
             $(this).remove();
-            // remove trailing line break between text and our link
-            $(this).contents().last().filter('br').remove();
+            ele.find('br.morelink-spacer').remove();
+            // move the div contents back and delete the empty div
+            var hidden = ele.find('div.hide');
+            hidden.contents().appendTo(ele);
+            hidden.remove();
         });
     });
 }
