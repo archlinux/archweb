@@ -157,7 +157,7 @@ class Package(models.Model):
                 matching_key = DeveloperKey.objects.select_related(
                         'owner').get(key=sig.key_id, owner_id__isnull=False)
                 user = matching_key.owner
-            except User.DoesNotExist:
+            except DeveloperKey.DoesNotExist:
                 user = None
             return user
         return None
