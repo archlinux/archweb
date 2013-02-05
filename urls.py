@@ -16,6 +16,7 @@ our_sitemaps = {
     'package-files':  sitemaps.PackageFilesSitemap,
     'package-groups': sitemaps.PackageGroupsSitemap,
     'split-packages': sitemaps.SplitPackagesSitemap,
+    'releases':       sitemaps.ReleasesSitemap,
 }
 
 admin.autodiscover()

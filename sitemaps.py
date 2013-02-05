@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from main.models import Package
 from news.models import News
 from packages.utils import get_group_info, get_split_packages_info
+from releng.models import Release
+
 
 class PackagesSitemap(Sitemap):
     changefreq = "weekly"
@@ -84,6 +86,21 @@ class NewsSitemap(Sitemap):
         if obj.last_modified > self.one_week_ago:
             return 'weekly'
         return 'yearly'
+
+
+class ReleasesSitemap(Sitemap):
+    changefreq = "monthly"
+
+    def items(self):
+        return Release.objects.all().defer('info', 'torrent_data').order_by()
+
+    def lastmod(self, obj):
+        return obj.created
+
+    def priority(self, obj):
+        if obj.available:
+            return "0.6"
+        return "0.2"
 
 
 class BaseSitemap(Sitemap):
