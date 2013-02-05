@@ -55,6 +55,10 @@ def generate_keyring(keyserver, keyring):
     master_key_ids = MasterKey.objects.values_list("pgp_key", flat=True)
     logger.info("%d keys fetched from master keys", len(master_key_ids))
 
+    # GPG is stupid and interprets any filename without path portion as being
+    # in ~/.gnupg/. Fake it out if we just get a bare filename.
+    if '/' not in keyring:
+        keyring = './%s' % keyring
     gpg_cmd = ["gpg", "--no-default-keyring", "--keyring", keyring,
             "--keyserver", keyserver, "--recv-keys"]
     logger.info("running command: %r", gpg_cmd)
