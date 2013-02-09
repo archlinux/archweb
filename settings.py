@@ -90,7 +90,7 @@ STATICFILES_DIRS = (
 )
 
 # Static files backend that allows us to use far future Expires headers
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
+STATICFILES_STORAGE = 'main.storage.MinifiedStaticFilesStorage'
 
 # Configure where messages should reside
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
