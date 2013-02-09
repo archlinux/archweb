@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 {% load package_extras %}
-{% load admin_static %}
 
 {% block title %}Arch Linux - Package Database{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block head %}
 {% if is_paginated and page_obj.number > 1 %}<meta name="robots" content="noindex, nofollow"/>{% endif %}
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/widgets.css" %}" />
 <link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="/feeds/packages/" />
 {% endblock %}
 
@@ -35,9 +33,6 @@
             <div>{{ search_form.maintainer.errors }}
                 <label for="id_maintainer" title="Limit results to a specific maintainer">
                     Maintainer</label>{{ search_form.maintainer}}</div>
-            <div>{{ search_form.last_update.errors }}
-                <label for="id_last_update" title="Limit results to a date after the date entered">
-                    Last Updated After</label>{{ search_form.last_update }}</div>
             <div>{{ search_form.flagged.errors }}
                 <label for="id_flagged" title="Limit results based on out-of-date status">
                     Flagged</label>{{ search_form.flagged }}</div>
@@ -126,13 +121,4 @@
     For unsupported packages, browse the <a href="https://aur.archlinux.org/"
         title="AUR package database">Arch User Repository (AUR).</a></p>
 </div>
-
-{% load cdn %}{% jquery %}
-<script type="text/javascript" src="/jsi18n/"></script>
-<script type="text/javascript">
-	window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";
-	var django = {"jQuery": jQuery};
-</script>
-<script type="text/javascript" src="{% static "admin/js/core.js" %}"></script>
-{{search_form.media}}
 {% endblock %}

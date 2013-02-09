@@ -3,7 +3,6 @@ import json
 from pytz import utc
 
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
@@ -44,8 +43,6 @@ class PackageSearchForm(forms.Form):
     sort = forms.CharField(required=False, widget=forms.HiddenInput())
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
-    last_update = forms.DateField(required=False, widget=AdminDateWidget(),
-            label='Last Updated After')
     flagged = forms.ChoiceField(
             choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
             required=False)
@@ -103,12 +100,6 @@ def parse_form(form, packages):
         packages = packages.filter(flag_date__isnull=False)
     elif form.cleaned_data['flagged'] == 'Not Flagged':
         packages = packages.filter(flag_date__isnull=True)
-
-    if form.cleaned_data['last_update']:
-        lu = form.cleaned_data['last_update']
-        cutoff = datetime(lu.year, lu.month, lu.day, 0, 0)
-        cutoff = cutoff.replace(tzinfo=utc)
-        packages = packages.filter(last_update__gte=cutoff)
 
     if form.cleaned_data['name']:
         name = form.cleaned_data['name']
