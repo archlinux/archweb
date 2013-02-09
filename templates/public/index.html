@@ -213,7 +213,7 @@
 
 {% load cdn %}{% jquery %}
 <script type="text/javascript" src="{% static "bootstrap-typeahead.min.js" %}"></script>
-<script type="text/javascript" src="{% static "konami.pack.js" %}"></script>
+<script type="text/javascript" src="{% static "konami.min.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('#pkgsearch-field').typeahead({
@@ -229,8 +229,7 @@ $(document).ready(function() {
     }).attr('autocomplete', 'off');
 });
 $(document).ready(function() {
-    var konami = new Konami();
-    konami.code = function() {
+    var konami = new Konami(function() {
         $('#konami').html('<img src="{% static "vector_tux.png" %}" alt=""/>');
         setTimeout(function() {
             $('#konami').fadeIn(500);
@@ -238,9 +237,7 @@ $(document).ready(function() {
         $('#konami').click(function() {
             $('#konami').fadeOut(500);
         });
-    };
-    konami.iphone.code = konami.code;
-    konami.load();
+    });
 });
 </script>
 {% endblock %}
