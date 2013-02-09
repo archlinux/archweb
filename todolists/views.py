@@ -47,7 +47,7 @@ def flag(request, slug, pkg_id):
     else:
         tlpkg.status = TodolistPackage.INCOMPLETE
     tlpkg.user = request.user
-    tlpkg.save()
+    tlpkg.save(update_fields=('status', 'user', 'last_modified'))
     if request.is_ajax():
         data = {
             'status': tlpkg.get_status_display(),

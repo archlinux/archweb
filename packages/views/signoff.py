@@ -45,7 +45,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
         except Signoff.DoesNotExist:
             raise Http404
         signoff.revoked = now()
-        signoff.save()
+        signoff.save(update_fields=('revoked',))
         created = False
     else:
         # ensure we should even be accepting signoffs

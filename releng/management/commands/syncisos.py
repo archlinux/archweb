@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 if not existing.active:
                     existing.active = True
                     existing.removed = None
-                    existing.save()
+                    existing.save(update_fields=('active', 'removed'))
         # and then mark all other names as no longer active
         Iso.objects.filter(active=True).exclude(name__in=active_isos).update(
                 active=False, removed=now())
