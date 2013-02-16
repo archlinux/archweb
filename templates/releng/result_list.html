@@ -6,7 +6,7 @@
 <div class="box">
     <h2>Results for:
         {% if option %}{{ option.verbose_name|title }}: {{ value }}{% endif %}
-        {{ iso_name|default:"" }}
+        {% if iso_name %}{{ iso_name|default:"" }}{% endif %}
     </h2>
 
     <p><a href="{% url 'releng-test-overview' %}">Go back to testing results</a></p>
