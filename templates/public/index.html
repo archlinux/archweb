@@ -212,10 +212,8 @@
 <div id="konami" style="display:none;"></div>
 
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{% static "bootstrap-typeahead.min.js" %}"></script>
-<script type="text/javascript" src="{% static "konami.min.js" %}"></script>
 <script type="text/javascript">
-$(document).ready(function() {
+function setupTypeahead() {
     $('#pkgsearch-field').typeahead({
         source: function(query, callback) {
             $.getJSON('/opensearch/packages/suggest', {q: query}, function(data) {
@@ -227,8 +225,8 @@ $(document).ready(function() {
         menu: '<ul class="pkgsearch-typeahead"></ul>',
         items: 10
     }).attr('autocomplete', 'off');
-});
-$(document).ready(function() {
+}
+function setupKonami() {
     var konami = new Konami(function() {
         $('#konami').html('<img src="{% static "vector_tux.png" %}" alt=""/>');
         setTimeout(function() {
@@ -238,6 +236,10 @@ $(document).ready(function() {
             $('#konami').fadeOut(500);
         });
     });
+}
+$(document).ready(function() {
+    $.ajax({ url: "{% static "bootstrap-typeahead.min.js" %}", cache: true, dataType: "script", success: setupTypeahead });
+    $.ajax({ url: "{% static "konami.min.js" %}", cache: true, dataType: "script", success: setupKonami });
 });
 </script>
 {% endblock %}
