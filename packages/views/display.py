@@ -104,6 +104,8 @@ def redirect_agnostic(request, name, repo, arch):
 
 
 def redirect_to_search(request, name, repo, arch):
+    if request.GET.get('q'):
+        name = request.GET.get('q')
     pkg_data = [
         ('arch', arch.lower()),
         ('repo', repo.lower()),

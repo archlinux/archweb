@@ -24,7 +24,6 @@ urlpatterns = patterns('packages.views',
     (r'^update/$',   'update'),
 
     (r'^$', SearchListView.as_view(), {}, 'packages-search'),
-    (r'^(?P<page>\d+)/$', SearchListView.as_view()),
     (r'^search/json/$', 'search_json'),
 
     (r'^differences/$',          'arch_differences', {}, 'packages-differences'),
