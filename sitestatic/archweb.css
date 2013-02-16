@@ -1002,19 +1002,30 @@ ul.admin-actions {
         padding-left: 1.5em;
     }
 
-/* todo lists (public and private) */
-.todo-table .complete {
+/* colored yes/no type values */
+.todo-table .complete,
+.signoff-yes,
+#key-status .signed-yes,
+#releng-result .success-yes,
+#release-list .available-yes {
     color: green;
 }
 
-.todo-table .incomplete {
+.todo-table .incomplete,
+.signoff-no,
+#key-status .signed-no,
+#releng-result .success-no,
+#release-list .available-no {
     color: red;
 }
 
-.todo-table .inprogress {
+.todo-table .inprogress,
+.signoff-bad {
     color: darkorange;
 }
 
+
+/* todo lists (public and private) */
 .todo-info {
     margin: 0; color: #999;
 }
@@ -1036,16 +1047,7 @@ ul.signoff-list {
 }
 
 .signoff-yes {
-    color: green;
     font-weight: bold;
-}
-
-.signoff-no {
-    color: red;
-}
-
-.signoff-bad {
-    color: darkorange;
 }
 
 .signoff-disabled {
@@ -1069,30 +1071,6 @@ ul.signoff-list {
 
 #releng-feedback ul+.helptext {
     position: relative; top: -0.9em;
-}
-
-#releng-result .success-yes {
-    color: green;
-}
-
-#releng-result .success-no {
-    color: red;
-}
-
-#release-list .available-yes {
-    color: green;
-}
-
-#release-list .available-no {
-    color: red;
-}
-
-#key-status .signed-yes {
-    color: green;
-}
-
-#key-status .signed-no {
-    color: red;
 }
 
 /* highlight current website in the navbar */
