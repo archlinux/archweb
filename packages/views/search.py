@@ -1,6 +1,4 @@
-from datetime import datetime
 import json
-from pytz import utc
 
 from django import forms
 from django.contrib.auth.models import User
@@ -12,26 +10,6 @@ from main.models import Package, Arch, Repo
 from main.utils import make_choice
 from ..models import PackageRelation
 from ..utils import attach_maintainers, PackageJSONEncoder
-
-
-def coerce_limit_value(value):
-    if not value:
-        return None
-    if value == 'all':
-        # negative value indicates show all results
-        return -1
-    value = int(value)
-    if value < 0:
-        raise ValueError
-    return value
-
-class LimitTypedChoiceField(forms.TypedChoiceField):
-    def valid_value(self, value):
-        try:
-            coerce_limit_value(value)
-            return True
-        except (ValueError, TypeError):
-            return False
 
 
 class PackageSearchForm(forms.Form):
@@ -46,11 +24,6 @@ class PackageSearchForm(forms.Form):
     flagged = forms.ChoiceField(
             choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
             required=False)
-    limit = LimitTypedChoiceField(
-            choices=make_choice([50, 100, 250]) + [('all', 'All')],
-            coerce=coerce_limit_value,
-            required=False,
-            initial=50)
 
     def __init__(self, *args, **kwargs):
         show_staging = kwargs.pop('show_staging', False)
@@ -119,6 +92,7 @@ def parse_form(form, packages):
 
 class SearchListView(ListView):
     template_name = "packages/search.html"
+    paginate_by = 100
 
     sort_fields = ("arch", "repo", "pkgname", "pkgbase", "compressed_size",
             "installed_size", "build_date", "last_update", "flag_date")
@@ -144,16 +118,6 @@ class SearchListView(ListView):
 
         # Form had errors so don't return any results
         return Package.objects.none()
-
-    def get_paginate_by(self, queryset):
-        limit = 50
-        if self.form.is_valid():
-            asked_limit = self.form.cleaned_data['limit']
-            if asked_limit and asked_limit < 0:
-                limit = None
-            elif asked_limit:
-                limit = asked_limit
-        return limit
 
     def get_context_data(self, **kwargs):
         context = super(SearchListView, self).get_context_data(**kwargs)
