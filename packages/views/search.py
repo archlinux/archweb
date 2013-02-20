@@ -121,7 +121,9 @@ class SearchListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SearchListView, self).get_context_data(**kwargs)
-        context['current_query'] = self.request.GET.urlencode()
+        query_params = self.request.GET.copy()
+        query_params.pop('page', None)
+        context['current_query'] = query_params.urlencode()
         context['search_form'] = self.form
         return context
 
