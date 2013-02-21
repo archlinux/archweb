@@ -11,16 +11,26 @@ from releng.models import Release
 
 
 class PackagesSitemap(Sitemap):
-    changefreq = "weekly"
-    priority = "0.5"
-
     def items(self):
-        return Package.objects.normal().filter(repo__staging=False).only(
+        return Package.objects.normal().only(
                 'pkgname', 'last_update', 'files_last_update',
-                'repo__name', 'arch__name').order_by()
+                'repo__name', 'repo__testing', 'repo__staging',
+                'arch__name').order_by()
 
     def lastmod(self, obj):
         return obj.last_update
+
+    def changefreq(self, obj):
+        if obj.repo.testing or obj.repo.staging:
+            return "daily"
+        return "weekly"
+
+    def priority(self, obj):
+        if obj.repo.testing:
+            return "0.4"
+        if obj.repo.staging:
+            return "0.1"
+        return "0.5"
 
 
 class PackageFilesSitemap(PackagesSitemap):
