@@ -187,7 +187,7 @@ class Package(models.Model):
             self._applicable_arches = list(arches)
         return self._applicable_arches
 
-    @cache_function(119)
+    #@cache_function(119)
     def get_requiredby(self):
         """
         Returns a list of package objects. An attempt will be made to keep this
@@ -265,7 +265,7 @@ class Package(models.Model):
             trimmed.append(dep)
         return trimmed
 
-    @cache_function(121)
+    #@cache_function(121)
     def get_depends(self):
         """
         Returns a list of dicts. Each dict contains ('dep', 'pkg', and
