@@ -293,7 +293,7 @@ class Package(models.Model):
             return (sort_order.get(dep.deptype, 1000), dep.name)
         return sorted(deps, key=sort_key)
 
-    @cache_function(123)
+    #@cache_function(123)
     def reverse_conflicts(self):
         """
         Returns a list of packages with conflicts against this package.
