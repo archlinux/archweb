@@ -25,7 +25,7 @@
     can always be updated with `pacman -Syu`.</p>
 
     <ul>
-        <li><strong>Current Release:</strong> {{ release.version }}</li>
+        {% if release.version %}<li><strong>Current Release:</strong> {{ release.version }}</li>{% endif %}
         {% if release.kernel_version %}<li><strong>Included Kernel:</strong> {{ release.kernel_version }}</li>{% endif %}
         {% if release.file_size %}<li><strong>ISO Size:</strong> {{ release.file_size|filesizeformat }}</li>{% endif %}
         <li><a href="https://wiki.archlinux.org/index.php/Installation_Guide">Installation Guide</a></li>
@@ -57,12 +57,12 @@
     download is finished, so you can seed it back to others.
     <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
 
-    <ul>
+    {% if release %}<ul>
         <li><a href="{{ release.magnet_uri }}"
             title="Magnet link">Magnet link for {{ release.version }}</a></li>
         <li><a href="{% url 'releng-release-torrent' release.version %}"
             title="Download torrent">Torrent for {{ release.version }}</a></li>
-    </ul>
+    </ul>{% endif %}
 
     <h3>Netboot</h3>
 
