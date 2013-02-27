@@ -110,7 +110,7 @@ def flag(request, name, repo, arch):
                 subject = '%s package [%s] marked out-of-date' % \
                         (pkg.repo.name, pkg.pkgname)
                 for maint in maints:
-                    if maint.get_profile().notify == True:
+                    if maint.userprofile.notify == True:
                         toemail.append(maint.email)
 
             if toemail:

@@ -152,7 +152,7 @@ def change_profile(request):
     if request.POST:
         form = ProfileForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES,
-                instance=request.user.get_profile())
+                instance=request.user.userprofile)
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
@@ -163,7 +163,7 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
-        profile_form = UserProfileForm(instance=request.user.get_profile())
+        profile_form = UserProfileForm(instance=request.user.userprofile)
     return render(request, 'devel/profile.html',
             {'form': form, 'profile_form': profile_form})
 
