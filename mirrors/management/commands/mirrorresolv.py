@@ -53,7 +53,7 @@ def resolve_mirrors():
             newvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             if newvals != oldvals:
                 logger.debug("values changed for %s", mirrorurl)
-                mirrorurl.save(force_update=True)
+                mirrorurl.save(update_fields=('has_ipv4', 'has_ipv6'))
         except socket.error, e:
             logger.warn("error resolving %s: %s", mirrorurl.hostname, e)
 

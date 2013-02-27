@@ -177,12 +177,15 @@ class Package(models.Model):
     def maintainers(self, maintainers):
         self._maintainers = maintainers
 
-    @cache_function(1800)
+    _applicable_arches = None
+
     def applicable_arches(self):
         '''The list of (this arch) + (available agnostic arches).'''
-        arches = set(Arch.objects.filter(agnostic=True))
-        arches.add(self.arch)
-        return list(arches)
+        if self._applicable_arches is None:
+            arches = set(Arch.objects.filter(agnostic=True))
+            arches.add(self.arch)
+            self._applicable_arches = list(arches)
+        return self._applicable_arches
 
     @cache_function(119)
     def get_requiredby(self):
@@ -277,10 +280,10 @@ class Package(models.Model):
         # TODO: we can use list comprehension and an 'in' query to make this
         # more effective
         for dep in self.depends.all():
-            pkg = dep.get_best_satisfier(self)
+            pkg = dep.get_best_satisfier()
             providers = None
             if not pkg:
-                providers = dep.get_providers(self)
+                providers = dep.get_providers()
             deps.append({'dep': dep, 'pkg': pkg, 'providers': providers})
         # sort the list; deptype sorting makes this tricker than expected
         sort_order = {'D': 0, 'O': 1, 'M': 2, 'C': 3}
