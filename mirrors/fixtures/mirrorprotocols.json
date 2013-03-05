@@ -7,7 +7,7 @@
             "default": true, 
             "protocol": "http"
         }
-    }, 
+    },
     {
         "pk": 2, 
         "model": "mirrors.mirrorprotocol", 
@@ -16,7 +16,7 @@
             "default": false, 
             "protocol": "ftp"
         }
-    }, 
+    },
     {
         "pk": 3, 
         "model": "mirrors.mirrorprotocol", 
@@ -24,6 +24,15 @@
             "is_download": false, 
             "default": false, 
             "protocol": "rsync"
+        }
+    },
+    {
+        "pk": 5, 
+        "model": "mirrors.mirrorprotocol", 
+        "fields": {
+            "is_download": true, 
+            "default": false, 
+            "protocol": "https"
         }
     }
 ]
