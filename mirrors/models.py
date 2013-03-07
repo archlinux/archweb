@@ -129,6 +129,13 @@ class CheckLocation(models.Model):
     def __unicode__(self):
         return self.hostname
 
+    @property
+    def family(self):
+        info = socket.getaddrinfo(self.source_ip, None, 0, 0, 0,
+                socket.AI_NUMERICHOST)
+        families = [x[0] for x in info]
+        return families[0]
+
 
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
