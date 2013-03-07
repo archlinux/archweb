@@ -176,16 +176,29 @@ def create_todolist_packages(form, creator=None):
     # Add (or mark unremoved) any packages in the new packages list
     todo_pkgs = []
     for package in packages:
+        # ensure get_or_create uses the fields in our unique constraint
+        defaults = {
+            'pkg': package,
+            'pkgbase': package.pkgbase,
+            'repo':  package.repo,
+        }
         todo_pkg, created = TodolistPackage.objects.get_or_create(
                 todolist=todolist,
-                pkg=package, pkgname=package.pkgname,
-                pkgbase=package.pkgbase,
-                arch=package.arch, repo=package.repo)
+                pkgname=package.pkgname,
+                arch=package.arch,
+                defaults=defaults)
         if created:
             todo_pkgs.append(todo_pkg)
-        elif todo_pkg.removed is not None:
-            todo_pkg.removed = None
-            todo_pkg.save()
+        else:
+            save = False
+            if todo_pkg.removed is not None:
+                todo_pkg.removed = None
+                save = True
+            if todo_pkg.pkg != package:
+                todo_pkg.pkg = package
+                save = True
+            if save:
+                todo_pkg.save()
 
     return todo_pkgs
 
