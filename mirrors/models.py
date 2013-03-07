@@ -28,6 +28,7 @@ class Mirror(models.Model):
     rsync_user = models.CharField(max_length=50, blank=True, default='')
     rsync_password = models.CharField(max_length=50, blank=True, default='')
     notes = models.TextField(blank=True)
+    created = models.DateTimeField(editable=False)
 
     class Meta:
         ordering = ('name',)
@@ -48,6 +49,7 @@ class MirrorProtocol(models.Model):
             help_text="Is protocol useful for end-users, e.g. FTP/HTTP")
     default = models.BooleanField(default=True,
             help_text="Included by default when building mirror list?")
+    created = models.DateTimeField(editable=False)
 
     def __unicode__(self):
         return self.protocol
@@ -66,6 +68,7 @@ class MirrorUrl(models.Model):
             editable=False)
     has_ipv6 = models.BooleanField("IPv6 capable", default=False,
             editable=False)
+    created = models.DateTimeField(editable=False)
 
     def address_families(self):
         hostname = urlparse(self.url).hostname
@@ -104,6 +107,7 @@ class MirrorRsync(models.Model):
     # max length is 40 chars for full-form IPv6 addr + subnet
     ip = models.CharField("IP", max_length=44)
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
+    created = models.DateTimeField(editable=False)
 
     def __unicode__(self):
         return self.ip
@@ -142,7 +146,8 @@ class MirrorLog(models.Model):
         get_latest_by = 'check_time'
 
 
-pre_save.connect(set_created_field, sender=CheckLocation,
-        dispatch_uid="mirrors.models")
+for model in (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync, CheckLocation):
+    pre_save.connect(set_created_field, sender=model,
+            dispatch_uid="mirrors.models")
 
 # vim: set ts=4 sw=4 et:
