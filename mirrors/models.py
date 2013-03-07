@@ -1,9 +1,12 @@
 import socket
 from urlparse import urlparse
 
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.db.models.signals import pre_save
 from django_countries import CountryField
+
+from main.utils import set_created_field
 
 
 class Mirror(models.Model):
@@ -109,6 +112,20 @@ class MirrorRsync(models.Model):
         verbose_name = 'mirror rsync IP'
 
 
+class CheckLocation(models.Model):
+    hostname = models.CharField(max_length=255)
+    source_ip = models.GenericIPAddressField(verbose_name='source IP',
+            unpack_ipv4=True, unique=True)
+    country = CountryField()
+    created = models.DateTimeField(editable=False)
+
+    class Meta:
+        ordering = ('hostname', 'source_ip')
+
+    def __unicode__(self):
+        return self.hostname
+
+
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
     check_time = models.DateTimeField(db_index=True)
@@ -123,5 +140,9 @@ class MirrorLog(models.Model):
     class Meta:
         verbose_name = 'mirror check log'
         get_latest_by = 'check_time'
+
+
+pre_save.connect(set_created_field, sender=CheckLocation,
+        dispatch_uid="mirrors.models")
 
 # vim: set ts=4 sw=4 et:
