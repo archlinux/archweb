@@ -31,7 +31,8 @@ from django.core.management.base import NoArgsCommand
 from django.db import transaction
 from django.utils.timezone import now
 
-from mirrors.models import MirrorUrl, MirrorLog
+from mirrors.models import MirrorUrl, MirrorLog, CheckLocation
+
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -40,17 +41,17 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
-
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
-        make_option('-t', '--timeout', dest='timeout', default='10',
+        make_option('-t', '--timeout', dest='timeout', type='float', default=10.0,
             help='Timeout value for connecting to URL'),
+        make_option('-l', '--location', dest='location', type='int',
+            help='ID of CheckLocation object to use for this run'),
     )
     help = "Runs a check on all known mirror URLs to determine their up-to-date status."
 
     def handle_noargs(self, **options):
         v = int(options.get('verbosity', 0))
-        timeout = int(options.get('timeout', 10))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:
@@ -58,12 +59,33 @@ class Command(NoArgsCommand):
         elif v == 2:
             logger.level = logging.DEBUG
 
+        timeout = options.get('timeout')
+
         urls = MirrorUrl.objects.select_related('protocol').filter(
                 mirror__active=True, mirror__public=True)
 
-        pool = MirrorCheckPool(urls, timeout)
+        location = options.get('location', None)
+        if location:
+            location = CheckLocation.objects.get(id=location)
+            family = location.family
+            monkeypatch_getaddrinfo(family)
+            if family == socket.AF_INET6:
+                urls = urls.filter(has_ipv6=True)
+            elif family == socket.AF_INET:
+                urls = urls.filter(has_ipv4=True)
+
+        pool = MirrorCheckPool(urls, location, timeout)
         pool.run()
         return 0
+
+
+def monkeypatch_getaddrinfo(force_family=socket.AF_INET):
+    '''Force the Python socket module to connect over the designated family;
+    e.g. socket.AF_INET or socket.AF_INET6.'''
+    orig = socket.getaddrinfo
+    def wrapper(host, port, family=0, socktype=0, proto=0, flags=0):
+        return orig(host, port, force_family, socktype, proto, flags)
+    socket.getaddrinfo = wrapper
 
 
 def parse_lastsync(log, data):
@@ -80,10 +102,10 @@ def parse_lastsync(log, data):
         log.is_success = False
 
 
-def check_mirror_url(mirror_url, timeout):
+def check_mirror_url(mirror_url, location, timeout):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
-    log = MirrorLog(url=mirror_url, check_time=now())
+    log = MirrorLog(url=mirror_url, check_time=now(), location=location)
     headers = {'User-Agent': 'archweb/1.0'}
     req = urllib2.Request(url, None, headers)
     try:
@@ -133,17 +155,24 @@ def check_mirror_url(mirror_url, timeout):
     return log
 
 
-def check_rsync_url(mirror_url, timeout):
+def check_rsync_url(mirror_url, location, timeout):
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
-    log = MirrorLog(url=mirror_url, check_time=now())
+    log = MirrorLog(url=mirror_url, check_time=now(), location=location)
 
     tempdir = tempfile.mkdtemp()
+    ipopt = ''
+    if location:
+        if location.family == socket.AF_INET6:
+            ipopt = '--ipv6'
+        elif location.family == socket.AF_INET:
+            ipopt = '--ipv4'
     lastsync_path = os.path.join(tempdir, 'lastsync')
     rsync_cmd = ["rsync", "--quiet", "--contimeout=%d" % timeout,
-            "--timeout=%d" % timeout, url, lastsync_path]
+            "--timeout=%d" % timeout, ipopt, url, lastsync_path]
     try:
         with open(os.devnull, 'w') as devnull:
+            logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
             proc = subprocess.Popen(rsync_cmd, stdout=devnull,
                     stderr=subprocess.PIPE)
             start = time.time()
@@ -170,15 +199,15 @@ def check_rsync_url(mirror_url, timeout):
     return log
 
 
-def mirror_url_worker(work, output, timeout):
+def mirror_url_worker(work, output, location, timeout):
     while True:
         try:
             url = work.get(block=False)
             try:
                 if url.protocol.protocol == 'rsync':
-                    log = check_rsync_url(url, timeout)
+                    log = check_rsync_url(url, location, timeout)
                 else:
-                    log = check_mirror_url(url, timeout)
+                    log = check_mirror_url(url, location, timeout)
                 output.append(log)
             finally:
                 work.task_done()
@@ -187,15 +216,15 @@ def mirror_url_worker(work, output, timeout):
 
 
 class MirrorCheckPool(object):
-    def __init__(self, urls, timeout=10, num_threads=10):
+    def __init__(self, urls, location, timeout=10, num_threads=10):
         self.tasks = Queue()
         self.logs = deque()
-        for i in list(urls):
-            self.tasks.put(i)
+        for url in list(urls):
+            self.tasks.put(url)
         self.threads = []
         for i in range(num_threads):
             thread = Thread(target=mirror_url_worker,
-                    args=(self.tasks, self.logs, timeout))
+                    args=(self.tasks, self.logs, location, timeout))
             thread.daemon = True
             self.threads.append(thread)
 
