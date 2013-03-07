@@ -4,7 +4,9 @@ from urlparse import urlparse, urlunsplit
 from django import forms
 from django.contrib import admin
 
-from .models import Mirror, MirrorProtocol, MirrorUrl, MirrorRsync
+from .models import (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
+        CheckLocation)
+
 
 class MirrorUrlForm(forms.ModelForm):
     class Meta:
@@ -26,11 +28,13 @@ class MirrorUrlForm(forms.ModelForm):
         url = urlunsplit((url_parts.scheme, url_parts.netloc, path, '', ''))
         return url
 
+
 class MirrorUrlInlineAdmin(admin.TabularInline):
     model = MirrorUrl
     form = MirrorUrlForm
     readonly_fields = ('protocol', 'has_ipv4', 'has_ipv6')
     extra = 3
+
 
 # ripped off from django.forms.fields, adding netmask ability
 IPV4NM_RE = re.compile(r'^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}(/(\d|[1-2]\d|3[0-2])){0,1}$')
@@ -43,15 +47,18 @@ class IPAddressNetmaskField(forms.fields.RegexField):
     def __init__(self, *args, **kwargs):
         super(IPAddressNetmaskField, self).__init__(IPV4NM_RE, *args, **kwargs)
 
+
 class MirrorRsyncForm(forms.ModelForm):
     class Meta:
         model = MirrorRsync
     ip = IPAddressNetmaskField(label='IP')
 
+
 class MirrorRsyncInlineAdmin(admin.TabularInline):
     model = MirrorRsync
     form = MirrorRsyncForm
     extra = 2
+
 
 class MirrorAdminForm(forms.ModelForm):
     class Meta:
@@ -59,6 +66,7 @@ class MirrorAdminForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
             queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
             required=False)
+
 
 class MirrorAdmin(admin.ModelAdmin):
     form = MirrorAdminForm
@@ -71,11 +79,19 @@ class MirrorAdmin(admin.ModelAdmin):
             MirrorRsyncInlineAdmin,
     ]
 
+
 class MirrorProtocolAdmin(admin.ModelAdmin):
     list_display = ('protocol', 'is_download', 'default')
     list_filter = ('is_download', 'default')
 
+
+class CheckLocationAdmin(admin.ModelAdmin):
+    list_display = ('hostname', 'source_ip', 'country', 'created')
+    search_fields = ('hostname', 'source_ip')
+
+
 admin.site.register(Mirror, MirrorAdmin)
 admin.site.register(MirrorProtocol, MirrorProtocolAdmin)
+admin.site.register(CheckLocation, CheckLocationAdmin)
 
 # vim: set ts=4 sw=4 et:
