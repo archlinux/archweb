@@ -169,7 +169,11 @@ def check_rsync_url(mirror_url, location, timeout):
             ipopt = '--ipv4'
     lastsync_path = os.path.join(tempdir, 'lastsync')
     rsync_cmd = ["rsync", "--quiet", "--contimeout=%d" % timeout,
-            "--timeout=%d" % timeout, ipopt, url, lastsync_path]
+            "--timeout=%d" % timeout]
+    if ipopt:
+        rsync_cmd.append(ipopt)
+    rsync_cmd.append(url)
+    rsync_cmd.append(lastsync_path)
     try:
         with open(os.devnull, 'w') as devnull:
             logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
