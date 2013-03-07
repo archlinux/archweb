@@ -139,6 +139,7 @@ class CheckLocation(models.Model):
 
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
+    location = models.ForeignKey(CheckLocation, related_name="logs", null=True)
     check_time = models.DateTimeField(db_index=True)
     last_sync = models.DateTimeField(null=True)
     duration = models.FloatField(null=True)
