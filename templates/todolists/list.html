@@ -49,7 +49,7 @@
 $(document).ready(function() {
     // I'm not sure why it didn't autodetect digit, but it has to be explicit
     // http://stackoverflow.com/questions/302749/jquery-tablesorter-problem
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[1,1]],
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[6, 1], [1, 1]],
         headers: { 4: { sorter: 'digit' }, 5: { sorter: 'digit' } } });
 });
 </script>
