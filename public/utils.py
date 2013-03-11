@@ -1,3 +1,4 @@
+from collections import defaultdict
 from operator import attrgetter
 
 from main.models import Arch, Repo, Package
@@ -44,10 +45,14 @@ class RecentUpdate(object):
         else:
             # fake out the template- this is slightly hacky but yields one
             # 'package-like' object per arch which is what the normal loop does
-            arches = set()
+            by_arch = defaultdict(list)
             for package in self.others:
-                if package.arch not in arches and not arches.add(package.arch):
-                    yield PackageStandin(package)
+                by_arch[package.arch].append(package)
+            for arch, packages in by_arch.items():
+                if len(packages) == 1:
+                    yield packages[0]
+                else:
+                    yield PackageStandin(packages[0])
 
     def __unicode__(self):
         return "RecentUpdate '%s %s' <%d packages>" % (
