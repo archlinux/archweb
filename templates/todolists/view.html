@@ -45,8 +45,10 @@
             <div><label for="id_repo_{{ repo.name|lower }}" title="Target Repository {{ repo.name }}">[{{ repo.name|lower }}]</label>
                 <input type="checkbox" name="repo_{{ repo.name|lower }}" id="id_repo_{{ repo.name|lower }}" class="repo_filter" value="{{ repo.name|lower }}" checked="checked"/></div>
             {% endfor %}
+            {% if user.is_authenticated %}
             <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
                 <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
+            {% endif %}
             <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
                 <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
             <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>

@@ -1,18 +1,18 @@
 from django.conf.urls import patterns
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 
 from .views import (view_redirect, view, todolist_list, add, edit, flag,
         list_pkgbases, DeleteTodolist)
 
 urlpatterns = patterns('',
-    (r'^$', login_required(todolist_list)),
+    (r'^$', todolist_list),
 
     # old todolists URLs, permanent redirect view so we don't break all links
     (r'^(?P<old_id>\d+)/$', view_redirect),
 
     (r'^add/$',
         permission_required('todolists.add_todolist')(add)),
-    (r'^(?P<slug>[-\w]+)/$', login_required(view)),
+    (r'^(?P<slug>[-\w]+)/$', view),
     (r'^(?P<slug>[-\w]+)/edit/$',
         permission_required('todolists.change_todolist')(edit)),
     (r'^(?P<slug>[-\w]+)/delete/$',
