@@ -92,7 +92,8 @@ def list_pkgbases(request, slug, svn_root):
 
 
 def todolist_list(request):
-    lists = get_annotated_todolists()
+    incomplete_only = request.user.is_anonymous()
+    lists = get_annotated_todolists(incomplete_only)
     return render(request, 'todolists/list.html', {'lists': lists})
 
 
