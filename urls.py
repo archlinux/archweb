@@ -71,7 +71,6 @@ urlpatterns += patterns('',
         {}, 'opensearch-packages'),
     (r'^opensearch/packages/suggest$', 'packages.views.opensearch_suggest',
         {}, 'opensearch-packages-suggest'),
-    (r'^todolists/$','todolists.views.public_list'),
 )
 
 # Retro home page views
@@ -109,6 +108,7 @@ legacy_urls = (
     ('^news.php',      '/news/'),
     ('^packages.php',  '/packages/'),
     ('^people.php',    '/developers/'),
+    ('^todolists/$',   '/todo/'),
 
     ('^docs/en/guide/install/arch-install-guide.html',
         'https://wiki.archlinux.org/index.php/Installation_Guide'),

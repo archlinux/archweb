@@ -230,14 +230,4 @@ def send_todolist_emails(todo_list, new_packages):
                 [maint],
                 fail_silently=True)
 
-
-def public_list(request):
-    todo_lists = Todolist.objects.incomplete().defer(
-            'raw').order_by('-created')
-    # total hackjob, but it makes this a lot less query-intensive.
-    all_pkgs = [tp for tl in todo_lists for tp in tl.packages()]
-    attach_maintainers(all_pkgs)
-    return render(request, "todolists/public_list.html",
-            {"todo_lists": todo_lists})
-
 # vim: set ts=4 sw=4 et:
