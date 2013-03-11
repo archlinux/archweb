@@ -8,11 +8,14 @@
 
     <h2>Package Todo Lists</h2>
 
-    {% if perms.todolists.add_todolist %}
-    <ul class="admin-actions">
+    {% if perms.todolists.add_todolist %}<ul class="admin-actions">
         <li><a href="/todo/add/" title="Add new todo list">Add Todo List</a></li>
-    </ul>
-    {% endif %}
+    </ul>{% endif %}
+
+    <p>Todo lists are used by the developers when a rebuild of a set of
+    packages is needed. This is common when a library has a version bump,
+    during a toolchain rebuild, or a general cleanup of packages in the
+    repositories. The progress can be tracked here.</p>
 
     <table id="dev-todo-lists" class="results todo-table">
         <thead>
