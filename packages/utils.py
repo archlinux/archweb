@@ -10,7 +10,7 @@ from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 
 from main.models import Package, PackageFile, Arch, Repo
-from main.utils import (cache_function, database_vendor,
+from main.utils import (database_vendor,
         groupby_preserve_order, PackageStandin)
 from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
@@ -33,7 +33,6 @@ def parse_version(version):
     return ver, rel, epoch
 
 
-@cache_function(127)
 def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
@@ -120,7 +119,6 @@ class Difference(object):
         return hash(self.__key())
 
 
-@cache_function(127)
 def get_differences_info(arch_a, arch_b):
     # This is a monster. Join packages against itself, looking for packages in
     # our non-'any' architectures only, and not having a corresponding package
