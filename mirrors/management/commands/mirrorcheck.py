@@ -41,6 +41,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(NoArgsCommand):
     option_list = NoArgsCommand.option_list + (
         make_option('-t', '--timeout', dest='timeout', type='float', default=10.0,
@@ -83,8 +84,10 @@ def monkeypatch_getaddrinfo(force_family=socket.AF_INET):
     '''Force the Python socket module to connect over the designated family;
     e.g. socket.AF_INET or socket.AF_INET6.'''
     orig = socket.getaddrinfo
+
     def wrapper(host, port, family=0, socktype=0, proto=0, flags=0):
         return orig(host, port, force_family, socktype, proto, flags)
+
     socket.getaddrinfo = wrapper
 
 
@@ -103,6 +106,12 @@ def parse_lastsync(log, data):
 
 
 def check_mirror_url(mirror_url, location, timeout):
+    if location:
+        if location.family == socket.AF_INET6:
+            ipopt = '--ipv6'
+        elif location.family == socket.AF_INET:
+            ipopt = '--ipv4'
+
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
     log = MirrorLog(url=mirror_url, check_time=now(), location=location)
@@ -210,9 +219,14 @@ def mirror_url_worker(work, output, location, timeout):
             try:
                 if url.protocol.protocol == 'rsync':
                     log = check_rsync_url(url, location, timeout)
+                if (url.protocol.protocol == 'ftp' and location and
+                        location.family == socket.AF_INET6):
+                    # IPv6 + FTP don't work; skip checking completely
+                    log = None
                 else:
                     log = check_mirror_url(url, location, timeout)
-                output.append(log)
+                if log:
+                    output.append(log)
             finally:
                 work.task_done()
         except Empty:
