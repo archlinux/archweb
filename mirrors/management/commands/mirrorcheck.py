@@ -219,7 +219,7 @@ def mirror_url_worker(work, output, location, timeout):
             try:
                 if url.protocol.protocol == 'rsync':
                     log = check_rsync_url(url, location, timeout)
-                if (url.protocol.protocol == 'ftp' and location and
+                elif (url.protocol.protocol == 'ftp' and location and
                         location.family == socket.AF_INET6):
                     # IPv6 + FTP don't work; skip checking completely
                     log = None
