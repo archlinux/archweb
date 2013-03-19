@@ -116,13 +116,9 @@ class RepoPackage(object):
                     builddate = datetime.utcfromtimestamp(int(v[0]))
                     self.builddate = builddate.replace(tzinfo=utc)
                 except ValueError:
-                    try:
-                        self.builddate = datetime.strptime(v[0],
-                                '%a %b %d %H:%M:%S %Y')
-                    except ValueError:
-                        logger.warning(
-                                'Package %s had unparsable build date %s',
-                                self.name, v[0])
+                    logger.warning(
+                            'Package %s had unparsable build date %s',
+                            self.name, v[0])
             elif k == 'files':
                 self.files = tuple(v)
                 self.has_files = True
