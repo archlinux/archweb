@@ -136,6 +136,15 @@ class CheckLocation(models.Model):
         families = [x[0] for x in info]
         return families[0]
 
+    @property
+    def ip_version(self):
+        '''Returns integer '4' or '6'.'''
+        if self.family == socket.AF_INET6:
+            return 6
+        if self.family == socket.AF_INET:
+            return 4
+        return None
+
 
 class MirrorLog(models.Model):
     url = models.ForeignKey(MirrorUrl, related_name="logs")
