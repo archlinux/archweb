@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django_countries import CountryField
 
+from .fields import IPNetworkField
 from main.utils import set_created_field
 
 
@@ -105,7 +106,7 @@ class MirrorUrl(models.Model):
 
 class MirrorRsync(models.Model):
     # max length is 40 chars for full-form IPv6 addr + subnet
-    ip = models.CharField("IP", max_length=44)
+    ip = IPNetworkField("IP")
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
     created = models.DateTimeField(editable=False)
 

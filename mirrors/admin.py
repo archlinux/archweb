@@ -1,4 +1,3 @@
-import re
 from urlparse import urlparse, urlunsplit
 
 from django import forms
@@ -36,22 +35,9 @@ class MirrorUrlInlineAdmin(admin.TabularInline):
     extra = 3
 
 
-# ripped off from django.forms.fields, adding netmask ability
-IPV4NM_RE = re.compile(r'^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}(/(\d|[1-2]\d|3[0-2])){0,1}$')
-
-class IPAddressNetmaskField(forms.fields.RegexField):
-    default_error_messages = {
-        'invalid': u'Enter a valid IPv4 address, possibly including netmask.',
-    }
-
-    def __init__(self, *args, **kwargs):
-        super(IPAddressNetmaskField, self).__init__(IPV4NM_RE, *args, **kwargs)
-
-
 class MirrorRsyncForm(forms.ModelForm):
     class Meta:
         model = MirrorRsync
-    ip = IPAddressNetmaskField(label='IP')
 
 
 class MirrorRsyncInlineAdmin(admin.TabularInline):
