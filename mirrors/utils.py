@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.db import connection
 from django.db.models import Avg, Count, Max, Min, StdDev
 from django.utils.timezone import now
 from django_countries.fields import Country
@@ -10,13 +11,12 @@ from .models import MirrorLog, MirrorProtocol, MirrorUrl
 
 DEFAULT_CUTOFF = timedelta(hours=24)
 
-def annotate_url(url, delays):
+def annotate_url(url, delay):
     '''Given a MirrorURL object, add a few more attributes to it regarding
     status, including completion_pct, delay, and score.'''
     url.completion_pct = float(url.success_count) / url.check_count
-    if url.id in delays:
-        url_delays = delays[url.id]
-        url.delay = sum(url_delays, timedelta()) / len(url_delays)
+    if delay is not None:
+        url.delay = delay
         hours = url.delay.days * 24.0 + url.delay.seconds / 3600.0
 
         if url.completion_pct > 0:
@@ -28,6 +28,30 @@ def annotate_url(url, delays):
     else:
         url.delay = None
         url.score = None
+
+
+def url_delays(cutoff_time, mirror_id=None):
+    cursor = connection.cursor()
+    if mirror_id is None:
+        sql= """
+SELECT url_id, AVG(check_time - last_sync)
+FROM mirrors_mirrorlog
+WHERE is_success = %s AND check_time >= %s AND last_sync IS NOT NULL
+GROUP BY url_id
+"""
+        cursor.execute(sql, [True, cutoff_time])
+    else:
+        sql = """
+SELECT l.url_id, avg(check_time - last_sync)
+FROM mirrors_mirrorlog l
+JOIN mirrors_mirrorurl u ON u.id = l.url_id
+WHERE is_success = %s AND check_time >= %s AND last_sync IS NOT NULL
+AND mirror_id = %s
+GROUP BY url_id
+"""
+        cursor.execute(sql, [True, cutoff_time, mirror_id])
+
+    return {url_id: delay for url_id, delay in cursor.fetchall()}
 
 
 @cache_function(123)
@@ -55,20 +79,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
 
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             id__in=valid_urls).order_by('mirror__id', 'url')
-
-    # The Django ORM makes it really hard to get actual average delay in the
-    # above query, so run a seperate query for it and we will process the
-    # results here.
-    times = MirrorLog.objects.values_list(
-            'url_id', 'check_time', 'last_sync').filter(
-            is_success=True, last_sync__isnull=False,
-            check_time__gte=cutoff_time)
-    if mirror_ids:
-        times = times.filter(url__mirror_id__in=mirror_ids)
-    delays = {}
-    for url_id, check_time, last_sync in times:
-        delay = check_time - last_sync
-        delays.setdefault(url_id, []).append(delay)
+    delays = url_delays(cutoff_time)
 
     if urls:
         url_data = dict((item['id'], item) for item in url_data)
@@ -97,7 +108,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
         # fake the standard deviation for local testing setups
         if vendor == 'sqlite':
             setattr(url, 'duration_stddev', 0.0)
-        annotate_url(url, delays)
+        annotate_url(url, delays.get(url.id, None))
 
     return {
         'cutoff': cutoff,
