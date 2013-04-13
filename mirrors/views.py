@@ -175,7 +175,7 @@ def mirror_details(request, name):
             (not mirror.public or not mirror.active):
         raise Http404
 
-    status_info = get_mirror_statuses(mirror_ids=[mirror.id])
+    status_info = get_mirror_statuses(mirror_id=mirror.id)
     checked_urls = {url for url in status_info['urls'] \
             if url.mirror_id == mirror.id}
     all_urls = set(mirror.urls.select_related('protocol'))
@@ -193,7 +193,7 @@ def mirror_details(request, name):
 
 def mirror_details_json(request, name):
     mirror = get_object_or_404(Mirror, name=name)
-    status_info = get_mirror_statuses(mirror_ids=[mirror.id])
+    status_info = get_mirror_statuses(mirror_id=mirror.id)
     data = status_info.copy()
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False,

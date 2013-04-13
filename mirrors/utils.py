@@ -55,15 +55,15 @@ GROUP BY url_id
 
 
 @cache_function(123)
-def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
+def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
 
     valid_urls = MirrorUrl.objects.filter(
             mirror__active=True, mirror__public=True,
             logs__check_time__gte=cutoff_time).distinct()
 
-    if mirror_ids:
-        valid_urls = valid_urls.filter(mirror_id__in=mirror_ids)
+    if mirror_id:
+        valid_urls = valid_urls.filter(mirror_id=mirror_id)
 
     url_data = MirrorUrl.objects.values('id', 'mirror_id').filter(
             id__in=valid_urls, logs__check_time__gte=cutoff_time).annotate(
@@ -79,7 +79,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
 
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             id__in=valid_urls).order_by('mirror__id', 'url')
-    delays = url_delays(cutoff_time)
+    delays = url_delays(cutoff_time, mirror_id)
 
     if urls:
         url_data = dict((item['id'], item) for item in url_data)
@@ -90,8 +90,8 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
         last_check = max([u.last_check for u in urls])
         num_checks = max([u.check_count for u in urls])
         check_info = MirrorLog.objects.filter(check_time__gte=cutoff_time)
-        if mirror_ids:
-            check_info = check_info.filter(url__mirror_id__in=mirror_ids)
+        if mirror_id:
+            check_info = check_info.filter(url__mirror_id=mirror_id)
         check_info = check_info.aggregate(
                 mn=Min('check_time'), mx=Max('check_time'))
         if num_checks > 1:
@@ -120,7 +120,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
 
 
 @cache_function(117)
-def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
+def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
@@ -130,8 +130,8 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_ids=None):
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
 
-    if mirror_ids:
-        urls = urls.filter(mirror_id__in=mirror_ids)
+    if mirror_id:
+        urls = urls.filter(mirror_id=mirror_id)
 
     errors = list(errors)
     for err in errors:
