@@ -321,6 +321,15 @@ class Update(models.Model):
         return Package.objects.normal().filter(
                 pkgname=self.pkgname, arch=self.arch)
 
+    def replacements(self):
+        pkgs = Package.objects.normal().filter(
+                replaces__name=self.pkgname)
+        if not self.arch.agnostic:
+            # make sure we match architectures if possible
+            arches = self.pkg.applicable_arches()
+            pkgs = pkgs.filter(arch__in=arches)
+        return pkgs
+
     def __unicode__(self):
         return u'%s of %s on %s' % (self.get_action_flag_display(),
                 self.pkgname, self.created)

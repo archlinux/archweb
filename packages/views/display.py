@@ -55,6 +55,8 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
     try:
         update = match.latest()
         elsewhere = update.elsewhere()
+        if len(elsewhere) == 0:
+            elsewhere = update.replacements()
         if len(elsewhere) == 1:
             return redirect(elsewhere[0])
         context = {
