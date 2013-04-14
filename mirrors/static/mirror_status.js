@@ -1,7 +1,16 @@
-function mirror_status(chart_id, data_url) {
-    var jq_div = jQuery(chart_id);
+function draw_graphs(location_url, log_url, container_id) {
+    $.when($.getJSON(location_url), $.getJSON(log_url))
+        .then(function(loc_data, log_data) {
+            $.each(loc_data[0].locations, function(i, val) {
+                mirror_status(container_id, val, log_data[0]);
+            });
+        });
+}
 
-    var draw_graph = function(data) {
+function mirror_status(container_id, check_loc, log_data) {
+
+    var draw_graph = function(chart_id, data) {
+        var jq_div = jQuery(chart_id);
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
             width = jq_div.width() - margin.left - margin.right,
             height = jq_div.height() - margin.top - margin.bottom;
@@ -106,31 +115,52 @@ function mirror_status(chart_id, data_url) {
             .text(function(d) { return d; });
     };
 
-    /* invoke the data-fetch + first draw */
-    var cached_data = null;
-    d3.json(data_url, function(json) {
-        cached_data = jQuery.map(json.urls, function(url, i) {
+    var filter_data = function(json, location_id) {
+        return jQuery.map(json.urls, function(url, i) {
+            var logs = jQuery.map(url.logs, function(log, j) {
+                if (!log.is_success) {
+                    return null;
+                }
+                /* screen by location ID if we were given one */
+                if (location_id && log.location_id !== location_id) {
+                    return null;
+                }
+                return {
+                    duration: log.duration,
+                    check_time: new Date(log.check_time)
+                };
+            });
+            /* don't return URLs without any log info */
+            if (logs.length === 0) {
+                return null;
+            }
             return {
                 url: url.url,
-                logs: jQuery.map(url.logs, function(log, j) {
-                    if (!log.is_success) {
-                        return null;
-                    }
-                    return {
-                        duration: log.duration,
-                        check_time: new Date(log.check_time)
-                    };
-                })
+                logs: logs
             };
         });
-        draw_graph(cached_data);
-    });
+    };
+
+    var cached_data = filter_data(log_data, check_loc.id);
+    /* we had a check location with no log data handed to us, skip graphing */
+    if (cached_data.length === 0) {
+        return;
+    }
+
+    /* create the containers, defer the actual graph drawing */
+    var chart_id = 'status-chart-' + check_loc.id;
+    $(container_id).append('<h3><span class="fam-flag fam-flag-' + check_loc.country_code.toLowerCase() + '" title="' + check_loc.country + '"></span> ' + check_loc.country + ' (' + check_loc.source_ip + '), IPv' + check_loc.ip_version + '</h3>');
+    $(container_id).append('<div id="' + chart_id + '" class="visualize-mirror visualize-chart"></div>');
+    $(container_id).append('<br/>');
+    setTimeout(function() {
+        draw_graph('#' + chart_id, cached_data);
+    }, 0);
 
     /* then hook up a resize handler to redraw if necessary */
     var resize_timeout = null;
     var real_resize = function() {
         resize_timeout = null;
-        draw_graph(cached_data);
+        draw_graph('#' + chart_id, cached_data);
     };
     jQuery(window).resize(function() {
         if (resize_timeout) {

@@ -304,6 +304,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
             return list(obj)
         if isinstance(obj, CheckLocation):
             return {
+                'id': obj.pk,
                 'hostname': obj.hostname,
                 'source_ip': obj.source_ip,
                 'country': unicode(obj.country.name),
@@ -316,7 +317,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
 def locations_json(request):
     data = {}
     data['version'] = 1
-    data['locations'] = CheckLocation.objects.all()
+    data['locations'] = CheckLocation.objects.all().order_by('pk')
     to_json = json.dumps(data, ensure_ascii=False, cls=LocationJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response

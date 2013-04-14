@@ -106,10 +106,16 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    <h3>Mirror Status Chart</h3>
+<div class="box">
+    <h2>Mirror Status Charts</h2>
 
-    <div id="visualize-mirror" class="visualize-mirror visualize-chart"></div>
+    <p>Periodic checks of the mirrors are done from various geographic
+    locations, IP addresses, and using IPv4 or IPv6. These results are
+    summarized in graphical form below.</p>
+
+    <div id="charts-container"></div>
 </div>
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "d3-3.0.6.min.js" %}"></script>
@@ -122,7 +128,7 @@ $(document).ready(function() {
         headers: { 8: { sorter: 'mostlydigit' }, 9: { sorter: 'mostlydigit' }, 10: { sorter: 'mostlydigit' } } });
 });
 $(document).ready(function() {
-    mirror_status("#visualize-mirror", "./json/");
+    draw_graphs("/mirrors/locations/json/", "./json/", "#charts-container");
 });
 </script>
 {% endblock %}
