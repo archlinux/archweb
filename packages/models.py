@@ -326,7 +326,8 @@ class Update(models.Model):
                 replaces__name=self.pkgname)
         if not self.arch.agnostic:
             # make sure we match architectures if possible
-            arches = self.pkg.applicable_arches()
+            arches = set(Arch.objects.filter(agnostic=True))
+            arches.add(self.arch)
             pkgs = pkgs.filter(arch__in=arches)
         return pkgs
 
