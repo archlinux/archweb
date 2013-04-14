@@ -13,7 +13,8 @@ from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django_countries.countries import COUNTRIES
 
-from .models import Mirror, MirrorUrl, MirrorProtocol, MirrorLog
+from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
+        CheckLocation)
 from .utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
 
 COUNTRY_LOOKUP = dict(COUNTRIES)
@@ -264,7 +265,8 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
 
 class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
     '''Adds URL check history information.'''
-    log_attributes = ('check_time', 'last_sync', 'duration', 'is_success')
+    log_attributes = ('check_time', 'last_sync', 'duration', 'is_success',
+            'location_id')
 
     def default(self, obj):
         if isinstance(obj, MirrorUrl):
@@ -289,6 +291,33 @@ def status_json(request, tier=None):
         data['urls'] = [url for url in data['urls'] if url.mirror.tier == tier]
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False, cls=MirrorStatusJSONEncoder)
+    response = HttpResponse(to_json, content_type='application/json')
+    return response
+
+
+class LocationJSONEncoder(DjangoJSONEncoder):
+    '''Base JSONEncoder extended to handle CheckLocation objects.'''
+
+    def default(self, obj):
+        if hasattr(obj, '__iter__'):
+            # mainly for queryset serialization
+            return list(obj)
+        if isinstance(obj, CheckLocation):
+            return {
+                'hostname': obj.hostname,
+                'source_ip': obj.source_ip,
+                'country': unicode(obj.country.name),
+                'country_code': obj.country.code,
+                'ip_version': obj.ip_version,
+            }
+        return super(LocationJSONEncoder, self).default(obj)
+
+
+def locations_json(request):
+    data = {}
+    data['version'] = 1
+    data['locations'] = CheckLocation.objects.all()
+    to_json = json.dumps(data, ensure_ascii=False, cls=LocationJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response
 
