@@ -10,7 +10,7 @@ from django.contrib.sites.models import Site
 from django.utils.timezone import now
 
 from .fields import PositiveBigIntegerField
-from .utils import cache_function, set_created_field
+from .utils import set_created_field
 from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
 
@@ -187,7 +187,6 @@ class Package(models.Model):
             self._applicable_arches = list(arches)
         return self._applicable_arches
 
-    #@cache_function(119)
     def get_requiredby(self):
         """
         Returns a list of package objects. An attempt will be made to keep this
@@ -265,7 +264,6 @@ class Package(models.Model):
             trimmed.append(dep)
         return trimmed
 
-    #@cache_function(121)
     def get_depends(self):
         """
         Returns a list of dicts. Each dict contains ('dep', 'pkg', and
@@ -293,7 +291,6 @@ class Package(models.Model):
             return (sort_order.get(dep.deptype, 1000), dep.name)
         return sorted(deps, key=sort_key)
 
-    #@cache_function(123)
     def reverse_conflicts(self):
         """
         Returns a list of packages with conflicts against this package.

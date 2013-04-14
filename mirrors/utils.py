@@ -111,7 +111,6 @@ def annotate_url(url, url_data):
         url.score = (hours + url.duration_avg + stddev) / divisor
 
 
-@cache_function(123)
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
 
@@ -155,7 +154,6 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     }
 
 
-@cache_function(117)
 def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
