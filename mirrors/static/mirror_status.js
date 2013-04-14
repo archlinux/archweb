@@ -1,13 +1,15 @@
 function draw_graphs(location_url, log_url, container_id) {
-    $.when($.getJSON(location_url), $.getJSON(log_url))
+    jQuery.when(jQuery.getJSON(location_url), jQuery.getJSON(log_url))
         .then(function(loc_data, log_data) {
-            $.each(loc_data[0].locations, function(i, val) {
-                mirror_status(container_id, val, log_data[0]);
+            /* use the same color selection for a given URL in every graph */
+            var color = d3.scale.category10();
+            jQuery.each(loc_data[0].locations, function(i, val) {
+                mirror_status(container_id, val, log_data[0], color);
             });
         });
 }
 
-function mirror_status(container_id, check_loc, log_data) {
+function mirror_status(container_id, check_loc, log_data, color) {
 
     var draw_graph = function(chart_id, data) {
         var jq_div = jQuery(chart_id);
@@ -15,8 +17,7 @@ function mirror_status(container_id, check_loc, log_data) {
             width = jq_div.width() - margin.left - margin.right,
             height = jq_div.height() - margin.top - margin.bottom;
 
-        var color = d3.scale.category10(),
-            x = d3.time.scale.utc().range([0, width]),
+        var x = d3.time.scale.utc().range([0, width]),
             y = d3.scale.linear().range([height, 0]),
             x_axis = d3.svg.axis().scale(x).orient("bottom"),
             y_axis = d3.svg.axis().scale(y).orient("left");
@@ -95,8 +96,9 @@ function mirror_status(container_id, check_loc, log_data) {
             .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
 
         /* add a legend for good measure */
+        var active = jQuery.map(data, function(item, i) { return item.url; });
         var legend = svg.selectAll(".legend")
-            .data(color.domain())
+            .data(active)
             .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
@@ -149,9 +151,9 @@ function mirror_status(container_id, check_loc, log_data) {
 
     /* create the containers, defer the actual graph drawing */
     var chart_id = 'status-chart-' + check_loc.id;
-    $(container_id).append('<h3><span class="fam-flag fam-flag-' + check_loc.country_code.toLowerCase() + '" title="' + check_loc.country + '"></span> ' + check_loc.country + ' (' + check_loc.source_ip + '), IPv' + check_loc.ip_version + '</h3>');
-    $(container_id).append('<div id="' + chart_id + '" class="visualize-mirror visualize-chart"></div>');
-    $(container_id).append('<br/>');
+    jQuery(container_id).append('<h3><span class="fam-flag fam-flag-' + check_loc.country_code.toLowerCase() + '" title="' + check_loc.country + '"></span> ' + check_loc.country + ' (' + check_loc.source_ip + '), IPv' + check_loc.ip_version + '</h3>');
+    jQuery(container_id).append('<div id="' + chart_id + '" class="visualize-mirror visualize-chart"></div>');
+    jQuery(container_id).append('<br/>');
     setTimeout(function() {
         draw_graph('#' + chart_id, cached_data);
     }, 0);
