@@ -885,19 +885,19 @@ table td.country {
         display: inline;
     }
 
-#visualize-mirror .axis path,
-#visualize-mirror .axis line {
+.visualize-mirror .axis path,
+.visualize-mirror .axis line {
     fill: none;
     stroke: #000;
     stroke-width: 3px;
     shape-rendering: crispEdges;
 }
 
-#visualize-mirror .url-dot {
+.visualize-mirror .url-dot {
     stroke: #000;
 }
 
-#visualize-mirror .url-line {
+.visualize-mirror .url-line {
     fill: none;
     stroke-width: 1.5px;
 }
