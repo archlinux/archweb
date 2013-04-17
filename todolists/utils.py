@@ -1,5 +1,4 @@
 from django.db import connections, router
-from django.db.models import Count
 
 from .models import Todolist, TodolistPackage
 from packages.models import Package

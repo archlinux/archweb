@@ -46,7 +46,6 @@ class RateLimitFilter(object):
 
         trace = '\n'.join(traceback.format_exception(*record.exc_info))
         key = md5(trace).hexdigest()
-        duplicate = False
         cache = self.cache_module.cache
 
         # Test if the cache works

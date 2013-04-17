@@ -131,7 +131,7 @@ class UserFinder(object):
                 self.username_email, self.user_name)
         for matcher in find_methods:
             user = matcher(name, email)
-            if user != None:
+            if user is not None:
                 break
 
         self.cache[userstring] = user

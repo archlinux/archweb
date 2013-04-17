@@ -1,13 +1,13 @@
 from datetime import timedelta
 
 from django.db import connection
-from django.db.models import Avg, Count, Max, Min, StdDev
+from django.db.models import Count, Max, Min
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
 from django_countries.fields import Country
 
 from main.utils import cache_function, database_vendor
-from .models import MirrorLog, MirrorProtocol, MirrorUrl
+from .models import MirrorLog, MirrorUrl
 
 
 DEFAULT_CUTOFF = timedelta(hours=24)
@@ -165,7 +165,7 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
             ).order_by('-last_occurred', '-error_count')
 
     if mirror_id:
-        urls = urls.filter(mirror_id=mirror_id)
+        errors = errors.filter(url__mirror_id=mirror_id)
 
     errors = list(errors)
     for err in errors:

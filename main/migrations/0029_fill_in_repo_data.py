@@ -7,7 +7,6 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        "Write your forwards methods here."
         orm.Repo.objects.filter(name__istartswith='community').update(bugs_project=5, svn_root='community')
         orm.Repo.objects.filter(name__iexact='multilib').update(bugs_project=5, svn_root='community')
 

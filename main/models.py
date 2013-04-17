@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.utils.timezone import now
 
 from .fields import PositiveBigIntegerField
 from .utils import set_created_field
@@ -140,7 +139,7 @@ class Package(models.Model):
     @property
     def signature(self):
         try:
-            data = b64decode(self.pgp_signature)
+            data = b64decode(self.pgp_signature.encode('utf-8'))
         except TypeError:
             return None
         if not data:
@@ -274,7 +273,6 @@ class Package(models.Model):
         Packages will match the testing status of this package if possible.
         """
         deps = []
-        arches = None
         # TODO: we can use list comprehension and an 'in' query to make this
         # more effective
         for dep in self.depends.all():
@@ -400,13 +398,13 @@ class Package(models.Model):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
         names = [self.pkgname]
-        if self.pkgname.startswith('lib32-'):
+        if self.pkgname.startswith(u'lib32-'):
             names.append(self.pkgname[6:])
-        elif self.pkgname.endswith('-multilib'):
+        elif self.pkgname.endswith(u'-multilib'):
             names.append(self.pkgname[:-9])
         else:
-            names.append('lib32-' + self.pkgname)
-            names.append(self.pkgname + '-multilib')
+            names.append(u'lib32-' + self.pkgname)
+            names.append(self.pkgname + u'-multilib')
         return Package.objects.normal().filter(
                 pkgname__in=names).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')

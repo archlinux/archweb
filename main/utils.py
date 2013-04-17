@@ -3,7 +3,6 @@ try:
 except ImportError:
     import pickle
 
-from datetime import datetime
 import hashlib
 
 from django.core.cache import cache

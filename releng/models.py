@@ -160,7 +160,7 @@ class Release(models.Model):
 
     def torrent(self):
         try:
-            data = b64decode(self.torrent_data)
+            data = b64decode(self.torrent_data.encode('utf-8'))
         except TypeError:
             return None
         if not data:

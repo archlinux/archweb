@@ -55,7 +55,7 @@ function packages_treemap(chart_id, orderings, default_order) {
             var nodes = d3_div.data([json]).selectAll("div")
                 .data(treemap.nodes, key_func);
             /* start out new nodes in the center of the picture area */
-            var w_center = jq_div.width() / 2;
+            var w_center = jq_div.width() / 2,
                 h_center = jq_div.height() / 2;
             nodes.enter().append("div")
                 .attr("class", "treemap-cell")

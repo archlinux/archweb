@@ -9,7 +9,6 @@ from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView
 from django.template import Context, loader
-from django.template.defaultfilters import slugify
 from django.utils.timezone import now
 
 from main.models import Package, Repo

@@ -391,7 +391,7 @@ SELECT DISTINCT s.id
     """
     cursor = connection.cursor()
     # query pre-process- fill in table name and placeholders for IN
-    repo_sql = ','.join(['%s' for r in repos])
+    repo_sql = ','.join(['%s' for _ in repos])
     sql = sql % (model._meta.db_table, repo_sql, repo_sql)
     repo_ids = [r.pk for r in repos]
     # repo_ids are needed twice, so double the array

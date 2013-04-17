@@ -231,7 +231,7 @@ def release_torrent(request, version):
     release = get_object_or_404(Release, version=version)
     if not release.torrent_data:
         raise Http404
-    data = b64decode(release.torrent_data)
+    data = b64decode(release.torrent_data.encode('utf-8'))
     response = HttpResponse(data, content_type='application/x-bittorrent')
     # TODO: this is duplicated from Release.iso_url()
     filename = 'archlinux-%s-dual.iso.torrent' % release.version

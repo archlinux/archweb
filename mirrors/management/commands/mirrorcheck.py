@@ -106,19 +106,13 @@ def parse_lastsync(log, data):
 
 
 def check_mirror_url(mirror_url, location, timeout):
-    if location:
-        if location.family == socket.AF_INET6:
-            ipopt = '--ipv6'
-        elif location.family == socket.AF_INET:
-            ipopt = '--ipv4'
-
     url = mirror_url.url + 'lastsync'
     logger.info("checking URL %s", url)
     log = MirrorLog(url=mirror_url, check_time=now(), location=location)
     headers = {'User-Agent': 'archweb/1.0'}
     req = urllib2.Request(url, None, headers)
+    start = time.time()
     try:
-        start = time.time()
         result = urllib2.urlopen(req, timeout=timeout)
         data = result.read()
         result.close()
@@ -147,12 +141,12 @@ def check_mirror_url(mirror_url, location, timeout):
         elif isinstance(e.reason, socket.error):
             log.error = e.reason.args[1]
         logger.debug("failed: %s, %s", url, log.error)
-    except HTTPException as e:
+    except HTTPException:
         # e.g., BadStatusLine
         log.is_success = False
         log.error = "Exception in processing HTTP request."
         logger.debug("failed: %s, %s", url, log.error)
-    except socket.timeout as e:
+    except socket.timeout:
         log.is_success = False
         log.error = "Connection timed out."
         logger.debug("failed: %s, %s", url, log.error)

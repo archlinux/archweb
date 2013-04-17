@@ -146,7 +146,6 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
 (function($) {
   $.fn.enableCheckboxRangeSelection = function() {
     var lastCheckbox = null,
-        lastElement = null,
         spec = this;
 
     spec.unbind("click.checkboxrange");

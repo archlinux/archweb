@@ -95,6 +95,7 @@ def parse_keydata(data):
 
     # parse all of the output from our successful GPG command
     logger.info("parsing command output")
+    node = None
     for line in data.split('\n'):
         parts = line.split(':')
         if parts[0] == 'pub':

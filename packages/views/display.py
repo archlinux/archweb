@@ -228,8 +228,6 @@ def download(request, name, repo, arch):
     if pkg.arch.agnostic:
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
-    values = {
-    }
     url = '{host}{repo}/os/{arch}/{filename}'.format(host=url.url,
             repo=pkg.repo.name.lower(), arch=arch, filename=pkg.filename)
     return redirect(url)

@@ -20,7 +20,7 @@ class IsoListParser(HTMLParser):
         if tag == 'a':
             for name, value in attrs:
                 if name == "href":
-                    if value != '../' and self.url_re.search(value) != None:
+                    if value != '../' and self.url_re.search(value) is not None:
                         self.hyperlinks.append(value[:-1])
 
     def parse(self, url):

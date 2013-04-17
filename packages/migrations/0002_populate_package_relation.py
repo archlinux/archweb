@@ -11,7 +11,6 @@ class Migration(DataMigration):
     )
 
     def forwards(self, orm):
-        "Write your forwards methods here."
         # search by pkgbase first and insert those records
         qs = orm['main.Package'].objects.exclude(maintainer=None).exclude(
                 pkgbase=None).distinct().values('pkgbase', 'maintainer_id')
@@ -29,7 +28,6 @@ class Migration(DataMigration):
                     defaults={'user_id': row['maintainer_id']})
 
     def backwards(self, orm):
-        "Write your backwards methods here."
         if not db.dry_run:
             orm.PackageRelation.objects.all().delete()
         pass

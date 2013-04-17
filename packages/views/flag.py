@@ -110,7 +110,7 @@ def flag(request, name, repo, arch):
                 subject = '%s package [%s] marked out-of-date' % \
                         (pkg.repo.name, pkg.pkgname)
                 for maint in maints:
-                    if maint.userprofile.notify == True:
+                    if maint.userprofile.notify is True:
                         toemail.append(maint.email)
 
             if toemail:
@@ -133,7 +133,6 @@ def flag(request, name, repo, arch):
             return redirect('package-flag-confirmed', name=name, repo=repo,
                     arch=arch)
     else:
-        initial = {}
         form = FlagForm(authenticated=authenticated)
 
     context = {
