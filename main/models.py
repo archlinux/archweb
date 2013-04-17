@@ -193,14 +193,22 @@ class Package(models.Model):
         category as this package if that check makes sense.
         """
         from packages.models import Depend
+        sorttype = '''(CASE deptype
+        WHEN 'D' THEN 0
+        WHEN 'O' THEN 1
+        WHEN 'M' THEN 2
+        WHEN 'C' THEN 3
+        ELSE 1000 END)'''
         name_clause = '''packages_depend.name IN (
         SELECT %s UNION ALL
         SELECT z.name FROM packages_provision z WHERE z.pkg_id = %s
         )'''
         requiredby = Depend.objects.select_related('pkg',
                 'pkg__arch', 'pkg__repo').extra(
-                 where=[name_clause], params=[self.pkgname, self.id]).order_by(
-                'pkg__pkgname', 'pkg__arch__name', 'pkg__repo__name')
+                select={'sorttype': sorttype},
+                where=[name_clause], params=[self.pkgname, self.id]).order_by(
+                'sorttype', 'pkg__pkgname',
+                'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
             requiredby = requiredby.filter(
