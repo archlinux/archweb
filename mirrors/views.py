@@ -17,8 +17,6 @@ from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
         CheckLocation)
 from .utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
 
-COUNTRY_LOOKUP = dict(COUNTRIES)
-
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False)
@@ -28,6 +26,8 @@ class MirrorlistForm(forms.Form):
             label="IP version", choices=(('4','IPv4'), ('6','IPv6')),
             widget=CheckboxSelectMultiple)
     use_mirror_status = forms.BooleanField(required=False)
+
+    countries = dict(COUNTRIES)
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
@@ -46,7 +46,7 @@ class MirrorlistForm(forms.Form):
         country_codes.update(MirrorUrl.objects.filter(
                 mirror__active=True).exclude(country='').values_list(
                 'country', flat=True).order_by().distinct())
-        countries = [(code, COUNTRY_LOOKUP[code]) for code in country_codes]
+        countries = [(code, self.countries[code]) for code in country_codes]
         return sorted(countries, key=itemgetter(1))
 
     def as_div(self):
