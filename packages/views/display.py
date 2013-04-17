@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 
 from main.models import Package, PackageFile, Arch, Repo
+from main.utils import empty_response
 from mirrors.utils import get_mirror_url_for_download
 from ..models import Update
 from ..utils import get_group_info, PackageJSONEncoder
@@ -126,6 +127,8 @@ def details(request, name='', repo='', arch=''):
             pkg = Package.objects.select_related(
                     'arch', 'repo', 'packager').get(pkgname=name,
                     repo=repo_obj, arch=arch_obj)
+            if request.method == 'HEAD':
+                return empty_response()
             return render(request, 'packages/details.html', {'pkg': pkg})
         except Package.DoesNotExist:
             # attempt a variety of fallback options before 404ing

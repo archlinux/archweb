@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.views.generic import ListView
 
 from main.models import Package, Arch, Repo
-from main.utils import make_choice
+from main.utils import empty_response, make_choice
 from ..models import PackageRelation
 from ..utils import attach_maintainers, PackageJSONEncoder
 
@@ -99,6 +99,8 @@ class SearchListView(ListView):
     allowed_sort = list(sort_fields) + ["-" + s for s in sort_fields]
 
     def get(self, request, *args, **kwargs):
+        if request.method == 'HEAD':
+            return empty_response()
         self.form = PackageSearchForm(data=request.GET,
                 show_staging=self.request.user.is_authenticated())
         return super(SearchListView, self).get(request, *args, **kwargs)

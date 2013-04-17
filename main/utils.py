@@ -8,6 +8,7 @@ import hashlib
 
 from django.core.cache import cache
 from django.db import connections, router
+from django.http import HttpResponse
 from django.utils.timezone import now
 from django.template.defaultfilters import slugify
 
@@ -53,6 +54,14 @@ def cache_function(length):
 def clear_cache_function(func, args, kwargs):
     key = cache_function_key(func, args, kwargs)
     cache.delete(key)
+
+
+def empty_response():
+    empty = HttpResponse('')
+    # designating response as 'streaming' forces ConditionalGetMiddleware to
+    # not add a 'Content-Length: 0' header
+    empty.streaming = True
+    return empty
 
 
 def format_http_headers(request):
