@@ -18,7 +18,7 @@ class NewsForm(forms.ModelForm):
 
 
 class NewsDetailView(DetailView):
-    model = News
+    queryset = News.objects.all().select_related('author')
     template_name = "news/view.html"
 
 
