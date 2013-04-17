@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_safe, require_POST
 
 from main.models import Package, Arch
 from ..models import PackageRelation
@@ -24,7 +24,7 @@ from .search import search_json
 from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 
 
-@require_GET
+@require_safe
 @cache_control(public=True, max_age=86400)
 def opensearch(request):
     if request.is_secure():
@@ -37,7 +37,7 @@ def opensearch(request):
             content_type='application/opensearchdescription+xml')
 
 
-@require_GET
+@require_safe
 @cache_control(public=True, max_age=300)
 def opensearch_suggest(request):
     search_term = request.GET.get('q', '')
