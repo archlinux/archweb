@@ -1,5 +1,4 @@
-{% load package_extras %}{% spaceless %}<li>
-{% ifequal depend.pkg None %}
+{% load package_extras %}<li>{% ifequal depend.pkg None %}
 {% if depend.providers %}{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">({% multi_pkg_details depend.providers %})</span>
 {% else %}{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">(virtual)</span>
 {% endif %}{% else %}
@@ -11,4 +10,4 @@
 {% endif %}{% if depend.dep.deptype == 'M' %} <span class="make-dep"> (make)</span>
 {% endif %}{% if depend.dep.deptype == 'C' %} <span class="check-dep"> (check)</span>
 {% endif %}{% if depend.dep.description %} - <span class="dep-desc">{{ depend.dep.description }}</span>
-{% endif %}</li>{% endspaceless %}
+{% endif %}</li>
