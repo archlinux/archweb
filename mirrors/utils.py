@@ -71,8 +71,10 @@ GROUP BY l.url_id, u.mirror_id
     # sqlite loves to return less than ideal types
     if vendor == 'sqlite':
         for item in url_data:
-            item['delay'] = timedelta(seconds=item['delay'])
-            item['last_sync'] = parse_datetime(item['last_sync'])
+            if item['delay'] is not None:
+                item['delay'] = timedelta(seconds=item['delay'])
+            if item['last_sync'] is not None:
+                item['last_sync'] = parse_datetime(item['last_sync'])
             item['last_check'] = parse_datetime(item['last_check'])
 
     return {item['url_id']: item for item in url_data}
