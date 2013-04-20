@@ -69,8 +69,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for pkg in package_list %}
-                {% spaceless %}<tr class="{% cycle 'odd' 'even' %}">
+                {% for pkg in package_list %}<tr class="{% cycle 'odd' 'even' %}">
                     {% if perms.main.change_package %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
                     {% endif %}
@@ -85,8 +84,7 @@
                     <td class="wrap">{{ pkg.pkgdesc }}</td>
                     <td>{{ pkg.last_update|date }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
-                </tr>
-            {% endspaceless %}{% endfor %}
+                </tr>{% endfor %}
             </tbody>
         </table>
         {% include "packages/search_paginator.html" %}

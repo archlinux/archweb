@@ -50,9 +50,7 @@
             </tr>
         </thead>
         <tbody id="tbody_signoffs">
-            {% for group in signoff_groups %}
-            <tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }} {{ group.target_repo|lower }}">
-                {% spaceless %}
+            {% for group in signoff_groups %}<tr class="{% cycle 'odd' 'even' %} {{ group.arch.name }} {{ group.target_repo|lower }}">
                 <td>{% pkg_details_link group.package %} {{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
@@ -75,9 +73,7 @@
                     {% endcomment %}{% if spec.known_bad %}Package is known to be bad<br/>{% endif %}{% comment %}
                     {% endcomment %}{{ spec.comments|default:""|linebreaksbr }}
                 {% endwith %}{% endif %}</td>
-                {% endspaceless %}
-            </tr>
-            {% endfor %}
+            </tr>{% endfor %}
         </tbody>
     </table>
 </div>
