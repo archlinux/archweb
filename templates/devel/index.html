@@ -294,7 +294,9 @@
     </table>
 </div>{# #dash-by-developer #}
 {% endcache %}
+{% endblock %}
 
+{% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
