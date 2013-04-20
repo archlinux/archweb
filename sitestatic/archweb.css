@@ -314,7 +314,7 @@ dl {
     dl dt,
     dl dd {
         margin-bottom: 4px;
-        padding: 8px 0px 4px;
+        padding: 8px 0 4px;
         font-weight: bold;
         border-top: 1px dotted #bbb;
     }
@@ -420,7 +420,7 @@ table thead th.tablesorter-headerDesc {
 }
 
 table thead th.sorter-false {
-    background-image: url();
+    background-image: none;
     cursor: default;
 }
 
@@ -490,13 +490,13 @@ table thead th.sorter-false {
 
 h3 span.arrow {
     display: block;
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid #1794D1;
     margin: 0 auto;
-    font-size: 0px;
+    font-size: 0;
     line-height: 0px;
 }
 
