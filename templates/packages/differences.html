@@ -5,7 +5,6 @@
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block content %}
-{% if differences %}
 <div class="box">
     <h2>Package Differences by Architecture</h2>
     <div class="filter-criteria">
@@ -111,5 +110,4 @@ $(document).ready(function() {
     filter_packages();
 });
 </script>
-{% endif %}
 {% endblock %}
