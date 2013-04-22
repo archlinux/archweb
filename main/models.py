@@ -48,6 +48,8 @@ class Arch(models.Model):
     name = models.CharField(max_length=255, unique=True)
     agnostic = models.BooleanField(default=False,
             help_text="Is this architecture non-platform specific?")
+    required_signoffs = models.PositiveIntegerField(default=2,
+            help_text="Number of signoffs required for packages of this architecture")
 
     def __unicode__(self):
         return self.name

@@ -8,7 +8,7 @@ class DonorAdmin(admin.ModelAdmin):
     exclude = ('created',)
 
 class ArchAdmin(admin.ModelAdmin):
-    list_display = ('name', 'agnostic')
+    list_display = ('name', 'agnostic', 'required_signoffs')
     list_filter = ('agnostic',)
     search_fields = ('name',)
 
