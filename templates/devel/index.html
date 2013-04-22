@@ -175,6 +175,7 @@
         package in any repository</li>
     </ul>
 </div>{# #dev-dashboard #}
+
 <div id='stats-area'>
     <p>Enable Javascript to get more useful info here.</p>
 </div>
@@ -185,6 +186,19 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+    $("#stats-area").html('<p>Loading stats…</p>');
+    $("#stats-area").load('stats/', function() {
+        var settings = {
+            widgets: ['zebra'],
+            sortList: [[0,0]],
+            headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' }, 3: { sorter: 'pkgcount' } }
+        };
+
+        $(".dash-stats").not($("#stats-by-maintainer")).tablesorter(settings);
+        settings['sortLocaleCompare'] = true;
+        $("#stats-by-maintainer").tablesorter(settings);
+    });
+
     $("#dash-myflagged:not(:has(tbody tr.empty))").tablesorter(
         {widgets: ['zebra'], sortList: [[0,0]]});
     $("#dash-mytodolist:not(:has(tbody tr.empty))").tablesorter(
@@ -196,14 +210,6 @@ $(document).ready(function() {
             sortList: [[0,0]],
             headers: { 6: {sorter: false } }
     });
-    var settings = {
-        widgets: ['zebra'],
-        sortList: [[0,0]],
-        headers: { 1: { sorter: 'pkgcount' }, 2: { sorter: 'pkgcount' }, 3: { sorter: 'pkgcount' } }
-    };
-    $(".dash-stats").not($("#stats-by-maintainer")).tablesorter(settings);
-    settings['sortLocaleCompare'] = true;
-    $("#stats-by-maintainer").tablesorter(settings);
 });
 </script>
 {% endblock %}
