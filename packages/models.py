@@ -60,7 +60,8 @@ class SignoffSpecificationManager(models.Manager):
                     pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
                     epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
         except SignoffSpecification.DoesNotExist:
-            return DEFAULT_SIGNOFF_SPEC
+            return fake_signoff_spec(pkg.arch)
+
 
 class SignoffSpecification(models.Model):
     '''
@@ -97,10 +98,15 @@ class SignoffSpecification(models.Model):
         return u'%s-%s' % (self.pkgbase, self.full_version)
 
 
-# fake default signoff spec when we don't have a persisted one in the database
+# Fake signoff specs for when we don't have persisted ones in the database.
+# These have all necessary attributes of the real thing but are lighter weight
+# and have no chance of being persisted.
 FakeSignoffSpecification = namedtuple('FakeSignoffSpecification',
         ('required', 'enabled', 'known_bad', 'comments'))
-DEFAULT_SIGNOFF_SPEC = FakeSignoffSpecification(2, True, False, u'')
+
+
+def fake_signoff_spec(arch):
+    return FakeSignoffSpecification(arch.required_signoffs, True, False, u'')
 
 
 class SignoffManager(models.Manager):

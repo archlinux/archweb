@@ -29,7 +29,8 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 class Command(NoArgsCommand):
-    help = "Pull the latest commit message from SVN for a given package that is signoff-eligible and does not have an existing comment attached"
+    help = """Pull the latest commit message from SVN for a given package that
+is signoff-eligible and does not have an existing comment attached"""
 
     def handle_noargs(self, **options):
         v = int(options.get('verbosity', None))
@@ -74,10 +75,11 @@ cached_svn_log.cache = {}
 
 def create_specification(package, log, finder):
     trimmed_message = log['message'].strip()
+    required = package.arch.required_signoffs
     spec = SignoffSpecification(pkgbase=package.pkgbase,
             pkgver=package.pkgver, pkgrel=package.pkgrel,
             epoch=package.epoch, arch=package.arch, repo=package.repo,
-            comments=trimmed_message)
+            comments=trimmed_message, required=required)
     spec.user = finder.find_by_username(log['author'])
     return spec
 

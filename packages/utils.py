@@ -14,7 +14,7 @@ from main.utils import (database_vendor,
         groupby_preserve_order, PackageStandin)
 from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
-        SignoffSpecification, Signoff, DEFAULT_SIGNOFF_SPEC)
+        SignoffSpecification, Signoff, fake_signoff_spec)
 
 
 VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
@@ -297,7 +297,6 @@ class PackageSignoffGroup(object):
         self.user = None
         self.target_repo = None
         self.signoffs = set()
-        self.specification = DEFAULT_SIGNOFF_SPEC
         self.default_spec = True
 
         first = packages[0]
@@ -308,6 +307,7 @@ class PackageSignoffGroup(object):
         self.last_update = first.last_update
         self.packager = first.packager
         self.maintainers = first.maintainers
+        self.specification = fake_signoff_spec(first.arch)
 
         version = first.full_version
         if all(version == pkg.full_version for pkg in packages):
