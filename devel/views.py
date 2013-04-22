@@ -33,7 +33,7 @@ from .utils import get_annotated_maintainers
 
 @login_required
 def index(request):
-    '''the developer dashboard'''
+    """The developer dashboard."""
     if request.user.is_authenticated():
         inner_q = PackageRelation.objects.filter(user=request.user)
     else:
@@ -54,6 +54,19 @@ def index(request):
     signoffs = sorted(get_signoff_groups(user=request.user),
             key=operator.attrgetter('pkgbase'))
 
+    page_dict = {
+            'todos': todolists,
+            'flagged': flagged,
+            'todopkgs': todopkgs,
+            'signoffs': signoffs
+    }
+
+    return render(request, 'devel/index.html', page_dict)
+
+
+@login_required
+def stats(request):
+    """The second half of the dev dashboard."""
     arches = Arch.objects.all().annotate(
             total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
     repos = Repo.objects.all().annotate(
@@ -80,17 +93,13 @@ def index(request):
     }
 
     page_dict = {
-            'todos': todolists,
             'arches': arches,
             'repos': repos,
             'maintainers': maintainers,
             'orphan': orphan,
-            'flagged': flagged,
-            'todopkgs': todopkgs,
-            'signoffs': signoffs
     }
 
-    return render(request, 'devel/index.html', page_dict)
+    return render(request, 'devel/stats.html', page_dict)
 
 
 @login_required

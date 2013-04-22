@@ -1,0 +1,120 @@
+{% load cache %}
+
+{% cache 60 dev-dash-by-arch %}
+<div id="dash-by-arch" class="box">
+
+    <h2>Stats by Architecture</h2>
+
+    <table id="stats-by-arch" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Arch</th>
+                <th># Packages</th>
+                <th># Flagged</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for arch in arches %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ arch.name }}</td>
+                    <td><a href="/packages/?arch={{ arch.name }}"
+                            title="View all packages for the {{ arch.name }} architecture">
+                            <strong>{{ arch.total_ct }}</strong> packages</a></td>
+                    <td><a href="/packages/?arch={{ arch.name }}&amp;flagged=Flagged"
+                            title="View all flagged packages for the {{ arch.name }} architecture">
+                            <strong>{{ arch.flagged_ct }}</strong> packages</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>{# #dash-by-arch #}
+{% endcache %}
+
+{% cache 60 dev-dash-by-repo %}
+<div id="dash-by-repo" class="box">
+
+    <h2>Stats by Repository</h2>
+
+    <table id="stats-by-repo" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Repository</th>
+                <th># Packages</th>
+                <th># Flagged</th>
+                <th># Maintainers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repo in repos %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ repo.name }}</td>
+                    <td><a href="/packages/?repo={{ repo.name }}"
+                            title="View all packages in the {{ repo.name }} repository">
+                            <strong>{{ repo.total_ct }}</strong> packages</a></td>
+                    <td><a href="/packages/?repo={{ repo.name }}&amp;flagged=Flagged"
+                            title="View all flagged packages in the {{ repo.name }} repository">
+                            <strong>{{ repo.flagged_ct }}</strong> packages</a></td>
+                    <td><strong>{{ repo.maintainer_ct }}</strong> maintainers</td>
+                </tr>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>{# dash-by-arch #}
+{% endcache %}
+
+{% cache 60 dev-dash-by-developer %}
+<div id="dash-by-developer" class="box">
+
+    <h2>Stats by Developer</h2>
+
+    {% if perms.main.change_package %}
+    <p><a href="/packages/stale_relations/">Look for stale relations</a></p>
+    {% endif %}
+
+    <table id="stats-by-maintainer" class="results dash-stats">
+        <thead>
+            <tr>
+                <th class="key">Maintainer</th>
+                <th># Maintained</th>
+                <th># Flagged</th>
+                <th># Last Packager</th>
+            </tr>
+            <tr class="even">
+                <td><em>Orphan/Unknown</em></td>
+                <td><a href="/packages/?maintainer=orphan"
+                        title="View all orphan packages">
+                        <strong>{{ orphan.package_count }}</strong> packages</a>
+                </td>
+                <td><a href="/packages/?maintainer=orphan&amp;flagged=Flagged"
+                        title="View all flagged orphan packages">
+                        <strong>{{ orphan.flagged_count }}</strong> packages</a>
+                </td>
+                <td><a href="/packages/?packager=unknown"
+                        title="View all packages last updated by unknown">
+                        <strong>{{ orphan.updated_count }}</strong> packages</a>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for maint in maintainers %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                    <td>{{ maint.get_full_name }}</td>
+                    <td><a href="/packages/?maintainer={{ maint.username }}"
+                            title="View all packages maintained by {{ maint.get_full_name }}">
+                            <strong>{{ maint.package_count }}</strong> packages</a>
+                    </td>
+                    <td><a href="/packages/?maintainer={{ maint.username }}&amp;flagged=Flagged"
+                            title="View all flagged packages maintained by {{ maint.get_full_name }}">
+                            <strong>{{ maint.flagged_count }}</strong> packages</a>
+                    </td>
+                    <td><a href="/packages/?packager={{ maint.username }}"
+                            title="View all packages last updated by {{ maint.get_full_name }}">
+                            <strong>{{ maint.updated_count }}</strong> packages</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>{# #dash-by-developer #}
+{% endcache %}
