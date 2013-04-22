@@ -11,6 +11,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
     $.tablesorter.addParser({
         id: 'todostatus',
         is: function(s) { return false; },
@@ -24,6 +25,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
     $.tablesorter.addParser({
         /* sorts numeric, but put '', 'unknown', and '∞' last. */
         id: 'mostlydigit',
@@ -40,6 +42,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
     $.tablesorter.addParser({
         /* sorts duration; put '', 'unknown', and '∞' last. */
         id: 'duration',
@@ -73,6 +76,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
     $.tablesorter.addParser({
         id: 'longDateTime',
         re: /^(\d{4})-(\d{2})-(\d{2}) ([012]\d):([0-5]\d)(:([0-5]\d))?( (\w+))?$/,
@@ -96,6 +100,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
     $.tablesorter.addParser({
         id: 'filesize',
         re: /^(\d+(?:\.\d+)?) (bytes?|[KMGTPEZY]i?B)$/,
@@ -141,6 +146,17 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         },
         type: 'numeric'
     });
+
+    $.tablesorter.removeParser = function(id) {
+        $.tablesorter.parsers = $.grep($.tablesorter.parsers,
+                function(ele, i) {
+                    return ele.id !== id;
+                });
+    };
+
+    // We don't use currency, and the parser is over-zealous at deciding it
+    // matches. Kill it from the parser selection.
+    $.tablesorter.removeParser('currency');
 }
 
 (function($) {
