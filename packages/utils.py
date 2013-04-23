@@ -410,7 +410,8 @@ def get_current_signoffs(repos):
 def get_current_specifications(repos):
     '''Returns a list of signoff specification objects for the given repos.'''
     to_fetch = signoffs_id_query(SignoffSpecification, repos)
-    return SignoffSpecification.objects.in_bulk(to_fetch).values()
+    return SignoffSpecification.objects.select_related('arch').in_bulk(
+            to_fetch).values()
 
 
 def get_target_repo_map(repos):
