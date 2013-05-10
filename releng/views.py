@@ -1,7 +1,10 @@
 from base64 import b64decode
+import json
 
 from django import forms
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core.urlresolvers import reverse
 from django.db.models import Count, Max
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -236,6 +239,48 @@ def release_torrent(request, version):
     # TODO: this is duplicated from Release.iso_url()
     filename = 'archlinux-%s-dual.iso.torrent' % release.version
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
+
+
+class ReleaseJSONEncoder(DjangoJSONEncoder):
+    release_attributes = ('release_date', 'version', 'kernel_version',
+            'created', 'md5_sum', 'sha1_sum')
+
+    def default(self, obj):
+        if hasattr(obj, '__iter__'):
+            # mainly for queryset serialization
+            return list(obj)
+        if isinstance(obj, Release):
+            data = {attr: getattr(obj, attr) or None
+                    for attr in self.release_attributes}
+            data['available'] = obj.available
+            data['iso_url'] = '/' + obj.iso_url()
+            data['magnet_uri'] = obj.magnet_uri()
+            data['torrent_url'] = reverse('releng-release-torrent', args=[obj.version])
+            data['info'] = obj.info_html()
+            torrent_data = obj.torrent()
+            if torrent_data:
+                torrent_data.pop('url_list', None)
+            data['torrent'] = torrent_data
+            return data
+        return super(ReleaseJSONEncoder, self).default(obj)
+
+
+def releases_json(request):
+    releases = Release.objects.all()
+    try:
+        latest_version = Release.objects.filter(available=True).values_list(
+                'version', flat=True).latest()
+    except Release.DoesNotExist:
+        latest_version = None
+
+    data = {
+        'version': 1,
+        'releases': releases,
+        'latest_version': latest_version,
+    }
+    to_json = json.dumps(data, ensure_ascii=False, cls=ReleaseJSONEncoder)
+    response = HttpResponse(to_json, content_type='application/json')
     return response
 
 # vim: set ts=4 sw=4 et:
