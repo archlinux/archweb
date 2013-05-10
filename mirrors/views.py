@@ -175,6 +175,7 @@ def mirror_details(request, name):
     if not request.user.is_authenticated() and \
             (not mirror.public or not mirror.active):
         raise Http404
+    error_cutoff = timedelta(days=7)
 
     status_info = get_mirror_statuses(mirror_id=mirror.id)
     checked_urls = {url for url in status_info['urls'] \
@@ -188,9 +189,15 @@ def mirror_details(request, name):
             setattr(url, attr, None)
     all_urls = sorted(checked_urls.union(other_urls), key=attrgetter('url'))
 
-    return render(request, 'mirrors/mirror_details.html',
-            {'mirror': mirror, 'urls': all_urls})
+    error_logs = get_mirror_errors(mirror_id=mirror.id, cutoff=error_cutoff)
 
+    context = {
+        'mirror': mirror,
+        'urls': all_urls,
+        'cutoff': error_cutoff,
+        'error_logs': error_logs,
+    }
+    return render(request, 'mirrors/mirror_details.html', context)
 
 def mirror_details_json(request, name):
     mirror = get_object_or_404(Mirror, name=name)

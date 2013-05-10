@@ -1,0 +1,23 @@
+{% load flags mirror_status %}
+<table id="errorlog_mirrors" class="results">
+    <thead>
+        <tr>
+            <th>Mirror URL</th>
+            <th>Protocol</th>
+            <th>Country</th>
+            <th>Error Message</th>
+            <th>Last Occurred</th>
+            <th>Occurrences (last {{ cutoff|hours }})</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in error_logs %}<tr class="{% cycle 'odd' 'even' %}">
+            <td>{{ log.url__url }}</td>
+            <td>{{ log.url__protocol__protocol }}</td>
+            <td class="country">{% country_flag log.country %}{{ log.country.name }}</td>
+            <td class="wrap">{{ log.error|linebreaksbr }}</td>
+            <td>{{ log.last_occurred|date:'Y-m-d H:i' }}</td>
+            <td>{{ log.error_count }}</td>
+        </tr>{% endfor %}
+    </tbody>
+</table>
