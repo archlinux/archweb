@@ -59,18 +59,14 @@
 
     <a name="outofsync" id="outofsync"></a>
     <h3>Out of Sync Mirrors</h3>
-    {% with bad_urls as urls %}
-    {% with 'outofsync_mirrors' as table_id %}
+    {% with urls=bad_urls  table_id='outofsync_mirrors' %}
     {% include "mirrors/status_table.html" %}
-    {% endwith %}
     {% endwith %}
 
     <a name="successful" id="successful"></a>
     <h3>Successfully Syncing Mirrors</h3>
-    {% with good_urls as urls %}
-    {% with 'successful_mirrors' as table_id %}
+    {% with urls=good_urls table_id='successful_mirrors' %}
     {% include "mirrors/status_table.html" %}
-    {% endwith %}
     {% endwith %}
 
     <a name="errorlog" id="errorlog"></a>
