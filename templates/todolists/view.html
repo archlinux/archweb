@@ -68,6 +68,7 @@
                 <th>Staging Version</th>
                 <th>Maintainers</th>
                 <th>Status</th>
+                <th>Last Touched By</th>
             </tr>
         </thead>
         <tbody>
@@ -95,6 +96,7 @@
                     <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
                     {% endif %}
                 </td>
+                <td>{{ pkg.user|default:"" }}</td>
             </tr>
             {% endfor %}
         </tbody>

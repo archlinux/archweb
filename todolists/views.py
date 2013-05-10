@@ -71,12 +71,13 @@ def view(request, slug):
     attach_staging(todolist.packages(), todolist.pk)
     arches = {tp.arch for tp in todolist.packages()}
     repos = {tp.repo for tp in todolist.packages()}
-    return render(request, 'todolists/view.html', {
+    context = {
         'list': todolist,
         'svn_roots': svn_roots,
         'arches': sorted(arches),
         'repos': sorted(repos),
-    })
+    }
+    return render(request, 'todolists/view.html', context)
 
 
 def list_pkgbases(request, slug, svn_root):
