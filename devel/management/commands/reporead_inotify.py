@@ -192,10 +192,11 @@ class EventHandler(pyinotify.ProcessEvent):
     def process_default(self, event):
         '''Primary event processing function which kicks off reporead timer
         threads if a files database was updated.'''
-        if not event.name:
+        name = event.name
+        if not name:
             return
-        # screen to only the files we care about
-        if event.name.endswith('.files.tar.gz'):
+        # screen to only the files we care about, skipping temp files
+        if name.endswith('.files.tar.gz') and not name.startswith('.'):
             path = event.pathname
             stat = os.stat(path)
             database = self.databases.get(path, None)
