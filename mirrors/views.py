@@ -8,7 +8,7 @@ from django.forms.widgets import CheckboxSelectMultiple
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django_countries.countries import COUNTRIES
@@ -78,18 +78,6 @@ def generate_mirrorlist(request):
             {'mirrorlist_form': form})
 
 
-def default_protocol_filter(original_urls):
-    key_func = attrgetter('country')
-    sorted_urls = sorted(original_urls, key=key_func)
-    urls = []
-    for _, group in groupby(sorted_urls, key=key_func):
-        cntry_urls = list(group)
-        if any(url.protocol.default for url in cntry_urls):
-            cntry_urls = [url for url in cntry_urls if url.protocol.default]
-        urls.extend(cntry_urls)
-    return urls
-
-
 def status_filter(original_urls):
     status_info = get_mirror_statuses()
     scores = {u.id: u.score for u in status_info['urls']}
@@ -105,7 +93,7 @@ def status_filter(original_urls):
 
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
-        ipv4_supported=True, ipv6_supported=True, smart_protocol=False):
+        ipv4_supported=True, ipv6_supported=True):
     if not protocols:
         protocols = MirrorProtocol.objects.filter(is_download=True)
     elif hasattr(protocols, 'model') and protocols.model == MirrorProtocol:
@@ -126,17 +114,12 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
         ip_version |= Q(has_ipv6=True)
     qset = qset.filter(ip_version)
 
-    if smart_protocol:
-        urls = default_protocol_filter(qset)
-    else:
-        urls = qset
-
     if not use_status:
         sort_key = attrgetter('country.name', 'mirror.name', 'url')
-        urls = sorted(urls, key=sort_key)
+        urls = sorted(qset, key=sort_key)
         template = 'mirrors/mirrorlist.txt'
     else:
-        urls = status_filter(urls)
+        urls = status_filter(qset)
         template = 'mirrors/mirrorlist_status.txt'
 
     context = {
@@ -147,9 +130,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
 
 def find_mirrors_simple(request, protocol):
     if protocol == 'smart':
-        # generate a 'smart' mirrorlist, one that only includes FTP mirrors if
-        # no HTTP mirror is available in that country.
-        return find_mirrors(request, smart_protocol=True)
+        return redirect('mirrorlist_simple', 'http', permanent=True)
     proto = get_object_or_404(MirrorProtocol, protocol=protocol)
     return find_mirrors(request, protocols=[proto])
 

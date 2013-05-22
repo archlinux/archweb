@@ -9,15 +9,6 @@
         }
     },
     {
-        "pk": 2, 
-        "model": "mirrors.mirrorprotocol", 
-        "fields": {
-            "is_download": true, 
-            "default": false, 
-            "protocol": "ftp"
-        }
-    },
-    {
         "pk": 3, 
         "model": "mirrors.mirrorprotocol", 
         "fields": {

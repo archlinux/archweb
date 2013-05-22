@@ -10,6 +10,7 @@ from .models import (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
 class MirrorUrlForm(forms.ModelForm):
     class Meta:
         model = MirrorUrl
+
     def clean_url(self):
         # is this a valid-looking URL?
         url_parts = urlparse(self.cleaned_data["url"])

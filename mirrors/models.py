@@ -47,7 +47,7 @@ class Mirror(models.Model):
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
     is_download = models.BooleanField(default=True,
-            help_text="Is protocol useful for end-users, e.g. FTP/HTTP")
+            help_text="Is protocol useful for end-users, e.g. HTTP")
     default = models.BooleanField(default=True,
             help_text="Included by default when building mirror list?")
     created = models.DateTimeField(editable=False)
