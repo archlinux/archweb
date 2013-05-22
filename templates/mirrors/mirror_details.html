@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
 {% load mirror_status %}
 {% load flags %}
+{% load admin_urls %}
 
 {% block title %}Arch Linux - {{ mirror.name }} - Mirror Details{% endblock %}
 
@@ -9,8 +10,13 @@
 
 {% block content %}
 <div class="box">
-
     <h2>Mirror Details: {{ mirror.name }}</h2>
+
+    {% if perms.mirrors.change_mirror %}
+    <ul class="admin-actions">
+        <li><a href="{% url 'admin:mirrors_mirror_change' mirror.pk %}" title="Edit mirror">Edit Mirror</a></li>
+    </ul>
+    {% endif %}
 
     <table class="compact">
         <tr>
