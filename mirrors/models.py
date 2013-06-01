@@ -70,6 +70,7 @@ class MirrorUrl(models.Model):
     has_ipv6 = models.BooleanField("IPv6 capable", default=False,
             editable=False)
     created = models.DateTimeField(editable=False)
+    active = models.BooleanField(default=True)
 
     def address_families(self):
         hostname = urlparse(self.url).hostname
