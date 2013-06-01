@@ -179,10 +179,11 @@ def check_rsync_url(mirror_url, location, timeout):
     rsync_cmd.append(lastsync_path)
     try:
         with open(os.devnull, 'w') as devnull:
-            logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
+            start = time.time()
             proc = subprocess.Popen(rsync_cmd, stdout=devnull,
                     stderr=subprocess.PIPE)
-            start = time.time()
             _, errdata = proc.communicate()
             end = time.time()
         log.duration = end - start
