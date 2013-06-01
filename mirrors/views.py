@@ -40,10 +40,13 @@ class MirrorlistForm(forms.Form):
         fields['protocol'].choices = protos
         fields['protocol'].initial = [p.protocol for p in initial]
         fields['ip_version'].initial = ['4']
+        locations = [(l.id, l.source_ip) for l in
+                CheckLocation.objects.all()]
+        fields['check_location'].choices = locations
 
     def get_countries(self):
         country_codes = set()
-        country_codes.update(MirrorUrl.objects.filter(
+        country_codes.update(MirrorUrl.objects.filter(active=True,
                 mirror__active=True).exclude(country='').values_list(
                 'country', flat=True).order_by().distinct())
         countries = [(code, self.countries[code]) for code in country_codes]
@@ -102,7 +105,7 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
     else:
         protocols = MirrorProtocol.objects.filter(protocol__in=protocols)
     qset = MirrorUrl.objects.select_related().filter(
-            protocol__in=protocols,
+            protocol__in=protocols, active=True,
             mirror__public=True, mirror__active=True)
     if countries and 'all' not in countries:
         qset = qset.filter(country__in=countries)

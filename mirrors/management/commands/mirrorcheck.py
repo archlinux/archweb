@@ -63,7 +63,7 @@ class Command(NoArgsCommand):
         timeout = options.get('timeout')
 
         urls = MirrorUrl.objects.select_related('protocol').filter(
-                mirror__active=True, mirror__public=True)
+                active=True, mirror__active=True, mirror__public=True)
 
         location = options.get('location', None)
         if location:

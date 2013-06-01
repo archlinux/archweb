@@ -39,7 +39,7 @@ class Command(NoArgsCommand):
 
 def resolve_mirrors():
     logger.debug("requesting list of mirror URLs")
-    for mirrorurl in MirrorUrl.objects.filter(mirror__active=True):
+    for mirrorurl in MirrorUrl.objects.filter(active=True, mirror__active=True):
         try:
             # save old values, we can skip no-op updates this way
             oldvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)

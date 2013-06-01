@@ -116,7 +116,10 @@ def annotate_url(url, url_data):
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
 
-    valid_urls = MirrorUrl.objects.filter(
+    # TODO: this prevents grabbing data points from any mirror that was active,
+    # receiving checks, and then marked private. we can probably be smarter and
+    # filter the data later?
+    valid_urls = MirrorUrl.objects.filter(active=True,
             mirror__active=True, mirror__public=True,
             logs__check_time__gte=cutoff_time).distinct()
 
@@ -159,7 +162,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
 def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
-            is_success=False, check_time__gte=cutoff_time,
+            is_success=False, check_time__gte=cutoff_time, url__active=True,
             url__mirror__active=True, url__mirror__public=True).values(
             'url__url', 'url__country', 'url__protocol__protocol',
             'url__mirror__tier', 'error').annotate(
@@ -189,13 +192,14 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
         min_sync_time = status_data['last_sync__max'] - timedelta(minutes=20)
         best_logs = MirrorLog.objects.filter(is_success=True,
                 check_time__gte=min_check_time, last_sync__gte=min_sync_time,
+                url__active=True,
                 url__mirror__public=True, url__mirror__active=True,
                 url__protocol__default=True).order_by(
                 'duration')[:1]
         if best_logs:
             return MirrorUrl.objects.get(id=best_logs[0].url_id)
 
-    mirror_urls = MirrorUrl.objects.filter(
+    mirror_urls = MirrorUrl.objects.filter(active=True,
             mirror__public=True, mirror__active=True, protocol__default=True)
     # look first for a country-agnostic URL, then fall back to any HTTP URL
     filtered_urls = mirror_urls.filter(country='')[:1]
