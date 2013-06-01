@@ -40,9 +40,6 @@ class MirrorlistForm(forms.Form):
         fields['protocol'].choices = protos
         fields['protocol'].initial = [p.protocol for p in initial]
         fields['ip_version'].initial = ['4']
-        locations = [(l.id, l.source_ip) for l in
-                CheckLocation.objects.all()]
-        fields['check_location'].choices = locations
 
     def get_countries(self):
         country_codes = set()
