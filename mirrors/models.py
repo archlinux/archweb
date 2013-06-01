@@ -116,6 +116,7 @@ class MirrorRsync(models.Model):
 
     class Meta:
         verbose_name = 'mirror rsync IP'
+        ordering = ('ip',)
 
 
 class CheckLocation(models.Model):

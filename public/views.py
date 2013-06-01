@@ -80,7 +80,7 @@ def _mirror_urls():
     '''In order to ensure this is lazily evaluated since we can't do
     sorting at the database level, make it a callable.'''
     urls = MirrorUrl.objects.select_related('mirror').filter(
-            protocol__default=True,
+            active=True, protocol__default=True,
             mirror__public=True, mirror__active=True, mirror__isos=True)
     sort_by = attrgetter('country.name', 'mirror.name')
     return sorted(urls, key=sort_by)

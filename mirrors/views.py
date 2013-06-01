@@ -161,7 +161,7 @@ def mirror_details(request, name):
     status_info = get_mirror_statuses(mirror_id=mirror.id)
     checked_urls = {url for url in status_info['urls'] \
             if url.mirror_id == mirror.id}
-    all_urls = set(mirror.urls.select_related('protocol'))
+    all_urls = set(mirror.urls.filter(active=True).select_related('protocol'))
     # Add dummy data for URLs that we haven't checked recently
     other_urls = all_urls.difference(checked_urls)
     for url in other_urls:
