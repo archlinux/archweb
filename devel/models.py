@@ -88,9 +88,9 @@ class MasterKey(models.Model):
 
 class DeveloperKey(models.Model):
     owner = models.ForeignKey(User, related_name='all_keys', null=True,
-        help_text="The developer this key belongs to")
+            help_text="The developer this key belongs to")
     key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
-			unique=True)
+            unique=True)
     created = models.DateTimeField()
     expires = models.DateTimeField(null=True, blank=True)
     revoked = models.DateTimeField(null=True, blank=True)
@@ -101,8 +101,10 @@ class DeveloperKey(models.Model):
 
 
 class PGPSignature(models.Model):
-    signer = PGPKeyField(max_length=40, verbose_name="Signer key fingerprint")
-    signee = PGPKeyField(max_length=40, verbose_name="Signee key fingerprint")
+    signer = PGPKeyField(max_length=40, verbose_name="Signer key fingerprint",
+            db_index=True)
+    signee = PGPKeyField(max_length=40, verbose_name="Signee key fingerprint",
+            db_index=True)
     created = models.DateField()
     expires = models.DateField(null=True, blank=True)
     valid = models.BooleanField(default=True)
