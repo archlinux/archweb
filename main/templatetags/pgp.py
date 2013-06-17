@@ -15,7 +15,7 @@ def format_key(key_id):
         # normal display format is 5 groups of 4 hex chars seperated by spaces,
         # double space, then 5 more groups of 4 hex chars
         split = tuple(key_id[i:i+4] for i in range(0, 40, 4))
-        return u'%s&nbsp; %s' % (' '.join(split[0:5]), ' '.join(split[5:10]))
+        return u'%s\u00a0 %s' % (' '.join(split[0:5]), ' '.join(split[5:10]))
     return u'0x%s' % key_id
 
 @register.simple_tag
