@@ -136,7 +136,8 @@ class BaseSitemap(Sitemap):
             'mirror-status',
             'mirrorlist',
             'packages-differences',
-            'releng-test-overview',
+            ('releng-test-overview', 0.3, 'monthly'),
+            'releng-release-list',
             'visualize-index',
     )
 
