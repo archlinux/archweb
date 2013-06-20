@@ -21,7 +21,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-
+@cache_function(178)
 def status_data(cutoff_time, mirror_id=None):
     if mirror_id is not None:
         params = [cutoff_time, mirror_id]
