@@ -49,7 +49,6 @@ class PackageFeed(Feed):
 
     link = '/packages/'
     title_template = 'feeds/packages_title.html'
-    description_template = 'feeds/packages_description.html'
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(etag_func=package_etag, last_modified_func=package_last_modified)
@@ -112,6 +111,9 @@ class PackageFeed(Feed):
     def item_pubdate(self, item):
         return item.last_update
 
+    def item_description(self, item):
+        return item.pkgdesc
+
     def item_categories(self, item):
         return (item.repo.name, item.arch.name)
 
@@ -133,7 +135,6 @@ class NewsFeed(Feed):
     link = '/news/'
     description = 'The latest and greatest news from the Arch Linux distribution.'
     subtitle = description
-    title_template = 'feeds/news_title.html'
     description_template = 'feeds/news_description.html'
 
     def __call__(self, request, *args, **kwargs):
@@ -154,6 +155,9 @@ class NewsFeed(Feed):
 
     def item_author_name(self, item):
         return item.author.get_full_name()
+
+    def item_title(self, item):
+        return item.title
 
 
 class ReleaseFeed(Feed):
