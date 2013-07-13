@@ -35,7 +35,7 @@ def status_data(cutoff_time, mirror_id=None):
         sql = """
 SELECT l.url_id, u.mirror_id,
     COUNT(l.id) AS check_count,
-    COUNT(l.duration) AS success_count,
+    COUNT(l.last_sync) AS success_count,
     MAX(l.last_sync) AS last_sync,
     MAX(l.check_time) AS last_check,
     AVG(l.duration) AS duration_avg,
@@ -51,7 +51,7 @@ GROUP BY l.url_id, u.mirror_id
         sql = """
 SELECT l.url_id, u.mirror_id,
     COUNT(l.id) AS check_count,
-    COUNT(l.duration) AS success_count,
+    COUNT(l.last_sync) AS success_count,
     MAX(l.last_sync) AS last_sync,
     MAX(l.check_time) AS last_check,
     AVG(l.duration) AS duration_avg,
