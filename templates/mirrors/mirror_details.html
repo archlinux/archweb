@@ -49,6 +49,10 @@
             <td>{% if mirror.admin_email %}<a href="mailto:{{ mirror.admin_email }}">{{ mirror.admin_email }}</a>{% else %}None{% endif %}</td>
         </tr>
         <tr>
+            <th>Alternate Email:</th>
+            <td>{% if mirror.alternate_email %}<a href="mailto:{{ mirror.alternate_email }}">{{ mirror.alternate_email }}</a>{% else %}None{% endif %}</td>
+        </tr>
+        <tr>
             <th>Notes:</th>
             <td>{{ mirror.notes|linebreaks }}</td>
         </tr>
