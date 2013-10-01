@@ -29,8 +29,7 @@ class DeveloperKeyAdmin(admin.ModelAdmin):
 
 
 class PGPSignatureAdmin(admin.ModelAdmin):
-    list_display = ('signer', 'signee', 'created', 'expires', 'valid')
-    list_filter = ('valid',)
+    list_display = ('signer', 'signee', 'created', 'expires', 'revoked')
     search_fields = ('signer', 'signee')
     date_hierarchy = 'created'
 

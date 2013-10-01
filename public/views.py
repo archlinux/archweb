@@ -126,7 +126,7 @@ def keys(request):
             'owner__userprofile', 'revoker__userprofile').filter(
             revoked__isnull=True)
 
-    sig_counts = PGPSignature.objects.filter(not_expired, valid=True,
+    sig_counts = PGPSignature.objects.filter(not_expired, revoked__isnull=True,
             signee__in=user_key_ids).order_by().values_list('signer').annotate(
             Count('signer'))
     sig_counts = {key_id[-16:]: ct for key_id, ct in sig_counts}
@@ -136,11 +136,11 @@ def keys(request):
 
     # frozenset because we are going to do lots of __contains__ lookups
     signatures = frozenset(PGPSignature.objects.filter(
-            not_expired, valid=True).values_list('signer', 'signee'))
+            not_expired, revoked__isnull=True).values_list('signer', 'signee'))
 
     restrict = Q(signer__in=user_key_ids) & Q(signee__in=user_key_ids)
     cross_signatures = PGPSignature.objects.filter(restrict,
-            not_expired, valid=True).order_by('created')
+            not_expired, revoked__isnull=True).order_by('created')
 
     context = {
         'keys': master_keys,
@@ -183,7 +183,7 @@ def keys_json(request):
     })
 
     not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
-    signatures = PGPSignature.objects.filter(not_expired, valid=True)
+    signatures = PGPSignature.objects.filter(not_expired, revoked__isnull=True)
     edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }
             for sig in signatures]
 

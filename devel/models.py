@@ -107,7 +107,7 @@ class PGPSignature(models.Model):
             db_index=True)
     created = models.DateField()
     expires = models.DateField(null=True, blank=True)
-    valid = models.BooleanField(default=True)
+    revoked = models.DateField(null=True, blank=True)
 
     class Meta:
         ordering = ('signer', 'signee')

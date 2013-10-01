@@ -176,8 +176,13 @@ def import_keys(keyring):
     logger.info("created %d, updated %d keys", created_ct, updated_ct)
 
 
-SignatureData = namedtuple('SignatureData',
-        ('signer', 'signee', 'created', 'expires', 'valid'))
+class SignatureData(object):
+    def __init__(self, signer, signee, created):
+        self.signer = signer
+        self.signee = signee
+        self.created = created
+        self.expires = None
+        self.revoked = None
 
 
 def parse_sigdata(data):
@@ -192,21 +197,26 @@ def parse_sigdata(data):
         if parts[0] == 'pub':
             current_pubkey = parts[4]
             nodes[current_pubkey] = None
-        if parts[0] == 'uid':
+        elif parts[0] == 'uid':
             uid = parts[9]
             # only set uid if this is the first one encountered
             if nodes[current_pubkey] is None:
                 nodes[current_pubkey] = uid
-        if parts[0] == 'sig':
+        elif parts[0] == 'sig':
             signer = parts[4]
             created = get_date(parts[5])
-            expires = None
+            edge = SignatureData(signer, current_pubkey, created)
             if parts[6]:
-                expires = get_date(parts[6])
-            valid = parts[1] != '-'
-            edge = SignatureData(signer, current_pubkey,
-                    created, expires, valid)
+                edge.expires = get_date(parts[6])
             edges.append(edge)
+        elif parts[0] == 'rev':
+            signer = parts[4]
+            revoked = get_date(parts[5])
+            # revoke any prior edges that match
+            matches = [e for e in edges if e.signer == signer
+                    and e.signee == current_pubkey]
+            for edge in matches:
+                edge.revoked = revoked
 
     return nodes, edges
 
@@ -220,18 +230,18 @@ def import_signatures(keyring):
     pruned_edges = {edge for edge in edges
             if edge.signer in nodes and edge.signer != edge.signee}
 
-    logger.info("creating or finding %d signatures", len(pruned_edges))
+    logger.info("creating or finding up to %d signatures", len(pruned_edges))
     created_ct = updated_ct = 0
     with transaction.commit_on_success():
         for edge in pruned_edges:
             sig, created = PGPSignature.objects.get_or_create(
                     signer=edge.signer, signee=edge.signee,
                     created=edge.created, expires=edge.expires,
-                    defaults={ 'valid': edge.valid })
-            if sig.valid != edge.valid:
-                sig.valid = edge.valid
+                    defaults={ 'revoked': edge.revoked })
+            if sig.revoked != edge.revoked:
+                sig.revoked = edge.revoked
                 sig.save()
-                updated_ct = 1
+                updated_ct += 1
             if created:
                 created_ct += 1
 
