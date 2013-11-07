@@ -138,8 +138,8 @@ DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")
 
 def create_depend(package, dep_str, deptype='D'):
     depend = Depend(pkg=package, deptype=deptype)
-    # lop off any description first
-    parts = dep_str.split(':', 1)
+    # lop off any description first, don't get confused by epoch
+    parts = dep_str.split(': ', 1)
     if len(parts) > 1:
         depend.description = parts[1].strip()
     match = DEPEND_RE.match(parts[0].strip())
