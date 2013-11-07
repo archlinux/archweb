@@ -10,6 +10,7 @@ from .models import (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
 class MirrorUrlForm(forms.ModelForm):
     class Meta:
         model = MirrorUrl
+        fields = ('url', 'country', 'active')
 
     def clean_url(self):
         # is this a valid-looking URL?
@@ -39,6 +40,7 @@ class MirrorUrlInlineAdmin(admin.TabularInline):
 class MirrorRsyncForm(forms.ModelForm):
     class Meta:
         model = MirrorRsync
+        fields = ('ip',)
 
 
 class MirrorRsyncInlineAdmin(admin.TabularInline):
@@ -50,6 +52,10 @@ class MirrorRsyncInlineAdmin(admin.TabularInline):
 class MirrorAdminForm(forms.ModelForm):
     class Meta:
         model = Mirror
+        fields = ('name', 'tier', 'upstream', 'admin_email', 'alternate_email',
+                'public', 'active', 'isos', 'rsync_user', 'rsync_password',
+                'notes')
+
     upstream = forms.ModelChoiceField(
             queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
             required=False)
