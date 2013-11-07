@@ -1,4 +1,3 @@
-from base64 import b64decode
 from datetime import datetime
 from itertools import groupby
 from pgpdump import BinaryData
@@ -141,13 +140,9 @@ class Package(models.Model):
 
     @property
     def signature(self):
-        try:
-            data = b64decode(self.pgp_signature.encode('utf-8'))
-        except TypeError:
+        if not self.signature_bytes:
             return None
-        if not data:
-            return None
-        data = BinaryData(data)
+        data = BinaryData(self.signature_bytes)
         packets = list(data.packets())
         return packets[0]
 

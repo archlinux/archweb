@@ -13,6 +13,7 @@ Example:
   ./manage.py reporead i686 /tmp/core.db.tar.gz
 """
 
+from base64 import b64decode
 from collections import defaultdict
 from copy import copy
 import io
@@ -217,7 +218,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = finder.find(repopkg.packager)
-    dbpkg.pgp_signature = repopkg.pgpsig
+    dbpkg.signature_bytes = b64decode(repopkg.pgpsig.encode('utf-8'))
 
     if timestamp:
         dbpkg.last_update = timestamp
