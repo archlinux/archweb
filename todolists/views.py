@@ -147,7 +147,7 @@ class DeleteTodolist(DeleteView):
     success_url = '/todo/'
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def create_todolist_packages(form, creator=None):
     package_names = form.package_names()
     packages = form.packages()

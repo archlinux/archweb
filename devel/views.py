@@ -166,7 +166,7 @@ def change_profile(request):
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
                 request.user.set_password(form.cleaned_data['passwd1'])
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 request.user.save()
                 profile_form.save()
             return HttpResponseRedirect('/devel/')
@@ -334,7 +334,7 @@ def new_user_form(request):
     if request.POST:
         form = NewUserForm(request.POST)
         if form.is_valid():
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 form.save()
                 log_addition(request, form.instance.user)
             return HttpResponseRedirect('/admin/auth/user/%d/' % \

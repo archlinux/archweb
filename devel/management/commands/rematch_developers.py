@@ -44,7 +44,7 @@ class Command(NoArgsCommand):
         match_packager(finder)
         match_flagrequest(finder)
 
-@transaction.commit_on_success
+@transaction.atomic
 def match_packager(finder):
     logger.info("getting all unmatched packager strings")
     package_count = matched_count = 0
@@ -70,7 +70,7 @@ def match_packager(finder):
             package_count, matched_count)
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def match_flagrequest(finder):
     logger.info("getting all flag request email addresses from unknown users")
     req_count = matched_count = 0

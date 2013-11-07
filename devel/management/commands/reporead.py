@@ -302,7 +302,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
     # If isolation level is repeatable-read, we need to ensure each package
     # update starts a new transaction and re-queries the database as
     # necessary to guard against simultaneous updates.
-    with transaction.commit_on_success():
+    with transaction.atomic():
         # force the transaction dirty, even though we will only do reads
         transaction.set_dirty()
 
@@ -365,7 +365,7 @@ def db_update(archname, reponame, pkgs, force=False):
         dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository,
                 created=timestamp)
         try:
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 populate_pkg(dbpkg, pkg, timestamp=timestamp)
                 Update.objects.log_update(None, dbpkg)
         except IntegrityError:
@@ -380,7 +380,7 @@ def db_update(archname, reponame, pkgs, force=False):
     for pkgname in (dbset - syncset):
         logger.info("Removing package %s", pkgname)
         dbpkg = dbdict[pkgname]
-        with transaction.commit_on_success():
+        with transaction.atomic():
             Update.objects.log_update(dbpkg, None)
             # no race condition here as long as simultaneous threads both
             # issue deletes; second delete will be a no-op
@@ -403,7 +403,7 @@ def db_update(archname, reponame, pkgs, force=False):
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing
         # files/depends/all related items to be double-imported.
-        with transaction.commit_on_success():
+        with transaction.atomic():
             dbpkg = Package.objects.select_for_update().get(id=dbpkg.id)
             if not force and pkg_same_version(pkg, dbpkg):
                 logger.debug("Package %s was already updated", pkg.name)
@@ -431,7 +431,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
         # The odd select_for_update song and dance here are to ensure
         # simultaneous updates don't happen on a package, causing
         # files to be double-imported.
-        with transaction.commit_on_success():
+        with transaction.atomic():
             if not dbpkg.files_last_update or not dbpkg.last_update:
                 pass
             elif not force and dbpkg.files_last_update >= dbpkg.last_update:

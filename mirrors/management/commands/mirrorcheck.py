@@ -241,7 +241,7 @@ class MirrorCheckPool(object):
             thread.daemon = True
             self.threads.append(thread)
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def run(self):
         logger.debug("starting threads")
         for thread in self.threads:
