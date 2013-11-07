@@ -7,12 +7,12 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.add_column('packages', 'signature_bytes',
-                self.gf('django.db.models.fields.BinaryField')(null=True),
-                keep_default=True)
+        db.delete_column('packages', 'pgp_signature')
 
     def backwards(self, orm):
-        db.delete_column('packages', 'signature_bytes')
+        db.add_column('packages', 'pgp_signature',
+                self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                keep_default=True)
 
 
     models = {
@@ -81,7 +81,6 @@ class Migration(SchemaMigration):
             'last_update': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
             'packager': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'packager_str': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'pgp_signature': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'pkgbase': ('django.db.models.fields.CharField', [], {'max_length': '255', 'db_index': 'True'}),
             'pkgdesc': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'pkgname': ('django.db.models.fields.CharField', [], {'max_length': '255'}),

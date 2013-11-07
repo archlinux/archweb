@@ -274,7 +274,7 @@ def report(request, report_name, username=None):
         cutoff = timedelta(hours=24)
         filtered = []
         packages = packages.select_related(
-                'arch', 'repo', 'packager').filter(pgp_signature__isnull=False)
+                'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
         known_keys = DeveloperKey.objects.select_related(
                 'owner').filter(owner__isnull=False)
         known_keys = {dk.key: dk for dk in known_keys}

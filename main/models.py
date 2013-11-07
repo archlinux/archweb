@@ -108,7 +108,6 @@ class Package(models.Model):
     packager_str = models.CharField('packager string', max_length=255)
     packager = models.ForeignKey(User, null=True, blank=True,
             on_delete=models.SET_NULL)
-    pgp_signature = models.TextField('PGP signature', null=True, blank=True)
     signature_bytes = models.BinaryField('PGP signature', null=True)
     flag_date = models.DateTimeField(null=True, blank=True)
 
