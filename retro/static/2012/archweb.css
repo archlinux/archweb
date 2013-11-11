@@ -1,0 +1,1005 @@
+/*
+ * ARCH LINUX DJANGO (MAIN SITE)
+ *
+ * Font sizing based on 16px browser defaults (use em):
+ *   14px = 0.875em
+ *   13px = 0.812em
+ *   12px = 0.75em
+ *   11px = 0.6875em
+ *
+ */
+
+/* import the global navbar stylesheet */
+@import url('archnavbar.css');
+
+/* simple reset */
+* {
+    margin: 0;
+    padding: 0;
+    line-height: 1.4;
+}
+
+/* general styling */
+body {
+    min-width: 650px;
+    background: #f6f9fc;
+    color: #222;
+    font: normal 100% sans-serif;
+    text-align: center;
+}
+
+p {
+    margin: .33em 0 1em;
+}
+
+ol,
+ul {
+    margin-bottom: 1em;
+    padding-left: 2em;
+}
+
+    ul {
+        list-style: square;
+    }
+
+code {
+    font: 1.2em monospace;
+    background: #ffd;
+    padding: 0.15em 0.25em;
+}
+
+pre {
+    font: 1.2em monospace;
+    border: 1px solid #bdb;
+    background: #dfd;
+    padding: 0.5em;
+    margin: 1em;
+}
+
+    pre code {
+        display: block;
+        background: none;
+    }
+
+blockquote {
+    margin: 1.5em 2em;
+}
+
+input {
+    vertical-align: middle;
+}
+
+select[multiple] {
+    padding: 1px 0;
+}
+
+    select[multiple] option {
+        padding: 0 0.5em 0 0.3em;
+    }
+
+input[type=submit] {
+    padding: 0 0.6em;
+}
+
+.clear {
+    clear: both;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #888;
+}
+
+img {
+    border: 0;
+}
+
+/* scale fonts down to a sane default (16 * .812 = 13px) */
+#content {
+    font-size: 0.812em;
+}
+
+/* link style */
+a {
+    text-decoration: none;
+}
+
+    a:link,
+    th a:visited {
+        color: #07b;
+    }
+
+    a:visited {
+        color: #666;
+    }
+
+    a:hover {
+        text-decoration: underline;
+        color: #666;
+    }
+
+    a:active {
+        color: #e90;
+    }
+
+/* headings */
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid #888;
+}
+
+h3 {
+    font-size: 1.25em;
+    margin-top: .5em;
+}
+
+h4 {
+    font-size: 1.15em;
+    margin-top: 1em;
+}
+
+h5 {
+    font-size: 1em;
+    margin-top: 1em;
+}
+
+/* general layout */
+div#content {
+    width: 95%;
+    margin: 0 auto;
+    text-align: left;
+}
+
+div#content-left-wrapper {
+    float: left;
+    width: 100%; /* req to keep content above sidebar in source code */
+}
+
+div#content-left {
+    margin: 0 340px 0 0;
+}
+
+div#content-right {
+    float: left;
+    width: 300px;
+    margin-left: -300px;
+}
+
+div.box {
+    margin-bottom: 1.5em;
+    padding: 0.65em;
+    background: #ecf2f5;
+    border: 1px solid #bcd;
+}
+
+div#footer {
+    clear: both;
+    margin: 2em 0 1em;
+}
+
+    div#footer p {
+        margin: 0;
+        text-align: center;
+        font-size: 0.85em;
+    }
+
+/* alignment */
+div.center,
+table.center,
+img.center {
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p.center,
+td.center,
+th.center {
+    text-align: center;
+}
+
+/* table generics */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    table .wrap {
+        white-space: normal;
+    }
+
+th,
+td {
+    white-space: nowrap;
+    text-align: left;
+}
+
+    th {
+        vertical-align: middle;
+        font-weight: bold;
+    }
+
+    td {
+        vertical-align: top;
+    }
+
+/* table pretty styles */
+table.pretty1 {
+    width: auto;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+    border-collapse: collapse;
+    border: 1px solid #bcd;
+}
+
+    table.pretty1 th {
+        padding: 0.35em;
+        background: #e4eeff;
+        border: 1px solid #bcd;
+    }
+
+    table.pretty1 td {
+        padding: 0.35em;
+        border: 1px dotted #bcd;
+    }
+
+table.pretty2 {
+    width: auto;
+    margin-top: 0.25em;
+    margin-bottom: 0.5em;
+    border-collapse: collapse;
+    border: 1px solid #bbb;
+}
+
+    table.pretty2 th {
+        padding: 0.35em;
+        background: #eee;
+        border: 1px solid #bbb;
+    }
+
+    table.pretty2 td {
+        padding: 0.35em;
+        border: 1px dotted #bbb;
+    }
+
+/* definition lists */
+dl {
+    clear: both;
+}
+
+    dl dt,
+    dl dd {
+        margin-bottom: 4px;
+        padding: 8px 0px 4px;
+        font-weight: bold;
+        border-top: 1px dotted #bbb;
+    }
+
+    dl dt {
+        color: #333;
+        float:left;
+        padding-right:15px;
+    }
+
+/* forms and input styling */
+form p {
+    margin: 0.5em 0;
+}
+
+fieldset {
+    border: 0;
+}
+
+label {
+    width: 12em;
+    vertical-align: top;
+    display: inline-block;
+    font-weight: bold;
+}
+
+input[type=text],
+input[type=password],
+textarea {
+    padding: 0.10em;
+}
+
+form.general-form label,
+form.general-form .form-help {
+    width: 10em;
+    vertical-align: top;
+    display: inline-block;
+}
+
+form.general-form input[type=text],
+form.general-form textarea {
+    width: 45%;
+}
+
+/* archdev navbar */
+div#archdev-navbar {
+    margin: 1.5em 0;
+}
+
+    div#archdev-navbar ul {
+        list-style: none;
+        margin: -0.5em 0;
+        padding: 0;
+    }
+
+    div#archdev-navbar li {
+        display: inline;
+        margin: 0;
+        padding: 0;
+        font-size: 0.9em;
+    }
+
+        div#archdev-navbar li a {
+            padding: 0 0.5em;
+            color: #07b;
+        }
+
+/* error/info messages (x pkg is already flagged out-of-date, etc) */
+#sys-message {
+    width: 35em;
+    text-align: center;
+    margin: 1em auto;
+    padding: 0.5em;
+    background: #fff;
+    border: 1px solid #f00;
+}
+
+    #sys-message p {
+        margin: 0;
+    }
+
+ul.errorlist {
+    color: red;
+}
+
+/**
+ *  PAGE SPECIFIC STYLES
+ */
+
+/* home: introduction */
+#intro p.readmore {
+    margin: -0.5em 0 0 0;
+    font-size: .9em;
+    text-align: right;
+}
+
+/* home: news */
+#news {
+    margin-top: 1.5em;
+}
+
+    #news h3 {
+        float: left;
+        padding-bottom: .5em
+    }
+
+    #news div {
+        margin-bottom: 1em;
+    }
+
+        #news div p {
+            margin-bottom: 0.5em;
+        }
+
+    #news .more {
+        font-weight: normal;
+    }
+
+    #news .rss-icon {
+        float: right;
+        margin-top: 1em;
+    }
+
+    #news h4 {
+        clear: both;
+        font-size: 1em;
+        margin-top: 1.5em;
+        border-bottom: 1px dotted #bbb;
+    }
+
+    #news .timestamp {
+        float: right;
+        font-size: 0.85em;
+        margin: -1.8em 0.5em 0 0;
+    }
+
+/* home: arrowed headings */
+#news h3 a {
+    display: block;
+    background: #1794D1;
+    font-size: 15px;
+    padding: 2px 10px;
+    color: white;
+}
+
+    #news a:active {
+        color: white;
+    }
+
+h3 span.arrow {
+    display: block;
+    width: 0px;
+    height: 0px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #1794D1;
+    margin: 0 auto;
+    font-size: 0px;
+    line-height: 0px;
+}
+
+/* home: pkgsearch box */
+#pkgsearch {
+    padding: 1em 0.75em;
+    background: #3ad;
+    color: #fff;
+    border: 1px solid #08b;
+}
+
+    #pkgsearch label {
+        width: auto;
+        padding: 0.1em 0;
+    }
+
+    #pkgsearch input {
+        width: 10em;
+        float: right;
+        font-size: 1em;
+        color: #000;
+        background: #fff;
+        border: 1px solid #09c;
+    }
+
+/* home: recent pkg updates */
+#pkg-updates h3 {
+    margin: 0 0 0.3em;
+}
+
+    #pkg-updates .more {
+        font-weight: normal;
+    }
+
+    #pkg-updates .rss-icon {
+        float: right;
+        margin: -2em 0 0 0;
+    }
+
+    #pkg-updates table {
+        margin: 0;
+    }
+
+    #pkg-updates td.pkg-name {
+        white-space: normal;
+    }
+
+    #pkg-updates td.pkg-arch {
+        text-align: right;
+    }
+
+    #pkg-updates span.testing {
+        font-style: italic;
+    }
+
+    #pkg-updates span.staging {
+        font-style: italic;
+        color: #ff8040;
+    }
+
+/* home: sidebar navigation */
+div#nav-sidebar ul {
+    list-style: none;
+    margin: 0.5em 0 0.5em 1em;
+    padding: 0;
+}
+
+/* home: sponsor banners */
+div#arch-sponsors img {
+    padding: 0.3em 0;
+}
+
+/* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
+div.widget {
+    margin-bottom: 1.5em;
+}
+
+/* feeds page */
+#rss-feeds .rss {
+    padding-right: 20px;
+    background: url(rss.png) top right no-repeat;
+}
+
+/* artwork: logo images */
+#artwork img.inverted {
+    background: #333;
+    padding: 0;
+}
+
+#artwork div.imagelist img {
+    display: inline;
+    margin: 0.75em;
+}
+
+/* news: article list */
+.news-nav {
+    float: right;
+    margin-top: -2.2em;
+}
+
+    .news-nav .prev,
+    .news-nav .next {
+        margin: 0 1em;
+    }
+
+/* news: article pages */
+div.news-article .article-info {
+    margin: 0;
+    color: #999;
+}
+
+/* news: add/edit article */
+form#newsform {
+    width: 60em;
+}
+
+    form#newsform input[type=text],
+    form#newsform textarea {
+        width: 75%;
+    }
+
+/* donate: donor list */
+div#donor-list ul {
+    width: 100%;
+}
+    /* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+    div#donor-list li {
+        float: left;
+        width: 25%;
+        min-width: 20em;
+    }
+
+/* download page */
+#arch-downloads h3 {
+    border-bottom: 1px dotted #bbb;
+}
+
+table#download-torrents .cpu-arch {
+    text-align: center;
+}
+
+table#download-mirrors {
+    width: auto;
+    margin-bottom: 1em;
+}
+
+    table#download-mirrors td.mirror-country {
+        padding-top: 1em;
+    }
+
+    table#download-mirrors td.mirror-server {
+        padding-right: 1em;
+    }
+
+    table#download-mirrors a {
+        display: block;
+        float: right;
+        width: 4em;
+    }
+
+/* pkglists/devlists */
+table.results {
+    font-size: 0.846em;
+    border-top: 1px dotted #999;
+    border-bottom: 1px dotted #999;
+}
+
+    table.results th {
+        padding: 0.5em 1em 0.25em 0.25em;
+        border-bottom: 1px solid #999;
+        white-space: nowrap;
+        background-color:#fff;
+    }
+
+        /* additional styles for JS sorting */
+        table.results th.header {
+            padding-right: 20px;
+            background-image: url(nosort.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+        table.results th.headerSortDown {
+            background-color: #e4eeff;
+            background-image: url(desc.gif);
+        }
+
+        table.results th.headerSortUp {
+            background-color: #e4eeff;
+            background-image: url(asc.gif);
+        }
+
+    table.results td {
+        padding: .3em 1em .3em 3px;
+    }
+
+    table.results tr.odd {
+        background: #fff;
+    }
+
+    table.results tr.even {
+        background: #e4eeff;
+    }
+
+    table.results .flagged {
+        color: red;
+    }
+
+/* pkglist: layout */
+div#pkglist-about {
+    margin-top: 1.5em;
+}
+
+/* pkglist: results navigation */
+#pkglist-stats-top,
+#pkglist-stats-bottom {
+    font-size: 0.85em;
+}
+
+#pkglist-results .pkglist-nav {
+    float: right;
+    margin-top: -2.2em;
+}
+
+.pkglist-nav .prev {
+    margin-right: 1em;
+}
+
+.pkglist-nav .next {
+    margin-right: 1em;
+}
+
+/* search fields  and other filter selections */
+.filter-criteria {
+    margin-bottom: 1em;
+}
+
+.filter-criteria h3 {
+    font-size: 1em;
+    margin-top: 0;
+}
+
+.filter-criteria div {
+    float: left;
+    margin-right: 1.65em;
+    font-size: 0.85em;
+}
+
+.filter-criteria legend {
+    display: none;
+}
+
+.filter-criteria label {
+    width: auto;
+    display: block;
+    font-weight: normal;
+}
+
+/* pkgdetails: details links that float on the right */
+#pkgdetails #detailslinks {
+    float: right;
+}
+
+    #pkgdetails #detailslinks h4 {
+        margin-top: 0;
+        margin-bottom: 0.25em;
+    }
+
+    #pkgdetails #detailslinks ul {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 0;
+        font-size: 0.846em;
+    }
+
+    #pkgdetails #detailslinks > div {
+        padding: 0.5em;
+        margin-bottom: 1em;
+        background: #eee;
+        border: 1px solid #bbb;
+    }
+
+#pkgdetails #actionlist .flagged {
+    color: red;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* pkgdetails: pkg info */
+#pkgdetails #pkginfo {
+    width: auto;
+}
+
+    #pkgdetails #pkginfo td {
+        padding: 0.25em 0 0.25em 1.5em;
+    }
+
+    #pkgdetails #pkginfo .userdata {
+        font-size: 0.85em;
+        padding: 0.5em;
+    }
+
+/* pkgdetails: flag package */
+form#flag-pkg-form label {
+    width: 10em;
+}
+
+form#flag-pkg-form textarea,
+form#flag-pkg-form input[type=text] {
+    width: 45%;
+}
+
+/* pkgdetails: deps, required by and file lists */
+#pkgdetails #metadata {
+    clear: both;
+}
+
+#pkgdetails #metadata h3 {
+    background: #555;
+    color: #fff;
+    font-size: 1em;
+    margin-bottom: 0.5em;
+    padding: 0.2em 0.35em;
+}
+
+#pkgdetails #metadata ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#pkgdetails #metadata li {
+    padding-left: 0.5em;
+}
+
+#pkgdetails #metadata p {
+    padding-left: 0.5em;
+}
+
+#pkgdetails #metadata .message {
+    font-style: italic;
+}
+
+#pkgdetails #metadata br {
+    clear: both;
+}
+
+#pkgdetails #pkgdeps {
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+}
+
+#pkgdetails #metadata .virtual-dep,
+#pkgdetails #metadata .testing-dep,
+#pkgdetails #metadata .opt-dep,
+#pkgdetails #metadata .dep-desc {
+    font-style: italic;
+}
+#pkgdetails #pkgreqs {
+    float: left;
+    width: 50%;
+}
+
+#pkgdetails #pkgfiles {
+    clear: left;
+    padding-top: 1em;
+}
+
+/* dev/TU biographies */
+div#arch-bio-toc {
+    width: 75%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+    div#arch-bio-toc a {
+        white-space: nowrap;
+    }
+
+table.arch-bio-entry td.pic {
+    vertical-align: top;
+    padding-right: 15px;
+    padding-top: 10px;
+}
+
+    table.arch-bio-entry td.pic img {
+        padding: 4px;
+        border: 1px solid #ccc;
+    }
+
+table.arch-bio-entry table.bio {
+    margin-bottom: 2em;
+}
+
+    table.arch-bio-entry table.bio th {
+        text-align: left;
+        padding-right: 0.5em;
+        vertical-align: top;
+        white-space: nowrap;
+    }
+
+    table.arch-bio-entry table.bio td {
+        width: 100%;
+        padding-bottom: 0.25em;
+    }
+
+/* dev: login/out */
+table#dev-login {
+    width: auto;
+}
+
+/* dev dashboard: flagged packages */
+form#dash-pkg-notify {
+    text-align: right;
+    padding: 1em 0 0;
+    margin-top: 1em;
+    font-size: 0.85em;
+    border-top: 1px dotted #bbb;
+}
+
+    form#dash-pkg-notify label {
+        width: auto;
+        font-weight: normal;
+    }
+
+    form#dash-pkg-notify input {
+        vertical-align: middle;
+        margin: 0 0.25em;
+    }
+
+        form#dash-pkg-notify input[type=submit] {
+            margin-top: -0.25em;
+        }
+
+    form#dash-pkg-notify p {
+        margin: 0;
+    }
+
+table.dash-stats .key {
+    width: 50%;
+}
+
+/* dev dashboard: admin actions (add news items, todo list, etc) */
+ul.admin-actions {
+    float: right;
+    list-style: none;
+    margin-top: -2.5em;
+}
+
+    ul.admin-actions li {
+        display: inline;
+        padding-left: 1.5em;
+    }
+
+/* todo lists (public and private) */
+.todo-table .complete {
+    color: green;
+}
+
+.todo-table .incomplete {
+    color: red;
+}
+.todo-info {
+    margin: 0; color: #999;
+}
+
+.todo-list h4 {
+    margin-top: 0;
+    margin-bottom: 0.4em;
+}
+
+/* dev: signoff page */
+#dev-signoffs tr:hover {
+    background: #ffd;
+}
+
+ul.signoff-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.signoff-yes {
+    color: green;
+    font-weight: bold;
+}
+
+.signoff-no {
+    color: red;
+}
+
+.signoff-bad {
+    color: darkorange;
+}
+
+.signoff-disabled {
+    color: gray;
+}
+
+/* iso testing feedback form */
+#releng-feedback label {
+    width: auto;
+    display: inline;
+    font-weight: normal;
+}
+
+#releng-feedback ul {
+    padding-left: 1em;
+}
+
+#releng-feedback li {
+    list-style: none;
+}
+
+#releng-feedback ul+.helptext {
+    position: relative; top: -0.9em;
+}
+
+#releng-result .success-yes {
+    color: green;
+}
+
+#releng-result .success-no {
+    color: red;
+}
+
+/* highlight current website in the navbar */
+#archnavbar.anb-home ul li#anb-home a,
+#archnavbar.anb-packages ul li#anb-packages a,
+#archnavbar.anb-download ul li#anb-download a {
+    color: white !important;
+}
+
+/* visualizations page */
+.visualize-buttons {
+    margin: 0.5em 0.33em;
+}
+
+    .visualize-buttons button.active {
+        depressed: true;
+    }
+
+.visualize-chart {
+    position: relative;
+    height: 500px;
+    margin: 0.33em;
+}
+
+#visualize-archrepo .treemap-cell {
+    border: solid 1px white;
+    overflow: hidden;
+    position: absolute;
+}
+
+    #visualize-archrepo .treemap-cell span {
+        padding: 3px;
+        font-size: 0.85em;
+        line-height: 1em;
+    }
+
+#visualize-keys svg {
+    width: 100%;
+}
+
+    #visualize-keys circle {
+        stroke-width: 1.5px;
+    }
+
+    #visualize-keys line {
+        stroke: #888;
+    }
