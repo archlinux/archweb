@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from .fields import PositiveBigIntegerField
-from .utils import set_created_field
+from .utils import set_created_field, DependStandin
 from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
 
@@ -247,6 +247,20 @@ class Package(models.Model):
         if len(requiredby) == 0:
             return requiredby
 
+        # do we have duplicate pkgbase values for non-primary depends?
+        # if so, filter it down to base packages only
+        def grouper(depend):
+            p = depend.pkg
+            return (depend.deptype, p.pkgbase, p.repo.testing, p.repo.staging)
+
+        filtered = []
+        for (typ, pkgbase, _, _), dep_pkgs in groupby(requiredby, grouper):
+            dep_pkgs = list(dep_pkgs)
+            if typ == 'D' or len(dep_pkgs) == 1:
+                filtered.extend(dep_pkgs)
+            else:
+                filtered.append(DependStandin(dep_pkgs))
+
         # find another package by this name in a different testing or staging
         # repo; if we can't, we can short-circuit some checks
         repo_q = (Q(repo__testing=(not self.repo.testing)) |
@@ -255,13 +269,13 @@ class Package(models.Model):
                 repo_q, pkgname=self.pkgname, arch=self.arch
                 ).exclude(id=self.id).exists():
             # there isn't one? short circuit, all required by entries are fine
-            return requiredby
+            return filtered
 
         trimmed = []
         # for each unique package name, try to screen our package list down to
         # those packages in the same testing and staging category (yes or no)
         # iff there is a package in the same testing and staging category.
-        for _, dep_pkgs in groupby(requiredby, lambda x: x.pkg.pkgname):
+        for _, dep_pkgs in groupby(filtered, lambda x: x.pkg.pkgname):
             dep_pkgs = list(dep_pkgs)
             dep = dep_pkgs[0]
             if len(dep_pkgs) > 1:
@@ -271,6 +285,7 @@ class Package(models.Model):
                 if len(dep_pkgs) > 0:
                     dep = dep_pkgs[0]
             trimmed.append(dep)
+
         return trimmed
 
     def get_depends(self):

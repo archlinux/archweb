@@ -187,4 +187,18 @@ class PackageStandin(object):
         return '/packages/%s/%s/%s/' % (
                 self.repo.name.lower(), self.arch.name, self.pkgbase)
 
+
+class DependStandin(object):
+    '''Resembles a Depend object, and has a few of the same fields, but is
+    really a link to a base package rather than a single package.'''
+    def __init__(self, depends):
+        self._depends = depends
+        first = depends[0]
+        self.name = first.name
+        self.version = first.version
+        self.comparison = first.comparison
+        self.description = first.description
+        self.deptype = first.deptype
+        self.pkg = first.pkg.base_package() or PackageStandin(first.pkg)
+
 # vim: set ts=4 sw=4 et:
