@@ -1,4 +1,3 @@
-from base64 import b64decode
 from datetime import datetime
 from itertools import groupby
 from pgpdump import BinaryData
@@ -97,7 +96,7 @@ class Package(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    pkgdesc = models.TextField(null=True)
+    pkgdesc = models.TextField('description', null=True)
     url = models.CharField(max_length=255, null=True)
     filename = models.CharField(max_length=255)
     compressed_size = PositiveBigIntegerField()
@@ -106,10 +105,10 @@ class Package(models.Model):
     last_update = models.DateTimeField(db_index=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField()
-    packager_str = models.CharField(max_length=255)
+    packager_str = models.CharField('packager string', max_length=255)
     packager = models.ForeignKey(User, null=True, blank=True,
             on_delete=models.SET_NULL)
-    pgp_signature = models.TextField(null=True, blank=True)
+    signature_bytes = models.BinaryField('PGP signature', null=True)
     flag_date = models.DateTimeField(null=True, blank=True)
 
     objects = PackageManager()
@@ -140,13 +139,9 @@ class Package(models.Model):
 
     @property
     def signature(self):
-        try:
-            data = b64decode(self.pgp_signature.encode('utf-8'))
-        except TypeError:
+        if not self.signature_bytes:
             return None
-        if not data:
-            return None
-        data = BinaryData(data)
+        data = BinaryData(self.signature_bytes)
         packets = list(data.packets())
         return packets[0]
 

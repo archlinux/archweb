@@ -134,7 +134,7 @@ def import_keys(keyring):
 
     logger.info("creating or finding %d keys", len(keydata))
     created_ct = updated_ct = 0
-    with transaction.commit_on_success():
+    with transaction.atomic():
         finder = UserFinder()
         # we are dependent on parents coming before children; parse_keydata
         # uses an OrderedDict to ensure this is the case.
@@ -232,7 +232,7 @@ def import_signatures(keyring):
 
     logger.info("creating or finding up to %d signatures", len(pruned_edges))
     created_ct = updated_ct = 0
-    with transaction.commit_on_success():
+    with transaction.atomic():
         for edge in pruned_edges:
             sig, created = PGPSignature.objects.get_or_create(
                     signer=edge.signer, signee=edge.signee,

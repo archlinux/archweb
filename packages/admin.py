@@ -20,7 +20,7 @@ class FlagRequestAdmin(admin.ModelAdmin):
     ordering = ('-created',)
     date_hierarchy = 'created'
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(FlagRequestAdmin, self).queryset(request)
         return qs.select_related('repo', 'user')
 
@@ -42,7 +42,7 @@ class SignoffSpecificationAdmin(admin.ModelAdmin):
     ordering = ('-created',)
     date_hierarchy = 'created'
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(SignoffSpecificationAdmin, self).queryset(request)
         return qs.select_related('arch', 'repo', 'user')
 

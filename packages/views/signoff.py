@@ -81,7 +81,7 @@ class SignoffOptionsForm(forms.ModelForm):
 
 def _signoff_options_all(request, name, repo):
     seen_ids = set()
-    with transaction.commit_on_success():
+    with transaction.atomic():
         # find or create a specification for all architectures, then
         # graft the form data onto them
         packages = Package.objects.filter(pkgbase=name,

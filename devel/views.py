@@ -167,7 +167,7 @@ def change_profile(request):
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
                 request.user.set_password(form.cleaned_data['passwd1'])
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 request.user.save()
                 profile_form.save()
             return HttpResponseRedirect('/devel/')
@@ -275,7 +275,7 @@ def report(request, report_name, username=None):
         cutoff = timedelta(hours=24)
         filtered = []
         packages = packages.select_related(
-                'arch', 'repo', 'packager').filter(pgp_signature__isnull=False)
+                'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
         known_keys = DeveloperKey.objects.select_related(
                 'owner').filter(owner__isnull=False)
         known_keys = {dk.key: dk for dk in known_keys}
@@ -335,7 +335,7 @@ def new_user_form(request):
     if request.POST:
         form = NewUserForm(request.POST)
         if form.is_valid():
-            with transaction.commit_on_success():
+            with transaction.atomic():
                 form.save()
                 log_addition(request, form.instance.user)
             return HttpResponseRedirect('/admin/auth/user/%d/' % \

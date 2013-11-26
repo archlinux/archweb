@@ -66,7 +66,7 @@ class Command(BaseCommand):
             if hasattr(thread, 'cancel'):
                 thread.cancel()
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def setup_notifier(self):
         '''Set up and configure the inotify machinery and logic.
         This takes the provided or default path_template and builds a list of

@@ -84,7 +84,7 @@ def flag(request, name, repo, arch):
             else:
                 email = form.cleaned_data['email']
 
-            @transaction.commit_on_success
+            @transaction.atomic
             def perform_updates():
                 current_time = now()
                 pkgs.update(flag_date=current_time)

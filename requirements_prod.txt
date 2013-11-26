@@ -1,5 +1,5 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==1.5.5
+Django==1.6
 IPy==0.81
 Markdown==2.3.1
 South==0.8.2
@@ -10,4 +10,4 @@ pgpdump==1.4
 psycopg2==2.5.1
 pyinotify==0.9.4
 python-memcached==1.53
-pytz>=2013.7
+pytz>=2013.8
