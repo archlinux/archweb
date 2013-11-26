@@ -14,6 +14,8 @@ RETRO_YEAR_MAP = {
     2009: 'index-20090327.html',
     2010: 'index-20100208.html',
     2011: 'index-20110212.html',
+    2012: 'index-2012-03-09.html',
+    2013: 'index-2013-03-07.html',
 }
 
 

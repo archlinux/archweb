@@ -20,7 +20,7 @@ from django.utils.http import http_date
 from django.utils.timezone import now
 
 from .forms import ProfileForm, UserProfileForm, NewUserForm
-from .models import DeveloperKey
+from .models import DeveloperKey, UserProfile
 from main.models import Package, PackageFile
 from main.models import Arch, Repo
 from news.models import News
@@ -158,10 +158,11 @@ def clock(request):
 @login_required
 @never_cache
 def change_profile(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.POST:
         form = ProfileForm(request.POST)
         profile_form = UserProfileForm(request.POST, request.FILES,
-                instance=request.user.userprofile)
+                instance=profile)
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
@@ -172,7 +173,7 @@ def change_profile(request):
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
-        profile_form = UserProfileForm(instance=request.user.userprofile)
+        profile_form = UserProfileForm(instance=profile)
     return render(request, 'devel/profile.html',
             {'form': form, 'profile_form': profile_form})
 

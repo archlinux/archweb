@@ -1,0 +1,24 @@
+
+
+
+
+
+/*
+     FILE ARCHIVED ON 16:45:26 Mar 12, 2012 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 22:32:15 Nov 11, 2013.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+ *  ARCH LINUX DJANGO (MAIN SITE)
+ *
+ *  Stylesheet for printing
+ */
+
+/* general styling */
+body { font: normal 100% sans-serif; }
+#content { font-size: 0.812em; }
+#archnavbarmenu, #archdev-navbar, .admin-actions { display: none; }
+
