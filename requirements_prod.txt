@@ -2,10 +2,10 @@
 Django==1.6
 IPy==0.81
 Markdown==2.3.1
-South==0.8.2
+South==0.8.4
 bencode==1.0
 django-countries==1.5
-jsmin==2.0.6
+jsmin==2.0.8
 pgpdump==1.4
 psycopg2==2.5.1
 pyinotify==0.9.4
