@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load cycle from future %}
 {% load static from staticfiles %}
+{% load package_extras %}
 
 {% block title %}Arch Linux - Package Differences Reports{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
@@ -78,12 +79,10 @@
         <tbody>
             {% for pkg1, pkg2 in multilib_differences %}
             <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="{{ pkg1.get_absolute_url }}"
-                        title="View package details for {{ pkg1.pkgname }}">{{ pkg1.pkgname }}</a></td>
+                <td>{% pkg_details_link pkg1 %}</td>
                 <td><span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.full_version }}</span></td>
                 <td><span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.full_version }}</span></td>
-                <td><a href="{{ pkg2.get_absolute_url }}"
-                        title="View package details for {{ pkg2.pkgname }}">{{ pkg2.pkgname }}</a></td>
+                <td>{% pkg_details_link pkg2 %}</td>
                 <td>{{ pkg2.repo }}</td>
                 <td>{{ pkg1.last_update|date }}</td>
                 <td>{{ pkg2.last_update|date }}</td>
