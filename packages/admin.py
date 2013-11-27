@@ -15,10 +15,9 @@ class PackageRelationAdmin(admin.ModelAdmin):
 class FlagRequestAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'repo', 'created', 'who',
             'is_spam', 'is_legitimate', 'message')
-    list_filter = ('is_spam', 'is_legitimate', 'repo')
+    list_filter = ('is_spam', 'is_legitimate', 'repo', 'created')
     search_fields = ('pkgbase', 'user_email', 'message')
     ordering = ('-created',)
-    date_hierarchy = 'created'
 
     def get_queryset(self, request):
         qs = super(FlagRequestAdmin, self).queryset(request)
@@ -28,19 +27,17 @@ class FlagRequestAdmin(admin.ModelAdmin):
 class SignoffAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
             'user', 'created', 'revoked')
-    list_filter = ('arch', 'repo', 'user')
+    list_filter = ('arch', 'repo', 'user', 'created')
     search_fields = ('pkgbase', 'user__username')
     ordering = ('-created',)
-    date_hierarchy = 'created'
 
 
 class SignoffSpecificationAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
             'user', 'created', 'comments')
-    list_filter = ('arch', 'repo', 'user')
+    list_filter = ('arch', 'repo', 'user', 'created')
     search_fields = ('pkgbase', 'user__username')
     ordering = ('-created',)
-    date_hierarchy = 'created'
 
     def get_queryset(self, request):
         qs = super(SignoffSpecificationAdmin, self).queryset(request)
@@ -50,10 +47,9 @@ class SignoffSpecificationAdmin(admin.ModelAdmin):
 class UpdateAdmin(admin.ModelAdmin):
     list_display = ('pkgname', 'repo', 'arch', 'action_flag',
             'old_version', 'new_version', 'created')
-    list_filter = ('action_flag', 'repo', 'arch')
+    list_filter = ('action_flag', 'repo', 'arch', 'created')
     search_fields = ('pkgname',)
     ordering = ('-created',)
-    date_hierarchy = 'created'
     raw_id_fields = ('package',)
 
 
