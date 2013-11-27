@@ -46,14 +46,10 @@
                 <td>{{ diff.pkgname }}</td>
                 <td>{{ diff.repo.name }}</td>
                 {% if diff.pkg_a %}
-                <td><a href="{{ diff.pkg_a.get_absolute_url }}"
-                        title="View package details for {{ diff.pkg_a.pkgname }}">
-                        <span{% if diff.pkg_a.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_a.full_version }}</span></a></td>
+                <td>{% pkg_details_link diff.pkg_a diff.pkg_a.full_version True %}</td>
                 {% else %}<td>-</td>{% endif %}
                 {% if diff.pkg_b %}
-                <td><a href="{{ diff.pkg_b.get_absolute_url }}"
-                        title="View package details for {{ diff.pkg_b.pkgname }}">
-                        <span{% if diff.pkg_b.flag_date %} class="flagged"{% endif %}>{{ diff.pkg_b.full_version }}</span></a></td>
+                <td>{% pkg_details_link diff.pkg_b diff.pkg_b.full_version True %}</td>
                 {% else %}<td>-</td>{% endif %}
             </tr>
             {% endfor %}
