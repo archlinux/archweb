@@ -1,6 +1,5 @@
 from datetime import timedelta
 from django import template
-from django.template.defaultfilters import floatformat
 
 register = template.Library()
 
@@ -27,10 +26,16 @@ def hours(value):
     return '%d hours' % hrs
 
 @register.filter
-def percentage(value, arg=-1):
+def floatvalue(value, arg=2):
+    if value is None:
+        return u''
+    return '%.*f' % (arg, value)
+
+@register.filter
+def percentage(value, arg=1):
     if not value and type(value) != float:
         return u''
     new_val = value * 100.0
-    return floatformat(new_val, arg) + '%'
+    return '%.*f%%' % (arg, new_val)
 
 # vim: set ts=4 sw=4 et:

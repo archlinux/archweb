@@ -1,4 +1,4 @@
-{% comment %}
+{% load mirror_status %}{% comment %}
 Yes, ugly templates are ugly, but in order to keep line breaks where we want
 them, sacrifices have to be made. If editing this template, it is easiest to
 forget about where line breaks are happening until you are done getting the
@@ -9,6 +9,6 @@ content right, and then go back later to fix it all up.
 ## Generated on {% now "Y-m-d" %}
 ##
 {% for mirror_url in mirror_urls %}
-## Score: {{ mirror_url.score|floatformat:1|default:'unknown' }}, {{ mirror_url.country.name|default:'Worldwide' }}
+## Score: {{ mirror_url.score|floatvalue:1|default:'unknown' }}, {{ mirror_url.country.name|default:'Worldwide' }}
 #Server = {{ mirror_url.url}}$repo/os/$arch{% endfor %}
 {% endautoescape %}
