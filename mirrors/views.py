@@ -153,15 +153,20 @@ def mirrors(request):
 
 def mirror_details(request, name):
     mirror = get_object_or_404(Mirror, name=name)
-    if not request.user.is_authenticated() and \
+    authorized = request.user.is_authenticated()
+    if not authorized and \
             (not mirror.public or not mirror.active):
         raise Http404
     error_cutoff = timedelta(days=7)
 
-    status_info = get_mirror_statuses(mirror_id=mirror.id)
+    status_info = get_mirror_statuses(mirror_id=mirror.id,
+            show_all=authorized)
     checked_urls = {url for url in status_info['urls'] \
             if url.mirror_id == mirror.id}
-    all_urls = set(mirror.urls.filter(active=True).select_related('protocol'))
+    all_urls = mirror.urls.select_related('protocol')
+    if not authorized:
+        all_urls = all_urls.filter(active=True)
+    all_urls = set(all_urls)
     # Add dummy data for URLs that we haven't checked recently
     other_urls = all_urls.difference(checked_urls)
     for url in other_urls:
@@ -170,7 +175,8 @@ def mirror_details(request, name):
             setattr(url, attr, None)
     all_urls = sorted(checked_urls.union(other_urls), key=attrgetter('url'))
 
-    error_logs = get_mirror_errors(mirror_id=mirror.id, cutoff=error_cutoff)
+    error_logs = get_mirror_errors(mirror_id=mirror.id, cutoff=error_cutoff,
+            show_all=True)
 
     context = {
         'mirror': mirror,
@@ -181,8 +187,10 @@ def mirror_details(request, name):
     return render(request, 'mirrors/mirror_details.html', context)
 
 def mirror_details_json(request, name):
+    authorized = request.user.is_authenticated()
     mirror = get_object_or_404(Mirror, name=name)
-    status_info = get_mirror_statuses(mirror_id=mirror.id)
+    status_info = get_mirror_statuses(mirror_id=mirror.id,
+            show_all=authorized)
     data = status_info.copy()
     data['version'] = 3
     to_json = json.dumps(data, ensure_ascii=False,

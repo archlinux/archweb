@@ -113,18 +113,17 @@ def annotate_url(url, url_data):
         url.score = (hours + url.duration_avg + stddev) / divisor
 
 
-def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
+def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
 
-    # TODO: this prevents grabbing data points from any mirror that was active,
-    # receiving checks, and then marked private. we can probably be smarter and
-    # filter the data later?
-    valid_urls = MirrorUrl.objects.filter(active=True,
-            mirror__active=True, mirror__public=True,
+    valid_urls = MirrorUrl.objects.filter(
             logs__check_time__gte=cutoff_time).distinct()
 
     if mirror_id:
         valid_urls = valid_urls.filter(mirror_id=mirror_id)
+    if not show_all:
+        valid_urls = valid_urls.filter(active=True, mirror__active=True,
+                mirror__public=True)
 
     url_data = status_data(cutoff_time, mirror_id)
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
@@ -159,11 +158,11 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None):
     }
 
 
-def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
+def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
-            is_success=False, check_time__gte=cutoff_time, url__active=True,
-            url__mirror__active=True, url__mirror__public=True).values(
+            is_success=False, check_time__gte=cutoff_time,
+            url__mirror__public=True).values(
             'url__url', 'url__country', 'url__protocol__protocol',
             'url__mirror__tier', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
@@ -171,6 +170,9 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None):
 
     if mirror_id:
         errors = errors.filter(url__mirror_id=mirror_id)
+    if not show_all:
+        errors = errors.filter(url__active=True, url__mirror__active=True,
+                url__mirror__public=True)
 
     errors = list(errors)
     for err in errors:
