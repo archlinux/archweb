@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
+from ..utils import cache_function
 from devel.models import DeveloperKey
 
 register = template.Library()
@@ -42,15 +43,22 @@ def pgp_key_link(key_id, link_text=None):
     values = (url, format_key(key_id), link_text)
     return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
-@register.simple_tag
-def user_pgp_key_link(key_id):
-    normalized = key_id[-16:]
+
+@cache_function(1800)
+def name_for_key(normalized):
     try:
         matching_key = DeveloperKey.objects.select_related(
                 'owner').get(key=normalized, owner_id__isnull=False)
+        return matching_key.owner.get_full_name()
     except DeveloperKey.DoesNotExist:
-        return pgp_key_link(key_id)
-    return pgp_key_link(key_id, matching_key.owner.get_full_name())
+        return None
+
+
+@register.simple_tag
+def user_pgp_key_link(key_id):
+    normalized = key_id[-16:]
+    name = name_for_key(normalized)
+    return pgp_key_link(key_id, name)
 
 
 @register.filter(needs_autoescape=True)

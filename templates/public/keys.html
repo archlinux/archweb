@@ -86,16 +86,16 @@
             </tr>
         </thead>
         <tbody>
-            {% for user in active_users %}
+            {% for user in active_users %}{% with user_key=user.userprofile.pgp_key %}
             <tr>
                 <th>{{ user.get_full_name }}</th>
-                <td>{% pgp_key_link user.userprofile.pgp_key %}</td>
+                <td>{% pgp_key_link user_key %}</td>
                 {% spaceless %}{% for key in keys %}
-                {% signature_exists signatures key.pgp_key user.userprofile.pgp_key as signed %}
+                {% signature_exists signatures key.pgp_key user_key as signed %}
                 <td class="signed-{{ signed|yesno }}">{{ signed|yesno|capfirst }}</td>
                 {% endfor %}{% endspaceless %}
             </tr>
-            {% endfor %}
+            {% endwith %}{% endfor %}
         </tbody>
     </table>
 </div>
