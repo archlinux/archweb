@@ -9,6 +9,14 @@ class Migration(SchemaMigration):
         db.add_column(u'mirrors_mirror', 'bug',
                       self.gf('django.db.models.fields.PositiveIntegerField')(null=True),
                       keep_default=False)
+        # UPDATE mirrors_mirror m
+        # SET bug = (
+        #   SELECT extracted::int FROM (
+        #    SELECT id, substring(notes from 'FS#([\d]+)') AS extracted FROM mirrors_mirror
+        #   ) a
+        #   WHERE extracted IS NOT NULL AND a.id = m.id
+        # )
+        # WHERE notes LIKE '%FS#%';
 
     def backwards(self, orm):
         db.delete_column(u'mirrors_mirror', 'bug')
