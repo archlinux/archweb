@@ -20,12 +20,14 @@ from .utils import get_recent_updates
 @cache_control(max_age=300)
 def index(request):
     if request.user.is_authenticated():
-        pkgs = get_recent_updates(testing=True, staging=True)
+        def updates():
+            return get_recent_updates(testing=True, staging=True)
     else:
-        pkgs = get_recent_updates()
+        def updates():
+            return get_recent_updates()
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
-        'pkg_updates': pkgs,
+        'pkg_updates': updates,
     }
     return render(request, 'public/index.html', context)
 

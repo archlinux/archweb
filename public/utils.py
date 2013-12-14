@@ -2,7 +2,7 @@ from collections import defaultdict
 from operator import attrgetter
 
 from main.models import Arch, Repo, Package
-from main.utils import cache_function, groupby_preserve_order, PackageStandin
+from main.utils import groupby_preserve_order, PackageStandin
 
 class RecentUpdate(object):
     def __init__(self, packages):
@@ -58,7 +58,6 @@ class RecentUpdate(object):
         return "RecentUpdate '%s %s' <%d packages>" % (
                 self.pkgbase, self.version, len(self.packages))
 
-@cache_function(62)
 def get_recent_updates(number=15, testing=True, staging=False):
     repos = Repo.objects.all()
     if not testing:
