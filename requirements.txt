@@ -1,5 +1,5 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==1.6
+Django==1.6.1
 IPy==0.81
 Markdown==2.3.1
 South==0.8.4
