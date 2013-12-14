@@ -22,7 +22,8 @@ def dictfetchall(cursor):
     ]
 
 @cache_function(178)
-def status_data(cutoff_time, mirror_id=None):
+def status_data(cutoff=DEFAULT_CUTOFF, mirror_id=None):
+    cutoff_time = now() - cutoff
     if mirror_id is not None:
         params = [cutoff_time, mirror_id]
         mirror_where = 'AND u.mirror_id = %s'
@@ -125,7 +126,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
         valid_urls = valid_urls.filter(active=True, mirror__active=True,
                 mirror__public=True)
 
-    url_data = status_data(cutoff_time, mirror_id)
+    url_data = status_data(cutoff, mirror_id)
     urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
             id__in=valid_urls).order_by('mirror__id', 'url')
 
