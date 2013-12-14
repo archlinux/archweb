@@ -54,6 +54,10 @@
             <td>{% if mirror.alternate_email %}<a href="mailto:{{ mirror.alternate_email }}">{{ mirror.alternate_email }}</a>{% else %}None{% endif %}</td>
         </tr>
         <tr>
+            <th>Flyspray Issue:</th>
+            <td>{% if mirror.bug %}<a href="https://bugs.archlinux.org/task/{{ mirror.bug }}">FS#{{ mirror.bug }}</a>{% endif %}</td>
+        </tr>
+        <tr>
             <th>Notes:</th>
             <td>{{ mirror.notes|linebreaks }}</td>
         </tr>
