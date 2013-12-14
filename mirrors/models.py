@@ -28,6 +28,7 @@ class Mirror(models.Model):
     isos = models.BooleanField("ISOs", default=True)
     rsync_user = models.CharField(max_length=50, blank=True, default='')
     rsync_password = models.CharField(max_length=50, blank=True, default='')
+    bug = models.PositiveIntegerField("Flyspray bug", null=True, blank=True)
     notes = models.TextField(blank=True)
     created = models.DateTimeField(editable=False)
 

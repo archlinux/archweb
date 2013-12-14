@@ -54,7 +54,7 @@ class MirrorAdminForm(forms.ModelForm):
         model = Mirror
         fields = ('name', 'tier', 'upstream', 'admin_email', 'alternate_email',
                 'public', 'active', 'isos', 'rsync_user', 'rsync_password',
-                'notes')
+                'bug', 'notes')
 
     upstream = forms.ModelChoiceField(
             queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
@@ -67,6 +67,7 @@ class MirrorAdmin(admin.ModelAdmin):
             'isos', 'admin_email', 'alternate_email')
     list_filter = ('tier', 'active', 'public')
     search_fields = ('name', 'admin_email', 'alternate_email')
+    readonly_fields = ('created',)
     inlines = [
             MirrorUrlInlineAdmin,
             MirrorRsyncInlineAdmin,
