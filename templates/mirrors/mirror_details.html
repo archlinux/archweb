@@ -71,14 +71,13 @@
         <tr>
             <th>Downstream:</th>
             {% with mirror.downstream as ds_mirrors %}
-            <td>{% if ds_mirrors %}
+            <td class="wrap">{% if ds_mirrors %}
                 {% for ds in ds_mirrors %}
                 <a href="{{ ds.get_absolute_url }}"
-                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a>
-                {% if not ds.active %}<span class="testing-dep">(inactive)</span>{% endif %}
-                {% if not ds.public %}<span class="testing-dep">(private)</span>{% endif %}
-                <br/>
-                {% endfor %}
+                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a>{% comment %}
+                {% endcomment %}{% if not ds.active %} <span class="testing-dep">(inactive)</span>{% endif %}{% comment %}
+                {% endcomment %}{% if not ds.public %} <span class="testing-dep">(private)</span>{% endif %}{% comment %}
+                {% endcomment %}{% if not forloop.last %}, {% endif %}{% endfor %}
                 {% else %}None{% endif %}</td>
             {% endwith %}
         </tr>
