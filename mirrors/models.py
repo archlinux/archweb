@@ -161,6 +161,8 @@ class MirrorLog(models.Model):
     error = models.TextField(blank=True, default='')
 
     def delay(self):
+        if self.last_sync is None:
+            return None
         # sanity check, this shouldn't happen
         if self.check_time < self.last_sync:
             return timedelta()

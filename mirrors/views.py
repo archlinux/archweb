@@ -186,6 +186,7 @@ def mirror_details(request, name):
     }
     return render(request, 'mirrors/mirror_details.html', context)
 
+
 def mirror_details_json(request, name):
     authorized = request.user.is_authenticated()
     mirror = get_object_or_404(Mirror, name=name)
@@ -197,6 +198,24 @@ def mirror_details_json(request, name):
             cls=ExtendedMirrorStatusJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response
+
+
+def url_details(request, name, url_id):
+    url = get_object_or_404(MirrorUrl, id=url_id, mirror__name=name)
+    mirror = url.mirror
+    authorized = request.user.is_authenticated()
+    if not authorized and \
+            (not mirror.public or not mirror.active or not url.active):
+        raise Http404
+    error_cutoff = timedelta(days=7)
+    cutoff_time = now() - error_cutoff
+    logs = MirrorLog.objects.filter(url=url, check_time__gte=cutoff_time).order_by('-check_time')
+
+    context = {
+        'url': url,
+        'logs': logs,
+    }
+    return render(request, 'mirrors/url_details.html', context)
 
 
 def status(request, tier=None):

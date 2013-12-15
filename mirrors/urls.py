@@ -9,6 +9,7 @@ urlpatterns = patterns('mirrors.views',
     (r'^locations/json/$',      'locations_json',  {}, 'mirror-locations-json'),
     (r'^(?P<name>[\.\-\w]+)/$', 'mirror_details'),
     (r'^(?P<name>[\.\-\w]+)/json/$', 'mirror_details_json'),
+    (r'^(?P<name>[\.\-\w]+)/(?P<url_id>\d+)/$', 'url_details'),
 )
 
 # vim: set ts=4 sw=4 et:

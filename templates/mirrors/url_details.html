@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load cycle from future %}
+{% load static from staticfiles %}
+{% load mirror_status %}
+{% load flags %}
+
+{% block title %}Arch Linux - {{ url.url }} - URL Details{% endblock %}
+
+{% block head %}<link rel="stylesheet" type="text/css" href="{% static "flags/fam.css" %}" media="screen, projection" />{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>URL Details: {{ url.url }}</h2>
+
+    <table class="compact">
+        <tr>
+            <th>URL:</th>
+            <td>{{ url.url }}</td>
+        </tr>
+        <tr>
+            <th>Protocol:</th>
+            <td>{{ url.protocol }}</td>
+        </tr>
+        <tr>
+            <th>Country:</th>
+            <td class="country">{% country_flag url.country %}{{ url.country.name }}</td>
+        </tr>
+        <tr>
+            <th>IPv4:</th>
+            <td>{{ url.has_ipv4|yesno|capfirst }}</td>
+        </tr>
+        <tr>
+            <th>IPv6:</th>
+            <td>{{ url.has_ipv6|yesno|capfirst }}</td>
+        </tr>
+        {% if user.is_authenticated %}
+        <tr>
+            <th>Active:</th>
+            <td>{{ url.active|yesno|capfirst }}</td>
+        </tr>
+        <tr>
+            <th>Created:</th>
+            <td>{{ url.created }}</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <h3>Check Logs</h3>
+
+    <table id="check_logs" class="results">
+        <thead>
+            <tr>
+                <th>Check Time</th>
+                <th>Check Location</th>
+                <th>Check IP</th>
+                <th>Last Sync</th>
+                <th>Delay (hh:mm)</th>
+                <th>Duration (secs)</th>
+                <th>Success?</th>
+                <th>Error Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}<tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ log.check_time|date:'Y-m-d H:i' }}</td>
+                <td class="country">{% country_flag log.location.country %}{{ log.location.country.name }}</td>
+                <td>{{ log.location.source_ip }}</td>
+                <td>{{ log.last_sync|date:'Y-m-d H:i' }}</td>
+                <td>{{ log.delay|duration }}</td>
+                <td>{{ log.duration|floatvalue }}</td>
+                <td>{{ log.is_success|yesno|capfirst }}</td>
+                <td class="wrap">{{ log.error|linebreaksbr }}</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block script_block %}
+{% load cdn %}{% jquery %}{% jquery_tablesorter %}
+<script type="text/javascript" src="{% static "archweb.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#check_logs:has(tbody tr)").tablesorter(
+        {widgets: ['zebra'], sortList: [[0,1]],
+        headers: { 5: { sorter: 'mostlydigit' } } });
+});
+</script>
+{% endblock %}

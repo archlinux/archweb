@@ -42,6 +42,10 @@
             <td>{{ mirror.active|yesno|capfirst }}</td>
         </tr>
         <tr>
+            <th>Created:</th>
+            <td>{{ mirror.created }}</td>
+        </tr>
+        <tr>
             <th>Rsync IPs:</th>
             <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
         </tr>
@@ -99,7 +103,8 @@
                 <th>μ Delay (hh:mm)</th>
                 <th>μ Duration (secs)</th>
                 <th>σ Duration (secs)</th>
-                <th>Mirror Score</th>
+                <th>Score</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
@@ -116,6 +121,7 @@
                 <td>{{ m_url.duration_avg|floatvalue:2 }}</td>
                 <td>{{ m_url.duration_stddev|floatvalue:2 }}</td>
                 <td>{{ m_url.score|floatvalue:1|default:'∞' }}</td>
+                <td><a href="{{ m_url.id }}/">Details</a></td>
             </tr>
             {% endfor %}
         </tbody>
