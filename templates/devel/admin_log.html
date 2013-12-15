@@ -48,7 +48,7 @@
                 {% if entry.is_deletion %}
                 {{ entry.object_repr }}
                 {% else %}
-                <a href="/admin/{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
                 {% endif %}
             </td>
             <td>{{ entry.change_message }}</td>
