@@ -1,3 +1,4 @@
+from datetime import timedelta
 import socket
 from urlparse import urlparse
 
@@ -158,6 +159,12 @@ class MirrorLog(models.Model):
     duration = models.FloatField(null=True)
     is_success = models.BooleanField(default=True)
     error = models.TextField(blank=True, default='')
+
+    def delay(self):
+        # sanity check, this shouldn't happen
+        if self.check_time < self.last_sync:
+            return timedelta()
+        return self.check_time - self.last_sync
 
     def __unicode__(self):
         return "Check of %s at %s" % (self.url.url, self.check_time)
