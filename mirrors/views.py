@@ -201,7 +201,8 @@ def mirror_details_json(request, name):
 
 
 def url_details(request, name, url_id):
-    url = get_object_or_404(MirrorUrl, id=url_id, mirror__name=name)
+    url = get_object_or_404(MirrorUrl.objects.select_related(),
+            id=url_id, mirror__name=name)
     mirror = url.mirror
     authorized = request.user.is_authenticated()
     if not authorized and \
@@ -209,7 +210,8 @@ def url_details(request, name, url_id):
         raise Http404
     error_cutoff = timedelta(days=7)
     cutoff_time = now() - error_cutoff
-    logs = MirrorLog.objects.filter(url=url, check_time__gte=cutoff_time).order_by('-check_time')
+    logs = MirrorLog.objects.select_related('location').filter(
+            url=url, check_time__gte=cutoff_time).order_by('-check_time')
 
     context = {
         'url': url,
