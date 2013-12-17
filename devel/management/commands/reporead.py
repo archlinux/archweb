@@ -82,8 +82,7 @@ class RepoPackage(object):
             'md5sum', 'sha256sum', 'url', 'packager' )
     number = ( 'csize', 'isize' )
     collections = ( 'depends', 'optdepends', 'makedepends', 'checkdepends',
-            'conflicts', 'provides', 'replaces', 'groups', 'license',
-            'files' )
+            'conflicts', 'provides', 'replaces', 'groups', 'license')
 
     def __init__(self, repo):
         self.repo = repo
@@ -98,7 +97,6 @@ class RepoPackage(object):
             setattr(self, k, ())
         self.builddate = None
         self.files = None
-        self.has_files = False
 
     def populate(self, values):
         for k, v in values.iteritems():
@@ -120,12 +118,20 @@ class RepoPackage(object):
                     logger.warning(
                             'Package %s had unparsable build date %s',
                             self.name, v[0])
-            elif k == 'files':
-                self.files = tuple(v)
-                self.has_files = True
             else:
                 # anything left in collections
                 setattr(self, k, tuple(v))
+
+    @property
+    def files_list(self):
+        data_file = io.TextIOWrapper(io.BytesIO(self.files), encoding='UTF-8')
+        try:
+            info = parse_info(data_file)
+        except UnicodeDecodeError:
+            logger.warn("Could not correctly decode files list for %s",
+                    self.name)
+            return None
+        return info['files']
 
     @property
     def full_version(self):
@@ -291,15 +297,18 @@ def populate_files(dbpkg, repopkg, force=False):
             return
 
     # only delete files if we are reading a DB that contains them
-    if repopkg.has_files:
+    if repopkg.files:
+        files = repopkg.files_list
+        # we had files data, but it couldn't be parsed, so skip
+        if not files:
+            return
         delete_pkg_files(dbpkg)
         logger.info("adding %d files for package %s",
-                len(repopkg.files), dbpkg.pkgname)
+                len(files), dbpkg.pkgname)
         pkg_files = []
         # sort in normal alpha-order that pacman uses, rather than makepkg's
         # default breadth-first, directory-first ordering
-        files = sorted(repopkg.files)
-        for f in files:
+        for f in sorted(files):
             if '/' in f:
                 dirname, filename = f.rsplit('/', 1)
                 dirname += '/'
@@ -507,24 +516,27 @@ def parse_repo(repopath):
 
     repodb = tarfile.open(repopath, "r")
     logger.debug("Starting package parsing")
-    dbfiles = ('desc', 'depends', 'files')
     newpkg = lambda: RepoPackage(reponame)
     pkgs = defaultdict(newpkg)
     for tarinfo in repodb.getmembers():
         if tarinfo.isreg():
             pkgid, fname = os.path.split(tarinfo.name)
-            if fname not in dbfiles:
-                continue
-            data_file = repodb.extractfile(tarinfo)
-            data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                    encoding='UTF-8')
-            try:
-                pkgs[pkgid].populate(parse_info(data_file))
-            except UnicodeDecodeError:
-                logger.warn("Could not correctly decode %s, skipping file",
-                        tarinfo.name)
-            data_file.close()
-            del data_file
+            if fname == 'files':
+                # don't parse yet for speed and memory consumption reasons
+                files_data = repodb.extractfile(tarinfo)
+                pkgs[pkgid].files = files_data.read()
+                del files_data
+            elif fname in ('desc', 'depends'):
+                data_file = repodb.extractfile(tarinfo)
+                data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
+                        encoding='UTF-8')
+                try:
+                    pkgs[pkgid].populate(parse_info(data_file))
+                except UnicodeDecodeError:
+                    logger.warn("Could not correctly decode %s, skipping file",
+                            tarinfo.name)
+                data_file.close()
+                del data_file
 
             logger.debug("Done parsing file %s/%s", pkgid, fname)
 
