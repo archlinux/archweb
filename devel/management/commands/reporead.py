@@ -260,6 +260,24 @@ def delete_pkg_files(dbpkg):
     cursor.execute('DELETE FROM package_files WHERE pkg_id = %s', [dbpkg.id])
 
 
+def batched_bulk_create(model, all_objects):
+    cutoff = 10000
+    length = len(all_objects)
+    if length < cutoff:
+        return model.objects.bulk_create(all_objects)
+
+    def chunks():
+        offset = 0
+        while offset < length:
+            yield all_objects[offset:offset + cutoff]
+            offset += cutoff
+
+    for items in chunks():
+        ret = model.objects.bulk_create(items)
+
+    return ret
+
+
 def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if not pkg_same_version(repopkg, dbpkg):
@@ -294,7 +312,7 @@ def populate_files(dbpkg, repopkg, force=False):
                     directory=dirname,
                     filename=filename)
             pkg_files.append(pkgfile)
-        PackageFile.objects.bulk_create(pkg_files)
+        batched_bulk_create(PackageFile, pkg_files)
         dbpkg.files_last_update = now()
         dbpkg.save()
 
