@@ -15,7 +15,7 @@
     <table class="compact">
         <tr>
             <th>URL:</th>
-            <td>{{ url.url }}</td>
+            <td>{% if url.protocol.is_download %}<a href="{{ url.url }}">{{ url.url }}</a>{% else %}{{ url.url }}{% endif %}</td>
         </tr>
         <tr>
             <th>Protocol:</th>
@@ -41,6 +41,14 @@
         <tr>
             <th>Created:</th>
             <td>{{ url.created }}</td>
+        </tr>
+        <tr>
+            <th>First Check:</th>
+            <td>{{ url.logs.earliest.check_time }}</td>
+        </tr>
+        <tr>
+            <th>Last Check:</th>
+            <td>{{ url.logs.latest.check_time }}</td>
         </tr>
         {% endif %}
     </table>
