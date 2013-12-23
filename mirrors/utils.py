@@ -88,6 +88,8 @@ def annotate_url(url, url_data):
         ('success_count', 0),
         ('check_count', 0),
         ('completion_pct', None),
+        ('duration_avg', None),
+        ('duration_stddev', None),
         ('last_check', None),
         ('last_sync', None),
         ('delay', None),
