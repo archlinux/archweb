@@ -10,14 +10,12 @@
         <li><strong>Release Date:</strong> {{ release.release_date|date }}</li>
         {% if release.kernel_version %}<li><strong>Kernel Version:</strong> {{ release.kernel_version }}</li>{% endif %}
         <li><strong>Available:</strong> {{ release.available|yesno }}</li>
-        {% if release.available %}<li><strong>Download:</strong> <a
+        {% if release.torrent_data %}<li><strong>Download:</strong> <a
                 href="{% url 'releng-release-torrent' release.version %}"
                 title="Download torrent for {{ release.version }}">Torrent</a>,
             <a href="{{ release.magnet_uri }}">Magnet</a></li>{% endif %}
-        {% if release.torrent_infohash %}<li><strong>Torrent Info Hash:</strong> {{ release.torrent_infohash }}</li>{% endif %}
         {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
         {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
-        <li><strong>Download Size:</strong> {% if release.file_size %}{{ release.file_size|filesizeformat }}{% else %}Unknown{% endif %}</li>
     </ul>
 
     {% if release.info %}
@@ -38,7 +36,7 @@
         <li><strong>File Length:</strong> {{ torrent.file_length|filesizeformat }}</li>
         <li><strong>Piece Count:</strong> {{ torrent.piece_count }} pieces</li>
         <li><strong>Piece Length:</strong> {{ torrent.piece_length|filesizeformat }}</li>
-        <li><strong>Computed Info Hash:</strong> {{ torrent.info_hash }}</li>
+        <li><strong>Info Hash:</strong> {{ torrent.info_hash }}</li>
         <li><strong>URL List Length:</strong> {{ torrent.url_list|length }} URLs</li>
     </ul>
     {% endwith %}{% endif %}

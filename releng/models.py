@@ -119,14 +119,13 @@ class Release(models.Model):
     release_date = models.DateField(db_index=True)
     version = models.CharField(max_length=50, unique=True)
     kernel_version = models.CharField(max_length=50, blank=True)
-    torrent_infohash = models.CharField(max_length=40, blank=True)
     md5_sum = models.CharField('MD5 digest', max_length=32, blank=True)
     sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
-    file_size = PositiveBigIntegerField(null=True, blank=True)
     created = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
     info = models.TextField('Public information', blank=True)
-    torrent_data = models.TextField(blank=True)
+    torrent_data = models.TextField(blank=True,
+            help_text="base64-encoded torrent file")
 
     class Meta:
         get_latest_by = 'release_date'
@@ -150,8 +149,9 @@ class Release(models.Model):
         ]
         if settings.TORRENT_TRACKERS:
             query.extend(('tr', uri) for uri in settings.TORRENT_TRACKERS)
-        if self.torrent_infohash:
-            query.insert(0, ('xt', "urn:btih:%s" % self.torrent_infohash))
+        metadata = self.torrent()
+        if metadata and 'info_hash' in metadata:
+            query.insert(0, ('xt', "urn:btih:%s" % metadata['info_hash']))
         return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
 
     def info_html(self):
