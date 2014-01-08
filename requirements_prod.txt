@@ -7,7 +7,7 @@ bencode==1.0
 django-countries==1.5
 jsmin==2.0.8
 pgpdump==1.4
-psycopg2==2.5.1
+psycopg2==2.5.2
 pyinotify==0.9.4
 python-memcached==1.53
 pytz>=2013.8
