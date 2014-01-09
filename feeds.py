@@ -194,7 +194,10 @@ class ReleaseFeed(Feed):
         return "%s://%s/%s.torrent" % (proto, domain, item.iso_url())
 
     def item_enclosure_length(self, item):
-        return item.file_size or ""
+        if item.torrent_data:
+            torrent = item.torrent()
+            return torrent['file_length'] or ""
+        return ""
 
     item_enclosure_mime_type = 'application/x-bittorrent'
 

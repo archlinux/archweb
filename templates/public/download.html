@@ -27,7 +27,7 @@
     <ul>
         {% if release.version %}<li><strong>Current Release:</strong> {{ release.version }}</li>{% endif %}
         {% if release.kernel_version %}<li><strong>Included Kernel:</strong> {{ release.kernel_version }}</li>{% endif %}
-        {% if release.file_size %}<li><strong>ISO Size:</strong> {{ release.file_size|filesizeformat }}</li>{% endif %}
+        {% if release.torrent_data %}<li><strong>ISO Size:</strong> {{ release.torrent.file_length|filesizeformat }}</li>{% endif %}
         <li><a href="https://wiki.archlinux.org/index.php/Installation_Guide">Installation Guide</a></li>
         <li><strong>Resources:</strong>
             <ul>

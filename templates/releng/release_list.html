@@ -34,7 +34,7 @@
                 <td>{% if item.available %}<a href="{% url 'releng-release-torrent' item.version %}"
                         title="Download torrent for {{ item.version }}">Torrent</a>{% endif %}</td>
                 <td>{% if item.available %}<a href="{{ item.magnet_uri }}">Magnet</a>{% endif %}</td>
-                <td>{% if item.file_size %}{{ item.file_size|filesizeformat }}{% endif %}</td>
+                <td>{% if item.torrent_data %}{{ item.torrent.file_length|filesizeformat }}{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>
