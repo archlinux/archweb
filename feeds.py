@@ -14,6 +14,22 @@ from news.models import News
 from releng.models import Release
 
 
+class BatchWritesWrapper(object):
+    def __init__(self, outfile, chunks=20):
+        self.outfile = outfile
+        self.chunks = chunks
+        self.buf = []
+    def write(self, s):
+        buf = self.buf
+        buf.append(s)
+        if len(buf) >= self.chunks:
+            self.outfile.write(''.join(buf))
+            self.buf = []
+    def flush(self):
+        self.outfile.write(''.join(self.buf))
+        self.outfile.flush()
+
+
 class GuidNotPermalinkFeed(Rss201rev2Feed):
     @staticmethod
     def check_for_unique_id(f):
@@ -26,12 +42,25 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
         return wrapper
 
     def write_items(self, handler):
-        # Totally disgusting. Monkey-patch the hander so if it sees a
-        # 'unique-id' field come through, add an isPermalink="false" attribute.
-        # Workaround for http://code.djangoproject.com/ticket/9800
+        '''
+        Totally disgusting. Monkey-patch the handler so if it sees a
+        'unique-id' field come through, add an isPermalink="false" attribute.
+        Workaround for http://code.djangoproject.com/ticket/9800
+        '''
         handler.addQuickElement = self.check_for_unique_id(
                 handler.addQuickElement)
         super(GuidNotPermalinkFeed, self).write_items(handler)
+
+    def write(self, outfile, encoding):
+        '''
+        Batch the underlying 'write' calls on the outfile because Python's
+        default saxutils XmlGenerator is a POS that insists on unbuffered
+        write/flush calls. This sucks when it is making 1-byte calls to write
+        '>' closing tags and over 1600 write calls in our package feed.
+        '''
+        wrapper = BatchWritesWrapper(outfile)
+        super(GuidNotPermalinkFeed, self).write(wrapper, encoding)
+        wrapper.flush()
 
 
 def package_etag(request, *args, **kwargs):
