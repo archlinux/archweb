@@ -11,6 +11,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import condition
 from django_countries.countries import COUNTRIES
 
 from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
@@ -220,6 +221,11 @@ def url_details(request, name, url_id):
     return render(request, 'mirrors/url_details.html', context)
 
 
+def status_last_modified(request, *args, **kwargs):
+    return MirrorLog.objects.values_list('check_time', flat=True).latest()
+
+
+@condition(last_modified_func=status_last_modified)
 def status(request, tier=None):
     if tier is not None:
         tier = int(tier)
@@ -297,6 +303,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
         return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 
+@condition(last_modified_func=status_last_modified)
 def status_json(request, tier=None):
     if tier is not None:
         tier = int(tier)
