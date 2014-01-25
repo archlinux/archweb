@@ -243,7 +243,8 @@ SELECT DISTINCT id
     cursor = connection.cursor()
     cursor.execute(sql, [PackageRelation.MAINTAINER])
     to_fetch = [row[0] for row in cursor.fetchall()]
-    relations = PackageRelation.objects.select_related('user').filter(
+    relations = PackageRelation.objects.select_related(
+            'user', 'user__userprofile').filter(
             id__in=to_fetch)
     return relations
 

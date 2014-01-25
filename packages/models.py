@@ -28,6 +28,9 @@ class PackageRelation(models.Model):
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
     created = models.DateTimeField(editable=False)
 
+    class Meta:
+        unique_together = (('pkgbase', 'user', 'type'),)
+
     def get_associated_packages(self):
         return Package.objects.normal().filter(pkgbase=self.pkgbase)
 
@@ -35,12 +38,12 @@ class PackageRelation(models.Model):
         packages = self.get_associated_packages()
         return sorted({p.repo for p in packages})
 
+    def last_update(self):
+        return Update.objects.filter(pkgbase=self.pkgbase).latest()
+
     def __unicode__(self):
         return u'%s: %s (%s)' % (
                 self.pkgbase, self.user, self.get_type_display())
-
-    class Meta:
-        unique_together = (('pkgbase', 'user', 'type'),)
 
 
 class SignoffSpecificationManager(models.Manager):
