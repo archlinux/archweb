@@ -194,8 +194,8 @@ def report(request, report_name, username=None):
         type=PackageRelation.MAINTAINER).values('user'))
 
     if report_name == 'old':
-        title = 'Packages last built more than one year ago'
-        cutoff = now() - timedelta(days=365)
+        title = 'Packages last built more than two years ago'
+        cutoff = now() - timedelta(days=365 * 2)
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
     elif report_name == 'long-out-of-date':
