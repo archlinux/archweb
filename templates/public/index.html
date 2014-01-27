@@ -224,8 +224,18 @@ function setupTypeahead() {
         matcher: function(item) { return true; },
         sorter: function(items) { return items; },
         menu: '<ul class="pkgsearch-typeahead"></ul>',
-        items: 10
+        items: 10,
+        updater: function(item) {
+            $('#pkgsearch-form').submit();
+            return item;
+        }
     }).attr('autocomplete', 'off');
+    $('#pkgsearch-field').keyup(function(e) {
+        if (e.keyCode === 13 &&
+                $('ul.pkgsearch-typeahead li.active').size() === 0) {
+            $('#pkgsearch-form').submit();
+        }
+    });
 }
 function setupKonami() {
     var konami = new Konami(function() {
