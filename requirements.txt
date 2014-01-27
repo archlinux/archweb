@@ -6,5 +6,5 @@ South==0.8.4
 bencode==1.0
 django-countries==1.5
 jsmin==2.0.8
-pgpdump==1.4
+pgpdump==1.5
 pytz>=2013.8
