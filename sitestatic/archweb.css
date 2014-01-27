@@ -79,6 +79,7 @@ pre {
     pre code {
         display: block;
         background: none;
+        overflow: auto;
     }
 
 blockquote {
