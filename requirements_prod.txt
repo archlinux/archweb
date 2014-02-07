@@ -1,11 +1,11 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==1.6.1
+Django==1.6.2
 IPy==0.81
 Markdown==2.3.1
 South==0.8.4
 bencode==1.0
 django-countries==1.5
-jsmin==2.0.8
+jsmin==2.0.9
 pgpdump==1.5
 psycopg2==2.5.2
 pyinotify==0.9.4
