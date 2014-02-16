@@ -226,6 +226,7 @@ function setupTypeahead() {
         menu: '<ul class="pkgsearch-typeahead"></ul>',
         items: 10,
         updater: function(item) {
+            $('#pkgsearch-field').val(item);
             $('#pkgsearch-form').submit();
             return item;
         }
