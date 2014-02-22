@@ -199,8 +199,8 @@ def report(request, report_name, username=None):
         packages = packages.filter(
                 build_date__lt=cutoff).order_by('build_date')
     elif report_name == 'long-out-of-date':
-        title = 'Packages marked out-of-date more than 90 days ago'
-        cutoff = now() - timedelta(days=90)
+        title = 'Packages marked out-of-date more than 30 days ago'
+        cutoff = now() - timedelta(days=30)
         packages = packages.filter(
                 flag_date__lt=cutoff).order_by('flag_date')
     elif report_name == 'big':
