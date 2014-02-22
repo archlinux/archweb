@@ -103,7 +103,6 @@ def unneeded_orphans(packages, username):
 
 
 def mismatched_signature(packages, username):
-    cutoff = timedelta(hours=24)
     filtered = []
     packages = packages.select_related(
             'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
@@ -113,8 +112,6 @@ def mismatched_signature(packages, username):
     for package in packages:
         bad = False
         sig = package.signature
-        sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
-        package.sig_date = sig_date.date()
         dev_key = known_keys.get(sig.key_id, None)
         if dev_key:
             package.sig_by = dev_key.owner
@@ -124,11 +121,23 @@ def mismatched_signature(packages, username):
             package.sig_by = sig.key_id
             bad = True
 
-        if sig_date > package.build_date + cutoff:
-            bad = True
-
         if bad:
             filtered.append(package)
+    return filtered
+
+
+def signature_time(packages, username):
+    cutoff = timedelta(hours=24)
+    filtered = []
+    packages = packages.select_related(
+            'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
+    for package in packages:
+        sig = package.signature
+        sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
+        package.sig_date = sig_date.date()
+        if sig_date > package.build_date + cutoff:
+            filtered.append(package)
+
     return filtered
 
 
@@ -160,12 +169,19 @@ REPORT_ORPHANS = DeveloperReport('unneeded-orphans', 'Unneeded Orphans',
         + 'other package in any repository', unneeded_orphans,
         personal=False)
 
-REPORT_SIGNATURE = DeveloperReport('mismatched-signature', 'Mismatched Signatures',
-        'Packages where 1) signing key is unknown, 2) signer != packager, '
-        + 'or 3) signature timestamp more than 24 hours after build timestamp',
+REPORT_SIGNATURE = DeveloperReport('mismatched-signature',
+        'Mismatched Signatures',
+        'Packages where the signing key is unknown or signer != packager',
         mismatched_signature,
-        ['Signature Date', 'Signed By', 'Packager'],
-        ['sig_date', 'sig_by', 'packager'])
+        ['Signed By', 'Packager'],
+        ['sig_by', 'packager'])
+
+REPORT_SIG_TIME = DeveloperReport('signature-time', 'Signature Time',
+        'Packages where the signature timestamp is more than 24 hours '
+        + 'after the build timestamp',
+        signature_time,
+        ['Signature Date', 'Packager'],
+        ['sig_date', 'packager'])
 
 
 def available_reports():
@@ -178,4 +194,5 @@ def available_reports():
         REPORT_INFO,
         REPORT_ORPHANS,
         REPORT_SIGNATURE,
+        REPORT_SIG_TIME,
     )
