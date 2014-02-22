@@ -1,6 +1,5 @@
 from datetime import timedelta
 import operator
-import pytz
 import time
 
 from django.http import HttpResponseRedirect
@@ -10,21 +9,21 @@ from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import F, Count, Max
+from django.db.models import Count, Max
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
-from django.template.defaultfilters import filesizeformat
 from django.views.decorators.cache import never_cache
 from django.utils.encoding import force_unicode
 from django.utils.http import http_date
 from django.utils.timezone import now
 
 from .forms import ProfileForm, UserProfileForm, NewUserForm
-from .models import DeveloperKey, UserProfile
-from main.models import Package, PackageFile
+from .models import UserProfile
+from .reports import available_reports
+from main.models import Package
 from main.models import Arch, Repo
 from news.models import News
-from packages.models import PackageRelation, Signoff, FlagRequest, Depend
+from packages.models import PackageRelation, Signoff, FlagRequest
 from packages.utils import get_signoff_groups
 from todolists.models import TodolistPackage
 from todolists.utils import get_annotated_todolists
@@ -180,10 +179,13 @@ def change_profile(request):
 
 @login_required
 def report(request, report_name, username=None):
-    title = 'Developer Report'
-    packages = Package.objects.normal()
-    names = attrs = user = None
+    available = {report.slug: report for report in available_reports()}
+    report = available.get(report_name, None)
+    if report is None:
+        raise Http404
 
+    packages = Package.objects.normal()
+    user = None
     if username:
         user = get_object_or_404(User, username=username, is_active=True)
         maintained = PackageRelation.objects.filter(user=user,
@@ -193,126 +195,17 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    if report_name == 'old':
-        title = 'Packages last built more than two years ago'
-        cutoff = now() - timedelta(days=365 * 2)
-        packages = packages.filter(
-                build_date__lt=cutoff).order_by('build_date')
-    elif report_name == 'long-out-of-date':
-        title = 'Packages marked out-of-date more than 30 days ago'
-        cutoff = now() - timedelta(days=30)
-        packages = packages.filter(
-                flag_date__lt=cutoff).order_by('flag_date')
-    elif report_name == 'big':
-        title = 'Packages with compressed size > 50 MiB'
-        cutoff = 50 * 1024 * 1024
-        packages = packages.filter(
-                compressed_size__gte=cutoff).order_by('-compressed_size')
-        names = [ 'Compressed Size', 'Installed Size' ]
-        attrs = [ 'compressed_size_pretty', 'installed_size_pretty' ]
-        # Format the compressed and installed sizes with MB/GB/etc suffixes
-        for package in packages:
-            package.compressed_size_pretty = filesizeformat(
-                package.compressed_size)
-            package.installed_size_pretty = filesizeformat(
-                package.installed_size)
-    elif report_name == 'badcompression':
-        title = 'Packages that have little need for compression'
-        cutoff = 0.90 * F('installed_size')
-        packages = packages.filter(compressed_size__gt=0, installed_size__gt=0,
-                compressed_size__gte=cutoff).order_by('-compressed_size')
-        names = [ 'Compressed Size', 'Installed Size', 'Ratio', 'Type' ]
-        attrs = [ 'compressed_size_pretty', 'installed_size_pretty',
-                'ratio', 'compress_type' ]
-        # Format the compressed and installed sizes with MB/GB/etc suffixes
-        for package in packages:
-            package.compressed_size_pretty = filesizeformat(
-                package.compressed_size)
-            package.installed_size_pretty = filesizeformat(
-                package.installed_size)
-            ratio = package.compressed_size / float(package.installed_size)
-            package.ratio = '%.3f' % ratio
-            package.compress_type = package.filename.split('.')[-1]
-    elif report_name == 'uncompressed-man':
-        title = 'Packages with uncompressed manpages'
-        # checking for all '.0'...'.9' + '.n' extensions
-        bad_files = PackageFile.objects.filter(is_directory=False,
-                directory__contains='/man/',
-                filename__regex=r'\.[0-9n]').exclude(
-                filename__endswith='.gz').exclude(
-                filename__endswith='.xz').exclude(
-                filename__endswith='.bz2').exclude(
-                filename__endswith='.html')
-        if username:
-            pkg_ids = set(packages.values_list('id', flat=True))
-            bad_files = bad_files.filter(pkg__in=pkg_ids)
-        bad_files = bad_files.values_list(
-                'pkg_id', flat=True).order_by().distinct()
-        packages = packages.filter(id__in=set(bad_files))
-    elif report_name == 'uncompressed-info':
-        title = 'Packages with uncompressed infopages'
-        # we don't worry about looking for '*.info-1', etc., given that an
-        # uncompressed root page probably exists in the package anyway
-        bad_files = PackageFile.objects.filter(is_directory=False,
-                directory__endswith='/info/', filename__endswith='.info')
-        if username:
-            pkg_ids = set(packages.values_list('id', flat=True))
-            bad_files = bad_files.filter(pkg__in=pkg_ids)
-        bad_files = bad_files.values_list(
-                'pkg_id', flat=True).order_by().distinct()
-        packages = packages.filter(id__in=set(bad_files))
-    elif report_name == 'unneeded-orphans':
-        title = 'Orphan packages required by no other packages'
-        owned = PackageRelation.objects.all().values('pkgbase')
-        required = Depend.objects.all().values('name')
-        # The two separate calls to exclude is required to do the right thing
-        packages = packages.exclude(pkgbase__in=owned).exclude(
-                pkgname__in=required)
-    elif report_name == 'mismatched-signature':
-        title = 'Packages with mismatched signatures'
-        names = [ 'Signature Date', 'Signed By', 'Packager' ]
-        attrs = [ 'sig_date', 'sig_by', 'packager' ]
-        cutoff = timedelta(hours=24)
-        filtered = []
-        packages = packages.select_related(
-                'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
-        known_keys = DeveloperKey.objects.select_related(
-                'owner').filter(owner__isnull=False)
-        known_keys = {dk.key: dk for dk in known_keys}
-        for package in packages:
-            bad = False
-            sig = package.signature
-            sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
-            package.sig_date = sig_date.date()
-            dev_key = known_keys.get(sig.key_id, None)
-            if dev_key:
-                package.sig_by = dev_key.owner
-                if dev_key.owner_id != package.packager_id:
-                    bad = True
-            else:
-                package.sig_by = sig.key_id
-                bad = True
-
-            if sig_date > package.build_date + cutoff:
-                bad = True
-
-            if bad:
-                filtered.append(package)
-        packages = filtered
-    else:
-        raise Http404
-
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
         'all_maintainers': maints,
-        'title': title,
+        'title': report.description,
         'maintainer': user,
-        'packages': packages,
+        'packages': report.packages(packages, username),
         'arches': sorted(arches),
         'repos': sorted(repos),
-        'column_names': names,
-        'column_attrs': attrs,
+        'column_names': report.names,
+        'column_attrs': report.attrs,
     }
     return render(request, 'devel/packages.html', context)
 

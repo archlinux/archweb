@@ -1,0 +1,176 @@
+from datetime import timedelta
+import pytz
+
+from django.db.models import F
+from django.template.defaultfilters import filesizeformat
+from django.utils.timezone import now
+
+from .models import DeveloperKey, UserProfile
+from main.models import PackageFile
+from packages.models import PackageRelation, Depend
+
+class DeveloperReport(object):
+    def __init__(self, slug, name, desc, packages_func,
+            names=None, attrs=None):
+        self.slug = slug
+        self.name = name
+        self.description = desc
+        self.packages = packages_func
+        self.names = names
+        self.attrs = attrs
+
+
+def old(packages, username):
+    cutoff = now() - timedelta(days=365 * 2)
+    return packages.filter(
+            build_date__lt=cutoff).order_by('build_date')
+
+
+def outofdate(packages, username):
+    cutoff = now() - timedelta(days=30)
+    return packages.filter(
+            flag_date__lt=cutoff).order_by('flag_date')
+
+
+def big(packages, username):
+    cutoff = 50 * 1024 * 1024
+    packages = packages.filter(
+            compressed_size__gte=cutoff).order_by('-compressed_size')
+    # Format the compressed and installed sizes with MB/GB/etc suffixes
+    for package in packages:
+        package.compressed_size_pretty = filesizeformat(
+            package.compressed_size)
+        package.installed_size_pretty = filesizeformat(
+            package.installed_size)
+    return packages
+
+
+def badcompression(packages, username):
+    cutoff = 0.90 * F('installed_size')
+    packages = packages.filter(compressed_size__gt=0, installed_size__gt=0,
+            compressed_size__gte=cutoff).order_by('-compressed_size')
+
+    # Format the compressed and installed sizes with MB/GB/etc suffixes
+    for package in packages:
+        package.compressed_size_pretty = filesizeformat(
+            package.compressed_size)
+        package.installed_size_pretty = filesizeformat(
+            package.installed_size)
+        ratio = package.compressed_size / float(package.installed_size)
+        package.ratio = '%.3f' % ratio
+        package.compress_type = package.filename.split('.')[-1]
+
+    return packages
+
+
+def uncompressed_man(packages, username):
+    # checking for all '.0'...'.9' + '.n' extensions
+    bad_files = PackageFile.objects.filter(is_directory=False,
+            directory__contains='/man/',
+            filename__regex=r'\.[0-9n]').exclude(
+            filename__endswith='.gz').exclude(
+            filename__endswith='.xz').exclude(
+            filename__endswith='.bz2').exclude(
+            filename__endswith='.html')
+    if username:
+        pkg_ids = set(packages.values_list('id', flat=True))
+        bad_files = bad_files.filter(pkg__in=pkg_ids)
+    bad_files = bad_files.values_list(
+            'pkg_id', flat=True).order_by().distinct()
+    return packages.filter(id__in=set(bad_files))
+
+
+def uncompressed_info(packages, username):
+    # we don't worry about looking for '*.info-1', etc., given that an
+    # uncompressed root page probably exists in the package anyway
+    bad_files = PackageFile.objects.filter(is_directory=False,
+            directory__endswith='/info/', filename__endswith='.info')
+    if username:
+        pkg_ids = set(packages.values_list('id', flat=True))
+        bad_files = bad_files.filter(pkg__in=pkg_ids)
+    bad_files = bad_files.values_list(
+            'pkg_id', flat=True).order_by().distinct()
+    return packages.filter(id__in=set(bad_files))
+
+
+def unneeded_orphans(packages, username):
+    owned = PackageRelation.objects.all().values('pkgbase')
+    required = Depend.objects.all().values('name')
+    # The two separate calls to exclude is required to do the right thing
+    return packages.exclude(pkgbase__in=owned).exclude(
+            pkgname__in=required)
+
+
+def mismatched_signature(packages, username):
+    cutoff = timedelta(hours=24)
+    filtered = []
+    packages = packages.select_related(
+            'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
+    known_keys = DeveloperKey.objects.select_related(
+            'owner').filter(owner__isnull=False)
+    known_keys = {dk.key: dk for dk in known_keys}
+    for package in packages:
+        bad = False
+        sig = package.signature
+        sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
+        package.sig_date = sig_date.date()
+        dev_key = known_keys.get(sig.key_id, None)
+        if dev_key:
+            package.sig_by = dev_key.owner
+            if dev_key.owner_id != package.packager_id:
+                bad = True
+        else:
+            package.sig_by = sig.key_id
+            bad = True
+
+        if sig_date > package.build_date + cutoff:
+            bad = True
+
+        if bad:
+            filtered.append(package)
+    return filtered
+
+
+REPORT_OLD = DeveloperReport('old', 'Old',
+        'Packages last built more than two years ago', old)
+
+REPORT_OUTOFDATE = DeveloperReport('long-out-of-date', 'Long Out-of-date',
+        'Packages marked out-of-date more than 30 days ago', outofdate)
+
+REPORT_BIG = DeveloperReport('big', 'Big',
+        'Packages with compressed size > 50 MiB', big,
+        ['Compressed Size', 'Installed Size'],
+        ['compressed_size_pretty', 'installed_size_pretty'])
+
+REPORT_BADCOMPRESS = DeveloperReport('badcompression', 'Bad Compression',
+        'Packages that have little need for compression', badcompression,
+        ['Compressed Size', 'Installed Size', 'Ratio', 'Type'],
+        ['compressed_size_pretty', 'installed_size_pretty','ratio', 'compress_type'])
+
+
+REPORT_MAN = DeveloperReport('uncompressed-man', 'Uncompressed Manpages',
+        'Packages with uncompressed manpages', uncompressed_man)
+
+REPORT_INFO = DeveloperReport('uncompressed-info', 'Uncompressed Info Pages',
+        'Packages with uncompressed infopages', uncompressed_info)
+
+REPORT_ORPHANS = DeveloperReport('unneeded-orphans', 'Unneeded Orphans',
+        'Orphan packages required by no other packages', unneeded_orphans)
+
+REPORT_SIGNATURE = DeveloperReport('mismatched-signature', 'Mismatched Signatures',
+        'Packages with mismatched signatures', mismatched_signature,
+        ['Signature Date', 'Signed By', 'Packager'],
+        ['sig_date', 'sig_by', 'packager'])
+
+
+def available_reports():
+    return (
+        REPORT_OLD,
+        REPORT_OUTOFDATE,
+        REPORT_BIG,
+        REPORT_BADCOMPRESS,
+        REPORT_MAN,
+        REPORT_INFO,
+        REPORT_ORPHANS,
+        REPORT_SIGNATURE,
+    )
