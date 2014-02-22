@@ -57,7 +57,8 @@ def index(request):
             'todos': todolists,
             'flagged': flagged,
             'todopkgs': todopkgs,
-            'signoffs': signoffs
+            'signoffs': signoffs,
+            'reports': available_reports(),
     }
 
     return render(request, 'devel/index.html', page_dict)

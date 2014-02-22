@@ -11,13 +11,14 @@ from packages.models import PackageRelation, Depend
 
 class DeveloperReport(object):
     def __init__(self, slug, name, desc, packages_func,
-            names=None, attrs=None):
+            names=None, attrs=None, personal=True):
         self.slug = slug
         self.name = name
         self.description = desc
         self.packages = packages_func
         self.names = names
         self.attrs = attrs
+        self.personal = personal
 
 
 def old(packages, username):
@@ -143,7 +144,7 @@ REPORT_BIG = DeveloperReport('big', 'Big',
         ['compressed_size_pretty', 'installed_size_pretty'])
 
 REPORT_BADCOMPRESS = DeveloperReport('badcompression', 'Bad Compression',
-        'Packages that have little need for compression', badcompression,
+        'Packages with a compression ratio of less than 10%', badcompression,
         ['Compressed Size', 'Installed Size', 'Ratio', 'Type'],
         ['compressed_size_pretty', 'installed_size_pretty','ratio', 'compress_type'])
 
@@ -152,13 +153,17 @@ REPORT_MAN = DeveloperReport('uncompressed-man', 'Uncompressed Manpages',
         'Packages with uncompressed manpages', uncompressed_man)
 
 REPORT_INFO = DeveloperReport('uncompressed-info', 'Uncompressed Info Pages',
-        'Packages with uncompressed infopages', uncompressed_info)
+        'Packages with uncompressed info pages', uncompressed_info)
 
 REPORT_ORPHANS = DeveloperReport('unneeded-orphans', 'Unneeded Orphans',
-        'Orphan packages required by no other packages', unneeded_orphans)
+        'Packages that have no maintainer and are not required by any '
+        + 'other package in any repository', unneeded_orphans,
+        personal=False)
 
 REPORT_SIGNATURE = DeveloperReport('mismatched-signature', 'Mismatched Signatures',
-        'Packages with mismatched signatures', mismatched_signature,
+        'Packages where 1) signing key is unknown, 2) signer != packager, '
+        + 'or 3) signature timestamp more than 24 hours after build timestamp',
+        mismatched_signature,
         ['Signature Date', 'Signed By', 'Packager'],
         ['sig_date', 'sig_by', 'packager'])
 
