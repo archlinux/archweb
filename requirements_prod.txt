@@ -4,7 +4,7 @@ IPy==0.81
 Markdown==2.4
 South==0.8.4
 bencode==1.0
-django-countries==1.5
+django-countries==2.0
 jsmin==2.0.9
 pgpdump==1.5
 psycopg2==2.5.2

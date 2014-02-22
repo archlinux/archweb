@@ -4,12 +4,12 @@ from south.db import db
 from south.v2 import DataMigration
 from django.db import models
 
-from django_countries.countries import OFFICIAL_COUNTRIES
+from django_countries.data import COUNTRIES
 
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        reverse_map = dict((v, k) for k, v in OFFICIAL_COUNTRIES.items())
+        reverse_map = dict((v.upper(), k) for k, v in COUNTRIES.items())
         # add a few special cases to the list that we know might exist
         reverse_map['GREAT BRITAIN'] = 'GB'
         reverse_map['KOREA'] = 'KR'

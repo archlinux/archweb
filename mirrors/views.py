@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import condition
-from django_countries.countries import COUNTRIES
+from django_countries.data import COUNTRIES
 
 from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
         CheckLocation)

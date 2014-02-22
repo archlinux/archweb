@@ -179,7 +179,7 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
 
     errors = list(errors)
     for err in errors:
-        err['country'] = Country(err['url__country'])
+        err['country'] = Country(err['url__country'], flag_url='')
     return errors
 
 
