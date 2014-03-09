@@ -84,10 +84,14 @@ $(document).ready(function() {
     $(".results").tablesorter({widgets: ['zebra']});
 });
 $(document).ready(function() {
-    var filter_func = function() { filter_pkgs_list('#report_filter', '#dev-report-results tbody'); };
+    var filter_func = function() {
+        filter_pkgs_list('#report_filter', '#dev-report-results tbody');
+        filter_report_save('{{ report.slug }}');
+    };
     $('#report_filter input').change(filter_func);
     $('#criteria_reset').click(function() { filter_pkgs_reset(filter_func); });
     // run on page load to ensure current form selections take effect
+    filter_report_load('{{ report.slug }}');
     filter_func();
 });
 </script>

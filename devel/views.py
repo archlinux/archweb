@@ -201,6 +201,7 @@ def report(request, report_name, username=None):
     context = {
         'all_maintainers': maints,
         'title': report.description,
+        'report': report,
         'maintainer': user,
         'packages': report.packages(packages, username),
         'arches': sorted(arches),

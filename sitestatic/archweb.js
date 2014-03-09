@@ -386,6 +386,22 @@ function filter_todolist_load(list_id) {
     });
 }
 
+function filter_report_save(report_id) {
+    var state = $('#report_filter').serializeArray();
+    localStorage['filter_report_' + report_id] = JSON.stringify(state);
+}
+function filter_report_load(report_id) {
+    var state = localStorage['filter_report_' + report_id];
+    if (!state)
+        return;
+    state = JSON.parse(state);
+    $('#report_filter input[type="checkbox"]').removeAttr('checked')
+    $.each(state, function (i, v) {
+        // this assumes our only filters are checkboxes
+        $('#report_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+    });
+}
+
 /* signoffs.html */
 function signoff_package() {
     // TODO: fix usage of this
