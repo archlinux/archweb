@@ -367,6 +367,25 @@ function filter_pkgs_reset(callback) {
     callback();
 }
 
+function filter_todolist_save(list_id) {
+    var state = $('#todolist_filter').serializeArray();
+    localStorage['filter_todolist_' + list_id] = JSON.stringify(state);
+}
+function filter_todolist_load(list_id) {
+    var state = localStorage['filter_todolist_' + list_id];
+    if (!state)
+        return;
+    state = JSON.parse(state);
+    $('#todolist_filter .arch_filter').removeAttr('checked');
+    $('#todolist_filter .repo_filter').removeAttr('checked');
+    $('#id_incomplete').removeAttr('checked');
+    $('#id_mine_only').removeAttr('checked');
+    $.each(state, function (i, v) {
+        // this assumes our only filters are checkboxes
+        $('#todolist_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+    });
+}
+
 /* signoffs.html */
 function signoff_package() {
     // TODO: fix usage of this

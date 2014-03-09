@@ -118,10 +118,14 @@ $(document).ready(function() {
 });
 $(document).ready(function() {
     $('a.status-link').click(todolist_flag);
-    var filter_func = function() { filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody'); };
+    var filter_func = function() {
+        filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody');
+        filter_todolist_save({{ list.id }});
+    };
     $('#todolist_filter input').change(filter_func);
     $('#criteria_reset').click(function() { filter_pkgs_reset(filter_func); });
     // fire function on page load to ensure the current form selections take effect
+    filter_todolist_load({{ list.id }});
     filter_func();
 });
 </script>
