@@ -103,7 +103,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
 
     $.tablesorter.addParser({
         id: 'filesize',
-        re: /^(\d+(?:\.\d+)?) (bytes?|[KMGTPEZY]i?B)$/,
+        re: /^(\d+(?:\.\d+)?)[ \u00a0](bytes?|[KMGTPEZY]i?B)$/,
         is: function(s) {
             return this.re.test(s);
         },
