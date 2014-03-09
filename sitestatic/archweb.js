@@ -376,10 +376,7 @@ function filter_todolist_load(list_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#todolist_filter .arch_filter').removeAttr('checked');
-    $('#todolist_filter .repo_filter').removeAttr('checked');
-    $('#id_incomplete').removeAttr('checked');
-    $('#id_mine_only').removeAttr('checked');
+    $('#todolist_filter input[type="checkbox"]').removeAttr('checked');
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
         $('#todolist_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
@@ -395,7 +392,7 @@ function filter_report_load(report_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#report_filter input[type="checkbox"]').removeAttr('checked')
+    $('#report_filter input[type="checkbox"]').removeAttr('checked');
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
         $('#report_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
@@ -496,9 +493,7 @@ function filter_signoffs_load() {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#signoffs_filter .arch_filter').removeAttr('checked');
-    $('#signoffs_filter .repo_filter').removeAttr('checked');
-    $('#id_pending').removeAttr('checked');
+    $('#signoffs_filter input[type="checkbox"]').removeAttr('checked');
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
         $('#signoffs_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
