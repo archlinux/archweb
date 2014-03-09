@@ -444,12 +444,30 @@ function filter_signoffs() {
     $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets', [false]);
+    filter_signoffs_save();
 }
 function filter_signoffs_reset() {
     $('#signoffs_filter .arch_filter').attr('checked', 'checked');
     $('#signoffs_filter .repo_filter').attr('checked', 'checked');
     $('#id_pending').removeAttr('checked');
     filter_signoffs();
+}
+function filter_signoffs_save() {
+    var state = $('#signoffs_filter').serializeArray();
+    localStorage['filter_signoffs'] = JSON.stringify(state);
+}
+function filter_signoffs_load() {
+    var state = localStorage['filter_signoffs'];
+    if (!state)
+        return;
+    state = JSON.parse(state);
+    $('#signoffs_filter .arch_filter').removeAttr('checked');
+    $('#signoffs_filter .repo_filter').removeAttr('checked');
+    $('#id_pending').removeAttr('checked');
+    $.each(state, function (i, v) {
+        // this assumes our only filters are checkboxes
+        $('#signoffs_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+    });
 }
 
 function collapseNotes(elements) {

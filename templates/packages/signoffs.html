@@ -93,6 +93,7 @@ $(document).ready(function() {
     $('#signoffs_filter input').change(filter_signoffs);
     $('#criteria_reset').click(filter_signoffs_reset);
     // fire function on page load to ensure the current form selections take effect
+    filter_signoffs_load();
     filter_signoffs();
 });
 $(document).ready(function() {
