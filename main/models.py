@@ -433,8 +433,8 @@ class Package(models.Model):
 class PackageFile(models.Model):
     pkg = models.ForeignKey(Package)
     is_directory = models.BooleanField(default=False)
-    directory = models.CharField(max_length=255)
-    filename = models.CharField(max_length=255, null=True, blank=True)
+    directory = models.CharField(max_length=1024)
+    filename = models.CharField(max_length=1024, null=True, blank=True)
 
     def __unicode__(self):
         return "%s%s" % (self.directory, self.filename or '')
