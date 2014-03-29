@@ -11,7 +11,8 @@ class Migration(SchemaMigration):
         db.add_column(u'mirrors_mirror', 'last_modified',
                       self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now()),
                       keep_default=False)
-        orm.Mirror.objects.update(last_modified=models.F('created'))
+        if not db.dry_run:
+            orm.Mirror.objects.update(last_modified=models.F('created'))
 
     def backwards(self, orm):
         db.delete_column(u'mirrors_mirror', 'last_modified')
