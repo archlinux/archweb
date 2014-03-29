@@ -67,7 +67,7 @@ class MirrorAdmin(admin.ModelAdmin):
             'isos', 'admin_email', 'alternate_email')
     list_filter = ('tier', 'active', 'public')
     search_fields = ('name', 'admin_email', 'alternate_email')
-    readonly_fields = ('created',)
+    readonly_fields = ('created', 'last_modified')
     inlines = [
             MirrorUrlInlineAdmin,
             MirrorRsyncInlineAdmin,

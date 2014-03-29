@@ -46,6 +46,10 @@
             <td>{{ mirror.created }}</td>
         </tr>
         <tr>
+            <th>Last Modified:</th>
+            <td>{{ mirror.last_modified }}</td>
+        </tr>
+        <tr>
             <th>Rsync IPs:</th>
             <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
         </tr>
