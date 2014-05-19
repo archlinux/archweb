@@ -1,5 +1,5 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==1.6.4
+Django==1.6.5
 IPy==0.81
 Markdown==2.4
 South==0.8.4
@@ -7,4 +7,4 @@ bencode==1.0
 django-countries==2.1.2
 jsmin==2.0.9
 pgpdump==1.5
-pytz>=2014.2
+pytz>=2014.3
