@@ -1,3 +1,4 @@
+from datetime import datetime
 from urlparse import urlparse, urlunsplit
 
 from django import forms
@@ -72,6 +73,13 @@ class MirrorAdmin(admin.ModelAdmin):
             MirrorUrlInlineAdmin,
             MirrorRsyncInlineAdmin,
     ]
+
+    def save_model(self, request, obj, form, change):
+        if '~~~' in obj.notes:
+            date = datetime.utcnow().strftime('%Y-%m-%d')
+            usertext = request.user.get_full_name()
+            obj.notes = obj.notes.replace('~~~', '%s (%s)' % (date, usertext))
+        obj.save()
 
 
 class MirrorProtocolAdmin(admin.ModelAdmin):
