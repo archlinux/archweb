@@ -139,7 +139,7 @@ def check_mirror_url(mirror_url, location, timeout):
         if isinstance(e.reason, socket.timeout):
             log.error = "Connection timed out."
         elif isinstance(e.reason, socket.error):
-            log.error = e.reason.args[1]
+            log.error = e.reason.args[-1]
         logger.debug("failed: %s, %s", url, log.error)
     except HTTPException:
         # e.g., BadStatusLine
