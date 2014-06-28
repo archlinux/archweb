@@ -5,6 +5,7 @@ import time
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import \
         login_required, permission_required, user_passes_test
+from django.contrib import admin
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -259,6 +260,7 @@ def admin_log(request, username=None):
         'title': "Admin Action Log",
         'log_user':  user,
     }
+    context.update(admin.site.each_context())
     return render(request, 'devel/admin_log.html', context)
 
 # vim: set ts=4 sw=4 et:
