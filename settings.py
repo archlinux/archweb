@@ -102,6 +102,9 @@ SESSION_COOKIE_HTTPONLY = True
 # Clickjacking protection
 X_FRAME_OPTIONS = 'DENY'
 
+# Use new test runner
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
