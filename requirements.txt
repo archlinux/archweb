@@ -5,6 +5,6 @@ Markdown==2.4.1
 South==0.8.4
 bencode==1.0
 django-countries==2.1.2
-jsmin==2.0.9
+jsmin==2.0.11
 pgpdump==1.5
-pytz>=2014.3
+pytz>=2014.4
