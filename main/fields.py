@@ -2,8 +2,6 @@ from django.db import models
 
 
 class PositiveBigIntegerField(models.BigIntegerField):
-    _south_introspects = True
-
     def get_internal_type(self):
         return "BigIntegerField"
 

@@ -26,7 +26,6 @@ packages, you will probably want the following:
 - django
 - python2-psycopg2
 - python2-markdown
-- python2-south
 - python2-memcached
 
 # Testing Installation

@@ -3,8 +3,6 @@ from django.core.validators import RegexValidator
 
 
 class PGPKeyField(models.CharField):
-    _south_introspects = True
-
     def __init__(self, *args, **kwargs):
         super(PGPKeyField, self).__init__(*args, **kwargs)
         self.validators.append(RegexValidator(r'^[0-9A-F]{40}$',
