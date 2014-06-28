@@ -111,7 +111,7 @@ class Test(models.Model):
     rollback_modules = models.ManyToManyField(Module,
             related_name="rollback_test_set", null=True, blank=True)
 
-    success = models.BooleanField()
+    success = models.BooleanField(default=True)
     comments = models.TextField(null=True, blank=True)
 
 
