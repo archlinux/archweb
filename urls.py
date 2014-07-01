@@ -111,7 +111,7 @@ legacy_urls = (
     ('^todolists/$',   '/todo/'),
 
     ('^docs/en/guide/install/arch-install-guide.html',
-        'https://wiki.archlinux.org/index.php/Installation_Guide'),
+        'https://wiki.archlinux.org/index.php/Installation_guide'),
     ('^docs/en/',
         'https://wiki.archlinux.org/'),
     ('^docs/',
