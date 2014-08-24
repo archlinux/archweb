@@ -181,9 +181,7 @@ class FlagRequest(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     user_email = models.EmailField('email address')
     created = models.DateTimeField(editable=False, db_index=True)
-    # Great work, Django... https://code.djangoproject.com/ticket/18212
-    ip_address = models.GenericIPAddressField(verbose_name='IP address',
-            unpack_ipv4=True)
+    ip_address = models.GenericIPAddressField('IP address', unpack_ipv4=True)
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)

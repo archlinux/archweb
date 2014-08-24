@@ -90,9 +90,7 @@ class Bootloader(IsoOption):
 class Test(models.Model):
     user_name = models.CharField(max_length=500)
     user_email = models.EmailField('email address')
-    # Great work, Django... https://code.djangoproject.com/ticket/18212
-    ip_address = models.GenericIPAddressField(verbose_name='IP address',
-            unpack_ipv4=True)
+    ip_address = models.GenericIPAddressField('IP address', unpack_ipv4=True)
     created = models.DateTimeField(editable=False)
 
     iso = models.ForeignKey(Iso)
