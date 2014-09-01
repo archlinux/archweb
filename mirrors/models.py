@@ -75,6 +75,12 @@ class MirrorUrl(models.Model):
     created = models.DateTimeField(editable=False)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = 'mirror URL'
+
+    def __unicode__(self):
+        return self.url
+
     def address_families(self):
         hostname = urlparse(self.url).hostname
         info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
@@ -101,11 +107,8 @@ class MirrorUrl(models.Model):
             self.has_ipv4 = False
             self.has_ipv6 = False
 
-    def __unicode__(self):
-        return self.url
-
-    class Meta:
-        verbose_name = 'mirror URL'
+    def get_absolute_url(self):
+        return '/mirrors/%s/%d/' % (self.mirror.name, self.pk)
 
 
 class MirrorRsync(models.Model):

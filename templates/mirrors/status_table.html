@@ -11,6 +11,7 @@
             <th>μ Duration (s)</th>
             <th>σ Duration (s)</th>
             <th>Mirror Score</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
             <td>{{ m_url.duration_avg|floatvalue:2 }}</td>
             <td>{{ m_url.duration_stddev|floatvalue:2 }}</td>
             <td>{{ m_url.score|floatvalue:1|default:'∞' }}</td>
+            <td><a href="{{ m_url.get_absolute_url }}">details</a></td>
         </tr>{% endfor %}
     </tbody>
 </table>

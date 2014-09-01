@@ -18,6 +18,10 @@
             <td>{% if url.protocol.is_download %}<a href="{{ url.url }}">{{ url.url }}</a>{% else %}{{ url.url }}{% endif %}</td>
         </tr>
         <tr>
+            <th>Mirror:</th>
+            <td><a href="../">{{ url.mirror.name }}</a></td>
+        </tr>
+        <tr>
             <th>Protocol:</th>
             <td>{{ url.protocol }}</td>
         </tr>

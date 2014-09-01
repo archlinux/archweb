@@ -80,7 +80,9 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    var headers = { 4: { sorter: 'duration' }, 5: { sorter: 'mostlydigit' }, 6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' } };
+    var headers = { 4: { sorter: 'duration' }, 5: { sorter: 'mostlydigit' },
+                    6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' },
+                    8: { sorter: false } };
     $("#outofsync_mirrors:has(tbody tr)").tablesorter(
         {widgets: ['zebra'], sortList: [[4,0]], headers: headers });
     $("#successful_mirrors:has(tbody tr)").tablesorter(
