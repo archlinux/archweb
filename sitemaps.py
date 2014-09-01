@@ -35,7 +35,7 @@ class PackagesSitemap(Sitemap):
 
 class PackageFilesSitemap(PackagesSitemap):
     changefreq = "weekly"
-    priority = "0.2"
+    priority = "0.1"
 
     def location(self, obj):
         return PackagesSitemap.location(self, obj) + 'files/'
