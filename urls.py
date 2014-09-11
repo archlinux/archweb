@@ -18,7 +18,6 @@ our_sitemaps = {
     'releases':       sitemaps.ReleasesSitemap,
 }
 
-admin.autodiscover()
 urlpatterns = []
 
 # Public pages

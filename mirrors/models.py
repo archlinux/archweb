@@ -118,7 +118,7 @@ class MirrorRsync(models.Model):
     created = models.DateTimeField(editable=False)
 
     def __unicode__(self):
-        return self.ip
+        return unicode(self.ip)
 
     class Meta:
         verbose_name = 'mirror rsync IP'
@@ -127,7 +127,7 @@ class MirrorRsync(models.Model):
 
 class CheckLocation(models.Model):
     hostname = models.CharField(max_length=255)
-    source_ip = models.GenericIPAddressField(verbose_name='source IP',
+    source_ip = models.GenericIPAddressField('source IP',
             unpack_ipv4=True, unique=True)
     country = CountryField()
     created = models.DateTimeField(editable=False)

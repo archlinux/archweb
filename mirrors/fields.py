@@ -4,7 +4,6 @@ from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
-from south.modelsinspector import add_introspection_rules
 
 
 class IPNetworkFormField(forms.Field):
@@ -44,6 +43,3 @@ class IPNetworkField(models.Field):
         defaults = {'form_class': IPNetworkFormField}
         defaults.update(kwargs)
         return super(IPNetworkField, self).formfield(**defaults)
-
-
-add_introspection_rules([], ["^mirrors\.fields\.IPNetworkField"])
