@@ -30,8 +30,8 @@ try:
 except ImportError:
     pass
 
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
 
 if using_newrelic:
     application = newrelic.agent.wsgi_application()(application)
