@@ -1,4 +1,5 @@
 import random
+from collections import OrderedDict
 from string import ascii_letters, digits
 
 from django import forms
@@ -51,13 +52,16 @@ class NewUserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
-        # Hack ourself so certain fields appear first. self.fields is a
-        # SortedDict object where we can manipulate the keyOrder list.
-        order = self.fields.keyOrder
-        keys = ('username', 'private_email', 'first_name', 'last_name')
-        for key in reversed(keys):
-            order.remove(key)
-            order.insert(0, key)
+        # Hack ourself so certain fields appear first
+        old = self.fields
+        self.fields = OrderedDict()
+        keys = ('username', 'private_email', 'first_name', 'last_name',
+                'alias', 'public_email')
+        for key in keys:
+            self.fields[key] = old[key]
+        for key, val in old.items():
+            if key not in keys:
+                self.fields[key] = old[key]
 
     def clean_username(self):
         username = self.cleaned_data['username']
