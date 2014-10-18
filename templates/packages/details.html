@@ -134,19 +134,19 @@
         {% with pkg.provides.all as all_related %}{% if all_related %}
         <tr>
             <th>Provides:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.replaces.all as all_related %}{% if all_related %}
         <tr>
             <th>Replaces:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.conflicts.all as all_related %}{% if all_related %}
         <tr>
             <th>Conflicts:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% with pkg.reverse_conflicts as rev_conflicts %}{% if rev_conflicts %}
@@ -205,7 +205,7 @@
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
                 Dependencies ({{deps|length}})</h3>
             {% if deps %}<ul id="pkgdepslist">
-                {% for depend in deps %}{% include "packages/details_depend.html" %}{% endfor %}
+                {% for depend in deps %}{% include "packages/details_depend.html.jinja" %}{% endfor %}
             </ul>{% endif %}
         </div>
         {% endwith %}
@@ -214,7 +214,7 @@
             <h3 title="Packages that require {{ pkg.pkgname }}">
                 Required By ({{rqdby|length}})</h3>
             {% if rqdby %}<ul id="pkgreqslist">
-                {% for req in rqdby %}{% include "packages/details_requiredby.html" %}{% endfor %}
+                {% for req in rqdby %}{% include "packages/details_requiredby.html.jinja" %}{% endfor %}
             </ul>{% endif %}
         </div>
         {% endwith %}

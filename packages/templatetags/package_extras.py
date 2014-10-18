@@ -80,11 +80,6 @@ def pkg_details_link(pkg, link_title=None, honor_flagged=False):
 
 
 @register.simple_tag
-def multi_pkg_details(pkgs):
-    return ', '.join([pkg_details_link(pkg) for pkg in pkgs])
-
-
-@register.simple_tag
 def maintainer_link(user):
     if user:
         # TODO don't hardcode

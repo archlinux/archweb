@@ -1,2 +1,0 @@
-{% load package_extras %}{% for related in all_related %}{% with related.get_best_satisfier as best_satisfier %}<span class="related">{% ifequal best_satisfier None %}{{ related.name }}{% else %}{% pkg_details_link best_satisfier %}{% endifequal %}{{ related.comparison|default:"" }}{{ related.version|default:"" }}{% if not forloop.last %}, {% endif %}</span>
-{% endwith %}{% endfor %}
