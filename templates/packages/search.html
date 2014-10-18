@@ -40,6 +40,42 @@
     </form>
 </div>
 
+{% if not is_paginated or page_obj.number == 1 %}{% with search_form.exact_matches as exact_matches %}{% if exact_matches %}
+<div id="exact-matches" class="box">
+    <div class="pkglist-stats">
+        <p>{{ exact_matches|length }} exact match{{ exact_matches|pluralize:"es" }} found.</p>
+    </div>
+    <table class="results">
+        <thead>
+            <tr>
+                <th>Arch</th>
+                <th>Repo</th>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Description</th>
+                <th>Last Updated</th>
+                <th>Flag Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pkg in exact_matches %}<tr class="{% cycle 'odd' 'even' %}">
+                <td>{{ pkg.arch.name }}</td>
+                <td>{{ pkg.repo.name|capfirst }}</td>
+                <td>{% pkg_details_link pkg %}</td>
+                {% if pkg.flag_date %}
+                <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                {% else %}
+                <td>{{ pkg.full_version }}</td>
+                {% endif %}
+                <td class="wrap">{{ pkg.pkgdesc }}</td>
+                <td>{{ pkg.last_update|date }}</td>
+                <td>{{ pkg.flag_date|date }}</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}{% endwith %}{% endif %}
+
 {% if package_list %}
 <div id="pkglist-results" class="box">
     {% include "packages/search_paginator.html" %}

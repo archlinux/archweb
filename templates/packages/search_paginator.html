@@ -1,6 +1,6 @@
 <div class="pkglist-stats">
     {% if is_paginated %}
-    <p>{{ paginator.count }} packages found.
+    <p>{{ paginator.count }} matching packages found.
     Page {{ page_obj.number }} of {{ paginator.num_pages }}.</p>
 
     <div class="pkglist-nav">
@@ -22,6 +22,6 @@
     </span>
     </div>
     {% else %}
-    <p>{{ package_list|length }} packages found.</p>
+    <p>{{ package_list|length }} matching package{{ package_list|pluralize }} found.</p>
     {% endif %}
 </div>

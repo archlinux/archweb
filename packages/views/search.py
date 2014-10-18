@@ -45,6 +45,12 @@ class PackageSearchForm(forms.Form):
                 [('', 'All'), ('unknown', 'Unknown')] + \
                 [(m.username, m.get_full_name()) for m in maints]
 
+    def exact_matches(self):
+        # only do exact match search if 'q' is sole parameter
+        if self.changed_data != ['q']:
+            return []
+        return Package.objects.normal().filter(pkgname=self.cleaned_data['q'])
+
 
 def parse_form(form, packages):
     if form.cleaned_data['repo']:
