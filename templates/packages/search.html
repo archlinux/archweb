@@ -2,7 +2,7 @@
 {% load cycle from future %}
 {% load package_extras %}
 
-{% block title %}Arch Linux - Package Database{% endblock %}
+{% block title %}Arch Linux - Package Search{% endblock %}
 {% block navbarclass %}anb-packages{% endblock %}
 
 {% block head %}
@@ -12,10 +12,7 @@
 
 {% block content %}
 <div id="pkglist-search" class="box filter-criteria">
-
-    <h2>Package Database</h2>
-
-    <h3>Package Search</h3>
+    <h2>Package Search</h2>
 
     <form id="pkg-search" method="get" action="/packages/">
         <p>{{ search_form.sort }}</p>
@@ -41,14 +38,12 @@
                 type="submit" value="Search" /></div>
         </fieldset>
     </form>
-
-</div><!-- #pkglist-search -->
+</div>
 
 {% if package_list %}
 <div id="pkglist-results" class="box">
     {% include "packages/search_paginator.html" %}
     <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
-
         <table class="results">
             <thead>
                 <tr>
@@ -96,10 +91,8 @@
         <input title="Orphan selected packages" type="submit" id="disown-btn"
         name="disown" value="Disown Packages" /></p>
         {% endif %}
-
     </form>
-
-</div><!-- #pkglist-results -->
+</div>
 {% else %}
 <div class="box">
     <p>We couldn't find any packages matching your query. Try searching again
