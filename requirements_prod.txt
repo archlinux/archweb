@@ -2,8 +2,10 @@
 -e git+git://github.com/SmileyChris/django-countries.git@a2c924074dbe2f0b9b3059bf70064aeadf5643ed#egg=django-countries
 Django==1.7
 IPy==0.81
+Jinja2==2.7.3
 Markdown==2.4.1
 bencode==1.0
+django-jinja==1.0.4
 jsmin==2.0.11
 pgpdump==1.5
 psycopg2==2.5.4
