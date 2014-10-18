@@ -37,7 +37,7 @@
                 <td>{{ relation.created }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="5"><em>No inactive user relations.</em></td></tr>
+                <tr class="empty"><td colspan="6"><em>No inactive user relations.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -66,7 +66,7 @@
                 <td>{{ relation.last_update.created }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="4"><em>No non-existent pkgbase relations.</em></td></tr>
+                <tr class="empty"><td colspan="6"><em>No non-existent pkgbase relations.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -100,7 +100,7 @@
                 <td class="wrap">{{ relation.repositories|join:", " }}</td>
             </tr>
             {% empty %}
-                <tr class="empty"><td colspan="6"><em>No relations with wrong permissions.</em></td></tr>
+                <tr class="empty"><td colspan="7"><em>No relations with wrong permissions.</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
