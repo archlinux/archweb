@@ -25,32 +25,6 @@ def link_encode(url, query):
 
 
 @library.global_function
-def maintainer_link(user):
-    if user:
-        # TODO don't hardcode
-        title = escape('View packages maintained by ' + user.get_full_name())
-        return '<a href="/packages/?maintainer=%s" title="%s">%s</a>' % (
-                user.username,
-                title,
-                user.get_full_name(),
-        )
-    return ''
-
-
-@library.global_function
-def packager_link(user):
-    if user:
-        # TODO don't hardcode
-        title = escape('View packages packaged by ' + user.get_full_name())
-        return '<a href="/packages/?packager=%s" title="%s">%s</a>' % (
-                user.username,
-                title,
-                user.get_full_name(),
-        )
-    return ''
-
-
-@library.global_function
 def pgp_key_link(key_id, link_text=None):
     return pgp.pgp_key_link(key_id, link_text)
 

@@ -149,11 +149,10 @@
         <tr>
             <th>Maintainers:</th>
             {% with maints = pkg.maintainers %}
-            <td>{% if maints %}
-                {% for m in maints %}
-                {{ maintainer_link(m)|safe }}<br/>
-                {% endfor %}
-                {% else %}Orphan{% endif %}
+            <td>{% if maints %}{% for m in maints %}
+                <a href="/packages/?maintainer={{ m.username }}"
+                    title="View packages maintained by {{ m.get_full_name() }}">{{ m.get_full_name() }}</a><br/>
+                {% endfor %}{% else %}Orphan{% endif %}
             </td>
             {% endwith %}
         </tr><tr>
@@ -164,7 +163,10 @@
             <td>{{ pkg.installed_size|filesizeformat }}</td>
         </tr><tr>
             <th>Last Packager:</th>
-            <td>{% with pkgr = pkg.packager %}{% if pkgr %}{{ packager_link(pkgr)|safe }}{% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
+            <td>{% with pkgr = pkg.packager %}{% if pkgr %}
+            <a href="/packages/?packager={{ pkgr.username }}"
+                title="View packages packaged by {{ pkgr.get_full_name() }}">{{ pkgr.get_full_name() }}</a>
+            {% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Build Date:</th>
             <td>{{ pkg.build_date|date("DATETIME_FORMAT") }} UTC</td>
