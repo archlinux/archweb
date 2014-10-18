@@ -183,6 +183,7 @@ if not TEMPLATE_DEBUG:
     TEMPLATE_LOADERS = (
         ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
+    JINJA2_BYTECODE_CACHE_ENABLE = True
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
