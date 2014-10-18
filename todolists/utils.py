@@ -6,7 +6,7 @@ from packages.models import Package
 
 def todo_counts():
     sql = """
-SELECT todolist_id, count(*), sum(CASE WHEN status = %s THEN 1 ELSE 0 END)
+SELECT todolist_id, count(*), SUM(CASE WHEN status = %s THEN 1 ELSE 0 END)
     FROM todolists_todolistpackage
     WHERE removed IS NULL
     GROUP BY todolist_id
