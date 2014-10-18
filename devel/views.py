@@ -197,6 +197,7 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
+    packages = report.packages(packages, username)
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
@@ -204,7 +205,7 @@ def report(request, report_name, username=None):
         'title': report.description,
         'report': report,
         'maintainer': user,
-        'packages': report.packages(packages, username),
+        'packages': packages,
         'arches': sorted(arches),
         'repos': sorted(repos),
         'column_names': report.names,
