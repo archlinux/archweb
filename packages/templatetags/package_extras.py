@@ -6,6 +6,9 @@ except ImportError:
 
 from django import template
 from django.utils.html import escape
+from django_jinja import library
+
+from main.templatetags import pgp
 
 register = template.Library()
 
@@ -14,11 +17,11 @@ def link_encode(url, query):
     # massage the data into all utf-8 encoded strings first, so urlencode
     # doesn't barf at the data we pass it
     query = {k: unicode(v).encode('utf-8') for k, v in query.items()}
-    data = urlencode(query).replace('&', '&amp;')
+    data = urlencode(query)
     return "%s?%s" % (url, data)
 
 
-@register.filter
+@library.filter
 def url_unquote(original_url):
     try:
         url = original_url
@@ -79,7 +82,7 @@ def pkg_details_link(pkg, link_title=None, honor_flagged=False):
     return link % (pkg.get_absolute_url(), pkg.pkgname, link_content)
 
 
-@register.simple_tag
+@library.global_function
 def maintainer_link(user):
     if user:
         # TODO don't hardcode
@@ -92,7 +95,7 @@ def maintainer_link(user):
     return ''
 
 
-@register.simple_tag
+@library.global_function
 def packager_link(user):
     if user:
         # TODO don't hardcode
@@ -105,7 +108,12 @@ def packager_link(user):
     return ''
 
 
-@register.simple_tag
+@library.global_function
+def pgp_key_link(key_id, link_text=None):
+    return pgp.pgp_key_link(key_id, link_text)
+
+
+@library.global_function
 def scm_link(package, operation):
     parts = (package.repo.svn_root, operation, package.pkgbase)
     linkbase = (
@@ -114,8 +122,8 @@ def scm_link(package, operation):
     return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
 
 
-@register.simple_tag
-def get_wiki_link(package):
+@library.global_function
+def wiki_link(package):
     url = "https://wiki.archlinux.org/index.php/Special:Search"
     data = {
         'search': package.pkgname,
@@ -123,7 +131,7 @@ def get_wiki_link(package):
     return link_encode(url, data)
 
 
-@register.simple_tag
+@library.global_function
 def bugs_list(package):
     url = "https://bugs.archlinux.org/"
     data = {
@@ -134,7 +142,7 @@ def bugs_list(package):
     return link_encode(url, data)
 
 
-@register.simple_tag
+@library.global_function
 def bug_report(package):
     url = "https://bugs.archlinux.org/newtask"
     data = {
