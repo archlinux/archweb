@@ -9,7 +9,7 @@ from main.utils import cache_function
 from main.models import Package
 from packages.models import PackageRelation
 
-@cache_function(300)
+@cache_function(283)
 def get_annotated_maintainers():
     maintainers = User.objects.filter(is_active=True).order_by(
             'first_name', 'last_name')

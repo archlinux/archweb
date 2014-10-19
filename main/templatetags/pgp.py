@@ -44,7 +44,7 @@ def pgp_key_link(key_id, link_text=None):
     return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
 
-@cache_function(1800)
+@cache_function(1741)
 def name_for_key(normalized):
     try:
         matching_key = DeveloperKey.objects.select_related(

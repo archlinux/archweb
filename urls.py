@@ -41,20 +41,19 @@ urlpatterns += patterns('public.views',
 # Feeds patterns, used below
 feeds_patterns = patterns('',
     (r'^$',          'public.views.feeds', {}, 'feeds-list'),
-    (r'^news/$',     cache_page(300)(NewsFeed())),
-    (r'^packages/$', cache_page(300)(PackageFeed())),
+    (r'^news/$',     cache_page(311)(NewsFeed())),
+    (r'^packages/$', cache_page(313)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/$',
-        cache_page(300)(PackageFeed())),
+        cache_page(313)(PackageFeed())),
     (r'^packages/all/(?P<repo>[A-z0-9\-]+)/$',
-        cache_page(300)(PackageFeed())),
+        cache_page(313)(PackageFeed())),
     (r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
-        cache_page(300)(PackageFeed())),
-    (r'^releases/$', cache_page(300)(ReleaseFeed())),
+        cache_page(313)(PackageFeed())),
+    (r'^releases/$', cache_page(317)(ReleaseFeed())),
 )
 
 # Includes and other remaining stuff
 urlpatterns += patterns('',
-    # cache this static JS resource for 1 week rather than default 5 minutes
     (r'^admin/',     include(admin.site.urls)),
     (r'^devel/',     include('devel.urls')),
     (r'^feeds/',     include(feeds_patterns)),
@@ -80,10 +79,10 @@ urlpatterns += patterns('retro.views',
 # Sitemaps
 urlpatterns += patterns('',
     (r'^sitemap.xml$',
-        cache_page(1800)(sitemap_views.index),
+        cache_page(1831)(sitemap_views.index),
         {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
     (r'^sitemap-(?P<section>.+)\.xml$',
-        cache_page(1800)(sitemap_views.sitemap),
+        cache_page(1831)(sitemap_views.sitemap),
         {'sitemaps': our_sitemaps}, 'sitemaps'),
 )
 

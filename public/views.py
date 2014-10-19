@@ -17,7 +17,7 @@ from releng.models import Release
 from .utils import get_recent_updates
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def index(request):
     if request.user.is_authenticated():
         def updates():
@@ -50,7 +50,7 @@ USER_LISTS = {
 }
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def userlist(request, user_type='devs'):
     users = User.objects.order_by(
             'first_name', 'last_name').select_related('userprofile')
@@ -70,7 +70,7 @@ def userlist(request, user_type='devs'):
     return render(request, 'public/userlist.html', context)
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def donate(request):
     context = {
         'donors': Donor.objects.filter(visible=True).order_by('name'),
@@ -88,7 +88,7 @@ def _mirror_urls():
     return sorted(urls, key=sort_by)
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def download(request):
     try:
         release = Release.objects.filter(available=True).latest()
@@ -104,7 +104,7 @@ def download(request):
     return render(request, 'public/download.html', context)
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def feeds(request):
     repos = Repo.objects.all()
     if not request.user.is_authenticated():
@@ -116,7 +116,7 @@ def feeds(request):
     return render(request, 'public/feeds.html', context)
 
 
-@cache_control(max_age=300)
+@cache_control(max_age=307)
 def keys(request):
     users = User.objects.filter(is_active=True).select_related(
             'userprofile__pgp_key').order_by('first_name', 'last_name')
@@ -153,7 +153,7 @@ def keys(request):
     return render(request, 'public/keys.html', context)
 
 
-@cache_page(1800)
+@cache_page(1789)
 def keys_json(request):
     node_list = []
 

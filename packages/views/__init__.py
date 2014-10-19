@@ -35,7 +35,7 @@ def opensearch(request):
 
 
 @require_safe
-@cache_control(public=True, max_age=300)
+@cache_control(public=True, max_age=613)
 def opensearch_suggest(request):
     search_term = request.GET.get('q', '')
     if search_term == '':
@@ -55,7 +55,7 @@ def opensearch_suggest(request):
                 'pkgname', flat=True).order_by('pkgname').distinct()[:10]
         results = [search_term, list(names)]
         to_json = json.dumps(results, ensure_ascii=False)
-        cache.set(cache_key, to_json, 300)
+        cache.set(cache_key, to_json, 613)
     return HttpResponse(to_json, content_type='application/x-suggestions+json')
 
 
