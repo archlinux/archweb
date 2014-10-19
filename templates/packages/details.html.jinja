@@ -93,7 +93,7 @@
         {% else %}
         <tr>
             <th>Base Package:</th>
-            {% with base = pkg.base_package %}{% if base %}
+            {% with base = pkg.base_package() %}{% if base %}
             <td>{{ details.details_link(base) }}</td>
             {% else %}
             <td><a href="../{{ pkg.pkgbase }}/"
