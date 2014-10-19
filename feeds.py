@@ -79,7 +79,6 @@ class PackageFeed(Feed):
     feed_type = GuidNotPermalinkFeed
 
     link = '/packages/'
-    title_template = 'feeds/packages_title.html'
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(etag_func=package_etag, last_modified_func=package_last_modified)
@@ -142,6 +141,9 @@ class PackageFeed(Feed):
     def item_pubdate(self, item):
         return item.last_update
 
+    def item_title(self, item):
+        return '%s %s %s' % (item.pkgname, item.full_version, item.arch.name)
+
     def item_description(self, item):
         return item.pkgdesc
 
@@ -168,7 +170,6 @@ class NewsFeed(Feed):
     link = '/news/'
     description = 'The latest and greatest news from the Arch Linux distribution.'
     subtitle = description
-    description_template = 'feeds/news_description.html'
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(etag_func=news_etag, last_modified_func=news_last_modified)
@@ -191,6 +192,9 @@ class NewsFeed(Feed):
 
     def item_title(self, item):
         return item.title
+
+    def item_description(self, item):
+        return item.html()
 
 
 class ReleaseFeed(Feed):
