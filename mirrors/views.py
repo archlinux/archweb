@@ -6,6 +6,7 @@ from operator import attrgetter, itemgetter
 from django import forms
 from django.forms.widgets import CheckboxSelectMultiple
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import connection
 from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -222,7 +223,9 @@ def url_details(request, name, url_id):
 
 
 def status_last_modified(request, *args, **kwargs):
-    return MirrorLog.objects.values_list('check_time', flat=True).latest()
+    cursor = connection.cursor()
+    cursor.execute("SELECT MAX(check_time) FROM mirrors_mirrorlog")
+    return cursor.fetchone()[0]
 
 
 @condition(last_modified_func=status_last_modified)
