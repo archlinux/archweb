@@ -443,12 +443,8 @@ class PackageFile(models.Model):
         db_table = 'package_files'
 
 
-# connect signals needed to keep cache in line with reality
-from main.utils import refresh_latest
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save
 
-post_save.connect(refresh_latest, sender=Package,
-        dispatch_uid="main.models")
 # note: reporead sets the 'created' field on Package objects, so no signal
 # listener is set up here to do so
 pre_save.connect(set_created_field, sender=Donor,

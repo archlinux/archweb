@@ -45,12 +45,9 @@ def set_news_fields(sender, **kwargs):
         news.guid = 'tag:%s,%s:%s' % (Site.objects.get_current(),
                 current_time.strftime('%Y-%m-%d'), news.get_absolute_url())
 
-# connect signals needed to keep cache in line with reality
-from main.utils import refresh_latest
-from django.db.models.signals import pre_save, post_save
 
-post_save.connect(refresh_latest, sender=News,
-        dispatch_uid="news.models")
+from django.db.models.signals import pre_save
+
 pre_save.connect(set_news_fields, sender=News,
         dispatch_uid="news.models")
 

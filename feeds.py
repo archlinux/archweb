@@ -4,11 +4,11 @@ from pytz import utc
 
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
+from django.db import connection
 from django.db.models import Q
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.views.decorators.http import condition
 
-from main.utils import retrieve_latest
 from main.models import Arch, Repo, Package
 from news.models import News
 from releng.models import Release
@@ -64,13 +64,15 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
 
 
 def package_etag(request, *args, **kwargs):
-    latest = retrieve_latest(Package)
+    latest = package_last_modified(request)
     if latest:
         return hashlib.md5(str(kwargs) + str(latest)).hexdigest()
     return None
 
 def package_last_modified(request, *args, **kwargs):
-    return retrieve_latest(Package)
+    cursor = connection.cursor()
+    cursor.execute("SELECT MAX(last_update) FROM packages")
+    return cursor.fetchone()[0]
 
 
 class PackageFeed(Feed):
@@ -148,13 +150,15 @@ class PackageFeed(Feed):
 
 
 def news_etag(request, *args, **kwargs):
-    latest = retrieve_latest(News, 'last_modified')
+    latest = news_last_modified(request)
     if latest:
         return hashlib.md5(str(latest)).hexdigest()
     return None
 
 def news_last_modified(request, *args, **kwargs):
-    return retrieve_latest(News, 'last_modified')
+    cursor = connection.cursor()
+    cursor.execute("SELECT MAX(last_modified) FROM news")
+    return cursor.fetchone()[0]
 
 
 class NewsFeed(Feed):
