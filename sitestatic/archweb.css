@@ -701,6 +701,10 @@ table.results {
         color: red;
     }
 
+    .results tr.empty td {
+        text-align: center;
+    }
+
 /* pkglist: layout */
 #pkglist-about {
     margin-top: 1.5em;

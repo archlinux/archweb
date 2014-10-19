@@ -58,7 +58,8 @@
             </tr>
         </thead>
         <tbody>
-            {% for pkg in exact_matches %}<tr class="{% cycle 'odd' 'even' %}">
+            {% for pkg in exact_matches %}
+            <tr class="{% cycle 'odd' 'even' %}">
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
@@ -70,13 +71,13 @@
                 <td class="wrap">{{ pkg.pkgdesc }}</td>
                 <td>{{ pkg.last_update|date }}</td>
                 <td>{{ pkg.flag_date|date }}</td>
-            </tr>{% endfor %}
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
 {% endif %}{% endwith %}{% endif %}
 
-{% if package_list %}
 <div id="pkglist-results" class="box">
     {% include "packages/search_paginator.html" %}
     <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
@@ -101,7 +102,8 @@
                 </tr>
             </thead>
             <tbody>
-                {% for pkg in package_list %}<tr class="{% cycle 'odd' 'even' %}">
+                {% for pkg in package_list %}
+                <tr class="{% cycle 'odd' 'even' %}">
                     {% if perms.main.change_package %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
                     {% endif %}
@@ -116,7 +118,10 @@
                     <td class="wrap">{{ pkg.pkgdesc }}</td>
                     <td>{{ pkg.last_update|date }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
-                </tr>{% endfor %}
+                </tr>
+                {% empty %}
+                <tr class="empty"><td colspan="{% if perms.main.change_package %}9{% else %}8{% endif %}"><em>No matching packages found</em></td></tr>
+                {% endfor %}
             </tbody>
         </table>
         {% include "packages/search_paginator.html" %}
@@ -129,21 +134,16 @@
         {% endif %}
     </form>
 </div>
-{% else %}
-<div class="box">
-    <p>We couldn't find any packages matching your query. Try searching again
+
+<div id="pkglist-about" class="box">
+    <p>Can't find what you are looking for? Try searching again
     using different criteria, or try
     {% if search_form.q.data %}
     <a href="https://aur.archlinux.org/packages.php?K={{ search_form.q.data|urlencode }}">searching the AUR</a>
     {% else %}searching the <a href="https://aur.archlinux.org/">AUR</a>{% endif %}
     to see if the package can be found there.</p>
-</div>
-{% endif %}
 
-<div id="pkglist-about" class="box">
     <p>You are browsing the Arch Linux package database. From here you can find
-    detailed information about packages located in the official supported repositories.
-    For unsupported packages, browse the <a href="https://aur.archlinux.org/"
-        title="AUR package database">Arch User Repository (AUR).</a></p>
+    detailed information about packages located in the official supported repositories.</p>
 </div>
 {% endblock %}
