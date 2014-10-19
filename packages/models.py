@@ -379,6 +379,13 @@ class RelatedToBase(models.Model):
         given criteria. It will not search provisions, but will find packages
         named and matching repo characteristics if possible.'''
         pkgs = Package.objects.normal().filter(pkgname=self.name)
+        # TODO: this may in fact be faster- select only the fields we know will
+        # actually get used, saving us some bandwidth and hopefully query
+        # construction time. However, reality hasn't quite proved it out yet.
+        #pkgs = Package.objects.select_related('repo', 'arch').only(
+        #        'id', 'pkgname', 'epoch', 'pkgver', 'pkgrel',
+        #        'repo__id', 'repo__name', 'repo__testing', 'repo__staging',
+        #        'arch__id', 'arch__name').filter(pkgname=self.name)
         if not self.pkg.arch.agnostic:
             # make sure we match architectures if possible
             arches = self.pkg.applicable_arches()

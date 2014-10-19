@@ -60,10 +60,12 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.eggs.Loader',
-    'django.template.loaders.app_directories.Loader',
+    'django_jinja.loaders.FileSystemLoader',
+    'django_jinja.loaders.AppLoader',
 )
+
+# Send templates matching the following to the Jinja2 engine
+DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.jinja'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -115,6 +117,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django_countries',
+    'django_jinja',
 
     'main',
     'mirrors',
@@ -180,6 +183,7 @@ if not TEMPLATE_DEBUG:
     TEMPLATE_LOADERS = (
         ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
     )
+    JINJA2_BYTECODE_CACHE_ENABLE = True
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:

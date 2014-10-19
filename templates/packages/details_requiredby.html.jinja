@@ -1,4 +1,4 @@
-{% load package_extras %}<li>{% pkg_details_link req.pkg %}
+{% import 'packages/details_link.html.jinja' as details %}<li>{{ details.details_link(req.pkg) }}
 {% if req.name != pkg.pkgname %}<span class="virtual-dep"> (requires {{ req.name }})</span>
 {% endif %}{% if req.pkg.repo.testing %}<span class="testing-dep"> (testing)</span>
 {% endif %}{% if req.pkg.repo.staging %}<span class="staging-dep"> (staging)</span>
