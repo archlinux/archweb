@@ -189,23 +189,21 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
     if status_data['check_time__max'] is not None:
         min_check_time = status_data['check_time__max'] - timedelta(minutes=5)
         min_sync_time = status_data['last_sync__max'] - timedelta(minutes=20)
-        best_logs = MirrorLog.objects.filter(is_success=True,
+        best_logs = MirrorLog.objects.select_related('url').filter(
+                is_success=True,
                 check_time__gte=min_check_time, last_sync__gte=min_sync_time,
                 url__active=True,
                 url__mirror__public=True, url__mirror__active=True,
                 url__protocol__default=True).order_by(
                 'duration')[:1]
         if best_logs:
-            return MirrorUrl.objects.get(id=best_logs[0].url_id)
+            return best_logs[0].url
 
     mirror_urls = MirrorUrl.objects.filter(active=True,
-            mirror__public=True, mirror__active=True, protocol__default=True)
-    # look first for a country-agnostic URL, then fall back to any HTTP URL
-    filtered_urls = mirror_urls.filter(country='')[:1]
-    if not filtered_urls:
-        filtered_urls = mirror_urls[:1]
-    if not filtered_urls:
+            mirror__public=True, mirror__active=True,
+            protocol__default=True)[:1]
+    if not mirror_urls:
         return None
-    return filtered_urls[0]
+    return mirror_urls[0]
 
 # vim: set ts=4 sw=4 et:
