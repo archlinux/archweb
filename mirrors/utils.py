@@ -118,20 +118,16 @@ def annotate_url(url, url_data):
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
 
-    valid_urls = MirrorUrl.objects.filter(
-            logs__check_time__gte=cutoff_time).distinct()
-
+    urls = MirrorUrl.objects.select_related(
+            'mirror', 'protocol').order_by('mirror__id', 'url')
     if mirror_id:
-        valid_urls = valid_urls.filter(mirror_id=mirror_id)
+        urls = urls.filter(mirror_id=mirror_id)
     if not show_all:
-        valid_urls = valid_urls.filter(active=True, mirror__active=True,
+        urls = urls.filter(active=True, mirror__active=True,
                 mirror__public=True)
 
-    url_data = status_data(cutoff, mirror_id)
-    urls = MirrorUrl.objects.select_related('mirror', 'protocol').filter(
-            id__in=valid_urls).order_by('mirror__id', 'url')
-
     if urls:
+        url_data = status_data(cutoff, mirror_id)
         urls = [annotate_url(url, url_data.get(url.id, {})) for url in urls]
         last_check = max([u.last_check for u in urls if u.last_check])
         num_checks = max([u.check_count for u in urls])

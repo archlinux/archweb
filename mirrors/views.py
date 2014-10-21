@@ -245,7 +245,10 @@ def status(request, tier=None):
         if tier is not None and url.mirror.tier != tier:
             continue
         # split them into good and bad lists based on delay
-        if not url.delay or url.delay > bad_timedelta:
+        if url.completion_pct is None:
+            # skip URLs that have never been checked
+            continue
+        elif not url.delay or url.delay > bad_timedelta:
             bad_urls.append(url)
         else:
             good_urls.append(url)
