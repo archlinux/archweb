@@ -84,19 +84,16 @@ GROUP BY l.url_id, u.mirror_id
 def annotate_url(url, url_data):
     '''Given a MirrorURL object, add a few more attributes to it regarding
     status, including completion_pct, delay, and score.'''
-    known_attrs = (
-        ('success_count', 0),
-        ('check_count', 0),
-        ('completion_pct', None),
-        ('duration_avg', None),
-        ('duration_stddev', None),
-        ('last_check', None),
-        ('last_sync', None),
-        ('delay', None),
-        ('score', None),
-    )
-    for k, v in known_attrs:
-        setattr(url, k, v)
+    # set up some sane default values in case we are missing anything
+    url.success_count = 0
+    url.check_count = 0
+    url.completion_pct = None
+    url.duration_avg = None
+    url.duration_stddev = None
+    url.last_check = None
+    url.last_sync = None
+    url.delay = None
+    url.score = None
     for k, v in url_data.items():
         if k not in ('url_id', 'mirror_id'):
             setattr(url, k, v)
@@ -107,13 +104,15 @@ def annotate_url(url, url_data):
     if url.delay is not None:
         hours = url.delay.days * 24.0 + url.delay.seconds / 3600.0
 
-        if url.completion_pct > 0:
+        if url.completion_pct > 0.0:
             divisor = url.completion_pct
         else:
             # arbitrary small value
             divisor = 0.005
         stddev = url.duration_stddev or 0.0
         url.score = (hours + url.duration_avg + stddev) / divisor
+
+    return url
 
 
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
@@ -133,8 +132,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
             id__in=valid_urls).order_by('mirror__id', 'url')
 
     if urls:
-        for url in urls:
-            annotate_url(url, url_data.get(url.id, {}))
+        urls = [annotate_url(url, url_data.get(url.id, {})) for url in urls]
         last_check = max([u.last_check for u in urls if u.last_check])
         num_checks = max([u.check_count for u in urls])
         check_info = MirrorLog.objects.filter(check_time__gte=cutoff_time)

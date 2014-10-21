@@ -275,9 +275,6 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, timedelta):
             # always returned as integer seconds
             return obj.days * 24 * 3600 + obj.seconds
-        if hasattr(obj, '__iter__'):
-            # mainly for queryset serialization
-            return list(obj)
         if isinstance(obj, MirrorUrl):
             data = {attr: getattr(obj, attr) for attr in self.url_attributes}
             country = obj.country
@@ -298,8 +295,8 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
         if isinstance(obj, MirrorUrl):
             data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
             cutoff = now() - DEFAULT_CUTOFF
-            data['logs'] = obj.logs.filter(
-                    check_time__gte=cutoff).order_by('check_time')
+            data['logs'] = list(obj.logs.filter(
+                    check_time__gte=cutoff).order_by('check_time'))
             return data
         if isinstance(obj, MirrorLog):
             return {attr: getattr(obj, attr) for attr in self.log_attributes}
