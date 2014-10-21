@@ -128,8 +128,8 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     if urls:
         url_data = status_data(cutoff_time, mirror_id)
         urls = [annotate_url(url, url_data.get(url.id, {})) for url in urls]
-        last_check = max([u.last_check for u in urls if u.last_check])
-        num_checks = max([u.check_count for u in urls])
+        last_check = max([u.last_check for u in urls if u.last_check] or [None])
+        num_checks = max(u.check_count for u in urls)
         check_info = MirrorLog.objects.filter(check_time__gte=cutoff_time)
         if mirror_id:
             check_info = check_info.filter(url__mirror_id=mirror_id)
