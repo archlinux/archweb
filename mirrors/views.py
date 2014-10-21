@@ -11,6 +11,7 @@ from django.db.models import Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import condition
 from django_countries.data import COUNTRIES
@@ -306,6 +307,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
         return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 
+@cache_page(67)
 @condition(last_modified_func=status_last_modified)
 def status_json(request, tier=None):
     if tier is not None:
