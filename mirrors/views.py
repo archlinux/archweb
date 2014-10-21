@@ -323,9 +323,6 @@ class LocationJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle CheckLocation objects.'''
 
     def default(self, obj):
-        if hasattr(obj, '__iter__'):
-            # mainly for queryset serialization
-            return list(obj)
         if isinstance(obj, CheckLocation):
             return {
                 'id': obj.pk,
@@ -341,7 +338,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
 def locations_json(request):
     data = {}
     data['version'] = 1
-    data['locations'] = CheckLocation.objects.all().order_by('pk')
+    data['locations'] = list(CheckLocation.objects.all().order_by('pk'))
     to_json = json.dumps(data, ensure_ascii=False, cls=LocationJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response

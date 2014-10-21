@@ -247,9 +247,6 @@ class ReleaseJSONEncoder(DjangoJSONEncoder):
             'created', 'md5_sum', 'sha1_sum')
 
     def default(self, obj):
-        if hasattr(obj, '__iter__'):
-            # mainly for queryset serialization
-            return list(obj)
         if isinstance(obj, Release):
             data = {attr: getattr(obj, attr) or None
                     for attr in self.release_attributes}
@@ -276,7 +273,7 @@ def releases_json(request):
 
     data = {
         'version': 1,
-        'releases': releases,
+        'releases': list(releases),
         'latest_version': latest_version,
     }
     to_json = json.dumps(data, ensure_ascii=False, cls=ReleaseJSONEncoder)
