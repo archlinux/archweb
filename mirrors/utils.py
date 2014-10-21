@@ -21,9 +21,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-@cache_function(178)
-def status_data(cutoff=DEFAULT_CUTOFF, mirror_id=None):
-    cutoff_time = now() - cutoff
+def status_data(cutoff_time, mirror_id=None):
     if mirror_id is not None:
         params = [cutoff_time, mirror_id]
         mirror_where = 'AND u.mirror_id = %s'
@@ -115,6 +113,7 @@ def annotate_url(url, url_data):
     return url
 
 
+@cache_function(178)
 def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
 
@@ -127,7 +126,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
                 mirror__public=True)
 
     if urls:
-        url_data = status_data(cutoff, mirror_id)
+        url_data = status_data(cutoff_time, mirror_id)
         urls = [annotate_url(url, url_data.get(url.id, {})) for url in urls]
         last_check = max([u.last_check for u in urls if u.last_check])
         num_checks = max([u.check_count for u in urls])
