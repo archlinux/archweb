@@ -214,44 +214,8 @@
 
 {% load cdn %}{% jquery %}
 <script type="text/javascript">
-function setupTypeahead() {
-    $('#pkgsearch-field').typeahead({
-        source: function(query, callback) {
-            $.getJSON('/opensearch/packages/suggest', {q: query}, function(data) {
-                callback(data[1]);
-            });
-        },
-        matcher: function(item) { return true; },
-        sorter: function(items) { return items; },
-        menu: '<ul class="pkgsearch-typeahead"></ul>',
-        items: 10,
-        updater: function(item) {
-            $('#pkgsearch-field').val(item);
-            $('#pkgsearch-form').submit();
-            return item;
-        }
-    }).attr('autocomplete', 'off');
-    $('#pkgsearch-field').keyup(function(e) {
-        if (e.keyCode === 13 &&
-                $('ul.pkgsearch-typeahead li.active').size() === 0) {
-            $('#pkgsearch-form').submit();
-        }
-    });
-}
-function setupKonami() {
-    var konami = new Konami(function() {
-        $('#konami').html('<img src="{% static "vector_tux.png" %}" alt=""/>');
-        setTimeout(function() {
-            $('#konami').fadeIn(500);
-        }, 500);
-        $('#konami').click(function() {
-            $('#konami').fadeOut(500);
-        });
-    });
-}
 $(document).ready(function() {
-    $.ajax({ url: "{% static "bootstrap-typeahead.min.js" %}", cache: true, dataType: "script", success: setupTypeahead });
-    $.ajax({ url: "{% static "konami.min.js" %}", cache: true, dataType: "script", success: setupKonami });
+    $.ajax({ url: "{% static "homepage.js" %}", cache: true, dataType: "script", success: function() { setupTypeahead(); setupKonami("{% static "vector_tux.png" %}"); } });
 });
 </script>
 {% endblock %}
