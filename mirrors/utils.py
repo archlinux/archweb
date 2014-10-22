@@ -141,6 +141,7 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
         else:
             check_frequency = None
     else:
+        urls = []
         last_check = None
         num_checks = 0
         check_frequency = None
