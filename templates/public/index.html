@@ -108,7 +108,6 @@
 {% cache 115 main-page-right secure %}
 <div id="nav-sidebar" class="widget">
     <h4>Documentation</h4>
-
     <ul>
         <li><a href="https://wiki.archlinux.org/"
             title="Community documentation">Wiki</a></li>
@@ -119,7 +118,6 @@
     </ul>
 
     <h4>Community</h4>
-
     <ul>
         <li><a href="https://mailman.archlinux.org/mailman/listinfo/"
             title="Community and developer mailing lists">Mailing Lists</a></li>
@@ -132,7 +130,6 @@
     </ul>
 
     <h4>Support</h4>
-
     <ul>
         <li><a href="{% url 'page-donate' %}" title="Help support Arch Linux">Donate</a></li>
         <li><a href="http://schwag.archlinux.ca/"
@@ -144,7 +141,6 @@
     </ul>
 
     <h4>Tools</h4>
-
     <ul>
         <li><a href="{% url 'mirrorlist' %}"
             title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
@@ -152,12 +148,9 @@
             title="See a listing of all available mirrors">Mirror List</a></li>
         <li><a href="{% url 'mirror-status' %}"
             title="Check the status of all known mirrors">Mirror Status</a></li>
-        <li><a href="{% url 'packages-differences' %}"
-            title="See differences in packages between available architectures">Differences Reports</a></li>
     </ul>
 
     <h4>Development</h4>
-
     <ul>
         <li><a href="https://projects.archlinux.org/"
             title="Official Arch projects (git)">Projects in Git</a></li>
@@ -173,23 +166,27 @@
             title="Release Engineering ISO listing">ISO Release List</a></li>
         <li><a href="{% url 'visualize-index' %}"
             title="View visualizations">Visualizations</a></li>
+        <li><a href="{% url 'packages-differences' %}"
+            title="See differences in packages between available architectures">Differences Reports</a></li>
+    </ul>
+
+    <h4>People</h4>
+    <ul>
+        <li><a href="{% url 'page-devs' %}" title="Active developers">Developers</a></li>
+        <li><a href="{% url 'page-tus' %}" title="Active Trusted Users (TUs)">Trusted Users</a></li>
+        <li><a href="{% url 'page-fellows' %}" title="Retired Developers">Fellows</a></li>
+        <li><a href="{% url 'page-keys' %}"
+            title="Package/Database signing master keys">Signing Master Keys</a></li>
     </ul>
 
     <h4>More Resources</h4>
-
     <ul>
-        <li><a href="{% url 'page-keys' %}"
-            title="Package/Database signing master keys">Signing Master Keys</a></li>
         <li><a href="https://wiki.archlinux.org/index.php/Arch_Linux_press_coverage"
             title="Arch Linux in the media">Press Coverage</a></li>
         <li><a href="{% url 'page-art' %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
         <li><a href="{% url 'news-list' %}" title="News Archives">News Archives</a></li>
         <li><a href="/feeds/" title="Various RSS Feeds">RSS Feeds</a></li>
-        <li><a href="{% url 'page-devs' %}" title="Active developers">Developer Profiles</a></li>
-        <li><a href="{% url 'page-tus' %}" title="Active Trusted Users (TUs)">Trusted User Profiles</a></li>
-        <li><a href="{% url 'page-fellows' %}" title="Retired Developers">Fellows Profiles</a></li>
     </ul>
-
 </div>
 
 <div id="home-donate-button" class="widget">
