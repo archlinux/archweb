@@ -159,6 +159,9 @@ class NewsFeed(Feed):
     def item_pubdate(self, item):
         return item.postdate
 
+    def item_updateddate(self, item):
+        return item.last_modified
+
     def item_author_name(self, item):
         return item.author.get_full_name()
 
@@ -190,6 +193,9 @@ class ReleaseFeed(Feed):
 
     def item_pubdate(self, item):
         return datetime.combine(item.release_date, time()).replace(tzinfo=utc)
+
+    def item_updateddate(self, item):
+        return item.last_modified
 
     item_guid_is_permalink = False
 

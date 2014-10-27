@@ -18,6 +18,7 @@ class ReleaseAdmin(admin.ModelAdmin):
     list_display = ('version', 'release_date', 'kernel_version', 'available',
             'created')
     list_filter = ('available', 'release_date')
+    readonly_fields = ('created', 'last_modified')
 
 
 SIMPLE_MODELS = (Architecture, BootType, Bootloader, ClockChoice, Filesystem,

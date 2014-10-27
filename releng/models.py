@@ -120,6 +120,7 @@ class Release(models.Model):
     md5_sum = models.CharField('MD5 digest', max_length=32, blank=True)
     sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
     created = models.DateTimeField(editable=False)
+    last_modified = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
     info = models.TextField('Public information', blank=True)
     torrent_data = models.TextField(blank=True,
