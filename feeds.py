@@ -18,38 +18,20 @@ class BatchWritesWrapper(object):
         self.outfile = outfile
         self.chunks = chunks
         self.buf = []
+
     def write(self, s):
         buf = self.buf
         buf.append(s)
         if len(buf) >= self.chunks:
             self.outfile.write(''.join(buf))
             self.buf = []
+
     def flush(self):
         self.outfile.write(''.join(self.buf))
         self.outfile.flush()
 
 
-class GuidNotPermalinkFeed(Rss201rev2Feed):
-    @staticmethod
-    def check_for_unique_id(f):
-        def wrapper(name, contents=None, attrs=None):
-            if attrs is None:
-                attrs = {}
-            if name == 'guid':
-                attrs['isPermaLink'] = 'false'
-            return f(name, contents, attrs)
-        return wrapper
-
-    def write_items(self, handler):
-        '''
-        Totally disgusting. Monkey-patch the handler so if it sees a
-        'unique-id' field come through, add an isPermalink="false" attribute.
-        Workaround for http://code.djangoproject.com/ticket/9800
-        '''
-        handler.addQuickElement = self.check_for_unique_id(
-                handler.addQuickElement)
-        super(GuidNotPermalinkFeed, self).write_items(handler)
-
+class FasterRssFeed(Rss201rev2Feed):
     def write(self, outfile, encoding):
         '''
         Batch the underlying 'write' calls on the outfile because Python's
@@ -58,7 +40,7 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
         '>' closing tags and over 1600 write calls in our package feed.
         '''
         wrapper = BatchWritesWrapper(outfile)
-        super(GuidNotPermalinkFeed, self).write(wrapper, encoding)
+        super(FasterRssFeed, self).write(wrapper, encoding)
         wrapper.flush()
 
 
@@ -69,7 +51,7 @@ def package_last_modified(request, *args, **kwargs):
 
 
 class PackageFeed(Feed):
-    feed_type = GuidNotPermalinkFeed
+    feed_type = FasterRssFeed
 
     link = '/packages/'
 
@@ -124,6 +106,8 @@ class PackageFeed(Feed):
     def items(self, obj):
         return obj['qs']
 
+    item_guid_is_permalink = False
+
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.last_update
@@ -151,7 +135,7 @@ def news_last_modified(request, *args, **kwargs):
 
 
 class NewsFeed(Feed):
-    feed_type = GuidNotPermalinkFeed
+    feed_type = FasterRssFeed
 
     title = 'Arch Linux: Recent news updates'
     link = '/news/'
@@ -167,6 +151,8 @@ class NewsFeed(Feed):
     def items(self):
         return News.objects.select_related('author').order_by(
                 '-postdate', '-id')[:10]
+
+    item_guid_is_permalink = False
 
     def item_guid(self, item):
         return item.guid
@@ -185,7 +171,7 @@ class NewsFeed(Feed):
 
 
 class ReleaseFeed(Feed):
-    feed_type = GuidNotPermalinkFeed
+    feed_type = FasterRssFeed
 
     title = 'Arch Linux: Releases'
     link = '/download/'
@@ -205,6 +191,8 @@ class ReleaseFeed(Feed):
 
     def item_pubdate(self, item):
         return datetime.combine(item.release_date, time()).replace(tzinfo=utc)
+
+    item_guid_is_permalink = False
 
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
