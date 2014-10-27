@@ -14,15 +14,14 @@ from releng.models import Release
 
 
 class BatchWritesWrapper(object):
-    def __init__(self, outfile, chunks=20):
+    def __init__(self, outfile):
         self.outfile = outfile
-        self.chunks = chunks
         self.buf = []
 
     def write(self, s):
         buf = self.buf
         buf.append(s)
-        if len(buf) >= self.chunks:
+        if len(buf) >= 40:
             self.outfile.write(''.join(buf))
             self.buf = []
 
