@@ -1,5 +1,4 @@
 from datetime import datetime, time
-import hashlib
 from pytz import utc
 
 from django.contrib.sites.models import Site
@@ -63,12 +62,6 @@ class GuidNotPermalinkFeed(Rss201rev2Feed):
         wrapper.flush()
 
 
-def package_etag(request, *args, **kwargs):
-    latest = package_last_modified(request)
-    if latest:
-        return hashlib.md5(str(kwargs) + str(latest)).hexdigest()
-    return None
-
 def package_last_modified(request, *args, **kwargs):
     cursor = connection.cursor()
     cursor.execute("SELECT MAX(last_update) FROM packages")
@@ -81,7 +74,7 @@ class PackageFeed(Feed):
     link = '/packages/'
 
     def __call__(self, request, *args, **kwargs):
-        wrapper = condition(etag_func=package_etag, last_modified_func=package_last_modified)
+        wrapper = condition(last_modified_func=package_last_modified)
         return wrapper(super(PackageFeed, self).__call__)(request, *args, **kwargs)
 
     __name__ = 'package_feed'
@@ -151,12 +144,6 @@ class PackageFeed(Feed):
         return (item.repo.name, item.arch.name)
 
 
-def news_etag(request, *args, **kwargs):
-    latest = news_last_modified(request)
-    if latest:
-        return hashlib.md5(str(latest)).hexdigest()
-    return None
-
 def news_last_modified(request, *args, **kwargs):
     cursor = connection.cursor()
     cursor.execute("SELECT MAX(last_modified) FROM news")
@@ -172,7 +159,7 @@ class NewsFeed(Feed):
     subtitle = description
 
     def __call__(self, request, *args, **kwargs):
-        wrapper = condition(etag_func=news_etag, last_modified_func=news_last_modified)
+        wrapper = condition(last_modified_func=news_last_modified)
         return wrapper(super(NewsFeed, self).__call__)(request, *args, **kwargs)
 
     __name__ = 'news_feed'
