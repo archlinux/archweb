@@ -72,8 +72,9 @@ class MirrorUrl(models.Model):
             editable=False)
     has_ipv6 = models.BooleanField("IPv6 capable", default=False,
             editable=False)
-    created = models.DateTimeField(editable=False)
     active = models.BooleanField(default=True)
+    bandwidth = models.FloatField("bandwidth (mbits)", null=True, blank=True)
+    created = models.DateTimeField(editable=False)
 
     class Meta:
         verbose_name = 'mirror URL'

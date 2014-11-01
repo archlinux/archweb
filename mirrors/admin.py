@@ -11,7 +11,7 @@ from .models import (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
 class MirrorUrlForm(forms.ModelForm):
     class Meta:
         model = MirrorUrl
-        fields = ('url', 'country', 'active')
+        fields = ('url', 'country', 'bandwidth', 'active')
 
     def clean_url(self):
         # is this a valid-looking URL?
