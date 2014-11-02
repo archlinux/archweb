@@ -5,11 +5,11 @@ from operator import attrgetter
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_control, cache_page
 
-from devel.models import MasterKey, PGPSignature
+from devel.models import MasterKey, PGPSignature, StaffGroup
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
@@ -28,45 +28,18 @@ def index(request):
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': updates,
+        'staff_groups': StaffGroup.objects.all(),
     }
     return render(request, 'public/index.html', context)
 
-USER_LISTS = {
-    'devs': {
-        'user_type': 'Developers',
-        'user_title': 'Developer',
-        'description': "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties.",
-    },
-    'tus': {
-        'user_type': 'Trusted Users',
-        'user_title': 'Trusted User',
-        'description': "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository.",
-    },
-    'fellows': {
-        'user_type': 'Fellows',
-        'user_title': 'Fellow',
-        'description': "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!",
-    },
-}
-
 
 @cache_control(max_age=307)
-def userlist(request, user_type='devs'):
-    users = User.objects.order_by(
+def people(request, slug):
+    group = get_object_or_404(StaffGroup, slug=slug)
+    users = User.objects.filter(groups=group.group).order_by(
             'first_name', 'last_name').select_related('userprofile')
-    if user_type == 'devs':
-        users = users.filter(is_active=True, groups__name="Developers")
-    elif user_type == 'tus':
-        users = users.filter(is_active=True, groups__name="Trusted Users")
-    elif user_type == 'fellows':
-        users = users.filter(is_active=False,
-                groups__name__in=["Developers", "Trusted Users"])
-    else:
-        raise Http404
 
-    users = users.distinct()
-    context = USER_LISTS[user_type].copy()
-    context['users'] = users
+    context = {'group': group, 'users': users}
     return render(request, 'public/userlist.html', context)
 
 

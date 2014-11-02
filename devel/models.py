@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import pytz
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django_countries.fields import CountryField
 
 from .fields import PGPKeyField
@@ -54,17 +55,29 @@ class UserProfile(models.Model):
         verbose_name_plural = 'additional profile data'
 
     def get_absolute_url(self):
-        # TODO: this is disgusting. find a way to consolidate this logic with
-        # public.views.userlist among other places, and make some constants or
-        # something so we aren't using copies of string names everywhere.
-        group_names = self.user.groups.values_list('name', flat=True)
-        if "Developers" in group_names:
-            prefix = "developers"
-        elif "Trusted Users" in group_names:
-            prefix = "trustedusers"
-        else:
-            prefix = "fellows"
-        return '/%s/#%s' % (prefix, self.user.username)
+        user = self.user
+        group = StaffGroup.objects.filter(group=user.groups.all()).first()
+        if group:
+            return '%s#%s' % (group.get_absolute_url(), user.username)
+        return None
+
+
+class StaffGroup(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True)
+    group = models.OneToOneField(Group)
+    sort_order = models.PositiveIntegerField()
+    member_title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ('sort_order',)
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('people', args=[self.slug])
 
 
 class MasterKey(models.Model):

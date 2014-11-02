@@ -172,9 +172,9 @@
 
     <h4>People</h4>
     <ul>
-        <li><a href="{% url 'page-devs' %}" title="Active developers">Developers</a></li>
-        <li><a href="{% url 'page-tus' %}" title="Active Trusted Users (TUs)">Trusted Users</a></li>
-        <li><a href="{% url 'page-fellows' %}" title="Retired Developers">Fellows</a></li>
+        {% for group in staff_groups %}
+        <li><a href="{% url 'people' group.slug %}" title="More info about {{ group.name }}">{{ group.name }}</a></li>
+        {% endfor %}
         <li><a href="{% url 'page-keys' %}"
             title="Package/Database signing master keys">Signing Master Keys</a></li>
     </ul>

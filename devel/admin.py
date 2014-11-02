@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import UserProfile, MasterKey, DeveloperKey, PGPSignature
+from .models import UserProfile, StaffGroup, MasterKey, DeveloperKey, PGPSignature
 
 
 class UserProfileInline(admin.StackedInline):
@@ -13,6 +13,11 @@ class UserProfileAdmin(UserAdmin):
     inlines = [UserProfileInline]
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
     list_filter = ('is_staff', 'is_superuser', 'is_active')
+
+
+class StaffGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'group', 'sort_order', 'member_title', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
 
 
 class MasterKeyAdmin(admin.ModelAdmin):
@@ -36,6 +41,7 @@ class PGPSignatureAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserProfileAdmin)
+admin.site.register(StaffGroup, StaffGroupAdmin)
 
 admin.site.register(MasterKey, MasterKeyAdmin)
 admin.site.register(DeveloperKey, DeveloperKeyAdmin)

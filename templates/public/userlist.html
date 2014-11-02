@@ -2,16 +2,16 @@
 {% load static from staticfiles %}
 {% load cache %}
 
-{% block title %}Arch Linux - {{ user_type }}{% endblock %}
+{% block title %}Arch Linux - {{ group.name }}{% endblock %}
 
 {% block head %}<link rel="stylesheet" type="text/css" href="{% static "flags/fam.css" %}" media="screen, projection" />{% endblock %}
 
 {% block content %}
-{% cache 600 dev-tu-profiles user_type %}
+{% cache 600 dev-tu-profiles group.name %}
 <div id="dev-tu-profiles" class="box">
-    <h2>Arch Linux {{user_type}}</h2>
+    <h2>Arch Linux {{ group.name }}</h2>
 
-    <p>{{description}}</p>
+    <p>{{ group.description }}</p>
 
     {% with users as dev_list %}
     {% include 'public/developer_list.html' %}

@@ -21,7 +21,7 @@
             <meta itemprop="name" content="{{ dev.get_full_name|escape }}"/>
             <meta itemprop="givenName" content="{{ dev.first_name|escape }}"/>
             <meta itemprop="familyName" content="{{ dev.last_name|escape }}"/>
-            <meta itemprop="jobTitle" content="{{ user_title|escape }}"/>
+            <meta itemprop="jobTitle" content="{{ group.member_title|escape }}"/>
             <div style="display:none" itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
                 <meta itemprop="name" content="Arch Linux"/>
             </div>
@@ -53,7 +53,7 @@
                     <th>Occupation:</th>
                     <td>{{ prof.occupation }}</td>
                 </tr><tr>
-                    <th>YOB:</th>
+                    <th>Birth Year:</th>
                     <td itemprop="birthDate">{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
                 </tr><tr>
                     <th>Location:</th>
