@@ -4,7 +4,7 @@ import json
 from operator import attrgetter, itemgetter
 
 from django import forms
-from django.forms.widgets import CheckboxSelectMultiple
+from django.forms.widgets import SelectMultiple, CheckboxSelectMultiple
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 from django.db.models import Q
@@ -14,7 +14,8 @@ from django.utils.timezone import now
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import condition
-from django_countries.data import COUNTRIES
+from django_countries import countries
+from django_countries.fields import Country
 
 from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
         CheckLocation)
@@ -22,15 +23,14 @@ from .utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
 
 
 class MirrorlistForm(forms.Form):
-    country = forms.MultipleChoiceField(required=False)
+    country = forms.MultipleChoiceField(required=False,
+            widget=SelectMultiple(attrs={'size': '12'}))
     protocol = forms.MultipleChoiceField(required=False,
             widget=CheckboxSelectMultiple)
     ip_version = forms.MultipleChoiceField(required=False,
             label="IP version", choices=(('4','IPv4'), ('6','IPv6')),
             widget=CheckboxSelectMultiple)
     use_mirror_status = forms.BooleanField(required=False)
-
-    countries = dict(COUNTRIES)
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
@@ -49,8 +49,8 @@ class MirrorlistForm(forms.Form):
         country_codes.update(MirrorUrl.objects.filter(active=True,
                 mirror__active=True).exclude(country='').values_list(
                 'country', flat=True).order_by().distinct())
-        countries = [(code, self.countries[code]) for code in country_codes]
-        return sorted(countries, key=itemgetter(1))
+        code_list = [(code, countries.name(code)) for code in country_codes]
+        return sorted(code_list, key=itemgetter(1))
 
     def as_div(self):
         "Returns this form rendered as HTML <divs>s."
@@ -142,14 +142,29 @@ def mirrors(request):
     mirror_list = Mirror.objects.select_related().order_by('tier', 'name')
     protos = MirrorUrl.objects.values_list(
             'mirror_id', 'protocol__protocol').order_by(
-            'mirror__id', 'protocol__protocol').distinct()
+            'mirror_id', 'protocol__protocol').distinct()
+    countries = MirrorUrl.objects.values_list(
+            'mirror_id', 'country').order_by(
+            'mirror_id', 'country').distinct()
+
     if not request.user.is_authenticated():
         mirror_list = mirror_list.filter(public=True, active=True)
-        protos = protos.filter(mirror__public=True, mirror__active=True)
+        protos = protos.filter(
+                mirror__public=True, mirror__active=True, active=True)
+        countries = countries.filter(
+                mirror__public=True, mirror__active=True, active=True)
+
     protos = {k: list(v) for k, v in groupby(protos, key=itemgetter(0))}
+    countries = {k: list(v) for k, v in groupby(countries, key=itemgetter(0))}
+
     for mirror in mirror_list:
-        items = protos.get(mirror.id, [])
-        mirror.protocols = [item[1] for item in items]
+        item_protos = protos.get(mirror.id, [])
+        mirror.protocols = [item[1] for item in item_protos]
+        mirror.country = None
+        item_countries = countries.get(mirror.id, [])
+        if len(item_countries) == 1:
+            mirror.country = Country(item_countries[0][1])
+
     return render(request, 'mirrors/mirrors.html',
             {'mirror_list': mirror_list})
 

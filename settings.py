@@ -175,6 +175,11 @@ TORRENT_TRACKERS = (
     'http://tracker.archlinux.org:6969/announce',
 )
 
+# Country name overrides for display purposes
+COUNTRIES_OVERRIDE = {
+    'MK': 'Macedonia',
+}
+
 ## Import local settings
 from local_settings import *
 
