@@ -1,0 +1,72 @@
+[
+{
+    "fields": {
+        "group": [
+            "Developers"
+        ],
+        "description": "This is a list of the current Arch Linux Developers. They maintain the [core] and [extra] package repositories in addition to doing any other developer duties.",
+        "sort_order": 1,
+        "member_title": "Developer",
+        "slug": "developers",
+        "name": "Developers"
+    },
+    "model": "devel.staffgroup",
+    "pk": 1
+},
+{
+    "fields": {
+        "group": [
+            "Trusted Users"
+        ],
+        "description": "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository.",
+        "sort_order": 2,
+        "member_title": "Trusted User",
+        "slug": "trusted-users",
+        "name": "Trusted Users"
+    },
+    "model": "devel.staffgroup",
+    "pk": 2
+},
+{
+    "fields": {
+        "group": [
+            "Retired Developers"
+        ],
+        "description": "Below you can find a list of ex-developers (aka project fellows). These folks helped make Arch what it is today. Thanks!",
+        "sort_order": 11,
+        "member_title": "Fellow",
+        "slug": "developer-fellows",
+        "name": "Developer Fellows"
+    },
+    "model": "devel.staffgroup",
+    "pk": 3
+},
+{
+    "fields": {
+        "group": [
+            "Retired Trusted Users"
+        ],
+        "description": "Below you can find a list of ex-trusted users (aka fellows). These folks helped make Arch what it is today. Thanks!",
+        "sort_order": 12,
+        "member_title": "Fellow",
+        "slug": "trusted-user-fellows",
+        "name": "Trusted User Fellows"
+    },
+    "model": "devel.staffgroup",
+    "pk": 4
+},
+{
+    "fields": {
+        "group": [
+            "Support Staff"
+        ],
+        "description": "These are the unheralded people that keep things running behind the scenes. Forum moderators, wiki admins, IRC moderators, mirror maintenance, and everything else that keeps a Linux distro running smoothly.",
+        "sort_order": 5,
+        "member_title": "Staff",
+        "slug": "support-staff",
+        "name": "Support Staff"
+    },
+    "model": "devel.staffgroup",
+    "pk": 5
+}
+]
