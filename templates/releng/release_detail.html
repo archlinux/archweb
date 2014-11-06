@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Arch Linux - Release: {{ release.version }}{% endblock %}
 
@@ -9,11 +10,15 @@
     <ul>
         <li><strong>Release Date:</strong> {{ release.release_date|date }}</li>
         {% if release.kernel_version %}<li><strong>Kernel Version:</strong> {{ release.kernel_version }}</li>{% endif %}
-        <li><strong>Available:</strong> {{ release.available|yesno }}</li>
-        {% if release.torrent_data %}<li><strong>Download:</strong> <a
-                href="{% url 'releng-release-torrent' release.version %}"
-                title="Download torrent for {{ release.version }}">Torrent</a>,
-            <a href="{{ release.magnet_uri }}">Magnet</a></li>{% endif %}
+        <li><strong>Available:</strong> {{ release.available|yesno|capfirst }}</li>
+        {% if release.torrent_data %}
+        <li><a href="{% url 'releng-release-torrent' release.version %}"
+               title="Download torrent for {{ release.version }}">
+               Download via Torrent <img width="12" height="12" src="{% static "download.png" %}" alt=""/></a></li>
+        <li><a href="{{ release.magnet_uri }}"
+               title="Get magnet link for {{ release.version }}">
+               Download via Magnet URI <img width="12" height="12" src="{% static "magnet.png" %}" alt=""/></a></li>
+       {% endif %}
         {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
         {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
     </ul>

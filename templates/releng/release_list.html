@@ -12,28 +12,41 @@
 <div id="release-list" class="box">
     <h2>Releases</h2>
 
+    <p>This is a list of ISO releases made by the Arch Linux release
+    engineering team. These are typically done on a monthly cadence, containing
+    the latest kernel and base packages from the package repositories. Click
+    the version of each release to read any additional notes or details about
+    each release.</p>
+    <p>Torrents and magnet URIs are available to download the releases.
+    Releases listed as not available may still be seeded by peers, but are no
+    longer registered via the official Arch Linux torrent tracker. We always
+    recommend running the latest available release.</p>
+
     <table id="release-table" class="results">
         <thead>
             <tr>
+                <th style="width: 30px;"></th>
                 <th>Release Date</th>
                 <th>Version</th>
                 <th>Kernel Version</th>
                 <th>Available?</th>
-                <th>Torrent</th>
-                <th>Magnet</th>
                 <th>Download Size</th>
             </tr>
         </thead>
         <tbody>
             {% for item in release_list %}
             <tr class="{% cycle 'odd' 'even' %}">
+                <td>{% if item.torrent_data %}
+                <a href="{% url 'releng-release-torrent' item.version %}"
+                       title="Download torrent for {{ item.version }}"><img width="12" height="12" src="{% static "download.png" %}" alt="Torrent"/></a>
+                    &nbsp;
+                    <a href="{{ item.magnet_uri }}"
+                       title="Get magnet link for {{ item.version }}"><img width="12" height="12" src="{% static "magnet.png" %}" alt="Magnet"/></a>
+                {% endif %}</td>
                 <td>{{ item.release_date|date }}</td>
                 <td><a href="{{ item.get_absolute_url }}" title="Release details for {{ item.version }}">{{ item.version }}</a></td>
                 <td>{{ item.kernel_version|default:"" }}</td>
                 <td class="available-{{ item.available|yesno }}">{{ item.available|yesno|capfirst }}</td>
-                <td><a href="{% url 'releng-release-torrent' item.version %}"
-                        title="Download torrent for {{ item.version }}">Torrent</a></td>
-                <td><a href="{{ item.magnet_uri }}">Magnet</a></td>
                 <td>{% if item.torrent_data %}{{ item.torrent.file_length|filesizeformat }}{% endif %}</td>
             </tr>
             {% endfor %}
@@ -50,7 +63,7 @@ $(document).ready(function() {
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[0,1], [1,1]],
-        headers: { 4: { sorter: false }, 5: { sorter: false } }
+        headers: { 0: { sorter: false } }
     });
 });
 </script>
