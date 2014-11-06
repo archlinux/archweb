@@ -59,9 +59,9 @@
 
     {% if release %}<ul>
         <li><a href="{{ release.magnet_uri }}"
-            title="Magnet link">Magnet link for {{ release.version }}</a></li>
+            title="Magnet link">Magnet link for {{ release.version }} <img width="12" height="12" src="{% static "magnet.png" %}" alt=""/></a></li>
         <li><a href="{% url 'releng-release-torrent' release.version %}"
-            title="Download torrent">Torrent for {{ release.version }}</a></li>
+            title="Download torrent">Torrent for {{ release.version }}<img width="12" height="12" src="{% static "download.png" %}" alt=""/></a></li>
     </ul>{% endif %}
 
     <h3>Netboot</h3>
