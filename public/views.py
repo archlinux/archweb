@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_control, cache_page
 
-from devel.models import MasterKey, PGPSignature, StaffGroup
+from devel.models import MasterKey, DeveloperKey, PGPSignature, StaffGroup, UserProfile
 from main.models import Arch, Repo, Donor
 from mirrors.models import MirrorUrl
 from news.models import News
@@ -91,7 +91,9 @@ def feeds(request):
 
 @cache_control(max_age=307)
 def keys(request):
-    users = User.objects.filter(is_active=True).select_related(
+    profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
+    users = User.objects.filter(
+            is_active=True, userprofile__id__in=profile_ids).select_related(
             'userprofile__pgp_key').order_by('first_name', 'last_name')
     user_key_ids = frozenset(user.userprofile.pgp_key[-16:] for user in users
             if user.userprofile.pgp_key)
@@ -114,34 +116,39 @@ def keys(request):
             not_expired, revoked__isnull=True).values_list('signer', 'signee'))
 
     restrict = Q(signer__in=user_key_ids) & Q(signee__in=user_key_ids)
-    cross_signatures = PGPSignature.objects.filter(restrict,
+    cross_signatures = PGPSignature.objects.filter(
             not_expired, revoked__isnull=True).order_by('created')
+    # filter in python so we aren't sending a crazy long query to the DB
+    cross_signatures = [s for s in cross_signatures
+            if s.signer in user_key_ids and s.signee in user_key_ids]
+
+    developer_keys = DeveloperKey.objects.select_related(
+            'owner').filter(owner__isnull=False)
+    developer_keys = {key.key[-16:]: key for key in developer_keys}
 
     context = {
         'keys': master_keys,
         'active_users': users,
         'signatures': signatures,
         'cross_signatures': cross_signatures,
+        'developer_keys': developer_keys,
     }
     return render(request, 'public/keys.html', context)
 
 
 @cache_page(1789)
 def keys_json(request):
-    node_list = []
+    profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
+    users = User.objects.filter(
+            is_active=True, userprofile__id__in=profile_ids).select_related(
+            'userprofile__pgp_key').order_by('first_name', 'last_name')
 
     users = User.objects.filter(is_active=True).select_related('userprofile')
-    node_list.extend({
-            'name': dev.get_full_name(),
-            'key': dev.userprofile.pgp_key,
-            'group': 'dev'
-        } for dev in users.filter(groups__name='Developers'))
-    node_list.extend({
-            'name': tu.get_full_name(),
-            'key': tu.userprofile.pgp_key,
-            'group': 'tu'
-        } for tu in users.filter(groups__name='Trusted Users').exclude(
-            groups__name='Developers'))
+    node_list = [{
+            'name': user.get_full_name(),
+            'key': user.userprofile.pgp_key,
+            'group': 'packager'
+        } for user in users]
 
     master_keys = MasterKey.objects.select_related('owner').filter(
             revoked__isnull=True)

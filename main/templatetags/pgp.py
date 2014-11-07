@@ -44,21 +44,14 @@ def pgp_key_link(key_id, link_text=None):
     return '<a href="%s" title="PGP key search for %s">%s</a>' % values
 
 
-@cache_function(1741)
-def name_for_key(normalized):
-    try:
-        matching_key = DeveloperKey.objects.select_related(
-                'owner').get(key=normalized, owner_id__isnull=False)
-        return matching_key.owner.get_full_name()
-    except DeveloperKey.DoesNotExist:
-        return None
-
-
 @register.simple_tag
-def user_pgp_key_link(key_id):
+def user_pgp_key_link(dev_keys, key_id):
     normalized = key_id[-16:]
-    name = name_for_key(normalized)
-    return pgp_key_link(key_id, name)
+    found = dev_keys.get(normalized, None)
+    if found:
+        return pgp_key_link(key_id, found.owner.get_full_name())
+    else:
+        return pgp_key_link(key_id, None)
 
 
 @register.filter(needs_autoescape=True)

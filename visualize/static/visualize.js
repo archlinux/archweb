@@ -175,7 +175,7 @@ function developer_keys(chart_id, data_url) {
             }
         });
         jQuery.map(json.nodes, function(d, i) {
-            if (d.group === "dev" || d.group === "tu") {
+            if (d.group === "packager") {
                 d.approved = d.master_sigs >= 3;
             } else {
                 d.approved = null;
@@ -200,8 +200,7 @@ function developer_keys(chart_id, data_url) {
                     return r * 1.6 - 0.75;
                 case "cacert":
                     return r * 1.4 - 0.75;
-                case "dev":
-                case "tu":
+                case "packager":
                 default:
                     return r - 0.75;
                 }
