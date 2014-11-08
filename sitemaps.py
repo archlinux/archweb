@@ -98,6 +98,13 @@ class NewsSitemap(Sitemap):
         return 'yearly'
 
 
+class RecentNewsSitemap(NewsSitemap):
+    def items(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        cutoff = now - timedelta(days=30)
+        return super(RecentNewsSitemap, self).items().filter(postdate__gte=cutoff)
+
+
 class ReleasesSitemap(Sitemap):
     changefreq = "monthly"
 

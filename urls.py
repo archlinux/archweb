@@ -18,6 +18,8 @@ our_sitemaps = {
     'releases':       sitemaps.ReleasesSitemap,
 }
 
+news_sitemaps = { 'news': sitemaps.RecentNewsSitemap }
+
 urlpatterns = []
 
 # Public pages
@@ -81,7 +83,12 @@ urlpatterns += patterns('',
         {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
     (r'^sitemap-(?P<section>.+)\.xml$',
         cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml.jinja'}, 'sitemaps'),
+        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml.jinja'},
+        'sitemaps'),
+    (r'^news-sitemap\.xml$',
+        cache_page(1831)(sitemap_views.sitemap),
+        {'sitemaps': news_sitemaps, 'template_name': 'sitemaps/news_sitemap.xml.jinja'},
+        'news-sitemap'),
 )
 
 # Authentication / Admin
