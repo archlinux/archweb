@@ -165,6 +165,7 @@ class MirrorLog(models.Model):
     is_success = models.BooleanField(default=True)
     error = models.TextField(blank=True, default='')
 
+    @property
     def delay(self):
         if self.last_sync is None:
             return None
