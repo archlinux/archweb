@@ -1,0 +1,36 @@
+<table id="available_urls" class="results">
+    <thead>
+        <tr>
+            <th>Mirror URL</th>
+            <th>Protocol</th>
+            <th>Country</th>
+            <th>IPv4</th>
+            <th>IPv6</th>
+            <th>Last Sync</th>
+            <th>Completion %</th>
+            <th>μ Delay (hh:mm)</th>
+            <th>μ Duration (s)</th>
+            <th>σ Duration (s)</th>
+            <th>Score</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m_url in urls %}
+        <tr class="{{ loop.cycle('odd', 'even') }}">
+            <td>{% if m_url.protocol.is_download %}<a href="{{ m_url.url }}">{{ m_url.url }}</a>{% else %}{{ m_url.url }}{% endif %}</td>
+            <td>{{ m_url.protocol }}</td>
+            <td class="country">{{ country_flag(m_url.country) }}{{ m_url.country.name }}</td>
+            <td>{{ m_url.has_ipv4|yesno|capfirst }}</td>
+            <td>{{ m_url.has_ipv6|yesno|capfirst }}</td>
+            <td>{{ m_url.last_sync|date('Y-m-d H:i')|default('unknown') }}</td>
+            <td>{{ m_url.completion_pct|percentage(1) }}</td>
+            <td>{{ m_url.delay|duration|default('unknown') }}</td>
+            <td>{{ m_url.duration_avg|floatvalue(2) }}</td>
+            <td>{{ m_url.duration_stddev|floatvalue(2) }}</td>
+            <td>{{ m_url.score|floatvalue(1)|default('∞') }}</td>
+            <td><a href="{{ m_url.id }}/">Details</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
