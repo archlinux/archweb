@@ -68,5 +68,4 @@ def bug_report(package):
     }
     return link_encode(url, data)
 
-
 # vim: set ts=4 sw=4 et:
