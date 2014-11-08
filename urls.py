@@ -81,7 +81,7 @@ urlpatterns += patterns('',
         {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
     (r'^sitemap-(?P<section>.+)\.xml$',
         cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml'}, 'sitemaps'),
+        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml.jinja'}, 'sitemaps'),
 )
 
 # Authentication / Admin
