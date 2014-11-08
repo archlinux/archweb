@@ -1,5 +1,3 @@
-{% load cycle from future %}
-{% load flags mirror_status %}
 <table id="errorlog_mirrors" class="results">
     <thead>
         <tr>
@@ -12,12 +10,12 @@
         </tr>
     </thead>
     <tbody>
-        {% for log in error_logs %}<tr class="{% cycle 'odd' 'even' %}">
+        {% for log in error_logs %}<tr class="{{ loop.cycle('odd', 'even') }}">
             <td>{{ log.url__url }}</td>
             <td>{{ log.url__protocol__protocol }}</td>
-            <td class="country">{% country_flag log.country %}{{ log.country.name }}</td>
+            <td class="country">{{ country_flag(log.country) }}{{ log.country.name }}</td>
             <td class="wrap">{{ log.error|linebreaksbr }}</td>
-            <td>{{ log.last_occurred|date:'Y-m-d H:i' }}</td>
+            <td>{{ log.last_occurred|date('Y-m-d H:i') }}</td>
             <td>{{ log.error_count }}</td>
         </tr>{% endfor %}
     </tbody>
