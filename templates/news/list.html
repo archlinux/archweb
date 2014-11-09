@@ -10,7 +10,7 @@
 {% block content %}
 <div id="news-article-list" class="box">
 
-    <h2>News Archives</h2>
+    <h2>Arch Linux News Archives</h2>
 
     {% if perms.news.add_news %}
     <ul class="admin-actions">
@@ -54,6 +54,5 @@
     </table>
 
     {% include "news/paginator.html" %}
-
 </div>
 {% endblock %}

@@ -5,8 +5,7 @@ from .views import (NewsDetailView, NewsListView,
 
 
 urlpatterns = patterns('news.views',
-    (r'^$',
-        NewsListView.as_view(), {}, 'news-list'),
+    (r'^$', NewsListView.as_view(), {}, 'news-list'),
 
     (r'^preview/$', 'preview'),
     # old news URLs, permanent redirect view so we don't break all links
