@@ -16,6 +16,7 @@ our_sitemaps = {
     'package-groups': sitemaps.PackageGroupsSitemap,
     'split-packages': sitemaps.SplitPackagesSitemap,
     'releases':       sitemaps.ReleasesSitemap,
+    'todolists':      sitemaps.TodolistSitemap,
 }
 
 news_sitemaps = { 'news': sitemaps.RecentNewsSitemap }

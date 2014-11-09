@@ -8,6 +8,7 @@ from main.models import Package
 from news.models import News
 from packages.utils import get_group_info, get_split_packages_info
 from releng.models import Release
+from todolists.models import Todolist
 
 
 class PackagesSitemap(Sitemap):
@@ -112,12 +113,31 @@ class ReleasesSitemap(Sitemap):
         return Release.objects.all().defer('info', 'torrent_data').order_by()
 
     def lastmod(self, obj):
-        return obj.created
+        return obj.last_modified
 
     def priority(self, obj):
         if obj.available:
             return "0.6"
         return "0.2"
+
+
+class TodolistSitemap(Sitemap):
+    priority = "0.4"
+
+    def __init__(self):
+        now = datetime.utcnow().replace(tzinfo=utc)
+        self.two_weeks_ago = now - timedelta(days=14)
+
+    def items(self):
+        return Todolist.objects.all().defer('raw').order_by()
+
+    def lastmod(self, obj):
+        return obj.last_modified
+
+    def changefreq(self, obj):
+        if obj.last_modified > self.two_weeks_ago:
+            return 'weekly'
+        return 'monthly'
 
 
 class BaseSitemap(Sitemap):
