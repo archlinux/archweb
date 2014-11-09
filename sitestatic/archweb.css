@@ -655,6 +655,17 @@ div.news-article .article-info {
         width: 75%;
     }
 
+/* todolists: list */
+.todolist-nav {
+    float: right;
+    margin-top: -2.2em;
+}
+
+    .todolist-nav .prev,
+    .todolist-nav .next {
+        margin: 0 1em;
+    }
+
 /* donate: donor list */
 #donor-list ul {
     width: 100%;

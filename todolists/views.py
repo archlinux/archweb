@@ -7,7 +7,7 @@ from django.shortcuts import (get_list_or_404, get_object_or_404,
         redirect, render)
 from django.db import transaction
 from django.views.decorators.cache import never_cache
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, ListView
 from django.template import Context, loader
 from django.utils.timezone import now
 
@@ -91,10 +91,13 @@ def list_pkgbases(request, slug, svn_root):
     return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
 
-def todolist_list(request):
-    incomplete_only = request.user.is_anonymous()
-    lists = get_annotated_todolists(incomplete_only)
-    return render(request, 'todolists/list.html', {'lists': lists})
+class TodolistListView(ListView):
+    context_object_name = "lists"
+    template_name = "todolists/list.html"
+    paginate_by = 50
+
+    def get_queryset(self):
+        return get_annotated_todolists()
 
 
 @never_cache

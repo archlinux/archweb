@@ -16,7 +16,10 @@
     <p>Todo lists are used by the developers when a rebuild of a set of
     packages is needed. This is common when a library has a version bump,
     during a toolchain rebuild, or a general cleanup of packages in the
-    repositories. The progress can be tracked here.</p>
+    repositories. The progress can be tracked here, and completed todo lists
+    can be browsed as well.</p>
+
+    {% include "todolists/paginator.html" %}
 
     <table id="dev-todo-lists" class="results todo-table">
         <thead>
@@ -46,6 +49,8 @@
             {% endfor %}
         </tbody>
     </table>
+
+    {% include "todolists/paginator.html" %}
 </div>
 {% endblock %}
 
