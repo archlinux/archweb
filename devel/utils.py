@@ -5,13 +5,16 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import connection
 from django.db.models import Count, Q
 
+from devel.models import UserProfile
 from main.utils import cache_function
 from main.models import Package
 from packages.models import PackageRelation
 
 @cache_function(283)
 def get_annotated_maintainers():
-    maintainers = User.objects.filter(is_active=True).order_by(
+    profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
+    maintainers = User.objects.filter(
+            is_active=True, userprofile__id__in=profile_ids).order_by(
             'first_name', 'last_name')
 
     # annotate the maintainers with # of maintained and flagged packages
