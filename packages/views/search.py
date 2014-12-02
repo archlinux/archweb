@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.views.generic import ListView
 
+from devel.models import UserProfile
 from main.models import Package, Arch, Repo
 from main.utils import empty_response, make_choice
 from ..models import PackageRelation
@@ -36,14 +37,16 @@ class PackageSearchForm(forms.Form):
         self.fields['arch'].choices = make_choice(
                         [arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
-        maints = User.objects.filter(is_active=True).order_by(
+
+        profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
+        people = User.objects.filter(
+                is_active=True, userprofile__id__in=profile_ids).order_by(
                 'first_name', 'last_name')
-        self.fields['maintainer'].choices = \
-                [('', 'All'), ('orphan', 'Orphan')] + \
-                [(m.username, m.get_full_name()) for m in maints]
-        self.fields['packager'].choices = \
-                [('', 'All'), ('unknown', 'Unknown')] + \
-                [(m.username, m.get_full_name()) for m in maints]
+        people = [('', 'All'), ('orphan', 'Orphan')] + \
+                 [(p.username, p.get_full_name()) for p in people]
+
+        self.fields['maintainer'].choices = people
+        self.fields['packager'].choices = people
 
     def exact_matches(self):
         # only do exact match search if 'q' is sole parameter
