@@ -157,8 +157,11 @@
     </ul>
 </div>{# #dev-dashboard #}
 
-<div id='stats-area'>
-    <p>Enable Javascript to get more useful info here.</p>
+<div id="stats-area">
+    <div class="box">
+        <h2>Developer Stats</h2>
+        <p id="stats-message">Enable JavaScript to get more useful info here.</p>
+    </div>
 </div>
 {% endblock %}
 
@@ -167,8 +170,12 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#stats-area").html('<p>Loading stats…</p>');
-    $("#stats-area").load('stats/', function() {
+    $("#stats-message").html('Loading developer stats…');
+    $("#stats-area").load('stats/', function(response, status, xhr) {
+        if (status === 'error' || status === 'timeout') {
+            $("#stats-message").html('Developer stats loading encountered an error. Sorry.');
+            return;
+        }
         var settings = {
             widgets: ['zebra'],
             sortList: [[0,0]],
