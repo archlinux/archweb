@@ -283,12 +283,12 @@ function filter_packages() {
             var cells = $(this).children('td');
 
             /* all this just to get the split version out of the table cell */
-            var ver_a = cells.eq(2).find('span').text().match(pat);
+            var ver_a = cells.eq(2).text().match(pat);
             if (!ver_a) {
                 return true;
             }
 
-            var ver_b = cells.eq(3).find('span').text().match(pat);
+            var ver_b = cells.eq(3).text().match(pat);
             if (!ver_b) {
                 return true;
             }
