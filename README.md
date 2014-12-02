@@ -68,7 +68,7 @@ packages, you will probably want the following:
 
 8. To optionally populate the database with real data:
 
-        wget ftp://ftp.archlinux.org/core/os/i686/core.db.tar.gz
+        wget http://mirrors.kernel.org/archlinux/core/os/i686/core.db.tar.gz
         ./manage.py reporead i686 core.db.tar.gz
         ./manage.py syncisos
 
