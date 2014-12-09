@@ -45,7 +45,8 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
         m.flagged_count = flag_count.get(m.id, 0)
         m.updated_count = update_count.get(m.id, 0)
 
-    return maintainers
+    # force non-QS context, otherwise pickling doesn't work
+    return list(maintainers)
 
 
 def ignore_does_not_exist(func):
