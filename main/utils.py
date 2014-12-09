@@ -4,6 +4,8 @@ except ImportError:
     import pickle
 
 import hashlib
+import markdown
+from markdown.extensions import Extension
 
 from django.core.cache import cache
 from django.db import connections, router
@@ -107,6 +109,19 @@ def database_vendor(model, mode='read'):
     else:
         raise Exception('Invalid database mode specified')
     return connections[database].vendor
+
+
+class EscapeHtml(Extension):
+    def extendMarkdown(self, md, md_globals):
+        del md.preprocessors['html_block']
+        del md.inlinePatterns['html']
+
+
+def parse_markdown(text, allow_html=False):
+    if allow_html:
+        return markdown.markdown(text, enable_attributes=False)
+    ext = [EscapeHtml()]
+    return markdown.markdown(text, extensions=ext, enable_attributes=False)
 
 
 def groupby_preserve_order(iterable, keyfunc):

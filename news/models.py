@@ -1,10 +1,10 @@
-import markdown
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
+
+from main.utils import parse_markdown
 
 
 class News(models.Model):
@@ -22,8 +22,7 @@ class News(models.Model):
         return '/news/%s/' % self.slug
 
     def html(self):
-        return mark_safe(markdown.markdown(
-            self.content, safe_mode=self.safe_mode, enable_attributes=False))
+        return mark_safe(parse_markdown(self.content, not self.safe_mode))
 
     def __unicode__(self):
         return self.title

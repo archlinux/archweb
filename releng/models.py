@@ -2,7 +2,6 @@ from base64 import b64decode
 from bencode import bdecode, bencode
 from datetime import datetime
 import hashlib
-import markdown
 from pytz import utc
 
 from django.conf import settings
@@ -12,7 +11,7 @@ from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
 
 from main.fields import PositiveBigIntegerField
-from main.utils import set_created_field
+from main.utils import set_created_field, parse_markdown
 
 
 class IsoOption(models.Model):
@@ -154,8 +153,7 @@ class Release(models.Model):
         return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
 
     def info_html(self):
-        return mark_safe(markdown.markdown(
-            self.info, safe_mode=True, enable_attributes=False))
+        return mark_safe(parse_markdown(self.info))
 
     def torrent(self):
         try:

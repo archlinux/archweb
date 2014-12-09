@@ -1,5 +1,3 @@
-import markdown
-
 from django import forms
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -8,7 +6,7 @@ from django.views.generic import (DetailView, ListView,
         CreateView, UpdateView, DeleteView)
 
 from .models import News
-from main.utils import find_unique_slug
+from main.utils import find_unique_slug, parse_markdown
 
 
 class NewsForm(forms.ModelForm):
@@ -62,7 +60,7 @@ def view_redirect(request, object_id):
 @require_POST
 def preview(request):
     data = request.POST.get('data', '')
-    markup = markdown.markdown(data, safe_mode=True, enable_attributes=False)
+    markup = parse_markdown(data)
     return HttpResponse(markup)
 
 # vim: set ts=4 sw=4 et:
