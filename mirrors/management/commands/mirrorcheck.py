@@ -96,7 +96,7 @@ def parse_lastsync(log, data):
     try:
         parsed_time = datetime.utcfromtimestamp(int(data))
         log.last_sync = parsed_time.replace(tzinfo=utc)
-    except ValueError:
+    except (TypeError, ValueError):
         # it is bad news to try logging the lastsync value;
         # sometimes we get a crazy-encoded web page.
         # if we couldn't parse a time, this is a failure.
@@ -197,8 +197,11 @@ def check_rsync_url(mirror_url, location, timeout):
                 log.duration = None
         else:
             logger.debug("success: %s, %.2f", url, log.duration)
-            with open(lastsync_path, 'r') as lastsync:
-                parse_lastsync(log, lastsync.read())
+            if os.path.exists(lastsync_path):
+                with open(lastsync_path, 'r') as lastsync:
+                    parse_lastsync(log, lastsync.read())
+            else:
+                parse_lastsync(log, None)
     finally:
         if os.path.exists(lastsync_path):
             os.unlink(lastsync_path)
