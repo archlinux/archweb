@@ -142,8 +142,6 @@ def keys_json(request):
     users = User.objects.filter(
             is_active=True, userprofile__id__in=profile_ids).select_related(
             'userprofile__pgp_key').order_by('first_name', 'last_name')
-
-    users = User.objects.filter(is_active=True).select_related('userprofile')
     node_list = [{
             'name': user.get_full_name(),
             'key': user.userprofile.pgp_key,
