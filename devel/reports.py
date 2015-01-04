@@ -48,7 +48,8 @@ def big(packages, username):
 
 def badcompression(packages, username):
     cutoff = 0.90 * F('installed_size')
-    packages = packages.filter(compressed_size__gt=0, installed_size__gt=0,
+    packages = packages.filter(compressed_size__gt=25*1024,
+            installed_size__gt=25*1024,
             compressed_size__gte=cutoff).order_by('-compressed_size')
 
     # Format the compressed and installed sizes with MB/GB/etc suffixes
@@ -153,10 +154,9 @@ REPORT_BIG = DeveloperReport('big', 'Big',
         ['compressed_size_pretty', 'installed_size_pretty'])
 
 REPORT_BADCOMPRESS = DeveloperReport('badcompression', 'Bad Compression',
-        'Packages with a compression ratio of less than 10%', badcompression,
+        'Packages > 25 KiB with a compression ratio < 10%', badcompression,
         ['Compressed Size', 'Installed Size', 'Ratio', 'Type'],
         ['compressed_size_pretty', 'installed_size_pretty','ratio', 'compress_type'])
-
 
 REPORT_MAN = DeveloperReport('uncompressed-man', 'Uncompressed Manpages',
         'Packages with uncompressed manpages', uncompressed_man)
