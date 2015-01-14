@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+
 {% block title %}Arch Linux - Logout successful{% endblock %}
 
 {% block content %}
 <div id="dev-logout" class="box">
     <h2>Developer Logout</h2>
 
-    <p>Logout was successful.<p>
+    <p>Logout was successful.
+    <a href='{% url 'login' %}'>Click here to login again.</a></p>
 </div>
 {% endblock %}
-

@@ -401,6 +401,10 @@ ul.errorlist {
     color: red;
 }
 
+form ul.errorlist {
+    margin: 0.5em 0;
+}
+
 /* JS sorting via tablesorter */
 table th.tablesorter-header {
     padding-right: 20px;

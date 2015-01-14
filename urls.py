@@ -92,12 +92,10 @@ urlpatterns += patterns('',
         'news-sitemap'),
 )
 
-# Authentication / Admin
+# Authentication
 urlpatterns += patterns('django.contrib.auth.views',
-    (r'^login/$',           'login',  {
-        'template_name': 'registration/login.html'}),
-    (r'^logout/$',          'logout', {
-        'template_name': 'registration/logout.html'}),
+    (r'^login/$', 'login', {'template_name': 'registration/login.html'}, 'login'),
+    (r'^logout/$', 'logout', {'template_name': 'registration/logout.html'}, 'logout'),
 )
 
 # Redirects for older known pages we see in the logs
@@ -119,10 +117,8 @@ legacy_urls = (
 
     ('^docs/en/guide/install/arch-install-guide.html',
         'https://wiki.archlinux.org/index.php/Installation_guide'),
-    ('^docs/en/',
-        'https://wiki.archlinux.org/'),
-    ('^docs/',
-        'https://wiki.archlinux.org/'),
+    ('^docs/en/', 'https://wiki.archlinux.org/'),
+    ('^docs/', 'https://wiki.archlinux.org/'),
 )
 
 urlpatterns += [url(old_url, RedirectView.as_view(url=new_url))

@@ -5,21 +5,15 @@
 
 {% block content %}
 <div id="dev-login" class="box">
-
     <h2>Developer Login</h2>
-
-    {% if form.has_errors %}
-    <p class="login-error">Your username and password didn't match. Please try again.</p>
-    {% endif %}
 
     <form id="dev-login-form" method="post">{% csrf_token %}
         <fieldset>
-            <legend>Enter login credentials</legend>
+            <legend>Please enter your credentials to login.</legend>
             {{ form.as_p }}
-            <p><label></label> <input type="submit" value="Login" /></p>
+            <p><label></label><input type="submit" value="Login"/></p>
         </fieldset>
     </form>
-
 </div>
 {% endblock %}
 
