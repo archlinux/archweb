@@ -155,7 +155,6 @@ LOGGING = {
     },
 }
 
-
 ## Server used for linking to PGP keysearch results
 PGP_SERVER = 'pgp.mit.edu:11371'
 
@@ -174,11 +173,6 @@ TORRENT_TRACKERS = (
     'udp://tracker.archlinux.org:6969',
     'http://tracker.archlinux.org:6969/announce',
 )
-
-# Country name overrides for display purposes
-COUNTRIES_OVERRIDE = {
-    'MK': 'Macedonia',
-}
 
 ## Import local settings
 from local_settings import *
