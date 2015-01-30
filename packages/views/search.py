@@ -42,11 +42,13 @@ class PackageSearchForm(forms.Form):
         people = User.objects.filter(
                 is_active=True, userprofile__id__in=profile_ids).order_by(
                 'first_name', 'last_name')
-        people = [('', 'All'), ('orphan', 'Orphan')] + \
+        maintainers = [('', 'All'), ('orphan', 'Orphan')] + \
+                 [(p.username, p.get_full_name()) for p in people]
+        packagers = [('', 'All'), ('unknown', 'Unknown')] + \
                  [(p.username, p.get_full_name()) for p in people]
 
-        self.fields['maintainer'].choices = people
-        self.fields['packager'].choices = people
+        self.fields['maintainer'].choices = maintainers
+        self.fields['packager'].choices = packagers
 
     def exact_matches(self):
         # only do exact match search if 'q' is sole parameter
