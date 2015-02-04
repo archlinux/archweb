@@ -1,4 +1,5 @@
 import json
+from operator import attrgetter
 
 from django import forms
 from django.http import HttpResponse
@@ -223,8 +224,9 @@ def send_todolist_emails(todo_list, new_packages):
                 maint_packages.setdefault(maint, []).append(todo_package)
 
     for maint, packages in maint_packages.iteritems():
+        packages = sorted(packages, key=attrgetter('pkgname', 'arch'))
         ctx = Context({
-            'todo_packages': sorted(packages),
+            'todo_packages': packages,
             'todolist': todo_list,
         })
         template = loader.get_template('todolists/email_notification.txt')
