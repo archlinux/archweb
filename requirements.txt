@@ -6,7 +6,7 @@ Markdown==2.5.2
 MarkupSafe==0.23
 bencode==1.0
 django-countries==3.1.1
-django-jinja==1.1.0
-jsmin==2.1.0
+django-jinja==1.1.1
+jsmin==2.1.1
 pgpdump==1.5
 pytz>=2014.10
