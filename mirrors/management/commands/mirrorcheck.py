@@ -238,7 +238,7 @@ class MirrorCheckPool(object):
         for url in list(urls):
             self.tasks.put(url)
         self.threads = []
-        for i in range(num_threads):
+        for _ in range(num_threads):
             thread = Thread(target=mirror_url_worker,
                     args=(self.tasks, self.logs, location, timeout))
             thread.daemon = True

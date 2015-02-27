@@ -4,7 +4,6 @@ from django.db import connection
 from django.db.models import Count, Max, Min
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
-from django_countries.fields import Country
 
 from main.utils import cache_function, database_vendor
 from .models import MirrorLog, MirrorUrl
@@ -184,12 +183,12 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
     status data available, it is used to determine a good choice by looking at
     the last batch of status rows.'''
     cutoff_time = now() - cutoff
-    status_data = MirrorLog.objects.filter(
+    log_data = MirrorLog.objects.filter(
             check_time__gte=cutoff_time).aggregate(
             Max('check_time'), Max('last_sync'))
-    if status_data['check_time__max'] is not None:
-        min_check_time = status_data['check_time__max'] - timedelta(minutes=5)
-        min_sync_time = status_data['last_sync__max'] - timedelta(minutes=20)
+    if log_data['check_time__max'] is not None:
+        min_check_time = log_data['check_time__max'] - timedelta(minutes=5)
+        min_sync_time = log_data['last_sync__max'] - timedelta(minutes=20)
         best_logs = MirrorLog.objects.select_related('url').filter(
                 is_success=True,
                 check_time__gte=min_check_time, last_sync__gte=min_sync_time,
