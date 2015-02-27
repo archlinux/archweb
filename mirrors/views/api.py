@@ -45,7 +45,9 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
                     check_time__gte=cutoff).order_by('check_time'))
             return data
         if isinstance(obj, MirrorLog):
-            return {attr: getattr(obj, attr) for attr in self.log_attributes}
+            data = {attr: getattr(obj, attr) for attr in self.log_attributes}
+            data['error'] = obj.error or None
+            return data
         return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
 
 
