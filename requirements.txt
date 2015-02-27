@@ -2,10 +2,10 @@
 Django==1.7.4
 IPy==0.81
 Jinja2==2.7.3
-Markdown==2.5.2
+Markdown==2.6
 MarkupSafe==0.23
 bencode==1.0
-django-countries==3.1.1
+django-countries==3.2
 django-jinja==1.1.1
 jsmin==2.1.1
 pgpdump==1.5
