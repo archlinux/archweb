@@ -159,9 +159,7 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
             is_success=False, check_time__gte=cutoff_time,
-            url__mirror__public=True).values(
-            'url__url', 'url__country', 'url__protocol__protocol',
-            'url__mirror__tier', 'error').annotate(
+            url__mirror__public=True).values('url__id', 'error').annotate(
             error_count=Count('error'), last_occurred=Max('check_time')
             ).order_by('-last_occurred', '-error_count')
 
@@ -172,8 +170,11 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
                 url__mirror__public=True)
 
     errors = list(errors)
+    to_fetch = [err['url__id'] for err in errors]
+    urls = MirrorUrl.objects.select_related(
+            'mirror', 'protocol').in_bulk(to_fetch)
     for err in errors:
-        err['country'] = Country(err['url__country'], flag_url='')
+        err['url'] = urls[err['url__id']]
     return errors
 
 

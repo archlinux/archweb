@@ -274,7 +274,7 @@ def status(request, tier=None):
     error_logs = get_mirror_errors()
     if tier is not None:
         error_logs = [log for log in error_logs
-                if log['url__mirror__tier'] == tier]
+                if log['url'].mirror.tier == tier]
 
     context = status_info.copy()
     context.update({
