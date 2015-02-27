@@ -17,9 +17,9 @@ from django.views.decorators.http import condition
 from django_countries import countries
 from django_countries.fields import Country
 
-from .models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
+from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
         CheckLocation)
-from .utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
+from ..utils import get_mirror_statuses, get_mirror_errors, DEFAULT_CUTOFF
 
 
 class MirrorlistForm(forms.Form):
