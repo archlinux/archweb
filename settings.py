@@ -151,7 +151,7 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        },
+        }
     },
 }
 
@@ -173,6 +173,12 @@ TORRENT_TRACKERS = (
     'udp://tracker.archlinux.org:6969',
     'http://tracker.archlinux.org:6969/announce',
 )
+
+# Shorten some names just a bit
+COUNTRIES_OVERRIDE = {
+    'GB': 'United Kingdom',
+    'US': 'United States',
+}
 
 ## Import local settings
 from local_settings import *
