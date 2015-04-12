@@ -37,12 +37,17 @@ class PackagesSitemap(Sitemap):
 class PackageFilesSitemap(PackagesSitemap):
     changefreq = "weekly"
     priority = "0.1"
+    # we fixed a bug on the package files page on this day, force modification
+    lastmod_min = datetime(2015, 4, 12).replace(tzinfo=utc)
 
     def location(self, obj):
         return PackagesSitemap.location(self, obj) + 'files/'
 
     def lastmod(self, obj):
-        return obj.files_last_update
+        update = obj.files_last_update
+        if update is None:
+            return None
+        return max(update, self.lastmod_min)
 
 
 class PackageGroupsSitemap(Sitemap):
