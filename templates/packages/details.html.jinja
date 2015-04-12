@@ -103,7 +103,7 @@
         {% endif %}
         <tr>
             <th>Description:</th>
-            <td class="wrap" itemprop="description">{{ pkg.pkgdesc|default("") }}</td>
+            <td class="wrap" itemprop="description">{{ pkg.pkgdesc|default("", true) }}</td>
         </tr><tr>
             <th>Upstream URL:</th>
             <td>{% if pkg.url %}<a itemprop="url" href="{{ pkg.url }}"
@@ -186,7 +186,7 @@
         {% if user.is_authenticated() %}{% with flag_request = pkg.flag_request() %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
             <td class="wrap">From {{ flag_request.who() }} on {{ flag_request.created|date }}:<br/>
-                <div class="userdata">{{ flag_request.message|linebreaksbr|default("{no message}") }}</div></td>
+                <div class="userdata">{{ flag_request.message|linebreaksbr|default("{no message}", true) }}</div></td>
         </tr>{% endif %}{% endwith %}{% endif %}
     </table>
     </div>
