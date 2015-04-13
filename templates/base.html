@@ -81,6 +81,18 @@
             the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
         </div>
     </div>
+    <script type="application/ld+json">
+    {
+       "@context": "http://schema.org",
+       "@type": "WebSite",
+       "url": "{{ domain }}/",
+       "potentialAction": {
+         "@type": "SearchAction",
+         "target": "{{ domain }}/packages/?q={search_term}",
+         "query-input": "required name=search_term"
+       }
+    }
+    </script>
     {% block script_block %}{% endblock %}
 </body>
 </html>

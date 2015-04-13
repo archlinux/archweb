@@ -25,10 +25,12 @@ def index(request):
     else:
         def updates():
             return get_recent_updates()
+    domain = "%s://%s" % (request.scheme, request.META['HTTP_HOST'])
     context = {
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': updates,
         'staff_groups': StaffGroup.objects.all(),
+        'domain': domain,
     }
     return render(request, 'public/index.html', context)
 
