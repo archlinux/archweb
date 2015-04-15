@@ -27,7 +27,7 @@ from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
 @require_safe
 @cache_control(public=True, max_age=86400)
 def opensearch(request):
-    domain = "%s://%s" % (request.scheme, request.META['HTTP_HOST'])
+    domain = "%s://%s" % (request.scheme, request.META.get('HTTP_HOST'))
 
     return render(request, 'packages/opensearch.xml',
             {'domain': domain},
