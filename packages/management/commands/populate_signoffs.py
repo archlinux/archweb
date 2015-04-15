@@ -95,9 +95,12 @@ def add_signoff_comments():
             continue
 
         logger.debug("getting SVN log for %s (%s)", group.pkgbase, group.repo)
-        log = cached_svn_log(group.pkgbase, group.repo)
-        logger.info("creating spec with SVN message for %s", group.pkgbase)
-        spec = create_specification(group.packages[0], log, finder)
-        spec.save()
+        try:
+            log = cached_svn_log(group.pkgbase, group.repo)
+            logger.info("creating spec with SVN message for %s", group.pkgbase)
+            spec = create_specification(group.packages[0], log, finder)
+            spec.save()
+        except:
+            logger.exception("error getting SVN log for %s", group.pkgbase)
 
 # vim: set ts=4 sw=4 et:
