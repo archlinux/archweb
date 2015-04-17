@@ -60,7 +60,7 @@
         "group": [
             "Support Staff"
         ],
-        "description": "These are the unheralded people that keep things running behind the scenes. Forum moderators, wiki admins, IRC moderators, mirror maintenance, and everything else that keeps a Linux distro running smoothly.",
+        "description": "These are only a few of the unheralded people who keep the distro and the community running smoothly from behind the scenes. Official lists of <a href=\"https://wiki.archlinux.org/index.php/ArchWiki:Administrators\">wiki administrators</a> and <a href=\"https://wiki.archlinux.org/index.php/ArchWiki:Maintainers\">wiki maintainers</a> are maintained on the wiki itself. The complete lists of <a href=\"https://bbs.archlinux.org/userlist.php?show_group=1\">forum administrators</a> and <a href=\"https://bbs.archlinux.org/userlist.php?show_group=2\">forum moderators</a> can be queried in the forums interface. <a href=\"https://wiki.archlinux.org/index.php/IRC_channel\">IRC</a> operators and <a href=\"https://www.archlinux.org/mirrors/\">mirror</a> maintainers must also be mentioned for their indispensable work.",
         "sort_order": 5,
         "member_title": "Staff",
         "slug": "support-staff",
