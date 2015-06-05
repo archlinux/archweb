@@ -1047,7 +1047,18 @@ ul.admin-actions {
 
 /* todo lists (public and private) */
 .todo-info {
-    margin: 0; color: #999;
+    color: #999;
+    border-bottom: 1px dotted #bbb;
+}
+
+.todo-description {
+    margin-top: 1em;
+    padding-left: 2em;
+    max-width: 900px;
+}
+
+.todo-pkgbases {
+    border-top: 1px dotted #bbb;
 }
 
 .todo-list h4 {

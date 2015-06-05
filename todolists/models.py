@@ -35,6 +35,10 @@ class Todolist(models.Model):
     def __unicode__(self):
         return self.name
 
+    @property
+    def stripped_description(self):
+        return self.description.strip()
+
     def get_absolute_url(self):
         return '/todo/%s/' % self.slug
 

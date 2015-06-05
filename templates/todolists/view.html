@@ -22,16 +22,18 @@
         {% endif %}
     </ul>
 
-    <p class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</p>
+    <div class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</div>
 
-    <div>{{list.description|urlize|linebreaks}}</div>
+    <div class="todo-description">
+        {{list.stripped_description|default:'(no description)'|urlize|linebreaks}}
+    </div>
 
-    <p>Link to lists of pkgbase values:</p>
-    <ul>{% for svn_root in svn_roots %}
-        <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
-    {% endfor %}</ul>
-
-    <p>{{ list.packages|length }} total todo list package{{ list.packages|pluralize }} found.</p>
+    <div class="todo-pkgbases">
+        <p>Link to lists of pkgbase values:</p>
+        <ul>{% for svn_root in svn_roots %}
+            <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
+        {% endfor %}</ul>
+    </div>
 
     <div class="box filter-criteria">
         <h3>Filter Todo List Packages</h3>
@@ -54,7 +56,10 @@
                 <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
             <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
             <div class="clear"></div>
-            <div id="filter-info"><span id="filter-count">{{ list.packages|length }}</span> todo list packages displayed.</div>
+            <div id="filter-info">
+                <span id="filter-count">{{ list.packages|length }}</span> packages displayed out of
+                {{ list.packages|length }} total package{{ list.packages|pluralize }}.
+            </div>
         </fieldset>
         </form>
     </div>
