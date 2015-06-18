@@ -18,6 +18,7 @@ from optparse import make_option
 from pytz import utc
 import re
 import socket
+import ssl
 import subprocess
 import sys
 import time
@@ -145,6 +146,10 @@ def check_mirror_url(mirror_url, location, timeout):
         # e.g., BadStatusLine
         log.is_success = False
         log.error = "Exception in processing HTTP request."
+        logger.debug("failed: %s, %s", url, log.error)
+    except ssl.CertificateError as e:
+        log.is_success = False
+        log.error = str(e)
         logger.debug("failed: %s, %s", url, log.error)
     except socket.timeout:
         log.is_success = False
