@@ -32,7 +32,7 @@ class Command(NoArgsCommand):
             logger.level = logging.ERROR
         elif v == 1:
             logger.level = logging.WARNING
-        elif v == 2:
+        elif v >= 2:
             logger.level = logging.DEBUG
 
         return resolve_mirrors()

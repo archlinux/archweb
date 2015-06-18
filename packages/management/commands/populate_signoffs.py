@@ -38,7 +38,7 @@ is signoff-eligible and does not have an existing comment attached"""
             logger.level = logging.ERROR
         elif v == 1:
             logger.level = logging.INFO
-        elif v == 2:
+        elif v >= 2:
             logger.level = logging.DEBUG
 
         return add_signoff_comments()

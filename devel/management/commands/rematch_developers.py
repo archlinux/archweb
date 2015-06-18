@@ -37,7 +37,7 @@ class Command(NoArgsCommand):
             logger.level = logging.ERROR
         elif v == 1:
             logger.level = logging.INFO
-        elif v == 2:
+        elif v >= 2:
             logger.level = logging.DEBUG
 
         finder = UserFinder()
