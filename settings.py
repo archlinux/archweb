@@ -156,7 +156,7 @@ LOGGING = {
 }
 
 ## Server used for linking to PGP keysearch results
-PGP_SERVER = 'pgp.mit.edu:11371'
+PGP_SERVER = 'pgp.mit.edu'
 
 # URL to fetch a current list of available ISOs
 ISO_LIST_URL = 'https://releng.archlinux.org/isos/'
