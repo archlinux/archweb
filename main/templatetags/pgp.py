@@ -36,8 +36,10 @@ def pgp_key_link(key_id, link_text=None):
     pgp_server = getattr(settings, 'PGP_SERVER', None)
     if not pgp_server:
         return format_key(key_id)
-    url = 'http://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % \
-            (pgp_server, key_id)
+    pgp_server_secure = getattr(settings, 'PGP_SERVER_SECURE', False)
+    scheme = 'https' if pgp_server_secure else 'http'
+    url = '%s://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % \
+            (scheme, pgp_server, key_id)
     if link_text is None:
         link_text = '0x%s' % key_id[-8:]
     values = (url, format_key(key_id), link_text)
