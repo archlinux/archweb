@@ -13,7 +13,14 @@
  */
 
 /* container for the entire bar */
-#archnavbar { height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+/* #archnavbar { height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; } */
+#archnavbar {
+    height: 40px !important;
+    padding: 8px 15px 12px !important;
+    /* padding: 10px 15px !important; */
+    background: #333 !important;
+    border-bottom: 5px #08c solid !important;
+}
 #archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 
 /* move the heading text offscreen */
@@ -21,6 +28,11 @@
 
 /* make the link the same size as the logo */
 #archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
+
+#archnavbarlogofont {
+    float: left !important;
+    margin: 0 !important;
+}
 
 /* display the list inline, float it to the right and style it */
 #archnavbarlist { display: inline !important; float: right !important; list-style: none !important; margin: 0 !important; padding: 0 !important; }

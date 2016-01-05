@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <title>{% block title %}Arch Linux{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static "archweb.css" %}" media="screen, projection" />
+    <link rel="stylesheet" type="text/css" href="{% static "fonts/font-awesome/css/font-awesome.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "fonts/icomoon/icomoon.css" %}" />
     <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
     <link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
     <link rel="apple-touch-icon" href="{% static "logos/apple-touch-icon-57x57.png" %}" />
@@ -15,7 +17,14 @@
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
     <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
-        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+	    <div id="archnavbarlogofont">
+		    <h1>
+			    <a href="/" title="Return to the main page">
+				    <span class="icon-archlinux"></span>
+				    <img src="/static/archnavbar/archlogofont.png" alt="">
+			    </a>
+		    </h1>
+	    </div>
         <div id="archnavbarmenu">
             <ul id="archnavbarlist">
                 <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
