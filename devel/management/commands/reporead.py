@@ -33,7 +33,7 @@ from django.utils.timezone import now
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
-from packages.models import Depend, Conflict, Provision, Replacement, Update
+from packages.models import Depend, Conflict, Provision, Replacement, Update, PackageRelation
 from packages.utils import parse_version
 
 
@@ -396,6 +396,12 @@ def db_update(archname, reponame, pkgs, force=False):
             with transaction.atomic():
                 populate_pkg(dbpkg, pkg, timestamp=timestamp)
                 Update.objects.log_update(None, dbpkg)
+                prel = PackageRelation(pkgbase=dbpkg.pkgbase,
+                                       user=dbpkg.packager,
+                                       type=PackageRelation.MAINTAINER)
+                prel.save()
+
+
         except IntegrityError:
             if architecture.agnostic:
                 logger.warning("Could not add package %s; "
