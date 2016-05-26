@@ -1,0 +1,157 @@
+#!ipxe
+{% regroup mirrorurls by country as mirrors_by_country %}
+
+# Figure out if client is 64-bit capable
+cpuid --ext 29 && set cpuarch x86_64 || set cpuarch i686
+
+# allow only trusted images
+imgtrust
+
+# initial options
+set bootarch ${cpuarch}
+set release {{ releases.0 }}
+set mirrorurl
+set extrabootoptions ip=dhcp
+set countrycode
+
+:main
+menu Arch Linux Netboot
+item --gap Settings
+item set_architecture Architecture: ${bootarch}
+item set_release Release: ${release}
+isset ${mirrorurl} && item set_mirror Mirror: ${mirrorurl} || item set_mirror Choose a mirror
+item set_options Boot options: ${extrabootoptions}
+item
+isset ${mirrorurl} && item boot Boot Arch Linux || item --gap Boot Arch Linux
+item shell Drop to iPXE shell
+item reboot Reboot
+item exit Exit iPXE
+isset ${mirrorurl} && choose --default set_options selected || choose --default set_mirror selected || goto shell
+goto ${selected} || goto main
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+goto main
+
+:reboot
+reboot
+
+:exit
+exit
+
+:set_architecture
+menu Arch Linux Netboot: Select Architecture
+item back back
+item
+item --gap Available architectures:
+iseq ${cpuarch} x86_64 && item x86_64 x64_64 ||
+item i686 i686
+choose selected || goto main
+iseq ${selected} back && goto main ||
+set bootarch ${selected}
+goto main
+
+:set_release
+menu Arch Linux Netboot: Select Release
+item back back
+item
+item --gap Available releases:
+{% for release in releases %}item {{ release }} {{ release }}
+{% endfor %}
+choose selected || goto main
+iseq ${selected} back && goto main ||
+set release ${selected}
+goto main
+
+:set_mirror
+goto select_mirror_country
+
+:select_mirror_country
+menu Arch Linux Netboot: Select Mirror
+item back back
+item
+item --gap Custom Configuration:
+item custom Enter mirror URL
+item
+item --gap Select Mirror By Country:
+{% for mirrorgroup in mirrors_by_country %}
+{% if mirrorgroup.grouper == '' %}
+item 00 Global
+{% else %}
+item {{ mirrorgroup.grouper }} {{ mirrorgroup.grouper.name }}
+{% endif %}
+{% endfor %}
+isset ${countrycode} && choose --default ${countrycode} selected || choose selected || goto main
+iseq ${selected} back && goto main ||
+iseq ${selected} custom && goto enter_mirror_url ||
+set countrycode ${selected}
+goto select_mirror_url
+
+:enter_mirror_url
+set countrycode
+echo Enter the mirror URL including the trailing slash.
+echo Example: http://some.host/archlinux/
+echo
+echo -n Mirror URL: ${} && read mirrorurl || goto select_mirror_country
+goto main
+
+:select_mirror_url
+goto select_mirror_url_${countrycode} || goto select_mirror_country
+
+{% for mirrorgroup in mirrors_by_country %}
+{% if mirrorgroup.grouper == '' %}
+:select_mirror_url_00
+set countryname Global
+{% else %}
+:select_mirror_url_{{ mirrorgroup.grouper }}
+set countryname {{ mirrorgroup.grouper.name }}
+{% endif %}
+menu Arch Linux Netboot: Select Mirror
+item back back
+item
+item --gap Available mirrors in ${countryname}
+{% for mirror in mirrorgroup.list %}item {{ mirror.url }} {{ mirror.mirror.name }}
+{% endfor %}
+choose selected || goto select_mirror_country
+iseq ${selected} back && goto select_mirror_country ||
+set mirrorurl ${selected}
+goto main
+{% endfor %}
+
+:set_options
+echo -n Boot options: ${} && read extrabootoptions ||
+goto main
+
+:boot
+echo Booting Arch Linux ${bootarch} ${release} from ${mirrorurl}
+echo
+kernel ${mirrorurl}iso/${release}/arch/boot/${bootarch}/vmlinuz || goto failed_download
+imgverify vmlinuz ${mirrorurl}iso/${release}/arch/boot/${bootarch}/vmlinuz.ipxe.sig || goto failed_verify
+initrd ${mirrorurl}iso/${release}/arch/boot/intel_ucode.img || goto failed_download
+imgverify intel_ucode.img ${mirrorurl}iso/${release}/arch/boot/intel_ucode.img.ipxe.sig || goto failed_verify
+initrd ${mirrorurl}iso/${release}/arch/boot/${bootarch}/archiso.img || goto failed_download
+imgverify archiso.img ${mirrorurl}iso/${release}/arch/boot/${bootarch}/archiso.img.ipxe.sig || goto failed_verify
+imgargs vmlinuz initrd=intel_ucode.img initrd=archiso.img archiso_http_srv=${mirrorurl}iso/${release}/ archisobasedir=arch verify=y ${extrabootoptions}
+boot || goto failed_boot
+
+:failed_download
+echo
+echo Failed to download a file.
+goto failed
+
+:failed_verify
+echo
+echo Failed to verify a file.
+goto failed
+
+:failed_boot
+echo
+echo Boot failed.
+goto failed
+
+:failed
+echo Press a key to return to the menu.
+prompt
+imgfree
+goto main

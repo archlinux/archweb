@@ -22,9 +22,14 @@ releases_patterns = patterns('releng.views',
         'release_torrent', {}, 'releng-release-torrent'),
 )
 
+netboot_patterns = patterns('releng.views',
+    (r'^archlinux\.ipxe$', 'netboot_config', {}, 'releng-netboot-config')
+)
+
 urlpatterns = patterns('',
     (r'^feedback/', include(feedback_patterns)),
     (r'^releases/', include(releases_patterns)),
+    (r'^netboot/', include(netboot_patterns)),
 )
 
 # vim: set ts=4 sw=4 et:

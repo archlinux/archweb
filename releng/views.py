@@ -13,7 +13,7 @@ from django.views.generic import DetailView, ListView
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test, Release)
-
+from mirrors.models import (Mirror, MirrorUrl, MirrorProtocol)
 
 def standard_field(model, empty_label=None, help_text=None, required=True):
     return forms.ModelChoiceField(queryset=model.objects.all(),
@@ -279,5 +279,24 @@ def releases_json(request):
     to_json = json.dumps(data, ensure_ascii=False, cls=ReleaseJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response
+
+def netboot_config(request):
+    release_qs = Release.objects.filter(available=True).order_by('-release_date')
+    releases = [ release.version for release in release_qs ]
+    mirrorurls = MirrorUrl.objects.filter(protocol__protocol='http',
+                                          active=True,
+                                          mirror__public=True,
+                                          mirror__active=True,
+                                          mirror__isos=True)
+    mirrorurls = sorted( mirrorurls,
+                         key=lambda x: x.mirror.name)
+    mirrorurls = sorted( mirrorurls,
+                         key=lambda x: x.country.name)
+    context = {
+        'archs': [ 'i686', 'x86_64' ],
+        'releases': releases,
+        'mirrorurls': mirrorurls,
+    }
+    return render(request, "releng/archlinux.ipxe", context, content_type='text/plain')
 
 # vim: set ts=4 sw=4 et:
