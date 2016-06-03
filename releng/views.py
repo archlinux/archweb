@@ -299,4 +299,7 @@ def netboot_config(request):
     }
     return render(request, "releng/archlinux.ipxe", context, content_type='text/plain')
 
+def netboot_info(request):
+    return render(request, "releng/netboot.html", None)
+
 # vim: set ts=4 sw=4 et:

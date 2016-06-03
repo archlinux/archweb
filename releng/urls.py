@@ -23,7 +23,8 @@ releases_patterns = patterns('releng.views',
 )
 
 netboot_patterns = patterns('releng.views',
-    (r'^archlinux\.ipxe$', 'netboot_config', {}, 'releng-netboot-config')
+    (r'^archlinux\.ipxe$', 'netboot_config', {}, 'releng-netboot-config'),
+    (r'^$', 'netboot_info', {}, 'releng-netboot-info')
 )
 
 urlpatterns = patterns('',
