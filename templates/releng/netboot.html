@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Arch Linux - Netboot{% endblock %}
+
+{% block content %}
+<div id="arch-netboot" class="box">
+
+<h2>Arch Linux Netboot</h2>
+
+<h3>About Netboot</h3>
+
+<p>Netboot images are small (&lt;1MB) images that can be used to download the latest Arch Linux release on the fly upon system boot.
+It is unnecessary to update the netboot image, the newest release will be available automatically.</p>
+
+<p>Netboot uses customized <a href="http://ipxe.org">iPXE</a> builds.
+The Linux kernel, initramfs and squashfs files for the live system are downloaded from an Arch Linux mirror.
+The integrity of all downloaded files is verified with cryptographic signatures.</p>
+
+<h3>Requirements</h3>
+
+<p>To use netboot, the following requirements must be met:
+
+<ul>
+<li>Wired (ethernet) internet connection with DHCP autoconfiguration</li>
+<li>Sufficient memory to store and run the live system</li>
+</ul>
+
+</p>
+
+<h3>Download</h3>
+
+<h4>BIOS</h4>
+
+<ul>
+<li><a href="{% static "netboot/ipxe.lkrn" %}">ipxe.lkrn</a> (<a href="{% static "netboot/ipxe.lkrn.sig" %}">PGP signature</a>) - Linux kernel-like image that can be started with any Linux bootloader</li>
+<li><a href="{% static "netboot/ipxe.pxe" %}">ipxe.pxe</a> (<a href="{% static "netboot/ipxe.pxe.sig" %}">PGP signature</a>) - PXE image for chainloading from a PXE environment</li>
+</ul>
+
+<h4>UEFI</h4>
+
+<ul>
+<li><a href="{% static "netboot/ipxe.efi" %}">ipxe.efi</a> (<a href="{% static "netboot/ipxe.efi.sig" %}">PGP signature</a>) - x86_64 UEFI executable</li>
+</ul>
+
+<p>You can build your own iPXE images compatible with netboot.
+For details, check out the <a href="https://aur.archlinux.org/packages/ipxe-netboot">ipxe-netboot AUR package</a>.</p>
+
+<h3>More information</h3>
+
+<p>For detailed usage instructions, check out the <a href="https://wiki.archlinux.org/index.php/Netboot">netboot wiki page</a>.
+
+</div>
+{% endblock %}

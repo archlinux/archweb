@@ -11,7 +11,7 @@ imgtrust
 set bootarch ${cpuarch}
 set release {{ releases.0 }}
 set mirrorurl
-set extrabootoptions ip=dhcp
+set extrabootoptions ip=dhcp net.ifnames=0
 set countrycode
 
 :main
