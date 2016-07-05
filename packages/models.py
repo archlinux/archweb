@@ -86,7 +86,7 @@ class SignoffSpecification(models.Model):
     enabled = models.BooleanField(default=True,
         help_text="Is this package eligible for signoffs?")
     known_bad = models.BooleanField(default=False,
-        help_text="Is package is known to be broken in some way?")
+        help_text="Is this package known to be broken in some way?")
     comments = models.TextField(null=True, blank=True)
 
     objects = SignoffSpecificationManager()
