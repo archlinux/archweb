@@ -26,6 +26,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             country = obj.country
             data['country'] = unicode(country.name)
             data['country_code'] = country.code
+            data['isos'] = obj.mirror.isos
             return data
         if isinstance(obj, MirrorProtocol):
             return unicode(obj)
