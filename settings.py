@@ -69,7 +69,7 @@ TEMPLATES = [
                     'django.core.context_processors.debug',
                     'django.contrib.messages.context_processors.messages',
                     'main.context_processors.secure',
-                ]
+                ],
             }
         }
 ]
@@ -200,13 +200,6 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
-# Enable caching templates in production environments
-if not TEMPLATE_DEBUG:
-    TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', TEMPLATE_LOADERS),
-    )
-    JINJA2_BYTECODE_CACHE_ENABLE = True
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
