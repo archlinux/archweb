@@ -48,59 +48,31 @@ AUTH_PROFILE_MODULE = 'devel.UserProfile'
 from os import path
 TEMPLATES = [
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            #'DIRS': ['%s/templates' % DEPLOY_PATH],
-            'DIRS' : [
-                path.join(DEPLOY_PATH, 'templates')
-                ],
+            'BACKEND': 'django_jinja.backend.Jinja2',
             'APP_DIRS': True,
+            'DIRS': [
+                path.join(DEPLOY_PATH, 'templates/jinja')
+            ],
             'OPTIONS': {
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.core.context_processors.debug',
-                    'django.contrib.messages.context_processors.messages',
-                    'main.context_processors.secure',
-                ],
+               'match_extension': '.jinja'
             }
         },
         {
-            'BACKEND': 'django_jinja.backend.Jinja2',
-            'APP_DIRS': True,
-            'DIRS' : [
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [
                 path.join(DEPLOY_PATH, 'templates')
-                ],
+            ],
+            'APP_DIRS': True,
             'OPTIONS': {
                 'context_processors': [
                     'django.contrib.auth.context_processors.auth',
                     'django.core.context_processors.debug',
                     'django.contrib.messages.context_processors.messages',
                     'main.context_processors.secure',
-                ],
-                'match_extension': '.jinja'
+                ]
             }
         }
 ]
-# We add a processor to determine if the request is secure or not
-#TEMPLATE_CONTEXT_PROCESSORS = (
-#    'django.contrib.auth.context_processors.auth',
-#    'django.core.context_processors.debug',
-#    'django.contrib.messages.context_processors.messages',
-#   'main.context_processors.secure',
-#)
-
-#TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates".
-    # Always use forward slashes, even on Windows.
-#    '%s/templates' % DEPLOY_PATH,
-#)
-
-#TEMPLATE_LOADERS = (
-#    'django_jinja.loaders.FileSystemLoader',
-#    'django_jinja.loaders.AppLoader',
-#)
-
-# Send templates matching the following to the Jinja2 engine
-#DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.jinja'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
