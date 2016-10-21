@@ -1,3 +1,5 @@
+{% load flags %}
+
 <table id="available_urls" class="results">
     <thead>
         <tr>
@@ -17,18 +19,18 @@
     </thead>
     <tbody>
         {% for m_url in urls %}
-        <tr class="{{ loop.cycle('odd', 'even') }}">
+        <tr class="{% cycle 'odd' 'even' %}">
             <td>{% if m_url.protocol.is_download %}<a href="{{ m_url.url }}">{{ m_url.url }}</a>{% else %}{{ m_url.url }}{% endif %}</td>
             <td>{{ m_url.protocol }}</td>
-            <td class="country">{{ country_flag(m_url.country) }}{{ m_url.country.name }}</td>
+            <td class="country">{% country_flag m_url.country %}{{ m_url.country.name }}</td>
             <td>{{ m_url.has_ipv4|yesno|capfirst }}</td>
             <td>{{ m_url.has_ipv6|yesno|capfirst }}</td>
-            <td>{{ m_url.last_sync|date('Y-m-d H:i')|default('unknown') }}</td>
-            <td>{{ m_url.completion_pct|percentage(1) }}</td>
-            <td>{{ m_url.delay|duration|default('unknown') }}</td>
-            <td>{{ m_url.duration_avg|floatvalue(2) }}</td>
-            <td>{{ m_url.duration_stddev|floatvalue(2) }}</td>
-            <td>{{ m_url.score|floatvalue(1)|default('∞') }}</td>
+            <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
+            <td>{{ m_url.completion_pct|percentage:1 }}</td>
+            <td>{{ m_url.delay|duration|default:'unknown' }}</td>
+            <td>{{ m_url.duration_avg|floatvalue:2 }}</td>
+            <td>{{ m_url.duration_stddev|floatvalue:2 }}</td>
+            <td>{{ m_url.score|floatvalue:1|default:'∞' }}</td>
             <td><a href="{{ m_url.id }}/">Details</a></td>
         </tr>
         {% endfor %}
