@@ -396,10 +396,13 @@ def db_update(archname, reponame, pkgs, force=False):
             with transaction.atomic():
                 populate_pkg(dbpkg, pkg, timestamp=timestamp)
                 Update.objects.log_update(None, dbpkg)
-                prel = PackageRelation(pkgbase=dbpkg.pkgbase,
-                                       user=dbpkg.packager,
-                                       type=PackageRelation.MAINTAINER)
-                prel.save()
+
+                packager = finder.find(pkg.packager)
+                if packager:
+                    prel = PackageRelation(pkgbase=dbpkg.pkgbase,
+                                           user=packager,
+                                           type=PackageRelation.MAINTAINER)
+                    prel.save()
 
 
         except IntegrityError:
