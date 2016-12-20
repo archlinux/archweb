@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.simple_tag
 def jquery():
-    version = '1.8.3'
+    version = '3.1.1'
     filename = 'jquery-%s.min.js' % version
     link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
@@ -14,8 +14,7 @@ def jquery():
 
 @register.simple_tag
 def jquery_tablesorter():
-    version = '2.7'
-    filename = 'jquery.tablesorter-%s.min.js' % version
+    filename = 'jquery.tablesorter.min.js'
     link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
 

@@ -540,8 +540,8 @@ h3 span.arrow {
         float: left;
         padding: 0.15em 0.1em;
         margin: 0;
-        min-width: 10em;
-        font-size: 0.812em;
+        width: 10em;
+        font-size: 1em;
         text-align: left;
         list-style: none;
         background-color: #f6f9fc;
