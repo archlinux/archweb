@@ -398,16 +398,18 @@ def db_update(archname, reponame, pkgs, force=False):
                 populate_pkg(dbpkg, pkg, timestamp=timestamp)
                 Update.objects.log_update(None, dbpkg)
 
-                maintainers = User.objects.filter(
-                        package_relations__pkgbase=dbpkg.pkgbase,
-                        package_relations__type=PackageRelation.MAINTAINER)
-                if not maintainers:
-                    packager = finder.find(pkg.packager)
-                    if packager:
-                        prel = PackageRelation(pkgbase=dbpkg.pkgbase,
-                                               user=packager,
-                                               type=PackageRelation.MAINTAINER)
-                        prel.save()
+                if not Package.objects.filter(
+                        pkgname=pkg.name).exclude(id=dbpkg.id).exists():
+                    if not User.objects.filter(
+                            package_relations__pkgbase=dbpkg.pkgbase,
+                            package_relations__type=PackageRelation.MAINTAINER
+                            ).exists():
+                        packager = finder.find(pkg.packager)
+                        if packager:
+                            prel = PackageRelation(pkgbase=dbpkg.pkgbase,
+                                                   user=packager,
+                                                   type=PackageRelation.MAINTAINER)
+                            prel.save()
 
 
         except IntegrityError:
