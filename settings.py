@@ -47,16 +47,6 @@ AUTH_PROFILE_MODULE = 'devel.UserProfile'
 from os import path
 TEMPLATES = [
         {
-            'BACKEND': 'django_jinja.backend.Jinja2',
-            'APP_DIRS': True,
-            'DIRS': [
-                path.join(DEPLOY_PATH, 'templates/jinja')
-            ],
-            'OPTIONS': {
-               'match_extension': '.jinja'
-            }
-        },
-        {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
             'DIRS': [
                 path.join(DEPLOY_PATH, 'templates')
@@ -124,7 +114,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django_countries',
-    'django_jinja',
 
     'main',
     'mirrors',
