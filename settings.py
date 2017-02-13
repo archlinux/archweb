@@ -3,7 +3,6 @@ import os
 
 ## Set the debug values
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR = False
 
 ## Notification admins
@@ -64,6 +63,7 @@ TEMPLATES = [
             ],
             'APP_DIRS': True,
             'OPTIONS': {
+                'debug': DEBUG,
                 'context_processors': [
                     'django.contrib.auth.context_processors.auth',
                     'django.core.context_processors.debug',
