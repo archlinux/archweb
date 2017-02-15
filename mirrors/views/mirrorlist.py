@@ -10,6 +10,7 @@ from django_countries import countries
 from ..models import MirrorUrl, MirrorProtocol
 from ..utils import get_mirror_statuses
 
+import random
 
 class MirrorlistForm(forms.Form):
     country = forms.MultipleChoiceField(required=False,
@@ -80,8 +81,8 @@ def status_filter(original_urls):
         # (as opposed to those that have been set with no score)
         if (u.id not in scores) or (u.score and u.score < 100.0):
             urls.append(u)
-    # if a url doesn't have a score, treat it as the highest possible
-    return sorted(urls, key=lambda x: x.score or 100.0)
+    # randomize list to prevent users from overloading the first mirror in the returned list
+    return random.shuffle(urls)
 
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False,

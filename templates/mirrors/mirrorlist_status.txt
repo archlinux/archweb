@@ -5,10 +5,10 @@ forget about where line breaks are happening until you are done getting the
 content right, and then go back later to fix it all up.
 {% endcomment %}{% autoescape off %}##
 ## Arch Linux repository mirrorlist
-## Sorted by mirror score from mirror status page
+## Filtered by mirror score from mirror status page
 ## Generated on {% now "Y-m-d" %}
 ##
 {% for mirror_url in mirror_urls %}
-## Score: {{ mirror_url.score|floatvalue:1|default:'unknown' }}, {{ mirror_url.country.name|default:'Worldwide' }}
+## {{ mirror_url.country.name|default:'Worldwide' }}
 #Server = {{ mirror_url.url}}$repo/os/$arch{% endfor %}
 {% endautoescape %}
