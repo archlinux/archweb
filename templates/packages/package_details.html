@@ -87,7 +87,7 @@
         {% with splits=pkg.split_packages %}{% if splits %}
         <tr>
             <th>Split Packages:</th>
-            <td class="wrap relatedto">{% for s in splits %}<span class="related">{% details_link s %}{% if not loop.last %}, {% endif %}</span>{% endfor %}</td>
+            <td class="wrap relatedto">{% for s in splits %}<span class="related">{% details_link s %}{% if not forloop.last %}, {% endif %}</span>{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% else %}
@@ -117,7 +117,7 @@
             <th>Groups:</th>
             <td class="wrap">{% for g in groups %}
                 <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
-                    title="Group details for {{ g.name }}">{{ g.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                    title="Group details for {{ g.name }}">{{ g.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
             </td>
         </tr>
         {% endif %}{% endwith %}
@@ -143,7 +143,7 @@
         <tr>
             <th>Reverse Conflicts:</th>
             <td class="wrap relatedto">{% for conflict in rev_conflicts %}
-                <span class="related">{% details_link conflict %}{% if not loop.last %}, {% endif %}</span>{% endfor %}</td>
+                <span class="related">{% details_link conflict %}{% if not forloop.last %}, {% endif %}</span>{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>

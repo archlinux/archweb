@@ -1,5 +1,5 @@
 {% load details_link %}<li>{% if depend.pkg == None %}
-{% if depend.providers %}{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">({% for pkg in depend.providers %}{% details_link pkg %}{% if not loop.last %}, {% endif %}{% endfor %})</span>
+{% if depend.providers %}{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">({% for pkg in depend.providers %}{% details_link pkg %}{% if not forloop.last %}, {% endif %}{% endfor %})</span>
 {% else %}{{ depend.dep.name }}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }} <span class="virtual-dep">(virtual)</span>
 {% endif %}{% else %}
 {% details_link depend.pkg %}{{ depend.dep.comparison|default:"" }}{{ depend.dep.version|default:"" }}
