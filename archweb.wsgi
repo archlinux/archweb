@@ -12,26 +12,5 @@ os.environ['DJANGO_SETTINGS_MODULE'] = "settings"
 
 os.chdir(base_path)
 
-using_newrelic = False
-try:
-    key_path = os.path.join(base_path, "newrelic.key")
-    if os.path.exists(key_path):
-        with open(key_path) as keyfile:
-            key = keyfile.read().strip()
-        os.environ["NEW_RELIC_LICENSE_KEY"] = key
-
-    import newrelic.agent
-    from newrelic.api.exceptions import ConfigurationError
-    try:
-        newrelic.agent.initialize(os.path.join(base_path, "newrelic.ini"))
-        using_newrelic = True
-    except ConfigurationError:
-        pass
-except ImportError:
-    pass
-
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
-
-if using_newrelic:
-    application = newrelic.agent.wsgi_application()(application)
