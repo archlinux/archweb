@@ -2,6 +2,7 @@ from urllib import urlencode
 from urlparse import parse_qs
 
 from django import template
+from django.utils.html import format_html
 
 
 register = template.Library()
@@ -53,7 +54,7 @@ def pkg_details_link(pkg, link_title=None, honor_flagged=False):
     if honor_flagged and pkg.flag_date:
         link_content = '<span class="flagged">%s</span>' % link_title
     link = '<a href="%s" title="View package details for %s">%s</a>'
-    return link % (pkg.get_absolute_url(), pkg.pkgname, link_content)
+    return format_html(link % (pkg.get_absolute_url(), pkg.pkgname, link_content))
 
 
 # vim: set ts=4 sw=4 et:

@@ -1,6 +1,6 @@
 from django import template
 from django.conf import settings
-from django.utils.html import conditional_escape
+from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
 
 
@@ -41,7 +41,7 @@ def pgp_key_link(key_id, link_text=None):
     if link_text is None:
         link_text = '0x%s' % key_id[-8:]
     values = (url, format_key(key_id), link_text)
-    return '<a href="%s" title="PGP key search for %s">%s</a>' % values
+    return format_html('<a href="%s" title="PGP key search for %s">%s</a>' % values)
 
 
 @register.simple_tag
