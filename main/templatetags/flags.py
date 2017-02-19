@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django import template
+from django.utils.html import format_html
 
 register = template.Library()
 
@@ -8,7 +9,7 @@ register = template.Library()
 def country_flag(country):
     if not country:
         return ''
-    return '<span class="fam-flag fam-flag-%s" title="%s"></span> ' % (
+    return format_html('<span class="fam-flag fam-flag-{}" title="{}"></span> ',
             unicode(country.code).lower(), unicode(country.name))
 
 @register.filter
