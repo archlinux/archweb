@@ -82,7 +82,8 @@ def status_filter(original_urls):
         if (u.id not in scores) or (u.score and u.score < 100.0):
             urls.append(u)
     # randomize list to prevent users from overloading the first mirror in the returned list
-    return random.shuffle(urls)
+    random.shuffle(urls)
+    return urls
 
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
