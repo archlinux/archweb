@@ -9,7 +9,6 @@ imgtrust
 
 # initial options
 set release {{ releases.0 }}
-set mirrorurl
 set extrabootoptions ip=dhcp net.ifnames=0
 set countrycode
 
