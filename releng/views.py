@@ -293,7 +293,6 @@ def netboot_config(request):
     mirrorurls = sorted( mirrorurls,
                          key=lambda x: x.country.name)
     context = {
-        'archs': [ 'i686', 'x86_64' ],
         'releases': releases,
         'mirrorurls': mirrorurls,
     }

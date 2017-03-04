@@ -8,16 +8,18 @@ cpuid --ext 29 && set cpuarch x86_64 || set cpuarch i686
 imgtrust
 
 # initial options
-set bootarch ${cpuarch}
 set release {{ releases.0 }}
 set mirrorurl
 set extrabootoptions ip=dhcp net.ifnames=0
 set countrycode
 
 :main
+iseq ${cpuarch} x86_64 && goto main_x86_64 || goto main_i686
+
+:main_x86_64
 menu Arch Linux Netboot
 item --gap Settings
-item set_architecture Architecture: ${bootarch}
+item --gap Architecture: x86_64
 item set_release Release: ${release}
 isset ${mirrorurl} && item set_mirror Mirror: ${mirrorurl} || item set_mirror Choose a mirror
 item set_options Boot options: ${extrabootoptions}
@@ -27,6 +29,15 @@ item shell Drop to iPXE shell
 item reboot Reboot
 item exit Exit iPXE
 isset ${mirrorurl} && choose --default set_options selected || choose --default set_mirror selected || goto shell
+goto ${selected} || goto main
+
+:main_i686
+menu Arch Linux Netboot
+item --gap ERROR: i686 is no longer supported!
+item shell Drop to iPXE shell
+item reboot Reboot
+item exit Exit iPXE
+choose --default shell selected || goto shell
 goto ${selected} || goto main
 
 :shell
@@ -39,18 +50,6 @@ reboot
 
 :exit
 exit
-
-:set_architecture
-menu Arch Linux Netboot: Select Architecture
-item back back
-item
-item --gap Available architectures:
-iseq ${cpuarch} x86_64 && item x86_64 x64_64 ||
-item i686 i686
-choose selected || goto main
-iseq ${selected} back && goto main ||
-set bootarch ${selected}
-goto main
 
 :set_release
 menu Arch Linux Netboot: Select Release
@@ -124,14 +123,14 @@ echo -n Boot options: ${} && read extrabootoptions ||
 goto main
 
 :boot
-echo Booting Arch Linux ${bootarch} ${release} from ${mirrorurl}
+echo Booting Arch Linux x86_64 ${release} from ${mirrorurl}
 echo
-kernel ${mirrorurl}iso/${release}/arch/boot/${bootarch}/vmlinuz || goto failed_download
-imgverify vmlinuz ${mirrorurl}iso/${release}/arch/boot/${bootarch}/vmlinuz.ipxe.sig || goto failed_verify
+kernel ${mirrorurl}iso/${release}/arch/boot/x86_64/vmlinuz || goto failed_download
+imgverify vmlinuz ${mirrorurl}iso/${release}/arch/boot/x86_64/vmlinuz.ipxe.sig || goto failed_verify
 initrd ${mirrorurl}iso/${release}/arch/boot/intel_ucode.img || goto failed_download
 imgverify intel_ucode.img ${mirrorurl}iso/${release}/arch/boot/intel_ucode.img.ipxe.sig || goto failed_verify
-initrd ${mirrorurl}iso/${release}/arch/boot/${bootarch}/archiso.img || goto failed_download
-imgverify archiso.img ${mirrorurl}iso/${release}/arch/boot/${bootarch}/archiso.img.ipxe.sig || goto failed_verify
+initrd ${mirrorurl}iso/${release}/arch/boot/x86_64/archiso.img || goto failed_download
+imgverify archiso.img ${mirrorurl}iso/${release}/arch/boot/x86_64/archiso.img.ipxe.sig || goto failed_verify
 imgargs vmlinuz initrd=intel_ucode.img initrd=archiso.img archiso_http_srv=${mirrorurl}iso/${release}/ archisobasedir=arch verify=y ${extrabootoptions}
 boot || goto failed_boot
 
