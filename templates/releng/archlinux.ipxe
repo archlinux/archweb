@@ -9,7 +9,7 @@ imgtrust
 
 # initial options
 set release {{ releases.0 }}
-set extrabootoptions ip=dhcp net.ifnames=0
+set extrabootoptions ip=dhcp net.ifnames=0 BOOTIF=01-${netX/mac}
 set countrycode
 
 :main
