@@ -139,11 +139,11 @@ class Release(models.Model):
         return "iso/%s/" % self.version
 
     def iso_url(self):
-        return "iso/%s/archlinux-%s-dual.iso" % (self.version, self.version)
+        return "iso/%s/archlinux-%s-x86_64.iso" % (self.version, self.version)
 
     def magnet_uri(self):
         query = [
-            ('dn', "archlinux-%s-dual.iso" % self.version),
+            ('dn', "archlinux-%s-x86_64.iso" % self.version),
         ]
         if settings.TORRENT_TRACKERS:
             query.extend(('tr', uri) for uri in settings.TORRENT_TRACKERS)

@@ -237,7 +237,7 @@ def release_torrent(request, version):
     data = b64decode(release.torrent_data.encode('utf-8'))
     response = HttpResponse(data, content_type='application/x-bittorrent')
     # TODO: this is duplicated from Release.iso_url()
-    filename = 'archlinux-%s-dual.iso.torrent' % release.version
+    filename = 'archlinux-%s-x86_64.iso.torrent' % release.version
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
