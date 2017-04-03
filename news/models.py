@@ -17,6 +17,7 @@ class News(models.Model):
     guid = models.CharField(max_length=255, editable=False)
     content = models.TextField()
     safe_mode = models.BooleanField(default=True)
+    send_announce = models.BooleanField(default=True)
 
     def get_absolute_url(self):
         return '/news/%s/' % self.slug

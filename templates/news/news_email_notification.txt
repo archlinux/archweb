@@ -1,0 +1,3 @@
+{{ news.content }}
+
+URL: https://www.archlinux.org{{ news.get_absolute_url }}
