@@ -7,7 +7,7 @@ Import keys and signatures from a given GPG keyring.
 Usage: ./manage.py pgp_import <keyring_path>
 """
 
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 from datetime import datetime
 import logging
 from pytz import utc
