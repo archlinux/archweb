@@ -178,8 +178,21 @@ COUNTRIES_OVERRIDE = {
     'US': 'United States',
 }
 
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '00000000000000000000000000000000000000000000000'
+
+DATABASES = {
+    'default': {
+        'ENGINE'  : 'django.db.backends.sqlite3',
+        'NAME'    : 'database.db',
+    },
+}
+
 ## Import local settings
-from local_settings import *
+try:
+    from local_settings import *
+except ImportError:
+    pass
 
 # Enable caching templates in production environments
 if not TEMPLATE_DEBUG:
