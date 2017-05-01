@@ -75,6 +75,16 @@ packages, you will probably want the following:
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
 
+# Testing SMTP server
+
+To be able to create an account on your test environment an SMTP server is
+required. A simple debugging SMTP server can be setup using Python.
+
+        python2 -m smtpd -n -c DebuggingServer localhost:1025
+
+In local_settings.py change the EMAIL_HOST to 'localhost' and the EMAIL_PORT to
+1025.
+
 # Production Installation
 
 Ask someone who knows, or you are going to be in trouble.
