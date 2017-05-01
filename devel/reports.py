@@ -21,19 +21,19 @@ class DeveloperReport(object):
         self.personal = personal
 
 
-def old(packages, username):
+def old(packages):
     cutoff = now() - timedelta(days=365 * 2)
     return packages.filter(
             build_date__lt=cutoff).order_by('build_date')
 
 
-def outofdate(packages, username):
+def outofdate(packages):
     cutoff = now() - timedelta(days=30)
     return packages.filter(
             flag_date__lt=cutoff).order_by('flag_date')
 
 
-def big(packages, username):
+def big(packages):
     cutoff = 50 * 1024 * 1024
     packages = packages.filter(
             compressed_size__gte=cutoff).order_by('-compressed_size')
@@ -46,7 +46,7 @@ def big(packages, username):
     return packages
 
 
-def badcompression(packages, username):
+def badcompression(packages):
     cutoff = 0.90 * F('installed_size')
     packages = packages.filter(compressed_size__gt=25*1024,
             installed_size__gt=25*1024,
@@ -95,7 +95,7 @@ def uncompressed_info(packages, username):
     return packages.filter(id__in=set(bad_files))
 
 
-def unneeded_orphans(packages, username):
+def unneeded_orphans(packages):
     owned = PackageRelation.objects.all().values('pkgbase')
     required = Depend.objects.all().values('name')
     # The two separate calls to exclude is required to do the right thing
@@ -103,7 +103,7 @@ def unneeded_orphans(packages, username):
             pkgname__in=required)
 
 
-def mismatched_signature(packages, username):
+def mismatched_signature(packages):
     filtered = []
     packages = packages.select_related(
             'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
@@ -127,7 +127,7 @@ def mismatched_signature(packages, username):
     return filtered
 
 
-def signature_time(packages, username):
+def signature_time(packages):
     cutoff = timedelta(hours=24)
     filtered = []
     packages = packages.select_related(
