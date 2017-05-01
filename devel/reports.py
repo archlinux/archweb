@@ -5,7 +5,7 @@ from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.utils.timezone import now
 
-from .models import DeveloperKey, UserProfile
+from .models import DeveloperKey
 from main.models import PackageFile
 from packages.models import PackageRelation, Depend
 
