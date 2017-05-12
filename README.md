@@ -85,6 +85,20 @@ required. A simple debugging SMTP server can be setup using Python.
 In local_settings.py change the EMAIL_HOST to 'localhost' and the EMAIL_PORT to
 1025.
 
+# Running tests and coverage
+
+To the unittests execute the following commands:
+
+        ./manage.py collectstatic --noinput
+        ./manage.py test
+
+Running coverage:
+
+        pip install coverage
+        coverage run --omit='env*' --source='.' manage.py test
+        coverage report
+
+
 # Production Installation
 
 Ask someone who knows, or you are going to be in trouble.
