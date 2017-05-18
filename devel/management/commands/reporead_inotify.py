@@ -35,6 +35,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     help = "Watch database files and run an update when necessary."
     args = "[path_template]"
@@ -73,16 +74,16 @@ class Command(BaseCommand):
         directories we need to watch for database updates. It then validates
         and passes these on to the various pyinotify pieces as necessary and
         finally builds and returns a notifier object.'''
-        transaction.commit_manually()
-        arches = Arch.objects.filter(agnostic=False)
-        repos = Repo.objects.all()
-        transaction.set_dirty()
+        with transaction.atomic():
+            arches = Arch.objects.filter(agnostic=False)
+            repos = Repo.objects.all()
+
         arch_path_map = {arch: None for arch in arches}
         all_paths = set()
         total_paths = 0
         for arch in arches:
-            combos = ({ 'repo': repo.name.lower(), 'arch': arch.name }
-                    for repo in repos)
+            combos = ({'repo': repo.name.lower(), 'arch': arch.name}
+                      for repo in repos)
             # take a python format string and generate all unique combinations
             # of directories from it; using set() ensures we filter it down
             paths = {self.path_template % values for values in combos}
@@ -97,7 +98,7 @@ class Command(BaseCommand):
         # template mapped to only one architecture
         if total_paths != len(all_paths):
             raise CommandError('path template did not uniquely '
-                    'determine architecture for each file')
+                               'determine architecture for each file')
 
         # A proper atomic replacement of the database as done by rsync is type
         # IN_MOVED_TO. repo-add/remove will finish with a IN_CLOSE_WRITE.
@@ -131,7 +132,7 @@ class Database(object):
     def _start_update_countdown(self):
         self.update_thread = threading.Timer(self.delay, self.update)
         logger.info('Starting %.1f second countdown to update %s',
-                self.delay, self.path)
+                    self.delay, self.path)
         self.update_thread.start()
 
     def queue_for_update(self, mtime):
