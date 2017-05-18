@@ -1,19 +1,8 @@
 from urllib import urlencode, quote as urlquote, unquote
-from django.utils.html import escape
-from django_jinja import library
+from django import template
 from main.templatetags import pgp
 
-
-@library.filter
-def url_unquote(original_url):
-    try:
-        url = original_url
-        if isinstance(url, unicode):
-            url = url.encode('ascii')
-        url = unquote(url).decode('utf-8')
-        return url
-    except UnicodeError:
-        return original_url
+register = template.Library()
 
 
 def link_encode(url, query):
@@ -24,12 +13,12 @@ def link_encode(url, query):
     return "%s?%s" % (url, data)
 
 
-@library.global_function
-def pgp_key_link(key_id, link_text=None):
-    return pgp.pgp_key_link(key_id, link_text)
+@register.inclusion_tag('packages/details_link.html')
+def details_link(pkg):
+    return {'pkg': pkg}
 
 
-@library.global_function
+@register.simple_tag
 def scm_link(package, operation):
     parts = (package.repo.svn_root, operation, package.pkgbase)
     linkbase = (
@@ -38,16 +27,7 @@ def scm_link(package, operation):
     return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
 
 
-@library.global_function
-def wiki_link(package):
-    url = "https://wiki.archlinux.org/index.php/Special:Search"
-    data = {
-        'search': package.pkgname,
-    }
-    return link_encode(url, data)
-
-
-@library.global_function
+@register.simple_tag
 def bugs_list(package):
     url = "https://bugs.archlinux.org/"
     data = {
@@ -58,7 +38,7 @@ def bugs_list(package):
     return link_encode(url, data)
 
 
-@library.global_function
+@register.simple_tag
 def bug_report(package):
     url = "https://bugs.archlinux.org/newtask"
     data = {
@@ -67,5 +47,31 @@ def bug_report(package):
         'item_summary': '[%s] PLEASE ENTER SUMMARY' % package.pkgname,
     }
     return link_encode(url, data)
+
+
+@register.simple_tag
+def wiki_link(package):
+    url = "https://wiki.archlinux.org/index.php/Special:Search"
+    data = {
+        'search': package.pkgname,
+    }
+    return link_encode(url, data)
+
+
+@register.simple_tag
+def pgp_key_link(key_id, link_text=None):
+    return pgp.pgp_key_link(key_id, link_text)
+
+
+@register.filter
+def url_unquote(original_url):
+    try:
+        url = original_url
+        if isinstance(url, unicode):
+            url = url.encode('ascii')
+        url = unquote(url).decode('utf-8')
+        return url
+    except UnicodeError:
+        return original_url
 
 # vim: set ts=4 sw=4 et:

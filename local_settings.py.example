@@ -1,6 +1,5 @@
 ## Debug settings
 DEBUG = False
-TEMPLATE_DEBUG = False
 #DEBUG_TOOLBAR = True
 
 ## For django debug toolbar

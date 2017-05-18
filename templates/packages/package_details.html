@@ -1,4 +1,4 @@
-{% import 'packages/details_link.html.jinja' as details %}
+{% load details_link %}
 <div id="pkgdetails" class="box">
     <h2>{{ pkg.pkgname }} {{ pkg.full_version }}</h2>
 
@@ -7,19 +7,19 @@
         <h4>Package Actions</h4>
             <ul class="small">
                 <li>
-                    <a href="{{ scm_link(pkg, 'tree') }}" title="View source files for {{ pkg.pkgname }}">Source Files</a> /
-                    <a href="{{ scm_link(pkg, 'log') }}" title="View changes for {{ pkg.pkgname }}">View Changes</a>
+                    <a href="{% scm_link pkg 'tree' %}" title="View source files for {{ pkg.pkgname }}">Source Files</a> /
+                    <a href="{% scm_link pkg 'log' %}" title="View changes for {{ pkg.pkgname }}">View Changes</a>
                 </li>
                 <li>
-                    <a href="{{ bugs_list(pkg) }}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a> /
-                    <a href="{{ bug_report(pkg) }}" title="Report new bug for {{ pkg.pkgname }}">Add New Bug</a>
+                    <a href="{% bugs_list pkg %}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a> /
+                    <a href="{% bug_report pkg %}" title="Report new bug for {{ pkg.pkgname }}">Add New Bug</a>
                 </li>
-                <li><a href="{{ wiki_link(pkg) }}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a></li>
+                <li><a href="{% wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a></li>
                 {% if pkg.flag_date %}
                 <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
-                {% with tp = pkg.in_testing() %}{% if tp %}
+                {% with tp=pkg.in_testing %}{% if tp %}
                 <li><span class="flagged">Version
-                    <a href="{{ tp.get_absolute_url() }}"
+                    <a href="{{ tp.get_absolute_url }}"
                         title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
                     in testing</span></li>
                 {% endif %}{% endwith %}
@@ -49,12 +49,12 @@
             {% endif %}
         </div>
 
-        {% with others = pkg.elsewhere() %}{% if others %}
+        {% with others=pkg.elsewhere %}{% if others %}
         <div id="elsewhere" class="widget">
             <h4>Versions Elsewhere</h4>
             <ul>
                 {% for o in others %}
-                <li><a href="{{ o.get_absolute_url() }}"
+                <li><a href="{{ o.get_absolute_url }}"
                     title="Package details for {{ o.pkgname }}">{{ o.pkgname }} {{ o.full_version }} [{{ o.repo.name|lower }}] ({{ o.arch.name }})</a></li>
                 {% endfor %}
             </ul>
@@ -67,11 +67,11 @@
     <meta itemprop="version" content="{{ pkg.full_version|escape }}"/>
     <meta itemprop="softwareVersion" content="{{ pkg.full_version|escape }}"/>
     <meta itemprop="fileSize" content="{{ pkg.compressed_size }}"/>
-    <meta itemprop="dateCreated" content="{{ pkg.build_date|date("Y-m-d") }}"/>
-    <meta itemprop="datePublished" content="{{ pkg.last_update|date("Y-m-d") }}"/>
+    <meta itemprop="dateCreated" content="{{ pkg.build_date|date:"Y-m-d" }}"/>
+    <meta itemprop="datePublished" content="{{ pkg.last_update|date:"Y-m-d" }}"/>
     <meta itemprop="operatingSystem" content="Arch Linux"/>
     {% if pkg.packager %}<div style="display:none" itemprop="provider" itemscope itemtype="http://schema.org/Person">
-        <meta itemprop="name" content="{{ pkg.packager.get_full_name()|escape }}"/>
+        <meta itemprop="name" content="{{ pkg.packager.get_full_name|escape }}"/>
     </div>{% endif %}
     <table id="pkginfo">
         <tr>
@@ -84,17 +84,17 @@
                     title="Browse the {{ pkg.repo.name|capfirst }} repository">{{ pkg.repo.name|capfirst }}</a></td>
         </tr>
         {% if pkg.pkgname == pkg.pkgbase %}
-        {% with splits = pkg.split_packages() %}{% if splits %}
+        {% with splits=pkg.split_packages %}{% if splits %}
         <tr>
             <th>Split Packages:</th>
-            <td class="wrap relatedto">{% for s in splits %}<span class="related">{{ details.details_link(s) }}{% if not loop.last %}, {% endif %}</span>{% endfor %}</td>
+            <td class="wrap relatedto">{% for s in splits %}<span class="related">{% details_link s %}{% if not forloop.last %}, {% endif %}</span>{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         {% else %}
         <tr>
             <th>Base Package:</th>
-            {% with base = pkg.base_package() %}{% if base %}
-            <td>{{ details.details_link(base) }}</td>
+            {% with base=pkg.base_package %}{% if base %}
+            <td>{% details_link base %}</td>
             {% else %}
             <td><a href="../{{ pkg.pkgbase }}/"
                     title="Split package details for {{ pkg.pkgbase }}">{{ pkg.pkgbase }}</a></td>
@@ -103,55 +103,55 @@
         {% endif %}
         <tr>
             <th>Description:</th>
-            <td class="wrap" itemprop="description">{{ pkg.pkgdesc|default("", true) }}</td>
+            <td class="wrap" itemprop="description">{{ pkg.pkgdesc|default:"" }}</td>
         </tr><tr>
             <th>Upstream URL:</th>
             <td>{% if pkg.url %}<a itemprop="url" href="{{ pkg.url }}"
                     title="Visit the website for {{ pkg.pkgname }}">{{ pkg.url|url_unquote }}</a>{% endif %}</td>
         </tr><tr>
             <th>License(s):</th>
-            <td class="wrap">{{ pkg.licenses.all()|join(", ") }}</td>
+            <td class="wrap">{{ pkg.licenses.all|join:", " }}</td>
         </tr>
-        {% with groups = pkg.groups.all() %}{% if groups %}
+        {% with groups=pkg.groups.all %}{% if groups %}
         <tr>
             <th>Groups:</th>
             <td class="wrap">{% for g in groups %}
                 <a href="/groups/{{ pkg.arch.name }}/{{ g.name }}/"
-                    title="Group details for {{ g.name }}">{{ g.name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+                    title="Group details for {{ g.name }}">{{ g.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
             </td>
         </tr>
         {% endif %}{% endwith %}
-        {% with all_related = pkg.provides.all() %}{% if all_related %}
+        {% with all_related=pkg.provides.all %}{% if all_related %}
         <tr>
             <th>Provides:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with all_related = pkg.replaces.all() %}{% if all_related %}
+        {% with all_related=pkg.replaces.all %}{% if all_related %}
         <tr>
             <th>Replaces:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with all_related = pkg.conflicts.all() %}{% if all_related %}
+        {% with all_related=pkg.conflicts.all %}{% if all_related %}
         <tr>
             <th>Conflicts:</th>
-            <td class="wrap relatedto">{% include "packages/details_relatedto.html.jinja" %}</td>
+            <td class="wrap relatedto">{% include "packages/details_relatedto.html" %}</td>
         </tr>
         {% endif %}{% endwith %}
-        {% with rev_conflicts = pkg.reverse_conflicts() %}{% if rev_conflicts %}
+        {% with rev_conflicts=pkg.reverse_conflicts %}{% if rev_conflicts %}
         <tr>
             <th>Reverse Conflicts:</th>
             <td class="wrap relatedto">{% for conflict in rev_conflicts %}
-                <span class="related">{{ details.details_link(conflict) }}{% if not loop.last %}, {% endif %}</span>{% endfor %}</td>
+                <span class="related">{% details_link conflict %}{% if not forloop.last %}, {% endif %}</span>{% endfor %}</td>
         </tr>
         {% endif %}{% endwith %}
         <tr>
             <th>Maintainers:</th>
-            {% with maints = pkg.maintainers %}
+            {% with maints=pkg.maintainers %}
             <td>{% if maints %}{% for m in maints %}
                 <a href="/packages/?maintainer={{ m.username }}"
-                    title="View packages maintained by {{ m.get_full_name() }}">{{ m.get_full_name() }}</a><br/>
+                    title="View packages maintained by {{ m.get_full_name }}">{{ m.get_full_name }}</a><br/>
                 {% endfor %}{% else %}Orphan{% endif %}
             </td>
             {% endwith %}
@@ -163,50 +163,50 @@
             <td>{{ pkg.installed_size|filesizeformat }}</td>
         </tr><tr>
             <th>Last Packager:</th>
-            <td>{% with pkgr = pkg.packager %}{% if pkgr %}
+            <td>{% with pkgr=pkg.packager %}{% if pkgr %}
             <a href="/packages/?packager={{ pkgr.username }}"
-                title="View packages packaged by {{ pkgr.get_full_name() }}">{{ pkgr.get_full_name() }}</a>
+                title="View packages packaged by {{ pkgr.get_full_name }}">{{ pkgr.get_full_name }}</a>
             {% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Build Date:</th>
-            <td>{{ pkg.build_date|date("DATETIME_FORMAT") }} UTC</td>
+            <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
         </tr>{% if pkg.signature %}<tr>
             <th>Signed By:</th>
-            <td>{% with signer = pkg.signer %}{% if signer %}{{ pgp_key_link(pkg.signature.key_id, signer.get_full_name())|safe }}{% else %}Unknown ({{ pgp_key_link(pkg.signature.key_id)|safe }}){% endif %}{% endwith %}</td>
+            <td>{% with signer=pkg.signer %}{% if signer %}{% pgp_key_link pkg.signature.key_id signer.get_full_name|safe %}{% else %}Unknown ({% pgp_key_link pkg.signature.key_id|safe %}){% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Signature Date:</th>
-            <td>{{ pkg.signature.creation_time|date("DATETIME_FORMAT") }} UTC</td>
+            <td>{{ pkg.signature.creation_time|date:"DATETIME_FORMAT" }} UTC</td>
         </tr>{% else %}<tr>
             <th>Signed By:</th>
             <td>Unsigned</td>
         </tr>{% endif %}<tr>
             <th>Last Updated:</th>
-            <td>{{ pkg.last_update|date("DATETIME_FORMAT") }} UTC</td>
+            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC</td>
         </tr>
-        {% if user.is_authenticated() %}{% with flag_request = pkg.flag_request() %}{% if flag_request %}<tr>
+        {% if user.is_authenticated %}{% with flag_request=pkg.flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
-            <td class="wrap">From {{ flag_request.who() }} on {{ flag_request.created|date }}:<br/>
-                <div class="userdata">{{ flag_request.message|linebreaksbr|default("{no message}", true) }}</div></td>
+            <td class="wrap">From {{ flag_request.who }} on {{ flag_request.created|date }}:<br/>
+                <div class="userdata">{{ flag_request.message|linebreaksbr|default:"{no message}" }}</div></td>
         </tr>{% endif %}{% endwith %}{% endif %}
     </table>
     </div>
 
     <div id="metadata">
-        {% with deps = pkg.get_depends() %}
+        {% with deps=pkg.get_depends %}
         <div id="pkgdeps" class="listing">
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
                 Dependencies ({{deps|length}})</h3>
             {% if deps %}<ul id="pkgdepslist">
-                {% for depend in deps %}{% include "packages/details_depend.html.jinja" %}{% endfor %}
+                {% for depend in deps %}{% include "packages/details_depend.html" %}{% endfor %}
             </ul>{% endif %}
         </div>
         {% endwith %}
-        {% with rqdby = pkg.get_requiredby() %}
+        {% with rqdby=pkg.get_requiredby %}
         <div id="pkgreqs" class="listing">
             <h3 title="Packages that require {{ pkg.pkgname }}">
                 Required By ({{rqdby|length}})</h3>
             {% if rqdby %}<ul id="pkgreqslist">
-                {% for req in rqdby %}{% include "packages/details_requiredby.html.jinja" %}{% endfor %}
+                {% for req in rqdby %}{% include "packages/details_requiredby.html" %}{% endfor %}
             </ul>{% endif %}
         </div>
         {% endwith %}

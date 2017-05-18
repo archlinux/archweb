@@ -60,18 +60,18 @@
     <a name="outofsync" id="outofsync"></a>
     <h3>Out of Sync Mirrors</h3>
     {% with urls=bad_urls table_id='outofsync_mirrors' %}
-    {% include "mirrors/status_table.html.jinja" %}
+    {% include "mirrors/status_table.html" %}
     {% endwith %}
 
     <a name="successful" id="successful"></a>
     <h3>Successfully Syncing Mirrors</h3>
     {% with urls=good_urls table_id='successful_mirrors' %}
-    {% include "mirrors/status_table.html.jinja" %}
+    {% include "mirrors/status_table.html" %}
     {% endwith %}
 
     <a name="errorlog" id="errorlog"></a>
     <h3>Mirror Syncing Error Log</h3>
-    {% include "mirrors/error_table.html.jinja" %}
+    {% include "mirrors/error_table.html" %}
 </div>
 {% endblock %}
 

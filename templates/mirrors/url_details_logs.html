@@ -1,3 +1,5 @@
+{% load flags %}
+
 <table id="check_logs" class="results">
     <thead>
         <tr>
@@ -12,11 +14,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for log in logs %}<tr class="{{ loop.cycle('odd', 'even') }}">
-            <td>{{ log.check_time|date('Y-m-d H:i') }}</td>
-            <td class="country">{% if log.location %}{{ country_flag(log.location.country) }}{{ log.location.country.name }}{% else %}Unknown{% endif %}</td>
+        {% for log in logs %}<tr class="{% cycle 'odd' 'even' %}">
+            <td>{{ log.check_time|date:'Y-m-d H:i' }}</td>
+            <td class="country">{% if log.location %}{% country_flag log.location.country %}{{ log.location.country.name }}{% else %}Unknown{% endif %}</td>
             <td>{% if log.location %}{{ log.location.source_ip }}{% else %}Unknown{% endif %}</td>
-            <td>{{ log.last_sync|date('Y-m-d H:i') }}</td>
+            <td>{{ log.last_sync|date:'Y-m-d H:i' }}</td>
             <td>{{ log.delay|duration }}</td>
             <td>{{ log.duration|floatvalue }}</td>
             <td>{{ log.is_success|yesno|capfirst }}</td>

@@ -333,7 +333,8 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
     # necessary to guard against simultaneous updates.
     with transaction.atomic():
         # force the transaction dirty, even though we will only do reads
-        transaction.set_dirty()
+        # https://github.com/django/django/blob/3c447b108ac70757001171f7a4791f493880bf5b/docs/releases/1.3.txt#L606
+        #transaction.set_dirty()
 
         repository = Repo.objects.get(name__iexact=reponame)
         architecture = Arch.objects.get(name=archname)

@@ -84,11 +84,11 @@ urlpatterns += patterns('',
         {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
     (r'^sitemap-(?P<section>.+)\.xml$',
         cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml.jinja'},
+        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml'},
         'sitemaps'),
     (r'^news-sitemap\.xml$',
         cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': news_sitemaps, 'template_name': 'sitemaps/news_sitemap.xml.jinja'},
+        {'sitemaps': news_sitemaps, 'template_name': 'sitemaps/news_sitemap.xml'},
         'news-sitemap'),
 )
 
