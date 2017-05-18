@@ -46,7 +46,7 @@ class NewsCreateView(CreateView):
             template = loader.get_template('news/news_email_notification.txt')
             send_mail('[arch-announce] %s' % newsitem.title,
                       template.render(ctx),
-                      'Arch Linux: Recent news updates: %s <arch-announce@archlinux.org>' % newsitem.author.get_full_name(),
+                      '"Arch Linux: Recent news updates: %s" <arch-announce@archlinux.org>' % newsitem.author.get_full_name(),
                       ['arch-announce@archlinux.org'],
                       fail_silently=True)
         return super(NewsCreateView, self).form_valid(form)
