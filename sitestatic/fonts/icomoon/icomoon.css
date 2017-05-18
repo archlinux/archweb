@@ -1,0 +1,187 @@
+@font-face {
+    font-family: 'icomoon';
+    src:    url('fonts/icomoon.eot?3w2gpl');
+    src:    url('fonts/icomoon.eot?3w2gpl#iefix') format('embedded-opentype'),
+        url('fonts/icomoon.ttf?3w2gpl') format('truetype'),
+        url('fonts/icomoon.woff?3w2gpl') format('woff'),
+        url('fonts/icomoon.svg?3w2gpl#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-archlinux-font-linux:before {
+    content: "\e903";
+}
+.icon-archlinux-font-arch:before {
+    content: "\e904";
+}
+.icon-archlinux:before {
+    content: "\e900";
+}
+.icon-archlinuxjp:before {
+    content: "\e901";
+}
+.icon-archlinuxjp-simple:before {
+    content: "\e902";
+}
+
+span.icon-archlinux {
+	font-size: 40px;
+	color: #1794D1;
+}
+
+span.icon-archlinux:hover {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	color: #38B7EA;
+}
+
+div#archnavbarlogofont span.icon-archlinuxjp {
+	font-size: 40px;
+	color: #1794D1;
+	position:absolute;
+}
+
+div#archnavbarlogofont span.icon-archlinuxjp-simple {
+	font-size: 40px;
+	color: #fff;
+	position:relative;
+}
+
+div#archnavbarlogofont span.icon-archlinux-font-arch {
+	font-size: 40px;
+	color: #fff;
+}
+
+div#archnavbarlogofont span.icon-archlinux-font-linux {
+	font-size: 40px;
+	color: #1794D1;
+}
+
+div#archnavbarlogofont span.icon-archlinuxjp:hover {
+	color:#38b7ea;
+}
+
+div#archnavbarlogofont h1 img {
+	position: absolute;
+        top: 6px !important;
+	width: 155px;
+}
+
+@media screen and ( max-width : 768px ) {
+	/* div#archnavbarlogofont h1 img { display:none; } */
+	#archnavbarlist { display: inline !important; float: bottom !important; list-style: none !important; margin-top: 50px !important; padding: 0 !important; }
+}
+
+div#archnavbarlogofont a:link {
+	text-decoration: none !important;
+}
+
+div#archnavbarlogofont a: {
+	text-decoration: none !important;
+}
+
+a:hover span.icon-archlinux {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+
+	/* easy */
+	-moz-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	-webkit-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	-o-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+
+	/* normal */
+	/* -moz-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #fff;
+	-webkit-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #fff;
+	-o-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #fff;
+	text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #fff; */
+
+	/* hard */
+	/* -moz-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #38b7ea;
+	-webkit-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #38b7ea;
+	-o-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #38b7ea;
+	text-shadow:0px 0px 1px black, 0 0 5px #38b7ea, 0 0 100px #38b7ea; */
+
+	color:#38b7ea;
+}
+
+a:hover span.icon-archlinuxjp {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	-moz-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	-webkit-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	-o-text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	text-shadow:0px 0px 1px black, 0 0 5px #38b7ea;
+	color:#38b7ea;
+}
+
+a:hover span.icon-archlinuxjp-simple {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	-moz-text-shadow:0px 0px 1px #38b7ea, 0 0 5px #38b7ea;
+	-webkit-text-shadow:0px 0px 1px #38b7ea, 0 0 5px #38b7ea;
+	-o-text-shadow:0px 0px 1px #38b7ea, 0 0 5px #38b7ea;
+	text-shadow:0px 0px 1px #38b7ea, 0 0 5px #38b7ea;
+	color:#38b7ea;
+}
+
+.fa-rss {
+	color: #FF5500;
+}
+
+.fa-rss:hover {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	color: #07b;
+}
+
+.fa-rss-square {
+	color: #FF5500;
+}
+.fa-rss-square:hover {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	color: #07b;
+}
+
+
+.fa-bars:hover {
+	-webkit-transition: 0.3s ease-in-out;
+	-moz-transition: 0.3s ease-in-out;
+	-o-transition: 0.3s ease-in-out;
+	transition: 0.3s ease-in-out;
+	color: #1794D1;
+}
+
+.fa-bars {
+	color: #fff;
+	padding-top: 7px;
+}
