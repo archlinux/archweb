@@ -1,5 +1,7 @@
 # Archweb README
 
+[![Coverage Status](https://coveralls.io/repos/github/archlinux/archweb/badge.svg?branch=master)](https://coveralls.io/github/archlinux/archweb?branch=master)
+
 To get a pretty version of this document, run
 
     $ markdown README > README.html
