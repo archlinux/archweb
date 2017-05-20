@@ -18,7 +18,6 @@ class IPNetworkFormField(forms.Field):
 
 
 class IPNetworkField(models.Field):
-    __metaclass__ = models.SubfieldBase
     description = "IPv4 or IPv6 address or subnet"
 
     def __init__(self, *args, **kwargs):
@@ -43,3 +42,6 @@ class IPNetworkField(models.Field):
         defaults = {'form_class': IPNetworkFormField}
         defaults.update(kwargs)
         return super(IPNetworkField, self).formfield(**defaults)
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
