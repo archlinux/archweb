@@ -44,25 +44,6 @@ LOGIN_REDIRECT_URL = '/'
 # Set django's User stuff to use our profile model
 AUTH_PROFILE_MODULE = 'devel.UserProfile'
 
-TEMPLATES = [
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [
-                path.join(DEPLOY_PATH, 'templates')
-            ],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'debug': DEBUG,
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.core.context_processors.debug',
-                    'django.contrib.messages.context_processors.messages',
-                    'main.context_processors.secure',
-                ],
-            }
-        }
-]
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -188,6 +169,25 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [
+                path.join(DEPLOY_PATH, 'templates')
+            ],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'debug': DEBUG,
+                'context_processors': [
+                    'django.contrib.auth.context_processors.auth',
+                    'django.core.context_processors.debug',
+                    'django.contrib.messages.context_processors.messages',
+                    'main.context_processors.secure',
+                ],
+            }
+        }
+]
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
