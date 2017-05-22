@@ -101,12 +101,12 @@ class Test(models.Model):
     source = models.ForeignKey(Source)
     clock_choice = models.ForeignKey(ClockChoice)
     filesystem = models.ForeignKey(Filesystem)
-    modules = models.ManyToManyField(Module, null=True, blank=True)
+    modules = models.ManyToManyField(Module, blank=True)
     bootloader = models.ForeignKey(Bootloader)
     rollback_filesystem = models.ForeignKey(Filesystem,
             related_name="rollback_test_set", null=True, blank=True)
     rollback_modules = models.ManyToManyField(Module,
-            related_name="rollback_test_set", null=True, blank=True)
+            related_name="rollback_test_set", blank=True)
 
     success = models.BooleanField(default=True)
     comments = models.TextField(null=True, blank=True)
