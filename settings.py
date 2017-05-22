@@ -1,5 +1,5 @@
-import os
 # Django settings for archweb project.
+from os import path
 
 ## Set the debug values
 DEBUG = False
@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 NOTIFICATIONS = ['arch-notifications@archlinux.org']
 
 # Full path to the data directory
-DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__))
+DEPLOY_PATH = path.dirname(path.realpath(__file__))
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -44,7 +44,6 @@ LOGIN_REDIRECT_URL = '/'
 # Set django's User stuff to use our profile model
 AUTH_PROFILE_MODULE = 'devel.UserProfile'
 
-from os import path
 TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -81,11 +80,11 @@ ROOT_URLCONF = 'urls'
 STATIC_URL = '/static/'
 
 # Location to collect static files
-STATIC_ROOT = os.path.join(DEPLOY_PATH, 'collected_static')
+STATIC_ROOT = path.join(DEPLOY_PATH, 'collected_static')
 
 # Look for more static files in these locations
 STATICFILES_DIRS = (
-    os.path.join(DEPLOY_PATH, 'sitestatic'),
+    path.join(DEPLOY_PATH, 'sitestatic'),
 )
 
 # Static files backend that allows us to use far future Expires headers
