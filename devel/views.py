@@ -1,33 +1,32 @@
-from datetime import timedelta
 import operator
 import time
+from datetime import timedelta
 
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import \
-        login_required, permission_required, user_passes_test
 from django.contrib import admin
-from django.contrib.admin.models import LogEntry, ADDITION
+from django.contrib.admin.models import ADDITION, LogEntry
+from django.contrib.auth.decorators import (login_required,
+                                            permission_required,
+                                            user_passes_test)
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, Max
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.views.decorators.cache import never_cache
 from django.utils.encoding import force_unicode
 from django.utils.http import http_date
 from django.utils.timezone import now
-
-from .forms import ProfileForm, UserProfileForm, NewUserForm
-from .models import UserProfile
-from .reports import available_reports
-from main.models import Package
-from main.models import Arch, Repo
+from django.views.decorators.cache import never_cache
+from main.models import Arch, Package, Repo
 from news.models import News
-from packages.models import PackageRelation, Signoff, FlagRequest
+from packages.models import FlagRequest, PackageRelation, Signoff
 from packages.utils import get_signoff_groups
 from todolists.models import TodolistPackage
 from todolists.utils import get_annotated_todolists
+
+from .forms import NewUserForm, ProfileForm, UserProfileForm
+from .models import UserProfile
+from .reports import available_reports
 from .utils import get_annotated_maintainers
 
 
@@ -41,25 +40,26 @@ def index(request):
     inner_q = inner_q.values('pkgbase')
 
     flagged = Package.objects.normal().filter(
-            flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
+        flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
 
     todopkgs = TodolistPackage.objects.select_related(
-            'todolist', 'pkg', 'arch', 'repo').exclude(
+        'todolist', 'pkg', 'arch', 'repo').exclude(
             status=TodolistPackage.COMPLETE).filter(removed__isnull=True)
-    todopkgs = todopkgs.filter(pkgbase__in=inner_q).order_by(
-            'todolist__name', 'pkgname')
+    todopkgs = todopkgs.filter(pkgbase__in=inner_q).order_by('todolist__name',
+                                                             'pkgname')
 
     todolists = get_annotated_todolists(incomplete_only=True)
 
-    signoffs = sorted(get_signoff_groups(user=request.user),
-            key=operator.attrgetter('pkgbase'))
+    signoffs = sorted(
+        get_signoff_groups(user=request.user),
+        key=operator.attrgetter('pkgbase'))
 
     page_dict = {
-            'todos': todolists,
-            'flagged': flagged,
-            'todopkgs': todopkgs,
-            'signoffs': signoffs,
-            'reports': available_reports(),
+        'todos': todolists,
+        'flagged': flagged,
+        'todopkgs': todopkgs,
+        'signoffs': signoffs,
+        'reports': available_reports(),
     }
 
     return render(request, 'devel/index.html', page_dict)
@@ -69,35 +69,37 @@ def index(request):
 def stats(request):
     """The second half of the dev dashboard."""
     arches = Arch.objects.all().annotate(
-            total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
+        total_ct=Count('packages'),
+        flagged_ct=Count('packages__flag_date'))
     repos = Repo.objects.all().annotate(
-            total_ct=Count('packages'), flagged_ct=Count('packages__flag_date'))
+        total_ct=Count('packages'),
+        flagged_ct=Count('packages__flag_date'))
     # the join is huge unless we do this separately, so merge the result here
     repo_maintainers = dict(Repo.objects.order_by().filter(
-            userprofile__user__is_active=True).values_list('id').annotate(
-            Count('userprofile')))
+        userprofile__user__is_active=True).values_list('id').annotate(Count(
+            'userprofile')))
     for repo in repos:
         repo.maintainer_ct = repo_maintainers.get(repo.id, 0)
 
     maintainers = get_annotated_maintainers()
 
     maintained = PackageRelation.objects.filter(
-            type=PackageRelation.MAINTAINER).values('pkgbase')
+        type=PackageRelation.MAINTAINER).values('pkgbase')
     total_orphans = Package.objects.exclude(pkgbase__in=maintained).count()
     total_flagged_orphans = Package.objects.filter(
-            flag_date__isnull=False).exclude(pkgbase__in=maintained).count()
+        flag_date__isnull=False).exclude(pkgbase__in=maintained).count()
     total_updated = Package.objects.filter(packager__isnull=True).count()
     orphan = {
-            'package_count': total_orphans,
-            'flagged_count': total_flagged_orphans,
-            'updated_count': total_updated,
+        'package_count': total_orphans,
+        'flagged_count': total_flagged_orphans,
+        'updated_count': total_updated,
     }
 
     page_dict = {
-            'arches': arches,
-            'repos': repos,
-            'maintainers': maintainers,
-            'orphan': orphan,
+        'arches': arches,
+        'repos': repos,
+        'maintainers': maintainers,
+        'orphan': orphan,
     }
 
     return render(request, 'devel/stats.html', page_dict)
@@ -106,25 +108,23 @@ def stats(request):
 @login_required
 def clock(request):
     devs = User.objects.filter(is_active=True).order_by(
-            'first_name', 'last_name').select_related('userprofile')
+        'first_name', 'last_name').select_related('userprofile')
 
-    latest_news = dict(News.objects.filter(
-            author__is_active=True).values_list('author').order_by(
-            ).annotate(last_post=Max('postdate')))
+    latest_news = dict(News.objects.filter(author__is_active=True).values_list(
+        'author').order_by().annotate(last_post=Max('postdate')))
     latest_package = dict(Package.objects.filter(
-            packager__is_active=True).values_list('packager').order_by(
-            ).annotate(last_build=Max('build_date')))
+        packager__is_active=True).values_list('packager').order_by().annotate(
+            last_build=Max('build_date')))
     latest_signoff = dict(Signoff.objects.filter(
-            user__is_active=True).values_list('user').order_by(
-            ).annotate(last_signoff=Max('created')))
+        user__is_active=True).values_list('user').order_by().annotate(
+            last_signoff=Max('created')))
     # The extra() bit ensures we can use our 'user_id IS NOT NULL' index
     latest_flagreq = dict(FlagRequest.objects.filter(
-            user__is_active=True).extra(
-            where=['user_id IS NOT NULL']).values_list('user_id').order_by(
-            ).annotate(last_flagrequest=Max('created')))
+        user__is_active=True).extra(where=['user_id IS NOT NULL']).values_list(
+            'user_id').order_by().annotate(last_flagrequest=Max('created')))
     latest_log = dict(LogEntry.objects.filter(
-            user__is_active=True).values_list('user').order_by(
-            ).annotate(last_log=Max('action_time')))
+        user__is_active=True).values_list('user').order_by().annotate(
+            last_log=Max('action_time')))
 
     for dev in devs:
         dates = [
@@ -142,10 +142,7 @@ def clock(request):
             dev.last_action = None
 
     current_time = now()
-    page_dict = {
-            'developers': devs,
-            'utc_now': current_time,
-    }
+    page_dict = {'developers': devs, 'utc_now': current_time, }
 
     response = render(request, 'devel/clock.html', page_dict)
     if not response.has_header('Expires'):
@@ -162,8 +159,9 @@ def change_profile(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.POST:
         form = ProfileForm(request.POST)
-        profile_form = UserProfileForm(request.POST, request.FILES,
-                instance=profile)
+        profile_form = UserProfileForm(request.POST,
+                                       request.FILES,
+                                       instance=profile)
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
             if form.cleaned_data['passwd1']:
@@ -176,7 +174,8 @@ def change_profile(request):
         form = ProfileForm(initial={'email': request.user.email})
         profile_form = UserProfileForm(instance=profile)
     return render(request, 'devel/profile.html',
-            {'form': form, 'profile_form': profile_form})
+                  {'form': form,
+                   'profile_form': profile_form})
 
 
 @login_required
@@ -190,14 +189,18 @@ def report(request, report_name, username=None):
     user = None
     if username:
         user = get_object_or_404(User, username=username, is_active=True)
-        maintained = PackageRelation.objects.filter(user=user,
-                type=PackageRelation.MAINTAINER).values('pkgbase')
+        maintained = PackageRelation.objects.filter(
+            user=user, type=PackageRelation.MAINTAINER).values('pkgbase')
         packages = packages.filter(pkgbase__in=maintained)
 
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    packages = report.packages(packages, username)
+    if report.slug == 'uncompressed-man' or report.slug == 'uncompressed-info':
+        packages = report.packages(packages, username)
+    else:
+        packages = report.packages(packages)
+
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
@@ -217,13 +220,12 @@ def report(request, report_name, username=None):
 def log_addition(request, obj):
     """Cribbed from ModelAdmin.log_addition."""
     LogEntry.objects.log_action(
-        user_id         = request.user.pk,
-        content_type_id = ContentType.objects.get_for_model(obj).pk,
-        object_id       = obj.pk,
-        object_repr     = force_unicode(obj),
-        action_flag     = ADDITION,
-        change_message  = "Added via Create New User form."
-    )
+        user_id=request.user.pk,
+        content_type_id=ContentType.objects.get_for_model(obj).pk,
+        object_id=obj.pk,
+        object_repr=force_unicode(obj),
+        action_flag=ADDITION,
+        change_message="Added via Create New User form.")
 
 
 @permission_required('auth.add_user')
@@ -257,10 +259,7 @@ def admin_log(request, username=None):
     user = None
     if username:
         user = get_object_or_404(User, username=username)
-    context = {
-        'title': "Admin Action Log",
-        'log_user':  user,
-    }
+    context = {'title': "Admin Action Log", 'log_user': user, }
     context.update(admin.site.each_context())
     return render(request, 'devel/admin_log.html', context)
 
