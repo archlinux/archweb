@@ -10,3 +10,6 @@ tags
 collected_static/
 testing/
 env/
+
+# rope
+.ropeproject/
