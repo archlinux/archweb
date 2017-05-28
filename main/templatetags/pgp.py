@@ -56,15 +56,11 @@ def user_pgp_key_link(dev_keys, key_id):
         return pgp_key_link(key_id, None)
 
 
-@register.filter(needs_autoescape=True)
-def pgp_fingerprint(key_id, autoescape=True):
+@register.filter
+def pgp_fingerprint(key_id):
     if not key_id:
         return u''
-    if autoescape:
-        esc = conditional_escape
-    else:
-        esc = lambda x: x
-    return mark_safe(format_key(esc(key_id)))
+    return mark_safe(format_key(conditional_escape(key_id)))
 
 
 @register.assignment_tag
