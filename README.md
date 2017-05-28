@@ -71,11 +71,11 @@ packages, you will probably want the following:
 
 8. To optionally populate the database with real data:
 
-        wget http://mirrors.kernel.org/archlinux/core/os/i686/core.db.tar.gz
-        ./manage.py reporead i686 core.db.tar.gz
+        wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
+        ./manage.py reporead x86_64 core.db.tar.gz
         # Package file listing
-        wget http://mirrors.kernel.org/archlinux/core/os/i686/core.files.tar.gz
-        ./manage.py reporead --filesonly i686 core.files.tar.gz
+        wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
+        ./manage.py reporead --filesonly x86_64 core.files.tar.gz
         ./manage.py syncisos
 
 Alter architecture and repo to get x86\_64 and packages from other repos if
