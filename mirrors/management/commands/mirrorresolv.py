@@ -54,12 +54,12 @@ def resolve_mirrors():
             if newvals != oldvals:
                 logger.debug("values changed for %s", mirrorurl)
                 mirrorurl.save(update_fields=('has_ipv4', 'has_ipv6'))
-        except socket.gaierror, e:
+        except socket.gaierror as e:
             if e.errno == socket.EAI_NONAME:
                 logger.debug("gaierror resolving %s: %s", mirrorurl.hostname, e)
             else:
                 logger.warn("gaierror resolving %s: %s", mirrorurl.hostname, e)
-        except socket.error, e:
+        except socket.error as e:
             logger.warn("error resolving %s: %s", mirrorurl.hostname, e)
 
 # vim: set ts=4 sw=4 et:
