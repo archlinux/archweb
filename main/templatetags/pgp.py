@@ -3,8 +3,6 @@ from django.conf import settings
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from ..utils import cache_function
-from devel.models import DeveloperKey
 
 register = template.Library()
 
