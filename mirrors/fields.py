@@ -18,7 +18,6 @@ class IPNetworkFormField(forms.Field):
 
 
 class IPNetworkField(models.Field):
-    __metaclass__ = models.SubfieldBase
     description = "IPv4 or IPv6 address or subnet"
 
     def __init__(self, *args, **kwargs):
@@ -32,6 +31,11 @@ class IPNetworkField(models.Field):
         if not value:
             return None
         return IP(value)
+
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return value
+        return self.to_python(value)
 
     def get_prep_value(self, value):
         value = self.to_python(value)
