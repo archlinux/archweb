@@ -500,5 +500,24 @@
     },
     "model": "auth.group",
     "pk": 11
+},
+{
+    "fields": {
+        "name": "Testers",
+        "permissions": [
+            [
+                "add_signoff",
+                "packages",
+                "signoff"
+            ],
+            [
+                "change_signoff",
+                "packages",
+                "signoff"
+            ]
+	]
+    },
+    "model": "auth.group",
+    "pk": 12
 }
 ]
