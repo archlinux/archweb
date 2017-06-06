@@ -19,4 +19,19 @@ def jquery_tablesorter():
     link = staticfiles_storage.url(filename)
     return '<script type="text/javascript" src="%s"></script>' % link
 
+
+@register.simple_tag
+def konami():
+    filename = 'konami.min.js'
+    link = staticfiles_storage.url(filename)
+    return '<script type="text/javascript" src="%s"></script>' % link
+
+
+@register.simple_tag
+def bootstrap_typeahead():
+    filename = 'bootstrap-typeahead.js'
+    link = staticfiles_storage.url(filename)
+    return '<script type="text/javascript" src="%s"></script>' % link
+
+
 # vim: set ts=4 sw=4 et:
