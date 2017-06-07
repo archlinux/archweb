@@ -17,11 +17,15 @@ class IsoListParser(HTMLParser):
         self.url_re = re.compile('(?!\.{2})/$')
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'a':
-            for name, value in attrs:
-                if name == "href":
-                    if value != '../' and self.url_re.search(value) is not None:
-                        self.hyperlinks.append(value[:-1])
+        if tag != 'a':
+            return
+
+        for name, value in attrs:
+            if name != "href":
+                continue
+
+            if value != '../' and self.url_re.search(value) is not None:
+                self.hyperlinks.append(value[:-1])
 
     def parse(self, url):
         try:
