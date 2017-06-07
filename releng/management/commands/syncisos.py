@@ -40,7 +40,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         parser = IsoListParser()
         isonames = Iso.objects.values_list('name', flat=True)
-        active_isos = parser.parse(settings.ISO_LIST_URL)
+        try:
+            active_isos = parser.parse(settings.ISO_LIST_URL)
+        except IOError as e:
+            print('Unable to fetch active isos from {}'.format(settings.ISO_LIST_URL))
+            if options.get('verbosity') > 1:
+                print(e)
+            return
 
         for iso in active_isos:
             # create any names that don't already exist
