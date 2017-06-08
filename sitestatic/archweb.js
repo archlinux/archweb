@@ -410,7 +410,7 @@ function signoff_package() {
         if (data.created) {
             signoff = $('<li>').addClass('signed-username').text(data.user);
             var list = cell.children('ul.signoff-list');
-            if (list.size() === 0) {
+            if (list.length === 0) {
                 list = $('<ul class="signoff-list">').prependTo(cell);
             }
             list.append(signoff);
