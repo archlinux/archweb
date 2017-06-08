@@ -1,11 +1,11 @@
 # Django settings for archweb project.
 from os import path
 
-## Set the debug values
+# Set the debug values
 DEBUG = False
 DEBUG_TOOLBAR = False
 
-## Notification admins
+# Notification admins
 ADMINS = ()
 
 # Set managers to admins
@@ -131,7 +131,7 @@ LOGGING = {
     },
 }
 
-## Server used for linking to PGP keysearch results
+# Server used for linking to PGP keysearch results
 PGP_SERVER = 'pgp.mit.edu'
 PGP_SERVER_SECURE = True
 
@@ -159,42 +159,42 @@ SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
 DATABASES = {
     'default': {
-        'ENGINE'  : 'django.db.backends.sqlite3',
-        'NAME'    : 'database.db',
+        'ENGINE':  'django.db.backends.sqlite3',
+        'NAME':    'database.db',
     },
 }
 
-## Import local settings
+# Import local settings
 try:
     from local_settings import *
 except ImportError:
     pass
 
 TEMPLATES = [
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [
-                path.join(DEPLOY_PATH, 'templates')
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            path.join(DEPLOY_PATH, 'templates')
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': DEBUG,
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.debug',
+                'django.contrib.messages.context_processors.messages',
+                'main.context_processors.secure',
             ],
-            'APP_DIRS': True,
-            'OPTIONS': {
-                'debug': DEBUG,
-                'context_processors': [
-                    'django.contrib.auth.context_processors.auth',
-                    'django.core.context_processors.debug',
-                    'django.contrib.messages.context_processors.messages',
-                    'main.context_processors.secure',
-                ],
-            }
         }
+    }
 ]
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
     MIDDLEWARE_CLASSES = \
-            [ 'debug_toolbar.middleware.DebugToolbarMiddleware' ] + \
+            ['debug_toolbar.middleware.DebugToolbarMiddleware'] + \
             list(MIDDLEWARE_CLASSES)
 
-    INSTALLED_APPS = list(INSTALLED_APPS) + [ 'debug_toolbar' ]
+    INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 
 # vim: set ts=4 sw=4 et:
