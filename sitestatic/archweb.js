@@ -314,8 +314,8 @@ function filter_packages() {
 }
 function filter_packages_reset() {
     $('#id_archonly').val('both');
-    $('#id_multilib').removeAttr('checked');
-    $('#id_minor').removeAttr('checked');
+    $('#id_multilib').prop('checked', false);
+    $('#id_minor').prop('checked', false);
     filter_packages();
 }
 
@@ -360,10 +360,10 @@ function filter_pkgs_list(filter_ele, tbody_ele) {
     $('.results').trigger('applyWidgets', [false]);
 }
 function filter_pkgs_reset(callback) {
-    $('#id_incomplete').removeAttr('checked');
-    $('#id_mine_only').removeAttr('checked');
-    $('.arch_filter').attr('checked', 'checked');
-    $('.repo_filter').attr('checked', 'checked');
+    $('#id_incomplete').prop('checked', false);
+    $('#id_mine_only').prop('checked', false);
+    $('.arch_filter').prop('checked', true);
+    $('.repo_filter').prop('checked', true);
     callback();
 }
 
@@ -376,10 +376,10 @@ function filter_todolist_load(list_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#todolist_filter input[type="checkbox"]').removeAttr('checked');
+    $('#todolist_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#todolist_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#todolist_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
@@ -392,10 +392,10 @@ function filter_report_load(report_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#report_filter input[type="checkbox"]').removeAttr('checked');
+    $('#report_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#report_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#report_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
@@ -479,9 +479,9 @@ function filter_signoffs() {
     filter_signoffs_save();
 }
 function filter_signoffs_reset() {
-    $('#signoffs_filter .arch_filter').attr('checked', 'checked');
-    $('#signoffs_filter .repo_filter').attr('checked', 'checked');
-    $('#id_pending').removeAttr('checked');
+    $('#signoffs_filter .arch_filter').prop('checked', true);
+    $('#signoffs_filter .repo_filter').prop('checked', true);
+    $('#id_pending').prop('checked', false);
     filter_signoffs();
 }
 function filter_signoffs_save() {
@@ -493,10 +493,10 @@ function filter_signoffs_load() {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#signoffs_filter input[type="checkbox"]').removeAttr('checked');
+    $('#signoffs_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#signoffs_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#signoffs_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
