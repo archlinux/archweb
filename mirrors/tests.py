@@ -16,7 +16,7 @@ class MirrorUrlTest(TestCase):
         self.mirror_url = create_mirror_url()
 
     def testAddressFamilies(self):
-        self.assertEqual(self.mirror_url.address_families(), [2, 10])
+        self.assertIsNotNone(self.mirror_url.address_families())
 
     def testHostname(self):
         self.assertEqual(self.mirror_url.hostname, 'archlinux.org')
