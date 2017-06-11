@@ -53,3 +53,10 @@ class PublicTest(TestCase):
     def test_people(self):
         response = self.client.get('/people/developers/')
         self.assertEqual(response.status_code, 200)
+
+    def test_sitemap(self):
+        sitemaps = ['sitemap', 'sitemap-base']
+        for sitemap in sitemaps:
+            response = self.client.get('/{}.xml'.format(sitemap))
+            self.assertEqual(response.status_code, 200)
+

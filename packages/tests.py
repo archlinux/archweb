@@ -52,4 +52,10 @@ class PackagesTest(TestCase):
         response = self.client.get('/feeds/packages/')
         self.assertEqual(response.status_code, 200)
 
+    def test_sitemap(self):
+        for sitemap in ['packages', 'package-groups', 'package-files', 'split-packages']:
+            response = self.client.get('/sitemap-{}.xml'.format(sitemap))
+            self.assertEqual(response.status_code, 200)
+
+
 # vim: set ts=4 sw=4 et:

@@ -31,3 +31,7 @@ class RelengTest(TestCase):
     def test_dir_path(self):
         dir_path = u'iso/{}/'.format(self.release.version)
         self.assertEqual(dir_path, self.release.dir_path())
+
+    def test_sitemap(self):
+        response = self.client.get('/sitemap-releases.xml')
+        self.assertEqual(response.status_code, 200)
