@@ -2,6 +2,9 @@ from django.test import TestCase
 
 
 class PublicTest(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json', 'main/fixtures/groups.json',
+                'devel/fixtures/staff_groups.json']
 
     def test_index(self):
         response = self.client.get('/')
@@ -35,3 +38,18 @@ class PublicTest(TestCase):
         response = self.client.get('/download/')
         self.assertEqual(response.status_code, 200)
 
+    def test_master_keys(self):
+        response = self.client.get('/master-keys/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_master_keys_json(self):
+        response = self.client.get('/master-keys/json/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_feeds(self):
+        response = self.client.get('/feeds/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_people(self):
+        response = self.client.get('/people/developers/')
+        self.assertEqual(response.status_code, 200)
