@@ -16,7 +16,7 @@ from ..models import SignoffSpecification, Signoff
 from ..utils import (get_signoff_groups, approved_by_signoffs,
         PackageSignoffGroup)
 
-@permission_required('main.change_package')
+@permission_required('packages.change_signoff')
 def signoffs(request):
     signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
     for group in signoff_groups:
@@ -29,7 +29,7 @@ def signoffs(request):
     }
     return render(request, 'packages/signoffs.html', context)
 
-@permission_required('main.change_package')
+@permission_required('packages.change_signoff')
 @never_cache
 def signoff_package(request, name, repo, arch, revoke=False):
     packages = get_list_or_404(Package, pkgbase=name,
@@ -173,7 +173,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
             return list(obj)
         return super(SignoffJSONEncoder, self).default(obj)
 
-@permission_required('main.change_package')
+@permission_required('packages.change_signoff')
 def signoffs_json(request):
     signoff_groups = sorted(get_signoff_groups(), key=attrgetter('pkgbase'))
     data = {
