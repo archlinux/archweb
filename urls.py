@@ -98,32 +98,6 @@ urlpatterns += patterns('django.contrib.auth.views',
     (r'^logout/$', 'logout', {'template_name': 'registration/logout.html'}, 'logout'),
 )
 
-# Redirects for older known pages we see in the logs
-legacy_urls = (
-    ('^about.php',     '/about/'),
-    ('^changelog.php', '/packages/?sort=-last_update'),
-    ('^devs.php',      '/people/developers/'),
-    ('^donations.php', '/donate/'),
-    ('^download.php',  '/download/'),
-    ('^index.php',     '/'),
-    ('^logos.php',     '/art/'),
-    ('^news.php',      '/news/'),
-    ('^packages.php',  '/packages/'),
-    ('^people.php',    '/people/developers/'),
-    ('^todolists/$',   '/todo/'),
-    ('^developers/$',  '/people/developers/'),
-    ('^fellows/$',     '/people/developer-fellows/'),
-    ('^trustedusers/$', '/people/trusted-users/'),
-
-    ('^docs/en/guide/install/arch-install-guide.html',
-        'https://wiki.archlinux.org/index.php/Installation_guide'),
-    ('^docs/en/', 'https://wiki.archlinux.org/'),
-    ('^docs/', 'https://wiki.archlinux.org/'),
-)
-
-urlpatterns += [url(old_url, RedirectView.as_view(url=new_url))
-        for old_url, new_url in legacy_urls]
-
 
 def show_urls(urllist=urlpatterns, depth=0):
     for entry in urllist:
