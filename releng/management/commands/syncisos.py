@@ -17,11 +17,15 @@ class IsoListParser(HTMLParser):
         self.url_re = re.compile('(?!\.{2})/$')
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'a':
-            for name, value in attrs:
-                if name == "href":
-                    if value != '../' and self.url_re.search(value) is not None:
-                        self.hyperlinks.append(value[:-1])
+        if tag != 'a':
+            return
+
+        for name, value in attrs:
+            if name != "href":
+                continue
+
+            if value != '../' and self.url_re.search(value) is not None:
+                self.hyperlinks.append(value[:-1])
 
     def parse(self, url):
         try:
@@ -40,7 +44,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         parser = IsoListParser()
         isonames = Iso.objects.values_list('name', flat=True)
-        active_isos = parser.parse(settings.ISO_LIST_URL)
+        try:
+            active_isos = parser.parse(settings.ISO_LIST_URL)
+        except IOError as e:
+            print('Unable to fetch active isos from {}'.format(settings.ISO_LIST_URL))
+            if options.get('verbosity') > 1:
+                print(e)
+            return
 
         for iso in active_isos:
             # create any names that don't already exist
