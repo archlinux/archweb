@@ -1,5 +1,8 @@
 import unittest
 
+from django.test import TestCase
+from main.models import Package, Arch, Repo
+
 from .alpm import AlpmAPI
 
 
@@ -41,6 +44,18 @@ class AlpmTestCase(unittest.TestCase):
         self.assertIsNone(mock_alpm.version())
         self.assertIsNone(mock_alpm.vercmp("1.0", "1.0"))
         self.assertIsNone(mock_alpm.compare_versions("1.0", "=", "1.0"))
+
+
+class PackagesTest(TestCase):
+
+    def test_feed(self):
+        response = self.client.get('/feeds/packages/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_sitemap(self):
+        for sitemap in ['packages', 'package-groups', 'package-files', 'split-packages']:
+            response = self.client.get('/sitemap-{}.xml'.format(sitemap))
+            self.assertEqual(response.status_code, 200)
 
 
 # vim: set ts=4 sw=4 et:

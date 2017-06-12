@@ -1,0 +1,25 @@
+[
+    {
+        "fields": {
+            "arch": 2,
+            "build_date": "2017-04-27T10:37:12Z",
+            "compressed_size": 61650988,
+            "created": "2017-05-20T13:06:46.688Z",
+            "epoch": 0,
+            "filename": "linux-4.10.13-1-i686.pkg.tar.xz",
+            "installed_size": 74946560,
+            "last_update": "2017-05-20T13:06:46.688Z",
+            "packager_str": "Tobias Powalowski <tpowa@archlinux.org>",
+            "pkgbase": "linux",
+            "pkgdesc": "The Linux kernel and modules",
+            "pkgname": "linux",
+            "pkgrel": "1",
+            "pkgver": "4.10.13",
+            "repo": 1,
+            "signature_bytes": "iQEzBAABCAAdFiEEW34/txt/EDKaHAOrdx32Yn7faB8FAlkC3M8ACgkQdx32Yn7faB8kHAf/YSMTEnIyLK/dTFWjM9P/X8iUVzoJUVn2X76m5QrMVLdX8rrqAXZt74DmEl87X4cjEweHgM3ihhP2L1i5YcFZ2t1NFhApJcdElPRZpLP/0BjR7ZoY9aUfnpseyBzzN+LamkUjAMdsQRBJDP3URfIFf+/r+F2bda0yto7h9yekuOphltkISF6ABn3VPrO5AxgI6SNrsXRdek3AUuOWr8BSAuIeRYt2chDuRPmztAy7DaDcZ71V9S90F+u2FkpcLKJygAAQbfKIPHVTS5GL2wc8gO5jXw+8lj4ioj4/fE+/Nq/ytn0zQHdebQ9akKzW+13D2r49pEU8EZiianmOgwd6yw==",
+            "url": "https://www.kernel.org/"
+        },
+        "model": "main.package",
+        "pk": 1
+    }
+]
