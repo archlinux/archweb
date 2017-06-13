@@ -7,10 +7,10 @@ from django.contrib.admin.models import ADDITION, LogEntry
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.encoding import force_unicode
@@ -107,8 +107,9 @@ def stats(request):
 
 @login_required
 def clock(request):
-    devs = User.objects.filter(is_active=True).order_by(
-        'first_name', 'last_name').select_related('userprofile')
+    devs = User.objects.filter(is_active=True).filter(groups__in=Group.objects.filter(
+        Q(name='Developers') | Q(name='Trusted Users') | Q(name='Support Staff'))).order_by(
+        'first_name', 'last_name').select_related('userprofile').distinct()
 
     latest_news = dict(News.objects.filter(author__is_active=True).values_list(
         'author').order_by().annotate(last_post=Max('postdate')))
