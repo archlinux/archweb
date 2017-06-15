@@ -7,7 +7,7 @@ from django.contrib.admin.models import ADDITION, LogEntry
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Count, Max
@@ -104,11 +104,13 @@ def stats(request):
 
     return render(request, 'devel/stats.html', page_dict)
 
+SELECTED_GROUPS = ['Developers', 'Trusted Users', 'Support Staff']
 
 @login_required
 def clock(request):
-    devs = User.objects.filter(is_active=True).order_by(
-        'first_name', 'last_name').select_related('userprofile')
+    groups = Group.objects.filter(name__in=SELECTED_GROUPS)
+    devs = User.objects.filter(is_active=True).filter(groups__in=groups).order_by(
+        'first_name', 'last_name').select_related('userprofile').distinct()
 
     latest_news = dict(News.objects.filter(author__is_active=True).values_list(
         'author').order_by().annotate(last_post=Max('postdate')))
