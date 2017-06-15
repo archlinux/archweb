@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import (login_required,
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
-from django.db.models import Count, Max, Q
+from django.db.models import Count, Max
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.encoding import force_unicode
@@ -104,11 +104,12 @@ def stats(request):
 
     return render(request, 'devel/stats.html', page_dict)
 
+SELECTED_GROUPS = ['Developers', 'Trusted Users', 'Support Staff']
 
 @login_required
 def clock(request):
-    devs = User.objects.filter(is_active=True).filter(groups__in=Group.objects.filter(
-        Q(name='Developers') | Q(name='Trusted Users') | Q(name='Support Staff'))).order_by(
+    groups = Group.objects.filter(name__in=SELECTED_GROUPS)
+    devs = User.objects.filter(is_active=True).filter(groups__in=groups).order_by(
         'first_name', 'last_name').select_related('userprofile').distinct()
 
     latest_news = dict(News.objects.filter(author__is_active=True).values_list(
