@@ -983,12 +983,6 @@ table td.country {
     width: auto;
 }
 
-/* dev: dashboard: dashboard and stats area */
-#dev-dashboard,
-#stats-area tr:hover {
-    background: #ffd;
-}
-
 /* dev dashboard: flagged packages */
 #dash-pkg-notify {
     text-align: right;
