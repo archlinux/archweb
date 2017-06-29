@@ -98,7 +98,7 @@ def keys(request):
     user_key_ids = frozenset(user.userprofile.pgp_key[-16:] for user in users
             if user.userprofile.pgp_key)
 
-    not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
+    not_expired = Q(expires__gt=datetime.utcnow()) | Q(expires__isnull=True)
     master_keys = MasterKey.objects.select_related('owner', 'revoker',
             'owner__userprofile', 'revoker__userprofile').filter(
             revoked__isnull=True)
@@ -162,7 +162,7 @@ def keys_json(request):
         'group': 'cacert',
     })
 
-    not_expired = Q(expires__gt=datetime.utcnow) | Q(expires__isnull=True)
+    not_expired = Q(expires__gt=datetime.utcnow()) | Q(expires__isnull=True)
     signatures = PGPSignature.objects.filter(not_expired, revoked__isnull=True)
     edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }
             for sig in signatures]
