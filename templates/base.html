@@ -1,4 +1,5 @@
 {% load static from staticfiles %}<!DOCTYPE html>
+{% load group %}
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -40,8 +41,10 @@
                     <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
                     <li><a href="/todo/" title="Developer todo lists">Todos</a></li>
                     <li><a href="{% url 'devel-clocks' %}" title="Developer world clocks">Dev Clocks</a></li>
+		    {% if user|in_group:'Developers' %}
                     <li><a href="https://mailman.archlinux.org/mailman/private/arch-dev/"
                         title="arch-dev mailing list archives">Archives</a></li>
+		    {% endif %}
                     <li><a href="https://zabbix.archlinux.org/"
                         title="Arch server monitoring">Server Monitoring</a></li>
                     {% if user.is_staff %}
