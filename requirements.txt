@@ -1,7 +1,7 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
 Django==1.8.18
 IPy==0.83
-Markdown==2.6.2
+Markdown==2.6.8
 MarkupSafe==0.23
 bencode==1.0
 django-countries==3.3
