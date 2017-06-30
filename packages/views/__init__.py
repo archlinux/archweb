@@ -65,7 +65,7 @@ def update(request):
     ids = request.POST.getlist('pkgid')
     count = 0
 
-    if request.POST.has_key('adopt'):
+    if 'adopt' in request.POST:
         repos = request.user.userprofile.allowed_repos.all()
         pkgs = Package.objects.filter(id__in=ids, repo__in=repos)
         disallowed_pkgs = Package.objects.filter(id__in=ids).exclude(
@@ -87,7 +87,7 @@ def update(request):
 
         messages.info(request, "%d base packages adopted." % count)
 
-    elif request.POST.has_key('disown'):
+    elif 'disown' in request.POST:
         # allow disowning regardless of allowed repos, helps things like
         # [community] -> [extra] moves
         for pkg in Package.objects.filter(id__in=ids):
