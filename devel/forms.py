@@ -73,7 +73,7 @@ class NewUserForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super(NewUserForm, self).save(False)
         pwletters = ascii_letters + digits
-        password = ''.join([random.choice(pwletters) for _ in xrange(8)])
+        password = ''.join([random.choice(pwletters) for _ in range(8)])
         user = User.objects.create_user(username=self.cleaned_data['username'],
                 email=self.cleaned_data['private_email'], password=password)
         user.first_name = self.cleaned_data['first_name']
