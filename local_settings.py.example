@@ -53,7 +53,4 @@ MEDIA_URL = '/media/img/'
 ## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
-## CDN settings
-CDN_ENABLED = False
-
 # vim: set ts=4 sw=4 et:
