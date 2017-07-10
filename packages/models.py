@@ -338,6 +338,10 @@ class Update(models.Model):
             pkgs = pkgs.filter(arch__in=arches)
         return pkgs
 
+    def get_absolute_url(self):
+        return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
+                self.arch.name, self.pkgname)
+
     def __unicode__(self):
         return u'%s of %s on %s' % (self.get_action_flag_display(),
                 self.pkgname, self.created)

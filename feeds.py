@@ -1,6 +1,8 @@
 from datetime import datetime, time
 from pytz import utc
 
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.admin.models import ADDITION, DELETION
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
 from django.db import connection
@@ -10,6 +12,7 @@ from django.views.decorators.http import condition
 
 from main.models import Arch, Repo, Package
 from news.models import News
+from packages.models import Update
 from releng.models import Release
 
 
@@ -122,6 +125,98 @@ class PackageFeed(Feed):
 
     def item_description(self, item):
         return item.pkgdesc
+
+    def item_categories(self, item):
+        return (item.repo.name, item.arch.name)
+
+def removal_last_modified(request, *args, **kwargs):
+    try:
+        return Update.objects.latest('created').created
+    except ObjectDoesNotExist:
+        return
+
+
+class PackageUpdatesFeed(Feed):
+    feed_type = FasterRssFeed
+    link = '/packages/'
+
+    def __call__(self, request, *args, **kwargs):
+        wrapper = condition(last_modified_func=removal_last_modified)
+        return wrapper(super(PackageUpdatesFeed, self).__call__)(request, *args, **kwargs)
+
+    __name__ = 'packages_updates_feed'
+
+    def get_object(self, request, operation='', arch='', repo=''):
+        obj = dict()
+
+        if 'added' in request.path:
+            flag = ADDITION
+            obj['action'] = 'added'
+        elif 'removed' in request.path:
+            flag = DELETION
+            obj['action'] = 'removed'
+
+        qs = Update.objects.filter(action_flag=flag).order_by('-created')
+
+        if arch != '':
+            # feed for a single arch, also include 'any' packages everywhere
+            a = Arch.objects.get(name=arch)
+            qs = qs.filter(Q(arch=a) | Q(arch__agnostic=True))
+            obj['arch'] = a
+        if repo != '':
+            # feed for a single arch AND repo
+            r = Repo.objects.get(name__iexact=repo)
+            qs = qs.filter(repo=r)
+            obj['repo'] = r
+        else:
+            qs = qs.filter(repo__staging=False)
+
+        obj['qs'] = qs[:50]
+        return obj
+
+    def title(self, obj):
+        s = 'Arch Linux: Recent {} packages'.format(obj['action'])
+        if 'repo' in obj and 'arch' in obj:
+            s += ' (%s [%s])' % (obj['arch'].name, obj['repo'].name.lower())
+        elif 'repo' in obj:
+            s += ' [%s]' % (obj['repo'].name.lower())
+        elif 'arch' in obj:
+            s += ' (%s)' % (obj['arch'].name)
+        return s
+
+    def description(self, obj):
+        s = 'Recently {} packages in the Arch Linux package repositories'.format(obj['action'])
+        if 'arch' in obj:
+            s += ' for the \'%s\' architecture' % obj['arch'].name.lower()
+            if not obj['arch'].agnostic:
+                s += ' (including \'any\' packages)'
+        if 'repo' in obj:
+            s += ' in the [%s] repository' % obj['repo'].name.lower()
+        s += '.'
+        return s
+
+    subtitle = description
+
+    def items(self, obj):
+        return obj['qs']
+
+    item_guid_is_permalink = False
+
+    def item_guid(self, item):
+        # http://diveintomark.org/archives/2004/05/28/howto-atom-id
+        date = item.created
+        return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
+                date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                date.strftime('%Y%m%d%H%M'))
+
+    def item_pubdate(self, item):
+        return item.created
+
+    def item_title(self, item):
+        return '%s %s' % (item.pkgname, item.arch.name)
+
+    def item_description(self, item):
+        return item.pkgname
 
     def item_categories(self, item):
         return (item.repo.name, item.arch.name)
