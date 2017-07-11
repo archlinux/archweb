@@ -1,9 +1,9 @@
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, patterns
 from django.contrib import admin
 from django.contrib.sitemaps import views as sitemap_views
 
 from django.views.decorators.cache import cache_page
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView
 
 from feeds import PackageFeed, NewsFeed, ReleaseFeed
 import sitemaps
