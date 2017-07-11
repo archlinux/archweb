@@ -19,7 +19,7 @@ our_sitemaps = {
     'todolists':      sitemaps.TodolistSitemap,
 }
 
-news_sitemaps = { 'news': sitemaps.RecentNewsSitemap }
+news_sitemaps = {'news': sitemaps.RecentNewsSitemap}
 
 urlpatterns = []
 
