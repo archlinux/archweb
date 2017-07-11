@@ -1,7 +1,6 @@
 import unittest
 
 from django.test import TestCase
-from main.models import Package, Arch, Repo
 
 from .alpm import AlpmAPI
 
