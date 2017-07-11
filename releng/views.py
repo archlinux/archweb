@@ -282,7 +282,7 @@ def releases_json(request):
 
 def netboot_config(request):
     release_qs = Release.objects.filter(available=True).order_by('-release_date')
-    releases = [ release.version for release in release_qs ]
+    releases = [release.version for release in release_qs]
     mirrorurls = MirrorUrl.objects.filter(protocol__protocol='http',
                                           active=True,
                                           mirror__public=True,
