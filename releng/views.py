@@ -13,7 +13,7 @@ from django.views.generic import DetailView, ListView
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test, Release)
-from mirrors.models import (Mirror, MirrorUrl, MirrorProtocol)
+from mirrors.models import MirrorUrl
 
 def standard_field(model, empty_label=None, help_text=None, required=True):
     return forms.ModelChoiceField(queryset=model.objects.all(),
