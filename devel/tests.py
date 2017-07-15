@@ -30,6 +30,12 @@ class DevelTest(TestCase):
         response = self.client.get('/mirrors/')
         self.assertEqual(response.status_code, 200)
 
+    def test_admin_log(self):
+        user = User.objects.create_superuser('admin', 'admin@archlinux.org', 'admin')
+        response = self.client.post('/login/', {'username': 'admin', 'password': 'admin'})
+        response = self.client.get('/devel/admin_log', follow=True)
+        self.assertEqual(response.status_code, 200)
+
 class FindUserTest(TestCase):
 
     def setUp(self):
