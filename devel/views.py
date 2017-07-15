@@ -262,7 +262,7 @@ def admin_log(request, username=None):
     if username:
         user = get_object_or_404(User, username=username)
     context = {'title': "Admin Action Log", 'log_user': user, }
-    context.update(admin.site.each_context())
+    context.update(admin.site.each_context(request))
     return render(request, 'devel/admin_log.html', context)
 
 # vim: set ts=4 sw=4 et:
