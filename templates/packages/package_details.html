@@ -42,7 +42,7 @@
                 <div><input type="hidden" name="pkgid" value="{{ pkg.id }}" /></div>
                 <p>{% if user in pkg.maintainers %}
                     <input title="Orphan this package" type="submit" name="disown" value="Disown"/>
-                    {% else %}
+                    {% elif pkg.repo in user.userprofile.allowed_repos.all %}
                     <input title="Adopt this package" type="submit" name="adopt" value="Adopt"/>
                  {% endif %}</p>
             </form>
