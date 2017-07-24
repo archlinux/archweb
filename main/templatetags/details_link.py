@@ -57,6 +57,10 @@ def wiki_link(package):
     }
     return link_encode(url, data)
 
+@register.simple_tag
+def sec_link(package):
+    url = "https://security.archlinux.org/package/{}"
+    return url.format(package.pkgname)
 
 @register.simple_tag
 def pgp_key_link(key_id, link_text=None):
