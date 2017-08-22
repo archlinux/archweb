@@ -47,9 +47,10 @@ class FasterRssFeed(Rss201rev2Feed):
 
 
 def package_last_modified(request, *args, **kwargs):
-    cursor = connection.cursor()
-    cursor.execute("SELECT MAX(last_update) FROM packages")
-    return cursor.fetchone()[0]
+    try:
+        return Package.objects.latest('last_update').last_update
+    except ObjectDoesNotExist:
+        return
 
 
 class PackageFeed(Feed):
