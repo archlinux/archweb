@@ -36,7 +36,7 @@ class BuildQueryStringNode(template.Node):
 @register.tag(name='buildsortqs')
 def do_buildsortqs(parser, token):
     try:
-        tagname, sortfield = token.split_contents()
+        _, sortfield = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError(
                 "%r tag requires a single argument" % token)

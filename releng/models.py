@@ -10,7 +10,6 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
 
-from main.fields import PositiveBigIntegerField
 from main.utils import set_created_field, parse_markdown
 
 

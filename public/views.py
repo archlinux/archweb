@@ -2,7 +2,6 @@ from datetime import datetime
 import json
 from operator import attrgetter
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.http import HttpResponse
@@ -115,7 +114,6 @@ def keys(request):
     signatures = frozenset(PGPSignature.objects.filter(
             not_expired, revoked__isnull=True).values_list('signer', 'signee'))
 
-    restrict = Q(signer__in=user_key_ids) & Q(signee__in=user_key_ids)
     cross_signatures = PGPSignature.objects.filter(
             not_expired, revoked__isnull=True).order_by('created')
     # filter in python so we aren't sending a crazy long query to the DB

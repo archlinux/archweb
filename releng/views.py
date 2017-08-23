@@ -13,7 +13,7 @@ from django.views.generic import DetailView, ListView
 from .models import (Architecture, BootType, Bootloader, ClockChoice,
         Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
         Test, Release)
-from mirrors.models import (Mirror, MirrorUrl, MirrorProtocol)
+from mirrors.models import MirrorUrl
 
 def standard_field(model, empty_label=None, help_text=None, required=True):
     return forms.ModelChoiceField(queryset=model.objects.all(),
@@ -282,7 +282,7 @@ def releases_json(request):
 
 def netboot_config(request):
     release_qs = Release.objects.filter(available=True).order_by('-release_date')
-    releases = [ release.version for release in release_qs ]
+    releases = [release.version for release in release_qs]
     mirrorurls = MirrorUrl.objects.filter(protocol__protocol='http',
                                           active=True,
                                           mirror__public=True,

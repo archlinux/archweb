@@ -1,4 +1,3 @@
-from datetime import datetime
 from itertools import groupby
 from pgpdump import BinaryData
 
@@ -249,7 +248,7 @@ class Package(models.Model):
             return (depend.deptype, p.pkgbase, p.repo.testing, p.repo.staging)
 
         filtered = []
-        for (typ, pkgbase, _, _), dep_pkgs in groupby(requiredby, grouper):
+        for (typ, _, _, _), dep_pkgs in groupby(requiredby, grouper):
             dep_pkgs = list(dep_pkgs)
             if typ == 'D' or len(dep_pkgs) == 1:
                 filtered.extend(dep_pkgs)

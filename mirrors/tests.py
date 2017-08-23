@@ -2,7 +2,7 @@ import json
 
 from django.test import TestCase
 
-from models import MirrorUrl, MirrorProtocol, Mirror
+from mirrors.models import MirrorUrl, MirrorProtocol, Mirror
 
 def create_mirror_url():
         mirror = Mirror.objects.create(name='mirror1', admin_email='admin@archlinux.org')

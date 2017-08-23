@@ -1,6 +1,3 @@
-import hashlib
-from datetime import datetime
-
 from django.test import TestCase
 
 from releng.models import Release
