@@ -79,7 +79,8 @@ enable=import-self,
        exec-used,
        logging-unsupported-format,
        logging-not-lazy,
-       unused-variable
+       unused-variable,
+       deprecated-method
 
 # Things we'd like to enable someday:
 # redefined-outer-name (requires a bunch of work to clean up our code first)
