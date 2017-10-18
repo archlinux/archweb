@@ -79,26 +79,19 @@ enable=import-self,
        exec-used,
        logging-unsupported-format,
        logging-not-lazy,
-       unused-variable
+       unused-variable,
+       deprecated-method,
+       unreachable,
+       continue-in-finally,
+       not-in-loop,
+       return-outside-function,
+       unnecessary-lambda,
+       unnecessary-pass,
 
-# Things we'd like to enable someday:
-# redefined-outer-name (requires a bunch of work to clean up our code first)
-# undefined-variable (re-enable when pylint fixes https://github.com/PyCQA/pylint/issues/760)
-# no-name-in-module (giving us spurious warnings https://github.com/PyCQA/pylint/issues/73)
-# unused-argument (need to clean up or code a lot, e.g. prefix unused_?)
-
-# Things we'd like to try.
-# Procedure:
-# 1. Enable a bunch.
-# 2. See if there's spurious ones; if so disable.
-# 3. Record above.
-# 4. Remove from this list.
        # deprecated-method,
        # anomalous-unicode-escape-in-string,
        # anomalous-backslash-in-string,
-       # not-in-loop,
        # function-redefined,
-       # continue-in-finally,
        # abstract-class-instantiated,
        # star-needs-assignment-target,
        # duplicate-argument-name,
@@ -120,11 +113,9 @@ enable=import-self,
        # useless-else-on-loop,
        # expression-not-assigned,
        # confusing-with-statement,
-       # unnecessary-lambda,
        # pointless-statement,
        # pointless-string-statement,
        # unnecessary-pass,
-       # unreachable,
        # eval-used,
        # exec-used,
        # bad-builtin,

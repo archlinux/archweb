@@ -5,7 +5,6 @@ from mock import patch
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TransactionTestCase
-from django.utils.six import StringIO
 
 
 from main.models import Package
@@ -29,7 +28,6 @@ class RepoReadTest(TransactionTestCase):
         self.assertIn('Specified package database file does not exist.', str(e.exception))
 
     def test_read_packages(self):
-        out = StringIO()
         with patch('devel.management.commands.reporead.logger') as logger:
             call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
         logger.info.assert_called()
