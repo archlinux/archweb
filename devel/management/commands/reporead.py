@@ -10,7 +10,7 @@ Usage: ./manage.py reporead ARCH PATH
  PATH:  full path to the repo.db.tar.gz file.
 
 Example:
-  ./manage.py reporead i686 /tmp/core.db.tar.gz
+  ./manage.py reporead x86_64 /tmp/core.db.tar.gz
 """
 
 from base64 import b64decode
