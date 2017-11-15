@@ -6,7 +6,7 @@
             "compressed_size": 61650988,
             "created": "2017-05-20T13:06:46.688Z",
             "epoch": 0,
-            "filename": "linux-4.10.13-1-i686.pkg.tar.xz",
+            "filename": "linux-4.10.13-1-x86_64.pkg.tar.xz",
             "installed_size": 74946560,
             "last_update": "2017-05-20T13:06:46.688Z",
             "packager_str": "Tobias Powalowski <tpowa@archlinux.org>",
