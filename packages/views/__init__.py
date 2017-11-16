@@ -106,16 +106,8 @@ def update(request):
 
 
 def arch_differences(request):
-    # TODO: we have some hardcoded magic here with respect to the arches.
-    arch_a = Arch.objects.get(name='i686')
-    arch_b = Arch.objects.get(name='x86_64')
-    differences = get_differences_info(arch_a, arch_b)
-    multilib_diffs = multilib_differences()
     context = {
-            'arch_a': arch_a,
-            'arch_b': arch_b,
-            'differences': differences,
-            'multilib_differences': multilib_diffs
+            'multilib_differences': multilib_differences()
     }
     return render(request, 'packages/differences.html', context)
 

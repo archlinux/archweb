@@ -8,56 +8,6 @@
 
 {% block content %}
 <div class="box">
-    <h2>Package Differences by Architecture</h2>
-    <div class="filter-criteria">
-        <h3>Filter Differences View</h3>
-        <form id="diff_filter" method="post" action=".">
-        <fieldset>
-            <legend>Select filter criteria</legend>
-            <div><label for="id_archonly" title="Limit packages to selected architecture">Architecture Limitation</label>
-                <select name="archonly" id="id_archonly">
-                    <option value="all">Show All</option>
-                    <option value="both" selected="selected">Only In Both</option>
-                    <option value="{{ arch_a.name }}">In {{ arch_a.name }} Only</option>
-                    <option value="{{ arch_b.name }}">In {{ arch_b.name }} Only</option>
-                </select>
-            </div>
-            <div><label for="id_multilib" title="Show multilib packages"><tt>[multilib]</tt> Visible</label>
-                <input type="checkbox" name="multilib" id="id_multilib" value="multilib"/></div>
-            <div><label for="id_minor" title="Show minor version mismatches">Minor Version Mismatches</label>
-                <input type="checkbox" name="minor" id="id_minor" value="minor"/></div>
-            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
-        </fieldset>
-        </form>
-    </div>
-
-    <table id="table_differences" class="results">
-        <thead>
-            <tr>
-                <th>Package Name</th>
-                <th>Repository</th>
-                <th>{{ arch_a.name }} Version</th>
-                <th>{{ arch_b.name }} Version</th>
-            </tr>
-        </thead>
-        <tbody id="tbody_differences">
-            {% for diff in differences %}
-            <tr class="{% cycle 'odd' 'even' %} {{ diff.classes }}">
-                <td>{{ diff.pkgname }}</td>
-                <td>{{ diff.repo.name }}</td>
-                {% if diff.pkg_a %}
-                <td>{% pkg_details_link diff.pkg_a diff.pkg_a.full_version True %}</td>
-                {% else %}<td>-</td>{% endif %}
-                {% if diff.pkg_b %}
-                <td>{% pkg_details_link diff.pkg_b diff.pkg_b.full_version True %}</td>
-                {% else %}<td>-</td>{% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<div class="box">
     <h2>Multilib Differences to Main Packages</h2>
 
     <table id="table_multilib_differences" class="results">
@@ -65,11 +15,11 @@
             <tr>
                 <th>Multilib Name</th>
                 <th>Multilib Version</th>
-                <th>i686 Version</th>
-                <th>i686 Name</th>
-                <th>i686 Repo</th>
+                <th>x86_64 Version</th>
+                <th>x86_64 Name</th>
+                <th>x864_ Repo</th>
                 <th>Multilib Last Updated</th>
-                <th>i686 Last Updated</th>
+                <th>x86_64 Last Updated</th>
             </tr>
         </thead>
         <tbody>

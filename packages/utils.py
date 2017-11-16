@@ -210,8 +210,8 @@ SELECT ml.id, reg.id
     ORDER BY ml.last_update
     """
     multilib = Repo.objects.get(name__iexact='multilib')
-    i686 = Arch.objects.get(name='i686')
-    params = ['lib32-%', '%-multilib', multilib.id, False, False, i686.id]
+    x86_64 = Arch.objects.get(name='x86_64')
+    params = ['lib32-%', '%-multilib', multilib.id, False, False, x86_64.id]
 
     cursor = connection.cursor()
     cursor.execute(sql, params)
