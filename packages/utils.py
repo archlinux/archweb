@@ -478,7 +478,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             'installed_size', 'build_date', 'last_update', 'flag_date',
             'maintainers', 'packager']
     pkg_list_attributes = ['groups', 'licenses', 'conflicts',
-            'provides', 'replaces', 'depends']
+            'provides', 'replaces']
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -488,6 +488,10 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             data = {attr: getattr(obj, attr) for attr in self.pkg_attributes}
             for attr in self.pkg_list_attributes:
                 data[attr] = getattr(obj, attr).all()
+            all_deps = obj.depends.all()
+            for (deptype, name) in [('D', 'depends'), ('O', 'optdepends'),
+                                    ('M', 'makedepends'), ('C', 'checkdepends')]:
+                data[name] = all_deps.filter(deptype=deptype)
             return data
         if isinstance(obj, PackageFile):
             filename = obj.filename or ''
