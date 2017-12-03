@@ -142,7 +142,7 @@ class SearchListView(ListView):
 
 
 def search_json(request):
-    limit = 250
+    limit = 1000
 
     container = {
         'version': 2,
