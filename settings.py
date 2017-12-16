@@ -164,6 +164,9 @@ DATABASES = {
     },
 }
 
+# Limit resulted JSON results
+JSON_RESULTS_LIMIT = 1000
+
 # Import local settings
 try:
     from local_settings import *

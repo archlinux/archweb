@@ -1,6 +1,7 @@
 import json
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
@@ -142,11 +143,9 @@ class SearchListView(ListView):
 
 
 def search_json(request):
-    limit = 1000
-
     container = {
         'version': 2,
-        'limit': limit,
+        'limit': settings.JSON_RESULTS_LIMIT,
         'valid': False,
         'results': [],
     }
