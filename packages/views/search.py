@@ -1,6 +1,7 @@
 import json
 
 from django import forms
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
@@ -14,6 +15,8 @@ from ..utils import attach_maintainers, PackageJSONEncoder
 
 
 class PackageSearchForm(forms.Form):
+    limit = forms.CharField(required=False)
+    page = forms.CharField(required=False)
     repo = forms.MultipleChoiceField(required=False)
     arch = forms.MultipleChoiceField(required=False)
     name = forms.CharField(required=False)
@@ -155,13 +158,27 @@ def search_json(request):
         form = PackageSearchForm(data=request.GET,
                 show_staging=request.user.is_authenticated())
         if form.is_valid():
+            form_limit = form.cleaned_data['limit']
+            limit = min(limit, int(form_limit)) if form_limit else limit
+            container['limit'] = limit
             packages = Package.objects.select_related('arch', 'repo',
                     'packager')
             if not request.user.is_authenticated():
                 packages = packages.filter(repo__staging=False)
-            packages = parse_form(form, packages)[:limit]
-            packages = packages.prefetch_related('groups', 'licenses',
-                    'conflicts', 'provides', 'replaces', 'depends')
+            packages = parse_form(form, packages)
+            paginator = Paginator(packages, limit)
+            container['num_pages'] = paginator.num_pages
+
+            page = form.cleaned_data.get('page')
+            page = int(page) if page else 1
+            container['page'] = page
+            try:
+                packages = paginator.page(page)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+
             attach_maintainers(packages)
             container['results'] = packages
             container['valid'] = True
