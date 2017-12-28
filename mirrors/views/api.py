@@ -27,6 +27,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             data['country'] = unicode(country.name)
             data['country_code'] = country.code
             data['isos'] = obj.mirror.isos
+            data['details'] = obj.get_full_url()
             return data
         if isinstance(obj, MirrorProtocol):
             return unicode(obj)
@@ -92,6 +93,7 @@ def mirror_details_json(request, name):
             show_all=authorized)
     data = status_info.copy()
     data['version'] = 3
+    data['details'] = mirror.get_full_url()
     if authorized and request.user.has_perm('mirror.change_mirror'):
         data['admin_email'] = mirror.admin_email
         data['alternate_email'] = mirror.alternate_email

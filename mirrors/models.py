@@ -3,6 +3,7 @@ import socket
 from urlparse import urlparse
 
 from django.core.exceptions import ValidationError
+from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models.signals import pre_save
 from django_countries.fields import CountryField
@@ -45,6 +46,10 @@ class Mirror(models.Model):
 
     def get_absolute_url(self):
         return '/mirrors/%s/' % self.name
+
+    def get_full_url(self, proto='https'):
+        domain = Site.objects.get_current().domain
+        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
 
 class MirrorProtocol(models.Model):
@@ -110,6 +115,10 @@ class MirrorUrl(models.Model):
 
     def get_absolute_url(self):
         return '/mirrors/%s/%d/' % (self.mirror.name, self.pk)
+
+    def get_full_url(self, proto='https'):
+        domain = Site.objects.get_current().domain
+        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
 
 
 class MirrorRsync(models.Model):
