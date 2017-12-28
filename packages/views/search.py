@@ -161,11 +161,13 @@ def search_json(request):
             form_limit = form.cleaned_data['limit']
             limit = min(limit, int(form_limit)) if form_limit else limit
             container['limit'] = limit
+
             packages = Package.objects.select_related('arch', 'repo',
                     'packager')
             if not request.user.is_authenticated():
                 packages = packages.filter(repo__staging=False)
             packages = parse_form(form, packages)
+
             paginator = Paginator(packages, limit)
             container['num_pages'] = paginator.num_pages
 
