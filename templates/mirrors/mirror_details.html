@@ -53,6 +53,7 @@
             <th>Rsync IPs:</th>
             <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
         </tr>
+        {% if perms.mirrors.change_mirror %}
         <tr>
             <th>Admin Email:</th>
             <td>{% if mirror.admin_email %}<a href="mailto:{{ mirror.admin_email }}">{{ mirror.admin_email }}</a>{% else %}None{% endif %}</td>
@@ -61,6 +62,7 @@
             <th>Alternate Email:</th>
             <td>{% if mirror.alternate_email %}<a href="mailto:{{ mirror.alternate_email }}">{{ mirror.alternate_email }}</a>{% else %}None{% endif %}</td>
         </tr>
+        {% endif %}
         <tr>
             <th>Flyspray Issue:</th>
             <td>{% if mirror.bug %}<a href="https://bugs.archlinux.org/task/{{ mirror.bug }}">FS#{{ mirror.bug }}</a>{% endif %}</td>

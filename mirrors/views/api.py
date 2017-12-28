@@ -92,6 +92,9 @@ def mirror_details_json(request, name):
             show_all=authorized)
     data = status_info.copy()
     data['version'] = 3
+    if authorized and request.user.has_perm('mirror.change_mirror'):
+        data['admin_email'] = mirror.admin_email
+        data['alternate_email'] = mirror.alternate_email
     to_json = json.dumps(data, ensure_ascii=False,
             cls=ExtendedMirrorStatusJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
