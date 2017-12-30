@@ -91,6 +91,23 @@ class PackageSearchJson(TestCase):
         data = json.loads(response.content)
         self.assertEqual(len(data['results']), 0)
 
+    def test_limit_four(self):
+        response = self.client.get('/packages/search/json/?limit=4')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['page'], 1)
+        self.assertEqual(data['num_pages'], 2)
+        self.assertEqual(data['limit'], 4)
+        self.assertEqual(len(data['results']), 4)
+
+    def test_second_page(self):
+        response = self.client.get('/packages/search/json/?limit=4&page=2')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['page'], 2)
+        self.assertEqual(data['num_pages'], 2)
+        self.assertEqual(len(data['results']), 1)
+
 
 class PackageSearch(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
