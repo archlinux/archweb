@@ -71,7 +71,7 @@ class PackageSearchJson(TestCase):
         self.assertEqual(data['results'], [])
         self.assertEqual(data['valid'], False)
 
-    def test_packagename(self):
+    def test_reponame(self):
         response = self.client.get('/packages/search/json/?repository=core')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
