@@ -67,7 +67,6 @@ class PackageSearchJson(TestCase):
         response = self.client.get('/packages/search/json/')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(data['limit'], 250)
         self.assertEqual(data['results'], [])
         self.assertEqual(data['valid'], False)
 
