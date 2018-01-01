@@ -8,7 +8,7 @@ available.
 Usage: ./manage.py mirrorresolv
 """
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
 import sys
 import logging
@@ -23,10 +23,10 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Runs a check on all active mirror URLs to determine if they are reachable via IPv4 and/or v6."
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         v = int(options.get('verbosity', 0))
         if v == 0:
             logger.level = logging.ERROR
