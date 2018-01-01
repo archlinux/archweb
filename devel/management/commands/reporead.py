@@ -23,7 +23,6 @@ import sys
 import tarfile
 import logging
 from datetime import datetime
-from optparse import make_option
 from pytz import utc
 
 from django.core.management.base import BaseCommand, CommandError
