@@ -48,14 +48,22 @@ logging.addLevelName(TRACE, 'TRACE')
 logger = logging.getLogger()
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option('-f', '--force', action='store_true', dest='force', default=False,
-            help='Force a re-import of data for all packages instead of only new ones. Will not touch the \'last updated\' value.'),
-        make_option('--filesonly', action='store_true', dest='filesonly', default=False,
-            help='Load filelists if they are outdated, but will not add or remove any packages. Will not touch the \'last updated\' value.'),
-    )
     help = "Runs a package repository import for the given arch and file."
-    args = "<arch> <filename>"
+    missing_args_message = 'missing arch and file.'
+
+    def add_arguments(self, parser):
+        parser.add_argument('args', nargs='*', help='<arch> <filename>')
+        parser.add_argument('--force',
+                            action='store_true',
+                            dest='force',
+                            default=False,
+                            help='Force a re-import of data for all packages instead of only new ones. Will not touch the \'last updated\' value.')
+
+        parser.add_argument('--filesonly',
+                            action='store_true',
+                            dest='filesonly',
+                            default=False,
+                            help='Load filelists if they are outdated, but will not add or remove any packages. Will not touch the \'last updated\' value.')
 
     def handle(self, arch=None, filename=None, **options):
         if not arch:
