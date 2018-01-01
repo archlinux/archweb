@@ -1,26 +1,23 @@
-from django.conf.urls import include, patterns
+from django.conf.urls import include, url
 
 from .views import ReleaseListView, ReleaseDetailView
+import views
 
-releases_patterns = patterns('releng.views',
-    (r'^$',
-        ReleaseListView.as_view(), {}, 'releng-release-list'),
-    (r'^json/$',
-        'releases_json', {}, 'releng-release-list-json'),
-    (r'^(?P<version>[-.\w]+)/$',
-        ReleaseDetailView.as_view(), {}, 'releng-release-detail'),
-    (r'^(?P<version>[-.\w]+)/torrent/$',
-        'release_torrent', {}, 'releng-release-torrent'),
-)
+releases_patterns = [
+    url(r'^$', ReleaseListView.as_view(), name='releng-release-list'),
+    url(r'^json/$', views.releases_json, name='releng-release-list-json'),
+    url(r'^(?P<version>[-.\w]+)/$', ReleaseDetailView.as_view(), name='releng-release-detail'),
+    url(r'^(?P<version>[-.\w]+)/torrent/$', views.release_torrent, name='releng-release-torrent'),
+]
 
-netboot_patterns = patterns('releng.views',
-    (r'^archlinux\.ipxe$', 'netboot_config', {}, 'releng-netboot-config'),
-    (r'^$', 'netboot_info', {}, 'releng-netboot-info')
-)
+netboot_patterns = [
+    url(r'^archlinux\.ipxe$', views.netboot_config, name='releng-netboot-config'),
+    url(r'^$', views.netboot_info, name='releng-netboot-info')
+]
 
-urlpatterns = patterns('',
-    (r'^releases/', include(releases_patterns)),
-    (r'^netboot/', include(netboot_patterns)),
-)
+urlpatterns = [
+    url(r'^releases/', include(releases_patterns)),
+    url(r'^netboot/', include(netboot_patterns)),
+]
 
 # vim: set ts=4 sw=4 et:

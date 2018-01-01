@@ -1,26 +1,26 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 
 from .views import (view_redirect, view, add, edit, flag,
         list_pkgbases, DeleteTodolist, TodolistListView)
 
-urlpatterns = patterns('',
-    (r'^$', TodolistListView.as_view(), {}, 'todolist-list'),
+urlpatterns = [
+    url(r'^$', TodolistListView.as_view(), name='todolist-list'),
 
     # old todolists URLs, permanent redirect view so we don't break all links
-    (r'^(?P<old_id>\d+)/$', view_redirect),
+    url(r'^(?P<old_id>\d+)/$', view_redirect),
 
-    (r'^add/$',
+    url(r'^add/$',
         permission_required('todolists.add_todolist')(add)),
-    (r'^(?P<slug>[-\w]+)/$', view),
-    (r'^(?P<slug>[-\w]+)/edit/$',
+    url(r'^(?P<slug>[-\w]+)/$', view),
+    url(r'^(?P<slug>[-\w]+)/edit/$',
         permission_required('todolists.change_todolist')(edit)),
-    (r'^(?P<slug>[-\w]+)/delete/$',
+    url(r'^(?P<slug>[-\w]+)/delete/$',
         permission_required('todolists.delete_todolist')(DeleteTodolist.as_view())),
-    (r'^(?P<slug>[-\w]+)/flag/(?P<pkg_id>\d+)/$',
+    url(r'^(?P<slug>[-\w]+)/flag/(?P<pkg_id>\d+)/$',
         permission_required('todolists.change_todolistpackage')(flag)),
-    (r'^(?P<slug>[-\w]+)/pkgbases/(?P<svn_root>[a-z]+)/$',
+    url(r'^(?P<slug>[-\w]+)/pkgbases/(?P<svn_root>[a-z]+)/$',
         list_pkgbases),
-)
+]
 
 # vim: set ts=4 sw=4 et:

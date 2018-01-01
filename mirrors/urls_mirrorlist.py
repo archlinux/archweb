@@ -1,11 +1,11 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 
+from views import mirrorlist as views
 
-urlpatterns = patterns('mirrors.views.mirrorlist',
-    (r'^$',         'generate_mirrorlist', {}, 'mirrorlist'),
-    (r'^all/$',     'find_mirrors', {'countries': ['all']}),
-    (r'^all/(?P<protocol>[A-z]+)/$', 'find_mirrors_simple',
-        {}, 'mirrorlist_simple')
-)
+urlpatterns = [
+    url(r'^$', views.generate_mirrorlist, name='mirrorlist'),
+    url(r'^all/$', views.find_mirrors, {'countries': ['all']}),
+    url(r'^all/(?P<protocol>[A-z]+)/$', views.find_mirrors_simple, name='mirrorlist_simple')
+]
 
 # vim: set ts=4 sw=4 et:

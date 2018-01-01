@@ -1,24 +1,26 @@
-from django.conf.urls import patterns
+from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 from .views import (NewsDetailView, NewsListView,
         NewsCreateView, NewsEditView, NewsDeleteView)
 
+import views
 
-urlpatterns = patterns('news.views',
-    (r'^$', NewsListView.as_view(), {}, 'news-list'),
 
-    (r'^preview/$', 'preview'),
+urlpatterns = [
+    url(r'^$', NewsListView.as_view(), name='news-list'),
+
+    url(r'^preview/$', views.preview),
     # old news URLs, permanent redirect view so we don't break all links
-    (r'^(?P<object_id>\d+)/$', 'view_redirect'),
+    url(r'^(?P<object_id>\d+)/$', views.view_redirect),
 
-    (r'^add/$',
+    url(r'^add/$',
         permission_required('news.add_news')(NewsCreateView.as_view())),
-    (r'^(?P<slug>[-\w]+)/$',
+    url(r'^(?P<slug>[-\w]+)/$',
         NewsDetailView.as_view()),
-    (r'^(?P<slug>[-\w]+)/edit/$',
+    url(r'^(?P<slug>[-\w]+)/edit/$',
         permission_required('news.change_news')(NewsEditView.as_view())),
-    (r'^(?P<slug>[-\w]+)/delete/$',
+    url(r'^(?P<slug>[-\w]+)/delete/$',
         permission_required('news.delete_news')(NewsDeleteView.as_view())),
-)
+]
 
 # vim: set ts=4 sw=4 et:
