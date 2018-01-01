@@ -178,7 +178,7 @@ TEMPLATES = [
             'debug': DEBUG,
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.debug',
+                'django.template.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
             ],
         }
