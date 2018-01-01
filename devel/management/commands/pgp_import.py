@@ -32,6 +32,9 @@ class Command(BaseCommand):
     args = "<keyring_path>"
     help = "Import keys and signatures from a given GPG keyring."
 
+    def add_arguments(self, parser):
+        parser.add_argument('args', nargs='*', help='<arch> <filename>')
+
     def handle(self, *args, **options):
         v = int(options.get('verbosity', None))
         if v == 0:
