@@ -15,7 +15,7 @@ import sys
 from xml.etree.ElementTree import XML
 
 from django.conf import settings
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
 from ...models import SignoffSpecification
 from ...utils import get_signoff_groups
@@ -28,11 +28,11 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = """Pull the latest commit message from SVN for a given package that
 is signoff-eligible and does not have an existing comment attached"""
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         v = int(options.get('verbosity', None))
         if v == 0:
             logger.level = logging.ERROR
