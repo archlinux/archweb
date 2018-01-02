@@ -163,4 +163,20 @@ class PackageSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('5 matching packages found', response.content)
 
+class OpenSearch(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def test_packages(self):
+        response = self.client.get('/opensearch/packages/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_packages_suggest(self):
+        response = self.client.get('/opensearch/packages/suggest?q=linux')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('linux', response.content)
+
+        response = self.client.get('/opensearch/packages/suggest')
+        self.assertEqual(response.status_code, 200)
+
 # vim: set ts=4 sw=4 et:
