@@ -1,12 +1,11 @@
 from django.conf.urls import url
 
-import views
-
+from packages.views import groups, group_details
 
 urlpatterns = [
-    url(r'^$', views.groups, name='groups-list'),
-    url(r'^(?P<arch>[A-z0-9]+)/$', views.groups),
-    url(r'^(?P<arch>[A-z0-9]+)/(?P<name>[^ /]+)/$', views.group_details),
+    url(r'^$', groups, name='groups-list'),
+    url(r'^(?P<arch>[A-z0-9]+)/$', groups),
+    url(r'^(?P<arch>[A-z0-9]+)/(?P<name>[^ /]+)/$', group_details),
 ]
 
 # vim: set ts=4 sw=4 et:

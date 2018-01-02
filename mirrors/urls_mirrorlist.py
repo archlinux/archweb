@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from views import mirrorlist as views
+from mirrors.views import mirrorlist as views
 
 urlpatterns = [
     url(r'^$', views.generate_mirrorlist, name='mirrorlist'),

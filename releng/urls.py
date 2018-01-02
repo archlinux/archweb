@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 
 from .views import ReleaseListView, ReleaseDetailView
-import views
+from releng import views
 
 releases_patterns = [
     url(r'^$', ReleaseListView.as_view(), name='releng-release-list'),

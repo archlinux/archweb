@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 
 from .views.search import SearchListView
-import views
+from packages import views
 
 
 package_patterns = [
