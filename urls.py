@@ -38,7 +38,7 @@ urlpatterns = []
 
 # Public pages
 urlpatterns.extend([
-    url(r'^$', public.views.index),
+    url(r'^$', public.views.index, name='index'),
     url(r'^about/$', TemplateView.as_view(template_name='public/about.html'), name='page-about'),
     url(r'^art/$',   TemplateView.as_view(template_name='public/art.html'), name='page-art'),
     url(r'^svn/$',   TemplateView.as_view(template_name='public/svn.html'), name='page-svn'),
