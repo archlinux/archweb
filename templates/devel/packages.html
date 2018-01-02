@@ -52,7 +52,7 @@
         </thead>
         <tbody>
             {% for pkg in packages %}
-            <tr class="{% cycle pkgr2,pkgr1 %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
+            <tr class="{% cycle 'pkgr2' 'pkgr1' %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
