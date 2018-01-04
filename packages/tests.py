@@ -177,6 +177,62 @@ class OpenSearch(TestCase):
         self.assertIn('linux', response.content)
 
         response = self.client.get('/opensearch/packages/suggest')
+
+class PackageViews(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def test_arch_differences(self):
+        response = self.client.get('/packages/differences/')
         self.assertEqual(response.status_code, 200)
+
+
+class PackageDisplay(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def test_packages_detail(self):
+        response = self.client.get('/packages/core/x86_64/linux/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/packages/core/x86_64/nope/')
+        self.assertEqual(response.status_code, 404)
+
+        # Redirect to search
+        response = self.client.get('/packages/core/x86_64/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_packages_json(self):
+        response = self.client.get('/packages/core/x86_64/linux/json/')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['pkgbase'], 'linux')
+        # TODO verify more of the structure
+
+    def test_packages_files(self):
+        response = self.client.get('/packages/core/x86_64/linux/files/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_packages_files_json(self):
+        response = self.client.get('/packages/core/x86_64/linux/files/json/')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['pkgname'], 'linux')
+        # TODO verify more of the structure
+
+    def test_packages_download(self):
+        response = self.client.get('/packages/core/x86_64/linux/download/')
+        self.assertEqual(response.status_code, 404)
+        # TODO: Figure out how to fake a mirror
+
+    def test_groups(self):
+        response = self.client.get('/groups/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_groups_detail(self):
+        response = self.client.get('/groups/x86_64/base/')
+        self.assertEqual(response.status_code, 404)
+        # FIXME: add group fixtures.
+
 
 # vim: set ts=4 sw=4 et:
