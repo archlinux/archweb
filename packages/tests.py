@@ -177,6 +177,13 @@ class OpenSearch(TestCase):
         self.assertIn('linux', response.content)
 
         response = self.client.get('/opensearch/packages/suggest')
+
+class PackageViews(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def test_arch_differences(self):
+        response = self.client.get('/packages/differences/')
         self.assertEqual(response.status_code, 200)
 
 # vim: set ts=4 sw=4 et:
