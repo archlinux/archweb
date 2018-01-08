@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mirrors.models import Mirror
+from mirrors.models import Mirror, CheckLocation
 from mirrors.tests import create_mirror_url
 
 
@@ -51,3 +51,20 @@ class MirrorTest(TestCase):
     def test_get_full_url(self):
         self.assertIn(self.mirror.get_absolute_url(), self.mirror.get_full_url())
         self.assertIn('http', self.mirror.get_full_url('http'))
+
+
+class CheckLocationTest(TestCase):
+    def setUp(self):
+        self.checkloc = CheckLocation.objects.create(hostname='arch.org',
+                                                     source_ip='127.0.0.1',
+                                                     country='US')
+
+    def tearDown(self):
+        self.checkloc.delete()
+
+    def test_family(self):
+        # TODO: mock socket.getaddrinfo in CheckLocation.family
+        self.assertIsInstance(self.checkloc.family, int)
+
+    def test_ip_version(self):
+        self.assertIsInstance(self.checkloc.ip_version, int)
