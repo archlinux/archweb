@@ -28,15 +28,3 @@ function setupTypeahead() {
         }
     });
 }
-
-function setupKonami(image_src) {
-    var konami = new Konami(function() {
-        $('#konami').html('<img src="' + image_src + '" alt=""/>');
-        setTimeout(function() {
-            $('#konami').fadeIn(500);
-        }, 500);
-        $('#konami').click(function() {
-            $('#konami').fadeOut(500);
-        });
-    });
-}

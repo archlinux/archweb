@@ -203,12 +203,11 @@
 {% endblock %}
 
 {% block script_block %}
-<div id="konami" style="display:none;"></div>
 
 {% load cdn %}{% jquery %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $.ajax({ url: "{% static "homepage.js" %}", cache: true, dataType: "script", success: function() { setupTypeahead(); setupKonami("{% static "vector_tux.png" %}"); } });
+    $.ajax({ url: "{% static "homepage.js" %}", cache: true, dataType: "script", success: function() { setupTypeahead(); } });
 });
 </script>
 {% endblock %}

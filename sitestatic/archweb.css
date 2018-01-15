@@ -608,17 +608,6 @@ div.widget {
     margin-bottom: 1.5em;
 }
 
-/* home: other stuff */
-#konami {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    opacity: 0.6;
-}
-
 /* feeds page */
 #rss-feeds .rss {
     padding-right: 20px;
