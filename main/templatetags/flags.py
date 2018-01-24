@@ -28,12 +28,6 @@ def duration(value):
     hrs, mins = divmod(mins, 60)
     return '%d:%02d' % (hrs, mins)
 
-@register.filter
-def floatvalue(value, arg=2):
-    if value is None:
-        return u''
-    return '%.*f' % (arg, value)
-
 
 @register.filter
 def hours(value):
