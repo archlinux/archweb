@@ -19,3 +19,4 @@ class FlagsTemplateTest(TestCase):
         flag = country_flag(self.checkloc.country)
         self.assertIn(self.checkloc.country.name, flag)
         self.assertIn(self.checkloc.country.code.lower(), flag)
+        self.assertEqual(country_flag(None), '')
