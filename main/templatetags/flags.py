@@ -12,13 +12,6 @@ def country_flag(country):
             unicode(country.code).lower(), unicode(country.name))
 
 @register.filter
-def percentage(value, arg=1):
-    if not value and type(value) != float:
-        return u''
-    new_val = value * 100.0
-    return '%.*f%%' % (arg, new_val)
-
-@register.filter
 def duration(value):
     if not value and type(value) != timedelta:
         return u''

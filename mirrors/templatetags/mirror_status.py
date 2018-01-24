@@ -31,4 +31,11 @@ def floatvalue(value, arg=2):
         return u''
     return '%.*f' % (arg, value)
 
+@register.filter
+def percentage(value, arg=1):
+    if not value and type(value) != float:
+        return u''
+    new_val = value * 100.0
+    return '%.*f%%' % (arg, new_val)
+
 # vim: set ts=4 sw=4 et:
