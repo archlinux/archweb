@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-from .models import (Architecture, BootType, Bootloader, ClockChoice,
-        Filesystem, HardwareType, InstallType, Iso, IsoType, Module, Source,
-        Test, Release)
+from .models import (Iso, Release)
 
 class IsoAdmin(admin.ModelAdmin):
     list_display = ('name', 'created', 'active', 'removed')
@@ -21,14 +19,7 @@ class ReleaseAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'last_modified')
 
 
-SIMPLE_MODELS = (Architecture, BootType, Bootloader, ClockChoice, Filesystem,
-        HardwareType, InstallType, IsoType, Module, Source)
-
-for model in SIMPLE_MODELS:
-    admin.site.register(model)
-
 admin.site.register(Iso, IsoAdmin)
-admin.site.register(Test, TestAdmin)
 admin.site.register(Release, ReleaseAdmin)
 
 # vim: set ts=4 sw=4 et:
