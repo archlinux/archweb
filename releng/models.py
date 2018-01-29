@@ -13,21 +13,6 @@ from django.utils.safestring import mark_safe
 from main.utils import set_created_field, parse_markdown
 
 
-class IsoOption(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        abstract = True
-
-
-class RollbackOption(IsoOption):
-    class Meta:
-        abstract = True
-
-
 class Iso(models.Model):
     name = models.CharField(max_length=255)
     created = models.DateTimeField(editable=False)
@@ -42,73 +27,6 @@ class Iso(models.Model):
 
     class Meta:
         verbose_name = 'ISO'
-
-
-class Architecture(IsoOption):
-    pass
-
-
-class IsoType(IsoOption):
-    class Meta:
-        verbose_name = 'ISO type'
-
-
-class BootType(IsoOption):
-    pass
-
-
-class HardwareType(IsoOption):
-    pass
-
-
-class InstallType(IsoOption):
-    pass
-
-
-class Source(IsoOption):
-    pass
-
-
-class ClockChoice(IsoOption):
-    pass
-
-
-class Filesystem(RollbackOption):
-    pass
-
-
-class Module(RollbackOption):
-    pass
-
-
-class Bootloader(IsoOption):
-    pass
-
-
-class Test(models.Model):
-    user_name = models.CharField(max_length=500)
-    user_email = models.EmailField('email address')
-    ip_address = models.GenericIPAddressField('IP address', unpack_ipv4=True)
-    created = models.DateTimeField(editable=False)
-
-    iso = models.ForeignKey(Iso)
-    architecture = models.ForeignKey(Architecture)
-    iso_type = models.ForeignKey(IsoType)
-    boot_type = models.ForeignKey(BootType)
-    hardware_type = models.ForeignKey(HardwareType)
-    install_type = models.ForeignKey(InstallType)
-    source = models.ForeignKey(Source)
-    clock_choice = models.ForeignKey(ClockChoice)
-    filesystem = models.ForeignKey(Filesystem)
-    modules = models.ManyToManyField(Module, blank=True)
-    bootloader = models.ForeignKey(Bootloader)
-    rollback_filesystem = models.ForeignKey(Filesystem,
-            related_name="rollback_test_set", null=True, blank=True)
-    rollback_modules = models.ManyToManyField(Module,
-            related_name="rollback_test_set", blank=True)
-
-    success = models.BooleanField(default=True)
-    comments = models.TextField(null=True, blank=True)
 
 
 class Release(models.Model):
@@ -185,7 +103,7 @@ class Release(models.Model):
         return metadata
 
 
-for model in (Iso, Test, Release):
+for model in (Iso, Release):
     pre_save.connect(set_created_field, sender=model,
             dispatch_uid="releng.models")
 

@@ -230,111 +230,6 @@
         "name": "Release Engineering",
         "permissions": [
             [
-                "add_architecture",
-                "releng",
-                "architecture"
-            ],
-            [
-                "change_architecture",
-                "releng",
-                "architecture"
-            ],
-            [
-                "delete_architecture",
-                "releng",
-                "architecture"
-            ],
-            [
-                "add_bootloader",
-                "releng",
-                "bootloader"
-            ],
-            [
-                "change_bootloader",
-                "releng",
-                "bootloader"
-            ],
-            [
-                "delete_bootloader",
-                "releng",
-                "bootloader"
-            ],
-            [
-                "add_boottype",
-                "releng",
-                "boottype"
-            ],
-            [
-                "change_boottype",
-                "releng",
-                "boottype"
-            ],
-            [
-                "delete_boottype",
-                "releng",
-                "boottype"
-            ],
-            [
-                "add_clockchoice",
-                "releng",
-                "clockchoice"
-            ],
-            [
-                "change_clockchoice",
-                "releng",
-                "clockchoice"
-            ],
-            [
-                "delete_clockchoice",
-                "releng",
-                "clockchoice"
-            ],
-            [
-                "add_filesystem",
-                "releng",
-                "filesystem"
-            ],
-            [
-                "change_filesystem",
-                "releng",
-                "filesystem"
-            ],
-            [
-                "delete_filesystem",
-                "releng",
-                "filesystem"
-            ],
-            [
-                "add_hardwaretype",
-                "releng",
-                "hardwaretype"
-            ],
-            [
-                "change_hardwaretype",
-                "releng",
-                "hardwaretype"
-            ],
-            [
-                "delete_hardwaretype",
-                "releng",
-                "hardwaretype"
-            ],
-            [
-                "add_installtype",
-                "releng",
-                "installtype"
-            ],
-            [
-                "change_installtype",
-                "releng",
-                "installtype"
-            ],
-            [
-                "delete_installtype",
-                "releng",
-                "installtype"
-            ],
-            [
                 "add_iso",
                 "releng",
                 "iso"
@@ -350,36 +245,6 @@
                 "iso"
             ],
             [
-                "add_isotype",
-                "releng",
-                "isotype"
-            ],
-            [
-                "change_isotype",
-                "releng",
-                "isotype"
-            ],
-            [
-                "delete_isotype",
-                "releng",
-                "isotype"
-            ],
-            [
-                "add_module",
-                "releng",
-                "module"
-            ],
-            [
-                "change_module",
-                "releng",
-                "module"
-            ],
-            [
-                "delete_module",
-                "releng",
-                "module"
-            ],
-            [
                 "add_release",
                 "releng",
                 "release"
@@ -393,36 +258,6 @@
                 "delete_release",
                 "releng",
                 "release"
-            ],
-            [
-                "add_source",
-                "releng",
-                "source"
-            ],
-            [
-                "change_source",
-                "releng",
-                "source"
-            ],
-            [
-                "delete_source",
-                "releng",
-                "source"
-            ],
-            [
-                "add_test",
-                "releng",
-                "test"
-            ],
-            [
-                "change_test",
-                "releng",
-                "test"
-            ],
-            [
-                "delete_test",
-                "releng",
-                "test"
             ]
         ]
     },
