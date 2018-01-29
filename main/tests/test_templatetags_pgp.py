@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.test import TestCase
 
-from main.templatetags.pgp import pgp_key_link, format_key
+from main.templatetags.pgp import pgp_key_link, format_key, pgp_fingerprint
 
 
 class PGPTemplateTest(TestCase):
@@ -52,3 +52,9 @@ class PGPTemplateTest(TestCase):
         with self.settings(PGP_SERVER_SECURE=False):
             pgp_key = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
             self.assertNotIn("https", pgp_key_link(pgp_key))
+
+    def test_pgp_fingerprint(self):
+        self.assertEqual(pgp_fingerprint(None), u"")
+        keyid = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
+        fingerprint = pgp_fingerprint(keyid)
+        self.assertTrue(len(fingerprint) > len(keyid))
