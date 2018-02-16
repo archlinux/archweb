@@ -166,7 +166,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
         elif isinstance(obj, Signoff):
             return {attr: getattr(obj, attr) for attr in self.signoff_attrs}
         elif isinstance(obj, Arch) or isinstance(obj, Repo):
-            return unicode(obj)
+            return str(obj)
         elif isinstance(obj, User):
             return obj.username
         elif isinstance(obj, set):

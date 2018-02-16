@@ -19,7 +19,7 @@ class BuildQueryStringNode(template.Node):
         # have simply u'\u2603' or a byte string of the UTF-8 value. Force the
         # keys and list of values to be byte strings only.
         qs = {k.encode('latin-1'): [v.encode('latin-1') for v in vals]
-                for k, vals in qs.items()}
+                for k, vals in list(qs.items())}
         if 'sort' in qs and self.sortfield in qs['sort']:
             if self.sortfield.startswith('-'):
                 qs['sort'] = [self.sortfield[1:]]

@@ -95,7 +95,7 @@ class MasterKey(models.Model):
         get_latest_by = 'created'
 
     def __unicode__(self):
-        return u'%s, created %s' % (
+        return '%s, created %s' % (
                 self.owner.get_full_name(), self.created)
 
 
@@ -128,7 +128,7 @@ class PGPSignature(models.Model):
         verbose_name = 'PGP signature'
 
     def __unicode__(self):
-        return u'%s → %s' % (self.signer, self.signee)
+        return '%s → %s' % (self.signer, self.signee)
 
 
 pre_save.connect(set_created_field, sender=UserProfile,

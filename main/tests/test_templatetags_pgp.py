@@ -13,7 +13,7 @@ class PGPTemplateTest(TestCase):
         pgp_key_len = len(pgp_key)
 
         output = format_key(pgp_key)
-        spaces = output.count(' ') + output.count(u'\xa0')  # nbsp
+        spaces = output.count(' ') + output.count('\xa0')  # nbsp
         self.assertEqual(pgp_key_len + spaces, len(output))
 
         # 21 - 39 len case
@@ -68,7 +68,7 @@ class PGPTemplateTest(TestCase):
             self.assertNotIn("https", pgp_key_link(pgp_key))
 
     def test_pgp_fingerprint(self):
-        self.assertEqual(pgp_fingerprint(None), u"")
+        self.assertEqual(pgp_fingerprint(None), "")
         keyid = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
         fingerprint = pgp_fingerprint(keyid)
         self.assertTrue(len(fingerprint) > len(keyid))
