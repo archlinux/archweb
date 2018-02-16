@@ -230,21 +230,6 @@
         "name": "Release Engineering",
         "permissions": [
             [
-                "add_iso",
-                "releng",
-                "iso"
-            ],
-            [
-                "change_iso",
-                "releng",
-                "iso"
-            ],
-            [
-                "delete_iso",
-                "releng",
-                "iso"
-            ],
-            [
                 "add_release",
                 "releng",
                 "release"

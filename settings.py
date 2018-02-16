@@ -135,9 +135,6 @@ LOGGING = {
 PGP_SERVER = 'pgp.mit.edu'
 PGP_SERVER_SECURE = True
 
-# URL to fetch a current list of available ISOs
-ISO_LIST_URL = 'https://releng.archlinux.org/isos/'
-
 # URL for SVN access for fetching commit messages (note absence of packages or
 # community bit on the end, repo.svn_root is appended)
 SVN_BASE_URL = 'svn://svn.archlinux.org/'
