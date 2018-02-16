@@ -9,7 +9,7 @@ from django.shortcuts import (get_list_or_404, get_object_or_404,
 from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView, ListView
-from django.template import Context, loader
+from django.template import loader
 from django.utils.timezone import now
 
 from main.models import Package, Repo
@@ -225,10 +225,10 @@ def send_todolist_emails(todo_list, new_packages):
 
     for maint, packages in maint_packages.iteritems():
         packages = sorted(packages, key=attrgetter('pkgname', 'arch'))
-        ctx = Context({
+        ctx = {
             'todo_packages': packages,
             'todolist': todo_list,
-        })
+        }
         template = loader.get_template('todolists/email_notification.txt')
         send_mail('Packages added to todo list \'%s\'' % todo_list.name,
                 template.render(ctx),

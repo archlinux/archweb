@@ -6,7 +6,7 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
-from django.template import loader, Context
+from django.template import loader
 
 from .models import UserProfile
 
@@ -88,11 +88,11 @@ class NewUserForm(forms.ModelForm):
             self.save_m2m()
 
         template = loader.get_template('devel/new_account.txt')
-        ctx = Context({
+        ctx = {
             'site': Site.objects.get_current(),
             'user': user,
             'password': password,
-        })
+        }
 
         send_mail("Your new archweb account",
                 template.render(ctx),

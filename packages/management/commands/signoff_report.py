@@ -14,7 +14,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db.models import Count
-from django.template import loader, Context
+from django.template import loader
 from django.utils.timezone import now
 
 from collections import namedtuple
@@ -106,7 +106,7 @@ def generate_report(email, repo_name):
 
     subject = 'Signoff report for [%s]' % repo.name.lower()
     t = loader.get_template('packages/signoff_report.txt')
-    c = Context({
+    c = {
         'repo': repo,
         'signoffs_url': signoffs_url,
         'disabled': disabled,
@@ -119,7 +119,7 @@ def generate_report(email, repo_name):
         'old': old,
         'old_days': old_days,
         'leaders': leaders,
-    })
+    }
     from_addr = 'Arch Website Notification <nobody@archlinux.org>'
     send_mail(subject, t.render(c), from_addr, [email])
 

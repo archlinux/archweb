@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import permission_required
 from django.core.mail import EmailMessage
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template import loader, Context
+from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page, never_cache
 
@@ -116,12 +116,12 @@ def flag(request, name, repo, arch):
             if toemail:
                 # send notification email to the maintainers
                 tmpl = loader.get_template('packages/outofdate.txt')
-                ctx = Context({
+                ctx = {
                     'email': email,
                     'message': message,
                     'pkg': pkg,
                     'packages': flagged_pkgs,
-                })
+                }
                 msg = EmailMessage(subject,
                         tmpl.render(ctx),
                         'Arch Website Notification <nobody@archlinux.org>',
