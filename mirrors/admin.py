@@ -1,5 +1,5 @@
 from datetime import datetime
-from urlparse import urlparse, urlunsplit
+from urllib.parse import urlunsplit, urlparse
 
 from django import forms
 from django.contrib import admin
