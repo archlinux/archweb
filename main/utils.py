@@ -1,5 +1,5 @@
 try:
-    import cPickle as pickle
+    import pickle as pickle
 except ImportError:
     import pickle
 
@@ -61,7 +61,7 @@ def empty_response():
 
 
 def format_http_headers(request):
-    headers = sorted((k, v) for k, v in request.META.items()
+    headers = sorted((k, v) for k, v in list(request.META.items())
             if k.startswith('HTTP_'))
     data = []
     for k, v in headers:

@@ -77,7 +77,7 @@ class PackageSearchJson(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(len(data['results']), 5)
-        self.assertEqual(set(map(lambda r: r['pkgname'], data['results'])),
+        self.assertEqual(set([r['pkgname'] for r in data['results']]),
                          {"coreutils", "glibc", "linux", "pacman", "systemd"})
 
     def test_packagename(self):

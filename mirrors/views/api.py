@@ -24,7 +24,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, MirrorUrl):
             data = {attr: getattr(obj, attr) for attr in self.url_attributes}
             country = obj.country
-            data['country'] = unicode(country.name)
+            data['country'] = str(country.name)
             data['country_code'] = country.code
             data['isos'] = obj.mirror.isos
             data['ipv4'] = obj.has_ipv4
@@ -32,7 +32,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             data['details'] = obj.get_full_url()
             return data
         if isinstance(obj, MirrorProtocol):
-            return unicode(obj)
+            return str(obj)
         return super(MirrorStatusJSONEncoder, self).default(obj)
 
 
@@ -64,7 +64,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
                 'id': obj.pk,
                 'hostname': obj.hostname,
                 'source_ip': obj.source_ip,
-                'country': unicode(obj.country.name),
+                'country': str(obj.country.name),
                 'country_code': obj.country.code,
                 'ip_version': obj.ip_version,
             }

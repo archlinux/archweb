@@ -187,7 +187,7 @@ class EventHandler(pyinotify.ProcessEvent):
 
         # we really want a single path to arch mapping, so massage the data
         arch_paths = kwargs['arch_paths']
-        for arch, paths in arch_paths.items():
+        for arch, paths in list(arch_paths.items()):
             self.arch_lookup.update((path.rstrip('/'), arch) for path in paths)
 
     def process_default(self, event):
