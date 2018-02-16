@@ -68,13 +68,6 @@ def pgp_key_link(key_id, link_text=None):
 
 @register.filter
 def url_unquote(original_url):
-    try:
-        url = original_url
-        if isinstance(url, str):
-            url = url.encode('ascii')
-        url = unquote(url).decode('utf-8')
-        return url
-    except UnicodeError:
-        return original_url
+    return unquote(original_url)
 
 # vim: set ts=4 sw=4 et:
