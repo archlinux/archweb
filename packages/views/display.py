@@ -1,6 +1,6 @@
 import datetime
 import json
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
