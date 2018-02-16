@@ -1,5 +1,4 @@
-from urllib import urlencode
-from urlparse import parse_qs
+from urllib.parse import urlencode, parse_qs
 
 from django import template
 from django.utils.html import format_html
