@@ -52,8 +52,8 @@ def arch_repo_data():
         repo_groups[repo]['data'].append(values)
 
     data = {
-        'by_arch': { 'name': 'Architectures', 'data': arch_groups.values() },
-        'by_repo': { 'name': 'Repositories', 'data': repo_groups.values() },
+        'by_arch': { 'name': 'Architectures', 'data': list(arch_groups.values()) },
+        'by_repo': { 'name': 'Repositories', 'data': list(repo_groups.values()) },
     }
     return data
 

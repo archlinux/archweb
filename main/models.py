@@ -124,8 +124,8 @@ class Package(models.Model):
     @property
     def full_version(self):
         if self.epoch > 0:
-            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return u'%s-%s' % (self.pkgver, self.pkgrel)
+            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return '%s-%s' % (self.pkgver, self.pkgrel)
 
     def get_absolute_url(self):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
@@ -417,13 +417,13 @@ class Package(models.Model):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
         names = [self.pkgname]
-        if self.pkgname.startswith(u'lib32-'):
+        if self.pkgname.startswith('lib32-'):
             names.append(self.pkgname[6:])
-        elif self.pkgname.endswith(u'-multilib'):
+        elif self.pkgname.endswith('-multilib'):
             names.append(self.pkgname[:-9])
         else:
-            names.append(u'lib32-' + self.pkgname)
-            names.append(self.pkgname + u'-multilib')
+            names.append('lib32-' + self.pkgname)
+            names.append(self.pkgname + '-multilib')
         return Package.objects.normal().filter(
                 pkgname__in=names).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')

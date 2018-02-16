@@ -141,7 +141,7 @@ def import_keys(keyring):
         finder = UserFinder()
         # we are dependent on parents coming before children; parse_keydata
         # uses an OrderedDict to ensure this is the case.
-        for data in keydata.values():
+        for data in list(keydata.values()):
             parent_id = None
             if data.parent:
                 parent_data = keydata.get(data.parent, None)
@@ -161,7 +161,7 @@ def import_keys(keyring):
             if created:
                 created_ct += 1
             else:
-                for k, v in other.items():
+                for k, v in list(other.items()):
                     if getattr(dkey, k) != v:
                         setattr(dkey, k, v)
                         needs_save = True
