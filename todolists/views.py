@@ -223,7 +223,7 @@ def send_todolist_emails(todo_list, new_packages):
             for maint in maints:
                 maint_packages.setdefault(maint, []).append(todo_package)
 
-    for maint, packages in maint_packages.iteritems():
+    for maint, packages in maint_packages.items():
         packages = sorted(packages, key=attrgetter('pkgname', 'arch'))
         ctx = {
             'todo_packages': packages,

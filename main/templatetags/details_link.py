@@ -1,4 +1,4 @@
-from urllib import urlencode, quote as urlquote, unquote
+from urllib.parse import urlencode, quote as urlquote, unquote
 from django import template
 from main.templatetags import pgp
 
@@ -8,7 +8,7 @@ register = template.Library()
 def link_encode(url, query):
     # massage the data into all utf-8 encoded strings first, so urlencode
     # doesn't barf at the data we pass it
-    query = {k: unicode(v).encode('utf-8') for k, v in query.items()}
+    query = {k: str(v).encode('utf-8') for k, v in list(query.items())}
     data = urlencode(query)
     return "%s?%s" % (url, data)
 
@@ -70,7 +70,7 @@ def pgp_key_link(key_id, link_text=None):
 def url_unquote(original_url):
     try:
         url = original_url
-        if isinstance(url, unicode):
+        if isinstance(url, str):
             url = url.encode('ascii')
         url = unquote(url).decode('utf-8')
         return url

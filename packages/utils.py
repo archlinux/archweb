@@ -50,8 +50,8 @@ def get_group_info(include_arches=None):
     if 'any' in group_mapping:
         any_groups = group_mapping['any']
         del group_mapping['any']
-        for arch, arch_groups in group_mapping.iteritems():
-            for grp in any_groups.itervalues():
+        for arch, arch_groups in group_mapping.items():
+            for grp in any_groups.values():
                 if grp['name'] in arch_groups:
                     found = arch_groups[grp['name']]
                     found['count'] += grp['count']
@@ -66,9 +66,9 @@ def get_group_info(include_arches=None):
     # now transform it back into a sorted list, including only the specified
     # architectures if we got a list
     groups = []
-    for key, val in group_mapping.iteritems():
+    for key, val in group_mapping.items():
         if not include_arches or key in include_arches:
-            groups.extend(val.itervalues())
+            groups.extend(iter(val.values()))
     return sorted(groups, key=itemgetter('name', 'arch'))
 
 
@@ -371,7 +371,7 @@ class PackageSignoffGroup(object):
         return user in (s.user for s in self.signoffs if not s.revoked)
 
     def __unicode__(self):
-        return u'%s-%s (%s): %d' % (
+        return '%s-%s (%s): %d' % (
                 self.pkgbase, self.version, self.arch, len(self.signoffs))
 
 
@@ -405,14 +405,14 @@ SELECT DISTINCT s.id
 def get_current_signoffs(repos):
     '''Returns a list of signoff objects for the given repos.'''
     to_fetch = signoffs_id_query(Signoff, repos)
-    return Signoff.objects.select_related('user').in_bulk(to_fetch).values()
+    return list(Signoff.objects.select_related('user').in_bulk(to_fetch).values())
 
 
 def get_current_specifications(repos):
     '''Returns a list of signoff specification objects for the given repos.'''
     to_fetch = signoffs_id_query(SignoffSpecification, repos)
-    return SignoffSpecification.objects.select_related('arch').in_bulk(
-            to_fetch).values()
+    return list(SignoffSpecification.objects.select_related('arch').in_bulk(
+            to_fetch).values())
 
 
 def get_target_repo_map(repos):
@@ -503,7 +503,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, (PackageGroup, License)):
             return obj.name
         if isinstance(obj, (Depend, Conflict, Provision, Replacement)):
-            return unicode(obj)
+            return str(obj)
         elif isinstance(obj, User):
             return obj.username
         return super(PackageJSONEncoder, self).default(obj)

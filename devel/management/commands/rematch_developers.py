@@ -62,7 +62,7 @@ def match_packager(finder):
             logger.debug("  found user %s", user.username)
             matched_count += 1
 
-    for packager_str, user in mapping.items():
+    for packager_str, user in list(mapping.items()):
         package_count += Package.objects.filter(packager__isnull=True,
                 packager_str=packager_str).update(packager=user)
 
@@ -88,7 +88,7 @@ def match_flagrequest(finder):
             logger.debug("  found user %s", user.username)
             matched_count += 1
 
-    for user_email, user in mapping.items():
+    for user_email, user in list(mapping.items()):
         req_count += FlagRequest.objects.filter(user__isnull=True,
                 user_email=user_email).update(user=user)
 

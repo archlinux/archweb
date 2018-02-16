@@ -59,7 +59,7 @@ class NewUserForm(forms.ModelForm):
                 'alias', 'public_email')
         for key in keys:
             self.fields[key] = old[key]
-        for key, _ in old.items():
+        for key, _ in list(old.items()):
             if key not in keys:
                 self.fields[key] = old[key]
 

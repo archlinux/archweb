@@ -64,9 +64,9 @@ class AlpmAPI(object):
 
 def main():
     api = AlpmAPI()
-    print(api.version())
-    print(api.vercmp(1, 2))
-    print(api.compare_versions(1, '<', 2))
+    print((api.version()))
+    print((api.vercmp(1, 2)))
+    print((api.compare_versions(1, '<', 2)))
 
 
 if __name__ == '__main__':

@@ -48,7 +48,7 @@ class RecentUpdate(object):
             by_arch = defaultdict(list)
             for package in self.others:
                 by_arch[package.arch].append(package)
-            for _, packages in by_arch.items():
+            for _, packages in list(by_arch.items()):
                 if len(packages) == 1:
                     yield packages[0]
                 else:
