@@ -13,22 +13,6 @@ from django.utils.safestring import mark_safe
 from main.utils import set_created_field, parse_markdown
 
 
-class Iso(models.Model):
-    name = models.CharField(max_length=255)
-    created = models.DateTimeField(editable=False)
-    removed = models.DateTimeField(null=True, blank=True, default=None)
-    active = models.BooleanField(default=True)
-
-    def get_absolute_url(self):
-        return reverse('releng-results-iso', args=[self.pk])
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'ISO'
-
-
 class Release(models.Model):
     release_date = models.DateField(db_index=True)
     version = models.CharField(max_length=50, unique=True)
@@ -103,8 +87,6 @@ class Release(models.Model):
         return metadata
 
 
-for model in (Iso, Release):
-    pre_save.connect(set_created_field, sender=model,
-            dispatch_uid="releng.models")
+pre_save.connect(set_created_field, sender=Release, dispatch_uid="releng.models")
 
 # vim: set ts=4 sw=4 et:
