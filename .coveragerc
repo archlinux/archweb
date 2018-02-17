@@ -4,5 +4,6 @@
 omit =
 	**/migrations/*.py
 	**/tests.py
+        **/tests/*.py
 	env*
 	/home/travis/virtualenv*
