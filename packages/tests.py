@@ -1,6 +1,7 @@
 import json
 import unittest
 
+from django.core import mail
 from django.test import TestCase
 
 from .alpm import AlpmAPI
@@ -233,6 +234,45 @@ class PackageDisplay(TestCase):
         response = self.client.get('/groups/x86_64/base/')
         self.assertEqual(response.status_code, 404)
         # FIXME: add group fixtures.
+
+
+class FlagPackage(TestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def test_flag_package(self):
+        data = {
+            'website': '',
+            'email': 'nobody@archlinux.org',
+            'message': 'new linux version',
+        }
+        response = self.client.post('/packages/core/x86_64/linux/flag/',
+                                    data,
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Package Flagged - linux', response.content)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('package [linux] marked out-of-date', mail.outbox[0].subject)
+
+        # Flag again, should fail
+        response = self.client.post('/packages/core/x86_64/linux/flag/',
+                                    data,
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('has already been flagged out-of-date.', response.content)
+
+    def test_flag_package_invalid(self):
+        data = {
+            'website': '',
+            'email': 'nobody@archlinux.org',
+            'message': 'a',
+        }
+        response = self.client.post('/packages/core/x86_64/linux/flag/',
+                                    data,
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Enter a valid and useful out-of-date message', response.content)
+        self.assertEqual(len(mail.outbox), 0)
 
 
 # vim: set ts=4 sw=4 et:
