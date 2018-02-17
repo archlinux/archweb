@@ -9,3 +9,4 @@ jsmin==2.2.2
 pgpdump==1.5
 pytz>=2015.4
 mock==2.0.0
+parse==1.8.2
