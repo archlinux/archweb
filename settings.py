@@ -180,7 +180,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.core.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
-                'main.context_processors.secure',
             ],
         }
     }
