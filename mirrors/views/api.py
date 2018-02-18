@@ -15,7 +15,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle datetime.timedelta and MirrorUrl
     serialization. The base class takes care of datetime.datetime types.'''
     url_attributes = ('url', 'protocol', 'last_sync', 'completion_pct',
-            'delay', 'duration_avg', 'duration_stddev', 'score')
+            'delay', 'duration_avg', 'duration_stddev', 'score', 'active')
 
     def default(self, obj):
         if isinstance(obj, timedelta):
