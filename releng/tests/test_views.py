@@ -30,3 +30,9 @@ class RelengViewTest(TestCase):
         version = self.release.version
         response = self.client.get('/releng/releases/{}/torrent/'.format(version))
         self.assertEqual(response.status_code, 404)
+
+    def test_release_details(self):
+        version = self.release.version
+        response = self.client.get('/releng/releases/{}/'.format(version))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(version, response.content.decode('utf-8'))
