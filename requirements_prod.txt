@@ -1,4 +1,4 @@
 -r requirements.txt
-psycopg2==2.6.1
+psycopg2==2.7.4
 pyinotify==0.9.6
 python-memcached==1.54
