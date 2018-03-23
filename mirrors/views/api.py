@@ -27,6 +27,8 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             data['country'] = unicode(country.name)
             data['country_code'] = country.code
             data['isos'] = obj.mirror.isos
+            data['ipv4'] = obj.has_ipv4
+            data['ipv6'] = obj.has_ipv6
             data['details'] = obj.get_full_url()
             return data
         if isinstance(obj, MirrorProtocol):
