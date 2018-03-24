@@ -21,8 +21,8 @@ class PGPTemplateTest(TestCase):
         pgp_key_len = len(pgp_key) + len('0x')
         self.assertEqual(pgp_key_len, len(format_key(pgp_key)))
 
-        # 8 - 20 len case
-        pgp_key = '3E2C81117BFB1108D'
+        # 8, 20 len case
+        pgp_key = '3E2C81117BFB1108DEFF'
         pgp_key_len = len(pgp_key) + len('0x')
         self.assertEqual(pgp_key_len, len(format_key(pgp_key)))
 
