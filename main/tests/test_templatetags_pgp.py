@@ -31,6 +31,11 @@ class PGPTemplateTest(TestCase):
         pgp_key_len = len(pgp_key) + len('0x')
         self.assertEqual(pgp_key_len, len(format_key(pgp_key)))
 
+    def assert_pgp_key_link(self, pgp_key):
+        output = pgp_key_link(int(pgp_key, 16))
+        self.assertIn(pgp_key[2:], output)
+        self.assertIn("https", output)
+
     def test_pgp_key_link(self):
         self.assertEqual(pgp_key_link(""), "Unknown")
 
@@ -42,6 +47,15 @@ class PGPTemplateTest(TestCase):
         output = pgp_key_link(pgp_key, "test")
         self.assertIn("test", output)
         self.assertIn("https", output)
+
+        # Numeric key_id <= 8
+        self.assert_pgp_key_link('0x0023BDC7')
+
+        # Numeric key_id <= 16
+        self.assert_pgp_key_link('0xBDC7FF5E34A12F')
+
+        # Numeric key_id <= 40
+        self.assert_pgp_key_link('0xA10E234343EA8BDC7FF5E34A12F')
 
         pgp_key = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
         server = getattr(settings, 'PGP_SERVER')
