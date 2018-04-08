@@ -23,7 +23,7 @@ from email.header import decode_header
 from parse import parse
 
 from django.db.utils import Error as DBError
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from main.models import Donor
 
 
@@ -91,8 +91,7 @@ class Command(BaseCommand):
             directory = options['maildir']
             maildir = mailbox.Maildir(directory, create=False)
         except mailbox.Error:
-            logger.error(u"Failed to open maildir: '%s'", directory)
-            return 0
+            raise CommandError(u"Failed to open maildir")
 
         for msg in maildir:
             subject = msg.get('subject', '')

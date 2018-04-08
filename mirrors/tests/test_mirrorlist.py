@@ -14,10 +14,6 @@ class MirrorListTest(TestCase):
         response = self.client.get('/mirrorlist/')
         self.assertEqual(response.status_code, 200)
 
-    def test_mirrorlist(self):
-        response = self.client.get('/mirrorlist/')
-        self.assertEqual(response.status_code, 200)
-
     def test_mirrorlist_all(self):
         response = self.client.get('/mirrorlist/all/')
         self.assertEqual(response.status_code, 200)
