@@ -56,7 +56,7 @@ class UserProfile(models.Model):
 
     def get_absolute_url(self):
         user = self.user
-        group = StaffGroup.objects.filter(group=user.groups.all()).first()
+        group = StaffGroup.objects.filter(group=user.groups.all().first()).get()
         if group:
             return '%s#%s' % (group.get_absolute_url(), user.username)
         return None
