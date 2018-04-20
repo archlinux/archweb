@@ -413,7 +413,7 @@ class Package(models.Model):
         except Package.DoesNotExist:
             return None
 
-    def elsewhere(self):
+    def elsewhere(self, staging=False):
         '''attempt to locate this package anywhere else, regardless of
         architecture or repository. Excludes this package from the list.'''
         names = [self.pkgname]
@@ -425,7 +425,7 @@ class Package(models.Model):
             names.append(u'lib32-' + self.pkgname)
             names.append(self.pkgname + u'-multilib')
         return Package.objects.normal().filter(
-                pkgname__in=names).exclude(id=self.id).order_by(
+                pkgname__in=names, repo__staging=staging).exclude(id=self.id).order_by(
                 'arch__name', 'repo__name')
 
 

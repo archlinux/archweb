@@ -50,7 +50,7 @@
             {% endif %}
         </div>
 
-        {% with others=pkg.elsewhere %}{% if others %}
+        {% if others %}
         <div id="elsewhere" class="widget">
             <h4>Versions Elsewhere</h4>
             <ul>
@@ -60,7 +60,7 @@
                 {% endfor %}
             </ul>
         </div>
-        {% endif %}{% endwith %}
+        {% endif %}
     </div>
 
     <div itemscope itemtype="http://schema.org/SoftwareApplication">

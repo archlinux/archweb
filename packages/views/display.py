@@ -129,7 +129,8 @@ def details(request, name='', repo='', arch=''):
                     repo=repo_obj, arch=arch_obj)
             if request.method == 'HEAD':
                 return empty_response()
-            return render(request, 'packages/details.html', {'pkg': pkg})
+            elsewhere = pkg.elsewhere(request.user.is_authenticated())
+            return render(request, 'packages/details.html', {'pkg': pkg, 'others': elsewhere})
         except Package.DoesNotExist:
             # attempt a variety of fallback options before 404ing
             options = (redirect_agnostic, split_package_details,
