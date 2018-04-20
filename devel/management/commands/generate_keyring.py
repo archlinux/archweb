@@ -26,6 +26,9 @@ class Command(BaseCommand):
     args = "<keyserver> <keyring_path> [ownertrust_path]"
     help = "Assemble a GPG keyring with all known developer keys."
 
+    def add_arguments(self, parser):
+        parser.add_argument('args', nargs='*', help='<arch> <filename>')
+
     def handle(self, *args, **options):
         v = int(options.get('verbosity', None))
         if v == 0:

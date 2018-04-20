@@ -11,7 +11,7 @@ matching up to a developer if we can find one.
 Usage: ./manage.py rematch_developers
 """
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.db import transaction
 
 import sys
@@ -28,10 +28,10 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Match and map objects in database to developer emails"
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         v = int(options.get('verbosity', None))
         if v == 0:
             logger.level = logging.ERROR
@@ -78,7 +78,7 @@ def match_flagrequest(finder):
 
     unmatched = FlagRequest.objects.filter(user__isnull=True).values_list(
             'user_email', flat=True).order_by().distinct()
-    
+
     logger.info("%d email addresses retrieved", len(unmatched))
     for user_email in unmatched:
         logger.debug("email %s", user_email)

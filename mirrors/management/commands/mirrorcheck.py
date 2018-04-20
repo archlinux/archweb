@@ -14,7 +14,6 @@ from datetime import datetime
 from httplib import HTTPException
 import logging
 import os
-from optparse import make_option
 from pytz import utc
 import re
 import socket
@@ -28,7 +27,7 @@ import types
 from Queue import Queue, Empty
 import urllib2
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.timezone import now
 
@@ -43,16 +42,23 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 
-class Command(NoArgsCommand):
-    option_list = NoArgsCommand.option_list + (
-        make_option('-t', '--timeout', dest='timeout', type='float', default=10.0,
-            help='Timeout value for connecting to URL'),
-        make_option('-l', '--location', dest='location', type='int',
-            help='ID of CheckLocation object to use for this run'),
-    )
+class Command(BaseCommand):
     help = "Runs a check on all known mirror URLs to determine their up-to-date status."
 
-    def handle_noargs(self, **options):
+    def add_arguments(self, parser):
+        parser.add_argument('-t',
+                            '--timeout',
+                            dest='timeout',
+                            type=float,
+                            default=10.0,
+                            help='Timeout value for connecting to URL')
+        parser.add_argument('-l',
+                            '--location',
+                            dest='location',
+                            type=int,
+                            help='ID of CheckLocation object to use for this run')
+
+    def handle(self, **options):
         v = int(options.get('verbosity', 0))
         if v == 0:
             logger.level = logging.ERROR

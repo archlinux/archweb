@@ -1,12 +1,12 @@
 import cssmin
 import jsmin
 
-from django.contrib.staticfiles.storage import CachedStaticFilesStorage
+from django.contrib.staticfiles.storage import ManifestStaticFilesStorage
 from django.core.files.base import ContentFile
 from django.utils.encoding import smart_str
 
 
-class MinifiedStaticFilesStorage(CachedStaticFilesStorage):
+class MinifiedStaticFilesStorage(ManifestStaticFilesStorage):
     """
     A static file system storage backend which minifies the hashed
     copies of the files it saves. It currently knows how to process

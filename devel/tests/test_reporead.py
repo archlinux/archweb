@@ -17,7 +17,7 @@ class RepoReadTest(TransactionTestCase):
     def test_invalid_args(self):
         with self.assertRaises(CommandError) as e:
             call_command('reporead')
-        self.assertIn('Architecture is required', str(e.exception))
+        self.assertIn('missing arch and file.', str(e.exception))
 
         with self.assertRaises(CommandError) as e:
             call_command('reporead', 'x86_64')

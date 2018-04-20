@@ -49,15 +49,11 @@ packages, you will probably want the following:
    Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
 
-4. Sync the database to create it.
-
-        ./manage.py syncdb
-
-5. Migrate changes.
+4. Migrate changes.
 
         ./manage.py migrate
 
-6. Load the fixtures to prepopulate some data. If you don't want some of the
+5. Load the fixtures to prepopulate some data. If you don't want some of the
    provided data, adjust the file glob accordingly.
 
         ./manage.py loaddata main/fixtures/*.json
@@ -65,11 +61,11 @@ packages, you will probably want the following:
         ./manage.py loaddata mirrors/fixtures/*.json
         ./manage.py loaddata releng/fixtures/*.json
 
-7. Use the following commands to start a service instance
+6. Use the following commands to start a service instance
 
         ./manage.py runserver
 
-8. To optionally populate the database with real data:
+7. To optionally populate the database with real data:
 
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
         ./manage.py reporead x86_64 core.db.tar.gz

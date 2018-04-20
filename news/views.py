@@ -2,7 +2,7 @@ from django import forms
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.template import Context, loader
+from django.template import loader
 from django.views.decorators.http import require_POST
 from django.views.generic import (DetailView, ListView,
         CreateView, UpdateView, DeleteView)
@@ -40,9 +40,9 @@ class NewsCreateView(CreateView):
         newsitem.slug = find_unique_slug(News, newsitem.title)
         newsitem.save()
         if newsitem.send_announce:
-            ctx = Context({
+            ctx = {
                 'news': newsitem,
-            })
+            }
             template = loader.get_template('news/news_email_notification.txt')
             send_mail('[arch-announce] %s' % newsitem.title,
                       template.render(ctx),
