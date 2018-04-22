@@ -32,7 +32,7 @@ class Todolist(models.Model):
     class Meta:
         get_latest_by = 'created'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @property
@@ -84,7 +84,7 @@ class TodolistPackage(models.Model):
         unique_together = (('todolist', 'pkgname', 'arch'),)
         get_latest_by = 'created'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.pkgname
 
     def status_css_class(self):

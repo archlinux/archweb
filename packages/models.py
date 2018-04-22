@@ -41,7 +41,7 @@ class PackageRelation(models.Model):
     def last_update(self):
         return Update.objects.filter(pkgbase=self.pkgbase).latest()
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s: %s (%s)' % (
                 self.pkgbase, self.user, self.get_type_display())
 
@@ -97,7 +97,7 @@ class SignoffSpecification(models.Model):
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
         return '%s-%s' % (self.pkgver, self.pkgrel)
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s-%s' % (self.pkgbase, self.full_version)
 
 
@@ -166,7 +166,7 @@ class Signoff(models.Model):
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
         return '%s-%s' % (self.pkgver, self.pkgrel)
 
-    def __unicode__(self):
+    def __str__(self):
         revoked = ''
         if self.revoked:
             revoked = ' (revoked)'
@@ -220,7 +220,7 @@ class FlagRequest(models.Model):
                 repo__staging=self.repo.staging).order_by(
                 'pkgname', 'repo__name', 'arch__name')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
 
@@ -338,7 +338,7 @@ class Update(models.Model):
             pkgs = pkgs.filter(arch__in=arches)
         return pkgs
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s of %s on %s' % (self.get_action_flag_display(),
                 self.pkgname, self.created)
 
@@ -351,7 +351,7 @@ class PackageGroup(models.Model):
     pkg = models.ForeignKey(Package, related_name='groups')
     name = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.name, self.pkg)
 
     class Meta:
@@ -362,7 +362,7 @@ class License(models.Model):
     pkg = models.ForeignKey(Package, related_name='licenses')
     name = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -451,7 +451,7 @@ class RelatedToBase(models.Model):
                 x.repo.testing == self.pkg.repo.testing)
         return sorted(pkgs, key=key_func, reverse=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.version:
             return '%s%s%s' % (self.name, self.comparison, self.version)
         return self.name
@@ -475,9 +475,9 @@ class Depend(RelatedToBase):
     deptype = models.CharField(max_length=1, default='D',
             choices=DEPTYPE_CHOICES)
 
-    def __unicode__(self):
+    def __str__(self):
         '''For depends, we may also have a description and a modifier.'''
-        to_str = super(Depend, self).__unicode__()
+        to_str = super(Depend, self).__str__()
         if self.description:
             return '%s: %s' % (to_str, self.description)
         return to_str
