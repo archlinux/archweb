@@ -38,4 +38,4 @@ class RepoReadTest(TransactionTestCase):
 
         packages = Package.objects.all()
         import_packages = ["{}-{}-{}".format(pkg.pkgname, pkg.pkgver, pkg.pkgrel) for pkg in packages]
-        self.assertItemsEqual(files, import_packages)
+        self.assertCountEqual(files, import_packages)
