@@ -120,52 +120,52 @@ class PackageSearch(TestCase):
     def test_invalid(self):
         response = self.client.get('/packages/?q=test')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('0 matching packages found', response.content)
+        self.assertIn('0 matching packages found', response.content.decode())
 
     def test_exact_match(self):
         response = self.client.get('/packages/?q=linux')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('1 matching package found', response.content)
+        self.assertIn('1 matching package found', response.content.decode())
 
     def test_filter_name(self):
         response = self.client.get('/packages/?name=name')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('0 matching packages found', response.content)
+        self.assertIn('0 matching packages found', response.content.decode())
 
     def test_filter_repo(self):
         response = self.client.get('/packages/?repo=Core')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('5 matching packages found', response.content)
+        self.assertIn('5 matching packages found', response.content.decode())
 
     def test_filter_desc(self):
         response = self.client.get('/packages/?desc=kernel')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('1 matching package found', response.content)
+        self.assertIn('1 matching package found', response.content.decode())
 
     def test_filter_flagged(self):
         response = self.client.get('/packages/?flagged=Flagged')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('0 matching packages found', response.content)
+        self.assertIn('0 matching packages found', response.content.decode())
 
     def test_filter_not_flagged(self):
         response = self.client.get('/packages/?flagged=Not Flagged')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('5 matching packages found', response.content)
+        self.assertIn('5 matching packages found', response.content.decode())
 
     def test_filter_arch(self):
         response = self.client.get('/packages/?arch=any')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('0 matching packages found', response.content)
+        self.assertIn('0 matching packages found', response.content.decode())
 
     def test_filter_maintainer_orphan(self):
         response = self.client.get('/packages/?maintainer=orphan')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('5 matching packages found', response.content)
+        self.assertIn('5 matching packages found', response.content.decode())
 
     def test_filter_packager_unknown(self):
         response = self.client.get('/packages/?packager=unknown')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('5 matching packages found', response.content)
+        self.assertIn('5 matching packages found', response.content.decode())
 
     def test_sort(self):
         response = self.client.get('/packages/?sort=pkgname')
@@ -188,7 +188,7 @@ class OpenSearch(TestCase):
     def test_packages_suggest(self):
         response = self.client.get('/opensearch/packages/suggest?q=linux')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('linux', response.content)
+        self.assertIn('linux', response.content.decode())
 
         response = self.client.get('/opensearch/packages/suggest')
 
@@ -271,7 +271,7 @@ class FlagPackage(TestCase):
                                     data,
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Package Flagged - linux', response.content)
+        self.assertIn('Package Flagged - linux', response.content.decode())
         self.assertEqual(len(mail.outbox), 1)
         self.assertIn('package [linux] marked out-of-date', mail.outbox[0].subject)
 
@@ -280,7 +280,7 @@ class FlagPackage(TestCase):
                                     data,
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('has already been flagged out-of-date.', response.content)
+        self.assertIn('has already been flagged out-of-date.', response.content.decode())
 
     def test_flag_package_invalid(self):
         data = {
@@ -292,7 +292,7 @@ class FlagPackage(TestCase):
                                     data,
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Enter a valid and useful out-of-date message', response.content)
+        self.assertIn('Enter a valid and useful out-of-date message', response.content.decode())
         self.assertEqual(len(mail.outbox), 0)
 
 
