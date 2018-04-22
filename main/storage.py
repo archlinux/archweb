@@ -27,7 +27,7 @@ class MinifiedStaticFilesStorage(ManifestStaticFilesStorage):
                     continue
                 if original_path.endswith(ext):
                     with self._open(processed_path) as processed_file:
-                        minified = func(processed_file.read())
+                        minified = func(processed_file.read().decode('utf-8'))
                     minified_file = ContentFile(smart_str(minified))
                     self.delete(processed_path)
                     self._save(processed_path, minified_file)
