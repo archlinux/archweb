@@ -17,12 +17,12 @@ class MirrorListTest(TestCase):
     def test_mirrorlist_all(self):
         response = self.client.get('/mirrorlist/all/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
 
     def test_mirrorlist_all_http(self):
         response = self.client.get('/mirrorlist/all/http/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
 
     def test_mirrorlist_all_https(self):
         response = self.client.get('/mirrorlist/all/https/')
@@ -32,9 +32,9 @@ class MirrorListTest(TestCase):
     def test_mirrorlist_filter(self):
         response = self.client.get('/mirrorlist/?country=all&protocol=http&ip_version=4')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
 
     def test_generate(self):
         response = self.client.get('/mirrorlist/?country=all&protocol=http&ip_version=4')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
