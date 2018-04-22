@@ -21,12 +21,12 @@ class TestTodolist(TestCase):
     def test_todolist_overview(self):
         response = self.client.get('/todo/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.todolist.name, response.content)
+        self.assertIn(self.todolist.name, response.content.decode())
 
     def test_todolist_detail(self):
         response = self.client.get(self.todolist.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.todolist.name, response.content)
+        self.assertIn(self.todolist.name, response.content.decode())
 
     def test_todolist_json(self):
         response = self.client.get(self.todolist.get_absolute_url() + 'json')
