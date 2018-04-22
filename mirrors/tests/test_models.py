@@ -22,7 +22,7 @@ class MirrorUrlTest(TestCase):
     def test_mirror_overview(self):
         response = self.client.get('/mirrors/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.mirror.name, response.content)
+        self.assertIn(self.mirror_url.mirror.name, response.content.decode())
 
     def testClean(self):
         # TODO: add test for self.mirror_url.clean()
