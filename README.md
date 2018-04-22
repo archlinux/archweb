@@ -72,7 +72,6 @@ packages, you will probably want the following:
         # Package file listing
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
         ./manage.py reporead --filesonly x86_64 core.files.tar.gz
-        ./manage.py syncisos
 
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
