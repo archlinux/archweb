@@ -50,7 +50,7 @@ class AlpmAPI(object):
     def vercmp(self, ver1, ver2):
         if not self.available:
             return None
-        return ALPM.alpm_pkg_vercmp(str(ver1), str(ver2))
+        return ALPM.alpm_pkg_vercmp(str(ver1).encode(), str(ver2).encode())
 
     def compare_versions(self, ver1, oper, ver2):
         func = self.OPERATOR_MAP.get(oper, None)
