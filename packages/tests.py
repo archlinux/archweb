@@ -16,7 +16,7 @@ class AlpmTestCase(unittest.TestCase):
     def test_version(self):
         version = alpm.version()
         self.assertIsNotNone(version)
-        version = version.split('.')
+        version = version.split(b'.')
         # version is a 3-tuple, e.g., '7.0.2'
         self.assertEqual(3, len(version))
 
