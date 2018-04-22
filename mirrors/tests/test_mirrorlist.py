@@ -27,12 +27,12 @@ class MirrorListTest(TestCase):
     def test_mirrorlist_all(self):
         response = self.client.get('/mirrorlist/all/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
 
     def test_mirrorlist_all_http(self):
         response = self.client.get('/mirrorlist/all/http/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(self.mirror_url.hostname, response.content.decode())
 
     def test_mirrorlist_all_https(self):
         # First test that without any https mirrors, we get a 404.
@@ -58,10 +58,10 @@ class MirrorListTest(TestCase):
         # First test that we correctly see the above mirror.
         response = self.client.get('/mirrorlist/?country=JP&protocol=https')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(jp_mirror_url.hostname, response.content)
+        self.assertIn(jp_mirror_url.hostname, response.content.decode())
 
         # Now confirm that the US mirror did not show up.
-        self.assertNotIn(self.mirror_url.hostname, response.content)
+        self.assertNotIn(self.mirror_url.hostname, response.content.decode())
 
         jp_mirror_url.delete()
 
