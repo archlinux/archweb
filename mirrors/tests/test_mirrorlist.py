@@ -25,9 +25,18 @@ class MirrorListTest(TestCase):
         self.assertIn(self.mirror_url.hostname, response.content)
 
     def test_mirrorlist_all_https(self):
+        # First test that without any https mirrors, we get a 404.
         response = self.client.get('/mirrorlist/all/https/')
         self.assertEqual(response.status_code, 404)
-        # TODO: test 200 case
+
+        # Now, after adding an HTTPS mirror, we expect to succeed.
+        https_mirror_url = create_mirror_url(
+            name='https_mirror',
+            protocol='https',
+            url='https://wikipedia.org')
+        response = self.client.get('/mirrorlist/all/https/')
+        self.assertEqual(response.status_code, 200)
+        https_mirror_url.delete()
 
     def test_mirrorlist_filter(self):
         jp_mirror_url = create_mirror_url(
@@ -45,8 +54,3 @@ class MirrorListTest(TestCase):
         self.assertNotIn(self.mirror_url.hostname, response.content)
 
         jp_mirror_url.delete()
-
-    def test_generate(self):
-        response = self.client.get('/mirrorlist/?country=all&protocol=http&ip_version=4')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
