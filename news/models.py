@@ -25,7 +25,7 @@ class News(models.Model):
     def html(self):
         return mark_safe(parse_markdown(self.content, not self.safe_mode))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
