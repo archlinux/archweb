@@ -33,7 +33,7 @@ class Donor(models.Model):
             help_text="Should we show this donor on the public page?")
     created = models.DateTimeField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -49,7 +49,7 @@ class Arch(models.Model):
     required_signoffs = models.PositiveIntegerField(default=2,
             help_text="Number of signoffs required for packages of this architecture")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __lt__(self, other):
@@ -74,7 +74,7 @@ class Repo(models.Model):
     svn_root = models.CharField(max_length=64,
             help_text="SVN root (e.g. path) for this repository.")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def __lt__(self, other):
@@ -118,7 +118,7 @@ class Package(models.Model):
         get_latest_by = 'last_update'
         unique_together = (('pkgname', 'repo', 'arch'),)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.pkgname
 
     @property
@@ -435,7 +435,7 @@ class PackageFile(models.Model):
     directory = models.CharField(max_length=1024)
     filename = models.CharField(max_length=1024, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s%s" % (self.directory, self.filename or '')
 
     class Meta:
