@@ -30,7 +30,7 @@ class Release(models.Model):
         get_latest_by = 'release_date'
         ordering = ('-release_date', '-version')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.version
 
     def get_absolute_url(self):
