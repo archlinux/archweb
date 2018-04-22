@@ -55,7 +55,8 @@ class MirrorlistForm(forms.Form):
 @csrf_exempt
 def generate_mirrorlist(request):
     if request.method == 'POST' or len(request.GET) > 0:
-        form = MirrorlistForm(data=request.POST)
+        data = request.POST if request.method == 'POST' else request.GET
+        form = MirrorlistForm(data=data)
         if form.is_valid():
             countries = form.cleaned_data['country']
             protocols = form.cleaned_data['protocol']

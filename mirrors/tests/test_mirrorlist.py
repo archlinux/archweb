@@ -30,9 +30,21 @@ class MirrorListTest(TestCase):
         # TODO: test 200 case
 
     def test_mirrorlist_filter(self):
-        response = self.client.get('/mirrorlist/?country=all&protocol=http&ip_version=4')
+        jp_mirror_url = create_mirror_url(
+            name='jp_mirror',
+            country='JP',
+            protocol='https',
+            url='https://wikipedia.jp')
+
+        # First test that we correctly see the above mirror.
+        response = self.client.get('/mirrorlist/?country=JP&protocol=https')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.hostname, response.content)
+        self.assertIn(jp_mirror_url.hostname, response.content)
+
+        # Now confirm that the US mirror did not show up.
+        self.assertNotIn(self.mirror_url.hostname, response.content)
+
+        jp_mirror_url.delete()
 
     def test_generate(self):
         response = self.client.get('/mirrorlist/?country=all&protocol=http&ip_version=4')
