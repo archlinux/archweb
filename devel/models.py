@@ -73,7 +73,7 @@ class StaffGroup(models.Model):
     class Meta:
         ordering = ('sort_order',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -94,7 +94,7 @@ class MasterKey(models.Model):
         ordering = ('created',)
         get_latest_by = 'created'
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s, created %s' % (
                 self.owner.get_full_name(), self.created)
 
@@ -109,7 +109,7 @@ class DeveloperKey(models.Model):
     revoked = models.DateTimeField(null=True, blank=True)
     parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
 
 
@@ -127,7 +127,7 @@ class PGPSignature(models.Model):
         get_latest_by = 'created'
         verbose_name = 'PGP signature'
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s → %s' % (self.signer, self.signee)
 
 
