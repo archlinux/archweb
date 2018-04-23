@@ -37,7 +37,7 @@ def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
             'name', 'pkg__arch__name').order_by('name').annotate(
             cnt=Count('pkg'), last_update=Max('pkg__last_update'))
-    # now for post_processing. we need to seperate things out and add
+    # now for post_processing. we need to separate things out and add
     # the count in for 'any' to all of the other architectures.
     group_mapping = {}
     for grp in raw_groups:
