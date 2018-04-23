@@ -1025,7 +1025,6 @@ ul.admin-actions {
 .todo-table .complete,
 .signoff-yes,
 #key-status .signed-yes,
-#releng-result .success-yes,
 #release-list .available-yes {
     color: green;
 }
@@ -1033,7 +1032,6 @@ ul.admin-actions {
 .todo-table .incomplete,
 .signoff-no,
 #key-status .signed-no,
-#releng-result .success-no,
 #release-list .available-no {
     color: red;
 }
@@ -1084,25 +1082,6 @@ ul.signoff-list {
     color: gray;
 }
 
-/* iso testing feedback form */
-#releng-feedback label {
-    width: auto;
-    display: inline;
-    font-weight: normal;
-}
-
-#releng-feedback ul {
-    padding-left: 1em;
-}
-
-#releng-feedback li {
-    list-style: none;
-}
-
-#releng-feedback ul+.helptext {
-    position: relative; top: -0.9em;
-}
-
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a,
 #archnavbar.anb-packages ul li#anb-packages a,
@@ -1114,10 +1093,6 @@ ul.signoff-list {
 .visualize-buttons {
     margin: 0.5em 0.33em;
 }
-
-    .visualize-buttons button.active {
-        depressed: true;
-    }
 
 .visualize-chart {
     position: relative;
