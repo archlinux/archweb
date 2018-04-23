@@ -1115,10 +1115,6 @@ ul.signoff-list {
     margin: 0.5em 0.33em;
 }
 
-    .visualize-buttons button.active {
-        depressed: true;
-    }
-
 .visualize-chart {
     position: relative;
     height: 500px;
