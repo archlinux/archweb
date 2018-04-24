@@ -17,8 +17,8 @@ See AUTHORS file.
 
 # Dependencies
 
-- python2
-- python2-virtualenv
+- python
+- python-virtualenv
 
 # Python dependencies
 
@@ -26,16 +26,16 @@ More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
 packages, you will probably want the following:
 
-- python2-django
-- python2-psycopg2
-- python2-markdown
-- python2-memcached
+- python-django
+- python-psycopg2
+- python-markdown
+- python-memcached
 
 # Testing Installation
 
-1. Run `virtualenv2`.
+1. Run `virtualenv3`.
 
-        cd /path/to/archweb && virtualenv2 ./env/
+        cd /path/to/archweb && virtualenv3 ./env/
 
 2. Activate the virtualenv.
 
@@ -88,9 +88,9 @@ For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
 To be able to create an account on your test environment an SMTP server is
 required. A simple debugging SMTP server can be setup using Python.
 
-        python2 -m smtpd -n -c DebuggingServer localhost:1025
+        python -m smtpd -n -c DebuggingServer localhost:1025
 
-In local_settings.py change the EMAIL_HOST to 'localhost' and the EMAIL_PORT to
+In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_PORT to
 1025.
 
 # Running tests and coverage
