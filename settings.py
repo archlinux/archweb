@@ -85,8 +85,8 @@ X_FRAME_OPTIONS = 'DENY'
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
