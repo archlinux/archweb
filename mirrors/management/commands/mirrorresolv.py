@@ -58,8 +58,8 @@ def resolve_mirrors():
             if e.errno == socket.EAI_NONAME:
                 logger.debug("gaierror resolving %s: %s", mirrorurl.hostname, e)
             else:
-                logger.warn("gaierror resolving %s: %s", mirrorurl.hostname, e)
+                logger.warning("gaierror resolving %s: %s", mirrorurl.hostname, e)
         except socket.error as e:
-            logger.warn("error resolving %s: %s", mirrorurl.hostname, e)
+            logger.warning("error resolving %s: %s", mirrorurl.hostname, e)
 
 # vim: set ts=4 sw=4 et:

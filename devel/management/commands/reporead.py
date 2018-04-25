@@ -136,7 +136,7 @@ class RepoPackage(object):
         try:
             info = parse_info(data_file)
         except UnicodeDecodeError:
-            logger.warn("Could not correctly decode files list for %s",
+            logger.warning("Could not correctly decode files list for %s",
                     self.name)
             return None
         return info['files']
@@ -557,7 +557,7 @@ def parse_repo(repopath):
                 try:
                     pkgs[pkgid].populate(parse_info(data_file))
                 except UnicodeDecodeError:
-                    logger.warn("Could not correctly decode %s, skipping file",
+                    logger.warning("Could not correctly decode %s, skipping file",
                             tarinfo.name)
                 data_file.close()
                 del data_file
