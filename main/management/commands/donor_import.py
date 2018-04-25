@@ -14,6 +14,7 @@ Subject: Receipt [$25.00] By: John Doe [john.doe@archlinux.org]
 Usage: ./manage.py donor_import path/to/maildir/
 """
 
+import codecs
 import logging
 import mailbox
 import sys
@@ -46,7 +47,7 @@ class Command(BaseCommand):
         default_charset = 'utf-8'
         # Convert the list of tuples containing the decoded string and encoding to
         # UTF-8
-        return u''.join([s[0].encode(default_charset, 'replace').decode(default_charset, 'replace') for s in subject])
+        return ''.join([codecs.decode(s[0], s[1] or default_charset) for s in subject])
 
 
     def parse_subject(self, subject):
