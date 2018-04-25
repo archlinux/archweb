@@ -38,7 +38,7 @@ class DonorImportTest(TransactionTestCase):
 
     def test_decode_subject(self):
         text = u'メイル'
-        subject = str(Header(text, 'utf-8'))
+        subject = Header(text, 'utf-8')
         self.assertEqual(self.command.decode_subject(subject), text)
 
     def test_invalid_args(self):
