@@ -78,7 +78,7 @@ def get_split_packages_info():
     pkgnames = Package.objects.values('pkgname')
     split_pkgs = Package.objects.exclude(pkgname=F('pkgbase')).exclude(
             pkgbase__in=pkgnames).values('pkgbase', 'repo', 'arch').annotate(
-            last_update=Max('last_update')).order_by().distinct()
+            last_update=Max('last_update')).distinct()
     all_arches = Arch.objects.in_bulk({s['arch'] for s in split_pkgs})
     all_repos = Repo.objects.in_bulk({s['repo'] for s in split_pkgs})
     for split in split_pkgs:
