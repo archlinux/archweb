@@ -16,7 +16,7 @@ class PackagesSitemap(Sitemap):
         return Package.objects.normal().only(
                 'pkgname', 'last_update', 'files_last_update',
                 'repo__name', 'repo__testing', 'repo__staging',
-                'arch__name').order_by()
+                'arch__name')
 
     def lastmod(self, obj):
         return obj.last_update
@@ -81,7 +81,7 @@ class NewsSitemap(Sitemap):
         self.one_week_ago = now - timedelta(days=7)
 
     def items(self):
-        return News.objects.all().defer('content', 'guid', 'title').order_by()
+        return News.objects.all().defer('content', 'guid', 'title')
 
     def lastmod(self, obj):
         return obj.last_modified
@@ -110,7 +110,7 @@ class ReleasesSitemap(Sitemap):
     changefreq = "monthly"
 
     def items(self):
-        return Release.objects.all().defer('info', 'torrent_data').order_by()
+        return Release.objects.all().defer('info', 'torrent_data')
 
     def lastmod(self, obj):
         return obj.last_modified
@@ -129,7 +129,7 @@ class TodolistSitemap(Sitemap):
         self.two_weeks_ago = now - timedelta(days=14)
 
     def items(self):
-        return Todolist.objects.all().defer('raw').order_by()
+        return Todolist.objects.all().defer('raw').order_by('created')
 
     def lastmod(self, obj):
         return obj.last_modified
