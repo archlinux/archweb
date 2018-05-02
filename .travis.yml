@@ -2,7 +2,10 @@ language: python
 python:
   - "2.7"
 cache: pip
-install: "pip install -r requirements.txt && pip install coveralls pylint"
+install: "pip install -r requirements.txt && pip install coveralls pylint selenium"
+sudo: required
+addons:
+  chrome: stable
 
 script:
   - python manage.py collectstatic --noinput
