@@ -14,8 +14,13 @@ from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
 from ..utils import get_mirror_statuses, get_mirror_errors
 
 
-def mirrors(request):
+def mirrors(request, tier=None):
     mirror_list = Mirror.objects.select_related().order_by('tier', 'name')
+    if tier is not None:
+        tier = int(tier)
+        if tier not in [t[0] for t in Mirror.TIER_CHOICES]:
+            raise Http404
+        mirror_list = mirror_list.filter(tier=tier)
     protos = MirrorUrl.objects.values_list(
             'mirror_id', 'protocol__protocol').order_by(
             'mirror_id', 'protocol__protocol').distinct()

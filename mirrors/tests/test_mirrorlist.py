@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from mirrors.tests import create_mirror_url
+from mirrors.models import Mirror
 
 
 class MirrorListTest(TestCase):
@@ -13,6 +14,15 @@ class MirrorListTest(TestCase):
     def test_mirrorlist(self):
         response = self.client.get('/mirrorlist/')
         self.assertEqual(response.status_code, 200)
+
+    def test_mirrorlist_tier(self):
+        response = self.client.get('/mirrorlist/tier/1/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_mirrorlist_tier(self):
+        last_tier = Mirror.TIER_CHOICES[-1][0]
+        response = self.client.get('/mirrorlist/tier/{}/'.format(last_tier + 1))
+        self.assertEqual(response.status_code, 404)
 
     def test_mirrorlist_all(self):
         response = self.client.get('/mirrorlist/all/')

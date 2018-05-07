@@ -5,6 +5,7 @@ from .views.api import status_json, mirror_details_json, locations_json
 
 urlpatterns = [
     url(r'^$', mirrors, name='mirror-list'),
+    url(r'^tier/(?P<tier>\d+)/$', mirrors, name='mirror-list-tier'),
     url(r'^status/$', status, name='mirror-status'),
     url(r'^status/json/$', status_json, name='mirror-status-json'),
     url(r'^status/tier/(?P<tier>\d+)/$', status, name='mirror-status-tier'),
