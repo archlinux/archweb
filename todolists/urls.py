@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 
-from .views import (view_redirect, view, add, edit, flag,
+from .views import (view_redirect, view, view_json, add, edit, flag,
         list_pkgbases, DeleteTodolist, TodolistListView)
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^add/$',
         permission_required('todolists.add_todolist')(add)),
     url(r'^(?P<slug>[-\w]+)/$', view),
+    url(r'^(?P<slug>[-\w]+)/json$', view_json),
     url(r'^(?P<slug>[-\w]+)/edit/$',
         permission_required('todolists.change_todolist')(edit)),
     url(r'^(?P<slug>[-\w]+)/delete/$',

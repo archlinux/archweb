@@ -14,7 +14,7 @@ from django.utils.timezone import now
 
 from main.models import Package, Repo
 from main.utils import find_unique_slug
-from packages.utils import attach_maintainers
+from packages.utils import attach_maintainers, PackageJSONEncoder
 from .models import Todolist, TodolistPackage
 from .utils import get_annotated_todolists, attach_staging
 
@@ -235,5 +235,24 @@ def send_todolist_emails(todo_list, new_packages):
                 'Arch Website Notification <nobody@archlinux.org>',
                 [maint],
                 fail_silently=True)
+
+
+class TodoListJSONEncoder(PackageJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Todolist):
+            return {
+                'id': obj.pk,
+                'name': obj.name,
+                'description': obj.description,
+                'packages': [pkg.pkg for pkg in obj.packages()],
+            }
+
+        return super(TodoListJSONEncoder, self).default(obj)
+
+
+def view_json(request, slug):
+    todolist = get_object_or_404(Todolist, slug=slug)
+    to_json = json.dumps(todolist, ensure_ascii=False, cls=TodoListJSONEncoder)
+    return HttpResponse(to_json, content_type='application/json')
 
 # vim: set ts=4 sw=4 et:

@@ -27,3 +27,9 @@ class TestTodolist(TestCase):
         response = self.client.get(self.todolist.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.todolist.name, response.content)
+
+    def test_todolist_json(self):
+        response = self.client.get(self.todolist.get_absolute_url() + 'json')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['name'], self.todolist.name)
