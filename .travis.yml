@@ -7,10 +7,13 @@ sudo: required
 addons:
   chrome: stable
 
+before_script:
+  - wget https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python2.7.14/
+
 script:
-  - ls -lh /home/travis/virtualenv/python2.7.9/
   - python manage.py collectstatic --noinput
-  - coverage run --rcfile .coveragerc manage.py test
+  - PATH=$PATH:/home/travis/virtualenv/python2.7.14/ coverage run --rcfile .coveragerc manage.py test
   - pylint devel main mirrors news packages releng retro templates todolists visualize *.py
 
 after_success:
