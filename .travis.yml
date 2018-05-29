@@ -8,6 +8,7 @@ addons:
   chrome: stable
 
 script:
+  - ls -lh /home/travis/virtualenv/python2.7.9/
   - python manage.py collectstatic --noinput
   - coverage run --rcfile .coveragerc manage.py test
   - pylint devel main mirrors news packages releng retro templates todolists visualize *.py
