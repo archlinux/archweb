@@ -977,6 +977,7 @@ table td.country {
 #clocks-table tr:hover,
 #dev-dashboard tr:hover,
 #dev-todo-pkglist tr:hover,
+#pkglist-results tr:hover,
 #stats-area tr:hover {
     background: #ffd;
 }
