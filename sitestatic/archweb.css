@@ -972,8 +972,12 @@ table td.country {
     width: auto;
 }
 
-/* dev: dashboard: dashboard and stats area */
+/* tables rows: highlight on mouse-vover */
+#article-list tr:hover,
+#clocks-table tr:hover,
 #dev-dashboard tr:hover,
+#dev-todo-pkglist tr:hover,
+#pkglist-results tr:hover,
 #stats-area tr:hover {
     background: #ffd;
 }
