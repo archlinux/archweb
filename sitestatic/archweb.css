@@ -974,6 +974,7 @@ table td.country {
 
 /* tables rows: highlight on mouse-vover */
 #article-list tr:hover,
+#clocks-table tr:hover,
 #dev-dashboard tr:hover,
 #dev-todo-pkglist tr:hover,
 #stats-area tr:hover {
