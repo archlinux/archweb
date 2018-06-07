@@ -974,6 +974,7 @@ table td.country {
 
 /* dev: dashboard: dashboard and stats area */
 #dev-dashboard tr:hover,
+#dev-todo-pkglist tr:hover,
 #stats-area tr:hover {
     background: #ffd;
 }
