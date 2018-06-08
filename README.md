@@ -76,6 +76,13 @@ packages, you will probably want the following:
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
 
+8. Database Updates for Added/Removed packages
+
+        sqlite3 archweb.db < packages/sql/update.sqlite3.sql
+
+For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
+
+
 # Testing SMTP server
 
 To be able to create an account on your test environment an SMTP server is
