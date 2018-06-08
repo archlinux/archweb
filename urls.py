@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
-from feeds import PackageFeed, NewsFeed, ReleaseFeed
+from feeds import PackageFeed, NewsFeed, ReleaseFeed, PackageUpdatesFeed
 import sitemaps
 
 import devel.urls
@@ -54,6 +54,10 @@ feeds_patterns = [
     url(r'^$', public.views.feeds, name='feeds-list'),
     url(r'^news/$', cache_page(311)(NewsFeed())),
     url(r'^packages/$', cache_page(313)(PackageFeed())),
+    url(r'^packages/(added|removed)/$', cache_page(313)(PackageUpdatesFeed())),
+    url(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageUpdatesFeed())),
+    url(r'^packages/(added|removed)/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageUpdatesFeed())),
+    url(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageUpdatesFeed())),
     url(r'^packages/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageFeed())),
     url(r'^packages/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
     url(r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),

@@ -59,6 +59,68 @@
     <p>A <a href="https://aur.archlinux.org/rss/" class="rss" title="AUR newest packages feed">newest packages feed</a>
     is also available from the <a href="https://aur.archlinux.org/" title="AUR Homepage">Arch User Repository (AUR)</a>.</p>
 
+    <p>Recently added packages.</p>
+    <table class="pretty2">
+        <thead>
+            <tr>
+                <th></th>
+                <th>All Arches</th>
+                {% for arch in arches %}
+                <th>{{ arch }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/added/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            {% for repo in repos %}
+            <tr>
+                <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/added/all/{{ repo|lower }}/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Recently removed packages.</p>
+    <table class="pretty2">
+        <thead>
+            <tr>
+                <th></th>
+                <th>All Arches</th>
+                {% for arch in arches %}
+                <th>{{ arch }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/removed/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            {% for repo in repos %}
+            <tr>
+                <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/removed/all/{{ repo|lower }}/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <h3>Release Feed</h3>
 
     <p>Grab the <a href="/feeds/releases/" class="rss" title="Arch Linux release feed">ISO release feed</a>
