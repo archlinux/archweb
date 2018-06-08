@@ -228,7 +228,7 @@ class UpdateManager(models.Manager):
     def log_update(self, old_pkg, new_pkg):
         '''Utility method to help log an update. This will determine the type
         based on how many packages are passed in, and will pull the relevant
-        necesary fields off the given packages.
+        necessary fields off the given packages.
         Note that in some cases, this is a no-op if we know this database type
         supports triggers to add these rows instead.'''
         if database_vendor(Package, 'write') in ('sqlite', 'postgresql'):
