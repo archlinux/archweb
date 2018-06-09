@@ -218,7 +218,7 @@ class Package(models.Model):
             new_rqd = []
             for dep in requiredby:
                 if not dep.comparison or not dep.version:
-                    # no comparisson/version, so always let it through
+                    # no comparison/version, so always let it through
                     new_rqd.append(dep)
                 elif self.pkgname == dep.name:
                     # depends on this package, so check it directly
