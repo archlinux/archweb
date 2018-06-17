@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 
 from mirrors.tests import create_mirror_url
@@ -28,7 +26,7 @@ class MirrorTest(TestCase):
 
         response = self.client.get(url + 'json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertNotEqual(data['urls'], [])
 
     def test_url_details(self):

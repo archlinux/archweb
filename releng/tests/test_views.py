@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 
 from releng.models import Release
@@ -15,7 +13,7 @@ class RelengViewTest(TestCase):
         version = self.release.version
         response = self.client.get('/releng/releases/json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         
         self.assertEqual(data['version'], 1)
         release = data['releases'][0]
