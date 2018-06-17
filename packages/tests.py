@@ -1,4 +1,3 @@
-import json
 import unittest
 
 from django.core import mail
@@ -67,7 +66,7 @@ class PackageSearchJson(TestCase):
     def test_invalid(self):
         response = self.client.get('/packages/search/json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(data['limit'], 250)
         self.assertEqual(data['results'], [])
         self.assertEqual(data['valid'], False)
@@ -75,7 +74,7 @@ class PackageSearchJson(TestCase):
     def test_reponame(self):
         response = self.client.get('/packages/search/json/?repository=core')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(len(data['results']), 5)
         self.assertEqual(set(map(lambda r: r['pkgname'], data['results'])),
                          {"coreutils", "glibc", "linux", "pacman", "systemd"})
@@ -83,19 +82,19 @@ class PackageSearchJson(TestCase):
     def test_packagename(self):
         response = self.client.get('/packages/search/json/?name=linux')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(len(data['results']), 1)
 
     def test_no_results(self):
         response = self.client.get('/packages/search/json/?name=none')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(len(data['results']), 0)
 
     def test_limit_four(self):
         response = self.client.get('/packages/search/json/?limit=4')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(data['page'], 1)
         self.assertEqual(data['num_pages'], 2)
         self.assertEqual(data['limit'], 4)
@@ -104,7 +103,7 @@ class PackageSearchJson(TestCase):
     def test_second_page(self):
         response = self.client.get('/packages/search/json/?limit=4&page=2')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(data['page'], 2)
         self.assertEqual(data['num_pages'], 2)
         self.assertEqual(len(data['results']), 1)
@@ -206,7 +205,7 @@ class PackageDisplay(TestCase):
     def test_packages_json(self):
         response = self.client.get('/packages/core/x86_64/linux/json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(data['pkgbase'], 'linux')
         # TODO verify more of the structure
 
@@ -217,7 +216,7 @@ class PackageDisplay(TestCase):
     def test_packages_files_json(self):
         response = self.client.get('/packages/core/x86_64/linux/files/json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(data['pkgname'], 'linux')
         # TODO verify more of the structure
 

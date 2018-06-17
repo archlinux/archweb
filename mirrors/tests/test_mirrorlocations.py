@@ -1,5 +1,3 @@
-import json
-
 from django.test import TestCase
 
 from mirrors.models import CheckLocation
@@ -14,7 +12,7 @@ class MirrorLocationsTest(TestCase):
     def test_mirrorlocations_json(self):
         response = self.client.get('/mirrors/locations/json/')
         self.assertEqual(response.status_code, 200)
-        data = json.loads(response.content)
+        data = response.json()
         self.assertEqual(1, data['version'])
         location = data['locations'][0]['country_code']
         self.assertEqual('US', location)
