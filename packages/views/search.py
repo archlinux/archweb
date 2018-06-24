@@ -1,4 +1,5 @@
 import json
+import operator
 
 from django import forms
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -98,8 +99,11 @@ def parse_form(form, packages):
 
     if form.cleaned_data['q']:
         query = form.cleaned_data['q']
-        q = Q(pkgname__icontains=query) | Q(pkgdesc__icontains=query)
-        packages = packages.filter(q)
+        q_pkgname = reduce(operator.__and__,
+                           (Q(pkgname__icontains=q) for q in query.split()))
+        q_pkgdesc = reduce(operator.__and__,
+                           (Q(pkgdesc__icontains=q) for q in query.split()))
+        packages = packages.filter(q_pkgname | q_pkgdesc)
 
     return packages
 
