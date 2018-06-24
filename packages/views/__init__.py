@@ -77,7 +77,6 @@ def update(request):
             if request.user in pkg.maintainers:
                 continue
 
-            # TODO type is a builtin python function...
             PackageRelation(pkgbase=pkg.pkgbase,
                             user=request.user,
                             type=PackageRelation.MAINTAINER
@@ -91,11 +90,9 @@ def update(request):
         # [community] -> [extra] moves
         for pkg in Package.objects.filter(id__in=ids):
             if request.user in pkg.maintainers:
-                rels = PackageRelation.objects.filter(
-                           pkgbase=pkg.pkgbase,
-                           user=request.user,
-                           type=PackageRelation.MAINTAINER
-                       )
+                rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
+                        user=request.user,
+                        type=PackageRelation.MAINTAINER)
                 count += rels.count()
                 rels.delete()
 

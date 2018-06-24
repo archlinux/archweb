@@ -25,6 +25,7 @@ class PackageRelation(models.Model):
     )
     pkgbase = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name="package_relations", on_delete=models.CASCADE)
+    # TODO type is a builtin python function...
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
     created = models.DateTimeField(editable=False)
 
