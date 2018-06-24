@@ -114,8 +114,9 @@ class SearchListView(ListView):
     paginate_by = 100
 
     sort_fields = ("arch", "repo", "pkgname", "pkgbase", "compressed_size",
-            "installed_size", "build_date", "last_update", "flag_date")
-    allowed_sort = list(sort_fields) + ["-" + s for s in sort_fields]
+                   "installed_size", "build_date", "last_update", "flag_date")
+    allowed_sort = set(sort_fields)
+    allowed_sort.update("-" + s for s in sort_fields)
 
     def get(self, request, *args, **kwargs):
         if request.method == 'HEAD':
@@ -132,10 +133,8 @@ class SearchListView(ListView):
             packages = parse_form(self.form, packages)
             sort = self.form.cleaned_data['sort']
             if sort in self.allowed_sort:
-                packages = packages.order_by(sort)
-            else:
-                packages = packages.order_by('pkgname')
-            return packages
+                return packages.order_by(sort)
+            return packages.order_by('pkgname')
 
         # Form had errors so don't return any results
         return Package.objects.none()
