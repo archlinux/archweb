@@ -186,11 +186,26 @@ class OpenSearch(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_packages_suggest(self):
+        response = self.client.get('/opensearch/packages/suggest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_packages_suggest_lowercase(self):
         response = self.client.get('/opensearch/packages/suggest?q=linux')
         self.assertEqual(response.status_code, 200)
         self.assertIn('linux', response.content.decode())
 
-        response = self.client.get('/opensearch/packages/suggest')
+        response = self.client.get('/opensearch/packages/suggest?q=linux-lts')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('linux-lts', response.content)
+
+    def test_packages_suggest_uppercase(self):
+        response = self.client.get('/opensearch/packages/suggest?q=LINUX')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('linux', response.content)
+
+        response = self.client.get('/opensearch/packages/suggest?q=LINux-')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('linux-lts', response.content)
 
 class PackageViews(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
