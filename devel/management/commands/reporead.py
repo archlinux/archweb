@@ -33,7 +33,7 @@ from django.contrib.auth.models import User
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
-from packages.models import Depend, Conflict, Provision, Replacement, Update, PackageRelation
+from packages.models import Depend, Conflict, FlagRequest, Provision, Replacement, Update, PackageRelation
 from packages.utils import parse_version
 
 
@@ -215,6 +215,13 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
         dbpkg.flag_date = None
     elif dbpkg.pkgver is None or dbpkg.pkgver != repopkg.ver:
         dbpkg.flag_date = None
+
+    # Remove flagged out of date objects when a package is updated.
+    if dbpkg.epoch != repopkg.epoch or dbpkg.pkgver != repopkg.ver:
+        repo = Repo.objects.get(name__iexact=repopkg.repo)
+        requests = FlagRequest.objects.filter(pkgbase=repopkg.base, repo=repo)
+        requests = requests.exclude(pkgver=repopkg.ver, epoch=repopkg.epoch)
+        requests.delete()
 
     if repopkg.base:
         dbpkg.pkgbase = repopkg.base
