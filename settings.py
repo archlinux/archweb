@@ -145,6 +145,9 @@ TORRENT_TRACKERS = (
     'http://tracker.archlinux.org:6969/announce',
 )
 
+# How long to keep mirrorlog's in days
+MIRRORLOG_RETENTION_PERIOD = 365
+
 # Shorten some names just a bit
 COUNTRIES_OVERRIDE = {
     'GB': 'United Kingdom',
