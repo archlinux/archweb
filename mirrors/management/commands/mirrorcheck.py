@@ -246,7 +246,7 @@ class MirrorCheckPool(object):
     def __init__(self, urls, location, timeout=10, num_threads=10):
         self.tasks = Queue()
         self.logs = deque()
-        for url in list(urls):
+        for url in urls:
             self.tasks.put(url)
         self.threads = []
         for _ in range(num_threads):
