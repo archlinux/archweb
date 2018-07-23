@@ -150,8 +150,7 @@ class CheckLocation(models.Model):
 
     @property
     def family(self):
-        info = socket.getaddrinfo(self.source_ip, None, 0, 0, 0,
-                socket.AI_NUMERICHOST)
+        info = socket.getaddrinfo(self.source_ip, None, 0, 0, 0, socket.AI_NUMERICHOST)
         families = [x[0] for x in info]
         return families[0]
 

@@ -10,7 +10,7 @@ Usage: ./manage.py mirrorcheck
 """
 
 from collections import deque
-from datetime import datetime
+from datetime import datetime, timedelta
 from httplib import HTTPException
 import logging
 import os
@@ -29,6 +29,7 @@ import urllib2
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.conf import settings
 from django.utils.timezone import now
 
 from mirrors.models import MirrorUrl, MirrorLog, CheckLocation
@@ -84,6 +85,7 @@ class Command(BaseCommand):
 
         pool = MirrorCheckPool(urls, location, timeout)
         pool.run()
+        pool.cleanup()
         return 0
 
 
@@ -246,7 +248,7 @@ class MirrorCheckPool(object):
     def __init__(self, urls, location, timeout=10, num_threads=10):
         self.tasks = Queue()
         self.logs = deque()
-        for url in list(urls):
+        for url in urls:
             self.tasks.put(url)
         self.threads = []
         for _ in range(num_threads):
@@ -265,5 +267,12 @@ class MirrorCheckPool(object):
         logger.debug("processing %d log entries", len(self.logs))
         MirrorLog.objects.bulk_create(self.logs)
         logger.debug("log entries saved")
+
+    def cleanup(self):
+        days = getattr(settings, 'MIRRORLOG_RETENTION_PERIOD', 365)
+        removal_date = now() - timedelta(days=days)
+        logger.info("cleaning up older MirrorLog objects then %s", removal_date.strftime('%Y-%m-%d'))
+        MirrorLog.objects.filter(check_time__lt=removal_date).delete()
+        logger.info('Finished cleaning up old MirrorLog objects')
 
 # vim: set ts=4 sw=4 et:
