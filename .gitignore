@@ -11,6 +11,8 @@ collected_static/
 testing/
 env/
 
+.mypy_cache/
+
 # rope
 .ropeproject/
 
