@@ -21,8 +21,8 @@ class MirrorCheckTest(TestCase):
     def tearDown(self):
         self.mirror_url.delete()
 
-    @mock.patch('urllib2.Request')
-    @mock.patch('urllib2.urlopen')
+    @mock.patch('urllib.request.Request')
+    @mock.patch('urllib.request.urlopen')
     def test_invalid(self, urlopen, Request):
         urlopen.return_value.read.return_value = 'data'
         Request.get_host.return_value = 'archlinux.org'
@@ -33,8 +33,8 @@ class MirrorCheckTest(TestCase):
         self.assertNotEqual(mirrorlog.error, '')
         self.assertEqual(mirrorlog.is_success, False)
 
-    @mock.patch('urllib2.Request')
-    @mock.patch('urllib2.urlopen')
+    @mock.patch('urllib.request.Request')
+    @mock.patch('urllib.request.urlopen')
     def test_valid(self, urlopen, Request):
         urlopen.return_value.read.return_value = str(int(time.time()))
         Request.get_host.return_value = 'archlinux.org'
@@ -45,8 +45,8 @@ class MirrorCheckTest(TestCase):
         self.assertEqual(mirrorlog.error, '')
         self.assertEqual(mirrorlog.is_success, True)
 
-    @mock.patch('urllib2.Request')
-    @mock.patch('urllib2.urlopen')
+    @mock.patch('urllib.request.Request')
+    @mock.patch('urllib.request.urlopen')
     def test_valid(self, urlopen, Request):
         urlopen.return_value.read.return_value = str(int(time.time()))
         Request.get_host.return_value = 'archlinux.org'
