@@ -529,23 +529,6 @@ function collapseNotes(elements) {
     });
 }
 
-/* visualizations */
-function format_filesize(size, decimals) {
-    /*var labels = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];*/
-    var labels = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-        label = 0;
-
-    while (size > 2048.0 && label < labels.length - 1) {
-        label++;
-        size /= 1024.0;
-    }
-    if (decimals === undefined) {
-        decimals = 2;
-    }
-
-    return size.toFixed(decimals) + ' ' + labels[label];
-}
-
 /* HTML5 input type and attribute enhancements */
 function modify_attributes(to_change) {
     /* jQuery doesn't let us change the 'type' attribute directly due to IE
