@@ -3,7 +3,7 @@ function draw_graphs(location_url, log_url, container_id) {
         .then(function(loc_data, log_data) {
             /* use the same color selection for a given URL in every graph */
             var color = d3.scale.category10();
-            jQuery.each(loc_data[0].locations, function(i, val) {
+            loc_data[0].locations.forEach(function(val) {
                 mirror_status(container_id, val, log_data[0], color);
             });
         });
@@ -12,10 +12,11 @@ function draw_graphs(location_url, log_url, container_id) {
 function mirror_status(container_id, check_loc, log_data, color) {
 
     var draw_graph = function(chart_id, data) {
-        var jq_div = jQuery(chart_id);
+        var jq_div = document.getElementById(chart_id.replace('#',''));
+
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = jq_div.width() - margin.left - margin.right,
-            height = jq_div.height() - margin.top - margin.bottom;
+            width = jq_div.offsetWidth - margin.left - margin.right,
+            height = jq_div.offsetHeight - margin.top - margin.bottom;
 
         var x = d3.time.scale.utc().range([0, width]),
             y = d3.scale.linear().range([height, 0]),
@@ -81,7 +82,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
 
         urls.selectAll("circle")
             .data(function(u) {
-                return jQuery.map(u.logs, function(l, i) {
+                return u.logs.map(function(l) {
                     return {url: u.url, check_time: l.check_time, duration: l.duration};
                 });
             })
@@ -96,7 +97,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
 
         /* add a legend for good measure */
-        var active = jQuery.map(data, function(item, i) { return item.url; });
+        var active = data.map(function(item) { return item.url; });
         var legend = svg.selectAll(".legend")
             .data(active)
             .enter().append("g")
@@ -118,19 +119,20 @@ function mirror_status(container_id, check_loc, log_data, color) {
     };
 
     var filter_data = function(json, location_id) {
-        return jQuery.map(json.urls, function(url, i) {
-            var logs = jQuery.map(url.logs, function(log, j) {
-                if (!log.is_success) {
-                    return null;
+        return json.urls.map(function(url) {
+            var logs = [];
+            url.logs.forEach(function(log) {
+               if (!log.is_success) {
+                   return;
                 }
                 /* screen by location ID if we were given one */
                 if (location_id && log.location_id !== location_id) {
-                    return null;
+                    return;
                 }
-                return {
+                logs.push({
                     duration: log.duration,
                     check_time: new Date(log.check_time)
-                };
+                });
             });
             /* don't return URLs without any log info */
             if (logs.length === 0) {
