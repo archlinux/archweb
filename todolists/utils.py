@@ -33,7 +33,8 @@ def get_annotated_todolists(incomplete_only=False):
 
     if incomplete_only:
         lists = [l for l in lists if l.incomplete_count > 0]
-
+    else:
+        lists = sorted(lists, key=lambda todolist: todolist.incomplete_count == 0)
     return lists
 
 
