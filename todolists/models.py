@@ -1,19 +1,10 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
-from django.db.models import Q
 from django.db.models.signals import pre_save
 
 from main.models import Arch, Repo, Package
 from main.utils import set_created_field
-
-
-class TodolistManager(models.Manager):
-    def incomplete(self):
-        not_done = ((Q(todolistpackage__status=TodolistPackage.INCOMPLETE) |
-                Q(todolistpackage__status=TodolistPackage.IN_PROGRESS)) &
-                Q(todolistpackage__removed__isnull=True))
-        return self.order_by().filter(not_done).distinct()
 
 
 class Todolist(models.Model):
@@ -26,8 +17,6 @@ class Todolist(models.Model):
     created = models.DateTimeField(db_index=True)
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
-
-    objects = TodolistManager()
 
     class Meta:
         get_latest_by = 'created'
