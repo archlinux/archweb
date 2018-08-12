@@ -163,6 +163,11 @@ class PackageSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('5 matching packages found', response.content)
 
+    def test_head(self):
+        response = self.client.head('/packages/?q=unknown')
+        self.assertEqual(response.status_code, 200)
+
+
 class OpenSearch(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
                 'main/fixtures/package.json']
