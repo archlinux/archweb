@@ -60,15 +60,6 @@ def empty_response():
     return empty
 
 
-def format_http_headers(request):
-    headers = sorted((k, v) for k, v in request.META.items()
-            if k.startswith('HTTP_'))
-    data = []
-    for k, v in headers:
-        data.extend([k[5:].replace('_', '-').title(), ': ', v, '\n'])
-    return ''.join(data)
-
-
 # utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]
 
