@@ -1,6 +1,6 @@
 from collections import defaultdict
 from itertools import chain
-from operator import attrgetter, itemgetter
+from operator import itemgetter
 import re
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -117,59 +117,6 @@ class Difference(object):
 
     def __hash__(self):
         return hash(self.__key())
-
-
-def get_differences_info(arch_a, arch_b):
-    # This is a monster. Join packages against itself, looking for packages in
-    # our non-'any' architectures only, and not having a corresponding package
-    # entry in the other table (or having one with a different pkgver). We will
-    # then go and fetch all of these packages from the database and display
-    # them later using normal ORM models.
-    sql = """
-SELECT p.id, q.id
-    FROM packages p
-    LEFT JOIN packages q
-    ON (
-        p.pkgname = q.pkgname
-        AND p.repo_id = q.repo_id
-        AND p.arch_id != q.arch_id
-        AND p.id != q.id
-    )
-    WHERE p.arch_id IN (%s, %s)
-    AND (
-        q.id IS NULL
-        OR p.pkgver != q.pkgver
-        OR p.pkgrel != q.pkgrel
-        OR p.epoch != q.epoch
-    )
-"""
-    cursor = connection.cursor()
-    cursor.execute(sql, [arch_a.id, arch_b.id])
-    results = cursor.fetchall()
-    # column A will always have a value, column B might be NULL
-    to_fetch = {row[0] for row in results}
-    # fetch all of the necessary packages
-    pkgs = Package.objects.normal().in_bulk(to_fetch)
-    # now build a set containing differences
-    differences = set()
-    for row in results:
-        pkg_a = pkgs.get(row[0])
-        pkg_b = pkgs.get(row[1])
-        # We want arch_a to always appear first
-        # pkg_a should never be None
-        if pkg_a.arch == arch_a:
-            item = Difference(pkg_a.pkgname, pkg_a.repo, pkg_a, pkg_b)
-        else:
-            # pkg_b can be None in this case, so be careful
-            name = pkg_a.pkgname if pkg_a else pkg_b.pkgname
-            repo = pkg_a.repo if pkg_a else pkg_b.repo
-            item = Difference(name, repo, pkg_b, pkg_a)
-        differences.add(item)
-
-    # now sort our list by repository, package name
-    key_func = attrgetter('repo.name', 'pkgname')
-    differences = sorted(differences, key=key_func)
-    return differences
 
 
 def multilib_differences():

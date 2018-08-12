@@ -62,7 +62,6 @@ class PackageSearchJson(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
                 'main/fixtures/package.json']
 
-
     def test_invalid(self):
         response = self.client.get('/packages/search/json/')
         self.assertEqual(response.status_code, 200)
@@ -163,6 +162,16 @@ class PackageSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('5 matching packages found', response.content)
 
+    def test_sort(self):
+        response = self.client.get('/packages/?sort=pkgname')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('5 matching packages found', response.content)
+
+    def test_head(self):
+        response = self.client.head('/packages/?q=unknown')
+        self.assertEqual(response.status_code, 200)
+
+
 class OpenSearch(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
                 'main/fixtures/package.json']
@@ -225,11 +234,19 @@ class PackageDisplay(TestCase):
         self.assertEqual(response.status_code, 404)
         # TODO: Figure out how to fake a mirror
 
+    def test_head(self):
+        response = self.client.head('/packages/core/x86_64/linux/')
+        self.assertEqual(response.status_code, 200)
+
     def test_groups(self):
         response = self.client.get('/groups/')
         self.assertEqual(response.status_code, 200)
 
-    def test_groups_detail(self):
+    def test_groups_arch(self):
+        response = self.client.get('/groups/x86_64/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_groups_details(self):
         response = self.client.get('/groups/x86_64/base/')
         self.assertEqual(response.status_code, 404)
         # FIXME: add group fixtures.
