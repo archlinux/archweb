@@ -11,14 +11,13 @@ from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_safe, require_POST
 
-from main.models import Package, Arch
+from main.models import Package
 from ..models import PackageRelation
-from ..utils import (get_differences_info,
-        multilib_differences, get_wrong_permissions)
+from ..utils import multilib_differences, get_wrong_permissions
 
 # make other views available from this same package
 from .display import (details, groups, group_details, files, details_json,
-        files_json, download)
+                      files_json, download)
 from .flag import flaghelp, flag, flag_confirmed, unflag, unflag_all
 from .search import search_json
 from .signoff import signoffs, signoff_package, signoff_options, signoffs_json
