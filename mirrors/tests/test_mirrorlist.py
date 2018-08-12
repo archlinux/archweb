@@ -64,3 +64,7 @@ class MirrorListTest(TestCase):
         self.assertNotIn(self.mirror_url.hostname, response.content)
 
         jp_mirror_url.delete()
+
+    def test_mirrorlist_status(self):
+        response = self.client.get('/mirrorlist/?country=all&use_mirror_status=on')
+        self.assertEqual(response.status_code, 200)
