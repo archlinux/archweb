@@ -26,7 +26,7 @@ More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
 packages, you will probably want the following:
 
-- django
+- python2-django
 - python2-psycopg2
 - python2-markdown
 - python2-memcached
