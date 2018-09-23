@@ -109,6 +109,6 @@ Running coverage:
 
 # Production Installation
 
-Ask someone who knows, or you are going to be in trouble.
+Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://git.archlinux.org/infrastructure.git/)
 
 vim: set syntax=markdown et:
