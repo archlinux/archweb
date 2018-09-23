@@ -118,4 +118,18 @@ class FindUserTest(TestCase):
                 self.finder.find("Tim Two <tim@anotherdomain.com>"))
         self.assertIsNone(self.finder.find("Tim <tim@anotherdomain.com>"))
 
+    def test_find_by_username(self):
+        self.assertEqual(self.finder.find_by_username(None), None)
+        self.assertEqual(self.finder.find_by_username('noone'), None)
+        self.assertEqual(self.finder.find_by_username(self.user1.username), self.user1)
+        # Test cache
+        self.assertEqual(self.finder.find_by_username(self.user1.username), self.user1)
+
+    def test_find_by_email(self):
+        self.assertEqual(self.finder.find_by_email(None), None)
+        self.assertEqual(self.finder.find_by_email('bar@bar.com'), None)
+        self.assertEqual(self.finder.find_by_email(self.user1.email), self.user1)
+        # Test cache
+        self.assertEqual(self.finder.find_by_email(self.user1.email), self.user1)
+
 # vim: set ts=4 sw=4 et:
