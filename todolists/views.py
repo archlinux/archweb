@@ -57,11 +57,6 @@ def flag(request, slug, pkg_id):
     return redirect(todolist)
 
 
-def view_redirect(request, old_id):
-    todolist = get_object_or_404(Todolist, old_id=old_id)
-    return redirect(todolist, permanent=True)
-
-
 def view(request, slug):
     todolist = get_object_or_404(Todolist, slug=slug)
     svn_roots = Repo.objects.values_list(
