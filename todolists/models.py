@@ -9,7 +9,6 @@ from main.utils import set_created_field
 
 class Todolist(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
-    old_id = models.IntegerField(null=True, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
     creator = models.ForeignKey(User, on_delete=models.PROTECT,

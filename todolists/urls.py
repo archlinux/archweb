@@ -1,14 +1,11 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 
-from .views import (view_redirect, view, view_json, add, edit, flag,
+from .views import (view, view_json, add, edit, flag,
         list_pkgbases, DeleteTodolist, TodolistListView)
 
 urlpatterns = [
     url(r'^$', TodolistListView.as_view(), name='todolist-list'),
-
-    # old todolists URLs, permanent redirect view so we don't break all links
-    url(r'^(?P<old_id>\d+)/$', view_redirect),
 
     url(r'^add/$',
         permission_required('todolists.add_todolist')(add)),
