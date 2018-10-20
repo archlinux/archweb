@@ -120,12 +120,12 @@ class SearchListView(ListView):
         if request.method == 'HEAD':
             return empty_response()
         self.form = PackageSearchForm(data=request.GET,
-                show_staging=self.request.user.is_authenticated())
+                show_staging=self.request.user.is_authenticated)
         return super(SearchListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
         packages = Package.objects.normal()
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             packages = packages.filter(repo__staging=False)
         if self.form.is_valid():
             packages = parse_form(self.form, packages)
@@ -160,7 +160,7 @@ def search_json(request):
 
     if request.GET:
         form = PackageSearchForm(data=request.GET,
-                show_staging=request.user.is_authenticated())
+                show_staging=request.user.is_authenticated)
         if form.is_valid():
             form_limit = form.cleaned_data['limit']
             limit = min(limit, int(form_limit)) if form_limit else limit
@@ -168,7 +168,7 @@ def search_json(request):
 
             packages = Package.objects.select_related('arch', 'repo',
                     'packager')
-            if not request.user.is_authenticated():
+            if not request.user.is_authenticated:
                 packages = packages.filter(repo__staging=False)
             packages = parse_form(form, packages)
 

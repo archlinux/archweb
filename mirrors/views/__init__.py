@@ -28,7 +28,7 @@ def mirrors(request, tier=None):
             'mirror_id', 'country').order_by(
             'mirror_id', 'country').distinct()
 
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         mirror_list = mirror_list.filter(public=True, active=True)
         protos = protos.filter(
                 mirror__public=True, mirror__active=True, active=True)
@@ -52,7 +52,7 @@ def mirrors(request, tier=None):
 
 def mirror_details(request, name):
     mirror = get_object_or_404(Mirror, name=name)
-    authorized = request.user.is_authenticated()
+    authorized = request.user.is_authenticated
     if not authorized and \
             (not mirror.public or not mirror.active):
         raise Http404
@@ -90,7 +90,7 @@ def url_details(request, name, url_id):
     url = get_object_or_404(MirrorUrl.objects.select_related(),
             id=url_id, mirror__name=name)
     mirror = url.mirror
-    authorized = request.user.is_authenticated()
+    authorized = request.user.is_authenticated
     if not authorized and \
             (not mirror.public or not mirror.active or not url.active):
         raise Http404

@@ -33,7 +33,7 @@ from .utils import get_annotated_maintainers
 @login_required
 def index(request):
     """The developer dashboard."""
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         inner_q = PackageRelation.objects.filter(user=request.user)
     else:
         inner_q = PackageRelation.objects.none()
