@@ -61,7 +61,7 @@ def pgp_fingerprint(key_id):
     return mark_safe(format_key(conditional_escape(key_id)))
 
 
-@register.assignment_tag
+@register.simple_tag
 def signature_exists(signatures, signer, signee):
     if not signer or not signee:
         return False
