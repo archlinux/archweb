@@ -71,7 +71,7 @@ class MirrorUrl(models.Model):
     url = models.CharField("URL", max_length=255, unique=True)
     protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
             editable=False, on_delete=models.PROTECT)
-    mirror = models.ForeignKey(Mirror, related_name="urls")
+    mirror = models.ForeignKey(Mirror, related_name="urls", on_delete=models.CASCADE)
     country = CountryField(blank=True, db_index=True)
     has_ipv4 = models.BooleanField("IPv4 capable", default=True,
             editable=False)
@@ -124,7 +124,7 @@ class MirrorUrl(models.Model):
 class MirrorRsync(models.Model):
     # max length is 40 chars for full-form IPv6 addr + subnet
     ip = IPNetworkField("IP")
-    mirror = models.ForeignKey(Mirror, related_name="rsync_ips")
+    mirror = models.ForeignKey(Mirror, related_name="rsync_ips", on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
     def __unicode__(self):
@@ -165,8 +165,8 @@ class CheckLocation(models.Model):
 
 
 class MirrorLog(models.Model):
-    url = models.ForeignKey(MirrorUrl, related_name="logs")
-    location = models.ForeignKey(CheckLocation, related_name="logs", null=True)
+    url = models.ForeignKey(MirrorUrl, related_name="logs", on_delete=models.CASCADE)
+    location = models.ForeignKey(CheckLocation, related_name="logs", null=True, on_delete=models.CASCADE)
     check_time = models.DateTimeField(db_index=True)
     last_sync = models.DateTimeField(null=True)
     duration = models.FloatField(null=True)

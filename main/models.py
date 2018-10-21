@@ -430,7 +430,7 @@ class Package(models.Model):
 
 
 class PackageFile(models.Model):
-    pkg = models.ForeignKey(Package)
+    pkg = models.ForeignKey(Package, on_delete=models.CASCADE)
     is_directory = models.BooleanField(default=False)
     directory = models.CharField(max_length=1024)
     filename = models.CharField(max_length=1024, null=True, blank=True)
