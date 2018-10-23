@@ -4,7 +4,7 @@
     <p class="news-nav">
     {% if page_obj.has_previous %}
     <a class="prev" href="?page={{ page_obj.previous_page_number }}"
-        title="Go to previous page">&lt; Prev</a>
+        title="Go to previous page" rel="prev">&lt; Prev</a>
     {% endif %}
     {% for num in paginator.page_range %}
     {% ifequal num page_obj.number %}
@@ -15,7 +15,7 @@
     {% endfor %}
     {% if page_obj.has_next %}
     <a class="next" href="?page={{ page_obj.next_page_number }}"
-        title="Go to next page">Next &gt;</a>
+        title="Go to next page" rel="next">Next &gt;</a>
     {% endif %}
     </p>
 </div>

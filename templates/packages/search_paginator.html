@@ -7,7 +7,7 @@
     <span class="prev">
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}&amp;{{ current_query }}"
-            title="Go to previous page">&lt; Prev</a>
+            title="Go to previous page" rel="prev">&lt; Prev</a>
         {% else %}
         &lt; Prev
         {% endif %}
@@ -15,7 +15,7 @@
     <span class="next">
         {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}&amp;{{ current_query }}"
-            title="Go to next page">Next &gt;</a>
+            title="Go to next page" rel="next">Next &gt;</a>
         {% else %}
         Next &gt;
         {% endif %}
