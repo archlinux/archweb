@@ -54,7 +54,7 @@ class DonorImportTest(TransactionTestCase):
     def test_maildir(self):
         tmpdir = mkdtemp('archweb')
         mdir = tmpdir + '/maildir'
-        
+
         maildir = Maildir(mdir)
         msg = Message()
         msg['subject'] = 'John Doe'
