@@ -66,7 +66,7 @@ feeds_patterns = [
 
 # Includes and other remaining stuff
 urlpatterns.extend([
-    url(r'^admin/',     include(admin.site.urls)),
+    url(r'^admin/',     admin.site.urls),
     url(r'^devel/',     include(devel.urls)),
     url(r'^feeds/',     include(feeds_patterns)),
     url(r'^groups/',    include(packages.urls_groups)),
@@ -100,8 +100,8 @@ urlpatterns.extend([
 
 # Authentication
 urlpatterns.extend([
-    url(r'^login/$', auth_views.login, {'template_name': 'registration/login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'template_name': 'registration/logout.html'}, name='logout'),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 ])
 
 
