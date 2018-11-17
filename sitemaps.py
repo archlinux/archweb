@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from main.models import Package
 from news.models import News
