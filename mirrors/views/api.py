@@ -87,7 +87,7 @@ def status_json(request, tier=None):
 
 
 def mirror_details_json(request, name):
-    authorized = request.user.is_authenticated()
+    authorized = request.user.is_authenticated
     mirror = get_object_or_404(Mirror, name=name)
     if not authorized and (not mirror.public or not mirror.active):
         raise Http404

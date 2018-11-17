@@ -44,7 +44,7 @@ LOGIN_REDIRECT_URL = '/'
 # Set django's User stuff to use our profile model
 AUTH_PROFILE_MODULE = 'devel.UserProfile'
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -190,9 +190,9 @@ TEMPLATES = [
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
-    MIDDLEWARE_CLASSES = \
+    MIDDLEWARE = \
             ['debug_toolbar.middleware.DebugToolbarMiddleware'] + \
-            list(MIDDLEWARE_CLASSES)
+            list(MIDDLEWARE)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 

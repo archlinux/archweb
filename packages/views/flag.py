@@ -61,7 +61,7 @@ def flag(request, name, repo, arch):
             repo__staging=pkg.repo.staging).order_by(
             'pkgname', 'repo__name', 'arch__name')
 
-    authenticated = request.user.is_authenticated()
+    authenticated = request.user.is_authenticated
 
     if request.POST:
         form = FlagForm(request.POST, authenticated=authenticated)
