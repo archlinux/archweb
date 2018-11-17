@@ -24,7 +24,7 @@ class PackageRelation(models.Model):
             (WATCHER, 'Watcher'),
     )
     pkgbase = models.CharField(max_length=255)
-    user = models.ForeignKey(User, related_name="package_relations")
+    user = models.ForeignKey(User, related_name="package_relations", on_delete=models.CASCADE)
     type = models.PositiveIntegerField(choices=TYPE_CHOICES, default=MAINTAINER)
     created = models.DateTimeField(editable=False)
 
@@ -77,9 +77,9 @@ class SignoffSpecification(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    arch = models.ForeignKey(Arch)
-    repo = models.ForeignKey(Repo)
-    user = models.ForeignKey(User, null=True)
+    arch = models.ForeignKey(Arch, on_delete=models.CASCADE)
+    repo = models.ForeignKey(Repo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     required = models.PositiveIntegerField(default=2,
         help_text="How many signoffs are required for this package?")
@@ -145,9 +145,9 @@ class Signoff(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    arch = models.ForeignKey(Arch)
-    repo = models.ForeignKey(Repo)
-    user = models.ForeignKey(User, related_name="package_signoffs")
+    arch = models.ForeignKey(Arch, on_delete=models.CASCADE)
+    repo = models.ForeignKey(Repo, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="package_signoffs", on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False, db_index=True)
     revoked = models.DateTimeField(null=True)
     comments = models.TextField(null=True, blank=True)
@@ -178,7 +178,7 @@ class FlagRequest(models.Model):
     '''
     A notification the package is out-of-date submitted through the web site.
     '''
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     user_email = models.EmailField('email address')
     created = models.DateTimeField(editable=False, db_index=True)
     ip_address = models.GenericIPAddressField('IP address', unpack_ipv4=True)
@@ -186,7 +186,7 @@ class FlagRequest(models.Model):
     pkgver = models.CharField(max_length=255)
     pkgrel = models.CharField(max_length=255)
     epoch = models.PositiveIntegerField(default=0)
-    repo = models.ForeignKey(Repo)
+    repo = models.ForeignKey(Repo, on_delete=models.CASCADE)
     num_packages = models.PositiveIntegerField('number of packages', default=1)
     message = models.TextField('message to developer', blank=True)
     is_spam = models.BooleanField(default=False,
@@ -278,8 +278,8 @@ class Update(models.Model):
 
     package = models.ForeignKey(Package, related_name="updates",
             null=True, on_delete=models.SET_NULL)
-    repo = models.ForeignKey(Repo, related_name="updates")
-    arch = models.ForeignKey(Arch, related_name="updates")
+    repo = models.ForeignKey(Repo, related_name="updates", on_delete=models.CASCADE)
+    arch = models.ForeignKey(Arch, related_name="updates", on_delete=models.CASCADE)
     pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255)
     action_flag = models.PositiveSmallIntegerField('action flag',
@@ -352,7 +352,7 @@ class PackageGroup(models.Model):
     Represents a group a package is in. There is no actual group entity,
     only names that link to given packages.
     '''
-    pkg = models.ForeignKey(Package, related_name='groups')
+    pkg = models.ForeignKey(Package, related_name='groups', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, db_index=True)
 
     def __unicode__(self):
@@ -363,7 +363,7 @@ class PackageGroup(models.Model):
 
 
 class License(models.Model):
-    pkg = models.ForeignKey(Package, related_name='licenses')
+    pkg = models.ForeignKey(Package, related_name='licenses', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -473,7 +473,7 @@ class Depend(RelatedToBase):
         ('C', 'Check Depend'),
     )
 
-    pkg = models.ForeignKey(Package, related_name='depends')
+    pkg = models.ForeignKey(Package, related_name='depends', on_delete=models.CASCADE)
     comparison = models.CharField(max_length=255, default='')
     description = models.TextField(null=True, blank=True)
     deptype = models.CharField(max_length=1, default='D',
@@ -488,12 +488,12 @@ class Depend(RelatedToBase):
 
 
 class Conflict(RelatedToBase):
-    pkg = models.ForeignKey(Package, related_name='conflicts')
+    pkg = models.ForeignKey(Package, related_name='conflicts', on_delete=models.CASCADE)
     comparison = models.CharField(max_length=255, default='')
 
 
 class Provision(RelatedToBase):
-    pkg = models.ForeignKey(Package, related_name='provides')
+    pkg = models.ForeignKey(Package, related_name='provides', on_delete=models.CASCADE)
     # comparison must be '=' for provides
 
     @property
@@ -504,7 +504,7 @@ class Provision(RelatedToBase):
 
 
 class Replacement(RelatedToBase):
-    pkg = models.ForeignKey(Package, related_name='replaces')
+    pkg = models.ForeignKey(Package, related_name='replaces', on_delete=models.CASCADE)
     comparison = models.CharField(max_length=255, default='')
 
 
