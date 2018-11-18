@@ -264,61 +264,6 @@ function collapseRelatedTo(elements) {
     });
 }
 
-/* packages/differences.html */
-function filter_packages() {
-    /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $('#tbody_differences').children(),
-        all_rows = rows;
-    if (!$('#id_multilib').is(':checked')) {
-        rows = rows.not('.multilib').not('.multilib-testing');
-    }
-    var arch = $('#id_archonly').val();
-    if (arch !== 'all') {
-        rows = rows.filter('.' + arch);
-    }
-    if (!$('#id_minor').is(':checked')) {
-        /* this check is done last because it is the most expensive */
-        var pat = /(.*)-(.+)/;
-        rows = rows.filter(function(index) {
-            var cells = $(this).children('td');
-
-            /* all this just to get the split version out of the table cell */
-            var ver_a = cells.eq(2).text().match(pat);
-            if (!ver_a) {
-                return true;
-            }
-
-            var ver_b = cells.eq(3).text().match(pat);
-            if (!ver_b) {
-                return true;
-            }
-
-            /* first check pkgver */
-            if (ver_a[1] !== ver_b[1]) {
-                return true;
-            }
-            /* pkgver matched, so see if rounded pkgrel matches */
-            if (Math.floor(parseFloat(ver_a[2])) ===
-                    Math.floor(parseFloat(ver_b[2]))) {
-                return false;
-            }
-            /* pkgrel didn't match, so keep the row */
-            return true;
-        });
-    }
-    /* hide all rows, then show the set we care about */
-    all_rows.hide();
-    rows.show();
-    /* make sure we update the odd/even styling from sorting */
-    $('.results').trigger('applyWidgets', [false]);
-}
-function filter_packages_reset() {
-    $('#id_archonly').val('both');
-    $('#id_multilib').removeAttr('checked');
-    $('#id_minor').removeAttr('checked');
-    filter_packages();
-}
-
 /* todolists/view.html */
 function todolist_flag() {
     // TODO: fix usage of this
@@ -360,10 +305,10 @@ function filter_pkgs_list(filter_ele, tbody_ele) {
     $('.results').trigger('applyWidgets', [false]);
 }
 function filter_pkgs_reset(callback) {
-    $('#id_incomplete').removeAttr('checked');
-    $('#id_mine_only').removeAttr('checked');
-    $('.arch_filter').attr('checked', 'checked');
-    $('.repo_filter').attr('checked', 'checked');
+    $('#id_incomplete').prop('checked', false);
+    $('#id_mine_only').prop('checked', false);
+    $('.arch_filter').prop('checked', true);
+    $('.repo_filter').prop('checked', true);
     callback();
 }
 
@@ -376,10 +321,10 @@ function filter_todolist_load(list_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#todolist_filter input[type="checkbox"]').removeAttr('checked');
+    $('#todolist_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#todolist_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#todolist_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
@@ -392,10 +337,10 @@ function filter_report_load(report_id) {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#report_filter input[type="checkbox"]').removeAttr('checked');
+    $('#report_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#report_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#report_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
@@ -410,7 +355,7 @@ function signoff_package() {
         if (data.created) {
             signoff = $('<li>').addClass('signed-username').text(data.user);
             var list = cell.children('ul.signoff-list');
-            if (list.size() === 0) {
+            if (list.length === 0) {
                 list = $('<ul class="signoff-list">').prependTo(cell);
             }
             list.append(signoff);
@@ -479,9 +424,9 @@ function filter_signoffs() {
     filter_signoffs_save();
 }
 function filter_signoffs_reset() {
-    $('#signoffs_filter .arch_filter').attr('checked', 'checked');
-    $('#signoffs_filter .repo_filter').attr('checked', 'checked');
-    $('#id_pending').removeAttr('checked');
+    $('#signoffs_filter .arch_filter').prop('checked', true);
+    $('#signoffs_filter .repo_filter').prop('checked', true);
+    $('#id_pending').prop('checked', false);
     filter_signoffs();
 }
 function filter_signoffs_save() {
@@ -493,10 +438,10 @@ function filter_signoffs_load() {
     if (!state)
         return;
     state = JSON.parse(state);
-    $('#signoffs_filter input[type="checkbox"]').removeAttr('checked');
+    $('#signoffs_filter input[type="checkbox"]').prop('checked', false);
     $.each(state, function (i, v) {
         // this assumes our only filters are checkboxes
-        $('#signoffs_filter input[name="' + v['name'] + '"]').attr('checked', 'checked');
+        $('#signoffs_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
 
@@ -527,23 +472,6 @@ function collapseNotes(elements) {
             hidden.remove();
         });
     });
-}
-
-/* visualizations */
-function format_filesize(size, decimals) {
-    /*var labels = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];*/
-    var labels = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-        label = 0;
-
-    while (size > 2048.0 && label < labels.length - 1) {
-        label++;
-        size /= 1024.0;
-    }
-    if (decimals === undefined) {
-        decimals = 2;
-    }
-
-    return size.toFixed(decimals) + ' ' + labels[label];
 }
 
 /* HTML5 input type and attribute enhancements */
