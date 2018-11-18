@@ -44,15 +44,7 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#table_differences').tablesorter({widgets: ['zebra'], sortList: [[1,0], [0,0]]});
     $('#table_multilib_differences').tablesorter({widgets: ['zebra'], sortList: [[5, 0]]});
-});
-$(document).ready(function() {
-    $('#diff_filter select').change(filter_packages);
-    $('#diff_filter input').change(filter_packages);
-    $('#criteria_reset').click(filter_packages_reset);
-    // fire function on page load to ensure the current form selections take effect
-    filter_packages();
 });
 </script>
 {% endblock %}

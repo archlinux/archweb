@@ -264,61 +264,6 @@ function collapseRelatedTo(elements) {
     });
 }
 
-/* packages/differences.html */
-function filter_packages() {
-    /* start with all rows, and then remove ones we shouldn't show */
-    var rows = $('#tbody_differences').children(),
-        all_rows = rows;
-    if (!$('#id_multilib').is(':checked')) {
-        rows = rows.not('.multilib').not('.multilib-testing');
-    }
-    var arch = $('#id_archonly').val();
-    if (arch !== 'all') {
-        rows = rows.filter('.' + arch);
-    }
-    if (!$('#id_minor').is(':checked')) {
-        /* this check is done last because it is the most expensive */
-        var pat = /(.*)-(.+)/;
-        rows = rows.filter(function(index) {
-            var cells = $(this).children('td');
-
-            /* all this just to get the split version out of the table cell */
-            var ver_a = cells.eq(2).text().match(pat);
-            if (!ver_a) {
-                return true;
-            }
-
-            var ver_b = cells.eq(3).text().match(pat);
-            if (!ver_b) {
-                return true;
-            }
-
-            /* first check pkgver */
-            if (ver_a[1] !== ver_b[1]) {
-                return true;
-            }
-            /* pkgver matched, so see if rounded pkgrel matches */
-            if (Math.floor(parseFloat(ver_a[2])) ===
-                    Math.floor(parseFloat(ver_b[2]))) {
-                return false;
-            }
-            /* pkgrel didn't match, so keep the row */
-            return true;
-        });
-    }
-    /* hide all rows, then show the set we care about */
-    all_rows.hide();
-    rows.show();
-    /* make sure we update the odd/even styling from sorting */
-    $('.results').trigger('applyWidgets', [false]);
-}
-function filter_packages_reset() {
-    $('#id_archonly').val('both');
-    $('#id_multilib').prop('checked', false);
-    $('#id_minor').prop('checked', false);
-    filter_packages();
-}
-
 /* todolists/view.html */
 function todolist_flag() {
     // TODO: fix usage of this
