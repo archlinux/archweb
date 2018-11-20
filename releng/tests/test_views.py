@@ -14,13 +14,17 @@ class RelengViewTest(TestCase):
         response = self.client.get('/releng/releases/json/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        
+
         self.assertEqual(data['version'], 1)
         release = data['releases'][0]
         self.assertEqual(release['version'], version)
 
     def test_netboot_page(self):
         response = self.client.get('/releng/netboot/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_netboot_config(self):
+        response = self.client.get('/releng/netboot/archlinux.ipxe')
         self.assertEqual(response.status_code, 200)
 
     def test_release_torrent_not_found(self):

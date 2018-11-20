@@ -41,7 +41,12 @@ class RepoReadTest(TransactionTestCase):
         with self.assertRaises(CommandError) as e:
             call_command('reporead', 'x86_64', 'nothing.db.tar.gz')
         self.assertIn('Specified package database file does not exist.', str(e.exception))
-
+    
+    def test_invalid_arch(self):
+        with self.assertRaises(CommandError) as e:
+            call_command('reporead', 'armv64', 'devel/fixtures/core.db.tar.gz')
+        self.assertEqual('Specified architecture armv64 is not currently known.', str(e.exception))
+    
     def test_read_packages(self):
         with patch('devel.management.commands.reporead.logger') as logger:
             call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
