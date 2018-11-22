@@ -105,7 +105,8 @@ urlpatterns.extend([
 ])
 
 
-def show_urls(urllist=urlpatterns, depth=0):
+# displays all archweb urls
+def show_urls(urllist=urlpatterns, depth=0):  # pragma: no cover
     for entry in urllist:
         print("  " * depth, entry.regex.pattern)
         if hasattr(entry, 'url_patterns'):
