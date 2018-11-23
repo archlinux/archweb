@@ -1,7 +1,12 @@
 import unittest
 
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from django.contrib.auth.models import User
+
+from main.models import Package, Repo
+from packages.models import PackageRelation
+from devel.models import UserProfile
 
 from .alpm import AlpmAPI
 
@@ -289,6 +294,65 @@ class FlagPackage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('Enter a valid and useful out-of-date message', response.content)
         self.assertEqual(len(mail.outbox), 0)
+
+
+class AdoptOrphanPackage(TransactionTestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def setUp(self):
+        password = 'test'
+        self.user = User.objects.create_superuser('admin',
+                                                  'admin@archlinux.org',
+                                                  password)
+        self.profile = UserProfile.objects.create(user=self.user,
+                                                  public_email="{}@awesome.com".format(self.user.username))
+        self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
+        self.profile.save()
+        self.client.post('/login/', {
+                                    'username': self.user.username,
+                                    'password': password
+        })
+
+    def tearDown(self):
+        self.profile.delete()
+        self.user.delete()
+        PackageRelation.objects.all().delete()
+
+    def request(self, pkgid, adopt=True):
+        data = {
+            'pkgid': pkgid,
+        }
+        if adopt:
+            data['adopt'] = 'adopt'
+        else:
+            data['disown'] = 'disown'
+        return self.client.post('/packages/update/', data, follow=True)
+
+    def test_adopt_package(self):
+        pkg = Package.objects.first()
+        response = self.request(pkg.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(PackageRelation.objects.all()), 1)
+
+        response = self.request(pkg.id, False)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(PackageRelation.objects.all()), 0)
+
+    def test_no_permissions(self):
+        self.profile.allowed_repos = []
+        self.profile.save()
+        pkg = Package.objects.first()
+
+        response = self.request(pkg.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(PackageRelation.objects.all()), 0)
+
+    def test_wrong_request(self):
+        pkg = Package.objects.first()
+        response = self.client.post('/packages/update/', {'pkgid': pkg.id, }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Are you trying to adopt or disown', response.content)
 
 
 # vim: set ts=4 sw=4 et:
