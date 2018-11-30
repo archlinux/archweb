@@ -354,5 +354,9 @@ class AdoptOrphanPackage(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('Are you trying to adopt or disown', response.content)
 
+    def test_stale_relations(self):
+        response = self.client.get('/packages/stale_relations/')
+        self.assertEqual(response.status_code, 200)
+
 
 # vim: set ts=4 sw=4 et:
