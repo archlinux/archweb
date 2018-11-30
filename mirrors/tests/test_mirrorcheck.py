@@ -11,7 +11,7 @@ from django.core.management import call_command
 
 
 from mirrors.tests import create_mirror_url
-from mirrors.models import MirrorLog
+from mirrors.models import MirrorLog, CheckLocation
 
 
 class MirrorCheckTest(TestCase):
@@ -56,3 +56,17 @@ class MirrorCheckTest(TestCase):
         MirrorLog.objects.create(url=self.mirror_url, check_time=date)
         call_command('mirrorcheck')
         self.assertEqual(len(MirrorLog.objects.all()), 1)
+
+    def test_checklocation(self):
+        with self.assertRaises(CheckLocation.DoesNotExist) as e:
+            call_command('mirrorcheck', '-l', '1')
+        self.assertEqual('CheckLocation matching query does not exist.', str(e.exception))
+
+    def test_checklocation_model(self):
+        checkloc = CheckLocation.objects.create(hostname='archlinux.org',
+                                                     source_ip='1.1.1.1')
+        with mock.patch('mirrors.management.commands.mirrorcheck.logger') as logger:
+            call_command('mirrorcheck', '-l', '1')
+        logger.info.assert_called()
+
+        checkloc.delete()
