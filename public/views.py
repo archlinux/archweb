@@ -18,7 +18,7 @@ from .utils import get_recent_updates
 
 @cache_control(max_age=307)
 def index(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         def updates():
             return get_recent_updates(testing=True, staging=True)
     else:
@@ -79,7 +79,7 @@ def download(request):
 @cache_control(max_age=307)
 def feeds(request):
     repos = Repo.objects.all()
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         repos = repos.filter(staging=False)
     context = {
         'arches': Arch.objects.all(),
