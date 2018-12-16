@@ -22,8 +22,6 @@ def release_populate_last_modified_backwards(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'releng', '0001_initial'), (b'releng', '0002_release_last_modified'), (b'releng', '0003_release_populate_last_modified'), (b'releng', '0004_auto_20170524_0704'), (b'releng', '0005_auto_20180616_0947')]
-
     initial = True
 
     dependencies = [
@@ -140,12 +138,12 @@ class Migration(migrations.Migration):
                 ('release_date', models.DateField(db_index=True)),
                 ('version', models.CharField(max_length=50, unique=True)),
                 ('kernel_version', models.CharField(blank=True, max_length=50)),
-                ('md5_sum', models.CharField(blank=True, max_length=32, verbose_name=b'MD5 digest')),
-                ('sha1_sum', models.CharField(blank=True, max_length=40, verbose_name=b'SHA1 digest')),
+                ('md5_sum', models.CharField(blank=True, max_length=32, verbose_name='MD5 digest')),
+                ('sha1_sum', models.CharField(blank=True, max_length=40, verbose_name='SHA1 digest')),
                 ('created', models.DateTimeField(editable=False)),
                 ('available', models.BooleanField(default=True)),
-                ('info', models.TextField(blank=True, verbose_name=b'Public information')),
-                ('torrent_data', models.TextField(blank=True, help_text=b'base64-encoded torrent file')),
+                ('info', models.TextField(blank=True, verbose_name='Public information')),
+                ('torrent_data', models.TextField(blank=True, help_text='base64-encoded torrent file')),
                 ('last_modified', models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0, tzinfo=utc), editable=False)),
             ],
             options={
@@ -168,8 +166,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('user_name', models.CharField(max_length=500)),
-                ('user_email', models.EmailField(max_length=75, verbose_name=b'email address')),
-                ('ip_address', models.GenericIPAddressField(unpack_ipv4=True, verbose_name=b'IP address')),
+                ('user_email', models.EmailField(max_length=75, verbose_name='email address')),
+                ('ip_address', models.GenericIPAddressField(unpack_ipv4=True, verbose_name='IP address')),
                 ('created', models.DateTimeField(editable=False)),
                 ('success', models.BooleanField(default=True)),
                 ('comments', models.TextField(blank=True, null=True)),
@@ -182,9 +180,9 @@ class Migration(migrations.Migration):
                 ('install_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.InstallType')),
                 ('iso', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Iso')),
                 ('iso_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.IsoType')),
-                ('modules', models.ManyToManyField(blank=True, null=True, to=b'releng.Module')),
-                ('rollback_filesystem', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name=b'rollback_test_set', to='releng.Filesystem')),
-                ('rollback_modules', models.ManyToManyField(blank=True, null=True, related_name=b'rollback_test_set', to=b'releng.Module')),
+                ('modules', models.ManyToManyField(blank=True, null=True, to='releng.Module')),
+                ('rollback_filesystem', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='rollback_test_set', to='releng.Filesystem')),
+                ('rollback_modules', models.ManyToManyField(blank=True, null=True, related_name='rollback_test_set', to='releng.Module')),
                 ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Source')),
             ],
         ),
@@ -203,7 +201,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='test',
             name='user_email',
-            field=models.EmailField(max_length=254, verbose_name=b'email address'),
+            field=models.EmailField(max_length=254, verbose_name='email address'),
         ),
         migrations.RemoveField(
             model_name='test',

@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('hostname', models.CharField(max_length=255)),
-                ('source_ip', models.GenericIPAddressField(unique=True, unpack_ipv4=True, verbose_name=b'source IP')),
+                ('source_ip', models.GenericIPAddressField(unique=True, unpack_ipv4=True, verbose_name='source IP')),
                 ('country', django_countries.fields.CountryField(max_length=2)),
                 ('created', models.DateTimeField(editable=False)),
             ],
@@ -34,15 +34,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
-                ('tier', models.SmallIntegerField(choices=[(0, b'Tier 0'), (1, b'Tier 1'), (2, b'Tier 2'), (-1, b'Untiered')], default=2)),
+                ('tier', models.SmallIntegerField(choices=[(0, 'Tier 0'), (1, 'Tier 1'), (2, 'Tier 2'), (-1, 'Untiered')], default=2)),
                 ('admin_email', models.EmailField(blank=True, max_length=255)),
                 ('alternate_email', models.EmailField(blank=True, max_length=255)),
                 ('public', models.BooleanField(default=True)),
                 ('active', models.BooleanField(default=True)),
-                ('isos', models.BooleanField(default=True, verbose_name=b'ISOs')),
-                ('rsync_user', models.CharField(blank=True, default=b'', max_length=50)),
-                ('rsync_password', models.CharField(blank=True, default=b'', max_length=50)),
-                ('bug', models.PositiveIntegerField(blank=True, null=True, verbose_name=b'Flyspray bug')),
+                ('isos', models.BooleanField(default=True, verbose_name='ISOs')),
+                ('rsync_user', models.CharField(blank=True, default='', max_length=50)),
+                ('rsync_password', models.CharField(blank=True, default='', max_length=50)),
+                ('bug', models.PositiveIntegerField(blank=True, null=True, verbose_name='Flyspray bug')),
                 ('notes', models.TextField(blank=True)),
                 ('created', models.DateTimeField(editable=False)),
                 ('last_modified', models.DateTimeField(editable=False)),
@@ -60,8 +60,8 @@ class Migration(migrations.Migration):
                 ('last_sync', models.DateTimeField(null=True)),
                 ('duration', models.FloatField(null=True)),
                 ('is_success', models.BooleanField(default=True)),
-                ('error', models.TextField(blank=True, default=b'')),
-                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name=b'logs', to='mirrors.CheckLocation')),
+                ('error', models.TextField(blank=True, default='')),
+                ('location', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='mirrors.CheckLocation')),
             ],
             options={
                 'get_latest_by': 'check_time',
@@ -73,8 +73,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('protocol', models.CharField(max_length=10, unique=True)),
-                ('is_download', models.BooleanField(default=True, help_text=b'Is protocol useful for end-users, e.g. HTTP')),
-                ('default', models.BooleanField(default=True, help_text=b'Included by default when building mirror list?')),
+                ('is_download', models.BooleanField(default=True, help_text='Is protocol useful for end-users, e.g. HTTP')),
+                ('default', models.BooleanField(default=True, help_text='Included by default when building mirror list?')),
                 ('created', models.DateTimeField(editable=False)),
             ],
             options={
@@ -85,9 +85,9 @@ class Migration(migrations.Migration):
             name='MirrorRsync',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ip', mirrors.fields.IPNetworkField(max_length=44, verbose_name=b'IP')),
+                ('ip', mirrors.fields.IPNetworkField(max_length=44, verbose_name='IP')),
                 ('created', models.DateTimeField(editable=False)),
-                ('mirror', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name=b'rsync_ips', to='mirrors.Mirror')),
+                ('mirror', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='rsync_ips', to='mirrors.Mirror')),
             ],
             options={
                 'ordering': ('ip',),
@@ -98,15 +98,15 @@ class Migration(migrations.Migration):
             name='MirrorUrl',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.CharField(max_length=255, unique=True, verbose_name=b'URL')),
+                ('url', models.CharField(max_length=255, unique=True, verbose_name='URL')),
                 ('country', django_countries.fields.CountryField(blank=True, db_index=True, max_length=2)),
-                ('has_ipv4', models.BooleanField(default=True, editable=False, verbose_name=b'IPv4 capable')),
-                ('has_ipv6', models.BooleanField(default=False, editable=False, verbose_name=b'IPv6 capable')),
+                ('has_ipv4', models.BooleanField(default=True, editable=False, verbose_name='IPv4 capable')),
+                ('has_ipv6', models.BooleanField(default=False, editable=False, verbose_name='IPv6 capable')),
                 ('created', models.DateTimeField(editable=False)),
                 ('active', models.BooleanField(default=True)),
-                ('mirror', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name=b'urls', to='mirrors.Mirror')),
-                ('protocol', models.ForeignKey(editable=False, on_delete=django.db.models.deletion.PROTECT, related_name=b'urls', to='mirrors.MirrorProtocol')),
-                ('bandwidth', models.FloatField(blank=True, null=True, verbose_name=b'bandwidth (mbits)')),
+                ('mirror', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='urls', to='mirrors.Mirror')),
+                ('protocol', models.ForeignKey(editable=False, on_delete=django.db.models.deletion.PROTECT, related_name='urls', to='mirrors.MirrorProtocol')),
+                ('bandwidth', models.FloatField(blank=True, null=True, verbose_name='bandwidth (mbits)')),
             ],
             options={
                 'verbose_name': 'mirror URL',
@@ -115,6 +115,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mirrorlog',
             name='url',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name=b'logs', to='mirrors.MirrorUrl'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='logs', to='mirrors.MirrorUrl'),
         ),
     ]
