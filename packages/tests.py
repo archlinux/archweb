@@ -170,7 +170,7 @@ class PackageSearch(TestCase):
     def test_sort(self):
         response = self.client.get('/packages/?sort=pkgname')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('5 matching packages found', response.content)
+        self.assertIn('5 matching packages found', response.content.decode())
 
     def test_head(self):
         response = self.client.head('/packages/?q=unknown')
@@ -340,7 +340,7 @@ class AdoptOrphanPackage(TransactionTestCase):
         self.assertEqual(len(PackageRelation.objects.all()), 0)
 
     def test_no_permissions(self):
-        self.profile.allowed_repos = []
+        self.profile.allowed_repos.set([])
         self.profile.save()
         pkg = Package.objects.first()
 
@@ -352,7 +352,7 @@ class AdoptOrphanPackage(TransactionTestCase):
         pkg = Package.objects.first()
         response = self.client.post('/packages/update/', {'pkgid': pkg.id, }, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Are you trying to adopt or disown', response.content)
+        self.assertIn('Are you trying to adopt or disown', response.content.decode())
 
     def test_stale_relations(self):
         response = self.client.get('/packages/stale_relations/')
