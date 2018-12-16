@@ -128,7 +128,7 @@ class MirrorRsync(models.Model):
     created = models.DateTimeField(editable=False)
 
     def __str__(self):
-        return unicode(self.ip)
+        return str(self.ip)
 
     class Meta:
         verbose_name = 'mirror rsync IP'
