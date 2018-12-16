@@ -9,8 +9,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'news', '0001_initial'), (b'news', '0002_news_send_announce')]
-
     initial = True
 
     dependencies = [

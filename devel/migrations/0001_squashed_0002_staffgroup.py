@@ -11,8 +11,6 @@ import django_countries.fields
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'devel', '0001_initial'), (b'devel', '0002_staffgroup')]
-
     initial = True
 
     dependencies = [

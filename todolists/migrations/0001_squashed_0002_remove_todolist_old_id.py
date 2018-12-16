@@ -9,8 +9,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'todolists', '0001_initial'), (b'todolists', '0002_remove_todolist_old_id')]
-
     initial = True
 
     dependencies = [

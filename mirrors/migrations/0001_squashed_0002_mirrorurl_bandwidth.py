@@ -10,8 +10,6 @@ import mirrors.fields
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'mirrors', '0001_initial'), (b'mirrors', '0002_mirrorurl_bandwidth')]
-
     initial = True
 
     dependencies = [
