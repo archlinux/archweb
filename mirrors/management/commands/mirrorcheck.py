@@ -140,7 +140,7 @@ def check_mirror_url(mirror_url, location, timeout):
     except urllib.error.URLError as e:
         log.is_success = False
         log.error = e.reason
-        if isinstance(e.reason, types.StringTypes) and \
+        if isinstance(e.reason, str) and \
                 re.search(r'550.*No such file', e.reason):
             # similar to 404 case above, still record duration
             end = time.time()
