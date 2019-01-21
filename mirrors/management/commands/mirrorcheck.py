@@ -23,7 +23,6 @@ import sys
 import time
 import tempfile
 from threading import Thread
-import types
 from queue import Queue, Empty
 import urllib
 
