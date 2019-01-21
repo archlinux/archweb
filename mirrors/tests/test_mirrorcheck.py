@@ -47,7 +47,7 @@ class MirrorCheckTest(TestCase):
 
     @mock.patch('urllib.request.Request')
     @mock.patch('urllib.request.urlopen')
-    def test_valid(self, urlopen, Request):
+    def test_valid_olddate(self, urlopen, Request):
         urlopen.return_value.read.return_value = str(int(time.time()))
         Request.get_host.return_value = 'archlinux.org'
         Request.type.return_value = 'https'
