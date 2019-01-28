@@ -38,13 +38,13 @@ class DonorImportTest(TransactionTestCase):
 
     def test_decode_subject(self):
         text = u'メイル'
-        subject = str(Header(text, 'utf-8'))
+        subject = Header(text, 'utf-8')
         self.assertEqual(self.command.decode_subject(subject), text)
 
     def test_invalid_args(self):
         with self.assertRaises(CommandError) as e:
             call_command('donor_import')
-        self.assertIn('Error: too few arguments', str(e.exception))
+        self.assertIn('Error: the following arguments are required', str(e.exception))
 
     def test_invalid_path(self):
         with self.assertRaises(CommandError) as e:

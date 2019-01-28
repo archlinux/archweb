@@ -14,6 +14,7 @@ Subject: Receipt [$25.00] By: John Doe [john.doe@archlinux.org]
 Usage: ./manage.py donor_import path/to/maildir/
 """
 
+import codecs
 import logging
 import mailbox
 import sys
@@ -43,10 +44,10 @@ class Command(BaseCommand):
 
     def decode_subject(self, subject):
         subject = decode_header(subject)
-        default_charset = 'ASCII'
+        default_charset = 'utf-8'
         # Convert the list of tuples containing the decoded string and encoding to
-        # the same encoding.
-        return u''.join([unicode(s[0], s[1] or default_charset) for s in subject])
+        # UTF-8
+        return ''.join([codecs.decode(s[0], s[1] or default_charset) for s in subject])
 
 
     def parse_subject(self, subject):
@@ -67,7 +68,7 @@ class Command(BaseCommand):
                 return u''
 
             # Strip any numbers, they could be a bank account number
-            name = filter(lambda x: not x.isdigit(), name)
+            name = u''.join([l for l in name if not l.isdigit()])
 
             # Normalize all capitalized names. (JOHN DOE)
             name = u' '.join(l.capitalize() for l in name.split(u' '))

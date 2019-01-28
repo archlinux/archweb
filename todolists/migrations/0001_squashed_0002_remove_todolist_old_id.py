@@ -9,8 +9,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'todolists', '0001_initial'), (b'todolists', '0002_remove_todolist_old_id')]
-
     initial = True
 
     dependencies = [
@@ -30,7 +28,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(db_index=True)),
                 ('last_modified', models.DateTimeField(editable=False)),
                 ('raw', models.TextField(blank=True)),
-                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name=b'created_todolists', to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='created_todolists', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'get_latest_by': 'created',
@@ -45,7 +43,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(editable=False)),
                 ('last_modified', models.DateTimeField(editable=False)),
                 ('removed', models.DateTimeField(blank=True, null=True)),
-                ('status', models.SmallIntegerField(choices=[(0, b'Incomplete'), (1, b'Complete'), (2, b'In-progress')], default=0)),
+                ('status', models.SmallIntegerField(choices=[(0, 'Incomplete'), (1, 'Complete'), (2, 'In-progress')], default=0)),
                 ('comments', models.TextField(blank=True, null=True)),
                 ('arch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='main.Arch')),
                 ('pkg', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='main.Package')),

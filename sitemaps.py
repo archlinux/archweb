@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from pytz import utc
 
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from main.models import Package
 from news.models import News
@@ -103,7 +103,7 @@ class RecentNewsSitemap(NewsSitemap):
     def items(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         cutoff = now - timedelta(days=30)
-        return super(RecentNewsSitemap, self).items().filter(postdate__gte=cutoff)
+        return list(super(RecentNewsSitemap, self).items()).filter(postdate__gte=cutoff)
 
 
 class ReleasesSitemap(Sitemap):

@@ -11,7 +11,7 @@ Usage: ./manage.py mirrorcheck
 
 from collections import deque
 from datetime import datetime, timedelta
-from httplib import HTTPException
+from http.client import HTTPException
 import logging
 import os
 from pytz import utc
@@ -23,9 +23,8 @@ import sys
 import time
 import tempfile
 from threading import Thread
-import types
-from Queue import Queue, Empty
-import urllib2
+from queue import Queue, Empty
+import urllib
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -119,17 +118,17 @@ def check_mirror_url(mirror_url, location, timeout):
     logger.info("checking URL %s", url)
     log = MirrorLog(url=mirror_url, check_time=now(), location=location)
     headers = {'User-Agent': 'archweb/1.0'}
-    req = urllib2.Request(url, None, headers)
+    req = urllib.request.Request(url, None, headers)
     start = time.time()
     try:
-        result = urllib2.urlopen(req, timeout=timeout)
+        result = urllib.request.urlopen(req, timeout=timeout)
         data = result.read()
         result.close()
         end = time.time()
         parse_lastsync(log, data)
         log.duration = end - start
         logger.debug("success: %s, %.2f", url, log.duration)
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
         if e.code == 404:
             # we have a duration, just not a success
             end = time.time()
@@ -137,10 +136,10 @@ def check_mirror_url(mirror_url, location, timeout):
         log.is_success = False
         log.error = str(e)
         logger.debug("failed: %s, %s", url, log.error)
-    except urllib2.URLError as e:
+    except urllib.error.URLError as e:
         log.is_success = False
         log.error = e.reason
-        if isinstance(e.reason, types.StringTypes) and \
+        if isinstance(e.reason, str) and \
                 re.search(r'550.*No such file', e.reason):
             # similar to 404 case above, still record duration
             end = time.time()

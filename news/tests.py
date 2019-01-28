@@ -77,4 +77,4 @@ class NewsCrud(TransactionTestCase):
     def testPreview(self):
         response = self.client.post('/news/preview/', {'data': '**body**'}, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual('<p><strong>body</strong></p>', response.content)
+        self.assertEqual('<p><strong>body</strong></p>', response.content.decode())

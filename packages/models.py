@@ -41,8 +41,8 @@ class PackageRelation(models.Model):
     def last_update(self):
         return Update.objects.filter(pkgbase=self.pkgbase).latest()
 
-    def __unicode__(self):
-        return u'%s: %s (%s)' % (
+    def __str__(self):
+        return '%s: %s (%s)' % (
                 self.pkgbase, self.user, self.get_type_display())
 
 
@@ -94,11 +94,11 @@ class SignoffSpecification(models.Model):
     @property
     def full_version(self):
         if self.epoch > 0:
-            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return u'%s-%s' % (self.pkgver, self.pkgrel)
+            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return '%s-%s' % (self.pkgver, self.pkgrel)
 
-    def __unicode__(self):
-        return u'%s-%s' % (self.pkgbase, self.full_version)
+    def __str__(self):
+        return '%s-%s' % (self.pkgbase, self.full_version)
 
 
 # Fake signoff specs for when we don't have persisted ones in the database.
@@ -109,7 +109,7 @@ FakeSignoffSpecification = namedtuple('FakeSignoffSpecification',
 
 
 def fake_signoff_spec(arch):
-    return FakeSignoffSpecification(arch.required_signoffs, True, False, u'')
+    return FakeSignoffSpecification(arch.required_signoffs, True, False, '')
 
 
 class SignoffManager(models.Manager):
@@ -163,14 +163,14 @@ class Signoff(models.Model):
     @property
     def full_version(self):
         if self.epoch > 0:
-            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return u'%s-%s' % (self.pkgver, self.pkgrel)
+            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return '%s-%s' % (self.pkgver, self.pkgrel)
 
-    def __unicode__(self):
-        revoked = u''
+    def __str__(self):
+        revoked = ''
         if self.revoked:
-            revoked = u' (revoked)'
-        return u'%s-%s: %s%s' % (
+            revoked = ' (revoked)'
+        return '%s-%s: %s%s' % (
                 self.pkgbase, self.full_version, self.user, revoked)
 
 
@@ -208,10 +208,10 @@ class FlagRequest(models.Model):
         # handle the case of pkgver and pkgrel being null as this table didn't
         # originally have version columns.
         if self.pkgver == '' and self.pkgrel == '':
-            return u''
+            return ''
         if self.epoch > 0:
-            return u'%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return u'%s-%s' % (self.pkgver, self.pkgrel)
+            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+        return '%s-%s' % (self.pkgver, self.pkgrel)
 
     def get_associated_packages(self):
         return Package.objects.normal().filter(
@@ -220,8 +220,8 @@ class FlagRequest(models.Model):
                 repo__staging=self.repo.staging).order_by(
                 'pkgname', 'repo__name', 'arch__name')
 
-    def __unicode__(self):
-        return u'%s from %s on %s' % (self.pkgbase, self.who(), self.created)
+    def __str__(self):
+        return '%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
 
 class UpdateManager(models.Manager):
@@ -313,16 +313,16 @@ class Update(models.Model):
         if self.action_flag == ADDITION:
             return None
         if self.old_epoch > 0:
-            return u'%d:%s-%s' % (self.old_epoch, self.old_pkgver, self.old_pkgrel)
-        return u'%s-%s' % (self.old_pkgver, self.old_pkgrel)
+            return '%d:%s-%s' % (self.old_epoch, self.old_pkgver, self.old_pkgrel)
+        return '%s-%s' % (self.old_pkgver, self.old_pkgrel)
 
     @property
     def new_version(self):
         if self.action_flag == DELETION:
             return None
         if self.new_epoch > 0:
-            return u'%d:%s-%s' % (self.new_epoch, self.new_pkgver, self.new_pkgrel)
-        return u'%s-%s' % (self.new_pkgver, self.new_pkgrel)
+            return '%d:%s-%s' % (self.new_epoch, self.new_pkgver, self.new_pkgrel)
+        return '%s-%s' % (self.new_pkgver, self.new_pkgrel)
 
     def elsewhere(self):
         return Package.objects.normal().filter(
@@ -342,8 +342,8 @@ class Update(models.Model):
         return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
                 self.arch.name, self.pkgname)
 
-    def __unicode__(self):
-        return u'%s of %s on %s' % (self.get_action_flag_display(),
+    def __str__(self):
+        return '%s of %s on %s' % (self.get_action_flag_display(),
                 self.pkgname, self.created)
 
 
@@ -355,7 +355,7 @@ class PackageGroup(models.Model):
     pkg = models.ForeignKey(Package, related_name='groups', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.name, self.pkg)
 
     class Meta:
@@ -366,7 +366,7 @@ class License(models.Model):
     pkg = models.ForeignKey(Package, related_name='licenses', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -455,9 +455,9 @@ class RelatedToBase(models.Model):
                 x.repo.testing == self.pkg.repo.testing)
         return sorted(pkgs, key=key_func, reverse=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.version:
-            return u'%s%s%s' % (self.name, self.comparison, self.version)
+            return '%s%s%s' % (self.name, self.comparison, self.version)
         return self.name
 
     class Meta:
@@ -479,11 +479,11 @@ class Depend(RelatedToBase):
     deptype = models.CharField(max_length=1, default='D',
             choices=DEPTYPE_CHOICES)
 
-    def __unicode__(self):
+    def __str__(self):
         '''For depends, we may also have a description and a modifier.'''
-        to_str = super(Depend, self).__unicode__()
+        to_str = super(Depend, self).__str__()
         if self.description:
-            return u'%s: %s' % (to_str, self.description)
+            return '%s: %s' % (to_str, self.description)
         return to_str
 
 

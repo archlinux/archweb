@@ -1,6 +1,6 @@
 from datetime import timedelta
 import socket
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
@@ -38,7 +38,7 @@ class Mirror(models.Model):
     class Meta:
         ordering = ('name',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def downstream(self):
@@ -60,7 +60,7 @@ class MirrorProtocol(models.Model):
             help_text="Included by default when building mirror list?")
     created = models.DateTimeField(editable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.protocol
 
     class Meta:
@@ -84,7 +84,7 @@ class MirrorUrl(models.Model):
     class Meta:
         verbose_name = 'mirror URL'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.url
 
     def address_families(self):
@@ -127,8 +127,8 @@ class MirrorRsync(models.Model):
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips", on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
-    def __unicode__(self):
-        return unicode(self.ip)
+    def __str__(self):
+        return str(self.ip)
 
     class Meta:
         verbose_name = 'mirror rsync IP'
@@ -145,7 +145,7 @@ class CheckLocation(models.Model):
     class Meta:
         ordering = ('hostname', 'source_ip')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.hostname
 
     @property
@@ -182,7 +182,7 @@ class MirrorLog(models.Model):
             return timedelta()
         return self.check_time - self.last_sync
 
-    def __unicode__(self):
+    def __str__(self):
         return "Check of %s at %s" % (self.url.url, self.check_time)
 
     class Meta:

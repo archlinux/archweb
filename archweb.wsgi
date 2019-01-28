@@ -4,8 +4,9 @@ import sys
 import site
 
 base_path = "/srv/http/archweb"
+py_version = sys.version_info
 
-site.addsitedir('/srv/http/archweb-env/lib/python2.7/site-packages')
+site.addsitedir('/srv/http/archweb-env/lib/python{}.{}/site-packages'.format(py_version.major, py_version.minor))
 sys.path.insert(0, base_path)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = "settings"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytz
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User, Group
@@ -73,7 +73,7 @@ class StaffGroup(models.Model):
     class Meta:
         ordering = ('sort_order',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -94,8 +94,8 @@ class MasterKey(models.Model):
         ordering = ('created',)
         get_latest_by = 'created'
 
-    def __unicode__(self):
-        return u'%s, created %s' % (
+    def __str__(self):
+        return '%s, created %s' % (
                 self.owner.get_full_name(), self.created)
 
 
@@ -109,7 +109,7 @@ class DeveloperKey(models.Model):
     revoked = models.DateTimeField(null=True, blank=True)
     parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.key
 
 
@@ -127,8 +127,8 @@ class PGPSignature(models.Model):
         get_latest_by = 'created'
         verbose_name = 'PGP signature'
 
-    def __unicode__(self):
-        return u'%s → %s' % (self.signer, self.signee)
+    def __str__(self):
+        return '%s → %s' % (self.signer, self.signee)
 
 
 pre_save.connect(set_created_field, sender=UserProfile,

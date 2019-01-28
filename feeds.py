@@ -25,11 +25,11 @@ class BatchWritesWrapper(object):
         buf = self.buf
         buf.append(s)
         if len(buf) >= 40:
-            self.outfile.write(''.join(buf))
+            self.outfile.write(b''.join(buf))
             self.buf = []
 
     def flush(self):
-        self.outfile.write(''.join(self.buf))
+        self.outfile.write(b''.join(self.buf))
         self.outfile.flush()
 
 

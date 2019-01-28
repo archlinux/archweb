@@ -1,5 +1,4 @@
-from urllib import urlencode
-from urlparse import parse_qs
+from urllib.parse import urlencode, parse_qs
 
 from django import template
 from django.utils.html import format_html
@@ -15,12 +14,6 @@ class BuildQueryStringNode(template.Node):
 
     def render(self, context):
         qs = parse_qs(context['current_query'])
-        # This is really dirty. The crazy round trips we do on our query string
-        # mean we get things like u'\xe2\x98\x83' in our views, when we should
-        # have simply u'\u2603' or a byte string of the UTF-8 value. Force the
-        # keys and list of values to be byte strings only.
-        qs = {k.encode('latin-1'): [v.encode('latin-1') for v in vals]
-                for k, vals in qs.items()}
         if 'sort' in qs and self.sortfield in qs['sort']:
             if self.sortfield.startswith('-'):
                 qs['sort'] = [self.sortfield[1:]]

@@ -107,12 +107,12 @@ class RepoPackage(object):
         self.files = None
 
     def populate(self, values):
-        for k, v in values.iteritems():
+        for k, v in values.items():
             # ensure we stay under our DB character limit
             if k in self.bare:
                 setattr(self, k, v[0][:254])
             elif k in self.number:
-                setattr(self, k, long(v[0]))
+                setattr(self, k, int(v[0]))
             elif k in ('desc', 'pgpsig'):
                 # do NOT prune these values at all
                 setattr(self, k, v[0])
@@ -145,8 +145,8 @@ class RepoPackage(object):
     def full_version(self):
         '''Very similar to the main.models.Package method.'''
         if self.epoch > 0:
-            return u'%d:%s-%s' % (self.epoch, self.ver, self.rel)
-        return u'%s-%s' % (self.ver, self.rel)
+            return '%d:%s-%s' % (self.epoch, self.ver, self.rel)
+        return '%s-%s' % (self.ver, self.rel)
 
 
 DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")
@@ -573,7 +573,7 @@ def parse_repo(repopath):
 
     repodb.close()
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
-    return (reponame, pkgs.values())
+    return (reponame, list(pkgs.values()))
 
 def locate_arch(arch):
     "Check if arch is valid."

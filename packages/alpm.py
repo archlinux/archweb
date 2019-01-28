@@ -50,7 +50,7 @@ class AlpmAPI(object):
     def vercmp(self, ver1, ver2):
         if not self.available:
             return None
-        return ALPM.alpm_pkg_vercmp(str(ver1), str(ver2))
+        return ALPM.alpm_pkg_vercmp(str(ver1).encode(), str(ver2).encode())
 
     def compare_versions(self, ver1, oper, ver2):
         func = self.OPERATOR_MAP.get(oper, None)
@@ -64,9 +64,9 @@ class AlpmAPI(object):
 
 def main(): # pragma: no cover
     api = AlpmAPI()
-    print(api.version())
-    print(api.vercmp(1, 2))
-    print(api.compare_versions(1, '<', 2))
+    print((api.version()))
+    print((api.vercmp(1, 2)))
+    print((api.compare_versions(1, '<', 2)))
 
 
 if __name__ == '__main__': # pragma: no cover
