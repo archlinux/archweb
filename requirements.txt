@@ -7,7 +7,6 @@ django-countries==5.0
 jsmin==2.2.2
 pgpdump==1.5
 pytz>=2017.3
-mock==2.0.0
 parse==1.8.2
 django-jinja==2.4.1
 sqlparse==0.2.4

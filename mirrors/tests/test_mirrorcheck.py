@@ -1,6 +1,6 @@
-import mock
 import time
 
+from unittest import mock
 from urllib.error import HTTPError, URLError
 
 
