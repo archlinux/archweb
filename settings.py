@@ -51,6 +51,7 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
 )
 
@@ -80,6 +81,12 @@ SESSION_COOKIE_HTTPONLY = True
 
 # Clickjacking protection
 X_FRAME_OPTIONS = 'DENY'
+
+# X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# X-XSS-Protection, enables cross-site scripting filter in most browsers
+SECURE_BROWSER_XSS_FILTER = True
 
 # Use new test runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
