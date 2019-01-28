@@ -2,7 +2,6 @@
 Django==2.1.5
 IPy==0.83
 Markdown==2.6.10
-MarkupSafe==0.23
 bencode.py==2.0.0
 django-countries==5.0
 jsmin==2.2.2
