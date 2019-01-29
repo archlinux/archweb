@@ -178,23 +178,6 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
   };
 })(jQuery);
 
-/* news/add.html */
-function enablePreview() {
-    $('#news-preview-button').click(function(event) {
-        event.preventDefault();
-        $.post('/news/preview/', {
-                data: $('#id_content').val(),
-                csrfmiddlewaretoken: $('#newsform input[name=csrfmiddlewaretoken]').val()
-            },
-            function(data) {
-                $('#news-preview-data').html(data);
-                $('#news-preview').show();
-            }
-        );
-        $('#news-preview-title').html($('#id_title').val());
-    });
-}
-
 /* packages/details.html */
 function ajaxifyFiles() {
     $('#filelink').click(function(event) {

@@ -653,6 +653,10 @@ div.news-article .article-info {
         width: 75%;
     }
 
+#news-preview {
+    display: none;
+}
+
 /* todolists: list */
 .todolist-nav {
     float: right;
