@@ -1126,3 +1126,8 @@ ul.signoff-list {
     width: 100%;
     height: 100%;
 }
+
+/* releases */
+#release-table th:first-of-type {
+    width: 30px;
+}
