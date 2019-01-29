@@ -61,7 +61,7 @@ class Command(BaseCommand):
 
     def sanitize_name(self, name):
             """Sanitizes the parsed name and removes numbers, entries with no
-            valid characters and finaly trims all excess whitespace"""
+            valid characters and finally trims all excess whitespace"""
 
             # Some submissions contain no alphabetic characters, skip them
             if all(not l.isalpha() for l in name):
