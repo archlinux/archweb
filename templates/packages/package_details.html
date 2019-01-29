@@ -71,7 +71,7 @@
     <meta itemprop="dateCreated" content="{{ pkg.build_date|date:"Y-m-d" }}"/>
     <meta itemprop="datePublished" content="{{ pkg.last_update|date:"Y-m-d" }}"/>
     <meta itemprop="operatingSystem" content="Arch Linux"/>
-    {% if pkg.packager %}<div style="display:none" itemprop="provider" itemscope itemtype="http://schema.org/Person">
+    {% if pkg.packager %}<div class="itemprop" itemprop="provider" itemscope itemtype="http://schema.org/Person">
         <meta itemprop="name" content="{{ pkg.packager.get_full_name|escape }}"/>
     </div>{% endif %}
     <table id="pkginfo">

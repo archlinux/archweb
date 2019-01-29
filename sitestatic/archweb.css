@@ -1131,3 +1131,8 @@ ul.signoff-list {
 #release-table th:first-of-type {
     width: 30px;
 }
+
+/* itemprops */
+.itemprop {
+    display: none;
+}
