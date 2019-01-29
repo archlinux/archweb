@@ -114,7 +114,7 @@
 {% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
     $('#inactive-user:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false }, 2: { sorter: false } }, sortList: [[1,0]]});
     $('#missing-pkgbase:not(:has(tbody tr.empty))').tablesorter({widgets: ['zebra'], headers: { 0: { sorter: false } }, sortList: [[1,0]]});

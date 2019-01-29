@@ -42,7 +42,7 @@
 {% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
     $('#table_multilib_differences').tablesorter({widgets: ['zebra'], sortList: [[5, 0]]});
 });

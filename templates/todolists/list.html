@@ -56,7 +56,7 @@
 {% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
     // I'm not sure why it didn't autodetect digit, but it has to be explicit
     // http://stackoverflow.com/questions/302749/jquery-tablesorter-problem
