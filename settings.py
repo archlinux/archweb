@@ -79,6 +79,10 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_HTTPONLY = True
 
+# CRSF cookie
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+
 # Clickjacking protection
 X_FRAME_OPTIONS = 'DENY'
 
