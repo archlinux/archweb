@@ -1,7 +1,9 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
+from django.urls import include, path
 from django.contrib import admin
 from django.contrib.sitemaps import views as sitemap_views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
 
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
@@ -104,6 +106,12 @@ urlpatterns.extend([
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 ])
 
+# django-toolbar
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns.extend([
+        path('__debug__/', include(debug_toolbar.urls)),
+    ])
 
 # displays all archweb urls
 def show_urls(urllist=urlpatterns, depth=0):  # pragma: no cover

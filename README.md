@@ -106,6 +106,10 @@ Running coverage:
         coverage run --omit='env*' --source='.' manage.py test
         coverage report
 
+# Django Debug toolbar
+
+To use the Django Debug toolbar install django-debug-toolbar and in local_settings.py
+set DEBUG_TOOLBAR to True.
 
 # Production Installation
 
