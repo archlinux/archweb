@@ -79,7 +79,7 @@ def call_gpg(keyring, *args):
     if proc.returncode != 0:
         logger.error(errdata)
         raise subprocess.CalledProcessError(proc.returncode, gpg_cmd)
-    return outdata
+    return outdata.decode("utf-8")
 
 
 class KeyData(object):
