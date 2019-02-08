@@ -172,6 +172,6 @@ class SignatureWrapper(SignaturePacket):
     def __init__(self, packet):
         for field in ("sig_version", "creation_time", "expiration_time"):
             setattr(self, field, getattr(packet, field))
-        self.key_id = str(packet.key_id) if packet.key_id else None
+        self.key_id = packet.key_id.decode() if packet.key_id else None
 
 # vim: set ts=4 sw=4 et:
