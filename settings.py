@@ -143,7 +143,7 @@ LOGGING = {
 }
 
 # Server used for linking to PGP keysearch results
-PGP_SERVER = 'pgp.mit.edu'
+PGP_SERVER = 'sks-keyservers.net'
 PGP_SERVER_SECURE = True
 
 # URL for SVN access for fetching commit messages (note absence of packages or
