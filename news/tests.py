@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from news.models import News
 
 
-class NewTest(TestCase):
+class NewsTest(TestCase):
 
     def test_feed(self):
         response = self.client.get('/feeds/news/')
@@ -14,6 +14,10 @@ class NewTest(TestCase):
 
     def test_sitemap(self):
         response = self.client.get('/sitemap-news.xml')
+        self.assertEqual(response.status_code, 200)
+
+    def test_news_sitemap(self):
+        response = self.client.get('/news-sitemap.xml')
         self.assertEqual(response.status_code, 200)
 
     def test_newsitem(self):

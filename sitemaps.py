@@ -103,7 +103,7 @@ class RecentNewsSitemap(NewsSitemap):
     def items(self):
         now = datetime.utcnow().replace(tzinfo=utc)
         cutoff = now - timedelta(days=30)
-        return list(super(RecentNewsSitemap, self).items()).filter(postdate__gte=cutoff)
+        return super(RecentNewsSitemap, self).items().filter(postdate__gte=cutoff)
 
 
 class ReleasesSitemap(Sitemap):
