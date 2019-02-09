@@ -821,6 +821,10 @@ table.results {
     width: 45%;
 }
 
+#flag-pkg-form #id_website {
+    display: none;
+}
+
 /* pkgdetails: deps, required by and file lists */
 #pkgdetails #metadata {
     clear: both;

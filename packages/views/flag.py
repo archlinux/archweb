@@ -21,7 +21,7 @@ class FlagForm(forms.Form):
     # The field below is used to filter out bots that blindly fill out all
     # input elements
     website = forms.CharField(label='',
-            widget=forms.TextInput(attrs={'style': 'display:none;'}),
+            widget=forms.TextInput(),
             required=False)
 
     def __init__(self, *args, **kwargs):
