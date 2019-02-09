@@ -296,6 +296,60 @@ class FlagPackage(TestCase):
         self.assertEqual(len(mail.outbox), 0)
 
 
+class UnFlagPackage(TransactionTestCase):
+    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
+                'main/fixtures/package.json']
+
+    def setUp(self):
+        password = 'test'
+        self.user = User.objects.create_superuser('admin',
+                                                  'admin@archlinux.org',
+                                                  password)
+        self.profile = UserProfile.objects.create(user=self.user,
+                                                  public_email="{}@awesome.com".format(self.user.username))
+        self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
+        self.profile.save()
+        self.client.post('/login/', {
+                                    'username': self.user.username,
+                                    'password': password
+        })
+
+    def tearDown(self):
+        self.profile.delete()
+        self.user.delete()
+        PackageRelation.objects.all().delete()
+
+    def flag_package(self):
+        data = {
+            'website': '',
+            'email': 'nobody@archlinux.org',
+            'message': 'new linux version',
+        }
+        response = self.client.post('/packages/core/x86_64/linux/flag/',
+                                    data,
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_unflag_package_404(self):
+        response = self.client.get('/packages/core/x86_64/fooobar/unflag/')
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get('/packages/core/x86_64/fooobar/unflag/all/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_unflag_package(self):
+        self.flag_package()
+        response = self.client.get('/packages/core/x86_64/linux/unflag/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Flag linux as out-of-date', response.content.decode())
+
+    def test_unflag_all_package(self):
+        self.flag_package()
+        response = self.client.get('/packages/core/x86_64/linux/unflag/all/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Flag linux as out-of-date', response.content.decode())
+
+
 class AdoptOrphanPackage(TransactionTestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
                 'main/fixtures/package.json']
