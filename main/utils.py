@@ -6,6 +6,7 @@ except ImportError:
 import hashlib
 import markdown
 from markdown.extensions import Extension
+from pgpdump.packet import SignaturePacket
 
 from django.core.cache import cache
 from django.db import connections, router
@@ -164,5 +165,13 @@ class DependStandin(object):
         self.description = first.description
         self.deptype = first.deptype
         self.pkg = first.pkg.base_package() or PackageStandin(first.pkg)
+
+
+class SignatureWrapper(SignaturePacket):
+    'Decode key_id from raw SignaturePacket'
+    def __init__(self, packet):
+        for field in ("sig_version", "creation_time", "expiration_time"):
+            setattr(self, field, getattr(packet, field))
+        self.key_id = packet.key_id.decode() if packet.key_id else None
 
 # vim: set ts=4 sw=4 et:

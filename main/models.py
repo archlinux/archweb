@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
 from .fields import PositiveBigIntegerField
-from .utils import set_created_field, DependStandin
+from .utils import set_created_field, DependStandin, SignatureWrapper
 from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
 
@@ -142,7 +142,7 @@ class Package(models.Model):
             return None
         data = BinaryData(self.signature_bytes)
         packets = list(data.packets())
-        return packets[0]
+        return SignatureWrapper(packets[0])
 
     @property
     def signer(self):
