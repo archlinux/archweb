@@ -44,15 +44,12 @@ def opensearch_suggest(request):
             hashlib.md5(search_term.encode('utf-8')).hexdigest()
     to_json = cache.get(cache_key, None)
     if to_json is None:
-        q = Q(pkgname__startswith=search_term)
-        lookup = search_term.lower()
-        if search_term != lookup:
-            # package names are lowercase by convention, so include that in
-            # search if original wasn't lowercase already
-            q |= Q(pkgname__startswith=lookup)
+        # Package names are lowercase by convention
+        q = Q(pkgname__istartswith=search_term)
+
         names = Package.objects.filter(q).values_list(
-                'pkgname', flat=True).order_by('pkgname').distinct()[:10]
-        results = [search_term, list(names)]
+                    'pkgname', flat=True).order_by('pkgname').distinct()[:10]
+        results = (search_term, tuple(names))
         to_json = json.dumps(results, ensure_ascii=False)
         cache.set(cache_key, to_json, 613)
     return HttpResponse(to_json, content_type='application/x-suggestions+json')
@@ -77,12 +74,13 @@ def update(request):
                         ))
 
         for pkg in pkgs:
-            if request.user not in pkg.maintainers:
-                prel = PackageRelation(pkgbase=pkg.pkgbase,
-                        user=request.user,
-                        type=PackageRelation.MAINTAINER)
-                count += 1
-                prel.save()
+            if request.user in pkg.maintainers:
+                continue
+
+            PackageRelation(pkgbase=pkg.pkgbase,
+                            user=request.user,
+                            type=PackageRelation.MAINTAINER).save()
+            count += 1
 
         messages.info(request, "%d base packages adopted." % count)
 
@@ -91,9 +89,11 @@ def update(request):
         # [community] -> [extra] moves
         for pkg in Package.objects.filter(id__in=ids):
             if request.user in pkg.maintainers:
-                rels = PackageRelation.objects.filter(pkgbase=pkg.pkgbase,
-                        user=request.user,
-                        type=PackageRelation.MAINTAINER)
+                rels = PackageRelation.objects.filter(
+                           pkgbase=pkg.pkgbase,
+                           user=request.user,
+                           type=PackageRelation.MAINTAINER
+                       )
                 count += rels.count()
                 rels.delete()
 
