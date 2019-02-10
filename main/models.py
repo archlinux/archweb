@@ -196,7 +196,7 @@ class Package(models.Model):
         WHEN 'C' THEN 3
         ELSE 1000 END)'''
         name_clause = '''packages_depend.name IN (
-        SELECT %s UNION ALL
+        SELECT '%s' UNION ALL
         SELECT z.name FROM packages_provision z WHERE z.pkg_id = %s
         )'''
         requiredby = Depend.objects.select_related('pkg',
