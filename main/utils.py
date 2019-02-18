@@ -1,9 +1,6 @@
-try:
-    import pickle as pickle
-except ImportError:
-    import pickle
-
+import pickle
 import hashlib
+
 import markdown
 from markdown.extensions import Extension
 from pgpdump.packet import SignaturePacket
