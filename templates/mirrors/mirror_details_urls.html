@@ -29,9 +29,9 @@
             <td>{{ m_url.last_sync|date:'Y-m-d H:i'|default:'unknown' }}</td>
             <td>{{ m_url.completion_pct|percentage:1 }}</td>
             <td>{{ m_url.delay|duration|default:'unknown' }}</td>
-            <td>{{ m_url.duration_avg|floatvalue:2 }}</td>
-            <td>{{ m_url.duration_stddev|floatvalue:2 }}</td>
-            <td>{{ m_url.score|floatvalue:1|default:'∞' }}</td>
+            <td>{{ m_url.duration_avg|floatformat:2 }}</td>
+            <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
+            <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
             <td><a href="{{ m_url.id }}/">Details</a></td>
         </tr>
         {% endfor %}

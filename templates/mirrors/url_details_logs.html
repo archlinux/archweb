@@ -21,7 +21,7 @@
             <td>{% if log.location %}{{ log.location.source_ip }}{% else %}Unknown{% endif %}</td>
             <td>{{ log.last_sync|date:'Y-m-d H:i' }}</td>
             <td>{{ log.delay|duration }}</td>
-            <td>{{ log.duration|floatvalue }}</td>
+            <td>{{ log.duration|floatformat:2 }}</td>
             <td>{{ log.is_success|yesno|capfirst }}</td>
             <td class="wrap">{{ log.error|linebreaksbr }}</td>
         </tr>{% endfor %}

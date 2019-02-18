@@ -25,11 +25,6 @@ def hours(value):
         return '%d hour' % hrs
     return '%d hours' % hrs
 
-@register.filter
-def floatvalue(value, arg=2):
-    if value is None:
-        return u''
-    return '%.*f' % (arg, value)
 
 @register.filter
 def percentage(value, arg=1):

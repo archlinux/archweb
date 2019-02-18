@@ -21,9 +21,9 @@
             <td class="country">{% country_flag m_url.country %}{{ m_url.country.name }}</td>
             <td>{{ m_url.completion_pct|percentage:1 }}</td>
             <td>{{ m_url.delay|duration }}</td>
-            <td>{{ m_url.duration_avg|floatvalue:2 }}</td>
-            <td>{{ m_url.duration_stddev|floatvalue:2 }}</td>
-            <td>{{ m_url.score|floatvalue:1|default:'∞' }}</td>
+            <td>{{ m_url.duration_avg|floatformat:2 }}</td>
+            <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
+            <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
             <td><a href="{{ m_url.get_absolute_url }}">details</a></td>
         </tr>{% endfor %}
     </tbody>

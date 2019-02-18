@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from django.test import SimpleTestCase
 
-from mirrors.templatetags.mirror_status import duration, hours, floatvalue, percentage
+from mirrors.templatetags.mirror_status import duration, hours, percentage
 
 
 class MirrorTemplateTagTest(SimpleTestCase):
@@ -20,13 +20,6 @@ class MirrorTemplateTagTest(SimpleTestCase):
         self.assertEqual(hours(timedelta(hours=5)), '5 hours')
         self.assertEqual(hours(timedelta(hours=1)), '1 hour')
         self.assertEqual(hours(timedelta(seconds=60*60)), '1 hour')
-
-    def test_floatvalue(self):
-        self.assertEqual(floatvalue(None), u'')
-
-        self.assertEqual(floatvalue(123), '123.00')
-        self.assertEqual(floatvalue(123.1), '123.10')
-        self.assertEqual(floatvalue(123.1, 1), '123.1')
 
     def test_percentage(self):
         self.assertEqual(percentage(None), u'')
