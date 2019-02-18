@@ -6,7 +6,7 @@ class PositiveBigIntegerField(models.BigIntegerField):
         return "BigIntegerField"
 
     def formfield(self, **kwargs):
-        defaults = { 'min_value': 0 }
+        defaults = {'min_value': 0}
         defaults.update(kwargs)
         return super(PositiveBigIntegerField, self).formfield(**defaults)
 
