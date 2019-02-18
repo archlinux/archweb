@@ -85,7 +85,7 @@ urlpatterns.extend([
 
 # Retro home page views
 urlpatterns.extend([
-    url(r'^retro/(?P<year>[0-9]{4})/$', retro.views.retro_homepage, name='retro-homepage'),
+    path('retro/<int:year>/', retro.views.retro_homepage, name='retro-homepage'),
 ])
 
 # Sitemaps
