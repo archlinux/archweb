@@ -29,13 +29,26 @@
     </form>
 </div>
 
-<div id="news-preview" class="news-article box" style="display:none;">
+<div id="news-preview" class="news-article box">
     <h2>News Preview: <span id="news-preview-title"></span></h2>
     <div id="news-preview-data" class="article-content"></div>
 </div>
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
-$(document).ready(enablePreview);
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
+$(document).ready(function() {
+    $('#news-preview-button').click(function(event) {
+        event.preventDefault();
+        $.post('/news/preview/', {
+                data: $('#id_content').val(),
+                csrfmiddlewaretoken: $('#newsform input[name=csrfmiddlewaretoken]').val()
+            },
+            function(data) {
+                $('#news-preview-data').html(data);
+                $('#news-preview').show();
+            }
+        );
+        $('#news-preview-title').html($('#id_title').val());
+    });
+});
 </script>
 {% endblock %}

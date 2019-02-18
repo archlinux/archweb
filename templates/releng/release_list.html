@@ -24,7 +24,7 @@
     <table id="release-table" class="results">
         <thead>
             <tr>
-                <th style="width: 30px;"></th>
+                <th></th>
                 <th>Release Date</th>
                 <th>Version</th>
                 <th>Kernel Version</th>
@@ -57,7 +57,7 @@
 {% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
     $(".results").tablesorter({
         widgets: ['zebra'],

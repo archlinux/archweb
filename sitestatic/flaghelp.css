@@ -1,0 +1,4 @@
+body { background: #f6f9fc; color: #222; font-family: sans-serif; }
+a:link { text-decoration: none; color: #07b; }
+a:visited { color: #666; }
+a:hover { text-decoration: underline; color: #666; }

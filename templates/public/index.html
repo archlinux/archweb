@@ -5,6 +5,7 @@
 {% block head %}
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
 <link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="/feeds/packages/" />
+<script type="text/javascript" src="{% static "homepage.js" %}" defer></script>
 {% endblock %}
 
 {% block content_left %}
@@ -79,7 +80,7 @@
     <form id="pkgsearch-form" method="get" action="/packages/">
         <fieldset>
             <label for="pkgsearch-field">Package Search:</label>
-            <input id="pkgsearch-field" type="text" name="q" size="18" maxlength="200" />
+            <input id="pkgsearch-field" type="text" name="q" size="18" maxlength="200" autocomplete="off" />
         </fieldset>
     </form>
 </div>
@@ -202,14 +203,4 @@
     </a>
 </div>
 {% endcache %}
-{% endblock %}
-
-{% block script_block %}
-
-{% load cdn %}{% jquery %}
-<script type="text/javascript">
-$(document).ready(function() {
-    $.ajax({ url: "{% static "homepage.js" %}", cache: true, dataType: "script", success: function() { setupTypeahead(); } });
-});
-</script>
 {% endblock %}

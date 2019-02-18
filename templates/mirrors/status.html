@@ -77,7 +77,7 @@
 {% block script_block %}
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
-<script type="text/javascript">
+<script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
     var headers = { 4: { sorter: 'duration' }, 5: { sorter: 'mostlydigit' },
                     6: { sorter: 'mostlydigit' }, 7: { sorter: 'mostlydigit' },

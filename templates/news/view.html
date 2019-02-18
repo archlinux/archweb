@@ -9,10 +9,10 @@
     <meta itemprop="dateModified" content="{{ news.last_modified|date:"Y-m-d" }}"/>
     <meta itemprop="inLanguage" content="en"/>
     <meta itemprop="wordCount" content="{{ news.content|wordcount }}"/>
-    <div style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <div class="itemprop" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <meta itemprop="name" content="{{ news.author.get_full_name|escape }}"/>
     </div>
-    <div style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <div class="itemprop" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
         <meta itemprop="name" content="Arch Linux"/>
     </div>
 

@@ -307,6 +307,10 @@ class FlagPackage(TestCase):
         self.assertIn('Enter a valid and useful out-of-date message', response.content.decode())
         self.assertEqual(len(mail.outbox), 0)
 
+    def test_flag_help(self):
+        response = self.client.get('/packages/flaghelp/')
+        self.assertEqual(response.status_code, 200)
+
 
 class UnFlagPackage(TransactionTestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
