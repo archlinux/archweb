@@ -33,8 +33,8 @@
   function setListLocation() {
     if (!list) return;
     const rects = input.getClientRects()[0];
-    list.style.top = (rects.y + rects.height) + "px";
-    list.style.left = rects.x + "px";
+    list.style.top = (rects.top + rects.height) + "px";
+    list.style.left = rects.left + "px";
   }
 
   function loadData(data) {
