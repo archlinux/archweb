@@ -202,7 +202,7 @@ def check_rsync_url(mirror_url, location, timeout):
         if proc.returncode != 0:
             logger.debug("error: %s, %s", url, errdata)
             log.is_success = False
-            log.error = errdata.strip()
+            log.error = errdata.strip().decode('utf-8')
             # look at rsync error code- if we had a command error or timed out,
             # don't record a duration as it is misleading
             if proc.returncode in (1, 30, 35):
