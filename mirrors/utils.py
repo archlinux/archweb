@@ -1,3 +1,4 @@
+import ast
 from datetime import timedelta
 
 from django.db import connection
@@ -174,6 +175,11 @@ def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
             'mirror', 'protocol').in_bulk(to_fetch)
     for err in errors:
         err['url'] = urls[err['url__id']]
+        try:
+            err_msg = ast.literal_eval(err['error'])
+            err['error'] = err_msg.decode('utf-8')
+        except (ValueError, SyntaxError):
+            pass
     return errors
 
 
