@@ -19,6 +19,7 @@ See AUTHORS file.
 
 - python
 - python-virtualenv
+- rsync (optional for mirrorcheck with rsync mirrors)
 
 # Python dependencies
 
