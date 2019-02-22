@@ -973,33 +973,7 @@ table td.country {
     background: #ffd;
 }
 
-/* dev dashboard: flagged packages */
-#dash-pkg-notify {
-    text-align: right;
-    padding: 1em 0 0;
-    margin-top: 1em;
-    font-size: 0.85em;
-    border-top: 1px dotted #bbb;
-}
-
-    #dash-pkg-notify label {
-        width: auto;
-        font-weight: normal;
-    }
-
-    #dash-pkg-notify input {
-        vertical-align: middle;
-        margin: 0 0.25em;
-    }
-
-        #dash-pkg-notify input[type=submit] {
-            margin-top: -0.25em;
-        }
-
-    #dash-pkg-notify p {
-        margin: 0;
-    }
-
+/* dev dashboard: */
 table.dash-stats .key {
     width: 50%;
 }
