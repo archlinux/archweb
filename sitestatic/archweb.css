@@ -264,25 +264,6 @@ td {
     }
 
 /* table pretty styles */
-table.pretty1 {
-    width: auto;
-    margin-top: 0.25em;
-    margin-bottom: 0.5em;
-    border-collapse: collapse;
-    border: 1px solid #bcd;
-}
-
-    .pretty1 th {
-        padding: 0.35em;
-        background: #e4eeff;
-        border: 1px solid #bcd;
-    }
-
-    .pretty1 td {
-        padding: 0.35em;
-        border: 1px dotted #bcd;
-    }
-
 table.pretty2 {
     width: auto;
     margin-top: 0.25em;
