@@ -414,6 +414,10 @@ table thead th.sorter-false {
     cursor: default;
 }
 
+.tablesorter-header:focus {
+    outline: none;
+}
+
 /**
  *  PAGE SPECIFIC STYLES
  */
