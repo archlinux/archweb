@@ -15,11 +15,7 @@ class MirrorListTest(TestCase):
         response = self.client.get('/mirrorlist/')
         self.assertEqual(response.status_code, 200)
 
-    def test_mirrorlist_tier(self):
-        response = self.client.get('/mirrorlist/tier/1/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_mirrorlist_tier(self):
+    def test_mirrorlist_tier_last(self):
         last_tier = Mirror.TIER_CHOICES[-1][0]
         response = self.client.get('/mirrorlist/tier/{}/'.format(last_tier + 1))
         self.assertEqual(response.status_code, 404)
