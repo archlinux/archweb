@@ -3,8 +3,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Arch Linux{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static "archweb.css" %}" media="screen" />
+    <script src="{% static "base.js" %}"></script>
     <link rel="icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
     <link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %}" />
     <link rel="apple-touch-icon" href="{% static "logos/apple-touch-icon-57x57.png" %}" />
@@ -14,11 +17,19 @@
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch-packages' as osp %}{{ osp }}" title="Arch Linux Packages" />
     {% block head %}{% endblock %}
 </head>
-<body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
-    <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
-        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
-        <div id="archnavbarmenu">
-            <ul id="archnavbarlist">
+<body>
+    <header class="arch-main">
+        <div class="top-wrapper">
+            <a href="/" title="Return to the main page">
+                <figure id="arch-logo">Arch Linux</figure>
+            </a>
+            <label class="arch-hamburger" for="arch-menu-toggle">
+                <span></span><span></span><span></span>
+            </label>
+        </div>
+        <input type="checkbox" id="arch-menu-toggle">
+        <nav class="arch-main">
+            <ul data-active="{% block navbarclass %}anb-home{% endblock %}">
                 <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
                 <li id="anb-packages"><a href="/packages/" title="Arch Package Database">Packages</a></li>
                 <li id="anb-forums"><a href="https://bbs.archlinux.org/" title="Community forums">Forums</a></li>
@@ -28,10 +39,10 @@
                 <li id="anb-aur"><a href="https://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
                 <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
             </ul>
-        </div>
-    </div>
-    <div id="content">
-        <div id="archdev-navbar">
+        </nav>
+    </header>
+    <div id="main-content">
+        <nav class="arch-dev">
             {% if user.is_authenticated %}
                 <ul>
                     <li><a href="{% url 'devel-index' %}" title="Developer Dashboard">Dashboard</a></li>
@@ -41,10 +52,10 @@
                     <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
                     <li><a href="/todo/" title="Developer todo lists">Todos</a></li>
                     <li><a href="{% url 'devel-clocks' %}" title="Developer world clocks">Dev Clocks</a></li>
-		    {% if user|in_group:'Developers' %}
+                    {% if user|in_group:'Developers' %}
                     <li><a href="https://mailman.archlinux.org/mailman/private/arch-dev/"
                         title="arch-dev mailing list archives">Archives</a></li>
-		    {% endif %}
+                    {% endif %}
                     <li><a href="https://zabbix.archlinux.org/"
                         title="Arch server monitoring">Server Monitoring</a></li>
                     {% if user.is_staff %}
@@ -54,37 +65,32 @@
                     <li><a href="/logout/" title="Logout of the developer interface">Logout</a></li>
                 </ul>
             {% endif %}
-        </div>
+        </nav>
         {% if messages %}
-            <div id="sys-message" class="box">
+            <div class="sys-message" class="box">
                 {% for message in messages %}
                     <p>{{message}}</p>
                 {% endfor %}
             </div>
         {% endif %}
         {% block content %}
-            <div id="content-left-wrapper">
-                <div id="content-left">
-                    {% block content_left %}{% endblock %}
-                </div>
-            </div>
-            <div id="content-right">
-                {% block content_right %}{% endblock %}
+            <div class="home-wrapper">
+                {% block content_home %}{% endblock %}
             </div>
         {% endblock %}
-        <div id="footer">
-            <p>Copyright © 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
-                title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
-                title="Contact Aaron Griffin">Aaron Griffin</a>.</p>
-
-            <p>The Arch Linux name and logo are recognized
-            <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:TrademarkPolicy"
-                title="Arch Linux Trademark Policy">trademarks</a>. Some rights reserved.</p>
-
-            <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,
-            the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
-        </div>
     </div>
+    <footer>
+        <p>Copyright © 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
+            title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
+            title="Contact Aaron Griffin">Aaron Griffin</a>.</p>
+
+        <p>The Arch Linux name and logo are recognized
+        <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:TrademarkPolicy"
+            title="Arch Linux Trademark Policy">trademarks</a>. Some rights reserved.</p>
+
+        <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,
+        the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
+    </footer>
     <script type="application/ld+json">
     {
        "@context": "http://schema.org",

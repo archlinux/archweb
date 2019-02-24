@@ -11,50 +11,52 @@
 <div class="box">
     <h2>URL Details: {{ url.url }}</h2>
 
-    <table class="compact">
-        <tr>
-            <th>URL:</th>
-            <td>{% if url.protocol.is_download %}<a href="{{ url.url }}">{{ url.url }}</a>{% else %}{{ url.url }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Mirror:</th>
-            <td><a href="../">{{ url.mirror.name }}</a></td>
-        </tr>
-        <tr>
-            <th>Protocol:</th>
-            <td>{{ url.protocol }}</td>
-        </tr>
-        <tr>
-            <th>Country:</th>
-            <td class="country">{% country_flag url.country %}{{ url.country.name }}</td>
-        </tr>
-        <tr>
-            <th>IPv4:</th>
-            <td>{{ url.has_ipv4|yesno|capfirst }}</td>
-        </tr>
-        <tr>
-            <th>IPv6:</th>
-            <td>{{ url.has_ipv6|yesno|capfirst }}</td>
-        </tr>
-        {% if user.is_authenticated %}
-        <tr>
-            <th>Active:</th>
-            <td>{{ url.active|yesno|capfirst }}</td>
-        </tr>
-        <tr>
-            <th>Created:</th>
-            <td>{{ url.created }}</td>
-        </tr>
-        <tr>
-            <th>First Check:</th>
-            <td>{{ url.logs.earliest.check_time }}</td>
-        </tr>
-        <tr>
-            <th>Last Check:</th>
-            <td>{{ url.logs.latest.check_time }}</td>
-        </tr>
-        {% endif %}
-    </table>
+    <div class="table-wrapper">
+        <table class="compact">
+            <tr>
+                <th>URL:</th>
+                <td>{% if url.protocol.is_download %}<a href="{{ url.url }}">{{ url.url }}</a>{% else %}{{ url.url }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Mirror:</th>
+                <td><a href="../">{{ url.mirror.name }}</a></td>
+            </tr>
+            <tr>
+                <th>Protocol:</th>
+                <td>{{ url.protocol }}</td>
+            </tr>
+            <tr>
+                <th>Country:</th>
+                <td class="country">{% country_flag url.country %}{{ url.country.name }}</td>
+            </tr>
+            <tr>
+                <th>IPv4:</th>
+                <td>{{ url.has_ipv4|yesno|capfirst }}</td>
+            </tr>
+            <tr>
+                <th>IPv6:</th>
+                <td>{{ url.has_ipv6|yesno|capfirst }}</td>
+            </tr>
+            {% if user.is_authenticated %}
+            <tr>
+                <th>Active:</th>
+                <td>{{ url.active|yesno|capfirst }}</td>
+            </tr>
+            <tr>
+                <th>Created:</th>
+                <td>{{ url.created }}</td>
+            </tr>
+            <tr>
+                <th>First Check:</th>
+                <td>{{ url.logs.earliest.check_time }}</td>
+            </tr>
+            <tr>
+                <th>Last Check:</th>
+                <td>{{ url.logs.latest.check_time }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
 
     <h3>Check Logs</h3>
     {% include "mirrors/url_details_logs.html" %}

@@ -1,9 +1,9 @@
-<div class="pkglist-stats">
+<div class="table-nav">
     {% if is_paginated %}
-    <p>{{ paginator.count }} matching packages found.
-    Page {{ page_obj.number }} of {{ paginator.num_pages }}.</p>
+    <span>{{ paginator.count }} matching packages found.
+    Page {{ page_obj.number }} of {{ paginator.num_pages }}.</span>
 
-    <div class="pkglist-nav">
+    <span>
     <span class="prev">
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}&amp;{{ current_query }}"
@@ -20,8 +20,8 @@
         Next &gt;
         {% endif %}
     </span>
-    </div>
+    </span>
     {% else %}
-    <p>{{ package_list|length }} matching package{{ package_list|pluralize }} found.</p>
+    <span>{{ package_list|length }} matching package{{ package_list|pluralize }} found.</span>
     {% endif %}
 </div>

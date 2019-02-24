@@ -18,9 +18,9 @@
 
     {% if perms.news.change_news %}
     <ul class="admin-actions">
-        <li><a href="edit/" title="Edit this article">Edit News Item</a></li>
+        <li><a href="edit/" title="Edit this article">Edit</a></li>
         {% if perms.news.delete_news %}
-        <li><a href="delete/" title="Delete this article">Delete News Item</a></li>
+        <li><a href="delete/" title="Delete this article">Delete</a></li>
         {% endif %}
     </ul>
     {% endif %}

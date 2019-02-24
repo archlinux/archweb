@@ -12,118 +12,124 @@
 
     <h3>News and Activity Feeds</h3>
 
-    <p>Grab the <a href="/feeds/news/" class="rss" title="Arch Linux news feed">news item feed</a>
+    <p>Grab the <a href="/feeds/news/" title="Arch Linux news feed">news item feed<icon class="rss"></icon></a>
     to keep up-to-date with the latest news from the Arch Linux development staff.</p>
 
     <p>The <a href="https://wiki.archlinux.org/index.php?title=Special:RecentChanges&amp;feed=rss"
-    title="ArchWiki Recent Changes feed" class="rss">Arch Wiki: Recent changes feed</a>
+    title="ArchWiki Recent Changes feed">Arch Wiki: Recent changes feed<icon class="rss"></icon></a>
     is also available to track document changes from the <a href="https://wiki.archlinux.org/"
     title="Arch Wiki community documentation">Arch Wiki</a>.</p>
 
     <h3>Package Feeds</h3>
 
-    <p>If you are interested in <a href="/feeds/packages/" class="rss"
-        title="Arch Linux package updates feed">all package updates</a>,
+    <p>If you are interested in <a href="/feeds/packages/"
+        title="Arch Linux package updates feed">all package updates<icon class="rss"></icon></a>,
     then grab this feed.
 
-    <table class="pretty2">
-        <thead>
-            <tr>
-                <th></th>
-                <th>All Arches</th>
-                {% for arch in arches %}
-                <th>{{ arch }}</th>
+    <div class="table-wrapper">
+        <table class="pretty">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>All Arches</th>
+                    {% for arch in arches %}
+                    <th>{{ arch }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/{{ arch }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
+                {% for repo in repos %}
+                <tr>
+                    <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/all/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>All Repos</strong></td>
-                <td><a href="/feeds/packages/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/{{ arch }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% for repo in repos %}
-            <tr>
-                <td><strong>{{ repo }}</strong></td>
-                <td><a href="/feeds/packages/all/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
-    <p>A <a href="https://aur.archlinux.org/rss/" class="rss" title="AUR newest packages feed">newest packages feed</a>
+    <p>A <a href="https://aur.archlinux.org/rss/" class="rss" title="AUR newest packages feed">newest packages feed<icon class="rss"></icon></a>
     is also available from the <a href="https://aur.archlinux.org/" title="AUR Homepage">Arch User Repository (AUR)</a>.</p>
 
     <p>Recently added packages.</p>
-    <table class="pretty2">
-        <thead>
-            <tr>
-                <th></th>
-                <th>All Arches</th>
-                {% for arch in arches %}
-                <th>{{ arch }}</th>
+    <div class="table-wrapper">
+        <table class="pretty">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>All Arches</th>
+                    {% for arch in arches %}
+                    <th>{{ arch }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/added/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
+                {% for repo in repos %}
+                <tr>
+                    <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/added/all/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>All Repos</strong></td>
-                <td><a href="/feeds/packages/added/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/added/{{ arch }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% for repo in repos %}
-            <tr>
-                <td><strong>{{ repo }}</strong></td>
-                <td><a href="/feeds/packages/added/all/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/added/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
     <p>Recently removed packages.</p>
-    <table class="pretty2">
-        <thead>
-            <tr>
-                <th></th>
-                <th>All Arches</th>
-                {% for arch in arches %}
-                <th>{{ arch }}</th>
+    <div class="table-wrapper">
+        <table class="pretty">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>All Arches</th>
+                    {% for arch in arches %}
+                    <th>{{ arch }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>All Repos</strong></td>
+                <td><a href="/feeds/packages/removed/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
+                {% for repo in repos %}
+                <tr>
+                    <td><strong>{{ repo }}</strong></td>
+                <td><a href="/feeds/packages/removed/all/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/{{ repo|lower }}/">Feed<icon class="rss"></icon></a></td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>All Repos</strong></td>
-                <td><a href="/feeds/packages/removed/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/removed/{{ arch }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% for repo in repos %}
-            <tr>
-                <td><strong>{{ repo }}</strong></td>
-                <td><a href="/feeds/packages/removed/all/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% for arch in arches %}
-                <td><a href="/feeds/packages/removed/{{ arch }}/{{ repo|lower }}/" class="rss">Feed</a></td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 
     <h3>Release Feed</h3>
 
-    <p>Grab the <a href="/feeds/releases/" class="rss" title="Arch Linux release feed">ISO release feed</a>
+    <p>Grab the <a href="/feeds/releases/" title="Arch Linux release feed">ISO release feed<icon class="rss"></icon></a>
     if you want to help seed the ISO release torrents as they come out.</p>
 
     <h3>Development Feeds</h3>
@@ -131,49 +137,51 @@
     <p>Subscribe to any of the following to track bug tickets and feature
     requests from the <a href="https://bugs.archlinux.org/" title="Arch Linux Bugs">Arch Linux Bugtracker</a>:</p>
 
-    <table class="pretty2">
-        <thead>
-            <tr>
-                <th>Project</th>
-                <th>Recently Opened Tasks</th>
-                <th>Recently Edited Tasks</th>
-                <th>Recently Closed Tasks</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>All Projects</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=0" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=0" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=0" class="rss">Feed</a></td>
-            </tr><tr>
-                <td>Arch Linux</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=1" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=1" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=1" class="rss">Feed</a></td>
-            </tr><tr>
-                <td>Release Engineering</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=6" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=6" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=6" class="rss">Feed</a></td>
-            </tr><tr>
-                <td>Pacman Development</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=3" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=3" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=3" class="rss">Feed</a></td>
-            </tr><tr>
-                <td>Community Packages</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=5" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=5" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=5" class="rss">Feed</a></td>
-            </tr><tr>
-                <td>AUR</td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=2" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=2" class="rss">Feed</a></td>
-                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=2" class="rss">Feed</a></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="pretty">
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Recently Opened Tasks</th>
+                    <th>Recently Edited Tasks</th>
+                    <th>Recently Closed Tasks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>All Projects</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=0">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=0">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=0">Feed<icon class="rss"></icon></a></td>
+                </tr><tr>
+                    <td>Arch Linux</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=1">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=1">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=1">Feed<icon class="rss"></icon></a></td>
+                </tr><tr>
+                    <td>Release Engineering</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=6">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=6">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=6">Feed<icon class="rss"></icon></a></td>
+                </tr><tr>
+                    <td>Pacman Development</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=3">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=3">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=3">Feed<icon class="rss"></icon></a></td>
+                </tr><tr>
+                    <td>Community Packages</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=5">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=5">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=5">Feed<icon class="rss"></icon></a></td>
+                </tr><tr>
+                    <td>AUR</td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;project=2">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=edit&amp;project=2">Feed<icon class="rss"></icon></a></td>
+                <td><a href="https://bugs.archlinux.org/feed.php?feed_type=rss2&amp;topic=clo&amp;project=2">Feed<icon class="rss"></icon></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
  </div>
 {% endblock %}

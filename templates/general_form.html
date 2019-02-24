@@ -13,14 +13,16 @@
         <fieldset>
             {% for field in form %}
             {{field.errors}}
-            <p><label for="{{field.auto_id}}">{{field.label}}:</label>
-            {% if field.help_text %}<br/><span class="form-help">{{field.help_text}}</span>{% endif %}
+            <p>
+                <label for="{{field.auto_id}}">{{field.label}}: {% if field.field.required %}
+                    <span class="form-req-field">*</span>{% endif %}
+                </label>
+                {% if field.help_text %}<span class="form-help">{{field.help_text}}</span>{% endif %}
             {{field}}
-            {% if field.field.required %}<span class="form-req-field">*</span>{% endif %}
             </p>
             {% endfor %}
         </fieldset>
-        <p><label></label> <input type="submit" value="{{submit_text}}" /></p>
+        <p><input type="submit" value="{{submit_text}}" /></p>
     </form>
 
 </div>

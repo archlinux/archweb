@@ -14,17 +14,17 @@
     <h2>Package Search</h2>
 
     <form id="pkg-search" method="get" action="/packages/">
-        <p>{{ search_form.sort }}</p>
+        {{ search_form.sort }}
         {{ search_form.non_field_errors }}
-        <fieldset>
+        <div class="grid" id="package-search">
             <legend>Enter search criteria</legend>
-            <div>{{ search_form.arch.errors }}
+            <div class="fill-h">{{ search_form.arch.errors }}
                 <label for="id_arch" title="Limit results a specific CPU architecture">
                     Arch</label>{{ search_form.arch }}</div>
-            <div>{{ search_form.repo.errors }}
+            <div class="fill-h">{{ search_form.repo.errors }}
                 <label for="id_repo" title="Limit results to a specific repository">
-                    Repository</label>{{ search_form.repo }}</div>
-            <div>{{ search_form.q.errors }}
+                Repository</label>{{ search_form.repo }}</div>
+            <div class="span-3">{{ search_form.q.errors }}
                 <label for="id_q" title="Enter keywords as desired">
                     Keywords</label>{{ search_form.q }}</div>
             <div>{{ search_form.maintainer.errors }}
@@ -33,9 +33,9 @@
             <div>{{ search_form.flagged.errors }}
                 <label for="id_flagged" title="Limit results based on out-of-date status">
                     Flagged</label>{{ search_form.flagged }}</div>
-            <div ><label>&nbsp;</label><input title="Search for packages using this criteria"
+            <div><label>&nbsp;</label><input title="Search for packages using this criteria"
                 type="submit" value="Search" /></div>
-        </fieldset>
+        </div>
     </form>
 </div>
 
@@ -44,68 +44,22 @@
     <div class="pkglist-stats">
         <p>{{ exact_matches|length }} exact match{{ exact_matches|pluralize:"es" }} found.</p>
     </div>
-    <table class="results">
-        <thead>
-            <tr>
-                <th>Arch</th>
-                <th>Repo</th>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Description</th>
-                <th>Last Updated</th>
-                <th>Flag Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pkg in exact_matches %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td>{{ pkg.arch.name }}</td>
-                <td>{{ pkg.repo.name|capfirst }}</td>
-                <td>{% pkg_details_link pkg %}</td>
-                {% if pkg.flag_date %}
-                <td><span class="flagged">{{ pkg.full_version }}</span></td>
-                {% else %}
-                <td>{{ pkg.full_version }}</td>
-                {% endif %}
-                <td class="wrap">{{ pkg.pkgdesc }}</td>
-                <td>{{ pkg.last_update|date }}</td>
-                <td>{{ pkg.flag_date|date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}{% endwith %}{% endif %}
-
-<div id="pkglist-results" class="box">
-    {% include "packages/search_paginator.html" %}
-    <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
+    <div class="table-wrapper">
         <table class="results">
             <thead>
                 <tr>
-                    {% if perms.main.change_package %}
-                    <th>&nbsp;</th>
-                    {% endif %}
-                    <th><a href="/packages/?{% buildsortqs "arch" %}"
-                            title="Sort packages by architecture">Arch</a></th>
-                    <th><a href="/packages/?{% buildsortqs "repo" %}"
-                            title="Sort packages by repository">Repo</a></th>
-                    <th><a href="/packages/?{% buildsortqs "pkgname" %}"
-                            title="Sort packages by package name">Name</a></th>
+                    <th>Arch</th>
+                    <th>Repo</th>
+                    <th>Name</th>
                     <th>Version</th>
                     <th>Description</th>
-                    <th><a href="/packages/?{% buildsortqs "-last_update" %}"
-                            title="Sort packages by last update">Last Updated</a></th>
-                    <th><a href="/packages/?{% buildsortqs "-flag_date" %}"
-                            title="Sort packages by when marked-out of-date">Flag Date</a></th>
+                    <th>Last Updated</th>
+                    <th>Flag Date</th>
                 </tr>
             </thead>
             <tbody>
-                {% for pkg in package_list %}
-                <tr class="{% cycle 'odd' 'even' %}">
-                    {% if perms.main.change_package %}
-                    <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
-                    {% endif %}
+                {% for pkg in exact_matches %}
+                <tr>
                     <td>{{ pkg.arch.name }}</td>
                     <td>{{ pkg.repo.name|capfirst }}</td>
                     <td>{% pkg_details_link pkg %}</td>
@@ -118,11 +72,61 @@
                     <td>{{ pkg.last_update|date }}</td>
                     <td>{{ pkg.flag_date|date }}</td>
                 </tr>
-                {% empty %}
-                <tr class="empty"><td colspan="{% if perms.main.change_package %}9{% else %}8{% endif %}"><em>No matching packages found</em></td></tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+{% endif %}{% endwith %}{% endif %}
+
+<div id="pkglist-results" class="box">
+    {% include "packages/search_paginator.html" %}
+    <form id="pkglist-results-form" method="post" action="/packages/update/">{% csrf_token %}
+       <div class="table-wrapper">
+            <table class="results">
+                <thead>
+                    <tr>
+                        {% if perms.main.change_package %}
+                        <th>&nbsp;</th>
+                        {% endif %}
+                        <th><a href="/packages/?{% buildsortqs "arch" %}"
+                                title="Sort packages by architecture">Arch</a></th>
+                        <th><a href="/packages/?{% buildsortqs "repo" %}"
+                                title="Sort packages by repository">Repo</a></th>
+                        <th><a href="/packages/?{% buildsortqs "pkgname" %}"
+                                title="Sort packages by package name">Name</a></th>
+                        <th>Version</th>
+                        <th>Description</th>
+                        <th><a href="/packages/?{% buildsortqs "-last_update" %}"
+                                title="Sort packages by last update">Last Updated</a></th>
+                        <th><a href="/packages/?{% buildsortqs "-flag_date" %}"
+                                title="Sort packages by when marked-out of-date">Flag Date</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pkg in package_list %}
+                    <tr>
+                        {% if perms.main.change_package %}
+                        <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
+                        {% endif %}
+                        <td>{{ pkg.arch.name }}</td>
+                        <td>{{ pkg.repo.name|capfirst }}</td>
+                        <td>{% pkg_details_link pkg %}</td>
+                        {% if pkg.flag_date %}
+                        <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                        {% else %}
+                        <td>{{ pkg.full_version }}</td>
+                        {% endif %}
+                        <td class="wrap">{{ pkg.pkgdesc }}</td>
+                        <td>{{ pkg.last_update|date }}</td>
+                        <td>{{ pkg.flag_date|date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr class="empty"><td colspan="{% if perms.main.change_package %}9{% else %}8{% endif %}"><em>No matching packages found</em></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% include "packages/search_paginator.html" %}
 
         {% if perms.main.change_package %}

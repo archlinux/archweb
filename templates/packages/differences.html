@@ -9,32 +9,34 @@
 <div class="box">
     <h2>Multilib Differences to Main Packages</h2>
 
-    <table id="table_multilib_differences" class="results">
-        <thead>
-            <tr>
-                <th>Multilib Name</th>
-                <th>Multilib Version</th>
-                <th>x86_64 Version</th>
-                <th>x86_64 Name</th>
-                <th>x864_ Repo</th>
-                <th>Multilib Last Updated</th>
-                <th>x86_64 Last Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pkg1, pkg2 in multilib_differences %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td>{% pkg_details_link pkg1 %}</td>
-                <td><span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.full_version }}</span></td>
-                <td><span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.full_version }}</span></td>
-                <td>{% pkg_details_link pkg2 %}</td>
-                <td>{{ pkg2.repo }}</td>
-                <td>{{ pkg1.last_update|date }}</td>
-                <td>{{ pkg2.last_update|date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="table_multilib_differences" class="results">
+            <thead>
+                <tr>
+                    <th>Multilib Name</th>
+                    <th>Multilib Version</th>
+                    <th>x86_64 Version</th>
+                    <th>x86_64 Name</th>
+                    <th>x864_ Repo</th>
+                    <th>Multilib Last Updated</th>
+                    <th>x86_64 Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pkg1, pkg2 in multilib_differences %}
+                <tr>
+                    <td>{% pkg_details_link pkg1 %}</td>
+                    <td><span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.full_version }}</span></td>
+                    <td><span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.full_version }}</span></td>
+                    <td>{% pkg_details_link pkg2 %}</td>
+                    <td>{{ pkg2.repo }}</td>
+                    <td>{{ pkg1.last_update|date }}</td>
+                    <td>{{ pkg2.last_update|date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 </div>
 {% endblock %}

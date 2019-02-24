@@ -29,32 +29,34 @@
     Current UTC Time: {{ utc_now|date:"Y-m-d H:i T" }}
     </p>
 
-    <table id="clocks-table" class="results">
-        <thead>
-            <tr>
-                <th>Developer</th>
-                <th>Username</th>
-                <th>Alias</th>
-                <th>Last Action</th>
-                <th>Location</th>
-                <th>Time Zone</th>
-                <th>Current Time</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for dev in developers %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="mailto:{{ dev.email }}">{{ dev.get_full_name }}</a></td>
-                <td>{{ dev.username }}</td>
-                <td>{{ dev.userprofile.alias }}</td>
-                <td>{{ dev.last_action }}</td>
-                <td>{% country_flag dev.userprofile.country %}{{ dev.userprofile.location }}</td>
-                <td>{{ dev.userprofile.time_zone }}</td>
-                <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}<span class="hide"> {{ dev.userprofile.time_zone }}</span></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="clocks-table" class="results">
+            <thead>
+                <tr>
+                    <th>Developer</th>
+                    <th>Username</th>
+                    <th>Alias</th>
+                    <th>Last Action</th>
+                    <th>Location</th>
+                    <th>Time Zone</th>
+                    <th>Current Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dev in developers %}
+                <tr>
+                    <td><a href="mailto:{{ dev.email }}">{{ dev.get_full_name }}</a></td>
+                    <td>{{ dev.username }}</td>
+                    <td>{{ dev.userprofile.alias }}</td>
+                    <td>{{ dev.last_action }}</td>
+                    <td>{% country_flag dev.userprofile.country %}{{ dev.userprofile.location }}</td>
+                    <td>{{ dev.userprofile.time_zone }}</td>
+                    <td>{{ utc_now|timezone:dev.userprofile.time_zone|date:"Y-m-d H:i T" }}<span class="hide"> {{ dev.userprofile.time_zone }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 

@@ -6,11 +6,13 @@
 {% block content %}
 <div id="dev-todo" class="box">
 
-    <h2>Package Todo Lists</h2>
+    <header>
+        <h2>Package Todo Lists</h2>
 
-    {% if perms.todolists.add_todolist %}<ul class="admin-actions">
-        <li><a href="/todo/add/" title="Add new todo list">Add Todo List</a></li>
-    </ul>{% endif %}
+        {% if perms.todolists.add_todolist %}<ul class="admin-actions">
+            <li><a href="/todo/add/" title="Add new todo list">Add Todo List</a></li>
+        </ul>{% endif %}
+    </header>
 
     <p>Todo lists are used by the developers when a rebuild of a set of
     packages is needed. This is common when a library has a version bump,
@@ -20,34 +22,36 @@
 
     {% include "todolists/paginator.html" %}
 
-    <table id="dev-todo-lists" class="results todo-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Creation Date</th>
-                <th>Creator</th>
-                <th>Description</th>
-                <th>Package Count</th>
-                <th>Incomplete Count</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for list in lists %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="{{ list.get_absolute_url }}"
-                        title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
-                <td>{{ list.created|date }}</td>
-                <td>{{ list.creator.get_full_name }}</td>
-                <td class="wrap">{{ list.description|urlize }}</td>
-                <td>{{ list.pkg_count }}</td>
-                <td>{{ list.incomplete_count }}</td>
-                <td>{% ifequal list.incomplete_count 0 %}<span class="complete">Complete</span>
-                    {% else %}<span class="incomplete">Incomplete</span>{% endifequal %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="dev-todo-lists" class="results todo-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Creation Date</th>
+                    <th>Creator</th>
+                    <th>Description</th>
+                    <th>Package Count</th>
+                    <th>Incomplete Count</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for list in lists %}
+                <tr>
+                    <td><a href="{{ list.get_absolute_url }}"
+                            title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
+                    <td>{{ list.created|date }}</td>
+                    <td>{{ list.creator.get_full_name }}</td>
+                    <td class="wrap">{{ list.description|urlize }}</td>
+                    <td>{{ list.pkg_count }}</td>
+                    <td>{{ list.incomplete_count }}</td>
+                    <td>{% ifequal list.incomplete_count 0 %}<span class="complete">Complete</span>
+                        {% else %}<span class="incomplete">Incomplete</span>{% endifequal %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {% include "todolists/paginator.html" %}
 </div>

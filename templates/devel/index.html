@@ -13,138 +13,146 @@
 
     <h3>My Flagged Packages</h3>
 
-    <table id="dash-myflagged" class="results">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Testing Version</th>
-                <th>Repo</th>
-                <th>Arch</th>
-                <th>Flagged</th>
-                <th>Last Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pkg in flagged %}
-                <tr class="{% cycle 'odd' 'even' %}">
-                    <td>{% pkg_details_link pkg %}</td>
-                    <td>{{ pkg.full_version }}</td>
-                    <td>{% with pkg.in_testing as tp %}{% if tp %}
-                        <a href="{{ tp.get_absolute_url }}"
-                            title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
-                        {% endif %}{% endwith %}</td>
-                    <td>{{ pkg.repo.name }}</td>
-                    <td>{{ pkg.arch.name }}</td>
-                    <td>{{ pkg.flag_date|date }}</td>
-                    <td>{{ pkg.last_update|date }}</td>
+    <div class="table-wrapper">
+        <table id="dash-myflagged" class="results">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Version</th>
+                    <th>Testing Version</th>
+                    <th>Repo</th>
+                    <th>Arch</th>
+                    <th>Flagged</th>
+                    <th>Last Updated</th>
                 </tr>
-            {% empty %}
-                <tr class="empty"><td colspan="7"><em>No flagged packages to display</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for pkg in flagged %}
+                    <tr>
+                        <td>{% pkg_details_link pkg %}</td>
+                        <td>{{ pkg.full_version }}</td>
+                        <td>{% with pkg.in_testing as tp %}{% if tp %}
+                            <a href="{{ tp.get_absolute_url }}"
+                                title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
+                            {% endif %}{% endwith %}</td>
+                        <td>{{ pkg.repo.name }}</td>
+                        <td>{{ pkg.arch.name }}</td>
+                        <td>{{ pkg.flag_date|date }}</td>
+                        <td>{{ pkg.last_update|date }}</td>
+                    </tr>
+                {% empty %}
+                    <tr class="empty"><td colspan="7"><em>No flagged packages to display</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>My Incomplete Todo List Packages</h3>
 
-    <table id="dash-mytodolist" class="results">
-        <thead>
-            <tr>
-                <th>Todo List</th>
-                <th>Name</th>
-                <th>Repo</th>
-                <th>Arch</th>
-                <th>Maintainer(s)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for todopkg in todopkgs %}
-                <tr class="{% cycle 'odd' 'even' %}">
-                    <td><a href="{{ todopkg.todolist.get_absolute_url }}"
-                            title="View todo list: {{ todopkg.todolist.name }}">{{ todopkg.todolist.name }}</a></td>
-                    <td>{% todopkg_details_link todopkg %}</td>
-                    <td>{{ todopkg.repo.name }}</td>
-                    <td>{{ todopkg.arch.name }}</td>
-                    <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>
+    <div class="table-wrapper">
+        <table id="dash-mytodolist" class="results">
+            <thead>
+                <tr>
+                    <th>Todo List</th>
+                    <th>Name</th>
+                    <th>Repo</th>
+                    <th>Arch</th>
+                    <th>Maintainer(s)</th>
                 </tr>
-            {% empty %}
-                <tr class="empty"><td colspan="5"><em>No incomplete todo list packages to display</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for todopkg in todopkgs %}
+                    <tr>
+                        <td><a href="{{ todopkg.todolist.get_absolute_url }}"
+                                title="View todo list: {{ todopkg.todolist.name }}">{{ todopkg.todolist.name }}</a></td>
+                        <td>{% todopkg_details_link todopkg %}</td>
+                        <td>{{ todopkg.repo.name }}</td>
+                        <td>{{ todopkg.arch.name }}</td>
+                        <td>{{ todopkg.pkg.maintainers|join:', ' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr class="empty"><td colspan="5"><em>No incomplete todo list packages to display</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>Package Todo Lists</h3>
 
-    <table id="dash-todo" class="results">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Creation Date</th>
-                <th>Creator</th>
-                <th>Description</th>
-                <th>Package Count</th>
-                <th>Incomplete Count</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for todo in todos %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="{{ todo.get_absolute_url }}"
-                        title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                <td>{{ todo.created|date }}</td>
-                <td>{{ todo.creator.get_full_name }}</td>
-                <td class="wrap">{{ todo.description|urlize }}</td>
-                <td>{{ todo.pkg_count }}</td>
-                <td>{{ todo.incomplete_count }}</td>
-            </tr>
-            {% empty %}
-            <tr class="empty"><td colspan="6"><em>No package todo lists to display</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="dash-todo" class="results">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Creation Date</th>
+                    <th>Creator</th>
+                    <th>Description</th>
+                    <th>Package Count</th>
+                    <th>Incomplete Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr>
+                    <td><a href="{{ todo.get_absolute_url }}"
+                            title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
+                    <td>{{ todo.created|date }}</td>
+                    <td>{{ todo.creator.get_full_name }}</td>
+                    <td class="wrap">{{ todo.description|urlize }}</td>
+                    <td>{{ todo.pkg_count }}</td>
+                    <td>{{ todo.incomplete_count }}</td>
+                </tr>
+                {% empty %}
+                <tr class="empty"><td colspan="6"><em>No package todo lists to display</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>Signoff Status</h3>
 
-    <table id="dash-signoffs" class="results">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Arch</th>
-                <th>Target Repo</th>
-                <th>Last Updated</th>
-                <th>Approved</th>
-                <th>Signoffs</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for group in signoffs %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td>{% pkg_details_link group.package %}</td>
-                <td>{{ group.version }}</td>
-                <td>{{ group.arch.name }}</td>
-                <td>{{ group.target_repo }}</td>
-                <td>{{ group.last_update|date }}</td>
-                {% if group.specification.known_bad %}
-                <td class="approval signoff-bad">Bad</td>
-                {% else %}
-                {% if not group.specification.enabled %}
-                <td class="approval signoff-disabled">Disabled</td>
-                {% else %}
-                <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
-                {% endif %}
-                {% endif %}
-                <td><ul class="signoff-list">
-                    {% for signoff in group.signoffs %}
-                    <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
-                    {% endfor %}
-                </ul></td>
-            </tr>
-            {% empty %}
-            <tr class="empty"><td colspan="7"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="dash-signoffs" class="results">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Version</th>
+                    <th>Arch</th>
+                    <th>Target Repo</th>
+                    <th>Last Updated</th>
+                    <th>Approved</th>
+                    <th>Signoffs</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in signoffs %}
+                <tr>
+                    <td>{% pkg_details_link group.package %}</td>
+                    <td>{{ group.version }}</td>
+                    <td>{{ group.arch.name }}</td>
+                    <td>{{ group.target_repo }}</td>
+                    <td>{{ group.last_update|date }}</td>
+                    {% if group.specification.known_bad %}
+                    <td class="approval signoff-bad">Bad</td>
+                    {% else %}
+                    {% if not group.specification.enabled %}
+                    <td class="approval signoff-disabled">Disabled</td>
+                    {% else %}
+                    <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
+                    {% endif %}
+                    {% endif %}
+                    <td><ul class="signoff-list">
+                        {% for signoff in group.signoffs %}
+                        <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
+                        {% endfor %}
+                    </ul></td>
+                </tr>
+                {% empty %}
+                <tr class="empty"><td colspan="7"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>Developer Reports</h3>
     <ul>

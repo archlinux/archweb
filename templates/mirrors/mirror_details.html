@@ -17,80 +17,82 @@
     </ul>
     {% endif %}
 
-    <table class="compact">
-        <tr>
-            <th>Name:</th>
-            <td>{{ mirror.name }}</td>
-        </tr>
-        <tr>
-            <th>Tier:</th>
-            <td>{{ mirror.get_tier_display }}</td>
-        </tr>
-        <tr>
-            <th>Has ISOs:</th>
-            <td>{{ mirror.isos|yesno|capfirst }}</td>
-        </tr>
-        {% if user.is_authenticated %}
-        <tr>
-            <th>Public:</th>
-            <td>{{ mirror.public|yesno|capfirst }}</td>
-        </tr>
-        <tr>
-            <th>Active:</th>
-            <td>{{ mirror.active|yesno|capfirst }}</td>
-        </tr>
-        <tr>
-            <th>Created:</th>
-            <td>{{ mirror.created }}</td>
-        </tr>
-        <tr>
-            <th>Last Modified:</th>
-            <td>{{ mirror.last_modified }}</td>
-        </tr>
-        <tr>
-            <th>Rsync IPs:</th>
-            <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
-        </tr>
-        {% if perms.mirrors.change_mirror %}
-        <tr>
-            <th>Admin Email:</th>
-            <td>{% if mirror.admin_email %}<a href="mailto:{{ mirror.admin_email }}">{{ mirror.admin_email }}</a>{% else %}None{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Alternate Email:</th>
-            <td>{% if mirror.alternate_email %}<a href="mailto:{{ mirror.alternate_email }}">{{ mirror.alternate_email }}</a>{% else %}None{% endif %}</td>
-        </tr>
-        {% endif %}
-        <tr>
-            <th>Flyspray Issue:</th>
-            <td>{% if mirror.bug %}<a href="https://bugs.archlinux.org/task/{{ mirror.bug }}">FS#{{ mirror.bug }}</a>{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Notes:</th>
-            <td class="wrap">{{ mirror.notes|linebreaks }}</td>
-        </tr>
-        <tr>
-            <th>Upstream:</th>
-            <td>{% if mirror.upstream %}
-                <a href="{{ mirror.upstream.get_absolute_url }}"
-                    title="Mirror details for {{ mirror.upstream.name }}">{{ mirror.upstream.name }}</a>
-                {% else %}None{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Downstream:</th>
-            {% with mirror.downstream as ds_mirrors %}
-            <td class="wrap">{% if ds_mirrors %}
-                {% for ds in ds_mirrors %}
-                <a href="{{ ds.get_absolute_url }}"
-                    title="Mirror details for {{ ds.name }}">{{ ds.name }}</a>{% comment %}
-                {% endcomment %}{% if not ds.active %} <span class="testing-dep">(inactive)</span>{% endif %}{% comment %}
-                {% endcomment %}{% if not ds.public %} <span class="testing-dep">(private)</span>{% endif %}{% comment %}
-                {% endcomment %}{% if not forloop.last %}, {% endif %}{% endfor %}
-                {% else %}None{% endif %}</td>
-            {% endwith %}
-        </tr>
-        {% endif %}
-    </table>
+    <div class="table-wrapper">
+        <table class="compact">
+            <tr>
+                <th>Name:</th>
+                <td>{{ mirror.name }}</td>
+            </tr>
+            <tr>
+                <th>Tier:</th>
+                <td>{{ mirror.get_tier_display }}</td>
+            </tr>
+            <tr>
+                <th>Has ISOs:</th>
+                <td>{{ mirror.isos|yesno|capfirst }}</td>
+            </tr>
+            {% if user.is_authenticated %}
+            <tr>
+                <th>Public:</th>
+                <td>{{ mirror.public|yesno|capfirst }}</td>
+            </tr>
+            <tr>
+                <th>Active:</th>
+                <td>{{ mirror.active|yesno|capfirst }}</td>
+            </tr>
+            <tr>
+                <th>Created:</th>
+                <td>{{ mirror.created }}</td>
+            </tr>
+            <tr>
+                <th>Last Modified:</th>
+                <td>{{ mirror.last_modified }}</td>
+            </tr>
+            <tr>
+                <th>Rsync IPs:</th>
+                <td class="wrap">{{mirror.rsync_ips.all|join:', '}}</td>
+            </tr>
+            {% if perms.mirrors.change_mirror %}
+            <tr>
+                <th>Admin Email:</th>
+                <td>{% if mirror.admin_email %}<a href="mailto:{{ mirror.admin_email }}">{{ mirror.admin_email }}</a>{% else %}None{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Alternate Email:</th>
+                <td>{% if mirror.alternate_email %}<a href="mailto:{{ mirror.alternate_email }}">{{ mirror.alternate_email }}</a>{% else %}None{% endif %}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Flyspray Issue:</th>
+                <td>{% if mirror.bug %}<a href="https://bugs.archlinux.org/task/{{ mirror.bug }}">FS#{{ mirror.bug }}</a>{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Notes:</th>
+                <td class="wrap">{{ mirror.notes|linebreaks }}</td>
+            </tr>
+            <tr>
+                <th>Upstream:</th>
+                <td>{% if mirror.upstream %}
+                    <a href="{{ mirror.upstream.get_absolute_url }}"
+                        title="Mirror details for {{ mirror.upstream.name }}">{{ mirror.upstream.name }}</a>
+                    {% else %}None{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Downstream:</th>
+                {% with mirror.downstream as ds_mirrors %}
+                <td class="wrap">{% if ds_mirrors %}
+                    {% for ds in ds_mirrors %}
+                    <a href="{{ ds.get_absolute_url }}"
+                        title="Mirror details for {{ ds.name }}">{{ ds.name }}</a>{% comment %}
+                    {% endcomment %}{% if not ds.active %} <span class="testing-dep">(inactive)</span>{% endif %}{% comment %}
+                    {% endcomment %}{% if not ds.public %} <span class="testing-dep">(private)</span>{% endif %}{% comment %}
+                    {% endcomment %}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    {% else %}None{% endif %}</td>
+                {% endwith %}
+            </tr>
+            {% endif %}
+        </table>
+    </div>
 
     <h3>Available URLs</h3>
     {% include "mirrors/mirror_details_urls.html" %}

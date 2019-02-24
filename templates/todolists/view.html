@@ -8,18 +8,20 @@
 {% block content %}
 <div id="dev-todo-details" class="box">
 
-    <h2>Todo List: {{ list.name }}</h2>
+    <header>
+        <h2>Todo List: {{ list.name }}</h2>
 
-    <ul class="admin-actions">
-        {% if perms.todolists.delete_todolist %}
-        <li><a href="/todo/{{ list.slug }}/delete/"
-            title="Delete this todo list">Delete Todo List</a></li>
-        {% endif %}
-        {% if perms.todolists.change_todolist %}
-        <li><a href="/todo/{{ list.slug }}/edit/"
-            title="Edit this todo list">Edit Todo List</a></li>
-        {% endif %}
-    </ul>
+        <ul class="admin-actions">
+            {% if perms.todolists.delete_todolist %}
+            <li><a href="/todo/{{ list.slug }}/delete/"
+                title="Delete this todo list">Delete</a></li>
+            {% endif %}
+            {% if perms.todolists.change_todolist %}
+            <li><a href="/todo/{{ list.slug }}/edit/"
+                title="Edit this todo list">Edit</a></li>
+            {% endif %}
+        </ul>
+    </header>
 
     <div class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</div>
 
@@ -33,79 +35,82 @@
             <li><a href="pkgbases/{{ svn_root }}/">{{ svn_root }}</a></li>
         {% endfor %}</ul>
     </div>
+</div>
 
-    <div class="box filter-criteria">
-        <h3>Filter Todo List Packages</h3>
-        <form id="todolist_filter" method="post" action=".">
-        <fieldset>
-            <legend>Select filter criteria</legend>
-            {% for arch in arches %}
-            <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
-                <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
-            {% endfor %}
-            {% for repo in repos %}
-            <div><label for="id_repo_{{ repo.name|lower }}" title="Target Repository {{ repo.name }}">[{{ repo.name|lower }}]</label>
-                <input type="checkbox" name="repo_{{ repo.name|lower }}" id="id_repo_{{ repo.name|lower }}" class="repo_filter" value="{{ repo.name|lower }}" checked="checked"/></div>
-            {% endfor %}
-            {% if user.is_authenticated %}
-            <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
-                <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
-            {% endif %}
-            <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
-                <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
-            <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
-            <div class="clear"></div>
-            <div id="filter-info">
-                <span id="filter-count">{{ list.packages|length }}</span> packages displayed out of
-                {{ list.packages|length }} total package{{ list.packages|pluralize }}.
-            </div>
-        </fieldset>
-        </form>
+<div class="box filter-criteria">
+    <h2>Filter Packages</h2>
+    <form id="todolist_filter" method="post" action=".">
+    <div class="grid small">
+        <legend>Select filter criteria</legend>
+        {% for arch in arches %}
+        <div><label for="id_arch_{{ arch.name }}" title="Architecture {{ arch.name }}">Arch {{ arch.name }}</label>
+            <input type="checkbox" name="arch_{{ arch.name }}" id="id_arch_{{ arch.name }}" class="arch_filter" value="{{ arch.name }}" checked="checked"/></div>
+        {% endfor %}
+        {% for repo in repos %}
+        <div><label for="id_repo_{{ repo.name|lower }}" title="Target Repository {{ repo.name }}">[{{ repo.name|lower }}]</label>
+            <input type="checkbox" name="repo_{{ repo.name|lower }}" id="id_repo_{{ repo.name|lower }}" class="repo_filter" value="{{ repo.name|lower }}" checked="checked"/></div>
+        {% endfor %}
+        {% if user.is_authenticated %}
+        <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
+            <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
+        {% endif %}
+        <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
+            <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
+        <div class="full-w"><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
     </div>
+    </form>
+</div>
 
-    <table id="dev-todo-pkglist" class="results todo-table">
-        <thead>
-            <tr>
-                <th>Arch</th>
-                <th>Repository</th>
-                <th>Name</th>
-                <th>Current Version</th>
-                <th>Staging Version</th>
-                <th>Maintainers</th>
-                <th>Status</th>
-                <th>Last Touched By</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pkg in list.packages %}
-            <tr class="{% cycle 'odd' 'even' %}{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
-                <td>{{ pkg.arch.name }}</td>
-                <td>{{ pkg.repo.name|capfirst }}</td>
-                <td>{% todopkg_details_link pkg %}</td>
-                {% if pkg.pkg.flag_date %}
-                <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
-                {% elif pkg.pkg %}
-                <td>{{ pkg.pkg.full_version }}</td>
-                {% else %}
-                <td></td>
-                {% endif %}
-                {% with staging=pkg.staging %}
-                <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
-                {% endwith %}
-                <td>{{ pkg.maintainers|join:', ' }}</td>
-                <td>
-                    {% if perms.todolists.change_todolistpackage %}
-                    <a href="/todo/{{ list.slug }}/flag/{{ pkg.id }}/"
-                        class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
+<div class="box">
+    <header>
+        <span id="filter-count">{{ list.packages|length }}</span> packages displayed out of
+        {{ list.packages|length }} total package{{ list.packages|pluralize }}.
+    </header>
+    <div class="table-wrapper">
+        <table id="dev-todo-pkglist" class="results todo-table">
+            <thead>
+                <tr>
+                    <th>Arch</th>
+                    <th>Repository</th>
+                    <th>Name</th>
+                    <th>Current Version</th>
+                    <th>Staging Version</th>
+                    <th>Maintainers</th>
+                    <th>Status</th>
+                    <th>Last Touched By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pkg in list.packages %}
+                <tr class="{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
+                    <td>{{ pkg.arch.name }}</td>
+                    <td>{{ pkg.repo.name|capfirst }}</td>
+                    <td>{% todopkg_details_link pkg %}</td>
+                    {% if pkg.pkg.flag_date %}
+                    <td><span class="flagged">{{ pkg.pkg.full_version }}</span></td>
+                    {% elif pkg.pkg %}
+                    <td>{{ pkg.pkg.full_version }}</td>
                     {% else %}
-                    <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
+                    <td></td>
                     {% endif %}
-                </td>
-                <td>{{ pkg.user|default:"" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    {% with staging=pkg.staging %}
+                    <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
+                    {% endwith %}
+                    <td>{{ pkg.maintainers|join:', ' }}</td>
+                    <td>
+                        {% if perms.todolists.change_todolistpackage %}
+                        <a href="/todo/{{ list.slug }}/flag/{{ pkg.id }}/"
+                            class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
+                        {% else %}
+                        <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ pkg.user|default:"" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 

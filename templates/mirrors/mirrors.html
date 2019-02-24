@@ -9,41 +9,43 @@
 {% block content %}
 <div id="dev-mirrorlist" class="box">
     <h2>Mirror Overview</h2>
-    <table class="results">
-        <thead>
-            <tr>
-                <th>Server</th>
-                <th>Country</th>
-                <th>Tier</th>
-                <th>ISOs</th>
-                <th>Protocols</th>
-                {% if user.is_authenticated %}
-                <th>Public</th>
-                <th>Active</th>
-                <th>Admin Email</th>
-                <th>Notes</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for mirror in mirror_list %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><a href="{{ mirror.get_absolute_url }}"
-                        title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
-                <td class="country">{% if mirror.country %}{% country_flag mirror.country %}{{ mirror.country.name }}{% else %}Various{% endif %}</td>
-                <td>{{ mirror.get_tier_display }}</td>
-                <td>{{ mirror.isos|yesno|capfirst }}</td>
-                <td class="wrap">{{ mirror.protocols|join:", " }}</td>
-                {% if user.is_authenticated %}
-                <td>{{ mirror.public|yesno|capfirst }}</td>
-                <td>{{ mirror.active|yesno|capfirst }}</td>
-                <td>{{ mirror.admin_email }}</td>
-                <td class="wrap">{{ mirror.notes|linebreaks }}</td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="results">
+            <thead>
+                <tr>
+                    <th>Server</th>
+                    <th>Country</th>
+                    <th>Tier</th>
+                    <th>ISOs</th>
+                    <th>Protocols</th>
+                    {% if user.is_authenticated %}
+                    <th>Public</th>
+                    <th>Active</th>
+                    <th>Admin Email</th>
+                    <th>Notes</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for mirror in mirror_list %}
+                <tr>
+                    <td><a href="{{ mirror.get_absolute_url }}"
+                            title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
+                    <td class="country">{% if mirror.country %}{% country_flag mirror.country %}{{ mirror.country.name }}{% else %}Various{% endif %}</td>
+                    <td>{{ mirror.get_tier_display }}</td>
+                    <td>{{ mirror.isos|yesno|capfirst }}</td>
+                    <td class="wrap">{{ mirror.protocols|join:", " }}</td>
+                    {% if user.is_authenticated %}
+                    <td>{{ mirror.public|yesno|capfirst }}</td>
+                    <td>{{ mirror.active|yesno|capfirst }}</td>
+                    <td>{{ mirror.admin_email }}</td>
+                    <td class="wrap">{{ mirror.notes|linebreaks }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% load cdn %}{% jquery %}{% jquery_tablesorter %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>

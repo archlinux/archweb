@@ -10,67 +10,69 @@
     </p>
 </div>
 
-<table class="arch-bio-entry">
-    {% for dev in dev_list %}
-    {% with dev.userprofile as prof %}
-    <tr itemscope itemtype="http://schema.org/Person">
-        <td class="pic pic-{{ dev.username }}">
-            <img itemprop="image" src="{{ prof.picture.url }}" height="125" width="125" alt="Image for {{ prof.alias }}"/>
-        </td>
-        <td>
-            <meta itemprop="name" content="{{ dev.get_full_name|escape }}"/>
-            <meta itemprop="givenName" content="{{ dev.first_name|escape }}"/>
-            <meta itemprop="familyName" content="{{ dev.last_name|escape }}"/>
-            <meta itemprop="jobTitle" content="{{ group.member_title|escape }}"/>
-            <div class="itemprop" itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
-                <meta itemprop="name" content="Arch Linux"/>
-            </div>
-            <h3>{{ dev.get_full_name }}{% if prof.latin_name %} ({{ prof.latin_name}}){% endif %}
-            <a class="headerlink" name="{{ dev.username }}" id="{{ dev.username }}" href="#{{ dev.username }}" title="Permalink">¶</a></h3>
-            <table class="bio bio-{{ dev.username }}">
-                <tr>
-                    <th>Alias:</th>
-                    <td itemprop="additionalName">{{ prof.alias }}</td>
-                </tr><tr>
-                    <th>Email:</th>
-                    <td>{{ prof.public_email }}</td>
-                </tr><tr>
-                    <th>Other Contact:</th>
-                    <td>{{ prof.other_contact }}</td>
-                </tr><tr>
-                    <th>PGP Key:</th>
-                    <td>{% pgp_key_link prof.pgp_key %}</td>
-                </tr><tr>
-                    <th>Roles:</th>
-                    <td>{{ prof.roles }}<br />
-                    </td>
-                </tr><tr>
-                    <th>Website:</th>
-                    <td>{% if prof.website %}<a itemprop="url" href="{{ prof.website }}"
-                            title="Visit the website for {{ dev.get_full_name }}">
-                            {{ prof.website }}</a>{% endif %}</td>
-                </tr><tr>
-                    <th>Occupation:</th>
-                    <td>{{ prof.occupation }}</td>
-                </tr><tr>
-                    <th>Birth Year:</th>
-                    <td itemprop="birthDate">{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
-                </tr><tr>
-                    <th>Location:</th>
-                    <td>{% country_flag dev.userprofile.country %}{{ prof.location }}</td>
-                </tr><tr>
-                    <th>Languages:</th>
-                    <td>{{ prof.languages }}</td>
-                </tr><tr>
-                    <th>Interests:</th>
-                    <td>{{ prof.interests }}</td>
-                </tr><tr>
-                    <th>Favorite Distros:</th>
-                    <td>{{ prof.favorite_distros }}</td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    {% endwith %}
-    {% endfor %}
-</table>
+<div class="table-wrapper">
+    <table class="arch-bio-entry">
+        {% for dev in dev_list %}
+        {% with dev.userprofile as prof %}
+        <tr itemscope itemtype="http://schema.org/Person">
+            <td class="pic pic-{{ dev.username }}">
+                <img itemprop="image" src="{{ prof.picture.url }}" height="125" width="125" alt="Image for {{ prof.alias }}"/>
+            </td>
+            <td>
+                <meta itemprop="name" content="{{ dev.get_full_name|escape }}"/>
+                <meta itemprop="givenName" content="{{ dev.first_name|escape }}"/>
+                <meta itemprop="familyName" content="{{ dev.last_name|escape }}"/>
+                <meta itemprop="jobTitle" content="{{ group.member_title|escape }}"/>
+                <div class="itemprop" itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
+                    <meta itemprop="name" content="Arch Linux"/>
+                </div>
+                <h3>{{ dev.get_full_name }}{% if prof.latin_name %} ({{ prof.latin_name}}){% endif %}
+                <a class="headerlink" name="{{ dev.username }}" id="{{ dev.username }}" href="#{{ dev.username }}" title="Permalink">¶</a></h3>
+                <table class="bio bio-{{ dev.username }}">
+                    <tr>
+                        <th>Alias:</th>
+                        <td itemprop="additionalName">{{ prof.alias }}</td>
+                    </tr><tr>
+                        <th>Email:</th>
+                        <td>{{ prof.public_email }}</td>
+                    </tr><tr>
+                        <th>Other Contact:</th>
+                        <td>{{ prof.other_contact }}</td>
+                    </tr><tr>
+                        <th>PGP Key:</th>
+                        <td>{% pgp_key_link prof.pgp_key %}</td>
+                    </tr><tr>
+                        <th>Roles:</th>
+                        <td>{{ prof.roles }}<br />
+                        </td>
+                    </tr><tr>
+                        <th>Website:</th>
+                        <td>{% if prof.website %}<a itemprop="url" href="{{ prof.website }}"
+                                title="Visit the website for {{ dev.get_full_name }}">
+                                {{ prof.website }}</a>{% endif %}</td>
+                    </tr><tr>
+                        <th>Occupation:</th>
+                        <td>{{ prof.occupation }}</td>
+                    </tr><tr>
+                        <th>Birth Year:</th>
+                        <td itemprop="birthDate">{% if prof.yob %}{{ prof.yob }}{% endif %}</td>
+                    </tr><tr>
+                        <th>Location:</th>
+                        <td>{% country_flag dev.userprofile.country %}{{ prof.location }}</td>
+                    </tr><tr>
+                        <th>Languages:</th>
+                        <td>{{ prof.languages }}</td>
+                    </tr><tr>
+                        <th>Interests:</th>
+                        <td>{{ prof.interests }}</td>
+                    </tr><tr>
+                        <th>Favorite Distros:</th>
+                        <td>{{ prof.favorite_distros }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+    </table>
+</div>

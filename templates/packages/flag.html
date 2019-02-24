@@ -34,11 +34,13 @@
 
     <p>Please confirm your flag request for {{package.pkgname}}:</p>
 
-    <form id="flag-pkg-form" method="post">{% csrf_token %}
+    <form class="general-form" id="flag-pkg-form" method="post">{% csrf_token %}
         <fieldset>
-            {{ form.as_p }}
+            <p>
+                {{ form.as_p }}
+            </p>
         </fieldset>
-        <p><label></label> <input title="Flag {{ package.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
+        <p><input title="Flag {{ package.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
     </form>
 </div>
 {% endblock %}

@@ -17,12 +17,11 @@
     are highly encouraged to use the <strong>Preview</strong> button to check
     your work.  Javascript must be enabled to use it, but it will render the
     news item exactly as it will appear on the news view page.</p>
-    <form id="newsform" method="post">{% csrf_token %}
+    <form class="general-form" id="newsform" method="post">{% csrf_token %}
         <fieldset>
             {{ form.as_p }}
         </fieldset>
         <p>
-        <label></label>
         <input title="Save changes" type="submit" value="Save" />
         <input id="news-preview-button" title="Preview" type="button" value="Preview" />
         </p>

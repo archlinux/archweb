@@ -1,30 +1,32 @@
 {% load flags %}
 {% load mirror_status %}
-<table id="{{ table_id }}" class="results">
-    <thead>
-        <tr>
-            <th>Mirror URL</th>
-            <th>Protocol</th>
-            <th>Country</th>
-            <th>Completion %</th>
-            <th>μ Delay (hh:mm)</th>
-            <th>μ Duration (s)</th>
-            <th>σ Duration (s)</th>
-            <th>Mirror Score</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for m_url in urls %}<tr class="{% cycle 'odd' 'even' %}">
-            <td>{{ m_url.url }}</td>
-            <td>{{ m_url.protocol }}</td>
-            <td class="country">{% country_flag m_url.country %}{{ m_url.country.name }}</td>
-            <td>{{ m_url.completion_pct|percentage:1 }}</td>
-            <td>{{ m_url.delay|duration }}</td>
-            <td>{{ m_url.duration_avg|floatformat:2 }}</td>
-            <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
-            <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
-            <td><a href="{{ m_url.get_absolute_url }}">details</a></td>
-        </tr>{% endfor %}
-    </tbody>
-</table>
+<div class="table-wrapper">
+    <table id="{{ table_id }}" class="results">
+        <thead>
+            <tr>
+                <th>Mirror URL</th>
+                <th>Protocol</th>
+                <th>Country</th>
+                <th>Completion %</th>
+                <th>μ Delay (hh:mm)</th>
+                <th>μ Duration (s)</th>
+                <th>σ Duration (s)</th>
+                <th>Mirror Score</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m_url in urls %}<tr>
+                <td>{{ m_url.url }}</td>
+                <td>{{ m_url.protocol }}</td>
+                <td class="country">{% country_flag m_url.country %}{{ m_url.country.name }}</td>
+                <td>{{ m_url.completion_pct|percentage:1 }}</td>
+                <td>{{ m_url.delay|duration }}</td>
+                <td>{{ m_url.duration_avg|floatformat:2 }}</td>
+                <td>{{ m_url.duration_stddev|floatformat:2 }}</td>
+                <td>{{ m_url.score|floatformat:1|default:'∞' }}</td>
+                <td><a href="{{ m_url.get_absolute_url }}">details</a></td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>

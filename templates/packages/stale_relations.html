@@ -11,98 +11,104 @@
     <form id="stale-relations-form" method="post" action="update/">{% csrf_token %}
     <h3>Inactive User Relations ({{ inactive_user|length }})</h3>
 
-    <table class="results" id="inactive-user">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Package Base</th>
-                <th>Packages</th>
-                <th>User</th>
-                <th>Type</th>
-                <th>Created</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for relation in inactive_user %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
-                <td>{{ relation.pkgbase }}</td>
-                <td class="wrap">{% for pkg in relation.get_associated_packages %}
-                    <a href="{{ pkg.get_absolute_url }}"
-                        title="View package details for {{ pkg.pkgname }}">{{ pkg.repo|lower }}/{{ pkg.pkgname }} ({{ pkg.arch }})</a>{% if not forloop.last %}, {% endif %}
-                {% endfor %}</td>
-                <td>{{ relation.user.get_full_name }}</td>
-                <td>{{ relation.get_type_display }}</td>
-                <td>{{ relation.created }}</td>
-            </tr>
-            {% empty %}
-                <tr class="empty"><td colspan="6"><em>No inactive user relations.</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="results" id="inactive-user">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Package Base</th>
+                    <th>Packages</th>
+                    <th>User</th>
+                    <th>Type</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relation in inactive_user %}
+                <tr>
+                    <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                    <td>{{ relation.pkgbase }}</td>
+                    <td class="wrap">{% for pkg in relation.get_associated_packages %}
+                        <a href="{{ pkg.get_absolute_url }}"
+                            title="View package details for {{ pkg.pkgname }}">{{ pkg.repo|lower }}/{{ pkg.pkgname }} ({{ pkg.arch }})</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
+                    <td>{{ relation.user.get_full_name }}</td>
+                    <td>{{ relation.get_type_display }}</td>
+                    <td>{{ relation.created }}</td>
+                </tr>
+                {% empty %}
+                    <tr class="empty"><td colspan="6"><em>No inactive user relations.</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>Relations with Non-existent <tt>pkgbase</tt> ({{ missing_pkgbase|length }})</h3>
 
-    <table class="results" id="missing-pkgbase">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Package Base</th>
-                <th>User</th>
-                <th>Type</th>
-                <th>Created</th>
-                <th>Latest Update</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for relation in missing_pkgbase %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
-                <td>{{ relation.pkgbase }}</td>
-                <td>{{ relation.user.get_full_name }}</td>
-                <td>{{ relation.get_type_display }}</td>
-                <td>{{ relation.created }}</td>
-                <td>{{ relation.last_update.created }}</td>
-            </tr>
-            {% empty %}
-                <tr class="empty"><td colspan="6"><em>No non-existent pkgbase relations.</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="results" id="missing-pkgbase">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Package Base</th>
+                    <th>User</th>
+                    <th>Type</th>
+                    <th>Created</th>
+                    <th>Latest Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relation in missing_pkgbase %}
+                <tr>
+                    <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                    <td>{{ relation.pkgbase }}</td>
+                    <td>{{ relation.user.get_full_name }}</td>
+                    <td>{{ relation.get_type_display }}</td>
+                    <td>{{ relation.created }}</td>
+                    <td>{{ relation.last_update.created }}</td>
+                </tr>
+                {% empty %}
+                    <tr class="empty"><td colspan="6"><em>No non-existent pkgbase relations.</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <h3>Maintainers with Wrong Permissions ({{ wrong_permissions|length }})</h3>
 
-    <table class="results" id="wrong-permissions">
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Package Base</th>
-                <th>Packages</th>
-                <th>User</th>
-                <th>Created</th>
-                <th>Allowed Repos</th>
-                <th>Currently in Repos</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for relation in wrong_permissions %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
-                <td>{{ relation.pkgbase }}</td>
-                <td class="wrap">{% for pkg in relation.get_associated_packages %}
-                    <a href="{{ pkg.get_absolute_url }}"
-                        title="View package details for {{ pkg.pkgname }}">{{ pkg.repo|lower }}/{{ pkg.pkgname }} ({{ pkg.arch }})</a>{% if not forloop.last %}, {% endif %}
-                {% endfor %}</td>
-                <td>{{ relation.user.get_full_name }}</td>
-                <td>{{ relation.created }}</td>
-                <td class="wrap">{{ relation.user.userprofile.allowed_repos.all|join:", " }}</td>
-                <td class="wrap">{{ relation.repositories|join:", " }}</td>
-            </tr>
-            {% empty %}
-                <tr class="empty"><td colspan="7"><em>No relations with wrong permissions.</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table class="results" id="wrong-permissions">
+            <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>Package Base</th>
+                    <th>Packages</th>
+                    <th>User</th>
+                    <th>Created</th>
+                    <th>Allowed Repos</th>
+                    <th>Currently in Repos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for relation in wrong_permissions %}
+                <tr>
+                    <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
+                    <td>{{ relation.pkgbase }}</td>
+                    <td class="wrap">{% for pkg in relation.get_associated_packages %}
+                        <a href="{{ pkg.get_absolute_url }}"
+                            title="View package details for {{ pkg.pkgname }}">{{ pkg.repo|lower }}/{{ pkg.pkgname }} ({{ pkg.arch }})</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}</td>
+                    <td>{{ relation.user.get_full_name }}</td>
+                    <td>{{ relation.created }}</td>
+                    <td class="wrap">{{ relation.user.userprofile.allowed_repos.all|join:", " }}</td>
+                    <td class="wrap">{{ relation.repositories|join:", " }}</td>
+                </tr>
+                {% empty %}
+                    <tr class="empty"><td colspan="7"><em>No relations with wrong permissions.</em></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <p><input title="Delete selected relations" type="submit" id="delete-relations"
     name="delete" value="Delete Selected Relations" />

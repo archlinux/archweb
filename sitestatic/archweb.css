@@ -13,28 +13,65 @@
  */
 
 /* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
-@media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
-	}
-}
+header.arch-main { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+#arch-menu-toggle { display: none !important; }
 
-/* move the heading text offscreen */
-#archnavbarlogo h1 { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
+#arch-logo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; text-indent:-9999px !important; background: url(archnavbar/archlogo.png) no-repeat !important; }
 
-/* make the link the same size as the logo */
-#archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
+.arch-hamburger { display: none !important; float: right !important; top: 0 !important; width: 28px !important; height: 100% !important; padding: 13px 5px !important; cursor: pointer !important; }
+.arch-hamburger span { display: block !important; height: 2px !important; margin-bottom: 5px !important; background: #888 !important; }
+.arch-hamburger:hover span { background: white !important; }
 
 /* display the list inline, float it to the right and style it */
-#archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+nav.arch-main ul { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important;text-align: right !important; }
 
 /* style the links */
-#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
-#archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+nav.arch-main li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 10px 0px !important; }
+nav.arch-main li a { display: block !important; color: #999; font-weight: bold !important; text-decoration: none !important; }
+nav.arch-main li a:hover { color: white !important; }
+
+@media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
+    #arch-logo { background: url(archnavbar/archlogo.svg) no-repeat !important; background-size: 100% !important; }
+}
+
+@media (max-width: 750px) and (min-width: 620px) {
+    #arch-logo { width: 40px !important; background: url(archnavbar/archicon.png) no-repeat !important; }
+    @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
+        #arch-logo { background: url(archnavbar/archicon.svg) no-repeat !important; background-size: 100% !important; }
+    }
+}
+
+@media (max-width: 620px) {
+    header.arch-main { padding: 0 !important; }
+    header.arch-main .top-wrapper { padding: 10px !important; min-height: 40px !important;}
+
+    .arch-hamburger { display: block !important;}
+
+    nav.arch-main { width: 100% !important; max-height: 0 !important; overflow: hidden !important; transition: max-height 0.5s !important;}
+    nav.arch-main ul { padding-bottom: 0.5rem !important; }
+    nav.arch-main li { display: block !important; padding: 0 !important; }
+    nav.arch-main li a { text-align: left !important; padding: 0.5em 0 0.5em 1em !important }
+    nav.arch-main li:hover a { background: #3c3c3c !important; }
+
+    #arch-menu-toggle:checked ~ nav.arch-main { max-height: 500px !important; }
+}
 
 /* END ARCH GLOBAL NAVBAR */
+
+/* highlight current website in the navbar */
+nav.arch-main ul[data-active="anb-home"] li#anb-home a,
+nav.arch-main ul[data-active="anb-packages"] li#anb-packages a,
+nav.arch-main ul[data-active="anb-download"] li#anb-download a {
+    color: white !important;
+}
+
+@media (max-width: 840px) and (min-width: 620px) {
+    nav.arch-main ul[data-active="anb-home"] li#anb-home,
+    nav.arch-main ul[data-active="anb-packages"] li#anb-packages,
+    nav.arch-main ul[data-active="anb-download"] li#anb-download {
+        display: none !important;
+    }
+}
 
 /* simple reset */
 * {
@@ -45,11 +82,11 @@
 
 /* general styling */
 body {
-    min-width: 650px;
+    min-width: 365px;
     background: #f6f9fc;
     color: #222;
-    font: normal 100% sans-serif;
-    text-align: center;
+    font: normal 81.2% sans-serif;
+    overflow-y: scroll;
 }
 
 p {
@@ -69,7 +106,7 @@ ul {
 code {
     font: 1.2em monospace;
     background: #ffd;
-    padding: 0.15em 0.25em;
+    padding: 0.25em 0.5em;
 }
 
 pre {
@@ -123,11 +160,6 @@ img {
     border: 0;
 }
 
-/* scale fonts down to a sane default (16 * .812 = 13px) */
-#content {
-    font-size: 0.812em;
-}
-
 /* link style */
 a {
     text-decoration: none;
@@ -143,7 +175,6 @@ a {
     }
 
     a:hover {
-        text-decoration: underline;
         color: #666;
     }
 
@@ -184,40 +215,66 @@ h5 {
 }
 
 /* general layout */
-#content {
+#main-content {
     width: 95%;
     margin: 0 auto;
     text-align: left;
 }
 
-#content-left-wrapper {
-    float: left;
-    width: 100%; /* req to keep content above sidebar in source code */
+.home-wrapper {
+    display: grid;
+    justify-content: space-between;
+    align-items: start;
+    grid-template-areas:
+        "intro"
+        "packages"
+        "news"
+        "sidebar";
+    column-gap: 2.5%;
+    grid-template-columns: minmax(250px, max-content);
 }
 
-#content-left {
-    margin: 0 340px 0 0;
+    .home-wrapper section.intro {
+        grid-area: intro;
+    }
+
+    .home-wrapper section.packages {
+        grid-area: packages;
+    }
+
+    .home-wrapper section.news {
+        grid-area: news;
+    }
+
+    .home-wrapper section.nav-sidebar {
+        grid-area: sidebar;
+    }
+
+@media (min-width: 700px) {
+    .home-wrapper {
+        grid-template-columns: minmax(40px, max-content) 300px;
+        grid-template-areas:
+        "intro      packages"
+        "news       packages"
+        "news       sidebar"
+        "news       ."
+    }
 }
 
-#content-right {
-    float: left;
-    width: 300px;
-    margin-left: -300px;
-}
-
-div.box {
+.box {
     margin-bottom: 1.5em;
     padding: 0.65em;
     background: #ecf2f5;
     border: 1px solid #bcd;
 }
 
-#footer {
+footer {
     clear: both;
-    margin: 2em 0 1em;
+    margin: 1em auto;
+    width: 95%;
 }
 
-    #footer p {
+    footer p {
         margin: 0;
         text-align: center;
         font-size: 0.85em;
@@ -240,7 +297,7 @@ th.center {
 
 /* table generics */
 table {
-    width: 100%;
+    min-width: 100%;
     border-collapse: collapse;
 }
 
@@ -264,7 +321,7 @@ td {
     }
 
 /* table pretty styles */
-table.pretty2 {
+table.pretty {
     width: auto;
     margin-top: 0.25em;
     margin-bottom: 0.5em;
@@ -272,13 +329,13 @@ table.pretty2 {
     border: 1px solid #bbb;
 }
 
-    .pretty2 th {
+    .pretty th {
         padding: 0.35em;
         background: #eee;
         border: 1px solid #bbb;
     }
 
-    .pretty2 td {
+    .pretty td {
         padding: 0.35em;
         border: 1px dotted #bbb;
     }
@@ -289,26 +346,6 @@ table.compact {
 
     .compact td {
         padding: 0.25em 0 0.25em 1.5em;
-    }
-
-
-/* definition lists */
-dl {
-    clear: both;
-}
-
-    dl dt,
-    dl dd {
-        margin-bottom: 4px;
-        padding: 8px 0 4px;
-        font-weight: bold;
-        border-top: 1px dotted #bbb;
-    }
-
-    dl dt {
-        color: #333;
-        float:left;
-        padding-right:15px;
     }
 
 /* forms and input styling */
@@ -327,49 +364,56 @@ label {
     font-weight: bold;
 }
 
+legend {
+    display: none;
+}
+
+label:empty {
+    display: none;
+}
+
 input[type=text],
 input[type=password],
 textarea {
     padding: 0.10em;
 }
 
-form.general-form label,
-form.general-form .form-help {
-    width: 10em;
-    vertical-align: top;
-    display: inline-block;
-}
-
-form.general-form input[type=text],
-form.general-form textarea {
-    width: 45%;
-}
-
 /* archdev navbar */
-#archdev-navbar {
+nav.arch-dev {
     margin: 1.5em 0;
 }
 
-    #archdev-navbar ul {
+    nav.arch-dev ul {
         list-style: none;
         margin: -0.5em 0;
-        padding: 0;
+        padding: 0.5em;
+        display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: #ecf2f5;
+        border: 1px solid #bcd;
+        max-width: max-content;
     }
 
-    #archdev-navbar li {
-        display: inline;
+    nav.arch-dev li {
         margin: 0;
-        padding: 0;
+        padding: 0.5em;
         font-size: 0.9em;
     }
 
-        #archdev-navbar li a {
-            padding: 0 0.5em;
+        nav.arch-dev li a {
             color: #07b;
         }
 
+@media (min-width: 780px) {
+    nav.arch-dev ul {
+        justify-content: flex-start;
+    }
+}
+
 /* error/info messages (x pkg is already flagged out-of-date, etc) */
-#sys-message {
+.sys-message {
     width: 35em;
     text-align: center;
     margin: 1em auto;
@@ -378,16 +422,12 @@ form.general-form textarea {
     border: 1px solid #f00;
 }
 
-    #sys-message p {
+    .sys-message p {
         margin: 0;
     }
 
 ul.errorlist {
     color: red;
-}
-
-form ul.errorlist {
-    margin: 0.5em 0;
 }
 
 /* JS sorting via tablesorter */
@@ -423,80 +463,102 @@ table thead th.sorter-false {
  */
 
 /* home: introduction */
-#intro p.readmore {
+.intro p.readmore {
     margin: -0.5em 0 0 0;
     font-size: .9em;
     text-align: right;
 }
 
 /* home: news */
-#news {
+.news * {
+    margin: 0;
+}
+
+.news section {
     margin-top: 1.5em;
 }
 
-    #news h3 {
-        float: left;
-        padding-bottom: .5em
+    .news header {
+        display: grid;
+        justify-content: space-between;
+        align-items: end;
+        grid-template-columns: auto auto;
     }
 
-    #news div {
-        margin-bottom: 1em;
-    }
+.news article header {
+    margin-top: 1em;
+    border-bottom: 1px dotted #bbb;
+    padding-bottom: 0.1em;
+}
 
-        #news div p {
-            margin-bottom: 0.5em;
-        }
-
-    #news .more {
-        font-weight: normal;
-    }
-
-    #news .rss-icon {
-        float: right;
-        margin-top: 1em;
-    }
-
-    #news h4 {
-        clear: both;
+    .news article header h4 {
         font-size: 1em;
-        margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
+        margin: 0;
     }
 
-    #news .timestamp {
-        float: right;
+    .news article header p {
         font-size: 0.85em;
-        margin: -1.8em 0.5em 0 0;
+        margin: 0;
     }
+
+.news article div p {
+    margin: 0.5em 0;
+}
+
+@media (max-width: 900px) {
+    .news article header {
+        grid-template-columns: auto;
+    }
+}
 
 /* home: arrowed headings */
-#news h3 a {
-    display: block;
+h3.arrow {
+    position: relative;
     background: #1794D1;
-    font-size: 15px;
-    padding: 2px 10px;
+}
+
+h3.arrow a {
+    display: block;
+    padding: 0.1em 0.5em;
     color: white;
 }
 
-    #news a:active {
-        color: white;
-    }
-
-h3 span.arrow {
-    display: block;
+h3.arrow:after {
+    content:'';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     width: 0;
     height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #1794D1;
-    margin: 0 auto;
-    font-size: 0;
-    line-height: 0px;
+    border-top: solid 6px #1794D1;
+    border-left: solid 6px transparent;
+    border-right: solid 6px transparent;
 }
+
+/* old news table styling */
+.news table {
+    margin-top: 1em;
+    font-weight: bold;
+}
+
+    .news table th {
+        padding: 0.5em 0.5em 0.5em 0;
+    }
+
+    .news table td {
+        padding: 0.5em 0;
+    }
+
+    .news table tr {
+        border-top: 1px dotted #bbb;
+        border-bottom: 1px dotted #bbb;
+    }
 
 /* home: pkgsearch box */
 #pkgsearch {
-    padding: 1em 0.75em;
+    padding: 1em;
     background: #3ad;
     color: #fff;
     border: 1px solid #08b;
@@ -535,11 +597,13 @@ h3 span.arrow {
 
         .pkgsearch-typeahead li a {
             color: #000;
+            display: block;
         }
 
         .pkgsearch-typeahead li:hover a,
         .pkgsearch-typeahead li.active a {
             color: #07b;
+            background: #ecf2f5;
         }
 
 /* home: recent pkg updates */
@@ -551,7 +615,7 @@ h3 span.arrow {
         font-weight: normal;
     }
 
-    #pkg-updates .rss-icon {
+    #pkg-updates > a {
         float: right;
         margin: -2em 0 0 0;
     }
@@ -578,15 +642,10 @@ h3 span.arrow {
     }
 
 /* home: sidebar navigation */
-#nav-sidebar ul {
+.nav-sidebar ul {
     list-style: none;
     margin: 0.5em 0 0.5em 1em;
     padding: 0;
-}
-
-/* home: sponsor banners */
-#arch-sponsors img {
-    padding: 0.3em 0;
 }
 
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
@@ -595,32 +654,23 @@ div.widget {
 }
 
 /* feeds page */
-#rss-feeds .rss {
-    padding-right: 20px;
-    background: url(rss.png) top right no-repeat;
+icon.rss {
+    padding-right: 1.3em;
+    background: url(rss.svg) top right no-repeat;
+    background-size: auto 66%;
+    background-position: right center;
 }
 
 /* artwork: logo images */
-#artwork img.inverted {
+img.inverted {
     background: #333;
     padding: 0;
 }
 
-#artwork div.imagelist img {
+div.imagelist img {
     display: inline;
     margin: 0.75em;
 }
-
-/* news: article list */
-.news-nav {
-    float: right;
-    margin-top: -2.2em;
-}
-
-    .news-nav .prev,
-    .news-nav .next {
-        margin: 0 1em;
-    }
 
 /* news: article pages */
 div.news-article .article-info {
@@ -628,41 +678,9 @@ div.news-article .article-info {
     color: #999;
 }
 
-/* news: add/edit article */
-#newsform {
-    width: 60em;
-}
-
-    #newsform input[type=text],
-    #newsform textarea {
-        width: 75%;
-    }
-
 #news-preview {
     display: none;
 }
-
-/* todolists: list */
-.todolist-nav {
-    float: right;
-    margin-top: -2.2em;
-}
-
-    .todolist-nav .prev,
-    .todolist-nav .next {
-        margin: 0 1em;
-    }
-
-/* donate: donor list */
-#donor-list ul {
-    width: 100%;
-}
-    /* max 4 columns, but possibly fewer if screen size doesn't allow for more */
-    #donor-list li {
-        float: left;
-        width: 25%;
-        min-width: 20em;
-    }
 
 /* download page */
 #arch-downloads h3 {
@@ -670,6 +688,11 @@ div.news-article .article-info {
 }
 
 /* pkglists/devlists */
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
 table.results {
     font-size: 0.846em;
     border-top: 1px dotted #999;
@@ -687,11 +710,11 @@ table.results {
         padding: .3em 1em .3em 3px;
     }
 
-    .results tr.odd {
+    .results tr:nth-child(odd) {
         background: #fff;
     }
 
-    .results tr.even {
+    .results tr:nth-child(even) {
         background: #e4eeff;
     }
 
@@ -703,78 +726,163 @@ table.results {
         text-align: center;
     }
 
-/* pkglist: layout */
-#pkglist-about {
-    margin-top: 1.5em;
+@media (max-width: 550px) {
+    table.results {
+        min-width: 550px;
+    }
+}
+
+.table-nav {
+    display: grid;
+    justify-content: space-between;
+    align-items: end;
+    grid-template-columns: auto auto;
+    padding: 0.5em 0;
+}
+
+.table-nav > span span + span {
+    margin-left: 0.5em;
+}
+
+@media (max-width: 500px) {
+    .table-nav {
+        grid-template-columns: auto;
+        grid-row-gap: 0.2em;
+    }
 }
 
 /* pkglist: results navigation */
 .pkglist-stats {
     font-size: 0.85em;
+    position: relative;
 }
 
-#pkglist-results .pkglist-nav {
-    float: right;
-    margin-top: -2.2em;
+.pkglist-nav {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
-.pkglist-nav .prev {
-    margin-right: 1em;
+    .pkglist-nav .prev {
+        margin-right: 1em;
+    }
+
+@media (max-width: 420px) {
+    .pkglist-stats .pkglist-nav {
+        position: relative;
+    }
+
+    .pkglist-stats p {
+        margin: 0;
+    }
+
+    #pkglist-results-form input {
+        width: 100%;
+        margin: 0.2em 0;
+    }
 }
 
-.pkglist-nav .next {
-    margin-right: 1em;
-}
-
-/* search fields  and other filter selections */
-.filter-criteria {
-    margin-bottom: 1em;
-}
-
-.filter-criteria h3 {
-    font-size: 1em;
-    margin-top: 0;
-}
-
-.filter-criteria div {
-    float: left;
-    margin-right: 1.65em;
-    font-size: 0.85em;
-}
-
-.filter-criteria legend {
-    display: none;
+/* search fields and other filter selections */
+.filter-criteria .grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min-content;
+    grid-template-rows: auto;
+    grid-column-gap: 1em;
 }
 
 .filter-criteria label {
     width: auto;
-    display: block;
-    font-weight: normal;
+    font-weight: bold;
+    font-size: 0.75em;
+    white-space: nowrap;
+}
+
+@media (min-width: 700px) and (max-width: 1100px) {
+    .filter-criteria .fill-h {
+        grid-row: 1 / -1;
+    }
+
+    .filter-criteria .span-3 {
+        grid-column: 3 / 6;
+    }
+
+    #package-search {
+        grid-template-rows: auto auto;
+    }
+}
+
+@media (max-width: 700px) {
+    .filter-criteria .grid {
+        grid-template-columns: auto;
+        grid-auto-flow: row;
+        grid-row-gap: 0.75em;
+        margin-top: 0.5em;
+    }
+
+    .filter-criteria .grid div * {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .filter-criteria .grid.small {
+        grid-template-columns: auto auto auto auto ;
+    }
+
+    .filter-criteria .grid input[type=checkbox] {
+        width: auto;
+    }
+
+    .filter-criteria .full-w {
+        grid-column: 1 / -1;
+    }
 }
 
 /* pkgdetails: details links that float on the right */
-#pkgdetails #detailslinks {
+#detailslinks {
     float: right;
+    margin: 3.4em 0.8em 0 0;
 }
 
-    #pkgdetails #detailslinks h4 {
+    #detailslinks h4 {
         margin-top: 0;
         margin-bottom: 0.25em;
     }
 
-    #pkgdetails #detailslinks ul {
+    #detailslinks ul {
         list-style: none;
         padding: 0;
         margin-bottom: 0;
         font-size: 0.846em;
     }
 
-    #pkgdetails #detailslinks > div {
+    #detailslinks > div {
         padding: 0.5em;
         margin-bottom: 1em;
         background: #eee;
         border: 1px solid #bbb;
     }
+
+#actionlist input {
+    width: 100%;
+}
+
+@media (max-width: 800px) {
+    #detailslinks {
+        margin: 0;
+        float: none;
+    }
+    #detailslinks > div {
+        background: #ecf2f5;
+        border: 1px solid #bcd;
+    }
+    #actionlist h4 {
+        font-size: 1.5em;
+    }
+    #actionlist input {
+        width: auto;
+    }
+}
 
 #pkgdetails #actionlist .flagged {
     color: red;
@@ -782,9 +890,14 @@ table.results {
     font-style: italic;
 }
 
+#pkgdetails .table-wrapper {
+    width: auto;
+}
+
 /* pkgdetails: pkg info */
 #pkgdetails #pkginfo {
     width: auto;
+    min-width: auto;
 }
 
     #pkgdetails #pkginfo td {
@@ -796,17 +909,8 @@ table.results {
         padding: 0.5em;
     }
 
-/* pkgdetails: flag package */
-#flag-pkg-form label {
-    width: 10em;
-}
 
-#flag-pkg-form textarea,
-#flag-pkg-form input[type=text] {
-    width: 45%;
-}
-
-#flag-pkg-form #id_website {
+#id_website {
     display: none;
 }
 
@@ -860,6 +964,7 @@ table.results {
 #pkgdetails #metadata .dep-desc {
     font-style: italic;
 }
+
 #pkgdetails #pkgreqs {
     float: left;
     width: 50%;
@@ -874,7 +979,11 @@ table.results {
     color: #666;
 }
 
-#pkgfilelist li.f {
+@media (max-width: 500px) {
+    #pkgdetails #pkgdeps, #pkgdetails #pkgreqs {
+        float: none;
+        width: 100%;
+    }
 }
 
 /* mirror stuff */
@@ -922,7 +1031,6 @@ table td.country {
 
 .arch-bio-entry {
     width: 75%;
-    min-width: 640px;
     margin: 0 auto;
 }
 
@@ -961,25 +1069,19 @@ table td.country {
             white-space: normal;
         }
 
-/* dev: login/out */
-#dev-login {
-    width: auto;
+@media (max-width: 500px) {
+    .arch-bio-entry td {
+        display: block;
+    }
+    .arch-bio-entry .pic, .arch-bio-entry h3 {
+        text-align: center;
+    }
 }
 
 /* tables rows: highlight on mouse-vover */
-#article-list tr:hover,
-#clocks-table tr:hover,
-#dev-dashboard tr:hover,
-#dev-todo-lists tr:hover,
-#dev-todo-pkglist tr:hover,
-#pkglist-results tr:hover,
-#stats-area tr:hover {
+table.pretty tr:hover,
+table.results tr:hover {
     background: #ffd;
-}
-
-/* dev dashboard: */
-table.dash-stats .key {
-    width: 50%;
 }
 
 /* dev dashboard: admin actions (add news items, todo list, etc) */
@@ -991,29 +1093,28 @@ ul.admin-actions {
 
     ul.admin-actions li {
         display: inline;
-        padding-left: 1.5em;
+        padding-left: 0.5em;
     }
 
 /* colored yes/no type values */
-.todo-table .complete,
+.complete,
 .signoff-yes,
 #key-status .signed-yes,
 #release-list .available-yes {
     color: green;
 }
 
-.todo-table .incomplete,
+.incomplete,
 .signoff-no,
-#key-status .signed-no,
-#release-list .available-no {
+.signed-no,
+.available-no {
     color: red;
 }
 
-.todo-table .inprogress,
+.inprogress,
 .signoff-bad {
     color: darkorange;
 }
-
 
 /* todo lists (public and private) */
 .todo-info {
@@ -1037,10 +1138,6 @@ ul.admin-actions {
 }
 
 /* dev: signoff page */
-#dev-signoffs tr:hover {
-    background: #ffd;
-}
-
 ul.signoff-list {
     list-style: none;
     margin: 0;
@@ -1053,13 +1150,6 @@ ul.signoff-list {
 
 .signoff-disabled {
     color: gray;
-}
-
-/* highlight current website in the navbar */
-#archnavbar.anb-home ul li#anb-home a,
-#archnavbar.anb-packages ul li#anb-packages a,
-#archnavbar.anb-download ul li#anb-download a {
-    color: white !important;
 }
 
 /* visualizations page */
@@ -1098,4 +1188,41 @@ ul.signoff-list {
 /* itemprops */
 .itemprop {
     display: none;
+}
+
+#donations img {
+    max-width: 100%;
+}
+
+.general-form fieldset p textarea,
+.general-form fieldset p input,
+.general-form fieldset p select {
+    display: block;
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.general-form fieldset p label,
+.general-form fieldset p span {
+    display: inline-block;
+    width: auto;
+}
+
+.general-form fieldset p input[type=checkbox] {
+    width: auto;
+}
+
+.general-form .form-help {
+    display: block;
+}
+
+@media (max-width: 400px) {
+    .general-form input[type=button],
+    .general-form input[type=submit] {
+        width: 100%;
+    }
+    .general-form input + input {
+        margin-top: 0.5em;
+    }
 }

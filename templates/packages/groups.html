@@ -7,27 +7,30 @@
 {% block content %}
 <div class="box">
     <h2>Package Groups Overview{% if arch %} - {{ arch }}{% endif %}</h2>
-    <table class="results">
-        <thead>
-            <tr>
-                <th>Arch</th>
-                <th>Group Name</th>
-                <th>Package Count</th>
-                <th>Last Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for grp in groups %}
-            <tr class="{% cycle 'odd' 'even' %}">
-                <td>{{ grp.arch }}</td>
-                <td><a href="/groups/{{ grp.arch }}/{{ grp.name }}/"
-                        title="Group details for {{ grp.name }}">{{ grp.name }}</a></td>
-                <td>{{ grp.count }}</td>
-                <td>{{ grp.last_update|date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="table-wrapper">
+        <table class="results">
+            <thead>
+                <tr>
+                    <th>Arch</th>
+                    <th>Group Name</th>
+                    <th>Package Count</th>
+                    <th>Last Updated</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grp in groups %}
+                <tr>
+                    <td>{{ grp.arch }}</td>
+                    <td><a href="/groups/{{ grp.arch }}/{{ grp.name }}/"
+                            title="Group details for {{ grp.name }}">{{ grp.name }}</a></td>
+                    <td>{{ grp.count }}</td>
+                    <td>{{ grp.last_update|date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
 

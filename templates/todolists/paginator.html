@@ -1,7 +1,7 @@
 {% if is_paginated %}
-<div class="pagination">
-    <p>{{ paginator.count }} todo lists, viewing page {{ page_obj.number }} of {{ paginator.num_pages }}.</p>
-    <p class="todolist-nav">
+<div class="table-nav">
+    <span>{{ paginator.count }} todo lists, viewing page {{ page_obj.number }} of {{ paginator.num_pages }}.</span>
+    <span>
     {% if page_obj.has_previous %}
     <a class="prev" href="?page={{ page_obj.previous_page_number }}"
         title="Go to previous page">&lt; Prev</a>
@@ -17,6 +17,6 @@
     <a class="next" href="?page={{ page_obj.next_page_number }}"
         title="Go to next page">Next &gt;</a>
     {% endif %}
-    </p>
+    </span>
 </div>
 {% endif %}
