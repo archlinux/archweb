@@ -53,11 +53,15 @@ class NewUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
         # Hack ourself so certain fields appear first
+        old = self.fields
+        self.fields = OrderedDict()
         keys = ('username', 'private_email', 'first_name', 'last_name',
                 'alias', 'public_email')
-        # add all remaining keys afterwards
-        keys += tuple(k for k in self.fields.keys() if k not in keys)
-        self.fields = OrderedDict((key, old[key]) for key in keys)
+        for key in keys:
+            self.fields[key] = old[key]
+        for key, _ in list(old.items()):
+            if key not in keys:
+                self.fields[key] = old[key]
 
     def clean_username(self):
         username = self.cleaned_data['username']
