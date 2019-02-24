@@ -98,6 +98,8 @@ CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'",)
 CSP_INCLUDE_NONCE_IN = ['script-src']
 CSP_IMG_SRC = ("'self'", 'data:',)
+CSP_BASE_URI = ("'none'",)
+CSP_FRAME_ANCESTORS = ("'none'",)
 
 # Use new test runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
