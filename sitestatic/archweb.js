@@ -456,13 +456,3 @@ function collapseNotes(elements) {
         });
     });
 }
-
-/* HTML5 input type and attribute enhancements */
-function modify_attributes(to_change) {
-    /* jQuery doesn't let us change the 'type' attribute directly due to IE
-       woes, so instead we can clone and replace, setting the type. */
-    $.each(to_change, function(id, attrs) {
-        var obj = $(id);
-        obj.replaceWith(obj.clone().attr(attrs));
-    });
-}

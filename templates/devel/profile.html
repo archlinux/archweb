@@ -27,15 +27,12 @@
 {% endblock %}
 
 {% block script_block %}
-{% load cdn %}{% jquery %}
-<script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
-    modify_attributes({
-        '#id_email': {type: 'email'},
-        '#id_alias': {autocorrect: 'off', autocapitalize: 'off'},
-        '#id_public_email': {autocorrect: 'off', autocapitalize: 'off'},
-        '#id_website': {type: 'url'},
-        '#id_yob': {pattern: '[0-9]*'}
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('id_email').setAttribute('type', 'email');
+        document.getElementById('id_public_email').setAttribute('type', 'email');
+        document.getElementById('id_website').setAttribute('type', 'url');
+        document.getElementById('id_yob').setAttribute('pattern', '[0-9]*');
     });
 </script>
 {% endblock %}
