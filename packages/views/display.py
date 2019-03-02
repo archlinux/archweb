@@ -162,7 +162,7 @@ def group_details(request, arch, name):
     arches = arch_plus_agnostic(arch)
     pkgs = Package.objects.normal().filter(
             groups__name=name, arch__in=arches).order_by('pkgname')
-    if len(pkgs) == 0:
+    if not pkgs:
         raise Http404
     context = {
         'list_title': 'Group Details',
