@@ -1,31 +1,30 @@
-from django.test import TestCase
-
-from mirrors.tests import create_mirror_url
+from mirrors.tests.conftest import HOSTNAME, URL
 
 
-class MirrorUrlTest(TestCase):
-    def setUp(self):
-        self.mirror_url = create_mirror_url()
+def test_mirrorurl_address_families(mirrorurl):
+    assert not mirrorurl.address_families() is None
 
-    def testAddressFamilies(self):
-        self.assertIsNotNone(self.mirror_url.address_families())
+def test_mirrorurl_hostname(mirrorurl):
+    assert mirrorurl.hostname == HOSTNAME
 
-    def testHostname(self):
-        self.assertEqual(self.mirror_url.hostname, 'archlinux.org')
+def test_mirrorurl_get_absolute_url(mirrorurl):
+    absolute_url = mirrorurl.get_absolute_url()
+    expected = '/mirrors/%s/%d/' % (mirrorurl.mirror.name, mirrorurl.pk)
+    assert absolute_url == expected
 
-    def testGetAbsoluteUrl(self):
-        absolute_url = self.mirror_url.get_absolute_url()
-        expected = '/mirrors/%s/%d/' % (self.mirror_url.mirror.name, self.mirror_url.pk)
-        self.assertEqual(absolute_url, expected)
+def test_mirrorurl_overview(client, mirrorurl):
+    response = client.get('/mirrors/')
+    assert response.status_code == 200
+    assert mirrorurl.mirror.name in response.content.decode()
 
-    def test_mirror_overview(self):
-        response = self.client.get('/mirrors/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.mirror.name, response.content.decode())
+def test_mirrorurl_get_full_url(mirrorurl):
+    assert 'mirrors/{}'.format(mirrorurl.mirror.name) in mirrorurl.get_full_url()
 
-    def testClean(self):
-        # TODO: add test for self.mirror_url.clean()
-        pass
+def test_mirror_url_clean(mirrorurl):
+    mirrorurl.clean()
+    # TOOD(jelle): this expects HOSTNAME to resolve, maybe mock
+    assert mirrorurl.has_ipv4 == True
+    assert mirrorurl.has_ipv6 == True
 
-    def tearDown(self):
-        self.mirror_url.delete()
+def test_mirrorurl_repr(mirrorurl):
+    assert URL in repr(mirrorurl)
