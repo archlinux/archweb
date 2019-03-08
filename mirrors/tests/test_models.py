@@ -1,70 +1,60 @@
-from django.test import TestCase
-
-from mirrors.models import Mirror, CheckLocation
-from mirrors.tests import create_mirror_url
+from mirrors.tests.conftest import NAME, HOSTNAME, PROTOCOL, URL
 
 
-class MirrorUrlTest(TestCase):
-    def setUp(self):
-        self.mirror_url = create_mirror_url()
+def test_mirrorurl_address_families(mirrorurl):
+    assert not mirrorurl.address_families() is None
 
-    def testAddressFamilies(self):
-        self.assertIsNotNone(self.mirror_url.address_families())
+def test_mirrorurl_hostname(mirrorurl):
+    assert mirrorurl.hostname == HOSTNAME
 
-    def testHostname(self):
-        self.assertEqual(self.mirror_url.hostname, 'archlinux.org')
+def test_mirrorurl_get_absolute_url(mirrorurl):
+    absolute_url = mirrorurl.get_absolute_url()
+    expected = '/mirrors/%s/%d/' % (mirrorurl.mirror.name, mirrorurl.pk)
+    assert absolute_url == expected
 
-    def testGetAbsoluteUrl(self):
-        absolute_url = self.mirror_url.get_absolute_url()
-        expected = '/mirrors/%s/%d/' % (self.mirror_url.mirror.name, self.mirror_url.pk)
-        self.assertEqual(absolute_url, expected)
+def test_mirrorurl_overview(client, mirrorurl):
+    response = client.get('/mirrors/')
+    assert response.status_code == 200
+    assert mirrorurl.mirror.name in response.content.decode()
 
-    def test_mirror_overview(self):
-        response = self.client.get('/mirrors/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.mirror_url.mirror.name, response.content.decode())
+def test_mirrorurl_get_full_url(mirrorurl):
+    assert 'mirrors/{}'.format(mirrorurl.mirror.name) in mirrorurl.get_full_url()
 
-    def testClean(self):
-        # TODO: add test for self.mirror_url.clean()
-        pass
+def test_mirror_url_clean(mirrorurl):
+    mirrorurl.clean()
+    # TOOD(jelle): this expects HOSTNAME to resolve, maybe mock
+    assert mirrorurl.has_ipv4 == True
+    assert mirrorurl.has_ipv6 == True
 
-    def tearDown(self):
-        self.mirror_url.delete()
-
-
-class MirrorTest(TestCase):
-    def setUp(self):
-        self.mirror = Mirror.objects.create(name='mirror1',
-                                            admin_email='admin@archlinux.org')
-
-    def tearDown(self):
-        self.mirror.delete()
-
-    def test_downstream(self):
-        self.assertEqual(list(self.mirror.downstream()), [])
-
-    def test_get_absolute_url(self):
-        absolute_url = self.mirror.get_absolute_url()
-        expected = '/mirrors/{}/'.format(self.mirror.name)
-        self.assertEqual(absolute_url, expected)
-
-    def test_get_full_url(self):
-        self.assertIn(self.mirror.get_absolute_url(), self.mirror.get_full_url())
-        self.assertIn('http', self.mirror.get_full_url('http'))
+def test_mirrorurl_repr(mirrorurl):
+    assert URL in repr(mirrorurl)
 
 
-class CheckLocationTest(TestCase):
-    def setUp(self):
-        self.checkloc = CheckLocation.objects.create(hostname='arch.org',
-                                                     source_ip='127.0.0.1',
-                                                     country='US')
+def test_mirror_get_full_url(mirror):
+    assert mirror.get_absolute_url() in mirror.get_full_url()
+    assert 'http' in mirror.get_full_url('http')
 
-    def tearDown(self):
-        self.checkloc.delete()
+def test_mirror_downstream(mirror):
+    assert list(mirror.downstream()) == []
 
-    def test_family(self):
-        # TODO: mock socket.getaddrinfo in CheckLocation.family
-        self.assertIsInstance(self.checkloc.family, int)
+def test_mirror_get_absolute_url(mirror):
+    absolute_url = mirror.get_absolute_url()
+    expected = '/mirrors/{}/'.format(mirror.name)
+    assert absolute_url == expected
 
-    def test_ip_version(self):
-        self.assertIsInstance(self.checkloc.ip_version, int)
+def test_mirror_rer(mirror):
+    assert NAME in repr(mirror)
+
+
+def test_checklocation_family(checklocation):
+    assert isinstance(checklocation.family, int)
+
+def test_checklocation_ip_version(checklocation):
+    assert isinstance(checklocation.ip_version, int)
+
+def test_checklocation_repr(checklocation):
+    assert HOSTNAME in repr(checklocation)
+
+
+def test_mirrorprotocol_repr(mirrorprotocol):
+    assert PROTOCOL in repr(mirrorprotocol)
