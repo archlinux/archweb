@@ -45,3 +45,20 @@ def mirrorurl(db, mirror, mirrorprotocol, country=COUNTRY,
                                               country=country)
         yield mirror_url
         mirror_url.delete()
+
+
+@pytest.fixture
+def create_mirrorurl(db, mirror, mirrorprotocol):
+    mirrors = []
+    def _create_mirrorurl(country=COUNTRY, url=URL):
+        mirror_url = MirrorUrl.objects.create(url=url,
+                                              protocol=mirrorprotocol,
+                                              mirror=mirror,
+                                              country=country)
+        mirrors.append(mirror_url)
+        return mirror_url
+
+    yield _create_mirrorurl
+
+    for mirror in mirrors:
+        mirror.delete()
