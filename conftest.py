@@ -2,6 +2,7 @@ import pytest
 
 from django.core.management import call_command
 
+from devel.models import UserProfile
 
 
 @pytest.fixture
@@ -28,3 +29,11 @@ def groups(db):
 @pytest.fixture
 def staff_groups(db):
     call_command('loaddata', 'devel/fixtures/staff_groups.json')
+
+
+@pytest.fixture
+def admin_user_profile(admin_user):
+    profile = UserProfile.objects.create(user=admin_user,
+                                         public_email="public@archlinux.org")
+    yield profile
+    profile.delete()
