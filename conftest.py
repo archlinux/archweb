@@ -18,3 +18,13 @@ def repos(db):
 def package(db):
     # TODO(jelle): create own parameter based version
     call_command('loaddata', 'main/fixtures/package.json')
+
+
+@pytest.fixture
+def groups(db):
+    call_command('loaddata', 'main/fixtures/groups.json')
+
+
+@pytest.fixture
+def staff_groups(db):
+    call_command('loaddata', 'devel/fixtures/staff_groups.json')
