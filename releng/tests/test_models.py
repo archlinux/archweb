@@ -1,34 +1,28 @@
-from django.test import TestCase
+def test_feed(client, release):
+    response = client.get('/feeds/releases/')
+    assert response.status_code == 200
 
-from releng.models import Release
+
+def test_absolute_url(release):
+    assert release.version in release.get_absolute_url()
 
 
-class RelengTest(TestCase):
-    fixtures = ['releng/fixtures/release.json']
+def test_iso_url(release):
+    url = release.iso_url()
+    ver = release.version
+    expected = 'iso/{}/archlinux-{}-x86_64.iso'.format(ver, ver)
+    assert url == expected
 
-    def setUp(self):
-        self.release = Release.objects.first()
 
-    def test_feed(self):
-        response = self.client.get('/feeds/releases/')
-        self.assertEqual(response.status_code, 200)
+def test_info_html(release):
+    assert release.info in release.info_html()
 
-    def test_absolute_url(self):
-        self.assertIn(self.release.version, self.release.get_absolute_url())
 
-    def test_iso_url(self):
-        url = self.release.iso_url()
-        ver = self.release.version
-        expected = 'iso/{}/archlinux-{}-x86_64.iso'.format(ver, ver)
-        self.assertEqual(url, expected)
+def test_dir_path(release):
+    dir_path = u'iso/{}/'.format(release.version)
+    assert dir_path == release.dir_path()
 
-    def test_info_html(self):
-        self.assertIn(self.release.info, self.release.info_html())
 
-    def test_dir_path(self):
-        dir_path = u'iso/{}/'.format(self.release.version)
-        self.assertEqual(dir_path, self.release.dir_path())
-
-    def test_sitemap(self):
-        response = self.client.get('/sitemap-releases.xml')
-        self.assertEqual(response.status_code, 200)
+def test_sitemap(client, release):
+    response = client.get('/sitemap-releases.xml')
+    assert response.status_code == 200

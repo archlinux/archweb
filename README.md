@@ -60,7 +60,6 @@ packages, you will probably want the following:
         ./manage.py loaddata main/fixtures/*.json
         ./manage.py loaddata devel/fixtures/*.json
         ./manage.py loaddata mirrors/fixtures/*.json
-        ./manage.py loaddata releng/fixtures/*.json
 
 6. Use the following commands to start a service instance
 
