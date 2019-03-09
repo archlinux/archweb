@@ -1,22 +1,10 @@
-from django.test import TestCase
-
-
 from main.templatetags.flags import country_flag
-from mirrors.models import CheckLocation
+
+from mirrors.tests.conftest import checklocation
 
 
-class FlagsTemplateTest(TestCase):
-
-    def setUp(self):
-        self.checkloc = CheckLocation.objects.create(hostname='arch.org',
-                                                     source_ip='127.0.0.1',
-                                                     country='US')
-
-    def tearDown(self):
-        self.checkloc.delete()
-
-    def test_country_flag(self):
-        flag = country_flag(self.checkloc.country)
-        self.assertIn(self.checkloc.country.name, flag)
-        self.assertIn(self.checkloc.country.code.lower(), flag)
-        self.assertEqual(country_flag(None), '')
+def test_country_flag(checklocation):
+    flag = country_flag(checklocation.country)
+    assert checklocation.country.name in flag
+    assert checklocation.country.code.lower() in flag
+    assert country_flag(None) == ''
