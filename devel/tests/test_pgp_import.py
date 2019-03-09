@@ -1,8 +1,9 @@
 from unittest.mock import patch
 
+import pytest
+
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.test import TransactionTestCase
 
 
 CREATED = 1541685162
@@ -19,28 +20,26 @@ SIG_DATA = [
 ]
 
 
-class PGPImportTest(TransactionTestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
+def test_pgp_import_error(arches, repos):
+    with pytest.raises(CommandError) as e:
+        call_command('pgp_import')
+    assert 'keyring_path' in str(e.value)
 
-    def test_pgp_import_error(self):
-        with self.assertRaises(CommandError) as e:
-            call_command('pgp_import')
-        self.assertIn('keyring_path', str(e.exception))
 
-    @patch('devel.management.commands.pgp_import.call_gpg')
-    def test_pgp_import_garbage_data(self, mock_call_gpg):
-        mock_call_gpg.return_value = 'barf'
-        with patch('devel.management.commands.pgp_import.logger') as logger:
-            call_command('pgp_import', '/tmp')
-        logger.info.assert_called()
-        logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
-        logger.info.assert_any_call('created %d, updated %d keys', 0, 0)
+@patch('devel.management.commands.pgp_import.call_gpg')
+def test_pgp_import_garbage_data(mock_call_gpg, arches, repos):
+    mock_call_gpg.return_value = 'barf'
+    with patch('devel.management.commands.pgp_import.logger') as logger:
+        call_command('pgp_import', '/tmp')
+    logger.info.assert_called()
+    logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
+    logger.info.assert_any_call('created %d, updated %d keys', 0, 0)
 
-    @patch('devel.management.commands.pgp_import.call_gpg')
-    def test_pgp_import(self, mock_call_gpg):
-        mock_call_gpg.return_value = '\n'.join(SIG_DATA)
-        with patch('devel.management.commands.pgp_import.logger') as logger:
-            call_command('pgp_import', '/tmp')
-        logger.info.assert_called()
-        logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
-        logger.info.assert_any_call('created %d, updated %d keys', 1, 0)
+@patch('devel.management.commands.pgp_import.call_gpg')
+def test_pgp_import(mock_call_gpg, arches, repos):
+    mock_call_gpg.return_value = '\n'.join(SIG_DATA)
+    with patch('devel.management.commands.pgp_import.logger') as logger:
+        call_command('pgp_import', '/tmp')
+    logger.info.assert_called()
+    logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
+    logger.info.assert_any_call('created %d, updated %d keys', 1, 0)
