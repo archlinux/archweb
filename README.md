@@ -18,7 +18,6 @@ See AUTHORS file.
 # Dependencies
 
 - python
-- python-virtualenv
 - rsync (optional for mirrorcheck with rsync mirrors)
 
 # Python dependencies
@@ -34,9 +33,9 @@ packages, you will probably want the following:
 
 # Testing Installation
 
-1. Run `virtualenv3`.
+1. Run `python -m venv env`.
 
-        cd /path/to/archweb && virtualenv3 ./env/
+        cd /path/to/archweb && python -m venv ./env/
 
 2. Activate the virtualenv.
 
