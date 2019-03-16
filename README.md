@@ -112,6 +112,14 @@ Running coverage:
 To use the Django Debug toolbar install django-debug-toolbar and in local_settings.py
 set DEBUG_TOOLBAR to True.
 
+# Updating iPXE image
+
+The netboot image can be updated by building the [AUR
+package](https://aur.archlinux.org/packages/ipxe-netboot/) (note that it builds
+from git master) and copying the resulting ipxe.pxe, ipxe.lkrn and ipxe.efi to
+sitestatic/netboot. Then as Arch Linux Developer sign them with your PGP key
+```gpg --output ipxe.efi.sig --detach-sig ipxe.efi```.
+
 # Production Installation
 
 Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://git.archlinux.org/infrastructure.git/).
