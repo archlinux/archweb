@@ -21,4 +21,11 @@ def jquery_tablesorter():
     link = staticfiles_storage.url(filename)
     return format_html('<script type="text/javascript" src="%s"></script>' % link)
 
+@register.simple_tag
+def d3js():
+    version = '3.0.6'
+    filename = 'd3-%s.min.js' % version
+    link = staticfiles_storage.url(filename)
+    return format_html('<script type="text/javascript" src="%s"></script>' % link)
+
 # vim: set ts=4 sw=4 et:

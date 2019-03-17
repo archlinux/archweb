@@ -135,8 +135,7 @@
 {% endblock %}
 
 {% block script_block %}
-{% load cdn %}{% jquery %}{% jquery_tablesorter %}
-<script type="text/javascript" src="{% static "d3-3.0.6.min.js" %}"></script>
+{% load cdn %}{% jquery %}{% jquery_tablesorter %}{% d3js %}
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
