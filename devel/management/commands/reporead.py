@@ -444,6 +444,11 @@ def db_update(archname, reponame, pkgs, force=False):
             # no race condition here as long as simultaneous threads both
             # issue deletes; second delete will be a no-op
             delete_pkg_files(dbpkg)
+
+            # Delete all matching FlagRequests when removing a package from a repo.
+            requests = FlagRequest.objects.filter(pkgbase=dbpkg.pkgbase, repo=dbpkg.repo)
+            requests.delete()
+
             dbpkg.delete()
 
     # packages in both database and in syncdb (update in database)
