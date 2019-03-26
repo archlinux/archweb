@@ -125,7 +125,6 @@ INSTALLED_APPS = (
     'public',
     'releng',
     'visualize',
-    'retro',
 )
 
 # Logging configuration for not getting overspammed

@@ -19,7 +19,6 @@ import packages.urls
 import packages.urls_groups
 import public.views
 import releng.urls
-import retro.views
 import todolists.urls
 import visualize.urls
 
@@ -81,11 +80,6 @@ urlpatterns.extend([
     url(r'^visualize/', include(visualize.urls)),
     url(r'^opensearch/packages/$', packages.views.opensearch, name='opensearch-packages'),
     url(r'^opensearch/packages/suggest$', packages.views.opensearch_suggest, name='opensearch-packages-suggest'),
-])
-
-# Retro home page views
-urlpatterns.extend([
-    path('retro/<int:year>/', retro.views.retro_homepage, name='retro-homepage'),
 ])
 
 # Sitemaps
