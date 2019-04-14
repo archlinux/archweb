@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import Mock
 
 
 from django.core.management import call_command
@@ -9,6 +9,6 @@ class RematchDeveloperTest(TransactionTestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
 
     def test_rematch_developers(self):
-        with patch('devel.management.commands.rematch_developers.logger') as logger:
-            call_command('rematch_developers')
+        logger = Mock()
+        call_command('rematch_developers', logger=logger)
         logger.info.assert_called()
