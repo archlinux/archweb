@@ -9,24 +9,16 @@ Usage: ./manage.py pgp_import <keyring_path>
 
 from collections import OrderedDict
 from datetime import datetime
-import logging
 from pytz import utc
 import subprocess
-import sys
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.db import transaction
 
+from main.management.command import BaseCommand
 from devel.models import DeveloperKey, PGPSignature
 from devel.utils import UserFinder
 
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
 
 class Command(BaseCommand):
     args = "<keyring_path>"
@@ -36,36 +28,91 @@ class Command(BaseCommand):
         parser.add_argument('args', nargs='*', help='<arch> <filename>')
 
     def handle(self, *args, **options):
-        v = int(options.get('verbosity', None))
-        if v == 0:
-            logger.level = logging.ERROR
-        elif v == 1:
-            logger.level = logging.INFO
-        elif v >= 2:
-            logger.level = logging.DEBUG
-
         if len(args) < 1:
             raise CommandError("keyring_path must be provided")
 
-        import_keys(args[0])
-        import_signatures(args[0])
+        self.import_keys(args[0])
+        self.import_signatures(args[0])
+
+    def import_keys(self, keyring):
+        outdata = call_gpg(keyring, "--list-sigs", self.logger)
+        self.logger.info("parsing command output")
+        keydata = parse_keydata(outdata)
+
+        self.logger.info("creating or finding %d keys", len(keydata))
+        created_ct = updated_ct = 0
+        with transaction.atomic():
+            finder = UserFinder()
+            # we are dependent on parents coming before children; parse_keydata
+            # uses an OrderedDict to ensure this is the case.
+            for data in keydata.values():
+                parent_id = None
+                if data.parent:
+                    parent_data = keydata.get(data.parent, None)
+                    if parent_data:
+                        parent_id = parent_data.db_id
+                other = {
+                    'expires': data.expires,
+                    'revoked': data.revoked,
+                    'parent_id': parent_id,
+                }
+                dkey, created = DeveloperKey.objects.get_or_create(
+                        key=data.key, created=data.created, defaults=other)
+                data.db_id = dkey.id
+
+                # set or update any additional data we might need to
+                needs_save = False
+                if created:
+                    created_ct += 1
+                else:
+                    for k, v in other.items():
+                        if getattr(dkey, k) != v:
+                            setattr(dkey, k, v)
+                            needs_save = True
+                if dkey.owner_id is None:
+                    owner = find_key_owner(data, keydata, finder)
+                    if owner is not None:
+                        dkey.owner = owner
+                        needs_save = True
+                if needs_save:
+                    dkey.save()
+                    updated_ct += 1
+
+        key_ct = DeveloperKey.objects.all().count()
+        self.logger.info("%d total keys in database", key_ct)
+        self.logger.info("created %d, updated %d keys", created_ct, updated_ct)
+
+    def import_signatures(self, keyring):
+        outdata = call_gpg(keyring, "--list-sigs", self.logger)
+        self.logger.info("parsing command output")
+        nodes, edges = parse_sigdata(outdata)
+
+        # now prune the data down to what we actually want.
+        # prune edges not in nodes, remove duplicates, and self-sigs
+        pruned_edges = {edge for edge in edges
+                if edge.signer in nodes and edge.signer != edge.signee}
+
+        self.logger.info("creating or finding up to %d signatures", len(pruned_edges))
+        created_ct = updated_ct = 0
+        with transaction.atomic():
+            for edge in pruned_edges:
+                sig, created = PGPSignature.objects.get_or_create(
+                        signer=edge.signer, signee=edge.signee,
+                        created=edge.created, expires=edge.expires,
+                        defaults={ 'revoked': edge.revoked })
+                if sig.revoked != edge.revoked:
+                    sig.revoked = edge.revoked
+                    sig.save()
+                    updated_ct += 1
+                if created:
+                    created_ct += 1
+
+        sig_ct = PGPSignature.objects.all().count()
+        self.logger.info("%d total signatures in database", sig_ct)
+        self.logger.info("created %d, updated %d signatures", created_ct, updated_ct)
 
 
-def get_date(epoch_string):
-    '''Convert a epoch string into a python 'date' object (not datetime).'''
-    if not epoch_string:
-        return None
-    return datetime.utcfromtimestamp(int(epoch_string)).date()
-
-
-def get_datetime(epoch_string):
-    '''Convert a epoch string into a python 'datetime' object.'''
-    if not epoch_string:
-        return None
-    return datetime.utcfromtimestamp(int(epoch_string)).replace(tzinfo=utc)
-
-
-def call_gpg(keyring, *args):
+def call_gpg(keyring, *args, logger):
     # GPG is stupid and interprets any filename without path portion as being
     # in ~/.gnupg/. Fake it out if we just get a bare filename.
     if '/' not in keyring:
@@ -80,6 +127,19 @@ def call_gpg(keyring, *args):
         logger.error(errdata)
         raise subprocess.CalledProcessError(proc.returncode, gpg_cmd)
     return outdata.decode("utf-8")
+
+def get_date(epoch_string):
+    '''Convert a epoch string into a python 'date' object (not datetime).'''
+    if not epoch_string:
+        return None
+    return datetime.utcfromtimestamp(int(epoch_string)).date()
+
+
+def get_datetime(epoch_string):
+    '''Convert a epoch string into a python 'datetime' object.'''
+    if not epoch_string:
+        return None
+    return datetime.utcfromtimestamp(int(epoch_string)).replace(tzinfo=utc)
 
 
 class KeyData(object):
@@ -97,7 +157,6 @@ def parse_keydata(data):
     current_pubkey = None
 
     # parse all of the output from our successful GPG command
-    logger.info("parsing command output")
     node = None
     for line in data.split('\n'):
         parts = line.split(':')
@@ -131,54 +190,6 @@ def find_key_owner(key, keys, finder):
     return None
 
 
-def import_keys(keyring):
-    outdata = call_gpg(keyring, "--list-sigs")
-    keydata = parse_keydata(outdata)
-
-    logger.info("creating or finding %d keys", len(keydata))
-    created_ct = updated_ct = 0
-    with transaction.atomic():
-        finder = UserFinder()
-        # we are dependent on parents coming before children; parse_keydata
-        # uses an OrderedDict to ensure this is the case.
-        for data in keydata.values():
-            parent_id = None
-            if data.parent:
-                parent_data = keydata.get(data.parent, None)
-                if parent_data:
-                    parent_id = parent_data.db_id
-            other = {
-                'expires': data.expires,
-                'revoked': data.revoked,
-                'parent_id': parent_id,
-            }
-            dkey, created = DeveloperKey.objects.get_or_create(
-                    key=data.key, created=data.created, defaults=other)
-            data.db_id = dkey.id
-
-            # set or update any additional data we might need to
-            needs_save = False
-            if created:
-                created_ct += 1
-            else:
-                for k, v in other.items():
-                    if getattr(dkey, k) != v:
-                        setattr(dkey, k, v)
-                        needs_save = True
-            if dkey.owner_id is None:
-                owner = find_key_owner(data, keydata, finder)
-                if owner is not None:
-                    dkey.owner = owner
-                    needs_save = True
-            if needs_save:
-                dkey.save()
-                updated_ct += 1
-
-    key_ct = DeveloperKey.objects.all().count()
-    logger.info("%d total keys in database", key_ct)
-    logger.info("created %d, updated %d keys", created_ct, updated_ct)
-
-
 class SignatureData(object):
     def __init__(self, signer, signee, created):
         self.signer = signer
@@ -194,7 +205,6 @@ def parse_sigdata(data):
     current_pubkey = None
 
     # parse all of the output from our successful GPG command
-    logger.info("parsing command output")
     for line in data.split('\n'):
         parts = line.split(':')
         if parts[0] == 'pub':
@@ -222,34 +232,5 @@ def parse_sigdata(data):
                 edge.revoked = revoked
 
     return nodes, edges
-
-
-def import_signatures(keyring):
-    outdata = call_gpg(keyring, "--list-sigs")
-    nodes, edges = parse_sigdata(outdata)
-
-    # now prune the data down to what we actually want.
-    # prune edges not in nodes, remove duplicates, and self-sigs
-    pruned_edges = {edge for edge in edges
-            if edge.signer in nodes and edge.signer != edge.signee}
-
-    logger.info("creating or finding up to %d signatures", len(pruned_edges))
-    created_ct = updated_ct = 0
-    with transaction.atomic():
-        for edge in pruned_edges:
-            sig, created = PGPSignature.objects.get_or_create(
-                    signer=edge.signer, signee=edge.signee,
-                    created=edge.created, expires=edge.expires,
-                    defaults={ 'revoked': edge.revoked })
-            if sig.revoked != edge.revoked:
-                sig.revoked = edge.revoked
-                sig.save()
-                updated_ct += 1
-            if created:
-                created_ct += 1
-
-    sig_ct = PGPSignature.objects.all().count()
-    logger.info("%d total signatures in database", sig_ct)
-    logger.info("created %d, updated %d signatures", created_ct, updated_ct)
 
 # vim: set ts=4 sw=4 et:

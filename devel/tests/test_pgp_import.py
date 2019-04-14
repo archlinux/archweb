@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -30,8 +30,10 @@ class PGPImportTest(TransactionTestCase):
     @patch('devel.management.commands.pgp_import.call_gpg')
     def test_pgp_import_garbage_data(self, mock_call_gpg):
         mock_call_gpg.return_value = 'barf'
-        with patch('devel.management.commands.pgp_import.logger') as logger:
-            call_command('pgp_import', '/tmp')
+
+        logger = Mock()
+        call_command('pgp_import', '/tmp', logger=logger)
+
         logger.info.assert_called()
         logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
         logger.info.assert_any_call('created %d, updated %d keys', 0, 0)
@@ -39,8 +41,10 @@ class PGPImportTest(TransactionTestCase):
     @patch('devel.management.commands.pgp_import.call_gpg')
     def test_pgp_import(self, mock_call_gpg):
         mock_call_gpg.return_value = '\n'.join(SIG_DATA)
-        with patch('devel.management.commands.pgp_import.logger') as logger:
-            call_command('pgp_import', '/tmp')
+
+        logger = Mock()
+        call_command('pgp_import', '/tmp', logger=logger)
+
         logger.info.assert_called()
         logger.info.assert_any_call('created %d, updated %d signatures', 0, 0)
         logger.info.assert_any_call('created %d, updated %d keys', 1, 0)
