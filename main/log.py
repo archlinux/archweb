@@ -1,4 +1,7 @@
 # Derived from Django snippets: http://djangosnippets.org/snippets/2242/
+
+import logging
+
 from collections import OrderedDict
 from datetime import datetime, timedelta
 from hashlib import md5
@@ -66,5 +69,10 @@ class RateLimitFilter(object):
             self.errors[key] = now
 
         return not duplicate
+
+
+class StdOutFilter(logging.Filter):
+    def filter(self, record):
+        return record.levelno < logging.WARNING
 
 # vim: set ts=4 sw=4 et:

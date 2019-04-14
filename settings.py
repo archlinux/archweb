@@ -130,24 +130,52 @@ INSTALLED_APPS = (
 # Logging configuration for not getting overspammed
 LOGGING = {
     'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} -> {levelname}: {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+    },
     'filters': {
         'ratelimit': {
             '()': 'main.log.RateLimitFilter',
-        }
+        },
+        'stdout': {
+            '()': 'main.log.StdOutFilter',
+        },
     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['ratelimit'],
             'class': 'django.utils.log.AdminEmailHandler',
-        }
+        },
+        'stdout': {
+            'level': 'INFO',
+            'filters': ['stdout'],
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+            'formatter': 'verbose'
+        },
+        'stderr': {
+            'level': 'WARNING',
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stderr',
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'archweb.command': {
+            'handlers': ['stdout', 'stderr'],
+            'level': 'INFO',
+            'propagate': False,
+        },
     },
 }
 
