@@ -26,7 +26,7 @@ def split_package_details(request, name, repo, arch):
     pkgs = Package.objects.normal().filter(pkgbase=name,
             repo__testing=repo.testing, repo__staging=repo.staging,
             arch__in=arches).order_by('pkgname')
-    if len(pkgs) == 0:
+    if not pkgs:
         return None
     # we have packages, but ensure at least one is in the given repo
     if not any(True for pkg in pkgs if pkg.repo == repo):
