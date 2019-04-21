@@ -397,8 +397,9 @@ class Package(models.Model):
         if self.repo.testing:
             return None
         try:
-            return Package.objects.normal().get(repo__testing=True,
-                    pkgname=self.pkgname, arch=self.arch)
+            # Kde-unstable is also a [testing] repo so sort on id.
+            return Package.objects.filter(repo__testing=True,
+                    pkgname=self.pkgname, arch=self.arch).order_by('-id').first()
         except Package.DoesNotExist:
             return None
 
