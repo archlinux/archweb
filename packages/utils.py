@@ -352,14 +352,14 @@ SELECT DISTINCT s.id
 def get_current_signoffs(repos):
     '''Returns a list of signoff objects for the given repos.'''
     to_fetch = signoffs_id_query(Signoff, repos)
-    return list(Signoff.objects.select_related('user').in_bulk(to_fetch).values())
+    return Signoff.objects.select_related('user').in_bulk(to_fetch).values()
 
 
 def get_current_specifications(repos):
     '''Returns a list of signoff specification objects for the given repos.'''
     to_fetch = signoffs_id_query(SignoffSpecification, repos)
-    return list(SignoffSpecification.objects.select_related('arch').in_bulk(
-            to_fetch).values())
+    return SignoffSpecification.objects.select_related('arch').in_bulk(
+            to_fetch).values()
 
 
 def get_target_repo_map(repos):
