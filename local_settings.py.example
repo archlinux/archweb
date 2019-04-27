@@ -13,7 +13,7 @@ ADMINS = (
 ## PostgreSQL Database settings
 #DATABASES = {
 #    'default': {
-#        'ENGINE'  : 'django.db.backends.postgresql_psycopg2',
+#        'ENGINE'  : 'django.db.backends.postgresql',
 #        'NAME'    : 'archlinux',
 #        'USER'    : 'archlinux',
 #        'PASSWORD': 'archlinux',
