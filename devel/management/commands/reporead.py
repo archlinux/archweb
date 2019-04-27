@@ -578,7 +578,7 @@ def parse_repo(repopath):
 
     repodb.close()
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
-    return (reponame, list(pkgs.values()))
+    return (reponame, pkgs.values())
 
 def locate_arch(arch):
     "Check if arch is valid."
