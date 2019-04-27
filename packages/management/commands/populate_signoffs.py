@@ -17,7 +17,7 @@ from xml.etree.ElementTree import XML
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from ...models import SignoffSpecification
+from ...models import FakeSignoffSpecification, SignoffSpecification, Signoff
 from ...utils import get_signoff_groups
 from devel.utils import UserFinder
 
@@ -41,7 +41,8 @@ is signoff-eligible and does not have an existing comment attached"""
         elif v >= 2:
             logger.level = logging.DEBUG
 
-        return add_signoff_comments()
+        add_signoff_comments()
+        cleanup_signoff_comments()
 
 def svn_log(pkgbase, repo):
     '''Retrieve the most recent SVN log entry for the given pkgbase and
@@ -102,5 +103,19 @@ def add_signoff_comments():
             spec.save()
         except:
             logger.exception("error getting SVN log for %s", group.pkgbase)
+
+def cleanup_signoff_comments():
+    logger.info("getting all signoff groups")
+    groups = get_signoff_groups()
+
+    id_signoffs = [signoff.id for g in groups for signoff in g.signoffs]
+    logger.info("Keeping %s signoffs", len(id_signoffs))
+    # FakeSignoffSpecification's have no id
+    id_signoffspecs = [g.specification.id for g in groups if not isinstance(g.specification, FakeSignoffSpecification)]
+    logger.info("Keeping %s signoffspecifications", len(id_signoffspecs))
+
+    Signoff.objects.exclude(id__in=id_signoffs).delete()
+    SignoffSpecification.objects.exclude(id__in=id_signoffspecs).delete()
+
 
 # vim: set ts=4 sw=4 et:
