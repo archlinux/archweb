@@ -32,9 +32,6 @@ class Command(BaseCommand):
     help = """Pull the latest commit message from SVN for a given package that
 is signoff-eligible and does not have an existing comment attached"""
 
-    def add_arguments(self, parser):
-        parser.add_argument('args', nargs='*', help='<arch> <filename>')
-
     def handle(self, **options):
         v = int(options.get('verbosity', None))
         if v == 0:
