@@ -65,6 +65,8 @@ class Repo(models.Model):
     name = models.CharField(max_length=255, unique=True)
     testing = models.BooleanField(default=False,
             help_text="Is this repo meant for package testing?")
+    public_testing = models.BooleanField(default=False,
+            help_text="Is this repo meant for package testing (without signoffs)?")
     staging = models.BooleanField(default=False,
             help_text="Is this repo meant for package staging?")
     bugs_project = models.SmallIntegerField(default=1,
@@ -397,9 +399,8 @@ class Package(models.Model):
         if self.repo.testing:
             return None
         try:
-            # Kde-unstable is also a [testing] repo so sort on id.
-            return Package.objects.filter(repo__testing=True,
-                    pkgname=self.pkgname, arch=self.arch).order_by('-id').first()
+            return Package.objects.normal().get(repo__testing=True,
+                    pkgname=self.pkgname, arch=self.arch)
         except Package.DoesNotExist:
             return None
 
