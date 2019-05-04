@@ -1,13 +1,13 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==2.2
+Django==2.2.1
 IPy==0.83
-Markdown==2.6.11
+Markdown==3.1
 bencode.py==2.0.0
-django-countries==5.0
+django-countries==5.3.3
 jsmin==2.2.2
 pgpdump==1.5
 pytz>=2017.3
-parse==1.11.1
+parse==1.12.0
 django-jinja==2.4.1
-sqlparse==0.2.4
+sqlparse==0.3.0
 django-csp==3.5
