@@ -3,8 +3,9 @@ from datetime import timedelta
 import pytz
 from django.db.models import F
 from django.template.defaultfilters import filesizeformat
+from django.db import connection
 from django.utils.timezone import now
-from main.models import PackageFile
+from main.models import Package, PackageFile
 from packages.models import Depend, PackageRelation
 
 from .models import DeveloperKey
@@ -144,6 +145,28 @@ def signature_time(packages):
 
     return filtered
 
+def non_existing_dependencies(packages):
+    cursor = connection.cursor()
+    query = """
+    select p.pkgname "pkgname", pd.name "dependency pkgname", depp.pkgname, provp.pkgname
+    from packages_depend pd
+    join packages p on p.id = pd.pkg_id
+    left join packages depp on depp.pkgname = pd.name
+    left join packages_provision depp_prov on depp_prov.name = pd.name
+    left join packages provp on provp.id = depp_prov.pkg_id;"""
+
+    packages = []
+    cursor.execute(query)
+    for row in cursor.fetchall():
+        pkgname, pdname, dep_pkgname, prov_pkgname = row
+        if not prov_pkgname and not dep_pkgname:
+            package = Package.objects.normal().filter(pkgname=pkgname).first()
+            package.nonexistingdep = pdname
+            packages.append(package)
+
+    return packages
+    
+
 
 REPORT_OLD = DeveloperReport(
     'old', 'Old', 'Packages last built more than two years ago', old)
@@ -191,6 +214,14 @@ REPORT_SIG_TIME = DeveloperReport(
     'after the build timestamp', signature_time,
     ['Signature Date', 'Packager'], ['sig_date', 'packager'])
 
+NON_EXISTING_DEPENDENCIES = DeveloperReport(
+    'non-existing-dependencies',
+    'Non existing dependencies',
+    'Packages that have dependencies that do not exists in the repository',
+    non_existing_dependencies,
+    ['Non existing dependency'],
+    ['nonexistingdep'],
+    personal=False)
 
 def available_reports():
     return (REPORT_OLD,
@@ -201,4 +232,5 @@ def available_reports():
             REPORT_INFO,
             REPORT_ORPHANS,
             REPORT_SIGNATURE,
-            REPORT_SIG_TIME, )
+            REPORT_SIG_TIME,
+            NON_EXISTING_DEPENDENCIES, )
