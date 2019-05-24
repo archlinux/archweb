@@ -115,6 +115,8 @@
                 <th>Last Updated</th>
                 <th>Approved</th>
                 <th>Signoffs</th>
+                <th>Packager</th>
+                <th>Maintainer</th>
             </tr>
         </thead>
         <tbody>
@@ -139,6 +141,8 @@
                     <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
                     {% endfor %}
                 </ul></td>
+                <td>{{ group.packager }}</td>
+                <td>{{ group.maintainer }}</td>
             </tr>
             {% empty %}
             <tr class="empty"><td colspan="7"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
