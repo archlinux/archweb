@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
+from django.template import loader
 
 from main.models import Arch, Repo, Package
 from main.utils import set_created_field
@@ -79,9 +81,35 @@ class TodolistPackage(models.Model):
         return self.get_status_display().lower().replace('-', '')
 
 
+def check_todolist_complete(sender, instance, **kwargs):
+    if instance.status == instance.INCOMPLETE:
+        return
+
+    query = TodolistPackage.objects.filter(todolist=instance.todolist, status__exact=instance.INCOMPLETE)
+    if query.count() > 0:
+        return
+
+    # Send e-mail notification
+    subject = "The last package on the TODO list '%s' has been completed." % instance.todolist.name
+    tmpl = loader.get_template('todolists/complete_email_notification.txt')
+    toemail = [instance.todolist.creator.email]
+    ctx = {
+        'todolist': instance.todolist,
+    }
+    msg = EmailMessage(subject,
+            tmpl.render(ctx),
+            'Arch Website Notification <nobody@archlinux.org>',
+            toemail,
+    )
+    msg.send(fail_silently=True)
+
+
 pre_save.connect(set_created_field, sender=Todolist,
         dispatch_uid="todolists.models")
 pre_save.connect(set_created_field, sender=TodolistPackage,
         dispatch_uid="todolists.models")
+
+post_save.connect(check_todolist_complete, sender=TodolistPackage,
+        dispatch_uid='todolist.models')
 
 # vim: set ts=4 sw=4 et:
