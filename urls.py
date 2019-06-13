@@ -48,6 +48,7 @@ urlpatterns.extend([
     url(r'^master-keys/$', public.views.keys, name='page-keys'),
     url(r'^master-keys/json/$', public.views.keys_json, name='pgp-keys-json'),
     url(r'^people/(?P<slug>[-\w]+)/$', public.views.people, name='people'),
+    url(r'^security/$', public.views.security, name='security'),
 ])
 
 # Feeds patterns, used below

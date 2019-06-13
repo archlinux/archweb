@@ -168,4 +168,20 @@ def keys_json(request):
     to_json = json.dumps(data, ensure_ascii=False)
     return HttpResponse(to_json, content_type='application/json')
 
+@cache_control(max_age=307)
+def security(request):
+
+    # FIXME: we may want to sort by firstname,lastname
+    developer_keys = DeveloperKey.objects.select_related(
+            'owner').filter(owner__isnull=False)
+
+    # FIXME this is probably not the way we want to do things for now.
+    SECURITY_TEAM = {'anthraxx', 'rgacogne', 'shibumi', 'jelle', 'sangy', 'Foxboron'}
+    developer_keys = [key for key in developer_keys if key.owner.userprofile.alias in SECURITY_TEAM]
+    context = {
+        'keys': developer_keys,
+    }
+    return render(request, 'public/security.html', context)
+
+
 # vim: set ts=4 sw=4 et:

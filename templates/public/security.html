@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Arch Linux - Security{% endblock %}
+{% block content %}
+{% load pgp %}
+
+<div class="box">
+    <h2 class="title">Arch Linux Security</h2>
+
+    For Arch Linux security is paramount, and a dedicated team of staffers and
+    volunteers helps with triaging, prioritizing, confirming, patching and
+    notifying about vulnerabilities in Arch Linux components as well as
+    packages provided in the official repositories.
+
+    <h3> Reporting Vulnerablities in Arch Linux Components or Infrastructure</h3>
+
+    If you have discovered a vulnerability in packages related to core
+    components or in Arch Linux infrastructure don't hesitate to reach out 
+    to <a href="mailto:security@archlinux.org">security@archlinux.org</a> to
+    discuss remediation. You can encrypt your email to the following gpg keys.
+
+
+    <ul>
+    {% for key in keys %}
+       {% with key.owner.userprofile as owner_profile %}
+       {{ key.owner.name }}
+       <li><a href="{{ owner_profile.get_absolute_url }}">{{ key.owner.get_full_name }}</a>
+       <tt>{{ key.pgp_key|pgp_fingerprint }}</tt>
+       {% pgp_key_link owner_profile.pgp_key %}
+       {% endwith %}
+	{% endfor %}
+    </ul>
+
+    <h3>Vulnerabilities in Upstream Packages</h3>
+
+    Our <a href="https://security.archlinux.org">CVE tracker</a> can help you
+    review the vulnerabilities that affect the packages we provide. If you
+    think a CVE that affects a package is not listed in there, do not hesitate
+    to reach out to us in irc on <tt>#archlinux-security</tt>.
+
+    <h3>Securing your Arch Linux installation</h3>
+
+    Consider checking this 
+    <a href="https://wiki.archlinux.org/security/">Wiki page for more information</a>
+
+{% endblock %}
+
