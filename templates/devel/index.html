@@ -27,7 +27,7 @@
         </thead>
         <tbody>
             {% for pkg in flagged %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     <td>{% pkg_details_link pkg %}</td>
                     <td>{{ pkg.full_version }}</td>
                     <td>{% with pkg.in_testing as tp %}{% if tp %}
@@ -59,7 +59,7 @@
         </thead>
         <tbody>
             {% for todopkg in todopkgs %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     <td><a href="{{ todopkg.todolist.get_absolute_url }}"
                             title="View todo list: {{ todopkg.todolist.name }}">{{ todopkg.todolist.name }}</a></td>
                     <td>{% todopkg_details_link todopkg %}</td>
@@ -88,7 +88,7 @@
         </thead>
         <tbody>
             {% for todo in todos %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><a href="{{ todo.get_absolute_url }}"
                         title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                 <td>{{ todo.created|date }}</td>
@@ -121,7 +121,7 @@
         </thead>
         <tbody>
             {% for group in signoffs %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td>{% pkg_details_link group.package %}</td>
                 <td>{{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>

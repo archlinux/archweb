@@ -24,7 +24,7 @@
         </thead>
         <tbody>
             {% for relation in inactive_user %}
-            <tr class="{% cycle 'odd' 'even' %}">
+	    <tr>
                 <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}
@@ -56,7 +56,7 @@
         </thead>
         <tbody>
             {% for relation in missing_pkgbase %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td>{{ relation.user.get_full_name }}</td>
@@ -86,7 +86,7 @@
         </thead>
         <tbody>
             {% for relation in wrong_permissions %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><input type="checkbox" class="relation-checkbox" name="relation_id" value="{{ relation.id }}" /></td>
                 <td>{{ relation.pkgbase }}</td>
                 <td class="wrap">{% for pkg in relation.get_associated_packages %}

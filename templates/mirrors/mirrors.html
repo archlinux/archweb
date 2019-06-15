@@ -27,7 +27,7 @@
         </thead>
         <tbody>
             {% for mirror in mirror_list %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><a href="{{ mirror.get_absolute_url }}"
                         title="Mirror details for {{ mirror.name }}">{{ mirror.name }}</a></td>
                 <td class="country">{% if mirror.country %}{% country_flag mirror.country %}{{ mirror.country.name }}{% else %}Various{% endif %}</td>

@@ -34,7 +34,7 @@
         </thead>
         <tbody>
             {% for list in lists %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><a href="{{ list.get_absolute_url }}"
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
                 <td>{{ list.created|date }}</td>

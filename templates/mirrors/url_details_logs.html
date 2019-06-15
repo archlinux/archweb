@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for log in logs %}<tr class="{% cycle 'odd' 'even' %}">
+        {% for log in logs %}<tr>
             <td>{{ log.check_time|date:'Y-m-d H:i' }}</td>
             <td class="country">{% if log.location %}{% country_flag log.location.country %}{{ log.location.country.name }}{% else %}Unknown{% endif %}</td>
             <td>{% if log.location %}{{ log.location.source_ip }}{% else %}Unknown{% endif %}</td>

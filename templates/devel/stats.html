@@ -15,7 +15,7 @@
         </thead>
         <tbody>
             {% for arch in arches %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     <td>{{ arch.name }}</td>
                     <td><a href="/packages/?arch={{ arch.name }}"
                             title="View all packages for the {{ arch.name }} architecture">
@@ -46,7 +46,7 @@
         </thead>
         <tbody>
             {% for repo in repos %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     <td>{{ repo.name }}</td>
                     <td><a href="/packages/?repo={{ repo.name }}"
                             title="View all packages in the {{ repo.name }} repository">
@@ -98,7 +98,7 @@
         </thead>
         <tbody>
             {% for maint in maintainers %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     <td>{{ maint.get_full_name }}</td>
                     <td><a href="/packages/?maintainer={{ maint.username }}"
                             title="View all packages maintained by {{ maint.get_full_name }}">

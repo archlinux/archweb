@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for m_url in urls %}<tr class="{% cycle 'odd' 'even' %}">
+        {% for m_url in urls %}<tr>
             <td>{{ m_url.url }}</td>
             <td>{{ m_url.protocol }}</td>
             <td class="country">{% country_flag m_url.country %}{{ m_url.country.name }}</td>

@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             {% for pkg1, pkg2 in multilib_differences %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td>{% pkg_details_link pkg1 %}</td>
                 <td><span{% if pkg1.flag_date %} class="flagged"{% endif %}>{{ pkg1.full_version }}</span></td>
                 <td><span{% if pkg2.flag_date %} class="flagged"{% endif %}>{{ pkg2.full_version }}</span></td>

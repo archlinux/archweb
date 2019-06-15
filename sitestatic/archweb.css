@@ -687,14 +687,6 @@ table.results {
         padding: .3em 1em .3em 3px;
     }
 
-    .results tr.odd {
-        background: #fff;
-    }
-
-    .results tr.even {
-        background: #e4eeff;
-    }
-
     .results .flagged {
         color: red;
     }
@@ -975,6 +967,16 @@ table td.country {
 #pkglist-results tr:hover,
 #stats-area tr:hover {
     background: #ffd;
+}
+
+.results tr:nth-child(even),
+#article-list tr:nth-child(even) {
+    background: #e4eeff;
+}
+
+.results tr:nth-child(odd),
+#article-list tr:nth-child(odd) {
+    background: #fff;
 }
 
 /* dev dashboard: */

@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for log in error_logs %}<tr class="{% cycle 'odd' 'even' %}">
+        {% for log in error_logs %}<tr>
             <td>{{ log.url.url }}</td>
             <td>{{ log.url.protocol.protocol }}</td>
             <td class="country">{% country_flag log.url.country %}{{ log.url.country.name }}</td>

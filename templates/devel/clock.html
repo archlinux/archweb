@@ -43,7 +43,7 @@
         </thead>
         <tbody>
             {% for dev in developers %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td><a href="mailto:{{ dev.email }}">{{ dev.get_full_name }}</a></td>
                 <td>{{ dev.username }}</td>
                 <td>{{ dev.userprofile.alias }}</td>

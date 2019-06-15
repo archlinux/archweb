@@ -34,7 +34,7 @@
         </thead>
         <tbody>
             {% for item in release_list %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td>{% if item.torrent_data %}
                 <a href="{% url 'releng-release-torrent' item.version %}"
                        title="Download torrent for {{ item.version }}"><img width="12" height="12" src="{% static "download.png" %}" alt="Torrent"/></a>

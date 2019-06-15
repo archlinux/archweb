@@ -58,7 +58,7 @@
         </thead>
         <tbody>
             {% for pkg in exact_matches %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
@@ -102,7 +102,7 @@
             </thead>
             <tbody>
                 {% for pkg in package_list %}
-                <tr class="{% cycle 'odd' 'even' %}">
+                <tr>
                     {% if perms.main.change_package %}
                     <td><input type="checkbox" name="pkgid" value="{{ pkg.id }}" /></td>
                     {% endif %}

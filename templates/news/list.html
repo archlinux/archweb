@@ -32,7 +32,7 @@
         </thead>
         <tbody>
             {% for item in news_list %}
-            <tr class="{% cycle 'odd' 'even' %}">
+            <tr>
                 <td>{{ item.postdate|date }}</td>
                 <td class="wrap"><a href="{{ item.get_absolute_url }}"
                         title="View: {{ item.title }}">{{ item.title }}</a></td>
