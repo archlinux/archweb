@@ -1,0 +1,8 @@
+{% autoescape off %}The todo list "{{ todolist.name }}" is complete.
+
+Todo list information:
+Name: {{ todolist.name }}
+URL: {{ todolist.get_full_url }}
+Creator: {{ todolist.creator.get_full_name }}
+Description:
+{{ todolist.description|striptags|wordwrap:78 }}{% endautoescape %}
