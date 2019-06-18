@@ -50,7 +50,7 @@
             </tr>
         </thead>
         <tbody id="tbody_signoffs">
-            {% for group in signoff_groups %}<tr {{ group.arch.name }} {{ group.target_repo|lower }}">
+            {% for group in signoff_groups %}<tr class="{{ group.arch.name }} {{ group.target_repo|lower }}">
                 <td>{% pkg_details_link group.package %} {{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
