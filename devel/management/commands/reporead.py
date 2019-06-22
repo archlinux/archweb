@@ -371,7 +371,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
                 "the web database"
         if not sanity_check:
             pass
-        elif repository.testing or repository.staging:
+        elif repository.testing or repository.public_testing or repository.staging:
             pass
         elif len(dbpkgs) == 0 and len(pkgs) == 0:
             pass
