@@ -165,7 +165,7 @@ def non_existing_dependencies(packages):
             packages.append(package)
 
     return packages
-    
+
 
 
 REPORT_OLD = DeveloperReport(
