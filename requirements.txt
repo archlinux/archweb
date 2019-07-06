@@ -1,5 +1,5 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==2.2.2
+Django==2.2.3
 IPy==0.83
 Markdown==3.1
 bencode.py==2.0.0
