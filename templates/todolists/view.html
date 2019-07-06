@@ -78,7 +78,7 @@
         </thead>
         <tbody>
             {% for pkg in list.packages %}
-            <tr{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
+            <tr class="{% if user in pkg.maintainers %} mine{% endif %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% todopkg_details_link pkg %}</td>
