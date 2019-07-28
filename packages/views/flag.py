@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page, never_cache
+from django.db.models import Q
+from django.http import Http404
 
 from ..models import FlagRequest
 from main.models import Package
@@ -54,13 +56,32 @@ def flag(request, name, repo, arch):
     if pkg.flag_date is not None:
         # already flagged. do nothing.
         return render(request, 'packages/flagged.html', {'pkg': pkg})
-    # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.normal().filter(
-            pkgbase=pkg.pkgbase, flag_date__isnull=True,
-            repo__testing=pkg.repo.testing,
-            repo__staging=pkg.repo.staging).order_by(
-            'pkgname', 'repo__name', 'arch__name')
 
+    # Find packages based on the same packagebase
+    pkg_filter = Q(pkgbase=pkg.pkgbase, flag_date__isnull=True,
+            repo__testing=pkg.repo.testing,
+            repo__staging=pkg.repo.staging)
+
+    if "lib32-" in name:
+        # Find normal version of lib32 packages
+        non_lib32_pkg = get_object_or_404(Package.objects.normal(),
+                pkgname=name.replace("lib32-",""))
+        pkg_filter = pkg_filter | Q(pkgbase=non_lib32_pkg.pkgbase,
+                                    flag_date__isnull=True)
+    else:
+        # Find lib32 version of normal packages
+        try:
+            lib32_pkg = get_object_or_404(Package.objects.normal(),
+                    pkgname="lib32-"+pkg.pkgbase)
+            pkg_filter = pkg_filter | Q(pkgbase=lib32_pkg.pkgbase,
+                                        flag_date__isnull=True)
+        except Http404:
+            pass # Do not raise an error when there is no lib32 version
+
+
+
+    pkgs = Package.objects.normal().filter(pkg_filter).order_by(
+            'pkgname', 'repo__name', 'arch__name')
     authenticated = request.user.is_authenticated
 
     if request.POST:
