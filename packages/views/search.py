@@ -59,6 +59,8 @@ class PackageSearchForm(forms.Form):
         # only do exact match search if 'q' is sole parameter
         if self.changed_data != ['q']:
             return []
+        if 'q' not in self.cleaned_data:
+            return []
         return Package.objects.normal().filter(pkgname=self.cleaned_data['q'])
 
 
