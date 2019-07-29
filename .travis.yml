@@ -6,9 +6,9 @@ cache: pip
 install: "pip install -r requirements.txt && pip install coveralls pylint"
 
 script:
-  - python manage.py collectstatic --noinput
-  - coverage run --rcfile .coveragerc manage.py test
-  - pylint devel main mirrors news packages releng templates todolists visualize *.py
+  - make collectstatic
+  - make lint 
+  - make coverage 
 
 after_success:
   - coveralls

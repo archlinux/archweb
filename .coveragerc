@@ -7,5 +7,6 @@ omit =
         **/tests/*.py
 	env*
         settings.py
+	conftest.py
         local_settings.py
 	/home/travis/virtualenv*
