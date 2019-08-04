@@ -1,5 +1,6 @@
 from main.templatetags.flags import country_flag
 
+# pylint: disable=W0611
 from mirrors.tests.conftest import checklocation
 
 
