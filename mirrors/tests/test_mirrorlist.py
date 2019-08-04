@@ -32,6 +32,11 @@ def test_mirrorlist_all_http(client, mirrorurl):
     assert response.status_code == 404
 
 
+def test_mirrorlist_all_smart(client, mirrorurl):
+    response = client.get('/mirrorlist/all/smart/', follow=True)
+    assert response.status_code == 404
+
+
 def test_mirrorlist_status(client, mirrorurl):
     response = client.get('/mirrorlist/?country=all&use_mirror_status=on')
     assert response.status_code == 200
