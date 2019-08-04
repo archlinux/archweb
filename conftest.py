@@ -2,7 +2,6 @@ import pytest
 
 from django.core.management import call_command
 
-from main.models import Repo
 from devel.models import UserProfile
 
 
