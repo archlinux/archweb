@@ -58,3 +58,7 @@ class DeveloperReport(TransactionTestCase):
     def test_reports_signature_time(self):
         response = self.client.get('/devel/reports/signature-time', follow=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_non_existing_dependencies(self):
+        response = self.client.get('/devel/reports/non-existing-dependencies', follow=True)
+        self.assertEqual(response.status_code, 200)
