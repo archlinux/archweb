@@ -10,3 +10,4 @@ omit =
 	conftest.py
         local_settings.py
 	/home/travis/virtualenv*
+	manage.py

@@ -2,6 +2,7 @@ import pytest
 
 from django.core.management import call_command
 
+from main.models import Repo
 from devel.models import UserProfile
 
 
@@ -31,8 +32,9 @@ def staff_groups(db):
     call_command('loaddata', 'devel/fixtures/staff_groups.json')
 
 
+# TODO: test with non-admin user fixture
 @pytest.fixture
-def admin_user_profile(admin_user):
+def admin_user_profile(admin_user, arches, repos):
     profile = UserProfile.objects.create(user=admin_user,
                                          public_email="public@archlinux.org")
     yield profile

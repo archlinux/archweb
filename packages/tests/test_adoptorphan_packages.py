@@ -13,7 +13,6 @@ def request(client, pkgid, adopt=True):
     return client.post('/packages/update/', data, follow=True)
 
 
-
 def test_wrong_request(admin_client, arches, repos, package):
     # TODO(jelle): fix 
     pkg = Package.objects.first()
