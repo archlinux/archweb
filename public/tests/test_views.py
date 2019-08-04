@@ -3,6 +3,11 @@ def test_index(client, arches, repos, package, groups, staff_groups):
     assert response.status_code == 200
 
 
+def test_index_logged_in(admin_client, arches, repos, package, groups, staff_groups):
+    response = admin_client.get('/')
+    assert response.status_code == 200
+
+
 def test_about(client, arches, repos, package, groups, staff_groups):
     response = client.get('/about/')
     assert response.status_code == 200
