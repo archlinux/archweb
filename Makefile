@@ -20,8 +20,8 @@ test-pdb: test
 lint:
 	pylint devel main mirrors news packages releng templates todolists visualize *.py
 
-collecstatic:
-	python manage.py collecstatic --noinput
+collectstatic:
+	python manage.py collectstatic --noinput
 
 test: test-py
 
