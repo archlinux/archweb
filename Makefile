@@ -26,7 +26,7 @@ collectstatic:
 test: test-py
 
 test-py coverage:
-	${PYTEST} ${PYTEST_INPUT} ${PYTEST_OPTIONS} ${PYTEST_COVERAGE_OPTIONS}
+	DJANGO_SETTINGS_MODULE=settings ${PYTEST} ${PYTEST_INPUT} ${PYTEST_OPTIONS} ${PYTEST_COVERAGE_OPTIONS}
 
 open-coverage: coverage
 	${BROWSER} htmlcov/index.html
