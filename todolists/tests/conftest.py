@@ -5,6 +5,7 @@ from todolists.models import Todolist, TodolistPackage
 
 
 NAME = 'Boost rebuild'
+SLUG = 'boost-rebuild'
 DESCRIPTION = 'Boost 1.66 rebuild'
 RAW = 'linux'
 
@@ -13,6 +14,7 @@ RAW = 'linux'
 def todolist(admin_user, arches, repos, package):
     todolist = Todolist.objects.create(name=NAME,
                                        description=DESCRIPTION,
+                                       slug=SLUG,
                                        creator=admin_user,
                                        raw=RAW)
     yield todolist

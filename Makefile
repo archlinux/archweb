@@ -15,7 +15,7 @@ endif
 test-pdb: test
 
 
-.PHONY: test lint
+.PHONY: test lint coverage
 
 lint:
 	pylint devel main mirrors news packages releng templates todolists visualize *.py
