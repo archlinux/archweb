@@ -95,6 +95,10 @@ In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_P
 
 # Running tests and coverage
 
+Install the test dependencies:
+
+        pip install -r requirements_text.txt
+
 To the unittests execute the following commands:
 
         ./manage.py collectstatic --noinput
@@ -102,7 +106,6 @@ To the unittests execute the following commands:
 
 Running coverage:
 
-        pip install coverage
         coverage run --omit='env*' --source='.' manage.py test
         coverage report
 

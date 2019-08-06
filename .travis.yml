@@ -3,7 +3,7 @@ language: python
 python:
   - "3.7"
 cache: pip
-install: "pip install -r requirements.txt && pip install coveralls pylint pytest pytest-cov pytest-django"
+install: "pip install -r requirements.txt && pip install -r requirements_test.txt"
 
 script:
   - make collectstatic
