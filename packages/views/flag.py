@@ -15,7 +15,6 @@ from django.http import Http404
 from ..models import FlagRequest
 from main.models import Package
 
-
 class FlagForm(forms.Form):
     email = forms.EmailField(label='E-mail Address')
     message = forms.CharField(label='Message To Developer',
@@ -48,6 +47,34 @@ class FlagForm(forms.Form):
 def flaghelp(request):
     return render(request, 'packages/flaghelp.html')
 
+def find_same_pkgbase(pkg):
+    # Find packages based on the same packagebase
+    pkg_filter = Q(pkgbase=pkg.pkgbase,
+            repo__testing=pkg.repo.testing,
+            repo__staging=pkg.repo.staging)
+
+    if "lib32-" in pkg.pkgname:
+        # Find normal version of lib32 packages
+        non_lib32_pkg = get_object_or_404(Package.objects.normal(),
+                pkgname=pkg.pkgname.replace("lib32-",""))
+        pkg_filter = pkg_filter | Q(pkgbase=non_lib32_pkg.pkgbase,
+                repo__testing=pkg.repo.testing,
+                repo__staging=pkg.repo.staging)
+    else:
+        # Find lib32 version of normal packages
+        try:
+            lib32_pkg = get_object_or_404(Package.objects.normal(),
+                    pkgname="lib32-"+pkg.pkgbase)
+            pkg_filter = pkg_filter | Q(pkgbase=lib32_pkg.pkgbase,
+                    repo__testing=pkg.repo.testing,
+                    repo__staging=pkg.repo.staging)
+        except Http404:
+            pass # Do not raise an error when there is no lib32 version
+
+    pkgs = Package.objects.normal().filter(pkg_filter).order_by(
+            'pkgname', 'repo__name', 'arch__name')
+
+    return pkgs
 
 @never_cache
 def flag(request, name, repo, arch):
@@ -57,31 +84,9 @@ def flag(request, name, repo, arch):
         # already flagged. do nothing.
         return render(request, 'packages/flagged.html', {'pkg': pkg})
 
-    # Find packages based on the same packagebase
-    pkg_filter = Q(pkgbase=pkg.pkgbase, flag_date__isnull=True,
-            repo__testing=pkg.repo.testing,
-            repo__staging=pkg.repo.staging)
+    pkgs = find_same_pkgbase(pkg).filter(
+            flag_date__isnull=True)
 
-    if "lib32-" in name:
-        # Find normal version of lib32 packages
-        non_lib32_pkg = get_object_or_404(Package.objects.normal(),
-                pkgname=name.replace("lib32-",""))
-        pkg_filter = pkg_filter | Q(pkgbase=non_lib32_pkg.pkgbase,
-                                    flag_date__isnull=True)
-    else:
-        # Find lib32 version of normal packages
-        try:
-            lib32_pkg = get_object_or_404(Package.objects.normal(),
-                    pkgname="lib32-"+pkg.pkgbase)
-            pkg_filter = pkg_filter | Q(pkgbase=lib32_pkg.pkgbase,
-                                        flag_date__isnull=True)
-        except Http404:
-            pass # Do not raise an error when there is no lib32 version
-
-
-
-    pkgs = Package.objects.normal().filter(pkg_filter).order_by(
-            'pkgname', 'repo__name', 'arch__name')
     authenticated = request.user.is_authenticated
 
     if request.POST:
@@ -166,11 +171,8 @@ def flag(request, name, repo, arch):
 def flag_confirmed(request, name, repo, arch):
     pkg = get_object_or_404(Package,
             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkgs = Package.objects.normal().filter(
-            pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
-            repo__testing=pkg.repo.testing,
-            repo__staging=pkg.repo.staging).order_by(
-            'pkgname', 'repo__name', 'arch__name')
+    pkgs = find_same_pkgbase(pkg).filter(
+            flag_date=pkg.flag_date)
 
     context = {'package': pkg, 'packages': pkgs}
 
