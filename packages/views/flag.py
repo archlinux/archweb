@@ -53,10 +53,10 @@ def find_same_pkgbase(pkg):
             repo__testing=pkg.repo.testing,
             repo__staging=pkg.repo.staging)
 
-    if "lib32-" in pkg.pkgname:
+    if 'lib32-' in pkg.pkgname:
         # Find normal version of lib32 packages
         non_lib32_pkg = get_object_or_404(Package.objects.normal(),
-                pkgname=pkg.pkgname.replace("lib32-",""))
+                pkgname=pkg.pkgname.replace('lib32-',''))
         pkg_filter = pkg_filter | Q(pkgbase=non_lib32_pkg.pkgbase,
                 repo__testing=pkg.repo.testing,
                 repo__staging=pkg.repo.staging)
@@ -64,7 +64,7 @@ def find_same_pkgbase(pkg):
         # Find lib32 version of normal packages
         try:
             lib32_pkg = get_object_or_404(Package.objects.normal(),
-                    pkgname="lib32-"+pkg.pkgbase)
+                    pkgname='lib32-'+pkg.pkgbase)
             pkg_filter = pkg_filter | Q(pkgbase=lib32_pkg.pkgbase,
                     repo__testing=pkg.repo.testing,
                     repo__staging=pkg.repo.staging)
@@ -85,7 +85,8 @@ def flag(request, name, repo, arch):
         return render(request, 'packages/flagged.html', {'pkg': pkg})
 
     pkgs = find_same_pkgbase(pkg).filter(
-            flag_date__isnull=True)
+            flag_date__isnull=True,
+            pkgver__lte=pkg.pkgver)
 
     authenticated = request.user.is_authenticated
 
