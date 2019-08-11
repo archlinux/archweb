@@ -4,10 +4,12 @@ from operator import attrgetter
 from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_list_or_404, redirect, render
+from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
 
@@ -53,6 +55,30 @@ def signoff_package(request, name, repo, arch, revoke=False):
             return render(request, '403.html', status=403)
         signoff, created = Signoff.objects.get_or_create_from_package(
                 package, request.user)
+        signoffs = Signoff.objects.for_package(package).filter(
+                revoked__isnull=True)
+
+        if signoffs.count() >= spec.required:
+            packager = package.packager
+
+            # TODO: Handle notification when packager does not exist
+            if packager:
+                toemail = [packager.email]
+                subject = f'{package.repo.name} package ' + \
+                    f'[{package.pkgname} {package.full_version}] approved'
+
+                # send notification email to the maintainers
+                tmpl = loader.get_template('packages/approved.txt')
+                ctx = {
+                    'signoffs': signoffs,
+                    'pkg': package,
+                }
+                msg = EmailMessage(subject,
+                        tmpl.render(ctx),
+                        'Arch Website Notification <nobody@archlinux.org>',
+                        toemail,
+                )
+                msg.send(fail_silently=True)
 
     all_signoffs = Signoff.objects.for_package(package)
 
