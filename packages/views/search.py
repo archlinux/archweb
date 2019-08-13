@@ -17,7 +17,7 @@ from ..utils import attach_maintainers, PackageJSONEncoder
 
 
 class PackageSearchForm(forms.Form):
-    limit = forms.CharField(required=False)
+    limit = forms.IntegerField(required=False, min_value=0)
     page = forms.CharField(required=False)
     repo = forms.MultipleChoiceField(required=False)
     arch = forms.MultipleChoiceField(required=False)
@@ -163,8 +163,8 @@ def search_json(request):
         form = PackageSearchForm(data=request.GET,
                 show_staging=request.user.is_authenticated)
         if form.is_valid():
-            form_limit = form.cleaned_data['limit']
-            limit = min(limit, int(form_limit)) if form_limit else limit
+            form_limit = form.cleaned_data.get('limit', limit)
+            limit = min(limit, form_limit) if form_limit else limit
             container['limit'] = limit
 
             packages = Package.objects.select_related('arch', 'repo',
