@@ -45,6 +45,53 @@
         </tbody>
     </table>
 
+    <h3>Signoff Status</h3>
+
+    <table id="dash-signoffs" class="results">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Arch</th>
+                <th>Target Repo</th>
+                <th>Last Updated</th>
+                <th>Approved</th>
+                <th>Signoffs</th>
+                <th>Packager</th>
+                <th>Maintainer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in signoffs %}
+            <tr>
+                <td>{% pkg_details_link group.package %}</td>
+                <td>{{ group.version }}</td>
+                <td>{{ group.arch.name }}</td>
+                <td>{{ group.target_repo }}</td>
+                <td>{{ group.last_update|date }}</td>
+                {% if group.specification.known_bad %}
+                <td class="approval signoff-bad">Bad</td>
+                {% else %}
+                {% if not group.specification.enabled %}
+                <td class="approval signoff-disabled">Disabled</td>
+                {% else %}
+                <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
+                {% endif %}
+                {% endif %}
+                <td><ul class="signoff-list">
+                    {% for signoff in group.signoffs %}
+                    <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
+                    {% endfor %}
+                </ul></td>
+                <td>{{ group.packager }}</td>
+                <td>{{ group.maintainer }}</td>
+            </tr>
+            {% empty %}
+            <tr class="empty"><td colspan="9"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <h3>My Incomplete Todo List Packages</h3>
 
     <table id="dash-mytodolist" class="results">
@@ -99,53 +146,6 @@
             </tr>
             {% empty %}
             <tr class="empty"><td colspan="6"><em>No package todo lists to display</em></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <h3>Signoff Status</h3>
-
-    <table id="dash-signoffs" class="results">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Version</th>
-                <th>Arch</th>
-                <th>Target Repo</th>
-                <th>Last Updated</th>
-                <th>Approved</th>
-                <th>Signoffs</th>
-                <th>Packager</th>
-                <th>Maintainer</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for group in signoffs %}
-            <tr>
-                <td>{% pkg_details_link group.package %}</td>
-                <td>{{ group.version }}</td>
-                <td>{{ group.arch.name }}</td>
-                <td>{{ group.target_repo }}</td>
-                <td>{{ group.last_update|date }}</td>
-                {% if group.specification.known_bad %}
-                <td class="approval signoff-bad">Bad</td>
-                {% else %}
-                {% if not group.specification.enabled %}
-                <td class="approval signoff-disabled">Disabled</td>
-                {% else %}
-                <td class="approval signoff-{{ group.approved|yesno }}">{{ group.approved|yesno|capfirst }}</td>
-                {% endif %}
-                {% endif %}
-                <td><ul class="signoff-list">
-                    {% for signoff in group.signoffs %}
-                    <li class="signed-username" title="Signed off by {{ signoff.user }}">{{ signoff.user }}{% if signoff.revoked %} (revoked){% endif %}</li>
-                    {% endfor %}
-                </ul></td>
-                <td>{{ group.packager }}</td>
-                <td>{{ group.maintainer }}</td>
-            </tr>
-            {% empty %}
-            <tr class="empty"><td colspan="9"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
             {% endfor %}
         </tbody>
     </table>
