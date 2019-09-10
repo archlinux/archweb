@@ -39,10 +39,11 @@ CACHES = {
     }
 }
 
-## Use secure session cookies? Make this true if you want all
+## Use secure session cookies? Make these True if you want all
 ## logged-in actions to take place over HTTPS only. If developing
 ## locally, you will want to use False.
 SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 ## location for saving dev pictures
 MEDIA_ROOT = '/srv/example.com/img/'
