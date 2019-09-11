@@ -1,0 +1,4 @@
+{% autoescape off %} The {{ pkg.repo.name }} package {{ pkg.pkgname }} {{ pkg.full_version }} has received the required number of signoffs.
+
+The package was signed off by the following users:{% for s in signoffs %}
+  - {{ s.user.username }}{% endfor %}{% endautoescape %}
