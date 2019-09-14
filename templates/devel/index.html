@@ -58,7 +58,7 @@
                 <th>Approved</th>
                 <th>Signoffs</th>
                 <th>Packager</th>
-                <th>Maintainer</th>
+                <th>Maintainer(s)</th>
             </tr>
         </thead>
         <tbody>
@@ -84,7 +84,7 @@
                     {% endfor %}
                 </ul></td>
                 <td>{{ group.packager }}</td>
-                <td>{{ group.maintainer }}</td>
+                <td>{{ group.maintainers|join:', ' }}</td>
             </tr>
             {% empty %}
             <tr class="empty"><td colspan="9"><em>No packages you maintain or have packaged need signoffs</em></td></tr>
