@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.db import transaction
 from django.db.models import Count, Max
 from django.http import Http404, HttpResponseRedirect
@@ -171,6 +173,12 @@ def change_profile(request):
             with transaction.atomic():
                 request.user.save()
                 profile_form.save()
+
+            # Invalidate userlist.html template cache fragment.
+            for group in request.user.groups.all():
+                key = make_template_fragment_key('dev-tu-profiles', [group.name])
+                cache.delete(key)
+
             return HttpResponseRedirect('/devel/')
     else:
         form = ProfileForm(initial={'email': request.user.email})
