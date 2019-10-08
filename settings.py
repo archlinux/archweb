@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'mirrors',
     'news',
     'packages',
+    'planet',
     'todolists',
     'devel',
     'public',
@@ -187,6 +188,9 @@ DATABASES = {
         'NAME':    'database.db',
     },
 }
+
+# Planet limit of items per feed to keep the feed size in check.
+RSS_FEED_LIMIT = 25
 
 # Import local settings
 try:

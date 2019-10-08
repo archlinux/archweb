@@ -494,6 +494,56 @@ h3 span.arrow {
     line-height: 0px;
 }
 
+/* planet: posts */
+#planet {
+    margin-top: 1.5em;
+}
+
+    #planet h3 {
+        float: left;
+        padding-bottom: .5em
+    }
+
+    #planet div {
+        margin-bottom: 1em;
+    }
+
+        #planet div p {
+            margin-bottom: 0.5em;
+        }
+
+    #planet .more {
+        font-weight: normal;
+    }
+
+    #planet .rss-icon {
+        float: right;
+        margin-top: 1em;
+    }
+
+    #planet h4 {
+        clear: both;
+        font-size: 1em;
+        margin-top: 1.5em;
+        border-bottom: 1px dotted #bbb;
+    }
+
+    #planet .timestamp {
+        float: right;
+        font-size: 0.85em;
+        margin: -1.8em 0.5em 0 0;
+    }
+
+#planet .article-author {
+    font-style: italic;
+    text-align: right;
+}
+
+#nav-sidebar .planet-list {
+    list-style: square;
+    padding-left: 1em;
+}
+
 /* home: pkgsearch box */
 #pkgsearch {
     padding: 1em 0.75em;
