@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load static from staticfiles %}
+
+{% block head %}
+<link rel="alternate" type="application/rss+xml" title="Arch Linux Planet" href="{% url 'planet-feed' %}" />
+{% endblock %}
+
+{% block content_left %}
+{% cache 62 planet-page-left %}
+<div id="intro" class="box">
+    <h2>Arch Planet</h2>
+
+    <p>Planet <strong>Arch Linux</strong> is a window into the world, work and
+    lives of Arch Linux developers, trusted users and support staff.</p>
+</div>
+
+<div id="planet">
+    <a href="{% url 'planet-feed' %}" title="Planet Arch Linux RSS Feed"
+        class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
+
+    {% for entry in feed_items %}
+    <h4>
+        <a href="{{ entry.url }}"
+            title="View full article: {{ entry.title }}">{{ entry.title }}</a>
+    </h4>
+    <p class="timestamp">{{ entry.publishdate|date }}</p>
+    <div class="article-content">
+        {{ entry.summary |safe }}
+    </div>
+    <p class="article-author">{% if entry.author %}{{ entry.author }}@{% endif %}<a href={{ entry.feed.website }}>{{ entry.feed.title }}</a></p>
+    {% endfor %}
+</div>
+{% endcache %}
+{% endblock %}
+
+{% block content_right %}
+{% cache 115 planet-page-right %}
+<div id="nav-sidebar" class="widget">
+    <h4>Subscribe</h4>
+    <ul class="planet-list">
+      {% for feed in official_feeds %}
+      <li>
+        <a href="{{ feed.website }}" title="{{ feed.title }}">{{ feed.title }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <h4>Arch Planet WorldWide</h4>
+    <p>Other Arch Linux communities around the world.</p>
+    <ul class="planet-list">
+      {% for planet in planets %}
+        <li><a href="{{ planet.website }}">{{planet.name}}</a></li>
+      {% endfor %}
+    </ul>
+
+</div>
+{% endcache %}
+{% endblock %}

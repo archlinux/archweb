@@ -8,7 +8,7 @@ from django.conf import settings
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
-from feeds import PackageFeed, NewsFeed, ReleaseFeed, PackageUpdatesFeed
+from feeds import PackageFeed, NewsFeed, ReleaseFeed, PackageUpdatesFeed, PlanetFeed
 import sitemaps
 
 import devel.urls
@@ -17,6 +17,7 @@ import mirrors.urls_mirrorlist
 import news.urls
 import packages.urls
 import packages.urls_groups
+import planet.views
 import public.views
 import releng.urls
 import todolists.urls
@@ -48,6 +49,7 @@ urlpatterns.extend([
     url(r'^master-keys/$', public.views.keys, name='page-keys'),
     url(r'^master-keys/json/$', public.views.keys_json, name='pgp-keys-json'),
     url(r'^people/(?P<slug>[-\w]+)/$', public.views.people, name='people'),
+    url(r'^planet/$', planet.views.index, name='planet'),
 ])
 
 # Feeds patterns, used below
@@ -63,6 +65,7 @@ feeds_patterns = [
     url(r'^packages/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
     url(r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
     url(r'^releases/$', cache_page(317)(ReleaseFeed())),
+    url(r'^planet/$', cache_page(317)(PlanetFeed()), name='planet-feed'),
 ]
 
 # Includes and other remaining stuff

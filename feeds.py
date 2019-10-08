@@ -14,6 +14,7 @@ from main.models import Arch, Repo, Package
 from news.models import News
 from packages.models import Update
 from releng.models import Release
+from planet.models import FeedItem
 
 
 class BatchWritesWrapper(object):
@@ -386,5 +387,50 @@ class ReleaseFeed(Feed):
         return ""
 
     item_enclosure_mime_type = 'application/x-bittorrent'
+
+
+class PlanetFeed(Feed):
+    feed_type = FasterRssFeed
+
+    title = 'Planet Arch Linux'
+    link = '/planet/'
+    description = 'Planet Arch Linux is a window into the world, work and lives of Arch Linux hackers and developers'
+    subtitle = description
+
+    def __call__(self, request, *args, **kwargs):
+        wrapper = condition(last_modified_func=planet_last_modified)
+        return wrapper(super(PlanetFeed, self).__call__)(request, *args, **kwargs)
+
+    __name__ = 'planet_feed'
+
+    def items(self):
+        return FeedItem.objects.filter().order_by('-publishdate')
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.summary
+
+    def item_pubdate(self, item):
+        return datetime.combine(item.publishdate, time()).replace(tzinfo=utc)
+
+    def item_updateddate(self, item):
+        return item.publishdate
+
+    item_guid_is_permalink = False
+
+    def item_guid(self, item):
+        # http://diveintomark.org/archives/2004/05/28/howto-atom-id
+        date = item.publishdate
+        return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
+                date.strftime('%Y-%m-%d'), item.url)
+
+
+def planet_last_modified(request, *args, **kwargs):
+    try:
+        return FeedItem.objects.latest().publishdate
+    except FeedItem.DoesNotExist:
+        pass
 
 # vim: set ts=4 sw=4 et:
