@@ -80,18 +80,19 @@ class Command(BaseCommand):
         return read_repo(arch, directory, processes, options)
 
 
-def read_file(arch, repo, filename):
-    pkgsec = None
-    basename = os.path.basename(filename)
-    pkgname = basename.rsplit('-', 3)[0]
+def read_file(filename):
+    '''
+    Read a pacman package and determine the 'package security status' by
+    finding all ELF files and determining the worst status of all ELF files in
+    the repo.
+    '''
 
+    pkgsec = {}
+    elffiles = []
+    
     with file_reader(filename) as pkg:
         for entry in pkg:
             if not entry.isfile:
-                continue
-
-            # Retrieve pkgname
-            if entry.name == '.PKGINFO':
                 continue
 
             if not entry.name.startswith('usr/bin/'):
@@ -103,10 +104,14 @@ def read_file(arch, repo, filename):
             if not elf.is_elf():
                 continue
 
-            pkg = Package.objects.get(pkgname=pkgname, arch=arch, repo=repo)
-            pkgsec = PackageSecurity(pkg=pkg, pie=elf.pie, relro=elf.relro, canary=elf.canary)
+            elffiles.append(elf)
 
-    return pkgsec
+            
+    if elffiles:
+        elf = elffiles[0]
+        print(elffiles)
+    
+    yield pkgsec
 
 
 
@@ -124,9 +129,14 @@ def read_repo(arch, source_dir, processes, options):
 
 
     with Pool(processes=processes) as pool:
-        results = pool.map(partial(read_file, arch, repo), tasks)
+        results = pool.imap(read_file, tasks)
 
-    results = [r for r in results if r and (not r.pie or not r.relro or not r.canary)]
+    # Process and add Package object.
+    results = [r for r in results if r]
+    resutls = [r for r in results if not r.pie or not r.relro or not r.canary]
+
+    print(results)
+    return
 
     with transaction.atomic():
         PackageSecurity.objects.all().delete()
