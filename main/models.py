@@ -447,7 +447,7 @@ class PackageFile(models.Model):
 class PackageSecurity(models.Model):
     NO_RELRO = 1
     PARTIAL_RELRO = 2
-    FULL_RELRO = 2
+    FULL_RELRO = 3
     RELRO_CHOICES = (
             (NO_RELRO, 'No RELRO'),
             (PARTIAL_RELRO, 'Partial RELRO'),
@@ -459,6 +459,13 @@ class PackageSecurity(models.Model):
     relro = models.PositiveIntegerField(choices=RELRO_CHOICES, default=NO_RELRO)
     canary = models.BooleanField(default=False)
     fortify = models.BooleanField(default=False)
+    filename = models.CharField(max_length=1024, blank=False, default='')
+
+    def relro_str(self):
+        for id_, desc in self.RELRO_CHOICES:
+            if id_ == self.relro:
+                return desc
+        return ''
 
     class Meta:
         db_table = 'package_security'

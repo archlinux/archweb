@@ -171,12 +171,13 @@ def security_packages_overview(packages):
     filtered = []
     packages_ids = packages.values_list('id',
                                        flat=True).order_by().distinct()
-    packages = PackageSecurity.objects.filter(id__in=set(packages_ids))
+    packages = PackageSecurity.objects.filter(pkg_id__in=set(packages_ids))
     for package in packages:
         package.pkg.pie = 'PIE enabled' if package.pie else 'No PIE'
-        package.pkg.relro = 'Full RELRO' if package.relro else 'None'
+        package.pkg.relro = package.relro_str()
         package.pkg.canary = 'Canary found' if package.canary else 'No canary found'
         package.pkg.fortify = 'Yes' if package.canary else 'No'
+        package.pkg.filename = package.filename
         filtered.append(package.pkg)
 
     return filtered
@@ -242,7 +243,7 @@ REPORT_SECURITY = DeveloperReport(
     'Security of Packages',
     'Packages that have security issues',
     security_packages_overview,
-    ['PIE', 'RELRO', 'CANARY', 'FORTIFY'], ['pie', 'relro', 'canary', 'fortify'])
+    ['filename', 'PIE', 'RELRO', 'CANARY', 'FORTIFY'], ['filename', 'pie', 'relro', 'canary', 'fortify'])
 
 
 def available_reports():

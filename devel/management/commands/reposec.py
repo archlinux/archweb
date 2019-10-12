@@ -18,7 +18,6 @@ import re
 import sys
 import logging
 
-from functools import partial
 from glob import glob
 from multiprocessing import Pool, cpu_count
 
@@ -34,7 +33,8 @@ from django.db import transaction
 from main.models import Arch, Package, PackageSecurity, Repo
 
 
-PKG_EXT = '.tar.xz'
+PKG_EXT = '.tar.xz' # TODO: detect zstd..
+BIN_PATHS = ['usr/bin/', 'opt/']
 STACK_CHK = set(["__stack_chk_fail", "__stack_smash_handler"])
 
 
@@ -48,7 +48,7 @@ logging.addLevelName(TRACE, 'TRACE')
 logger = logging.getLogger()
 
 class Command(BaseCommand):
-    help = ""
+    help = "Checks all packages in the repository for missing hardening bits (relro, stack canary, pie, etc)"
     missing_args_message = 'missing arch and file.'
 
     def add_arguments(self, parser):
@@ -87,32 +87,32 @@ def read_file(filename):
     the repo.
     '''
 
-    pkgsec = {}
     elffiles = []
     
     with file_reader(filename) as pkg:
+        pkgname = os.path.basename(filename).rsplit('-', 3)[0]
+
         for entry in pkg:
             if not entry.isfile:
                 continue
 
-            if not entry.name.startswith('usr/bin/'):
+            if not any(entry.name.startswith(path) for path in BIN_PATHS):
                 continue
 
             fp = io.BytesIO(b''.join(entry.get_blocks()))
-            elf = Elf(fp)
+            elf = Elf(entry.name, fp)
 
             if not elf.is_elf():
                 continue
 
-            elffiles.append(elf)
+            if elf.hardened:
+                continue
 
-            
-    if elffiles:
-        elf = elffiles[0]
-        print(elffiles)
-    
-    yield pkgsec
+            data = elf.dump()
+            data['pkgname'] = pkgname
+            elffiles.append(data)
 
+    return elffiles
 
 
 def read_repo(arch, source_dir, processes, options):
@@ -127,24 +127,37 @@ def read_repo(arch, source_dir, processes, options):
     reponame = os.path.basename(source_dir).title()
     repo = Repo.objects.get(name=reponame)
 
+    packagesecs = []
 
     with Pool(processes=processes) as pool:
-        results = pool.imap(read_file, tasks)
+        for results in pool.imap_unordered(read_file, tasks):
+            # No elf files
+            if not results:
+                continue
 
-    # Process and add Package object.
-    results = [r for r in results if r]
-    resutls = [r for r in results if not r.pie or not r.relro or not r.canary]
+            # determine 
+            print(results)
+            for result in results:
+                try:
+                    pkg = Package.objects.get(pkgname=result['pkgname'], arch=arch, repo=repo)
+                except Exception:
+                    print("package '%s' not found in repo" % result['pkgname'])
+                    continue
 
-    print(results)
-    return
+                print(result)
+                packagesec = PackageSecurity(pkg=pkg, relro=result['relro'],
+                                             pie=result['pie'], canary=result['canary'],
+                                             filename=result['filename'])
+                packagesecs.append(packagesec)
 
+    print(packagesecs)
     with transaction.atomic():
-        PackageSecurity.objects.all().delete()
-        PackageSecurity.objects.bulk_create(results)
+        PackageSecurity.objects.bulk_create(packagesecs)
 
 
 class Elf:
-    def __init__(self, fileobj):
+    def __init__(self, filename, fileobj):
+        self.filename = filename
         self.fileobj = fileobj
         self._elffile = None
 
@@ -154,15 +167,13 @@ class Elf:
             self._elffile = ELFFile(self.fileobj)
         return self._elffile
 
-    def _file_has_magic(self, fileobj, magic_bytes):
-        length = len(magic_bytes)
-        magic = fileobj.read(length)
-        fileobj.seek(0)
-        return magic == magic_bytes
-
-    def is_elf(self):
+    def is_elf(self): 
         "Take file object, peek at the magic bytes to check if ELF file."
-        return self._file_has_magic(self.fileobj, b"\x7fELF")
+        magic_bytes = b"\x7fELF"
+        length = len(magic_bytes)
+        magic = self.fileobj.read(length)
+        self.fileobj.seek(0)
+        return magic == magic_bytes
 
     def dynamic_tags(self, key):
         for section in self.elffile.iter_sections():
@@ -173,6 +184,7 @@ class Elf:
                     return tag
         return None
 
+    @property
     def rpath(self, key="DT_RPATH", verbose=False):
         tag = self.dynamic_tags(key)
         if tag and verbose:
@@ -181,6 +193,7 @@ class Elf:
             return 'RPATH'
         return ''
 
+    @property
     def runpath(self, key="DT_RUNPATH", verbose=False):
         tag = self.dynamic_tags(key)
         if tag and verbose:
@@ -193,25 +206,25 @@ class Elf:
     @property
     def relro(self):
         if self.elffile.num_segments() == 0:
-            return "Disabled"
+            return PackageSecurity.NO_RELRO
 
-        have_relro = False
+        have_relro = PackageSecurity.NO_RELRO
         for segment in self.elffile.iter_segments():
             if re.search("GNU_RELRO", str(segment['p_type'])):
-                have_relro = True
+                have_relro = PackageSecurity.FULL_RELRO
                 break
 
         if self.dynamic_tags("DT_BIND_NOW") and have_relro:
-            return True
+            return PackageSecurity.FULL_RELRO
         if have_relro: # partial
-            return False
-        return False
+            return PackageSecurity.PARTIAL_RELRO
+        return PackageSecurity.FULL_RELRO
 
     @property
     def pie(self):
         header = self.elffile.header
         if self.dynamic_tags("EXEC"):
-            return "Disabled"
+            return False
         if "ET_DYN" in header['e_type']:
             if self.dynamic_tags("DT_DEBUG"):
                 return True
@@ -230,17 +243,14 @@ class Elf:
                     return True
         return False
 
-    def program_headers(self):
-        pflags = P_FLAGS()
-        if self.elffile.num_segments() == 0:
-            return ""
+    @property
+    def hardened(self):
+        return self.pie and self.canary and self.relro == PackageSecurity.FULL_RELRO
 
-        found = False
-        for segment in self.elffile.iter_segments():
-            if search("GNU_STACK", str(segment['p_type'])):
-                found = True
-                if segment['p_flags'] & pflags.PF_X:
-                    return "Disabled"
-        if found:
-            return "Enabled"
-        return "Disabled"
+    def dump(self):
+        return {
+                'pie': self.pie,
+                'relro': self.relro,
+                'canary': self.canary,
+                'filename': self.filename
+        }
