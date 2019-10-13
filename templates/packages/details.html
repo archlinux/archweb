@@ -10,8 +10,75 @@
 
 {% block script_block %}
 {% load cdn %}{% jquery %}
-<script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript" nonce="{{ CSP_NONCE }}">
+function ajaxifyFiles() {
+    $('#filelink').click(function(event) {
+        event.preventDefault();
+        $.getJSON(this.href + 'json/', function(data) {
+            // Map each file item into an <li/> with the correct class
+            var list_items = $.map(data.files, function(value, i) {
+                var cls = value.match(/\/$/) ? 'd' : 'f';
+                return ['<li class="', cls, '">', value, '</li>'];
+            });
+            $('#pkgfilelist').empty();
+            if (data.pkg_last_update > data.files_last_update) {
+                $('#pkgfilelist').append('<p class="message">Note: This file list was generated from a previous version of the package; it may be out of date.</p>');
+            }
+            if (list_items.length > 0) {
+                $('#pkgfilelist').append('<ul>' + list_items.join('') + '</ul>');
+            } else if (data.files_last_update === null) {
+                $('#pkgfilelist').append('<p class="message">No file list available.</p>');
+            } else {
+                $('#pkgfilelist').append('<p class="message">Package has no files.</p>');
+            }
+        });
+    });
+}
+
+function collapseDependsList(list) {
+    list = $(list);
+    // Hide everything past a given limit. Don't do anything if we don't have
+    // enough items, or the link already exists.
+    var limit = 20,
+        linkid = list.attr('id') + 'link',
+        items = list.find('li').slice(limit);
+    if (items.length <= 1 || $('#' + linkid).length > 0) {
+        return;
+    }
+    items.hide();
+    list.after('<p><a id="' + linkid + '" href="#">Show More…</a></p>');
+
+    // add link and wire it up to show the hidden items
+    $('#' + linkid).click(function(event) {
+        event.preventDefault();
+        list.find('li').show();
+        // remove the full <p/> node from the DOM
+        $(this).parent().remove();
+    });
+}
+
+function collapseRelatedTo(elements) {
+    var limit = 5;
+    $(elements).each(function(idx, ele) {
+        ele = $(ele);
+        // Hide everything past a given limit. Don't do anything if we don't
+        // have enough items, or the link already exists.
+        var items = ele.find('span.related').slice(limit);
+        if (items.length <= 1 || ele.find('a.morelink').length > 0) {
+            return;
+        }
+        items.hide();
+        ele.append('<a class="morelink" href="#">More…</a>');
+
+        // add link and wire it up to show the hidden items
+        ele.find('a.morelink').click(function(event) {
+            event.preventDefault();
+            ele.find('span.related').show();
+            $(this).remove();
+        });
+    });
+}
+
 $(document).ready(function() {
         ajaxifyFiles();
         collapseDependsList("#pkgdepslist");
