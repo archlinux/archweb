@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.simple_tag
 def jquery():
-    version = '3.4.0'
+    version = '3.4.1'
     filename = 'jquery-%s.min.js' % version
     link = staticfiles_storage.url(filename)
     return mark_safe('<script type="text/javascript" src="%s"></script>' % link)
