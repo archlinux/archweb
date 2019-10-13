@@ -41,7 +41,6 @@
                 <th>Repo</th>
                 <th>Name</th>
                 <th>Version</th>
-                <th>Description</th>
                 <th>Last Updated</th>
                 <th>Build Date</th>
                 <th>Flag Date</th>
@@ -52,7 +51,7 @@
         </thead>
         <tbody>
             {% for pkg in packages %}
-            <tr class="{% cycle 'pkgr2' 'pkgr1' %} {{ pkg.arch.name }} {{ pkg.repo.name|lower }}">
+            <tr>
                 <td>{{ pkg.arch.name }}</td>
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
@@ -61,7 +60,6 @@
                 {% else %}
                 <td>{{ pkg.full_version }}</td>
                 {% endif %}
-                <td class="wrap">{{ pkg.pkgdesc }}</td>
                 <td>{{ pkg.last_update|date }}</td>
                 <td>{{ pkg.build_date|date }}</td>
                 <td>{{ pkg.flag_date|date }}</td>
