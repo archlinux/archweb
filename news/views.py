@@ -40,13 +40,13 @@ class NewsCreateView(CreateView):
         newsitem.author = self.request.user
         newsitem.slug = find_unique_slug(News, newsitem.title)
         newsitem.save()
-        if newsitem.send_announce and settings.MAILMAN_PASSWORD:
+        if newsitem.send_announce:
             ctx = {
                 'news': newsitem,
             }
-            headers = {
-                'Approved': settings.MAILMAN_PASSWORD,
-            }
+            headers = dict()
+            if settings.MAILMAN_PASSWORD:
+                headers['Approved'] = settings.MAILMAN_PASSWORD
             template = loader.get_template('news/news_email_notification.txt')
             EmailMessage(subject='[arch-announce] %s' % newsitem.title,
                       body=template.render(ctx),
