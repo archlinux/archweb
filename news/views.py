@@ -1,5 +1,6 @@
 from django import forms
-from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -39,16 +40,19 @@ class NewsCreateView(CreateView):
         newsitem.author = self.request.user
         newsitem.slug = find_unique_slug(News, newsitem.title)
         newsitem.save()
-        if newsitem.send_announce:
+        if newsitem.send_announce and settings.MAILMAN_PASSWORD:
             ctx = {
                 'news': newsitem,
             }
+            headers = {
+                'Approved': settings.MAILMAN_PASSWORD,
+            }
             template = loader.get_template('news/news_email_notification.txt')
-            send_mail('[arch-announce] %s' % newsitem.title,
-                      template.render(ctx),
-                      '"Arch Linux: Recent news updates: %s" <arch-announce@archlinux.org>' % newsitem.author.get_full_name(),
-                      ['arch-announce@archlinux.org'],
-                      fail_silently=True)
+            EmailMessage(subject='[arch-announce] %s' % newsitem.title,
+                      body=template.render(ctx),
+                      from_email='"Arch Linux: Recent news updates: %s" <arch-announce@archlinux.org>' % newsitem.author.get_full_name(),
+                      to=['arch-announce@archlinux.org'],
+                      headers=headers).send()
         return super(NewsCreateView, self).form_valid(form)
 
 
