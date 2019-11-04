@@ -34,6 +34,60 @@
 #archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
 #archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
 
+/* style the navbar for mobile viewport */
+@media (max-width: 768px) {
+    /* style hamburger icon */
+    #hamburger {
+        width: 50px;
+        height: 30px;
+        display: none;
+        margin-left: auto;
+    }
+
+    #hamburger span {
+        background-color: #fff;
+        border-radius: 8px;
+        height: 3px;
+        width: 40px;
+        display: block;
+        margin: 5px;
+        transition: 0.5s;
+    }
+
+    /* animate hamburger */
+    #hamburger.open span:nth-child(1) { transform: rotate(45deg) translateY(10px); }
+    #hamburger.open span:nth-child(2) { opacity: 0; }
+    #hamburger.open span:nth-child(3) { transform: rotate(-45deg) translateY(-10px); }
+
+    /* display nav items in hamburger menu fashion */
+    .open + #archnavbarmenu #archnavbarlist {
+        display: flex !important;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 20px !important;
+        width: 100%;
+        position: absolute;
+        left: 0;
+        top: 60px;
+        background-color: #333;
+    }
+
+    #archnavbar {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    #hamburger {
+        display: block;
+    }
+
+    #archnavbarlist {
+        display: none !important;
+        position: relative;
+    }
+}
+
 /* END ARCH GLOBAL NAVBAR */
 
 /* simple reset */
@@ -45,7 +99,6 @@
 
 /* general styling */
 body {
-    min-width: 650px;
     background: #f6f9fc;
     color: #222;
     font: normal 100% sans-serif;
