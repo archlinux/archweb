@@ -18,6 +18,11 @@
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
     <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
         <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+        <div id="hamburger">
+           <span></span>
+           <span></span>
+           <span></span>
+        </div>
         <div id="archnavbarmenu">
             <ul id="archnavbarlist">
                 <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
