@@ -107,6 +107,23 @@
 {% endcache %}
 
 {% cache 115 main-page-right %}
+<div id="arch-sponsors" class="widget">
+    <a href="https://www.privateinternetaccess.com/" title="Private Internet Access">
+        <img src="{% static "pia_button.png" %}"
+            title="" alt="Private Internet Access logo"/>
+    </a>
+    <a href="https://www.hetzner.com" title="Dedicated Root Server, VPS &amp; Hosting - Hetzner Online GmbH">
+        <img src="{% static "hetzner_logo.jpg" %}"
+            title="" alt="Hetzner logo"/>
+    </a>
+</div>
+
+<div id="home-donate-button" class="widget">
+    <a href="https://co.clickandpledge.com/Default.aspx?WID=47294">
+        <img src="{% static "click_and_pledge.png" %}" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
+    </a>
+</div>
+
 <div id="nav-sidebar" class="widget">
     <h4>Documentation</h4>
     <ul>
@@ -192,21 +209,5 @@
     </ul>
 </div>
 
-<div id="home-donate-button" class="widget">
-    <a href="https://co.clickandpledge.com/Default.aspx?WID=47294">
-        <img src="{% static "click_and_pledge.png" %}" alt="Donate via Click&amp;Pledge to Arch Linux" title="Donate via Click&amp;Pledge to Arch Linux"/>
-    </a>
-</div>
-
-<div id="arch-sponsors" class="widget">
-    <a href="https://www.privateinternetaccess.com/" title="Private Internet Access">
-        <img src="{% static "pia_button.png" %}"
-            title="" alt="Private Internet Access logo"/>
-    </a>
-    <a href="https://www.hetzner.com" title="Dedicated Root Server, VPS &amp; Hosting - Hetzner Online GmbH">
-        <img src="{% static "hetzner_logo.jpg" %}"
-            title="" alt="Hetzner logo"/>
-    </a>
-</div>
 {% endcache %}
 {% endblock %}
