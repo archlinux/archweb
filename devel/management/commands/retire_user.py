@@ -32,7 +32,7 @@ MAPPING = {
 
 
 class Command(BaseCommand):
-    help = "Retires a user by deactiving the user and moving the group membership to retired groups."
+    help = "Retires a user by deactivating the user and moving the group membership to retired groups."
     missing_args_message = 'missing argument user.'
 
     def add_arguments(self, parser):
