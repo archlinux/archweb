@@ -42,6 +42,7 @@
         height: 30px;
         display: none;
         margin-left: auto;
+        margin-right: 30px;
     }
 
     #hamburger span {
@@ -52,12 +53,13 @@
         display: block;
         margin: 5px;
         transition: 0.5s;
+        transform-origin: 25%;
     }
 
     /* animate hamburger */
-    #hamburger.open span:nth-child(1) { transform: rotate(45deg) translateY(10px); }
+    #hamburger.open span:nth-child(1) { transform: rotate(45deg); }
     #hamburger.open span:nth-child(2) { opacity: 0; }
-    #hamburger.open span:nth-child(3) { transform: rotate(-45deg) translateY(-10px); }
+    #hamburger.open span:nth-child(3) { transform: rotate(-45deg); }
 
     /* display nav items in hamburger menu fashion */
     .open + #archnavbarmenu #archnavbarlist {
@@ -66,16 +68,32 @@
         align-items: flex-start;
         padding-bottom: 20px !important;
         width: 100%;
+        height: calc(100vh - 60px);
         position: absolute;
         left: 0;
         top: 60px;
         background-color: #333;
     }
 
+    #archnavbarlist li {
+        text-align: left;
+        width: 100%;
+        padding-top: 0 !important;
+    }
+
+    #archnavbarlist a {
+        width: 100%;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 45px !important;
+    }
+
     #archnavbar {
         display: flex;
         align-items: center;
-        position: relative;
+        position: fixed;
+        top: 0;
+        width: 100%;
     }
 
     #hamburger {
@@ -85,6 +103,10 @@
     #archnavbarlist {
         display: none !important;
         position: relative;
+    }
+
+    body {
+        padding-top: 65px;
     }
 }
 
