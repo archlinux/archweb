@@ -106,9 +106,17 @@ def parse_form(form, packages):
                            (Q(pkgname__icontains=q) for q in query.split()))
         q_pkgdesc = reduce(operator.__and__,
                            (Q(pkgdesc__icontains=q) for q in query.split()))
-        packages = packages.filter(q_pkgname | q_pkgdesc)
+        qs_provide = []
+        for query_term in query.split():
+            term_parts = query_term.rsplit('=', 2)
+            qs_provide.append(Q(provides__name__icontains=term_parts[0]))
+            if len(term_parts) == 2:
+                qs_provide.append(Q(provides__version__exact=term_parts[1]))
+        q_provides = reduce(operator.__and__, qs_provide)
 
-    return packages
+        packages = packages.filter(q_pkgname | q_pkgdesc | q_provides)
+
+    return packages.distinct()
 
 
 class SearchListView(ListView):
