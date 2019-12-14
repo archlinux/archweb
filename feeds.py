@@ -74,10 +74,23 @@ class PackageFeed(Feed):
             qs = qs.filter(Q(arch=a) | Q(arch__agnostic=True))
             obj['arch'] = a
         if repo != '':
-            # feed for a single arch AND repo
-            r = Repo.objects.get(name__iexact=repo)
-            qs = qs.filter(repo=r)
-            obj['repo'] = r
+            if repo == 'stable-repos':
+                # feed for a single arch AND all stable repos
+                r = Repo.objects.filter(testing=False, staging=False)
+                qs = qs.filter(repo__in=r)
+                obj['repos'] = r
+                setattr(obj['repos'], 'name', 'all stable repositories')
+            elif repo == 'testing-repos':
+                # feed for a single arch AND all testing repos
+                r = Repo.objects.filter(testing=True, staging=False)
+                qs = qs.filter(repo__in=r)
+                obj['repos'] = r
+                setattr(obj['repos'], 'name', 'all testing repositories')
+            else:
+                # feed for a single arch AND repo
+                r = Repo.objects.get(name__iexact=repo)
+                qs = qs.filter(repo=r)
+                obj['repo'] = r
         else:
             qs = qs.filter(repo__staging=False)
         obj['qs'] = qs[:50]
@@ -85,24 +98,47 @@ class PackageFeed(Feed):
 
     def title(self, obj):
         s = 'Arch Linux: Recent package updates'
-        if 'repo' in obj and 'arch' in obj:
-            s += ' (%s [%s])' % (obj['arch'].name, obj['repo'].name.lower())
-        elif 'repo' in obj:
-            s += ' [%s]' % (obj['repo'].name.lower())
-        elif 'arch' in obj:
-            s += ' (%s)' % (obj['arch'].name)
-        return s
+        fields = dict(
+            arch=obj['arch'].name if 'arch' in obj else None,
+            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            repos=obj['repos'].name if 'repos' in obj else None,)
+
+        if fields['arch']:
+            if fields['repo']:
+                s += ' (%(arch)s in %(repo)s)'
+            elif fields['repos']:
+                s += ' (%(arch)s in %(repos)s)'
+            else:
+                s += ' (%(arch)s)'
+
+        elif fields['repo']:
+            s += ' in %(repo)s'
+
+        elif fields['repos']:
+            s += ' in %(repos)s'
+
+        return s % fields
 
     def description(self, obj):
-        s = 'Recently updated packages in the Arch Linux package repositories'
-        if 'arch' in obj:
-            s += ' for the \'%s\' architecture' % obj['arch'].name.lower()
+        s = 'Recently updated packages'
+
+        fields = dict(
+            arch=obj['arch'].name if 'arch' in obj else None,
+            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            repos=', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None,)
+
+        if fields['arch']:
+            s += ' for the \'%(arch)s\' architecture'
             if not obj['arch'].agnostic:
                 s += ' (including \'any\' packages)'
-        if 'repo' in obj:
-            s += ' in the [%s] repository' % obj['repo'].name.lower()
+        if fields['repo']:
+            s += ' in the Arch Linux %(repo)s repository'
+        elif fields['repos']:
+            s += ' in the %(repos)s repositories'
+        else:
+            s += ' in the Arch Linux package repositories'
         s += '.'
-        return s
+        return s % fields
 
     subtitle = description
 
@@ -165,10 +201,23 @@ class PackageUpdatesFeed(Feed):
             qs = qs.filter(Q(arch=a) | Q(arch__agnostic=True))
             obj['arch'] = a
         if repo != '':
-            # feed for a single arch AND repo
-            r = Repo.objects.get(name__iexact=repo)
-            qs = qs.filter(repo=r)
-            obj['repo'] = r
+            if repo == 'stable-repos':
+                # feed for a single arch AND all stable repos
+                r = Repo.objects.filter(testing=False, staging=False)
+                qs = qs.filter(repo__in=r)
+                obj['repos'] = r
+                setattr(obj['repos'], 'name', 'all stable repositories')
+            elif repo == 'testing-repos':
+                # feed for a single arch AND all testing repos
+                r = Repo.objects.filter(testing=True, staging=False)
+                qs = qs.filter(repo__in=r)
+                obj['repos'] = r
+                setattr(obj['repos'], 'name', 'all testing repositories')
+            else:
+                # feed for a single arch AND repo
+                r = Repo.objects.get(name__iexact=repo)
+                qs = qs.filter(repo=r)
+                obj['repo'] = r
         else:
             qs = qs.filter(repo__staging=False)
 
@@ -176,25 +225,49 @@ class PackageUpdatesFeed(Feed):
         return obj
 
     def title(self, obj):
-        s = 'Arch Linux: Recent {} packages'.format(obj['action'])
-        if 'repo' in obj and 'arch' in obj:
-            s += ' (%s [%s])' % (obj['arch'].name, obj['repo'].name.lower())
-        elif 'repo' in obj:
-            s += ' [%s]' % (obj['repo'].name.lower())
-        elif 'arch' in obj:
-            s += ' (%s)' % (obj['arch'].name)
-        return s
+        s = 'Arch Linux: Recently %(action)s packages' % obj
+
+        fields = dict(
+            arch=obj['arch'].name if 'arch' in obj else None,
+            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            repos=obj['repos'].name if 'repos' in obj else None,)
+
+        if fields['arch']:
+            if fields['repo']:
+                s += ' (%(arch)s in %(repo)s)'
+            elif fields['repos']:
+                s += ' (%(arch)s in %(repos)s)'
+            else:
+                s += ' (%(arch)s)'
+
+        elif fields['repo']:
+            s += ' in %(repo)s'
+
+        elif fields['repos']:
+            s += ' in %(repos)s'
+
+        return s % fields
 
     def description(self, obj):
-        s = 'Recently {} packages in the Arch Linux package repositories'.format(obj['action'])
-        if 'arch' in obj:
-            s += ' for the \'%s\' architecture' % obj['arch'].name.lower()
+        s = 'Recently %(action)s packages' % obj
+
+        fields = dict(
+            arch=obj['arch'].name if 'arch' in obj else None,
+            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            repos=', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None,)
+
+        if fields['arch']:
+            s += ' for the \'%(arch)s\' architecture'
             if not obj['arch'].agnostic:
                 s += ' (including \'any\' packages)'
-        if 'repo' in obj:
-            s += ' in the [%s] repository' % obj['repo'].name.lower()
+        if fields['repo']:
+            s += ' in the Arch Linux %(repo)s repository'
+        elif fields['repos']:
+            s += ' in the %(repos)s repositories'
+        else:
+            s += ' in the Arch Linux package repositories'
         s += '.'
-        return s
+        return s % fields
 
     subtitle = description
 

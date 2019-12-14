@@ -44,6 +44,20 @@
                 <td><a href="/feeds/packages/{{ arch }}/" class="rss">Feed</a></td>
                 {% endfor %}
             </tr>
+            <tr>
+                <td><strong>All Stable Repos</strong></td>
+                <td><a href="/feeds/packages/all/stable-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/{{ arch }}/stable-repos/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><strong>All Testing Repos</strong></td>
+                <td><a href="/feeds/packages/all/testing-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/{{ arch }}/testing-repos/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
             {% for repo in repos %}
             <tr>
                 <td><strong>{{ repo }}</strong></td>
@@ -78,6 +92,20 @@
                 <td><a href="/feeds/packages/added/{{ arch }}/" class="rss">Feed</a></td>
                 {% endfor %}
             </tr>
+            <tr>
+                <td><strong>All Stable Repos</strong></td>
+                <td><a href="/feeds/packages/added/all/stable-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/stable-repos/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><strong>All Testing Repos</strong></td>
+                <td><a href="/feeds/packages/added/all/testing-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/added/{{ arch }}/testing-repos/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
             {% for repo in repos %}
             <tr>
                 <td><strong>{{ repo }}</strong></td>
@@ -107,6 +135,20 @@
                 <td><a href="/feeds/packages/removed/" class="rss">Feed</a></td>
                 {% for arch in arches %}
                 <td><a href="/feeds/packages/removed/{{ arch }}/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><strong>All Stable Repos</strong></td>
+                <td><a href="/feeds/packages/removed/all/stable-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/stable-repos/" class="rss">Feed</a></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><strong>All Testing Repos</strong></td>
+                <td><a href="/feeds/packages/removed/all/testing-repos/" class="rss">Feed</a></td>
+                {% for arch in arches %}
+                <td><a href="/feeds/packages/removed/{{ arch }}/testing-repos/" class="rss">Feed</a></td>
                 {% endfor %}
             </tr>
             {% for repo in repos %}
