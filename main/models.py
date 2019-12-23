@@ -444,6 +444,33 @@ class PackageFile(models.Model):
         db_table = 'package_files'
 
 
+class PackageSecurity(models.Model):
+    NO_RELRO = 1
+    PARTIAL_RELRO = 2
+    FULL_RELRO = 3
+    RELRO_CHOICES = (
+            (NO_RELRO, 'No RELRO'),
+            (PARTIAL_RELRO, 'Partial RELRO'),
+            (FULL_RELRO, 'Full RELRO'),
+    )
+
+    pkg = models.ForeignKey(Package, on_delete=models.CASCADE)
+    pie = models.BooleanField(default=False)
+    relro = models.PositiveIntegerField(choices=RELRO_CHOICES, default=NO_RELRO)
+    canary = models.BooleanField(default=False)
+    fortify = models.BooleanField(default=False)
+    filename = models.CharField(max_length=1024, blank=False, default='')
+
+    def relro_str(self):
+        for id_, desc in self.RELRO_CHOICES:
+            if id_ == self.relro:
+                return desc
+        return ''
+
+    class Meta:
+        db_table = 'package_security'
+
+
 from django.db.models.signals import pre_save
 
 # note: reporead sets the 'created' field on Package objects, so no signal

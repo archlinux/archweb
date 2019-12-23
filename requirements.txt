@@ -13,3 +13,5 @@ django-jinja==2.4.1
 sqlparse==0.3.0
 django-csp==3.5
 ptpython==2.0.4
+pyelftools==0.25
+libarchive-c==2.8

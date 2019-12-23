@@ -5,7 +5,7 @@ from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.db import connection
 from django.utils.timezone import now
-from main.models import Package, PackageFile
+from main.models import Package, PackageFile, PackageSecurity
 from packages.models import Depend, PackageRelation
 
 from .models import DeveloperKey
@@ -167,6 +167,21 @@ def non_existing_dependencies(packages):
     return packages
 
 
+def security_packages_overview(packages):
+    filtered = []
+    packages_ids = packages.values_list('id',
+                                       flat=True).order_by().distinct()
+    packages = PackageSecurity.objects.filter(pkg_id__in=set(packages_ids))
+    for package in packages:
+        package.pkg.pie = 'PIE enabled' if package.pie else 'No PIE'
+        package.pkg.relro = package.relro_str()
+        package.pkg.canary = 'Canary found' if package.canary else 'No canary found'
+        package.pkg.fortify = 'Yes' if package.canary else 'No'
+        package.pkg.filename = package.filename
+        filtered.append(package.pkg)
+
+    return filtered
+
 
 REPORT_OLD = DeveloperReport(
     'old', 'Old', 'Packages last built more than two years ago', old)
@@ -223,6 +238,14 @@ NON_EXISTING_DEPENDENCIES = DeveloperReport(
     ['nonexistingdep'],
     personal=False)
 
+REPORT_SECURITY = DeveloperReport(
+    'security-issue-packages',
+    'Security of Packages',
+    'Packages that have security issues',
+    security_packages_overview,
+    ['filename', 'PIE', 'RELRO', 'CANARY', 'FORTIFY'], ['filename', 'pie', 'relro', 'canary', 'fortify'])
+
+
 def available_reports():
     return (REPORT_OLD,
             REPORT_OUTOFDATE,
@@ -233,4 +256,5 @@ def available_reports():
             REPORT_ORPHANS,
             REPORT_SIGNATURE,
             REPORT_SIG_TIME,
-            NON_EXISTING_DEPENDENCIES, )
+            NON_EXISTING_DEPENDENCIES,
+            REPORT_SECURITY, )
