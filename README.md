@@ -120,6 +120,11 @@ from git master) and copying the resulting ipxe.pxe, ipxe.lkrn and ipxe.efi to
 sitestatic/netboot. Then as Arch Linux Developer sign them with your PGP key
 ```gpg --output ipxe.efi.sig --detach-sig ipxe.efi```.
 
+Testing a build iPXE image requires the 'qemu' package and running the
+following command:
+
+        qemu-system-x86_64 -kernel ipxe.lkrn -m 2G
+
 # Production Installation
 
 Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://git.archlinux.org/infrastructure.git/).
