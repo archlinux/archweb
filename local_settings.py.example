@@ -54,4 +54,7 @@ MEDIA_URL = '/media/img/'
 ## Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
+## Display a warning if serving netboot images on downgraded ciphers
+NETBOOT_SECURITY_BANNER=True
+
 # vim: set ts=4 sw=4 et:

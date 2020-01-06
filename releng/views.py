@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import DetailView, ListView
+from django.conf import settings
 
 from .models import Release
 from mirrors.models import MirrorUrl
@@ -89,6 +90,7 @@ def netboot_config(request):
 
 
 def netboot_info(request):
-    return render(request, "releng/netboot.html", None)
+    return render(request, "releng/netboot.html", 
+            {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
 
 # vim: set ts=4 sw=4 et:
