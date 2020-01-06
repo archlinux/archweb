@@ -28,6 +28,19 @@ The integrity of all downloaded files is verified with cryptographic signatures.
 
 </p>
 
+{% if security_banner  %}
+<h3> A note on security </h3>
+
+Be advised that, due to limitations with the <a
+    href='https://lists.ipxe.org/pipermail/ipxe-devel/2019-November/006808.html'>iPXE
+    SSL stack</a>, the chainloading script for the iPXE image is served using a
+downgraded list of cipher-suites under ipxe.archlinux.org. The cipher-suites
+---RSA-AES256-CBC-SHA256 -- served on this domain are not the recommended list
+on the mozilla observatory, yet they still yield a reasonable degree of
+protection/authentication.
+
+{% endif %}
+
 <h3>Download</h3>
 
 <h4>BIOS</h4>
