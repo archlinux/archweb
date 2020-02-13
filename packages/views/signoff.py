@@ -58,7 +58,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
         signoffs = Signoff.objects.for_package(package).filter(
                 revoked__isnull=True)
 
-        if signoffs.count() >= spec.required:
+        if signoffs.count() == spec.required:
             packager = package.packager
 
             # TODO: Handle notification when packager does not exist
