@@ -136,7 +136,7 @@
         <tbody>
             {% for todo in todos %}
             <tr>
-                <td><a href="{{ todo.get_absolute_url }}"
+                <td class="wrap"><a href="{{ todo.get_absolute_url }}"
                         title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                 <td>{{ todo.created|date }}</td>
                 <td>{{ todo.creator.get_full_name }}</td>

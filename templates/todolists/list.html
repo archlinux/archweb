@@ -35,7 +35,7 @@
         <tbody>
             {% for list in lists %}
             <tr>
-                <td><a href="{{ list.get_absolute_url }}"
+                <td class="wrap"><a href="{{ list.get_absolute_url }}"
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
                 <td>{{ list.created|date }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
