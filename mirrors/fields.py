@@ -1,4 +1,4 @@
-from IPy import IP
+from ipaddress import ip_address
 
 from django import forms
 from django.core import validators
@@ -11,7 +11,7 @@ class IPNetworkFormField(forms.Field):
         if value in validators.EMPTY_VALUES:
             return None
         try:
-            value = IP(value)
+            value = ip_address(value)
         except ValueError as e:
             raise ValidationError(str(e))
         return value
@@ -30,7 +30,7 @@ class IPNetworkField(models.Field):
     def to_python(self, value):
         if not value:
             return None
-        return IP(value)
+        return ip_address(value)
 
     def get_prep_value(self, value):
         value = self.to_python(value)
