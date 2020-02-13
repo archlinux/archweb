@@ -10,6 +10,8 @@ tags
 collected_static/
 testing/
 env/
+*.db
+.vscode
 
 .mypy_cache/
 
