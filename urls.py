@@ -68,6 +68,12 @@ feeds_patterns = [
     url(r'^planet/$', cache_page(317)(PlanetFeed()), name='planet-feed'),
 ]
 
+# Old planet.archlinux.org redirects, to be removed once people have migrated.
+urlpatterns.extend([
+    url(r'^planet/rss20.xml$', cache_page(317)(PlanetFeed())),
+    url(r'^planet/atom.xml$', cache_page(317)(PlanetFeed())),
+])
+
 # Includes and other remaining stuff
 urlpatterns.extend([
     url(r'^admin/',     admin.site.urls),
