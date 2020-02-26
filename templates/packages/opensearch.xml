@@ -1,4 +1,4 @@
-{% load static from staticfiles %}<?xml version="1.0" encoding="UTF-8"?>
+{% load static %}<?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
 	<ShortName>Arch Packages</ShortName>
 	<LongName>Arch Linux Package Repository Search</LongName>
