@@ -54,15 +54,19 @@ class Command(BaseCommand):
 
         etag = cache.get(f'planet:etag:{url}')
         feed = feedparser.parse(url, etag=etag)
+        http_status = feed.get('status')
 
-        if feed['status'] == 304:
+        if not http_status:
+            logger.info("The feed '%s' returns no HTTP status", url)
+
+        if http_status == 304:
             logger.info("The feed '%s' has not changed since we last checked it", url)
             if 'etag' in feed:
                 cache.set(f'planet:etag:{url}', feed.etag, 86400)
             return
 
-        if feed['status'] != 200:
-            logger.info("error parsing feed: '%s', status: '%s'", url, feed['status'])
+        if http_status != 200:
+            logger.info("error parsing feed: '%s', status: '%s'", url, http_status)
             return
 
         if not feed.entries:
