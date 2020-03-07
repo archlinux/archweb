@@ -16,6 +16,8 @@ from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, fake_signoff_spec)
 
+from todolists.models import TodolistPackage
+
 
 VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 
@@ -423,6 +425,7 @@ DEPENDENCY_TYPES =  [('D', 'depends'), ('O', 'optdepends'),
                      ('M', 'makedepends'), ('C', 'checkdepends')]
 
 class PackageJSONEncoder(DjangoJSONEncoder):
+    todolistpkg_attributes = ['status']
     pkg_attributes = ['pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
             'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
             'installed_size', 'build_date', 'last_update', 'flag_date',
@@ -434,6 +437,11 @@ class PackageJSONEncoder(DjangoJSONEncoder):
         if hasattr(obj, '__iter__'):
             # mainly for queryset serialization
             return list(obj)
+        if isinstance(obj, TodolistPackage):
+            data = super(PackageJSONEncoder, self).default(obj.pkg)
+            for attr in self.todolistpkg_attributes:
+                data[attr] = getattr(obj, attr)
+            return data
         if isinstance(obj, Package):
             data = {attr: getattr(obj, attr) for attr in self.pkg_attributes}
             for attr in self.pkg_list_attributes:
