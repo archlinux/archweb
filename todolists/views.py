@@ -239,6 +239,8 @@ class TodoListJSONEncoder(PackageJSONEncoder):
                 'id': obj.pk,
                 'name': obj.name,
                 'description': obj.description,
+                'created': obj.created,
+                'last_modified': obj.last_modified,
                 'packages': [pkg.pkg for pkg in obj.packages()],
             }
 
