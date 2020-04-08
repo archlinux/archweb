@@ -634,11 +634,6 @@ h3 span.arrow {
     padding: 0;
 }
 
-/* home: sponsor banners */
-#arch-sponsors img {
-    padding: 0.3em 0;
-}
-
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
 div.widget {
     margin-bottom: 1.5em;
