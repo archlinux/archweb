@@ -87,6 +87,9 @@ CSRF_COOKIE_HTTPONLY = True
 # Clickjacking protection
 X_FRAME_OPTIONS = 'DENY'
 
+# Referrer Policy
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+
 # X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
