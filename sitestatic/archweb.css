@@ -12,8 +12,73 @@
  * to help prevent other stylesheets from interfering.
  */
 
+:root {
+    --header-color: #333;
+    --header-link-color: #999;
+    --on-header-color: #f9ffff;
+
+    --arch-blue-dulled: #006191;
+    --arch-blue: #1793D1;
+    --arch-blue-active: #47AEED;
+
+    --link: #08c;
+
+    --on-arch-blue: #F9FFFF;
+
+    --arch-orange: #FA7C00;
+
+    --arch-yellow: #E0C600;
+
+    --arch-red: #E6195D;
+
+    --arch-green: #00A658;
+
+    --borders: #bdb;
+
+    --base: #f6f9fc;
+    --on-base: #222;
+
+    --view: #ecf2f5;
+    --on-view: #1B2124;
+
+    --mono-view: #ffd;
+    --on-mono-view: #010B0F;
+}
+
+@media (prefers-color-scheme: dark) {
+:root {
+    --header-color: #010B0F;
+    --on-header-color: #E3EAEF;
+
+    --arch-blue-dulled: #57a3c7;
+    --arch-blue: #74BEE3;
+    --arch-blue-active: #91daff;
+
+    --on-arch-blue: #1B2124;
+
+    --arch-orange: #FCB066;
+
+    --arch-yellow: #FFEE6F;
+
+    --arch-red: #F0759E;
+
+    --arch-green: #66CA9B;
+
+    --borders: rgba(255,255,255,0.2);
+
+    --base: #1B2124;
+    --on-base: #F9FFFF;
+
+    --view: #30373A;
+    --on-view: #F9FFFF;
+
+    --mono-view: #30373A;
+    --on-mono-view: #F9FFFF;
+}
+}
+
 /* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: var(--header-color) !important; border-bottom: 5px var(--link) solid !important; }
 #archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
 	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important;
@@ -31,8 +96,8 @@
 #archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
 
 /* style the links */
-#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
-#archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+#archnavbarlist li a { color: var(--header-link-color); opacity: 0.7; font-weight: bold !important; text-decoration: none !important; }
+#archnavbarlist li a:hover { color: var(--header-link-color) !important; text-decoration: underline !important; }
 
 /* END ARCH GLOBAL NAVBAR */
 
@@ -46,8 +111,8 @@
 /* general styling */
 body {
     min-width: 650px;
-    background: #f6f9fc;
-    color: #222;
+    background: var(--base);
+    color: var(--on-base);
     font: normal 100% sans-serif;
     text-align: center;
 }
@@ -68,14 +133,16 @@ ul {
 
 code {
     font: 1.2em monospace;
-    background: #ffd;
+    background: var(--mono-view);
+    color: var(--on-mono-view);
     padding: 0.15em 0.25em;
 }
 
 pre {
     font: 1.2em monospace;
-    border: 1px solid #bdb;
-    background: #dfd;
+    border: 1px solid var(--borders);
+    background: var(--mono-view);
+    color: var(--on-mono-view);
     padding: 0.5em;
     margin: 1em;
 }
@@ -116,7 +183,7 @@ input[type=submit] {
 
 hr {
     border: none;
-    border-top: 1px solid #888;
+    border-top: 1px solid var(--borders);
 }
 
 img {
@@ -136,14 +203,14 @@ a {
     a:link,
     a:visited,
     th a:visited {
-        color: #08c;
+        color: var(--link);
     }
 
     a:hover,
     a:focus,
     a:visited,
     a:visited:hover {
-        color: #08c;
+        color: var(--link);
         text-decoration: underline;
     }
 
@@ -204,8 +271,16 @@ h5 {
 div.box {
     margin-bottom: 1.5em;
     padding: 0.65em;
-    background: #ecf2f5;
-    border: 1px solid #bcd;
+    background: var(--view);
+    color: var(--on-view);
+    border: 1px solid var(--borders);
+}
+
+@media (prefers-color-scheme: dark) {
+div.box {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
 }
 
 #footer {
@@ -265,18 +340,19 @@ table.pretty2 {
     margin-top: 0.25em;
     margin-bottom: 0.5em;
     border-collapse: collapse;
-    border: 1px solid #bbb;
+    border: 1px solid var(--borders);
 }
 
     .pretty2 th {
         padding: 0.35em;
-        background: #eee;
-        border: 1px solid #bbb;
+        background: var(--view);
+        color: var(--on-view);
+        border: 1px solid var(--borders);
     }
 
     .pretty2 td {
         padding: 0.35em;
-        border: 1px dotted #bbb;
+        border: 1px dotted var(--borders);
     }
 
 table.compact {
@@ -298,11 +374,11 @@ dl {
         margin-bottom: 4px;
         padding: 8px 0 4px;
         font-weight: bold;
-        border-top: 1px dotted #bbb;
+        border-top: 1px dotted var(--borders);
     }
 
     dl dt {
-        color: #333;
+        color: var(--on-base);
         float:left;
         padding-right:15px;
     }
@@ -361,7 +437,7 @@ form.general-form textarea {
 
         #archdev-navbar li a {
             padding: 0 0.5em;
-            color: #07b;
+            color: var(--arch-blue);
         }
 
 /* error/info messages (x pkg is already flagged out-of-date, etc) */
@@ -370,8 +446,9 @@ form.general-form textarea {
     text-align: center;
     margin: 1em auto;
     padding: 0.5em;
-    background: #fff;
-    border: 1px solid #f00;
+    background: var(--view);
+    color: var(--on-view);
+    border: 1px solid var(--arch-red);
 }
 
     #sys-message p {
@@ -379,7 +456,7 @@ form.general-form textarea {
     }
 
 ul.errorlist {
-    color: red;
+    color: var(--arch-red);
 }
 
 form ul.errorlist {
@@ -396,12 +473,14 @@ table th.tablesorter-header {
 }
 
 table thead th.tablesorter-headerAsc {
-    background-color: #e4eeff;
+    background-color: var(--view);
+    color: var(--on-view);
     background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
 }
 
 table thead th.tablesorter-headerDesc {
-    background-color: #e4eeff;
+    background-color: var(--view);
+    color: var(--on-view);
     background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 }
 
@@ -456,7 +535,7 @@ table thead th.sorter-false {
         clear: both;
         font-size: 1em;
         margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
+        border-bottom: 1px dotted var(--borders);
     }
 
     #news .timestamp {
@@ -468,14 +547,14 @@ table thead th.sorter-false {
 /* home: arrowed headings */
 #news h3 a {
     display: block;
-    background: #1794D1;
+    background: var(--arch-blue);
     font-size: 15px;
     padding: 2px 10px;
-    color: white;
+    color: var(--on-arch-blue);
 }
 
     #news a:active {
-        color: white;
+        color: var(--on-arch-blue);
     }
 
 h3 span.arrow {
@@ -484,7 +563,7 @@ h3 span.arrow {
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid #1794D1;
+    border-top: 6px solid var(--arch-blue);
     margin: 0 auto;
     font-size: 0;
     line-height: 0px;
@@ -539,7 +618,7 @@ h3 span.arrow {
         clear: both;
         font-size: 1em;
         margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
+        border-bottom: 1px dotted var(--borders);
     }
 
     #planet .timestamp {
@@ -561,9 +640,9 @@ h3 span.arrow {
 /* home: pkgsearch box */
 #pkgsearch {
     padding: 1em 0.75em;
-    background: #3ad;
-    color: #fff;
-    border: 1px solid #08b;
+    background: var(--arch-blue);
+    color: var(--on-arch-blue);
+    border: 1px solid var(--arch-blue-dulled);
 }
 
     #pkgsearch label {
@@ -575,9 +654,9 @@ h3 span.arrow {
         width: 10em;
         float: right;
         font-size: 1em;
-        color: #000;
-        background: #fff;
-        border: 1px solid #09c;
+        color: var(--on-view);
+        background: var(--view);
+        border: 1px solid var(--arch-blue-dulled);
     }
 
     .pkgsearch-typeahead {
@@ -593,17 +672,17 @@ h3 span.arrow {
         font-size: 1em;
         text-align: left;
         list-style: none;
-        background-color: #f6f9fc;
-        border: 1px solid #09c;
+        background-color: var(--view);
+        border: 1px solid var(--arch-blue);
     }
 
         .pkgsearch-typeahead li a {
-            color: #000;
+            color: var(--on-view);
         }
 
         .pkgsearch-typeahead li:hover a,
         .pkgsearch-typeahead li.active a {
-            color: #07b;
+            color: var(--arch-blue);
         }
 
 /* home: recent pkg updates */
@@ -638,7 +717,7 @@ h3 span.arrow {
 
     #pkg-updates span.staging {
         font-style: italic;
-        color: #ff8040;
+        color: var(--arch-orange);
     }
 
 /* home: sidebar navigation */
@@ -661,7 +740,8 @@ div.widget {
 
 /* artwork: logo images */
 #artwork img.inverted {
-    background: #333;
+    background: var(--header-color);
+    color: var(--on-header-color);
     padding: 0;
 }
 
@@ -725,21 +805,22 @@ div.news-article .article-info {
 
 /* download page */
 #arch-downloads h3 {
-    border-bottom: 1px dotted #bbb;
+    border-bottom: 1px dotted var(--borders);
 }
 
 /* pkglists/devlists */
 table.results {
     font-size: 0.846em;
-    border-top: 1px dotted #999;
-    border-bottom: 1px dotted #999;
+    border-top: 1px dotted var(--borders);
+    border-bottom: 1px dotted var(--borders);
 }
 
     .results th {
         padding: 0.5em 1em 0.25em 0.25em;
-        border-bottom: 1px solid #999;
+        border-bottom: 1px solid var(--borders);
         white-space: nowrap;
-        background-color:#fff;
+        background-color: var(--view);
+        color: var(--on-view);
     }
 
     .results td {
@@ -747,7 +828,7 @@ table.results {
     }
 
     .results .flagged {
-        color: red;
+        color: var(--arch-red);
     }
 
     .results tr.empty td {
@@ -823,12 +904,13 @@ table.results {
     #pkgdetails #detailslinks > div {
         padding: 0.5em;
         margin-bottom: 1em;
-        background: #eee;
-        border: 1px solid #bbb;
+        background: var(--view);
+        color: var(--on-view);
+        border: 1px solid var(--borders);
     }
 
 #pkgdetails #actionlist .flagged {
-    color: red;
+    color: var(--arch-red);
     font-size: 0.9em;
     font-style: italic;
 }
@@ -883,8 +965,8 @@ table.results {
 }
 
 #pkgdetails #metadata h3 {
-    background: #555;
-    color: #fff;
+    background: var(--header-color);
+    color: var(--on-header-color);
     font-size: 1em;
     margin-bottom: 0.5em;
     padding: 0.2em 0.35em;
@@ -950,7 +1032,7 @@ table.results {
 }
 
 #pkgfilelist li.d {
-    color: #666;
+    color: var(--on-header-color);
 }
 
 #pkgfilelist li.f {
@@ -1013,11 +1095,11 @@ table td.country {
 
         .arch-bio-entry td.pic img {
             padding: 4px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--borders);
         }
 
     .arch-bio-entry td h3 {
-        border-bottom: 1px dotted #ccc;
+        border-bottom: 1px dotted var(--borders);
         margin-bottom: 0.5em;
     }
 
@@ -1026,7 +1108,7 @@ table td.country {
     }
 
         .arch-bio-entry table.bio th {
-            color: #666;
+            color: var(--on-base);
             font-weight: normal;
             text-align: right;
             padding-right: 0.5em;
@@ -1053,17 +1135,17 @@ table td.country {
 #dev-todo-pkglist tr:hover,
 #pkglist-results tr:hover,
 #stats-area tr:hover {
-    background: #ffd;
+    background: var(--view);
 }
 
 .results tr:nth-child(even),
 #article-list tr:nth-child(even) {
-    background: #e4eeff;
+    background: var(--view);
 }
 
 .results tr:nth-child(odd),
 #article-list tr:nth-child(odd) {
-    background: #fff;
+    background: var(--base);
 }
 
 /* dev dashboard: */
@@ -1088,26 +1170,26 @@ ul.admin-actions {
 .signoff-yes,
 #key-status .signed-yes,
 #release-list .available-yes {
-    color: green;
+    color: var(--arch-green);
 }
 
 .todo-table .incomplete,
 .signoff-no,
 #key-status .signed-no,
 #release-list .available-no {
-    color: red;
+    color: var(--arch-red);
 }
 
 .todo-table .inprogress,
 .signoff-bad {
-    color: darkorange;
+    color: var(--arch-orange);
 }
 
 
 /* todo lists (public and private) */
 .todo-info {
-    color: #999;
-    border-bottom: 1px dotted #bbb;
+    color: var(--borders);
+    border-bottom: 1px dotted var(--borders);
 }
 
 .todo-description {
@@ -1117,7 +1199,7 @@ ul.admin-actions {
 }
 
 .todo-pkgbases {
-    border-top: 1px dotted #bbb;
+    border-top: 1px dotted var(--borders);
 }
 
 .todo-list h4 {
@@ -1127,7 +1209,7 @@ ul.admin-actions {
 
 /* dev: signoff page */
 #dev-signoffs tr:hover {
-    background: #ffd;
+    background: var(--view);
 }
 
 ul.signoff-list {
@@ -1141,14 +1223,15 @@ ul.signoff-list {
 }
 
 .signoff-disabled {
-    color: gray;
+    color: var(--borders);
 }
 
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a,
 #archnavbar.anb-packages ul li#anb-packages a,
 #archnavbar.anb-download ul li#anb-download a {
-    color: white !important;
+    color: var(--on-header-color) !important;
+    opacity: 1;
 }
 
 /* visualizations page */
@@ -1163,7 +1246,7 @@ ul.signoff-list {
 }
 
 #visualize-archrepo .treemap-cell {
-    border: solid 1px white;
+    border: solid 1px var(--borders);
     overflow: hidden;
     position: absolute;
 }
