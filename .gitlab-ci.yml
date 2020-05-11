@@ -1,0 +1,16 @@
+image: archlinux/base
+
+before_script:
+   - pacman -Syu --needed --noconfirm python-pip git
+   - pip install pylint coverage
+   - pip install -r requirements.txt
+   - python manage.py collectstatic --noinput
+
+lint:
+  script:
+     - pylint devel main mirrors news packages releng templates todolists visualize *.py
+
+# TODO: https://docs.gitlab.com/ee/ci/junit_test_reports.html
+test:
+  script:
+     - coverage run --rcfile .coveragerc manage.py test
