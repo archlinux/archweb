@@ -228,4 +228,7 @@ if DEBUG_TOOLBAR:
 
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 
+## Display a warning if serving netboot images on downgraded ciphers
+NETBOOT_SECURITY_BANNER=True
+
 # vim: set ts=4 sw=4 et:
