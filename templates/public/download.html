@@ -2,6 +2,7 @@
 {% load cache %}
 {% load static %}
 {% load flags %}
+{% load pgp %}
 
 {% block title %}Arch Linux - Downloads{% endblock %}
 
@@ -98,6 +99,7 @@
     <ul>
         <li><a href="https://www.archlinux.org/{{ release.iso_url }}.sig"
             title="PGP signature">PGP signature</a></li>
+        {% if release.pgp_key %}<li><strong>PGP fingerprint:</strong> {% pgp_key_link release.pgp_key %}</li>{% endif %}
         {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
         {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
     </ul>
