@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load pgp %}
 
 {% block title %}Arch Linux - Release: {{ release.version }}{% endblock %}
 
@@ -21,6 +22,7 @@
        {% endif %}
         {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
         {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
+	{% if release.pgp_key %}<li><strong>PGP fingerprint:</strong> {% pgp_key_link release.pgp_key %}</li>{% endif %}
     </ul>
 
     {% if release.info %}

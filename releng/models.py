@@ -11,6 +11,7 @@ from django.db.models.signals import pre_save
 from django.utils.safestring import mark_safe
 
 from main.utils import set_created_field, parse_markdown
+from devel.fields import PGPKeyField
 
 
 class Release(models.Model):
@@ -19,6 +20,8 @@ class Release(models.Model):
     kernel_version = models.CharField(max_length=50, blank=True)
     md5_sum = models.CharField('MD5 digest', max_length=32, blank=True)
     sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
+    pgp_key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",  null=True, blank=True,
+                          help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     created = models.DateTimeField(editable=False)
     last_modified = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
