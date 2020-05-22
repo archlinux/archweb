@@ -23,8 +23,7 @@ class Release(models.Model):
     last_modified = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
     info = models.TextField('Public information', blank=True)
-    torrent_data = models.TextField(blank=True,
-            help_text="base64-encoded torrent file")
+    torrent_data = models.TextField(blank=True, help_text="base64-encoded torrent file")
 
     class Meta:
         get_latest_by = 'release_date'
@@ -79,7 +78,7 @@ class Release(models.Model):
             'info_hash': None,
         }
         if 'creation date' in data:
-            created= datetime.utcfromtimestamp(data['creation date'])
+            created = datetime.utcfromtimestamp(data['creation date'])
             metadata['creation_date'] = created.replace(tzinfo=utc)
         if info:
             metadata['info_hash'] = hashlib.sha1(bencode(info)).hexdigest()
