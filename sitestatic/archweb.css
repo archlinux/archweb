@@ -260,24 +260,38 @@ h5 {
 
 /* general layout */
 #content {
-    width: 95%;
+    max-width: 1440px;
+    padding: 0 20px;
     margin: 0 auto;
     text-align: left;
+    display: flex;
+    flex-direction: row;
+}
+
+.anb-packages ~ #content {
+    flex-direction: column;
 }
 
 #content-left-wrapper {
-    float: left;
-    width: 100%; /* req to keep content above sidebar in source code */
+    padding-right: 45px;
 }
 
 #content-left {
-    margin: 0 340px 0 0;
 }
 
 #content-right {
-    float: left;
-    width: 300px;
-    margin-left: -300px;
+    min-width: 300px;
+}
+
+@media (max-width: 768px) {
+    #content {
+        flex-direction: column;
+    }
+
+    #content-left-wrapper {
+        padding-right: 0;
+    }
+
 }
 
 div.box {
@@ -288,7 +302,7 @@ div.box {
 }
 
 #footer {
-    clear: both;
+    font-size: .812em;
     margin: 2em 0 1em;
 }
 
@@ -556,6 +570,10 @@ table thead th.sorter-false {
     #news a:active {
         color: white;
     }
+
+.article-content {
+    word-break: break-word;
+}
 
 h3 span.arrow {
     display: block;
