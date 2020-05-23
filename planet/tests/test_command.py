@@ -1,7 +1,7 @@
 import time
 from unittest import mock
 
-from django.test import TestCase
+import pytest
 
 from planet.models import Feed, FeedItem
 from planet.management.commands.update_planet import Command
@@ -13,6 +13,7 @@ class Result(dict):
 
     def get(self, value):
         return getattr(self, value)
+
 
 class Entry(dict):
     title = 'title'
@@ -26,58 +27,82 @@ class Entry(dict):
         return getattr(self, value)
 
 
-class UpdatePlanetTest(TestCase):
+@pytest.fixture
+def command():
+    yield Command()
 
-    def setUp(self):
-        self.command = Command()
-        self.feed = Feed(title='test', website='http://archlinux.org',
-                         website_rss='http://archlinux.org/feed.rss')
 
-    # Test when feedparser receives an exception and returns no status
-    @mock.patch('feedparser.parse')
-    def test_parse_feed_wrong(self, parse):
+@pytest.fixture
+def feed(db):
+    return Feed(title='test', website='http://archlinux.org',
+                website_rss='http://archlinux.org/feed.rss')
+
+
+class MockParse:
+    @staticmethod
+    def parse():
+        return {}
+
+
+@pytest.fixture
+def mock_parse(monkeypatch):
+    def mock_get(*args, **kwargs):
+        return MockParse()
+
+    monkeypatch.setattr(feedparser, "parse", mock_get)
+
+
+# Test when feedparser receives an exception and returns no status
+def test_parse_feed_wrong(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         parse.return_value = {}
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 0
 
-    @mock.patch('feedparser.parse')
-    def test_parse_feed_304(self, parse):
+
+def test_parse_feed_304(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         parse.return_value = {'status': 304}
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 0
 
-    @mock.patch('feedparser.parse')
-    def test_parse_feed_unknown(self, parse):
+
+def test_parse_feed_unknown(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         parse.return_value = {'status': 201}
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 0
 
-    @mock.patch('feedparser.parse')
-    def test_parse_entries_empty(self, parse):
+
+def test_parse_entries_empty(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         parse.return_value = Result()
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 0
 
-    @mock.patch('feedparser.parse')
-    def test_parse_entries_not_published(self, parse):
+
+def test_parse_entries_not_published(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         value = Result()
         entry = Entry()
         entry.published_parsed = None
         value.entries = [entry]
         parse.return_value = value
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 0
 
-    @mock.patch('feedparser.parse')
-    def test_parse_entries(self, parse):
+
+def test_parse_entries(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         value = Result()
         value.entries = [Entry()]
         parse.return_value = value
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 1
 
-    @mock.patch('feedparser.parse')
-    def test_parse_entries_atom(self, parse):
+
+def test_parse_entries_atom(feed, command):
+    with mock.patch('feedparser.parse') as parse:
         value = Result()
         entry = Entry()
         entry.published_parsed = None
@@ -85,5 +110,5 @@ class UpdatePlanetTest(TestCase):
 
         value.entries = [entry]
         parse.return_value = value
-        self.command.parse_feed(self.feed)
+        command.parse_feed(feed)
         assert FeedItem.objects.count() == 1
