@@ -18,10 +18,6 @@ from main.management.commands.donor_import import Command
 command = Command()
 
 
-def gen_parse_subject(data):
-    return command.parse_subject(valid.format(data))
-
-
 def test_parse_subject():
     assert command.parse_subject('garbage') is None
 
