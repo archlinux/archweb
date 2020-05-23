@@ -746,6 +746,25 @@ h3 span.arrow {
     padding: 0;
 }
 
+@media (max-width: 768px) {
+    #nav-sidebar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .nav-sidebar-item {
+        flex-basis: 31%;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-sidebar-item {
+        flex-basis: 45%;
+    }
+}
+
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
 div.widget {
     margin-bottom: 1.5em;
