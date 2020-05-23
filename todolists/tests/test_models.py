@@ -1,10 +1,10 @@
-from todolists.tests.conftest import NAME, RAW
+from todolists.tests.conftest import NAME
 
 
 def test_stripped_description(todolist):
     todolist.description = 'Boost rebuild '
     desc = todolist.stripped_description
-    assert desc.endswith(' ') == False
+    assert not desc.endswith(' ')
 
 
 def test_get_absolute_url(todolist):

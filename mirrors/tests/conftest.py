@@ -14,10 +14,10 @@ URL = '{}://{}'.format(PROTOCOL, HOSTNAME)
 
 @pytest.fixture
 def mirror(db, name=NAME, admin_email=ADMIN_EMAIL):
-        mirror = Mirror.objects.create(name=name,
-                                       admin_email=admin_email)
-        yield mirror
-        mirror.delete()
+    mirror = Mirror.objects.create(name=name,
+                                   admin_email=admin_email)
+    yield mirror
+    mirror.delete()
 
 
 @pytest.fixture
@@ -39,17 +39,18 @@ def mirrorprotocol(db, protocol=PROTOCOL):
 @pytest.fixture
 def mirrorurl(db, mirror, mirrorprotocol, country=COUNTRY,
               url=URL):
-        mirror_url = MirrorUrl.objects.create(url=url,
-                                              protocol=mirrorprotocol,
-                                              mirror=mirror,
-                                              country=country)
-        yield mirror_url
-        mirror_url.delete()
+    mirror_url = MirrorUrl.objects.create(url=url,
+                                          protocol=mirrorprotocol,
+                                          mirror=mirror,
+                                          country=country)
+    yield mirror_url
+    mirror_url.delete()
 
 
 @pytest.fixture
 def create_mirrorurl(db, mirror, mirrorprotocol):
     mirrors = []
+
     def _create_mirrorurl(country=COUNTRY, url=URL):
         mirror_url = MirrorUrl.objects.create(url=url,
                                               protocol=mirrorprotocol,
