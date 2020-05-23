@@ -548,6 +548,11 @@ table thead th.sorter-false {
         border-bottom: 1px dotted #bbb;
     }
 
+    #news h4 a {
+        max-width: 80%;
+        display: inline-block;
+    }
+
     #news .timestamp {
         float: right;
         font-size: 0.85em;
