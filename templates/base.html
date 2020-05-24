@@ -18,23 +18,25 @@
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
     <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
-        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
-        <div id="hamburger">
-           <span></span>
-           <span></span>
-           <span></span>
-        </div>
-        <div id="archnavbarmenu">
-            <ul id="archnavbarlist">
-                <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
-                <li id="anb-packages"><a href="/packages/" title="Arch Package Database">Packages</a></li>
-                <li id="anb-forums"><a href="https://bbs.archlinux.org/" title="Community forums">Forums</a></li>
-                <li id="anb-wiki"><a href="https://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
-                <li id="anb-bugs"><a href="https://bugs.archlinux.org/" title="Report and track bugs">Bugs</a></li>
-                <li id="anb-security"><a href="https://security.archlinux.org/" title="Arch Linux Security Tracker">Security</a></li>
-                <li id="anb-aur"><a href="https://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
-                <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
-            </ul>
+        <div class="navbar-wrapper">
+            <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+            <div id="hamburger">
+               <span></span>
+               <span></span>
+               <span></span>
+            </div>
+            <div id="archnavbarmenu">
+                <ul id="archnavbarlist">
+                    <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
+                    <li id="anb-packages"><a href="/packages/" title="Arch Package Database">Packages</a></li>
+                    <li id="anb-forums"><a href="https://bbs.archlinux.org/" title="Community forums">Forums</a></li>
+                    <li id="anb-wiki"><a href="https://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
+                    <li id="anb-bugs"><a href="https://bugs.archlinux.org/" title="Report and track bugs">Bugs</a></li>
+                    <li id="anb-security"><a href="https://security.archlinux.org/" title="Arch Linux Security Tracker">Security</a></li>
+                    <li id="anb-aur"><a href="https://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
+                    <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div id="archdev-navbar">

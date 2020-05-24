@@ -13,7 +13,7 @@
  */
 
 /* container for the entire bar */
-#archnavbar { display: flex; justify-content: flex-end; min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
 #archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
 	#archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
@@ -28,11 +28,19 @@
 
 /* display the list inline, float it to the right and style it */
 #archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 0 15px 0px !important; }
 
 /* style the links */
 #archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
 #archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+
+
+.navbar-wrapper {
+    display: flex; justify-content: flex-end;
+    align-items: center;
+    max-width: 1440px; 
+    margin: 0 auto;
+}
 
 /* style the navbar for mobile viewport */
 @media (max-width: 768px) {
@@ -78,7 +86,6 @@
     #archnavbarlist li {
         text-align: left;
         width: 100%;
-        padding-top: 0 !important;
     }
 
     #archnavbarlist a {
@@ -89,8 +96,6 @@
     }
 
     #archnavbar {
-        display: flex;
-        align-items: center;
         position: fixed;
         top: 0;
         width: 100%;
