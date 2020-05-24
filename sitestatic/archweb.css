@@ -13,10 +13,10 @@
  */
 
 /* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
+#archnavbar { display: flex; justify-content: flex-end; min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
+#archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
+	#archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
 	}
 }
 
