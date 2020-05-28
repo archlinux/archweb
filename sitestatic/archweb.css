@@ -97,6 +97,7 @@
 
     #archnavbar {
         position: fixed;
+        z-index: 5;
         top: 0;
         width: 100%;
     }
@@ -113,6 +114,41 @@
     body {
         padding-top: 65px;
     }
+
+
+    /* packages table mobile view */
+
+    .results table, .results thead, .results tbody, .results th, .results td, .results tr {
+        display: block;
+    }
+
+    .results thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    } 
+
+    .results td {
+        border: none;
+        border-bottom: 1px solid #999;
+        position: relative;
+        padding-left: 30% !important;
+        min-height: 15px;
+    }
+
+    .results td:before {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+    }
+
+    .results td:nth-of-type(1):before { content: "Arch"; }
+    .results td:nth-of-type(2):before { content: "Repo"; }
+    .results td:nth-of-type(3):before { content: "Name"; }
+    .results td:nth-of-type(4):before { content: "Version"; }
+    .results td:nth-of-type(5):before { content: "Description"; }
+    .results td:nth-of-type(6):before { content: "Last Updated"; }
+    .results td:nth-of-type(7):before { content: "Flag Date"; }
 }
 
 /* END ARCH GLOBAL NAVBAR */
