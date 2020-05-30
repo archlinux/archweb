@@ -50,6 +50,8 @@ class UserProfile(models.Model):
     allowed_repos = models.ManyToManyField('main.Repo', blank=True)
     latin_name = models.CharField(max_length=255, null=True, blank=True,
         help_text="Latin-form name; used only for non-Latin full names")
+    rebuilderd_updates = models.BooleanField(default=False,
+                                             help_text='Receive reproducible build package updates')
     last_modified = models.DateTimeField(editable=False)
 
     class Meta:

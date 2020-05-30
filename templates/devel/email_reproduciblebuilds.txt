@@ -1,0 +1,4 @@
+The following packages have become non reproducible:
+{% for pkg in pkgs %}
+* {{ pkg }}
+{% endfor %}

@@ -5,7 +5,7 @@ from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.db import connection
 from django.utils.timezone import now
-from main.models import Package, PackageFile
+from main.models import Package, PackageFile, RebuilderdStatus
 from packages.models import Depend, PackageRelation
 
 from .models import DeveloperKey
@@ -145,6 +145,7 @@ def signature_time(packages):
 
     return filtered
 
+
 def non_existing_dependencies(packages):
     cursor = connection.cursor()
     query = """
@@ -166,6 +167,10 @@ def non_existing_dependencies(packages):
 
     return packages
 
+
+def non_reproducible_packages(packages):
+    statuses = RebuilderdStatus.objects.exclude(status=RebuilderdStatus.GOOD).values('pkg__pkgname')
+    return packages.filter(pkgname__in=statuses)
 
 
 REPORT_OLD = DeveloperReport(
@@ -223,6 +228,14 @@ NON_EXISTING_DEPENDENCIES = DeveloperReport(
     ['nonexistingdep'],
     personal=False)
 
+REBUILDERD_PACKAGES = DeveloperReport(
+    'non-reproducible-packages',
+    'Non Reproducible package',
+    'Packages that are not reproducible on our reproducible.archlinux.org test environment',
+    non_reproducible_packages,
+    )
+
+
 def available_reports():
     return (REPORT_OLD,
             REPORT_OUTOFDATE,
@@ -233,4 +246,5 @@ def available_reports():
             REPORT_ORPHANS,
             REPORT_SIGNATURE,
             REPORT_SIG_TIME,
-            NON_EXISTING_DEPENDENCIES, )
+            NON_EXISTING_DEPENDENCIES,
+            REBUILDERD_PACKAGES, )

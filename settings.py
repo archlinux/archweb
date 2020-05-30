@@ -195,6 +195,9 @@ DATABASES = {
 # Planet limit of items per feed to keep the feed size in check.
 RSS_FEED_LIMIT = 25
 
+# Rebuilderd API endpoint
+REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
+
 # Import local settings
 try:
     from local_settings import *
