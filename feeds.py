@@ -7,6 +7,7 @@ from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
 from django.db import connection
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.views.decorators.http import condition
 
@@ -378,7 +379,9 @@ class ReleaseFeed(Feed):
     def item_enclosure_url(self, item):
         domain = Site.objects.get_current().domain
         proto = 'https'
-        return "%s://%s/%s.torrent" % (proto, domain, item.iso_url())
+        # Use archweb internal link, as the rsync job might not have been
+        # running and RSS torrent clients do not retry failed urls often.
+        return "%s://%s/%s" % (proto, domain, reverse('releng-release-torrent', args=[item.version]))
 
     def item_enclosure_length(self, item):
         if item.torrent_data:
