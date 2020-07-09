@@ -119,7 +119,7 @@ def import_rebuilderd_status(url):
                 rbstatus.was_repro = False
 
             if rbstatus.pkgver != pkgver or rbstatus.pkgrel != pkgrel or rbstatus.epoch != epoch:
-                logger.info('updating status for package: %s', pkg['name'])
+                logger.info('updating status for package: %s to %s', pkg['name'], RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.epoch = epoch
                 rbstatus.pkgver = pkgver
                 rbstatus.pkgrel = pkgrel
@@ -127,7 +127,7 @@ def import_rebuilderd_status(url):
                 rbstatus.arch = arch
                 rbstatus.repo = repository
             elif rbstatus.status != status:  # Rebuilderd rebuild the same package?
-                logger.info('status for package: %s changed', pkg['name'])
+                logger.info('status for package: %s changed to %s', pkg['name'], RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.status = status
 
             # TODO: does django know when a model was really modified?
