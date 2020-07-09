@@ -4,7 +4,6 @@ from datetime import datetime
 import hashlib
 from pytz import utc
 
-from django.conf import settings
 from django.urls import reverse
 from django.db import models
 from django.db.models.signals import pre_save
@@ -48,8 +47,6 @@ class Release(models.Model):
         query = [
             ('dn', "archlinux-%s-x86_64.iso" % self.version),
         ]
-        if settings.TORRENT_TRACKERS:
-            query.extend(('tr', uri) for uri in settings.TORRENT_TRACKERS)
         metadata = self.torrent()
         if metadata and 'info_hash' in metadata:
             query.insert(0, ('xt', "urn:btih:%s" % metadata['info_hash']))

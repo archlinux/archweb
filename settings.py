@@ -164,12 +164,6 @@ PGP_SERVER_SECURE = True
 # community bit on the end, repo.svn_root is appended)
 SVN_BASE_URL = 'svn://svn.archlinux.org/'
 
-# Trackers used for ISO download magnet links
-TORRENT_TRACKERS = (
-    'udp://tracker.archlinux.org:6969',
-    'http://tracker.archlinux.org:6969/announce',
-)
-
 # How long to keep mirrorlog's in days
 MIRRORLOG_RETENTION_PERIOD = 365
 
