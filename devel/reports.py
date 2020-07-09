@@ -169,7 +169,7 @@ def non_existing_dependencies(packages):
 
 
 def non_reproducible_packages(packages):
-    statuses = RebuilderdStatus.objects.exclude(status=RebuilderdStatus.GOOD).values('pkg__pkgname')
+    statuses = RebuilderdStatus.objects.filter(status=RebuilderdStatus.BAD).values('pkg__pkgname')
     return packages.filter(pkgname__in=statuses)
 
 
