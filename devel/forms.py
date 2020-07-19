@@ -42,7 +42,7 @@ class UserProfileForm(forms.ModelForm):
 class NewUserForm(forms.ModelForm):
     username = forms.CharField(max_length=30)
     private_email = forms.EmailField()
-    first_name = forms.CharField(required=False)
+    first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=False)
     groups = forms.ModelMultipleChoiceField(required=False, queryset=Group.objects.all())
 
