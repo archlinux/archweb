@@ -21,9 +21,7 @@ def details_link(pkg):
 @register.simple_tag
 def scm_link(package, operation):
     parts = (package.repo.svn_root, operation, package.pkgbase)
-    linkbase = (
-        "https://projects.archlinux.org/svntogit/%s.git/%s/trunk?"
-        "h=packages/%s")
+    linkbase = ("https://github.com/archlinux/svntogit-%s/%s/master/%s/trunk")
     return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
 
 
