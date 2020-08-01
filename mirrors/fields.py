@@ -1,10 +1,9 @@
-from IPy import IP
-
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from ipaddress import ip_address as IP
 
 class IPNetworkFormField(forms.Field):
     def to_python(self, value):

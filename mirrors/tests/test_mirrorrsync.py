@@ -27,4 +27,4 @@ class MirrorRsyncTest(TransactionTestCase):
     def test_invalid(self):
         with self.assertRaises(ValueError) as e:
             MirrorRsync.objects.create(ip="8.8.8.8.8", mirror=self.mirror)
-        self.assertIn('IPv4 Address with more than 4 bytes', str(e.exception))
+        self.assertIn('does not appear to be an IPv4 or IPv6 address', str(e.exception))
