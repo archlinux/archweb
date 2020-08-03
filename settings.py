@@ -167,6 +167,9 @@ SVN_BASE_URL = 'svn://svn.archlinux.org/'
 # How long to keep mirrorlog's in days
 MIRRORLOG_RETENTION_PERIOD = 365
 
+# Display a warning if serving netboot images on downgraded ciphers
+NETBOOT_SECURITY_BANNER = False
+
 # Shorten some names just a bit
 COUNTRIES_OVERRIDE = {
     'GB': 'United Kingdom',
@@ -224,8 +227,5 @@ if DEBUG_TOOLBAR:
             list(MIDDLEWARE)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
-
-## Display a warning if serving netboot images on downgraded ciphers
-NETBOOT_SECURITY_BANNER=True
 
 # vim: set ts=4 sw=4 et:
