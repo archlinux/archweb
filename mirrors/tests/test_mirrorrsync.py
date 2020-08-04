@@ -4,7 +4,9 @@ from mirrors.models import MirrorRsync, Mirror
 
 
 TEST_IPV6 = "2a0b:4342:1a31:410::"
+TEST_IPV6_MASK = "2a0b:4342:1a31:410::/64"
 TEST_IPV4 = "8.8.8.8"
+TEST_IPV4_MASK = "192.168.1.0/24"
 
 class MirrorRsyncTest(TransactionTestCase):
     def setUp(self):
@@ -19,9 +21,19 @@ class MirrorRsyncTest(TransactionTestCase):
         self.assertEqual(str(mirrorrsync), TEST_IPV6)
         mirrorrsync.delete()
 
+    def test_ipv6_mask(self):
+        mirrorsync = MirrorRsync.objects.create(ip=TEST_IPV6_MASK, mirror=self.mirror)
+        self.assertEqual(str(mirrorsync), TEST_IPV6_MASK)
+        mirrorsync.delete()
+
     def test_ipv4(self):
         mirrorrsync = MirrorRsync.objects.create(ip=TEST_IPV4, mirror=self.mirror)
         self.assertEqual(str(mirrorrsync), TEST_IPV4)
+        mirrorrsync.delete()
+
+    def test_ipv4_mask(self):
+        mirrorrsync = MirrorRsync.objects.create(ip=TEST_IPV4_MASK, mirror=self.mirror)
+        self.assertEqual(str(mirrorrsync), TEST_IPV4_MASK)
         mirrorrsync.delete()
 
     def test_invalid(self):
