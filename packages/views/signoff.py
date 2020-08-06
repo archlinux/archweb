@@ -82,7 +82,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
 
     all_signoffs = Signoff.objects.for_package(package)
 
-    if request.is_ajax():
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         data = {
             'created': created,
             'revoked': bool(signoff.revoked),
