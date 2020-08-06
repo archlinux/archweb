@@ -1,10 +1,10 @@
 -e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
-Django==3.0.9
+Django==3.1
 IPy==1.00
-Markdown==3.2.1
+Markdown==3.2.2
 bencode.py==2.0.0
 django-countries==5.5
-django-extensions==2.2.9
+django-extensions==3.0.4
 jsmin==2.2.2
 pgpdump==1.5
 pytz>=2019.2
@@ -15,4 +15,4 @@ django-csp==3.6
 ptpython==2.0.4
 feedparser==5.2.1
 bleach==3.1.5
-requests==2.22.0
+requests==2.24.0
