@@ -2,7 +2,6 @@
 
 
 from django.db import models, migrations
-import main.fields
 import django.db.models.deletion
 from django.conf import settings
 
@@ -56,8 +55,8 @@ class Migration(migrations.Migration):
                 ('pkgdesc', models.TextField(null=True, verbose_name='description')),
                 ('url', models.CharField(max_length=255, null=True, verbose_name='URL')),
                 ('filename', models.CharField(max_length=255)),
-                ('compressed_size', main.fields.PositiveBigIntegerField()),
-                ('installed_size', main.fields.PositiveBigIntegerField()),
+                ('compressed_size', models.PositiveBigIntegerField()),
+                ('installed_size', models.PositiveBigIntegerField()),
                 ('build_date', models.DateTimeField(null=True)),
                 ('last_update', models.DateTimeField(db_index=True)),
                 ('files_last_update', models.DateTimeField(null=True, blank=True)),
