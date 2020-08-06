@@ -6,7 +6,6 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from .fields import PositiveBigIntegerField
 from .utils import set_created_field, DependStandin, SignatureWrapper
 from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
@@ -100,8 +99,8 @@ class Package(models.Model):
     pkgdesc = models.TextField('description', null=True)
     url = models.CharField('URL', max_length=255, null=True)
     filename = models.CharField(max_length=255)
-    compressed_size = PositiveBigIntegerField()
-    installed_size = PositiveBigIntegerField()
+    compressed_size = models.PositiveBigIntegerField()
+    installed_size = models.PositiveBigIntegerField()
     build_date = models.DateTimeField(null=True)
     last_update = models.DateTimeField(db_index=True)
     files_last_update = models.DateTimeField(null=True, blank=True)
