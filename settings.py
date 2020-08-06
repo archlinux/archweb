@@ -212,6 +212,7 @@ TEMPLATES = [
             'debug': DEBUG,
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
                 'django.template.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
                 'csp.context_processors.nonce',
