@@ -194,14 +194,16 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
                 check_time__gte=min_check_time, last_sync__gte=min_sync_time,
                 url__active=True,
                 url__mirror__public=True, url__mirror__active=True,
-                url__protocol__default=True).order_by(
+                url__protocol__default=True,
+                url__protocol__protocol='https').order_by(
                 'duration')[:1]
         if best_logs:
             return best_logs[0].url
 
-    mirror_urls = MirrorUrl.objects.filter(active=True,
-            mirror__public=True, mirror__active=True,
-            protocol__default=True)[:1]
+    mirror_urls = MirrorUrl.objects.filter(active=True, mirror__public=True,
+                                           mirror__active=True,
+                                           protocol__protocol='https',
+                                           protocol__default=True)[:1]
     if not mirror_urls:
         return None
     return mirror_urls[0]
