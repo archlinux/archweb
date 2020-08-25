@@ -1,10 +1,14 @@
-from IPy import IP
-
 from django import forms
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from ipaddress import ip_address, ip_interface
+
+def IP(address):
+    if '/' not in address:
+        return ip_address(address)
+    return ip_interface(address)
 
 class IPNetworkFormField(forms.Field):
     def to_python(self, value):
