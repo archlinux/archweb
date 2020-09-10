@@ -494,6 +494,24 @@ h3 span.arrow {
     line-height: 0px;
 }
 
+/* home: headings inside news previews */
+#news div.article-content h1,
+#news div.article-content h2,
+#news div.article-content h3,
+#news div.article-content h4,
+#news div.article-content h5 {
+    /* cancel styling for #news h3 */
+    float: none;
+    padding-bottom: 0em;
+    /* cancel styling for #news h4 */
+    clear: none;
+    border-bottom: none;
+    /* force the style of normal h5 */
+    font-size: 1em;
+    margin-top: 1em;
+    margin-bottom: 0em;
+}
+
 /* planet: posts */
 #planet {
     margin-top: 1.5em;
