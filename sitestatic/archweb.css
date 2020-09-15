@@ -14,9 +14,9 @@
 
 /* container for the entire bar */
 #archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
+#archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
+	#archnavbarlogo { margin: 0 auto 0 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
 	}
 }
 
@@ -28,11 +28,128 @@
 
 /* display the list inline, float it to the right and style it */
 #archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 0 15px 0px !important; }
 
 /* style the links */
 #archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
 #archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+
+
+.navbar-wrapper {
+    display: flex; justify-content: flex-end;
+    align-items: center;
+    max-width: 1440px; 
+    margin: 0 auto;
+}
+
+/* style the navbar for mobile viewport */
+@media (max-width: 768px) {
+    /* style hamburger icon */
+    #hamburger {
+        width: 50px;
+        height: 30px;
+        display: none;
+        margin-left: auto;
+        margin-right: 30px;
+    }
+
+    #hamburger span {
+        background-color: #fff;
+        border-radius: 8px;
+        height: 3px;
+        width: 40px;
+        display: block;
+        margin: 5px;
+        transition: 0.5s;
+        transform-origin: 25%;
+    }
+
+    /* animate hamburger */
+    #hamburger.open span:nth-child(1) { transform: rotate(45deg); }
+    #hamburger.open span:nth-child(2) { opacity: 0; }
+    #hamburger.open span:nth-child(3) { transform: rotate(-45deg); }
+
+    /* display nav items in hamburger menu fashion */
+    .open + #archnavbarmenu #archnavbarlist {
+        display: flex !important;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 20px !important;
+        width: 100%;
+        height: calc(100vh - 60px);
+        position: absolute;
+        left: 0;
+        top: 60px;
+        background-color: #333;
+    }
+
+    #archnavbarlist li {
+        text-align: left;
+        width: 100%;
+    }
+
+    #archnavbarlist a {
+        width: 100%;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 45px !important;
+    }
+
+    #archnavbar {
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        width: 100%;
+    }
+
+    #hamburger {
+        display: block;
+    }
+
+    #archnavbarlist {
+        display: none !important;
+        position: relative;
+    }
+
+    body {
+        padding-top: 65px;
+    }
+
+
+    /* packages table mobile view */
+
+    .results table, .results thead, .results tbody, .results th, .results td, .results tr {
+        display: block;
+    }
+
+    .results thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    } 
+
+    .results td {
+        border: none;
+        border-bottom: 1px solid #999;
+        position: relative;
+        padding-left: 30% !important;
+        min-height: 15px;
+    }
+
+    .results td:before {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+    }
+
+    .results td:nth-of-type(1):before { content: "Arch"; }
+    .results td:nth-of-type(2):before { content: "Repo"; }
+    .results td:nth-of-type(3):before { content: "Name"; }
+    .results td:nth-of-type(4):before { content: "Version"; }
+    .results td:nth-of-type(5):before { content: "Description"; }
+    .results td:nth-of-type(6):before { content: "Last Updated"; }
+    .results td:nth-of-type(7):before { content: "Flag Date"; }
+}
 
 /* END ARCH GLOBAL NAVBAR */
 
@@ -45,7 +162,6 @@
 
 /* general styling */
 body {
-    min-width: 650px;
     background: #f6f9fc;
     color: #222;
     font: normal 100% sans-serif;
@@ -185,24 +301,38 @@ h5 {
 
 /* general layout */
 #content {
-    width: 95%;
+    max-width: 1440px;
+    padding: 0 20px;
     margin: 0 auto;
     text-align: left;
+    display: flex;
+    flex-direction: row;
+}
+
+.anb-packages ~ #content {
+    flex-direction: column;
 }
 
 #content-left-wrapper {
-    float: left;
-    width: 100%; /* req to keep content above sidebar in source code */
+    padding-right: 45px;
 }
 
 #content-left {
-    margin: 0 340px 0 0;
 }
 
 #content-right {
-    float: left;
-    width: 300px;
-    margin-left: -300px;
+    min-width: 300px;
+}
+
+@media (max-width: 768px) {
+    #content {
+        flex-direction: column;
+    }
+
+    #content-left-wrapper {
+        padding-right: 0;
+    }
+
 }
 
 div.box {
@@ -213,7 +343,7 @@ div.box {
 }
 
 #footer {
-    clear: both;
+    font-size: .812em;
     margin: 2em 0 1em;
 }
 
@@ -463,6 +593,11 @@ table thead th.sorter-false {
         border-bottom: 1px dotted #bbb;
     }
 
+    #news h4 a {
+        max-width: 80%;
+        display: inline-block;
+    }
+
     #news .timestamp {
         float: right;
         font-size: 0.85em;
@@ -481,6 +616,10 @@ table thead th.sorter-false {
     #news a:active {
         color: white;
     }
+
+.article-content {
+    word-break: break-word;
+}
 
 h3 span.arrow {
     display: block;
@@ -650,6 +789,25 @@ h3 span.arrow {
     list-style: none;
     margin: 0.5em 0 0.5em 1em;
     padding: 0;
+}
+
+@media (max-width: 768px) {
+    #nav-sidebar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .nav-sidebar-item {
+        flex-basis: 31%;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-sidebar-item {
+        flex-basis: 45%;
+    }
 }
 
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
