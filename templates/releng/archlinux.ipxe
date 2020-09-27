@@ -130,9 +130,9 @@ initrd ${mirrorurl}iso/${release}/arch/boot/amd-ucode.img || goto failed_downloa
 imgverify amd-ucode.img ${mirrorurl}iso/${release}/arch/boot/amd-ucode.img.ipxe.sig || goto failed_verify
 initrd ${mirrorurl}iso/${release}/arch/boot/intel-ucode.img || goto failed_download
 imgverify intel-ucode.img ${mirrorurl}iso/${release}/arch/boot/intel-ucode.img.ipxe.sig || goto failed_verify
-initrd ${mirrorurl}iso/${release}/arch/boot/x86_64/archiso.img || goto failed_download
-imgverify archiso.img ${mirrorurl}iso/${release}/arch/boot/x86_64/archiso.img.ipxe.sig || goto failed_verify
-imgargs vmlinuz-linux initrd=amd-ucode.img initrd=intel-ucode.img initrd=archiso.img archiso_http_srv=${mirrorurl}iso/${release}/ archisobasedir=arch verify=y ${extrabootoptions}
+initrd ${mirrorurl}iso/${release}/arch/boot/x86_64/initramfs-linux.img || goto failed_download
+imgverify initramfs-linux.img ${mirrorurl}iso/${release}/arch/boot/x86_64/initramfs-linux.img.ipxe.sig || goto failed_verify
+imgargs vmlinuz-linux initrd=amd-ucode.img initrd=intel-ucode.img initrd=initramfs-linux.img archiso_http_srv=${mirrorurl}iso/${release}/ archisobasedir=arch verify=y ${extrabootoptions}
 boot || goto failed_boot
 
 :failed_download
