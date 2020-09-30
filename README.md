@@ -1,4 +1,4 @@
-# Archweb README
+# Archweb basics README
 
 [![Actions Status](https://github.com/archlinux/archweb/workflows/Github-Actions/badge.svg)](https://github.com/archlinux/archweb/actions)
 [![Build Status](https://travis-ci.com/archlinux/archweb.svg?branch=master)](https://travis-ci.com/archlinux/archweb)
@@ -8,20 +8,20 @@ To get a pretty version of this document, run
 
     $ markdown README > README.html
 
-# License
+# License ;
 
 See LICENSE file.
 
-# Authors
+# Authors ;
 
 See AUTHORS file.
 
-# Dependencies
+# Dependencies ;
 
 - python
 - rsync (optional for mirrorcheck with rsync mirrors)
 
-# Python dependencies
+# Python dependencies ;
 
 More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
@@ -32,7 +32,7 @@ packages, you will probably want the following:
 - python-markdown
 - python-memcached
 
-# Testing Installation
+# Testing Installation ;
 
 1. Run `python -m venv env`.
 
@@ -94,7 +94,7 @@ required. A simple debugging SMTP server can be setup using Python.
 In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_PORT to
 1025.
 
-# Running tests and coverage
+# Running tests and coverage ;
 
 To the unittests execute the following commands:
 
@@ -107,7 +107,7 @@ Running coverage:
         coverage run --omit='env*' --source='.' manage.py test
         coverage report
 
-# Django Debug toolbar
+# Django Debug toolbar ;
 
 To use the Django Debug toolbar install django-debug-toolbar and in local_settings.py
 set DEBUG_TOOLBAR to True.
