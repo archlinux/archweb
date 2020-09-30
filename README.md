@@ -34,15 +34,15 @@ packages, you will probably want the following:
 
 # Testing Installation
 
-1. Run `python -m venv env`.
+1. Run `python -m venv env`:
 
         cd /path/to/archweb && python -m venv ./env/
 
-2. Activate the virtualenv.
+2. Activate the virtualenv:
 
         source ./env/bin/activate
 
-2. Install dependencies through `pip`.
+2. Install dependencies through `pip`:
 
         pip install -r requirements.txt
 
@@ -50,19 +50,19 @@ packages, you will probably want the following:
    Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
 
-4. Migrate changes.
+4. Migrate changes:
 
         ./manage.py migrate
 
 5. Load the fixtures to pre populate some data. If you don't want some of the
-   provided data, adjust the file glob accordingly.
+   provided data, adjust the file glob accordingly:
 
         ./manage.py loaddata main/fixtures/*.json
         ./manage.py loaddata devel/fixtures/*.json
         ./manage.py loaddata mirrors/fixtures/*.json
         ./manage.py loaddata releng/fixtures/*.json
 
-6. Use the following commands to start a service instance
+6. Use the following commands to start a service instance:
 
         ./manage.py runserver
 
@@ -77,7 +77,7 @@ packages, you will probably want the following:
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
 
-8. Database Updates for Added/Removed packages
+8. Database Updates for Added/Removed packages:
 
         sqlite3 archweb.db < packages/sql/update.sqlite3.sql
 
