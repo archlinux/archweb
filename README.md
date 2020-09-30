@@ -10,11 +10,11 @@ To get a pretty version of this document, run
 
 # License
 
-See LICENSE file.
+Kindly See LICENSE file.
 
 # Authors
 
-See AUTHORS file.
+Kindly See AUTHORS file.
 
 # Dependencies
 
