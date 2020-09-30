@@ -1,4 +1,4 @@
-# Archweb README
+# Archlinuxweb README
 
 [![Actions Status](https://github.com/archlinux/archweb/workflows/Github-Actions/badge.svg)](https://github.com/archlinux/archweb/actions)
 [![Build Status](https://travis-ci.com/archlinux/archweb.svg?branch=master)](https://travis-ci.com/archlinux/archweb)
