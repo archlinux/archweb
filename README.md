@@ -23,7 +23,7 @@ See AUTHORS file.
 
 # Python dependencies
 
-More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
+More details in `requirements.txt` and `requirements_prod.txt`; it is the best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
 packages, you will probably want the following:
 
@@ -47,10 +47,10 @@ packages, you will probably want the following:
         pip install -r requirements.txt
 
 3. Copy `local_settings.py.example` to `local_settings.py` and modify.
-   Make sure to uncomment the appropriate database section (either sqlite or
+   Make sure to uncomment that the appropriate database section (either sqlite or
    PostgreSQL).
 
-4. Migrate changes.
+4. Migrate all of changes.
 
         ./manage.py migrate
 
@@ -62,7 +62,7 @@ packages, you will probably want the following:
         ./manage.py loaddata mirrors/fixtures/*.json
         ./manage.py loaddata releng/fixtures/*.json
 
-6. Use the following commands to start a service instance
+6. Use following commands to start a service instance
 
         ./manage.py runserver
 
@@ -74,7 +74,7 @@ packages, you will probably want the following:
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
         ./manage.py reporead --filesonly x86_64 core.files.tar.gz
 
-Alter architecture and repo to get x86\_64 and packages from other repos if
+Alter architecture and repository to get x86\_64 and packages from other repository if
 needed.
 
 8. Database Updates for Added/Removed packages
