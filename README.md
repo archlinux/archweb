@@ -27,10 +27,10 @@ More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
 packages, you will probably want the following:
 
-- python-django
-- python-psycopg2
-- python-markdown
-- python-memcached
+ -  python-django
+ -  python-psycopg2
+ -  python-markdown
+ -  python-memcached
 
 # Testing Installation
 
