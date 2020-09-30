@@ -21,7 +21,7 @@ See AUTHORS file.
 - python
 - rsync (optional for mirrorcheck with rsync mirrors)
 
-# Python dependencies
+# Python Dependencies
 
 More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
 use virtualenv and pip to handle these. But if you insist on (Arch Linux)
@@ -38,11 +38,11 @@ packages, you will probably want the following:
 
         cd /path/to/archweb && python -m venv ./env/
 
-2. Activate the virtualenv.
+2. Activate The Virtualenv.
 
         source ./env/bin/activate
 
-2. Install dependencies through `pip`.
+2. Install Dependencies Through `pip`.
 
         pip install -r requirements.txt
 
@@ -50,7 +50,7 @@ packages, you will probably want the following:
    Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
 
-4. Migrate changes.
+4. Migrate Changes.
 
         ./manage.py migrate
 
@@ -77,14 +77,14 @@ packages, you will probably want the following:
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
 
-8. Database Updates for Added/Removed packages
+8. Database Updates For Added/Removed Packages
 
         sqlite3 archweb.db < packages/sql/update.sqlite3.sql
 
 For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
 
 
-# Testing SMTP server
+# Testing SMTP Server
 
 To be able to create an account on your test environment an SMTP server is
 required. A simple debugging SMTP server can be setup using Python.
@@ -94,25 +94,25 @@ required. A simple debugging SMTP server can be setup using Python.
 In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_PORT to
 1025.
 
-# Running tests and coverage
+# Running Tests And Coverage
 
 To the unittests execute the following commands:
 
         ./manage.py collectstatic --noinput
         ./manage.py test
 
-Running coverage:
+Running Coverage:
 
         pip install coverage
         coverage run --omit='env*' --source='.' manage.py test
         coverage report
 
-# Django Debug toolbar
+# Django Debug Toolbar
 
 To use the Django Debug toolbar install django-debug-toolbar and in local_settings.py
 set DEBUG_TOOLBAR to True.
 
-# Updating iPXE image
+# Updating iPXE Image
 
 The netboot image can be updated by building the [AUR
 package](https://aur.archlinux.org/packages/ipxe-netboot/) (note that it builds
