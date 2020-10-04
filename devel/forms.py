@@ -12,12 +12,13 @@ from .models import UserProfile
 
 
 class ProfileForm(forms.Form):
-    email = forms.EmailField(label='Private email (not shown publicly):',
-            help_text="Used for out-of-date notifications, etc.")
-    passwd1 = forms.CharField(label='New Password', required=False,
-            widget=forms.PasswordInput)
-    passwd2 = forms.CharField(label='Confirm Password', required=False,
-            widget=forms.PasswordInput)
+    email = forms.EmailField(
+        label='Private email (not shown publicly):',
+        help_text="Used for out-of-date notifications, etc.")
+    passwd1 = forms.CharField(
+        label='New Password', required=False, widget=forms.PasswordInput)
+    passwd2 = forms.CharField(
+        label='Confirm Password', required=False, widget=forms.PasswordInput)
 
     def clean(self):
         if self.cleaned_data['passwd1'] != self.cleaned_data['passwd2']:
@@ -43,8 +44,7 @@ class NewUserForm(forms.ModelForm):
     private_email = forms.EmailField()
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
-    groups = forms.ModelMultipleChoiceField(required=False,
-            queryset=Group.objects.all())
+    groups = forms.ModelMultipleChoiceField(required=False, queryset=Group.objects.all())
 
     class Meta:
         model = UserProfile
@@ -66,16 +66,16 @@ class NewUserForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data['username']
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError(
-                    "A user with that username already exists.")
+            raise forms.ValidationError("A user with that username already exists.")
         return username
 
     def save(self, commit=True):
         profile = super(NewUserForm, self).save(False)
         pwletters = ascii_letters + digits
         password = ''.join([random.choice(pwletters) for _ in range(8)])
-        user = User.objects.create_user(username=self.cleaned_data['username'],
-                email=self.cleaned_data['private_email'], password=password)
+        user = User.objects.create_user(
+            username=self.cleaned_data['username'],
+            email=self.cleaned_data['private_email'], password=password)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
@@ -95,9 +95,9 @@ class NewUserForm(forms.ModelForm):
         }
 
         send_mail("Your new archweb account",
-                template.render(ctx),
-                'Arch Website Notification <nobody@archlinux.org>',
-                [user.email],
-                fail_silently=False)
+                  template.render(ctx),
+                  'Arch Website Notification <nobody@archlinux.org>',
+                  [user.email],
+                  fail_silently=False)
 
 # vim: set ts=4 sw=4 et:

@@ -70,7 +70,7 @@ class Command(BaseCommand):
         timeout = options.get('timeout')
 
         urls = MirrorUrl.objects.select_related('protocol').filter(
-                active=True, mirror__active=True, mirror__public=True)
+            active=True, mirror__active=True, mirror__public=True)
 
         location = options.get('location', None)
         if location:
@@ -183,8 +183,7 @@ def check_rsync_url(mirror_url, location, timeout):
         elif location.family == socket.AF_INET:
             ipopt = '--ipv4'
     lastsync_path = os.path.join(tempdir, 'lastsync')
-    rsync_cmd = ["rsync", "--quiet", "--contimeout=%d" % timeout,
-            "--timeout=%d" % timeout]
+    rsync_cmd = ["rsync", "--quiet", "--contimeout=%d" % timeout, "--timeout=%d" % timeout]
     if ipopt:
         rsync_cmd.append(ipopt)
     rsync_cmd.append(url)
@@ -194,8 +193,7 @@ def check_rsync_url(mirror_url, location, timeout):
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
             start = time.time()
-            proc = subprocess.Popen(rsync_cmd, stdout=devnull,
-                    stderr=subprocess.PIPE)
+            proc = subprocess.Popen(rsync_cmd, stdout=devnull, stderr=subprocess.PIPE)
             _, errdata = proc.communicate()
             end = time.time()
         log.duration = end - start
@@ -229,8 +227,7 @@ def mirror_url_worker(work, output, location, timeout):
             try:
                 if url.protocol.protocol == 'rsync':
                     log = check_rsync_url(url, location, timeout)
-                elif (url.protocol.protocol == 'ftp' and location and
-                        location.family == socket.AF_INET6):
+                elif (url.protocol.protocol == 'ftp' and location and location.family == socket.AF_INET6):
                     # IPv6 + FTP don't work; skip checking completely
                     log = None
                 else:
@@ -251,8 +248,7 @@ class MirrorCheckPool(object):
             self.tasks.put(url)
         self.threads = []
         for _ in range(num_threads):
-            thread = Thread(target=mirror_url_worker,
-                    args=(self.tasks, self.logs, location, timeout))
+            thread = Thread(target=mirror_url_worker, args=(self.tasks, self.logs, location, timeout))
             thread.daemon = True
             self.threads.append(thread)
 

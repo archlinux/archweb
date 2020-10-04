@@ -41,14 +41,12 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('maildir', type=str)
 
-
     def decode_subject(self, subject):
         subject = decode_header(subject)
         default_charset = 'utf-8'
         # Convert the list of tuples containing the decoded string and encoding to
         # UTF-8
         return ''.join([codecs.decode(s[0], s[1] or default_charset) for s in subject])
-
 
     def parse_subject(self, subject):
         """Format of the subject is as following: Receipt [$amount] By: John Doe [mail]"""
@@ -58,26 +56,24 @@ class Command(BaseCommand):
         if parsed:
             return parsed['name']
 
-
     def sanitize_name(self, name):
-            """Sanitizes the parsed name and removes numbers, entries with no
-            valid characters and finally trims all excess whitespace"""
+        """Sanitizes the parsed name and removes numbers, entries with no
+        valid characters and finally trims all excess whitespace"""
 
-            # Some submissions contain no alphabetic characters, skip them
-            if all(not l.isalpha() for l in name):
-                return u''
+        # Some submissions contain no alphabetic characters, skip them
+        if all(not l.isalpha() for l in name):
+            return u''
 
-            # Strip any numbers, they could be a bank account number
-            name = u''.join([l for l in name if not l.isdigit()])
+        # Strip any numbers, they could be a bank account number
+        name = u''.join([l for l in name if not l.isdigit()])
 
-            # Normalize all capitalized names. (JOHN DOE)
-            name = u' '.join(l.capitalize() for l in name.split(u' '))
+        # Normalize all capitalized names. (JOHN DOE)
+        name = u' '.join(l.capitalize() for l in name.split(u' '))
 
-            # Trim excess spaces
-            name = name.rstrip().lstrip()
+        # Trim excess spaces
+        name = name.rstrip().lstrip()
 
-            return name
-
+        return name
 
     def handle(self, *args, **options):
         v = int(options.get('verbosity', 0))

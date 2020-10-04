@@ -146,8 +146,7 @@ class PackageStandin(object):
         return getattr(self.package, name)
 
     def get_absolute_url(self):
-        return '/packages/%s/%s/%s/' % (
-                self.repo.name.lower(), self.arch.name, self.pkgbase)
+        return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
 
 class DependStandin(object):

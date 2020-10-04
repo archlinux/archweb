@@ -5,8 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
 from django.views.decorators.http import require_POST
-from django.views.generic import (DetailView, ListView,
-        CreateView, UpdateView, DeleteView)
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
 from .models import News
 from main.utils import find_unique_slug, parse_markdown
@@ -48,11 +47,12 @@ class NewsCreateView(CreateView):
             if settings.MAILMAN_PASSWORD:
                 headers['Approved'] = settings.MAILMAN_PASSWORD
             template = loader.get_template('news/news_email_notification.txt')
-            EmailMessage(subject='[arch-announce] %s' % newsitem.title,
-                      body=template.render(ctx),
-                      from_email='"Arch Linux: Recent news updates: %s" <arch-announce@archlinux.org>' % newsitem.author.get_full_name(),
-                      to=['arch-announce@archlinux.org'],
-                      headers=headers).send()
+            EmailMessage(
+                subject=f'[arch-announce] {newsitem.title}',
+                body=template.render(ctx),
+                from_email=f'Arch Linux: Recent news updates: {newsitem.author.get_full_name()} <arch-announce@archlinux.org>', # noqa
+                to=['arch-announce@archlinux.org'],
+                headers=headers).send()
         return super(NewsCreateView, self).form_valid(form)
 
 

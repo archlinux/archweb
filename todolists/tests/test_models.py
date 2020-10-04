@@ -37,9 +37,9 @@ class TestTodolist(TestCase):
     def test_packages(self):
         pkg = Package.objects.first()
         todopkg = TodolistPackage.objects.create(pkg=pkg, pkgname=pkg.pkgname,
-                                       pkgbase=pkg.pkgbase, arch=pkg.arch,
-                                       repo=pkg.repo, user=self.user,
-                                       todolist=self.todolist)
+                                                 pkgbase=pkg.pkgbase, arch=pkg.arch,
+                                                 repo=pkg.repo, user=self.user,
+                                                 todolist=self.todolist)
         pkgs = self.todolist.packages()
         self.assertEqual(len(pkgs), 1)
         self.assertEqual(pkgs[0], todopkg)

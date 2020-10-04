@@ -14,6 +14,7 @@ class Result(dict):
     def get(self, value):
         return getattr(self, value)
 
+
 class Entry(dict):
     title = 'title'
     description = 'lorem ipsum'

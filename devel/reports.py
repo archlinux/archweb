@@ -203,8 +203,7 @@ REPORT_INFO = DeveloperReport('uncompressed-info', 'Uncompressed Info Pages',
 REPORT_ORPHANS = DeveloperReport(
     'unneeded-orphans',
     'Unneeded Orphans',
-    'Packages that have no maintainer and are not required by any ' +
-    'other package in any repository',
+    'Packages that have no maintainer and are not required by any other package in any repository',
     unneeded_orphans,
     personal=False)
 
@@ -215,8 +214,8 @@ REPORT_SIGNATURE = DeveloperReport(
 
 REPORT_SIG_TIME = DeveloperReport(
     'signature-time', 'Signature Time',
-    'Packages where the signature timestamp is more than 24 hours ' +
-    'after the build timestamp', signature_time,
+    'Packages where the signature timestamp is more than 24 hours after the build timestamp',
+    signature_time,
     ['Signature Date', 'Packager'], ['sig_date', 'packager'])
 
 NON_EXISTING_DEPENDENCIES = DeveloperReport(
@@ -232,8 +231,7 @@ REBUILDERD_PACKAGES = DeveloperReport(
     'non-reproducible-packages',
     'Non Reproducible package',
     'Packages that are not reproducible on our reproducible.archlinux.org test environment',
-    non_reproducible_packages,
-    )
+    non_reproducible_packages)
 
 
 def available_reports():

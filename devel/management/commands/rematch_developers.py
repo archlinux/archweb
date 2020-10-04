@@ -28,6 +28,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     help = "Match and map objects in database to developer emails"
 
@@ -44,6 +45,7 @@ class Command(BaseCommand):
         match_packager(finder)
         match_flagrequest(finder)
 
+
 @transaction.atomic
 def match_packager(finder):
     logger.info("getting all unmatched packager strings")
@@ -51,7 +53,7 @@ def match_packager(finder):
     mapping = {}
 
     unmatched = Package.objects.filter(packager__isnull=True).values_list(
-            'packager_str', flat=True).order_by().distinct()
+        'packager_str', flat=True).order_by().distinct()
 
     logger.info("%d packager strings retrieved", len(unmatched))
     for packager in unmatched:
@@ -63,11 +65,11 @@ def match_packager(finder):
             matched_count += 1
 
     for packager_str, user in mapping.items():
-        package_count += Package.objects.filter(packager__isnull=True,
-                packager_str=packager_str).update(packager=user)
+        package_count += Package.objects.filter(
+            packager__isnull=True,
+            packager_str=packager_str).update(packager=user)
 
-    logger.info("%d packages updated, %d packager strings matched",
-            package_count, matched_count)
+    logger.info("%d packages updated, %d packager strings matched", package_count, matched_count)
 
 
 @transaction.atomic
@@ -77,7 +79,7 @@ def match_flagrequest(finder):
     mapping = {}
 
     unmatched = FlagRequest.objects.filter(user__isnull=True).values_list(
-            'user_email', flat=True).order_by().distinct()
+        'user_email', flat=True).order_by().distinct()
 
     logger.info("%d email addresses retrieved", len(unmatched))
     for user_email in unmatched:
@@ -89,10 +91,9 @@ def match_flagrequest(finder):
             matched_count += 1
 
     for user_email, user in mapping.items():
-        req_count += FlagRequest.objects.filter(user__isnull=True,
-                user_email=user_email).update(user=user)
+        req_count += FlagRequest.objects.filter(
+            user__isnull=True, user_email=user_email).update(user=user)
 
-    logger.info("%d request emails updated, %d emails matched",
-            req_count, matched_count)
+    logger.info("%d request emails updated, %d emails matched", req_count, matched_count)
 
 # vim: set ts=4 sw=4 et:

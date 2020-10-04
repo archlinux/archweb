@@ -12,23 +12,21 @@ from ..utils import get_mirror_statuses
 
 import random
 
+
 class MirrorlistForm(forms.Form):
-    country = forms.MultipleChoiceField(required=False,
-            widget=SelectMultiple(attrs={'size': '12'}))
-    protocol = forms.MultipleChoiceField(required=False,
-            widget=CheckboxSelectMultiple)
-    ip_version = forms.MultipleChoiceField(required=False,
-            label="IP version", choices=(('4','IPv4'), ('6','IPv6')),
-            widget=CheckboxSelectMultiple)
+    country = forms.MultipleChoiceField(required=False, widget=SelectMultiple(attrs={'size': '12'}))
+    protocol = forms.MultipleChoiceField(required=False, widget=CheckboxSelectMultiple)
+    ip_version = forms.MultipleChoiceField(
+        required=False, label="IP version", choices=(('4', 'IPv4'), ('6', 'IPv6')),
+        widget=CheckboxSelectMultiple)
     use_mirror_status = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
         fields = self.fields
-        fields['country'].choices = [('all','All')] + self.get_countries()
+        fields['country'].choices = [('all', 'All')] + self.get_countries()
         fields['country'].initial = ['all']
-        protos = [(p.protocol, p.protocol) for p in
-                MirrorProtocol.objects.filter(is_download=True)]
+        protos = [(p.protocol, p.protocol) for p in MirrorProtocol.objects.filter(is_download=True)]
         initial = MirrorProtocol.objects.filter(is_download=True, default=True)
         fields['protocol'].choices = protos
         fields['protocol'].initial = [p.protocol for p in initial]
@@ -36,20 +34,20 @@ class MirrorlistForm(forms.Form):
 
     def get_countries(self):
         country_codes = set()
-        country_codes.update(MirrorUrl.objects.filter(active=True,
-                mirror__active=True).exclude(country='').values_list(
-                'country', flat=True).order_by().distinct())
+        country_codes.update(MirrorUrl.objects.filter(
+            active=True, mirror__active=True).exclude(country='').values_list(
+            'country', flat=True).order_by().distinct())
         code_list = [(code, countries.name(code)) for code in country_codes]
         return sorted(code_list, key=itemgetter(1))
 
     def as_div(self):
         "Returns this form rendered as HTML <divs>s."
         return self._html_output(
-            normal_row = u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
-            error_row = u'%s',
-            row_ender = '</div>',
-            help_text_html = u' <span class="helptext">%s</span>',
-            errors_on_separate_row = True)
+            normal_row=u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
+            error_row=u'%s',
+            row_ender='</div>',
+            help_text_html=u' <span class="helptext">%s</span>',
+            errors_on_separate_row=True)
 
 
 @csrf_exempt
@@ -64,12 +62,12 @@ def generate_mirrorlist(request):
             ipv4 = '4' in form.cleaned_data['ip_version']
             ipv6 = '6' in form.cleaned_data['ip_version']
             return find_mirrors(request, countries, protocols,
-                    use_status, ipv4, ipv6)
+                                use_status, ipv4, ipv6)
     else:
         form = MirrorlistForm()
 
     return render(request, 'mirrors/mirrorlist_generate.html',
-            {'mirrorlist_form': form})
+                  {'mirrorlist_form': form})
 
 
 def status_filter(original_urls):
@@ -88,7 +86,7 @@ def status_filter(original_urls):
 
 
 def find_mirrors(request, countries=None, protocols=None, use_status=False,
-        ipv4_supported=True, ipv6_supported=True):
+                 ipv4_supported=True, ipv6_supported=True):
     if not protocols:
         protocols = MirrorProtocol.objects.filter(is_download=True)
     elif hasattr(protocols, 'model') and protocols.model == MirrorProtocol:
@@ -97,8 +95,8 @@ def find_mirrors(request, countries=None, protocols=None, use_status=False,
     else:
         protocols = MirrorProtocol.objects.filter(protocol__in=protocols)
     qset = MirrorUrl.objects.select_related().filter(
-            protocol__in=protocols, active=True,
-            mirror__public=True, mirror__active=True)
+        protocol__in=protocols, active=True,
+        mirror__public=True, mirror__active=True)
     if countries and 'all' not in countries:
         qset = qset.filter(country__in=countries)
 

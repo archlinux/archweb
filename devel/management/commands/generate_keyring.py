@@ -22,6 +22,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     args = "<keyserver> <keyring_path> [ownertrust_path]"
     help = "Assemble a GPG keyring with all known developer keys."
@@ -52,8 +53,8 @@ def generate_keyring(keyserver, keyring):
 
     # Screw you Django, for not letting one natively do value != <empty string>
     key_ids = UserProfile.objects.filter(
-            pgp_key__isnull=False).extra(where=["pgp_key != ''"]).values_list(
-            "pgp_key", flat=True)
+        pgp_key__isnull=False).extra(where=["pgp_key != ''"]).values_list(
+        "pgp_key", flat=True)
     logger.info("%d keys fetched from user profiles", len(key_ids))
     master_key_ids = MasterKey.objects.values_list("pgp_key", flat=True)
     logger.info("%d keys fetched from master keys", len(master_key_ids))
@@ -63,7 +64,7 @@ def generate_keyring(keyserver, keyring):
     if '/' not in keyring:
         keyring = './%s' % keyring
     gpg_cmd = ["gpg", "--no-default-keyring", "--keyring", keyring,
-            "--keyserver", keyserver, "--recv-keys"]
+               "--keyserver", keyserver, "--recv-keys"]
     logger.info("running command: %r", gpg_cmd)
     gpg_cmd.extend(key_ids)
     gpg_cmd.extend(master_key_ids)

@@ -21,6 +21,7 @@ def jquery_tablesorter():
     link = staticfiles_storage.url(filename)
     return format_html('<script type="text/javascript" src="%s"></script>' % link)
 
+
 @register.simple_tag
 def d3js():
     version = '3.5.0'

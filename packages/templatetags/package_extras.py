@@ -29,11 +29,9 @@ def do_buildsortqs(parser, token):
     try:
         _, sortfield = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-                "%r tag requires a single argument" % token)
+        raise template.TemplateSyntaxError("%r tag requires a single argument" % token)
     if not (sortfield[0] == sortfield[-1] and sortfield[0] in ('"', "'")):
-        raise template.TemplateSyntaxError(
-                "%r tag's argument should be in quotes" % token)
+        raise template.TemplateSyntaxError("%r tag's argument should be in quotes" % token)
     return BuildQueryStringNode(sortfield[1:-1])
 
 

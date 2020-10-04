@@ -28,8 +28,8 @@ class PackageManager(models.Manager):
 
 class Donor(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    visible = models.BooleanField(default=True,
-            help_text="Should we show this donor on the public page?")
+    visible = models.BooleanField(
+        default=True, help_text="Should we show this donor on the public page?")
     created = models.DateTimeField()
 
     def __str__(self):
@@ -43,10 +43,10 @@ class Donor(models.Model):
 
 class Arch(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    agnostic = models.BooleanField(default=False,
-            help_text="Is this architecture non-platform specific?")
-    required_signoffs = models.PositiveIntegerField(default=2,
-            help_text="Number of signoffs required for packages of this architecture")
+    agnostic = models.BooleanField(
+        default=False, help_text="Is this architecture non-platform specific?")
+    required_signoffs = models.PositiveIntegerField(
+        default=2, help_text="Number of signoffs required for packages of this architecture")
 
     def __str__(self):
         return self.name
@@ -62,18 +62,18 @@ class Arch(models.Model):
 
 class Repo(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    testing = models.BooleanField(default=False,
-            help_text="Is this repo meant for package testing?")
-    public_testing = models.BooleanField(default=False,
-            help_text="Is this repo meant for package testing (without signoffs)?")
-    staging = models.BooleanField(default=False,
-            help_text="Is this repo meant for package staging?")
-    bugs_project = models.SmallIntegerField(default=1,
-            help_text="Flyspray project ID for this repository.")
-    bugs_category = models.SmallIntegerField(default=2,
-            help_text="Flyspray category ID for this repository.")
-    svn_root = models.CharField(max_length=64,
-            help_text="SVN root (e.g. path) for this repository.")
+    testing = models.BooleanField(
+        default=False, help_text="Is this repo meant for package testing?")
+    public_testing = models.BooleanField(
+        default=False, help_text="Is this repo meant for package testing (without signoffs)?")
+    staging = models.BooleanField(
+        default=False, help_text="Is this repo meant for package staging?")
+    bugs_project = models.SmallIntegerField(
+        default=1, help_text="Flyspray project ID for this repository.")
+    bugs_category = models.SmallIntegerField(
+        default=2, help_text="Flyspray category ID for this repository.")
+    svn_root = models.CharField(
+        max_length=64, help_text="SVN root (e.g. path) for this repository.")
 
     def __str__(self):
         return self.name
@@ -87,10 +87,8 @@ class Repo(models.Model):
 
 
 class Package(models.Model):
-    repo = models.ForeignKey(Repo, related_name="packages",
-            on_delete=models.PROTECT)
-    arch = models.ForeignKey(Arch, related_name="packages",
-            on_delete=models.PROTECT)
+    repo = models.ForeignKey(Repo, related_name="packages", on_delete=models.PROTECT)
+    arch = models.ForeignKey(Arch, related_name="packages", on_delete=models.PROTECT)
     pkgname = models.CharField(max_length=255)
     pkgbase = models.CharField(max_length=255, db_index=True)
     pkgver = models.CharField(max_length=255)
@@ -106,8 +104,7 @@ class Package(models.Model):
     files_last_update = models.DateTimeField(null=True, blank=True)
     created = models.DateTimeField()
     packager_str = models.CharField('packager string', max_length=255)
-    packager = models.ForeignKey(User, null=True, blank=True,
-            on_delete=models.SET_NULL)
+    packager = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     signature_bytes = models.BinaryField('PGP signature', null=True)
     flag_date = models.DateTimeField(null=True, blank=True)
 
@@ -129,13 +126,12 @@ class Package(models.Model):
         return '%s-%s' % (self.pkgver, self.pkgrel)
 
     def get_absolute_url(self):
-        return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
-                self.arch.name, self.pkgname)
+        return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
     def get_full_url(self, proto='https'):
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
-        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+        return f'{proto}://{domain}{self.get_absolute_url()}'
 
     @property
     def signature(self):
@@ -151,7 +147,7 @@ class Package(models.Model):
         if sig and sig.key_id:
             try:
                 matching_key = DeveloperKey.objects.select_related(
-                        'owner').get(key=sig.key_id, owner_id__isnull=False)
+                    'owner').get(key=sig.key_id, owner_id__isnull=False)
                 user = matching_key.owner
             except DeveloperKey.DoesNotExist:
                 user = None
@@ -165,8 +161,8 @@ class Package(models.Model):
         from packages.models import PackageRelation
         if self._maintainers is None:
             self._maintainers = User.objects.filter(
-                    package_relations__pkgbase=self.pkgbase,
-                    package_relations__type=PackageRelation.MAINTAINER)
+                package_relations__pkgbase=self.pkgbase,
+                package_relations__type=PackageRelation.MAINTAINER)
         return self._maintainers
 
     @maintainers.setter
@@ -200,16 +196,16 @@ class Package(models.Model):
         SELECT %s UNION ALL
         SELECT z.name FROM packages_provision z WHERE z.pkg_id = %s
         )'''
-        requiredby = Depend.objects.select_related('pkg',
-                'pkg__arch', 'pkg__repo').extra(
-                select={'sorttype': sorttype},
-                where=[name_clause], params=[self.pkgname, self.id]).order_by(
-                'sorttype', 'pkg__pkgname',
-                'pkg__arch__name', 'pkg__repo__name')
+        requiredby = Depend.objects.select_related(
+            'pkg', 'pkg__arch', 'pkg__repo').extra(
+            select={'sorttype': sorttype},
+            where=[name_clause], params=[self.pkgname, self.id]).order_by(
+            'sorttype', 'pkg__pkgname',
+            'pkg__arch__name', 'pkg__repo__name')
         if not self.arch.agnostic:
             # make sure we match architectures if possible
             requiredby = requiredby.filter(
-                    pkg__arch__in=self.applicable_arches())
+                pkg__arch__in=self.applicable_arches())
 
         # if we can use ALPM, ensure our returned Depend objects abide by the
         # version comparison operators they may specify
@@ -223,22 +219,19 @@ class Package(models.Model):
                     new_rqd.append(dep)
                 elif self.pkgname == dep.name:
                     # depends on this package, so check it directly
-                    if alpm.compare_versions(self.full_version,
-                            dep.comparison, dep.version):
+                    if alpm.compare_versions(self.full_version, dep.comparison, dep.version):
                         new_rqd.append(dep)
                 else:
                     # it must be a provision of ours at this point
                     for provide in (p for p in provides if p.name == dep.name):
-                        if alpm.compare_versions(provide.version,
-                                dep.comparison, dep.version):
+                        if alpm.compare_versions(provide.version, dep.comparison, dep.version):
                             new_rqd.append(dep)
                             break
             requiredby = new_rqd
 
         # sort out duplicate packages; this happens if something has a double
         # versioned depend such as a kernel module
-        requiredby = [list(vals)[0] for _, vals in
-                groupby(requiredby, lambda x: x.pkg.id)]
+        requiredby = [list(vals)[0] for _, vals in groupby(requiredby, lambda x: x.pkg.id)]
         if not requiredby:
             return requiredby
 
@@ -258,11 +251,9 @@ class Package(models.Model):
 
         # find another package by this name in a different testing or staging
         # repo; if we can't, we can short-circuit some checks
-        repo_q = (Q(repo__testing=(not self.repo.testing)) |
-                Q(repo__staging=(not self.repo.staging)))
+        repo_q = (Q(repo__testing=(not self.repo.testing)) | Q(repo__staging=(not self.repo.staging)))
         if not Package.objects.filter(
-                repo_q, pkgname=self.pkgname, arch=self.arch
-                ).exclude(id=self.id).exists():
+                repo_q, pkgname=self.pkgname, arch=self.arch).exclude(id=self.id).exists():
             # there isn't one? short circuit, all required by entries are fine
             return filtered
 
@@ -274,9 +265,8 @@ class Package(models.Model):
             dep_pkgs = list(dep_pkgs)
             dep = dep_pkgs[0]
             if len(dep_pkgs) > 1:
-                dep_pkgs = [d for d in dep_pkgs
-                        if d.pkg.repo.testing == self.repo.testing and
-                        d.pkg.repo.staging == self.repo.staging]
+                dep_pkgs = [d for d in dep_pkgs if d.pkg.repo.testing == self.repo.testing
+                            and d.pkg.repo.staging == self.repo.staging]
                 if len(dep_pkgs) > 0:
                     dep = dep_pkgs[0]
             trimmed.append(dep)
@@ -331,8 +321,8 @@ class Package(models.Model):
                 if conflict.name != self.pkgname:
                     continue
                 if not conflict.comparison or not conflict.version \
-                        or alpm.compare_versions(self.full_version,
-                        conflict.comparison, conflict.version):
+                        or alpm.compare_versions(
+                        self.full_version, conflict.comparison, conflict.version):
                     new_pkgs.append(package)
         return new_pkgs
 
@@ -344,14 +334,14 @@ class Package(models.Model):
         """
         try:
             # start by looking for something in this repo
-            return Package.objects.normal().get(arch=self.arch,
-                    repo=self.repo, pkgname=self.pkgbase)
+            return Package.objects.normal().get(
+                arch=self.arch, repo=self.repo, pkgname=self.pkgbase)
         except Package.DoesNotExist:
             # this package might be split across repos? find one
             # that matches the correct [testing] repo flag
-            pkglist = Package.objects.normal().filter(arch=self.arch,
-                    repo__testing=self.repo.testing,
-                    repo__staging=self.repo.staging, pkgname=self.pkgbase)
+            pkglist = Package.objects.normal().filter(
+                arch=self.arch, repo__testing=self.repo.testing,
+                repo__staging=self.repo.staging, pkgname=self.pkgbase)
             if len(pkglist) > 0:
                 return pkglist[0]
             return None
@@ -365,10 +355,10 @@ class Package(models.Model):
         return value will be an empty list.
         """
         return Package.objects.normal().filter(
-                arch__in=self.applicable_arches(),
-                repo__testing=self.repo.testing,
-                repo__staging=self.repo.staging,
-                pkgbase=self.pkgbase).exclude(id=self.id)
+            arch__in=self.applicable_arches(),
+            repo__testing=self.repo.testing,
+            repo__staging=self.repo.staging,
+            pkgbase=self.pkgbase).exclude(id=self.id)
 
     def flag_request(self):
         if self.flag_date is None:
@@ -378,9 +368,9 @@ class Package(models.Model):
             # Note that we don't match on pkgrel here; this is because a pkgrel
             # bump does not unflag a package so we can still show the same flag
             # request from a different pkgrel.
-            request = FlagRequest.objects.filter(pkgbase=self.pkgbase,
-                    repo=self.repo, pkgver=self.pkgver,
-                    epoch=self.epoch, is_spam=False).latest()
+            request = FlagRequest.objects.filter(
+                pkgbase=self.pkgbase, repo=self.repo,
+                pkgver=self.pkgver, epoch=self.epoch, is_spam=False).latest()
             return request
         except FlagRequest.DoesNotExist:
             return None
@@ -388,9 +378,9 @@ class Package(models.Model):
     def is_same_version(self, other):
         'is this package similar, name and version-wise, to another'
         return self.pkgname == other.pkgname \
-                and self.pkgver == other.pkgver \
-                and self.pkgrel == other.pkgrel \
-                and self.epoch == other.epoch
+            and self.pkgver == other.pkgver \
+            and self.pkgrel == other.pkgrel \
+            and self.epoch == other.epoch
 
     def in_testing(self):
         '''attempt to locate this package in a testing repo; if we are in
@@ -398,8 +388,8 @@ class Package(models.Model):
         if self.repo.testing:
             return None
         try:
-            return Package.objects.normal().get(repo__testing=True,
-                    pkgname=self.pkgname, arch=self.arch)
+            return Package.objects.normal().get(
+                repo__testing=True, pkgname=self.pkgname, arch=self.arch)
         except Package.DoesNotExist:
             return None
 
@@ -409,8 +399,8 @@ class Package(models.Model):
         if self.repo.staging:
             return None
         try:
-            return Package.objects.normal().get(repo__staging=True,
-                    pkgname=self.pkgname, arch=self.arch)
+            return Package.objects.normal().get(
+                repo__staging=True, pkgname=self.pkgname, arch=self.arch)
         except Package.DoesNotExist:
             return None
 
@@ -426,8 +416,8 @@ class Package(models.Model):
             names.append('lib32-' + self.pkgname)
             names.append(self.pkgname + '-multilib')
         return Package.objects.normal().filter(
-                pkgname__in=names).exclude(id=self.id).order_by(
-                'arch__name', 'repo__name')
+            pkgname__in=names).exclude(id=self.id).order_by(
+            'arch__name', 'repo__name')
 
 
 class PackageFile(models.Model):
@@ -478,11 +468,10 @@ class RebuilderdStatus(models.Model):
         return "pkg=%s, status=%s" % (self.pkg, self.status_str)
 
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save # noqa
 
 # note: reporead sets the 'created' field on Package objects, so no signal
 # listener is set up here to do so
-pre_save.connect(set_created_field, sender=Donor,
-        dispatch_uid="main.models")
+pre_save.connect(set_created_field, sender=Donor, dispatch_uid="main.models")
 
 # vim: set ts=4 sw=4 et:

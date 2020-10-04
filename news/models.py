@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
@@ -10,7 +11,7 @@ from main.utils import parse_markdown
 class News(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     author = models.ForeignKey(User, related_name='news_author',
-            on_delete=models.PROTECT)
+                               on_delete=models.PROTECT)
     postdate = models.DateTimeField("post date", db_index=True)
     last_modified = models.DateTimeField(editable=False, db_index=True)
     title = models.CharField(max_length=255)
@@ -42,13 +43,9 @@ def set_news_fields(sender, **kwargs):
     if not news.postdate:
         news.postdate = current_time
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
-        news.guid = 'tag:%s,%s:%s' % (Site.objects.get_current(),
-                current_time.strftime('%Y-%m-%d'), news.get_absolute_url())
+        news.guid = f"tag:{Site.objects.get_current()},{current_time.strftime('%Y-%m-%d')}:{news.get_absolute_url()}"
 
 
-from django.db.models.signals import pre_save
-
-pre_save.connect(set_news_fields, sender=News,
-        dispatch_uid="news.models")
+pre_save.connect(set_news_fields, sender=News, dispatch_uid="news.models")
 
 # vim: set ts=4 sw=4 et:

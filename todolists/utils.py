@@ -21,7 +21,7 @@ SELECT todolist_id, count(*), SUM(CASE WHEN status = %s THEN 1 ELSE 0 END)
 
 def get_annotated_todolists(incomplete_only=False):
     lists = Todolist.objects.all().defer('raw').select_related(
-            'creator').order_by('-created')
+        'creator').order_by('-created')
     lookup = todo_counts()
 
     # tag each list with package counts
@@ -32,7 +32,7 @@ def get_annotated_todolists(incomplete_only=False):
         todolist.incomplete_count = counts[0] - counts[1]
 
     if incomplete_only:
-        lists = [l for l in lists if l.incomplete_count > 0]
+        lists = [lst for lst in lists if lst.incomplete_count > 0]
     else:
         lists = sorted(lists, key=lambda todolist: todolist.incomplete_count == 0)
     return lists
@@ -42,9 +42,9 @@ def attach_staging(packages, list_id):
     '''Look for any staging version of the packages provided and attach them
     to the 'staging' attribute on each package if found.'''
     pkgnames = TodolistPackage.objects.filter(
-            todolist_id=list_id).values('pkgname')
+        todolist_id=list_id).values('pkgname')
     staging_pkgs = Package.objects.normal().filter(repo__staging=True,
-            pkgname__in=pkgnames)
+                                                   pkgname__in=pkgnames)
     # now build a lookup dict to attach to the correct package
     lookup = {(p.pkgname, p.arch): p for p in staging_pkgs}
 

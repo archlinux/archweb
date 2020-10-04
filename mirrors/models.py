@@ -54,10 +54,10 @@ class Mirror(models.Model):
 
 class MirrorProtocol(models.Model):
     protocol = models.CharField(max_length=10, unique=True)
-    is_download = models.BooleanField(default=True,
-            help_text="Is protocol useful for end-users, e.g. HTTP")
-    default = models.BooleanField(default=True,
-            help_text="Included by default when building mirror list?")
+    is_download = models.BooleanField(
+        default=True, help_text="Is protocol useful for end-users, e.g. HTTP")
+    default = models.BooleanField(
+        default=True, help_text="Included by default when building mirror list?")
     created = models.DateTimeField(editable=False)
 
     def __str__(self):
@@ -69,14 +69,13 @@ class MirrorProtocol(models.Model):
 
 class MirrorUrl(models.Model):
     url = models.CharField("URL", max_length=255, unique=True)
-    protocol = models.ForeignKey(MirrorProtocol, related_name="urls",
-            editable=False, on_delete=models.PROTECT)
+    protocol = models.ForeignKey(
+        MirrorProtocol, related_name="urls",
+        editable=False, on_delete=models.PROTECT)
     mirror = models.ForeignKey(Mirror, related_name="urls", on_delete=models.CASCADE)
     country = CountryField(blank=True, db_index=True)
-    has_ipv4 = models.BooleanField("IPv4 capable", default=True,
-            editable=False)
-    has_ipv6 = models.BooleanField("IPv6 capable", default=False,
-            editable=False)
+    has_ipv4 = models.BooleanField("IPv4 capable", default=True, editable=False)
+    has_ipv6 = models.BooleanField("IPv6 capable", default=False, editable=False)
     active = models.BooleanField(default=True)
     bandwidth = models.FloatField("bandwidth (mbits)", null=True, blank=True)
     created = models.DateTimeField(editable=False)
@@ -137,8 +136,8 @@ class MirrorRsync(models.Model):
 
 class CheckLocation(models.Model):
     hostname = models.CharField(max_length=255)
-    source_ip = models.GenericIPAddressField('source IP',
-            unpack_ipv4=True, unique=True)
+    source_ip = models.GenericIPAddressField(
+        'source IP', unpack_ipv4=True, unique=True)
     country = CountryField()
     created = models.DateTimeField(editable=False)
 
@@ -191,7 +190,6 @@ class MirrorLog(models.Model):
 
 
 for model in (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync, CheckLocation):
-    pre_save.connect(set_created_field, sender=model,
-            dispatch_uid="mirrors.models")
+    pre_save.connect(set_created_field, sender=model, dispatch_uid="mirrors.models")
 
 # vim: set ts=4 sw=4 et:

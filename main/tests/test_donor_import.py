@@ -19,9 +19,6 @@ class DonorImportTest(TransactionTestCase):
     def setUp(self):
         self.command = Command()
 
-    def gen_parse_subject(self, data):
-        return self.command.parse_subject(valid.format(data))
-
     def test_parse_subject(self):
         self.assertIsNone(self.command.parse_subject('garbage'))
 
