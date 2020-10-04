@@ -28,8 +28,8 @@ class PackageSearchForm(forms.Form):
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
     flagged = forms.ChoiceField(
-            choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
-            required=False)
+        choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
+        required=False)
 
     def __init__(self, *args, **kwargs):
         show_staging = kwargs.pop('show_staging', False)
@@ -37,20 +37,18 @@ class PackageSearchForm(forms.Form):
         repos = Repo.objects.all()
         if not show_staging:
             repos = repos.filter(staging=False)
-        self.fields['repo'].choices = make_choice(
-                        [repo.name for repo in repos])
-        self.fields['arch'].choices = make_choice(
-                        [arch.name for arch in Arch.objects.all()])
+        self.fields['repo'].choices = make_choice([repo.name for repo in repos])
+        self.fields['arch'].choices = make_choice([arch.name for arch in Arch.objects.all()])
         self.fields['q'].widget.attrs.update({"size": "30"})
 
         profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
         people = User.objects.filter(
-                is_active=True, userprofile__id__in=profile_ids).order_by(
-                'first_name', 'last_name')
+            is_active=True, userprofile__id__in=profile_ids).order_by(
+            'first_name', 'last_name')
         maintainers = [('', 'All'), ('orphan', 'Orphan')] + \
-                 [(p.username, p.get_full_name()) for p in people]
+            [(p.username, p.get_full_name()) for p in people]
         packagers = [('', 'All'), ('unknown', 'Unknown')] + \
-                 [(p.username, p.get_full_name()) for p in people]
+            [(p.username, p.get_full_name()) for p in people]
 
         self.fields['maintainer'].choices = maintainers
         self.fields['packager'].choices = packagers
@@ -66,26 +64,23 @@ class PackageSearchForm(forms.Form):
 
 def parse_form(form, packages):
     if form.cleaned_data['repo']:
-        packages = packages.filter(
-                repo__name__in=form.cleaned_data['repo'])
+        packages = packages.filter(repo__name__in=form.cleaned_data['repo'])
 
     if form.cleaned_data['arch']:
-        packages = packages.filter(
-                arch__name__in=form.cleaned_data['arch'])
+        packages = packages.filter(arch__name__in=form.cleaned_data['arch'])
 
     if form.cleaned_data['maintainer'] == 'orphan':
         inner_q = PackageRelation.objects.all().values('pkgbase')
         packages = packages.exclude(pkgbase__in=inner_q)
     elif form.cleaned_data['maintainer']:
         inner_q = PackageRelation.objects.filter(
-                user__username=form.cleaned_data['maintainer']).values('pkgbase')
+            user__username=form.cleaned_data['maintainer']).values('pkgbase')
         packages = packages.filter(pkgbase__in=inner_q)
 
     if form.cleaned_data['packager'] == 'unknown':
         packages = packages.filter(packager__isnull=True)
     elif form.cleaned_data['packager']:
-        packages = packages.filter(
-                packager__username=form.cleaned_data['packager'])
+        packages = packages.filter(packager__username=form.cleaned_data['packager'])
 
     if form.cleaned_data['flagged'] == 'Flagged':
         packages = packages.filter(flag_date__isnull=False)
@@ -131,7 +126,7 @@ class SearchListView(ListView):
         if request.method == 'HEAD':
             return empty_response()
         self.form = PackageSearchForm(data=request.GET,
-                show_staging=self.request.user.is_authenticated)
+                                      show_staging=self.request.user.is_authenticated)
         return super(SearchListView, self).get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -169,14 +164,13 @@ def search_json(request):
 
     if request.GET:
         form = PackageSearchForm(data=request.GET,
-                show_staging=request.user.is_authenticated)
+                                 show_staging=request.user.is_authenticated)
         if form.is_valid():
             form_limit = form.cleaned_data.get('limit', limit)
             limit = min(limit, form_limit) if form_limit else limit
             container['limit'] = limit
 
-            packages = Package.objects.select_related('arch', 'repo',
-                    'packager')
+            packages = Package.objects.select_related('arch', 'repo', 'packager')
             if not request.user.is_authenticated:
                 packages = packages.filter(repo__staging=False)
             packages = parse_form(form, packages)

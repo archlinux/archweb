@@ -28,6 +28,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     args = "<keyring_path>"
     help = "Import keys and signatures from a given GPG keyring."
@@ -71,7 +72,7 @@ def call_gpg(keyring, *args):
     if '/' not in keyring:
         keyring = './%s' % keyring
     gpg_cmd = ["gpg2", "--no-default-keyring", "--keyring", keyring,
-            "--with-colons", "--fixed-list-mode"]
+               "--with-colons", "--fixed-list-mode"]
     gpg_cmd.extend(args)
     logger.info("running command: %s", ' '.join(gpg_cmd))
     proc = subprocess.Popen(gpg_cmd, stdout=subprocess.PIPE)
@@ -153,7 +154,7 @@ def import_keys(keyring):
                 'parent_id': parent_id,
             }
             dkey, created = DeveloperKey.objects.get_or_create(
-                    key=data.key, created=data.created, defaults=other)
+                key=data.key, created=data.created, defaults=other)
             data.db_id = dkey.id
 
             # set or update any additional data we might need to
@@ -216,8 +217,7 @@ def parse_sigdata(data):
             signer = parts[4]
             revoked = get_date(parts[5])
             # revoke any prior edges that match
-            matches = [e for e in edges if e.signer == signer
-                    and e.signee == current_pubkey]
+            matches = [e for e in edges if e.signer == signer and e.signee == current_pubkey]
             for edge in matches:
                 edge.revoked = revoked
 
@@ -230,17 +230,16 @@ def import_signatures(keyring):
 
     # now prune the data down to what we actually want.
     # prune edges not in nodes, remove duplicates, and self-sigs
-    pruned_edges = {edge for edge in edges
-            if edge.signer in nodes and edge.signer != edge.signee}
+    pruned_edges = {edge for edge in edges if edge.signer in nodes and edge.signer != edge.signee}
 
     logger.info("creating or finding up to %d signatures", len(pruned_edges))
     created_ct = updated_ct = 0
     with transaction.atomic():
         for edge in pruned_edges:
             sig, created = PGPSignature.objects.get_or_create(
-                    signer=edge.signer, signee=edge.signee,
-                    created=edge.created, expires=edge.expires,
-                    defaults={ 'revoked': edge.revoked })
+                signer=edge.signer, signee=edge.signee,
+                created=edge.created, expires=edge.expires,
+                defaults={'revoked': edge.revoked})
             if sig.revoked != edge.revoked:
                 sig.revoked = edge.revoked
                 sig.save()

@@ -197,7 +197,7 @@ REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
 
 # Import local settings
 try:
-    from local_settings import *
+    from local_settings import * # noqa
 except ImportError:
     pass
 
@@ -223,9 +223,7 @@ TEMPLATES = [
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
-    MIDDLEWARE = \
-            ['debug_toolbar.middleware.DebugToolbarMiddleware'] + \
-            list(MIDDLEWARE)
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + list(MIDDLEWARE)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 

@@ -14,7 +14,7 @@ from ..utils import get_group_info, PackageJSONEncoder
 
 
 def arch_plus_agnostic(arch):
-    arches = [ arch ]
+    arches = [arch]
     arches.extend(Arch.objects.filter(agnostic=True).order_by())
     return arches
 
@@ -24,8 +24,8 @@ def split_package_details(request, name, repo, arch):
     name. If so, we can show a listing page for the entire set of packages.'''
     arches = arch_plus_agnostic(arch)
     pkgs = Package.objects.normal().filter(pkgbase=name,
-            repo__testing=repo.testing, repo__staging=repo.staging,
-            arch__in=arches).order_by('pkgname')
+                                           repo__testing=repo.testing, repo__staging=repo.staging,
+                                           arch__in=arches).order_by('pkgname')
     if not pkgs:
         return None
     # we have packages, but ensure at least one is in the given repo
@@ -49,7 +49,7 @@ def recently_removed_package(request, name, repo, arch, cutoff=CUTOFF):
     requester in the right direction.'''
     arches = arch_plus_agnostic(arch)
     match = Update.objects.select_related('arch', 'repo').filter(
-            pkgname=name, repo=repo, arch__in=arches)
+        pkgname=name, repo=repo, arch__in=arches)
     if cutoff is not None:
         when = now() - cutoff
         match = match.filter(created__gte=when)
@@ -100,7 +100,7 @@ def redirect_agnostic(request, name, repo, arch):
         # except only one matching result
         pkgs = Package.objects.select_related(
             'arch', 'repo', 'packager').filter(pkgname=name,
-                    repo=repo, arch__agnostic=True)[:2]
+                                               repo=repo, arch__agnostic=True)[:2]
         if len(pkgs) == 1:
             return redirect(pkgs[0], permanent=True)
     return None
@@ -125,15 +125,15 @@ def details(request, name='', repo='', arch=''):
         repo_obj = get_object_or_404(Repo, name__iexact=repo)
         try:
             pkg = Package.objects.select_related(
-                    'arch', 'repo', 'packager').get(pkgname=name,
-                    repo=repo_obj, arch=arch_obj)
+                'arch', 'repo', 'packager').get(pkgname=name,
+                                                repo=repo_obj, arch=arch_obj)
             if request.method == 'HEAD':
                 return empty_response()
             return render(request, 'packages/details.html', {'pkg': pkg})
         except Package.DoesNotExist:
             # attempt a variety of fallback options before 404ing
             options = (redirect_agnostic, split_package_details,
-                    recently_removed_package, replaced_package)
+                       recently_removed_package, replaced_package)
             for method in options:
                 ret = method(request, name, repo_obj, arch_obj)
                 if ret:
@@ -161,7 +161,7 @@ def group_details(request, arch, name):
     arch = get_object_or_404(Arch, name=arch)
     arches = arch_plus_agnostic(arch)
     pkgs = Package.objects.normal().filter(
-            groups__name=name, arch__in=arches).order_by('pkgname')
+        groups__name=name, arch__in=arches).order_by('pkgname')
     if not pkgs:
         raise Http404
     context = {
@@ -175,7 +175,7 @@ def group_details(request, arch, name):
 
 def files(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+                            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
     dir_count = sum(1 for f in fileslist if f.is_directory)
@@ -192,14 +192,14 @@ def files(request, name, repo, arch):
 
 def details_json(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+                            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     to_json = json.dumps(pkg, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, content_type='application/json')
 
 
 def files_json(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+                            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
     dir_count = sum(1 for f in fileslist if f.is_directory)
@@ -220,7 +220,7 @@ def files_json(request, name, repo, arch):
 
 def download(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
-            pkgname=name, repo__name__iexact=repo, arch__name=arch)
+                            pkgname=name, repo__name__iexact=repo, arch__name=arch)
     url = get_mirror_url_for_download()
     if not url:
         raise Http404
@@ -229,7 +229,8 @@ def download(request, name, repo, arch):
         # grab the first non-any arch to fake the download path
         arch = Arch.objects.exclude(agnostic=True)[0].name
     url = '{host}{repo}/os/{arch}/{filename}'.format(host=url.url,
-            repo=pkg.repo.name.lower(), arch=arch, filename=pkg.filename)
+                                                     repo=pkg.repo.name.lower(),
+                                                     arch=arch, filename=pkg.filename)
     return redirect(url)
 
 # vim: set ts=4 sw=4 et:

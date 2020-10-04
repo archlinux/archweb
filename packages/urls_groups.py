@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from packages.views import groups, group_details
+from packages.views.display import groups, group_details
 
 urlpatterns = [
     url(r'^$', groups, name='groups-list'),

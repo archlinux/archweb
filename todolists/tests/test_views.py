@@ -46,9 +46,8 @@ class TestTodolistAdmin(TestCase):
                                                   password)
 
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
-        })
+                         'username': self.user.username,
+                         'password': password})
 
     def tearDown(self):
         Todolist.objects.all().delete()

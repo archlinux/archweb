@@ -5,7 +5,7 @@ from django import forms
 from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.shortcuts import (get_list_or_404, get_object_or_404,
-        redirect, render)
+                              redirect, render)
 from django.db import transaction
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView, ListView
@@ -21,16 +21,16 @@ from .utils import get_annotated_todolists, attach_staging
 
 class TodoListForm(forms.ModelForm):
     raw = forms.CharField(label='Packages', required=False,
-            help_text='(one per line)',
-            widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
+                          help_text='(one per line)',
+                          widget=forms.Textarea(attrs={'rows': '20', 'cols': '60'}))
 
     def package_names(self):
         return {s.strip() for s in self.cleaned_data['raw'].split("\n")}
 
     def packages(self):
         return Package.objects.normal().filter(
-                pkgname__in=self.package_names(),
-                repo__testing=False, repo__staging=False).order_by('arch')
+            pkgname__in=self.package_names(),
+            repo__testing=False, repo__staging=False).order_by('arch')
 
     class Meta:
         model = Todolist
@@ -60,7 +60,7 @@ def flag(request, slug, pkg_id):
 def view(request, slug):
     todolist = get_object_or_404(Todolist, slug=slug)
     svn_roots = Repo.objects.values_list(
-            'svn_root', flat=True).order_by().distinct()
+        'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(todolist.packages())
@@ -81,9 +81,9 @@ def list_pkgbases(request, slug, svn_root):
     todolist = get_object_or_404(Todolist, slug=slug)
     repos = get_list_or_404(Repo, svn_root=svn_root)
     pkgbases = TodolistPackage.objects.values_list(
-            'pkgbase', flat=True).filter(
-            todolist=todolist, repo__in=repos, removed__isnull=True).order_by(
-            'pkgbase').distinct()
+        'pkgbase', flat=True).filter(
+        todolist=todolist, repo__in=repos, removed__isnull=True).order_by(
+        'pkgbase').distinct()
     return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
 
@@ -108,10 +108,10 @@ def add(request):
         form = TodoListForm()
 
     page_dict = {
-            'title': 'Add Todo List',
-            'description': '',
-            'form': form,
-            'submit_text': 'Create List'
+        'title': 'Add Todo List',
+        'description': '',
+        'form': form,
+        'submit_text': 'Create List'
     }
     return render(request, 'general_form.html', page_dict)
 
@@ -128,13 +128,13 @@ def edit(request, slug):
             return redirect(todo_list)
     else:
         form = TodoListForm(instance=todo_list,
-                initial={'packages': todo_list.raw})
+                            initial={'packages': todo_list.raw})
 
     page_dict = {
-            'title': 'Edit Todo List: %s' % todo_list.name,
-            'description': '',
-            'form': form,
-            'submit_text': 'Save List'
+        'title': f'Edit Todo List: {todo_list.name}',
+        'description': '',
+        'form': form,
+        'submit_text': 'Save List'
     }
     return render(request, 'general_form.html', page_dict)
 
@@ -171,7 +171,7 @@ def create_todolist_packages(form, creator=None):
                 to_remove.add(todo_pkg.pk)
 
         TodolistPackage.objects.filter(
-                pk__in=to_remove).update(removed=timestamp)
+            pk__in=to_remove).update(removed=timestamp)
 
     # Add (or mark unremoved) any packages in the new packages list
     todo_pkgs = []
@@ -183,10 +183,10 @@ def create_todolist_packages(form, creator=None):
             'repo':  package.repo,
         }
         todo_pkg, created = TodolistPackage.objects.get_or_create(
-                todolist=todolist,
-                pkgname=package.pkgname,
-                arch=package.arch,
-                defaults=defaults)
+            todolist=todolist,
+            pkgname=package.pkgname,
+            arch=package.arch,
+            defaults=defaults)
         if created:
             todo_pkgs.append(todo_pkg)
         else:
@@ -226,10 +226,10 @@ def send_todolist_emails(todo_list, new_packages):
         }
         template = loader.get_template('todolists/email_notification.txt')
         send_mail('Packages added to todo list \'%s\'' % todo_list.name,
-                template.render(ctx),
-                'Arch Website Notification <nobody@archlinux.org>',
-                [maint],
-                fail_silently=True)
+                  template.render(ctx),
+                  'Arch Website Notification <nobody@archlinux.org>',
+                  [maint],
+                  fail_silently=True)
 
 
 class TodoListJSONEncoder(PackageJSONEncoder):

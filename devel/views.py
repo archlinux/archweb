@@ -106,7 +106,9 @@ def stats(request):
 
     return render(request, 'devel/stats.html', page_dict)
 
+
 SELECTED_GROUPS = ['Developers', 'Trusted Users', 'Support Staff']
+
 
 @login_required
 def clock(request):
@@ -247,8 +249,7 @@ def new_user_form(request):
             with transaction.atomic():
                 form.save()
                 log_addition(request, form.instance.user)
-            return HttpResponseRedirect('/admin/auth/user/%d/' % \
-                    form.instance.user.id)
+            return HttpResponseRedirect('/admin/auth/user/%d/' % form.instance.user.id)
     else:
         form = NewUserForm()
 

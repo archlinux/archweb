@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='release',
             name='pgp_key',
-            field=devel.fields.PGPKeyField(blank=True, help_text='consists of 40 hex digits; use `gpg --fingerprint`', max_length=40, null=True, verbose_name='PGP key fingerprint'),
+            field=devel.fields.PGPKeyField(blank=True, help_text='consists of 40 hex digits; use `gpg --fingerprint`',
+                                           max_length=40, null=True, verbose_name='PGP key fingerprint'),
         ),
     ]

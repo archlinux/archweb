@@ -3,6 +3,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def duration(value):
     if not value and type(value) != timedelta:
@@ -12,6 +13,7 @@ def duration(value):
     mins = total_secs // 60
     hrs, mins = divmod(mins, 60)
     return '%d:%02d' % (hrs, mins)
+
 
 @register.filter
 def hours(value):

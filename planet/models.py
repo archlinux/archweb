@@ -19,6 +19,7 @@ class Feed(models.Model):
         get_latest_by = 'title'
         ordering = ('-title',)
 
+
 class FeedItem(models.Model):
     title = models.CharField(max_length=255)
     summary = models.CharField(max_length=FEEDITEM_SUMMARY_LIMIT)
@@ -39,6 +40,7 @@ class FeedItem(models.Model):
         verbose_name_plural = 'Feed Items'
         get_latest_by = 'publishdate'
         ordering = ('-publishdate',)
+
 
 class Planet(models.Model):
     '''

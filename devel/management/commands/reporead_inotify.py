@@ -205,8 +205,8 @@ class EventHandler(pyinotify.ProcessEvent):
                 arch = self.arch_lookup.get(event.path, None)
                 if arch is None:
                     logger.warning(
-                            'Could not determine arch for %s, skipping update',
-                            path)
+                        'Could not determine arch for %s, skipping update',
+                        path)
                     return
                 database = Database(arch, path)
                 self.databases[path] = database

@@ -18,8 +18,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(unique=True, max_length=255)),
-                ('agnostic', models.BooleanField(default=False, help_text='Is this architecture non-platform specific?')),
-                ('required_signoffs', models.PositiveIntegerField(default=2, help_text='Number of signoffs required for packages of this architecture')),
+                ('agnostic', models.BooleanField(
+                    default=False, help_text='Is this architecture non-platform specific?')),
+                ('required_signoffs', models.PositiveIntegerField(
+                    default=2, help_text='Number of signoffs required for packages of this architecture')),
             ],
             options={
                 'ordering': ('name',),
@@ -33,7 +35,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(unique=True, max_length=255)),
-                ('visible', models.BooleanField(default=True, help_text='Should we show this donor on the public page?')),
+                ('visible', models.BooleanField(
+                    default=True, help_text='Should we show this donor on the public page?')),
                 ('created', models.DateTimeField()),
             ],
             options={
@@ -64,8 +67,10 @@ class Migration(migrations.Migration):
                 ('packager_str', models.CharField(max_length=255, verbose_name='packager string')),
                 ('signature_bytes', models.BinaryField(verbose_name='PGP signature', null=True)),
                 ('flag_date', models.DateTimeField(null=True, blank=True)),
-                ('arch', models.ForeignKey(related_name='packages', on_delete=django.db.models.deletion.PROTECT, to='main.Arch')),
-                ('packager', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('arch', models.ForeignKey(
+                    related_name='packages', on_delete=django.db.models.deletion.PROTECT, to='main.Arch')),
+                ('packager', models.ForeignKey(
+                    on_delete=django.db.models.deletion.SET_NULL, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'ordering': ('pkgname',),
@@ -95,9 +100,12 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=255)),
                 ('testing', models.BooleanField(default=False, help_text='Is this repo meant for package testing?')),
                 ('staging', models.BooleanField(default=False, help_text='Is this repo meant for package staging?')),
-                ('bugs_project', models.SmallIntegerField(default=1, help_text='Flyspray project ID for this repository.')),
-                ('bugs_category', models.SmallIntegerField(default=2, help_text='Flyspray category ID for this repository.')),
-                ('svn_root', models.CharField(help_text='SVN root (e.g. path) for this repository.', max_length=64)),
+                ('bugs_project', models.SmallIntegerField(
+                    default=1, help_text='Flyspray project ID for this repository.')),
+                ('bugs_category', models.SmallIntegerField(
+                    default=2, help_text='Flyspray category ID for this repository.')),
+                ('svn_root', models.CharField(
+                    help_text='SVN root (e.g. path) for this repository.', max_length=64)),
             ],
             options={
                 'ordering': ('name',),
@@ -108,7 +116,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='package',
             name='repo',
-            field=models.ForeignKey(related_name='packages', on_delete=django.db.models.deletion.PROTECT, to='main.Repo'),
+            field=models.ForeignKey(
+                related_name='packages',
+                on_delete=django.db.models.deletion.PROTECT,
+                to='main.Repo'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

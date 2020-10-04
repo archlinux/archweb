@@ -20,8 +20,8 @@ class PackageRelation(models.Model):
     MAINTAINER = 1
     WATCHER = 2
     TYPE_CHOICES = (
-            (MAINTAINER, 'Maintainer'),
-            (WATCHER, 'Watcher'),
+        (MAINTAINER, 'Maintainer'),
+        (WATCHER, 'Watcher'),
     )
     pkgbase = models.CharField(max_length=255)
     user = models.ForeignKey(User, related_name="package_relations", on_delete=models.CASCADE)
@@ -42,8 +42,7 @@ class PackageRelation(models.Model):
         return Update.objects.filter(pkgbase=self.pkgbase).latest()
 
     def __str__(self):
-        return '%s: %s (%s)' % (
-                self.pkgbase, self.user, self.get_type_display())
+        return f'{self.pkgbase}: {self.user} ({self.get_typw_display()})'
 
 
 class SignoffSpecificationManager(models.Manager):
@@ -51,8 +50,8 @@ class SignoffSpecificationManager(models.Manager):
         '''Utility method to pull all relevant name-version fields from a
         package and get a matching signoff specification.'''
         return self.get(
-                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
 
     def get_or_default_from_package(self, pkg):
         '''utility method to pull all relevant name-version fields from a
@@ -60,8 +59,8 @@ class SignoffSpecificationManager(models.Manager):
         base case.'''
         try:
             return self.get(
-                    pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                    epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
         except SignoffSpecification.DoesNotExist:
             return fake_signoff_spec(pkg.arch)
 
@@ -82,11 +81,11 @@ class SignoffSpecification(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
     required = models.PositiveIntegerField(default=2,
-        help_text="How many signoffs are required for this package?")
+                                           help_text="How many signoffs are required for this package?")
     enabled = models.BooleanField(default=True,
-        help_text="Is this package eligible for signoffs?")
+                                  help_text="Is this package eligible for signoffs?")
     known_bad = models.BooleanField(default=False,
-        help_text="Is this package known to be broken in some way?")
+                                    help_text="Is this package known to be broken in some way?")
     comments = models.TextField(null=True, blank=True)
 
     objects = SignoffSpecificationManager()
@@ -104,8 +103,9 @@ class SignoffSpecification(models.Model):
 # Fake signoff specs for when we don't have persisted ones in the database.
 # These have all necessary attributes of the real thing but are lighter weight
 # and have no chance of being persisted.
-FakeSignoffSpecification = namedtuple('FakeSignoffSpecification',
-        ('required', 'enabled', 'known_bad', 'comments'))
+FakeSignoffSpecification = namedtuple(
+    'FakeSignoffSpecification',
+    ('required', 'enabled', 'known_bad', 'comments'))
 
 
 def fake_signoff_spec(arch):
@@ -118,22 +118,23 @@ class SignoffManager(models.Manager):
         package and get a matching signoff.'''
         not_revoked = not revoked
         return self.get(
-                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
-                revoked__isnull=not_revoked, user=user)
+            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
+            revoked__isnull=not_revoked, user=user)
 
     def get_or_create_from_package(self, pkg, user):
         '''Utility method to pull all relevant name-version fields from a
         package and get or create a matching signoff.'''
         return self.get_or_create(
-                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
-                revoked=None, user=user)
+            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo,
+            revoked=None, user=user)
 
     def for_package(self, pkg):
         return self.select_related('user').filter(
-                pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
-                epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+            pkgbase=pkg.pkgbase, pkgver=pkg.pkgver, pkgrel=pkg.pkgrel,
+            epoch=pkg.epoch, arch=pkg.arch, repo=pkg.repo)
+
 
 class Signoff(models.Model):
     '''
@@ -157,8 +158,8 @@ class Signoff(models.Model):
     @property
     def packages(self):
         return Package.objects.normal().filter(pkgbase=self.pkgbase,
-                pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=self.epoch,
-                arch=self.arch, repo=self.repo)
+                                               pkgver=self.pkgver, pkgrel=self.pkgrel, epoch=self.epoch,
+                                               arch=self.arch, repo=self.repo)
 
     @property
     def full_version(self):
@@ -170,8 +171,7 @@ class Signoff(models.Model):
         revoked = ''
         if self.revoked:
             revoked = ' (revoked)'
-        return '%s-%s: %s%s' % (
-                self.pkgbase, self.full_version, self.user, revoked)
+        return f'{self.pkgbase}-{self.full_version}: {self.user}{revoked}'
 
 
 class FlagRequest(models.Model):
@@ -190,9 +190,9 @@ class FlagRequest(models.Model):
     num_packages = models.PositiveIntegerField('number of packages', default=1)
     message = models.TextField('message to developer', blank=True)
     is_spam = models.BooleanField(default=False,
-            help_text="Is this comment from a real person?")
+                                  help_text="Is this comment from a real person?")
     is_legitimate = models.BooleanField(default=True,
-            help_text="Is this actually an out-of-date flag request?")
+                                        help_text="Is this actually an out-of-date flag request?")
 
     class Meta:
         get_latest_by = 'created'
@@ -215,10 +215,10 @@ class FlagRequest(models.Model):
 
     def get_associated_packages(self):
         return Package.objects.normal().filter(
-                pkgbase=self.pkgbase,
-                repo__testing=self.repo.testing,
-                repo__staging=self.repo.staging).order_by(
-                'pkgname', 'repo__name', 'arch__name')
+            pkgbase=self.pkgbase,
+            repo__testing=self.repo.testing,
+            repo__staging=self.repo.staging).order_by(
+            'pkgname', 'repo__name', 'arch__name')
 
     def __str__(self):
         return '%s from %s on %s' % (self.pkgbase, self.who(), self.created)
@@ -249,9 +249,9 @@ class UpdateManager(models.Manager):
             if new_pkg:
                 update.action_flag = CHANGE
                 # ensure we should even be logging this
-                if (old_pkg.pkgver == new_pkg.pkgver and
-                        old_pkg.pkgrel == new_pkg.pkgrel and
-                        old_pkg.epoch == new_pkg.epoch):
+                if (old_pkg.pkgver == new_pkg.pkgver
+                        and old_pkg.pkgrel == new_pkg.pkgrel
+                        and old_pkg.epoch == new_pkg.epoch):
                     # all relevant fields were the same; e.g. a force update
                     return
             else:
@@ -277,13 +277,12 @@ class Update(models.Model):
     )
 
     package = models.ForeignKey(Package, related_name="updates",
-            null=True, on_delete=models.SET_NULL)
+                                null=True, on_delete=models.SET_NULL)
     repo = models.ForeignKey(Repo, related_name="updates", on_delete=models.CASCADE)
     arch = models.ForeignKey(Arch, related_name="updates", on_delete=models.CASCADE)
     pkgname = models.CharField(max_length=255, db_index=True)
     pkgbase = models.CharField(max_length=255)
-    action_flag = models.PositiveSmallIntegerField('action flag',
-            choices=UPDATE_ACTION_CHOICES)
+    action_flag = models.PositiveSmallIntegerField('action flag', choices=UPDATE_ACTION_CHOICES)
     created = models.DateTimeField(editable=False, db_index=True)
 
     old_pkgver = models.CharField(max_length=255, null=True)
@@ -325,12 +324,10 @@ class Update(models.Model):
         return '%s-%s' % (self.new_pkgver, self.new_pkgrel)
 
     def elsewhere(self):
-        return Package.objects.normal().filter(
-                pkgname=self.pkgname, arch=self.arch)
+        return Package.objects.normal().filter(pkgname=self.pkgname, arch=self.arch)
 
     def replacements(self):
-        pkgs = Package.objects.normal().filter(
-                replaces__name=self.pkgname)
+        pkgs = Package.objects.normal().filter(replaces__name=self.pkgname)
         if not self.arch.agnostic:
             # make sure we match architectures if possible
             arches = set(Arch.objects.filter(agnostic=True))
@@ -339,12 +336,10 @@ class Update(models.Model):
         return pkgs
 
     def get_absolute_url(self):
-        return '/packages/%s/%s/%s/' % (self.repo.name.lower(),
-                self.arch.name, self.pkgname)
+        return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
     def __str__(self):
-        return '%s of %s on %s' % (self.get_action_flag_display(),
-                self.pkgname, self.created)
+        return f'{self.get_action_flag_display()} of {self.pkgname} on {self.created}'
 
 
 class PackageGroup(models.Model):
@@ -386,7 +381,7 @@ class RelatedToBase(models.Model):
         # TODO: this may in fact be faster- select only the fields we know will
         # actually get used, saving us some bandwidth and hopefully query
         # construction time. However, reality hasn't quite proved it out yet.
-        #pkgs = Package.objects.select_related('repo', 'arch').only(
+        # pkgs = Package.objects.select_related('repo', 'arch').only(
         #        'id', 'pkgname', 'epoch', 'pkgver', 'pkgrel',
         #        'repo__id', 'repo__name', 'repo__testing', 'repo__staging',
         #        'arch__id', 'arch__name').filter(pkgname=self.name)
@@ -398,9 +393,8 @@ class RelatedToBase(models.Model):
         # actually satisfy the requirements
         if self.comparison and self.version:
             alpm = AlpmAPI()
-            pkgs = [pkg for pkg in pkgs if not alpm.available or
-                    alpm.compare_versions(pkg.full_version, self.comparison,
-                        self.version)]
+            pkgs = [pkg for pkg in pkgs if not alpm.available
+                    or alpm.compare_versions(pkg.full_version, self.comparison, self.version)]
         if len(pkgs) == 0:
             # couldn't find a package in the DB
             # it should be a virtual depend (or a removed package)
@@ -426,8 +420,7 @@ class RelatedToBase(models.Model):
         '''Return providers of this related package. Does *not* include exact
         matches as it checks the Provision names only, use get_best_satisfier()
         instead for exact matches.'''
-        pkgs = Package.objects.normal().filter(
-                provides__name=self.name).order_by().distinct()
+        pkgs = Package.objects.normal().filter(provides__name=self.name).order_by().distinct()
         if not self.pkg.arch.agnostic:
             # make sure we match architectures if possible
             arches = self.pkg.applicable_arches()
@@ -443,16 +436,14 @@ class RelatedToBase(models.Model):
                 for provide in package.provides.all():
                     if provide.name != self.name:
                         continue
-                    if alpm.compare_versions(provide.version,
-                            self.comparison, self.version):
+                    if alpm.compare_versions(provide.version, self.comparison, self.version):
                         new_pkgs.append(package)
             pkgs = new_pkgs
 
         # Sort providers by preference. We sort those in same staging/testing
         # combination first, followed by others. We sort by a (staging,
         # testing) match tuple that will be (True, True) in the best case.
-        key_func = lambda x: (x.repo.staging == self.pkg.repo.staging,
-                x.repo.testing == self.pkg.repo.testing)
+        key_func = lambda x: (x.repo.staging == self.pkg.repo.staging, x.repo.testing == self.pkg.repo.testing)
         return sorted(pkgs, key=key_func, reverse=True)
 
     def __str__(self):
@@ -476,8 +467,7 @@ class Depend(RelatedToBase):
     pkg = models.ForeignKey(Package, related_name='depends', on_delete=models.CASCADE)
     comparison = models.CharField(max_length=255, default='')
     description = models.TextField(null=True, blank=True)
-    deptype = models.CharField(max_length=1, default='D',
-            choices=DEPTYPE_CHOICES)
+    deptype = models.CharField(max_length=1, default='D', choices=DEPTYPE_CHOICES)
 
     def __str__(self):
         '''For depends, we may also have a description and a modifier.'''
@@ -510,8 +500,7 @@ class Replacement(RelatedToBase):
 
 # hook up some signals
 for sender in (FlagRequest, PackageRelation,
-        SignoffSpecification, Signoff, Update):
-    pre_save.connect(set_created_field, sender=sender,
-            dispatch_uid="packages.models")
+               SignoffSpecification, Signoff, Update):
+    pre_save.connect(set_created_field, sender=sender, dispatch_uid="packages.models")
 
 # vim: set ts=4 sw=4 et:

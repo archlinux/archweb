@@ -60,7 +60,8 @@ feeds_patterns = [
     url(r'^packages/(added|removed)/$', cache_page(313)(PackageUpdatesFeed())),
     url(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageUpdatesFeed())),
     url(r'^packages/(added|removed)/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageUpdatesFeed())),
-    url(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageUpdatesFeed())),
+    url(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
+        cache_page(313)(PackageUpdatesFeed())),
     url(r'^packages/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageFeed())),
     url(r'^packages/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
     url(r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
@@ -76,16 +77,16 @@ urlpatterns.extend([
 
 # Includes and other remaining stuff
 urlpatterns.extend([
-    url(r'^admin/',     admin.site.urls),
-    url(r'^devel/',     include(devel.urls)),
-    url(r'^feeds/',     include(feeds_patterns)),
-    url(r'^groups/',    include(packages.urls_groups)),
-    url(r'^mirrorlist/',include(mirrors.urls_mirrorlist)),
-    url(r'^mirrors/',   include(mirrors.urls)),
-    url(r'^news/',      include(news.urls)),
-    url(r'^packages/',  include(packages.urls)),
-    url(r'^releng/',    include(releng.urls)),
-    url(r'^todo/',      include(todolists.urls)),
+    url(r'^admin/', admin.site.urls),
+    url(r'^devel/', include(devel.urls)),
+    url(r'^feeds/', include(feeds_patterns)),
+    url(r'^groups/', include(packages.urls_groups)),
+    url(r'^mirrorlist/', include(mirrors.urls_mirrorlist)),
+    url(r'^mirrors/', include(mirrors.urls)),
+    url(r'^news/', include(news.urls)),
+    url(r'^packages/', include(packages.urls)),
+    url(r'^releng/', include(releng.urls)),
+    url(r'^todo/', include(todolists.urls)),
     url(r'^visualize/', include(visualize.urls)),
     url(r'^opensearch/packages/$', packages.views.opensearch, name='opensearch-packages'),
     url(r'^opensearch/packages/suggest$', packages.views.opensearch_suggest, name='opensearch-packages-suggest'),
@@ -115,6 +116,7 @@ if settings.DEBUG_TOOLBAR:
     urlpatterns.extend([
         path('__debug__/', include(debug_toolbar.urls)),
     ])
+
 
 # displays all archweb urls
 def show_urls(urllist=urlpatterns, depth=0):  # pragma: no cover

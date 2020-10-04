@@ -11,11 +11,10 @@ from devel.models import UserProfile
 class RetireUsertest(TransactionTestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
 
-
     def setUp(self):
         self.username = 'joe'
         self.user = User.objects.create(username=self.username, first_name="Joe",
-                                         last_name="User", email="user1@example.com")
+                                        last_name="User", email="user1@example.com")
 
         self.profile = UserProfile.objects.create(user=self.user,
                                                   public_email="{}@awesome.com".format(self.user.username))
@@ -38,7 +37,7 @@ class RetireUsertest(TransactionTestCase):
 
     def test_userprofile_missing(self):
         user = User.objects.create(username='user2', first_name="Jane",
-                                         last_name="User2", email="user2@example.com")
+                                   last_name="User2", email="user2@example.com")
 
         with self.assertRaises(CommandError) as e:
             call_command('retire_user', user.username)

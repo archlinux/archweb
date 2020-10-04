@@ -19,7 +19,7 @@ class MirrorTemplateTagTest(SimpleTestCase):
 
         self.assertEqual(hours(timedelta(hours=5)), '5 hours')
         self.assertEqual(hours(timedelta(hours=1)), '1 hour')
-        self.assertEqual(hours(timedelta(seconds=60*60)), '1 hour')
+        self.assertEqual(hours(timedelta(seconds=60 * 60)), '1 hour')
 
     def test_percentage(self):
         self.assertEqual(percentage(None), u'')

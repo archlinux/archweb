@@ -16,7 +16,8 @@ from django.views.decorators.cache import never_cache
 from main.models import Package, Arch, Repo
 from ..models import SignoffSpecification, Signoff
 from ..utils import (get_signoff_groups, approved_by_signoffs,
-        PackageSignoffGroup)
+                     PackageSignoffGroup)
+
 
 @permission_required('packages.change_signoff')
 def signoffs(request):
@@ -31,19 +32,19 @@ def signoffs(request):
     }
     return render(request, 'packages/signoffs.html', context)
 
+
 @permission_required('packages.change_signoff')
 @never_cache
 def signoff_package(request, name, repo, arch, revoke=False):
     packages = get_list_or_404(Package, pkgbase=name,
-            arch__name=arch, repo__name__iexact=repo, repo__testing=True)
+                               arch__name=arch, repo__name__iexact=repo, repo__testing=True)
     package = packages[0]
 
     spec = SignoffSpecification.objects.get_or_default_from_package(package)
 
     if revoke:
         try:
-            signoff = Signoff.objects.get_from_package(
-                    package, request.user, False)
+            signoff = Signoff.objects.get_from_package(package, request.user, False)
         except Signoff.DoesNotExist:
             raise Http404
         signoff.revoked = now()
@@ -53,10 +54,8 @@ def signoff_package(request, name, repo, arch, revoke=False):
         # ensure we should even be accepting signoffs
         if spec.known_bad or not spec.enabled:
             return render(request, '403.html', status=403)
-        signoff, created = Signoff.objects.get_or_create_from_package(
-                package, request.user)
-        signoffs = Signoff.objects.for_package(package).filter(
-                revoked__isnull=True)
+        signoff, created = Signoff.objects.get_or_create_from_package(package, request.user)
+        signoffs = Signoff.objects.for_package(package).filter(revoked__isnull=True)
 
         if signoffs.count() == spec.required:
             packager = package.packager
@@ -64,8 +63,7 @@ def signoff_package(request, name, repo, arch, revoke=False):
             # TODO: Handle notification when packager does not exist
             if packager:
                 toemail = [packager.email]
-                subject = f'{package.repo.name} package ' + \
-                    f'[{package.pkgname} {package.full_version}] approved'
+                subject = f'{package.repo.name} package [{package.pkgname} {package.full_version}] approved'
 
                 # send notification email to the maintainers
                 tmpl = loader.get_template('packages/approved.txt')
@@ -74,10 +72,9 @@ def signoff_package(request, name, repo, arch, revoke=False):
                     'pkg': package,
                 }
                 msg = EmailMessage(subject,
-                        tmpl.render(ctx),
-                        'Arch Website Notification <nobody@archlinux.org>',
-                        toemail,
-                )
+                                   tmpl.render(ctx),
+                                   'Arch Website Notification <nobody@archlinux.org>',
+                                   toemail)
                 msg.send(fail_silently=True)
 
     all_signoffs = Signoff.objects.for_package(package)
@@ -93,17 +90,19 @@ def signoff_package(request, name, repo, arch, revoke=False):
             'user': str(request.user),
         }
         return HttpResponse(json.dumps(data, ensure_ascii=False),
-                content_type='application/json')
+                            content_type='application/json')
 
     return redirect('package-signoffs')
 
+
 class SignoffOptionsForm(forms.ModelForm):
     apply_all = forms.BooleanField(required=False,
-        help_text="Apply these options to all architectures?")
+                                   help_text="Apply these options to all architectures?")
 
     class Meta:
         model = SignoffSpecification
         fields = ('required', 'enabled', 'known_bad', 'comments')
+
 
 def _signoff_options_all(request, name, repo):
     seen_ids = set()
@@ -111,7 +110,7 @@ def _signoff_options_all(request, name, repo):
         # find or create a specification for all architectures, then
         # graft the form data onto them
         packages = Package.objects.filter(pkgbase=name,
-            repo__name__iexact=repo, repo__testing=True)
+                                          repo__name__iexact=repo, repo__testing=True)
         for package in packages:
             try:
                 spec = SignoffSpecification.objects.get_from_package(package)
@@ -119,9 +118,9 @@ def _signoff_options_all(request, name, repo):
                     continue
             except SignoffSpecification.DoesNotExist:
                 spec = SignoffSpecification(pkgbase=package.pkgbase,
-                        pkgver=package.pkgver, pkgrel=package.pkgrel,
-                        epoch=package.epoch, arch=package.arch,
-                        repo=package.repo)
+                                            pkgver=package.pkgver, pkgrel=package.pkgrel,
+                                            epoch=package.epoch, arch=package.arch,
+                                            repo=package.repo)
 
             if spec.user is None:
                 spec.user = request.user
@@ -131,11 +130,12 @@ def _signoff_options_all(request, name, repo):
                 form.save()
             seen_ids.add(form.instance.pk)
 
+
 @permission_required('main.change_package')
 @never_cache
 def signoff_options(request, name, repo, arch):
     packages = get_list_or_404(Package, pkgbase=name,
-            arch__name=arch, repo__name__iexact=repo, repo__testing=True)
+                               arch__name=arch, repo__name__iexact=repo, repo__testing=True)
     package = packages[0]
 
     if request.user != package.packager and \
@@ -147,8 +147,8 @@ def signoff_options(request, name, repo, arch):
     except SignoffSpecification.DoesNotExist:
         # create a fake one, but don't save it just yet
         spec = SignoffSpecification(pkgbase=package.pkgbase,
-                pkgver=package.pkgver, pkgrel=package.pkgrel,
-                epoch=package.epoch, arch=package.arch, repo=package.repo)
+                                    pkgver=package.pkgver, pkgrel=package.pkgrel,
+                                    epoch=package.epoch, arch=package.arch, repo=package.repo)
 
     if spec.user is None:
         spec.user = request.user
@@ -171,11 +171,12 @@ def signoff_options(request, name, repo, arch):
     }
     return render(request, 'packages/signoff_options.html', context)
 
+
 class SignoffJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle all serialization of all classes
     related to signoffs.'''
     signoff_group_attrs = ['arch', 'last_update', 'maintainers', 'packager',
-            'pkgbase', 'repo', 'signoffs', 'target_repo', 'version']
+                           'pkgbase', 'repo', 'signoffs', 'target_repo', 'version']
     signoff_spec_attrs = ['required', 'enabled', 'known_bad', 'comments']
     signoff_attrs = ['user', 'created', 'revoked']
 
@@ -187,7 +188,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
             data['package_count'] = len(obj.packages)
             data['approved'] = obj.approved()
             data.update((attr, getattr(obj.specification, attr))
-                    for attr in self.signoff_spec_attrs)
+                        for attr in self.signoff_spec_attrs)
             return data
         elif isinstance(obj, Signoff):
             return {attr: getattr(obj, attr) for attr in self.signoff_attrs}
@@ -198,6 +199,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
         elif isinstance(obj, set):
             return list(obj)
         return super(SignoffJSONEncoder, self).default(obj)
+
 
 @permission_required('packages.change_signoff')
 def signoffs_json(request):

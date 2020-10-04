@@ -326,8 +326,8 @@ class UnFlagPackage(TransactionTestCase):
         self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
         self.profile.save()
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
+            'username': self.user.username,
+            'password': password
         })
 
     def tearDown(self):
@@ -380,8 +380,8 @@ class AdoptOrphanPackage(TransactionTestCase):
         self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
         self.profile.save()
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
+            'username': self.user.username,
+            'password': password
         })
 
     def tearDown(self):
@@ -443,8 +443,8 @@ class SignOffTest(TransactionTestCase):
         self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
         self.profile.save()
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
+            'username': self.user.username,
+            'password': password
         })
 
     def tearDown(self):

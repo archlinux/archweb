@@ -24,10 +24,10 @@ class RepoReadTest(TransactionTestCase):
         arch = Arch.objects.get(name__iexact='any')
         now = datetime.now(tz=timezone.utc)
         return Package.objects.create(arch=arch, repo=repo, pkgname='systemd',
-                                     pkgbase='systemd', pkgver=pkgver,
-                                     pkgrel=pkgrel, pkgdesc='Linux kernel',
-                                     compressed_size=10, installed_size=20,
-                                     last_update=now, created=now)
+                                      pkgbase='systemd', pkgver=pkgver,
+                                      pkgrel=pkgrel, pkgdesc='Linux kernel',
+                                      compressed_size=10, installed_size=20,
+                                      last_update=now, created=now)
 
     def test_invalid_args(self):
         with self.assertRaises(CommandError) as e:
@@ -41,12 +41,12 @@ class RepoReadTest(TransactionTestCase):
         with self.assertRaises(CommandError) as e:
             call_command('reporead', 'x86_64', 'nothing.db.tar.gz')
         self.assertIn('Specified package database file does not exist.', str(e.exception))
-    
+
     def test_invalid_arch(self):
         with self.assertRaises(CommandError) as e:
             call_command('reporead', 'armv64', 'devel/fixtures/core.db.tar.gz')
         self.assertEqual('Specified architecture armv64 is not currently known.', str(e.exception))
-    
+
     def test_read_packages(self):
         with patch('devel.management.commands.reporead.logger') as logger:
             call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
@@ -54,7 +54,8 @@ class RepoReadTest(TransactionTestCase):
 
         # Verify contents
         with tarfile.open('devel/fixtures/core.db.tar.gz') as tar:
-            files = [name.replace('core.db/', '') for name in tar.getnames() if name != 'core.db' and not 'desc' in name]
+            files = [name.replace('core.db/', '') for name in tar.getnames()
+                     if name != 'core.db' and 'desc' not in name]
 
         packages = Package.objects.all()
         import_packages = ["{}-{}-{}".format(pkg.pkgname, pkg.pkgver, pkg.pkgrel) for pkg in packages]
@@ -89,6 +90,6 @@ class RepoReadTest(TransactionTestCase):
             call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
         logger.info.assert_called()
 
-        objects =  FlagRequest.objects.all()
+        objects = FlagRequest.objects.all()
         self.assertEqual(len(objects), 1)
         self.assertEqual(objects[0].pkgver, staging_pkg.pkgver)

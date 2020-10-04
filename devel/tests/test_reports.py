@@ -12,8 +12,8 @@ class DeveloperReport(TransactionTestCase):
                                                   'admin@archlinux.org',
                                                   password)
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
+            'username': self.user.username,
+            'password': password
         })
 
     def tearDown(self):

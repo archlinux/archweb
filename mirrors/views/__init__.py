@@ -9,8 +9,7 @@ from django.utils.timezone import now
 from django.views.decorators.http import condition
 from django_countries.fields import Country
 
-from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
-        CheckLocation)
+from ..models import Mirror, MirrorUrl, MirrorLog
 from ..utils import get_mirror_statuses, get_mirror_errors
 
 
@@ -22,18 +21,18 @@ def mirrors(request, tier=None):
             raise Http404
         mirror_list = mirror_list.filter(tier=tier)
     protos = MirrorUrl.objects.values_list(
-            'mirror_id', 'protocol__protocol').order_by(
-            'mirror_id', 'protocol__protocol').distinct()
+        'mirror_id', 'protocol__protocol').order_by(
+        'mirror_id', 'protocol__protocol').distinct()
     countries = MirrorUrl.objects.values_list(
-            'mirror_id', 'country').order_by(
-            'mirror_id', 'country').distinct()
+        'mirror_id', 'country').order_by(
+        'mirror_id', 'country').distinct()
 
     if not request.user.is_authenticated:
         mirror_list = mirror_list.filter(public=True, active=True)
         protos = protos.filter(
-                mirror__public=True, mirror__active=True, active=True)
+            mirror__public=True, mirror__active=True, active=True)
         countries = countries.filter(
-                mirror__public=True, mirror__active=True, active=True)
+            mirror__public=True, mirror__active=True, active=True)
 
     protos = {k: list(v) for k, v in groupby(protos, key=itemgetter(0))}
     countries = {k: list(v) for k, v in groupby(countries, key=itemgetter(0))}
@@ -47,7 +46,7 @@ def mirrors(request, tier=None):
             mirror.country = Country(item_countries[0][1])
 
     return render(request, 'mirrors/mirrors.html',
-            {'mirror_list': mirror_list})
+                  {'mirror_list': mirror_list})
 
 
 def mirror_details(request, name):
@@ -58,10 +57,8 @@ def mirror_details(request, name):
         raise Http404
     error_cutoff = timedelta(days=7)
 
-    status_info = get_mirror_statuses(mirror_id=mirror.id,
-            show_all=authorized)
-    checked_urls = {url for url in status_info['urls'] \
-            if url.mirror_id == mirror.id}
+    status_info = get_mirror_statuses(mirror_id=mirror.id, show_all=authorized)
+    checked_urls = {url for url in status_info['urls'] if url.mirror_id == mirror.id}
     all_urls = mirror.urls.select_related('protocol')
     if not authorized:
         all_urls = all_urls.filter(active=True)
@@ -70,12 +67,12 @@ def mirror_details(request, name):
     other_urls = all_urls.difference(checked_urls)
     for url in other_urls:
         for attr in ('last_sync', 'completion_pct', 'delay', 'duration_avg',
-                'duration_stddev', 'score'):
+                     'duration_stddev', 'score'):
             setattr(url, attr, None)
     all_urls = sorted(checked_urls.union(other_urls), key=attrgetter('url'))
 
     error_logs = get_mirror_errors(mirror_id=mirror.id, cutoff=error_cutoff,
-            show_all=True)
+                                   show_all=True)
 
     context = {
         'mirror': mirror,
@@ -88,7 +85,7 @@ def mirror_details(request, name):
 
 def url_details(request, name, url_id):
     url = get_object_or_404(MirrorUrl.objects.select_related(),
-            id=url_id, mirror__name=name)
+                            id=url_id, mirror__name=name)
     mirror = url.mirror
     authorized = request.user.is_authenticated
     if not authorized and \
@@ -97,7 +94,7 @@ def url_details(request, name, url_id):
     error_cutoff = timedelta(days=7)
     cutoff_time = now() - error_cutoff
     logs = MirrorLog.objects.select_related('location').filter(
-            url=url, check_time__gte=cutoff_time).order_by('-check_time')
+        url=url, check_time__gte=cutoff_time).order_by('-check_time')
 
     context = {
         'url': url,
@@ -139,8 +136,7 @@ def status(request, tier=None):
 
     error_logs = get_mirror_errors()
     if tier is not None:
-        error_logs = [log for log in error_logs
-                if log['url'].mirror.tier == tier]
+        error_logs = [log for log in error_logs if log['url'].mirror.tier == tier]
 
     context = status_info.copy()
     context.update({

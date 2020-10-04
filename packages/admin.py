@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (PackageRelation, FlagRequest,
-        Signoff, SignoffSpecification, Update)
+from .models import (PackageRelation, FlagRequest, Signoff, SignoffSpecification,
+                     Update)
 
 
 class PackageRelationAdmin(admin.ModelAdmin):
@@ -14,7 +14,7 @@ class PackageRelationAdmin(admin.ModelAdmin):
 
 class FlagRequestAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'repo', 'created', 'who',
-            'is_spam', 'is_legitimate', 'message')
+                    'is_spam', 'is_legitimate', 'message')
     list_filter = ('is_spam', 'is_legitimate', 'repo', 'created')
     search_fields = ('pkgbase', 'user_email', 'message')
     ordering = ('-created',)
@@ -26,7 +26,7 @@ class FlagRequestAdmin(admin.ModelAdmin):
 
 class SignoffAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
-            'user', 'created', 'revoked')
+                    'user', 'created', 'revoked')
     list_filter = ('arch', 'repo', 'user', 'created')
     search_fields = ('pkgbase', 'user__username')
     ordering = ('-created',)
@@ -34,7 +34,7 @@ class SignoffAdmin(admin.ModelAdmin):
 
 class SignoffSpecificationAdmin(admin.ModelAdmin):
     list_display = ('pkgbase', 'full_version', 'arch', 'repo',
-            'user', 'created', 'comments')
+                    'user', 'created', 'comments')
     list_filter = ('arch', 'repo', 'user', 'created')
     search_fields = ('pkgbase', 'user__username')
     ordering = ('-created',)
@@ -46,7 +46,7 @@ class SignoffSpecificationAdmin(admin.ModelAdmin):
 
 class UpdateAdmin(admin.ModelAdmin):
     list_display = ('pkgname', 'repo', 'arch', 'action_flag',
-            'old_version', 'new_version', 'created')
+                    'old_version', 'new_version', 'created')
     list_filter = ('action_flag', 'repo', 'arch', 'created')
     search_fields = ('pkgname',)
     ordering = ('-created',)

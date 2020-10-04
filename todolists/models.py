@@ -39,9 +39,9 @@ class Todolist(models.Model):
     def packages(self):
         if not hasattr(self, '_packages'):
             self._packages = self.todolistpackage_set.filter(
-                    removed__isnull=True).select_related(
-                    'pkg', 'repo', 'arch', 'user__userprofile').order_by(
-                    'pkgname', 'arch')
+                removed__isnull=True).select_related(
+                'pkg', 'repo', 'arch', 'user__userprofile').order_by(
+                'pkgname', 'arch')
         return self._packages
 
 

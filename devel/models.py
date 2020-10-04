@@ -30,7 +30,8 @@ class UserProfile(models.Model):
         max_length=50,
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
-    pgp_key = PGPKeyField(max_length=40, null=True, blank=True,
+    pgp_key = PGPKeyField(
+        max_length=40, null=True, blank=True,
         verbose_name="PGP key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     website = models.CharField(max_length=200, null=True, blank=True)
@@ -44,14 +45,14 @@ class UserProfile(models.Model):
     occupation = models.CharField(max_length=50, null=True, blank=True)
     roles = models.CharField(max_length=255, null=True, blank=True)
     favorite_distros = models.CharField(max_length=255, null=True, blank=True)
-    picture = models.FileField(upload_to='devs', default='devs/silhouette.png',
-        help_text="Ideally 125px by 125px")
+    picture = models.FileField(
+        upload_to='devs', default='devs/silhouette.png', help_text="Ideally 125px by 125px")
     user = models.OneToOneField(User, related_name='userprofile', on_delete=models.CASCADE)
     allowed_repos = models.ManyToManyField('main.Repo', blank=True)
-    latin_name = models.CharField(max_length=255, null=True, blank=True,
-        help_text="Latin-form name; used only for non-Latin full names")
-    rebuilderd_updates = models.BooleanField(default=False,
-                                             help_text='Receive reproducible build package updates')
+    latin_name = models.CharField(
+        max_length=255, null=True, blank=True, help_text="Latin-form name; used only for non-Latin full names")
+    rebuilderd_updates = models.BooleanField(
+        default=False, help_text='Receive reproducible build package updates')
     last_modified = models.DateTimeField(editable=False)
 
     class Meta:
@@ -87,11 +88,16 @@ class StaffGroup(models.Model):
 
 
 class MasterKey(models.Model):
-    owner = models.ForeignKey(User, related_name='masterkey_owner',
-        help_text="The developer holding this master key", on_delete=models.CASCADE)
-    revoker = models.ForeignKey(User, related_name='masterkey_revoker',
-        help_text="The developer holding the revocation certificate", on_delete=models.CASCADE)
-    pgp_key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
+    owner = models.ForeignKey(
+        User, related_name='masterkey_owner',
+        help_text="The developer holding this master key",
+        on_delete=models.CASCADE)
+    revoker = models.ForeignKey(
+        User, related_name='masterkey_revoker',
+        help_text="The developer holding the revocation certificate",
+        on_delete=models.CASCADE)
+    pgp_key = PGPKeyField(
+        max_length=40, verbose_name="PGP key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     created = models.DateField()
     revoked = models.DateField(null=True, blank=True)
@@ -101,15 +107,15 @@ class MasterKey(models.Model):
         get_latest_by = 'created'
 
     def __str__(self):
-        return '%s, created %s' % (
-                self.owner.get_full_name(), self.created)
+        return '%s, created %s' % (self.owner.get_full_name(), self.created)
 
 
 class DeveloperKey(models.Model):
-    owner = models.ForeignKey(User, related_name='all_keys', null=True,
-            help_text="The developer this key belongs to", on_delete=models.CASCADE)
-    key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",
-            unique=True)
+    owner = models.ForeignKey(
+        User, related_name='all_keys', null=True,
+        help_text="The developer this key belongs to",
+        on_delete=models.CASCADE)
+    key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint", unique=True)
     created = models.DateTimeField()
     expires = models.DateTimeField(null=True, blank=True)
     revoked = models.DateTimeField(null=True, blank=True)
@@ -120,10 +126,8 @@ class DeveloperKey(models.Model):
 
 
 class PGPSignature(models.Model):
-    signer = PGPKeyField(max_length=40, verbose_name="Signer key fingerprint",
-            db_index=True)
-    signee = PGPKeyField(max_length=40, verbose_name="Signee key fingerprint",
-            db_index=True)
+    signer = PGPKeyField(max_length=40, verbose_name="Signer key fingerprint", db_index=True)
+    signee = PGPKeyField(max_length=40, verbose_name="Signee key fingerprint", db_index=True)
     created = models.DateField()
     expires = models.DateField(null=True, blank=True)
     revoked = models.DateField(null=True, blank=True)
@@ -193,10 +197,8 @@ def delete_feed_model(sender, **kwargs):
     Feed.objects.filter(website_rss=userprofile.website_rss).delete()
 
 
-pre_save.connect(create_feed_model, sender=UserProfile,
-        dispatch_uid="devel.models")
+pre_save.connect(create_feed_model, sender=UserProfile, dispatch_uid="devel.models")
 
-post_save.connect(delete_feed_model, sender=User,
-        dispatch_uid='main.models')
+post_save.connect(delete_feed_model, sender=User, dispatch_uid='main.models')
 
 # vim: set ts=4 sw=4 et:

@@ -14,9 +14,9 @@ from todolists.models import Todolist
 class PackagesSitemap(Sitemap):
     def items(self):
         return Package.objects.normal().only(
-                'pkgname', 'last_update', 'files_last_update',
-                'repo__name', 'repo__testing', 'repo__staging',
-                'arch__name')
+            'pkgname', 'last_update', 'files_last_update',
+            'repo__name', 'repo__testing', 'repo__staging',
+            'arch__name')
 
     def lastmod(self, obj):
         return obj.last_update
@@ -70,8 +70,7 @@ class SplitPackagesSitemap(Sitemap):
         return obj['last_update']
 
     def location(self, obj):
-        return '/packages/%s/%s/%s/' % (
-                obj['repo'].name.lower(), obj['arch'], obj['pkgbase'])
+        return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/obj['pkgbase']/"
 
 
 class NewsSitemap(Sitemap):
@@ -144,24 +143,24 @@ class BaseSitemap(Sitemap):
     DEFAULT_PRIORITY = 0.7
 
     base_viewnames = (
-            ('index', 1.0, 'hourly'),
-            ('packages-search', 0.8, 'hourly'),
-            ('page-download', 0.8, 'monthly'),
-            ('page-keys', 0.8, 'weekly'),
-            ('news-list', 0.7, 'weekly'),
-            ('groups-list', 0.5, 'weekly'),
-            ('mirror-status', 0.4, 'hourly'),
-            'page-about',
-            'page-art',
-            'page-svn',
-            'page-donate',
-            'feeds-list',
-            'mirror-list',
-            'mirror-status',
-            'mirrorlist',
-            'packages-differences',
-            'releng-release-list',
-            'visualize-index',
+        ('index', 1.0, 'hourly'),
+        ('packages-search', 0.8, 'hourly'),
+        ('page-download', 0.8, 'monthly'),
+        ('page-keys', 0.8, 'weekly'),
+        ('news-list', 0.7, 'weekly'),
+        ('groups-list', 0.5, 'weekly'),
+        ('mirror-status', 0.4, 'hourly'),
+        'page-about',
+        'page-art',
+        'page-svn',
+        'page-donate',
+        'feeds-list',
+        'mirror-list',
+        'mirror-status',
+        'mirrorlist',
+        'packages-differences',
+        'releng-release-list',
+        'visualize-index',
     )
 
     def items(self):

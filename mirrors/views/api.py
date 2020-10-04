@@ -6,8 +6,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 
-from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog,
-        CheckLocation)
+from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog, CheckLocation)
 from ..utils import get_mirror_statuses, DEFAULT_CUTOFF
 
 
@@ -15,7 +14,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
     '''Base JSONEncoder extended to handle datetime.timedelta and MirrorUrl
     serialization. The base class takes care of datetime.datetime types.'''
     url_attributes = ('url', 'protocol', 'last_sync', 'completion_pct',
-            'delay', 'duration_avg', 'duration_stddev', 'score', 'active')
+                      'delay', 'duration_avg', 'duration_stddev', 'score', 'active')
 
     def default(self, obj):
         if isinstance(obj, timedelta):
@@ -39,14 +38,14 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
 class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
     '''Adds URL check history information.'''
     log_attributes = ('check_time', 'last_sync', 'duration', 'is_success',
-            'location_id')
+                      'location_id')
 
     def default(self, obj):
         if isinstance(obj, MirrorUrl):
             data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
             cutoff = now() - DEFAULT_CUTOFF
             data['logs'] = list(obj.logs.filter(
-                    check_time__gte=cutoff).order_by('check_time'))
+                check_time__gte=cutoff).order_by('check_time'))
             return data
         if isinstance(obj, MirrorLog):
             data = {attr: getattr(obj, attr) for attr in self.log_attributes}
@@ -91,16 +90,14 @@ def mirror_details_json(request, name):
     mirror = get_object_or_404(Mirror, name=name)
     if not authorized and (not mirror.public or not mirror.active):
         raise Http404
-    status_info = get_mirror_statuses(mirror_id=mirror.id,
-            show_all=authorized)
+    status_info = get_mirror_statuses(mirror_id=mirror.id, show_all=authorized)
     data = status_info.copy()
     data['version'] = 4
     data['details'] = mirror.get_full_url()
     if authorized and request.user.has_perm('mirrors.change_mirror'):
         data['admin_email'] = mirror.admin_email
         data['alternate_email'] = mirror.alternate_email
-    to_json = json.dumps(data, ensure_ascii=False,
-            cls=ExtendedMirrorStatusJSONEncoder)
+    to_json = json.dumps(data, ensure_ascii=False, cls=ExtendedMirrorStatusJSONEncoder)
     response = HttpResponse(to_json, content_type='application/json')
     return response
 
