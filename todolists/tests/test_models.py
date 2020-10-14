@@ -1,45 +1,34 @@
-from django.contrib.auth.models import User
-from django.test import TestCase
+from todolists.tests.conftest import NAME
 
 
-from main.models import Package
-from todolists.models import Todolist, TodolistPackage
+def test_stripped_description(todolist):
+    todolist.description = 'Boost rebuild '
+    desc = todolist.stripped_description
+    assert not desc.endswith(' ')
 
 
-class TestTodolist(TestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
-                'main/fixtures/package.json']
+def test_get_absolute_url(todolist):
+    assert '/todo/' in todolist.get_absolute_url()
 
-    def setUp(self):
-        self.user = User.objects.create(username="joeuser", first_name="Joe",
-                                        last_name="User", email="user1@example.com")
-        self.todolist = Todolist.objects.create(name='Boost rebuild',
-                                                description='Boost 1.66 rebuid',
-                                                creator=self.user,
-                                                raw='linux')
 
-    def tearDown(self):
-        self.todolist.delete()
-        self.user.delete()
+def test_get_full_url(todolist):
+    url = todolist.get_full_url()
+    assert 'https://example.com/todo/' in url
 
-    def test_stripped_description(self):
-        self.todolist.description = 'Boost rebuild '
-        desc = self.todolist.stripped_description
-        self.assertFalse(desc.endswith(' '))
 
-    def test_get_absolute_url(self):
-        self.assertIn('/todo/', self.todolist.get_absolute_url())
+def test_packages(admin_user, todolist, todolistpackage):
+    pkgs = todolist.packages()
+    assert len(pkgs) == 1
+    assert pkgs[0] == todolistpackage
 
-    def test_get_full_url(self):
-        url = self.todolist.get_full_url()
-        self.assertIn('https://example.com/todo/', url)
 
-    def test_packages(self):
-        pkg = Package.objects.first()
-        todopkg = TodolistPackage.objects.create(pkg=pkg, pkgname=pkg.pkgname,
-                                       pkgbase=pkg.pkgbase, arch=pkg.arch,
-                                       repo=pkg.repo, user=self.user,
-                                       todolist=self.todolist)
-        pkgs = self.todolist.packages()
-        self.assertEqual(len(pkgs), 1)
-        self.assertEqual(pkgs[0], todopkg)
+def test_str(admin_user, todolist):
+    assert NAME in str(todolist)
+
+
+def test_todolist_str(admin_user, todolist, todolistpackage):
+    assert todolistpackage.pkgname in str(todolistpackage)
+
+
+def test_status_css_class(admin_user, todolist, todolistpackage):
+    assert todolistpackage.status_css_class() == 'incomplete'

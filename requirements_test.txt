@@ -1,0 +1,6 @@
+coveralls
+pylint
+pytest
+pytest-cov
+pytest-django
+

@@ -1,12 +1,8 @@
-from django.test import TestCase
+def test_feed(db, client):
+    response = client.get('/feeds/planet/')
+    assert response.status_code == 200
 
 
-class PlanetTest(TestCase):
-
-    def test_feed(self):
-        response = self.client.get('/feeds/planet/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_planet(self):
-        response = self.client.get('/planet/')
-        self.assertEqual(response.status_code, 200)
+def test_planet(db, client):
+    response = client.get('/planet/')
+    assert response.status_code == 200

@@ -1,30 +1,23 @@
-from django.test import TransactionTestCase
+import pytest
 
-from mirrors.models import MirrorRsync, Mirror
+from mirrors.models import MirrorRsync
 
 
-TEST_IPV6 = "2a0b:4342:1a31:410::"
-TEST_IPV4 = "8.8.8.8"
+def test_invalid(transactional_db, mirror):
+    with pytest.raises(ValueError) as excinfo:
+        MirrorRsync.objects.create(ip="8.8.8.8.8", mirror=mirror)
+    assert 'IPv4 Address with more than 4 bytes' in str(excinfo)
 
-class MirrorRsyncTest(TransactionTestCase):
-    def setUp(self):
-        self.mirror = Mirror.objects.create(name='rmirror',
-                                            admin_email='foo@bar.com')
 
-    def tearDown(self):
-        self.mirror.delete()
+def test_ipv6(transactional_db, mirror):
+    ipv6 = "2a0b:4342:1a31:410::"
+    mirrorrsync = MirrorRsync.objects.create(ip=ipv6, mirror=mirror)
+    assert str(mirrorrsync) == ipv6
+    mirrorrsync.delete()
 
-    def test_ipv6(self):
-        mirrorrsync = MirrorRsync.objects.create(ip=TEST_IPV6, mirror=self.mirror)
-        self.assertEqual(str(mirrorrsync), TEST_IPV6)
-        mirrorrsync.delete()
 
-    def test_ipv4(self):
-        mirrorrsync = MirrorRsync.objects.create(ip=TEST_IPV4, mirror=self.mirror)
-        self.assertEqual(str(mirrorrsync), TEST_IPV4)
-        mirrorrsync.delete()
-
-    def test_invalid(self):
-        with self.assertRaises(ValueError) as e:
-            MirrorRsync.objects.create(ip="8.8.8.8.8", mirror=self.mirror)
-        self.assertIn('IPv4 Address with more than 4 bytes', str(e.exception))
+def test_ipv4(transactional_db, mirror):
+    ipv4 = "8.8.8.8"
+    mirrorrsync = MirrorRsync.objects.create(ip=ipv4, mirror=mirror)
+    assert str(mirrorrsync) == ipv4
+    mirrorrsync.delete()
