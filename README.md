@@ -10,11 +10,11 @@ To get a pretty version of this document, run
 
 # License
 
-See LICENSE(https://github.com/archlinux/archweb/blob/master/LICENSE) file.
+See [LICENSE](https://github.com/archlinux/archweb/blob/master/LICENSE) file.
 
 # Authors
 
-See AUTHORS(https://github.com/archlinux/archweb/blob/master/AUTHORS) file.
+See [AUTHORS](https://github.com/archlinux/archweb/blob/master/AUTHORS) file.
 
 # Dependencies
 
