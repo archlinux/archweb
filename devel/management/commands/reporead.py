@@ -20,7 +20,7 @@ import io
 import os
 import re
 import sys
-import tarfile
+import xtarfile as tarfile
 import logging
 from datetime import datetime
 from pytz import utc
@@ -550,33 +550,32 @@ def parse_repo(repopath):
         logger.error("File does not have the proper extension")
         raise Exception("File does not have the proper extension")
 
-    repodb = tarfile.open(repopath, "r")
-    logger.debug("Starting package parsing")
-    newpkg = lambda: RepoPackage(reponame)
-    pkgs = defaultdict(newpkg)
-    for tarinfo in repodb.getmembers():
-        if tarinfo.isreg():
-            pkgid, fname = os.path.split(tarinfo.name)
-            if fname == 'files':
-                # don't parse yet for speed and memory consumption reasons
-                files_data = repodb.extractfile(tarinfo)
-                pkgs[pkgid].files = files_data.read()
-                del files_data
-            elif fname in ('desc', 'depends'):
-                data_file = repodb.extractfile(tarinfo)
-                data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                        encoding='UTF-8')
-                try:
-                    pkgs[pkgid].populate(parse_info(data_file))
-                except UnicodeDecodeError:
-                    logger.warning("Could not correctly decode %s, skipping file",
-                            tarinfo.name)
-                data_file.close()
-                del data_file
+    with tarfile.open(repopath, 'r') as repodb:
+        logger.debug("Starting package parsing")
+        newpkg = lambda: RepoPackage(reponame)
+        pkgs = defaultdict(newpkg)
+        for tarinfo in repodb.getmembers():
+            if tarinfo.isreg():
+                pkgid, fname = os.path.split(tarinfo.name)
+                if fname == 'files':
+                    # don't parse yet for speed and memory consumption reasons
+                    files_data = repodb.extractfile(tarinfo)
+                    pkgs[pkgid].files = files_data.read()
+                    del files_data
+                elif fname in ('desc', 'depends'):
+                    data_file = repodb.extractfile(tarinfo)
+                    data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
+                            encoding='UTF-8')
+                    try:
+                        pkgs[pkgid].populate(parse_info(data_file))
+                    except UnicodeDecodeError:
+                        logger.warning("Could not correctly decode %s, skipping file",
+                                tarinfo.name)
+                    data_file.close()
+                    del data_file
 
-            logger.debug("Done parsing file %s/%s", pkgid, fname)
+                logger.debug("Done parsing file %s/%s", pkgid, fname)
 
-    repodb.close()
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
     return (reponame, pkgs.values())
 
