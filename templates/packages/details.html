@@ -35,6 +35,35 @@ function ajaxifyFiles() {
     });
 }
 
+function ajaxifySonames() {
+    const link = document.getElementById("sonamelink");
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+        fetch(this.getAttribute('href') + 'json/').then(function(response) {
+                return response.json();
+        }).then(function(data) {
+            const sonamelist = document.getElementById("pkgsonamelist");
+            while (sonamelist.firstChild) {
+                sonamelist.removeChild(sonamelist.firstChild);
+            }
+            if (data.length > 0) {
+                const fragment = document.createDocumentFragment();
+                for (soname of data) {
+                    let ul = document.createElement("UL");
+                    ul.innerHTML = soname;
+                    fragment.appendChild(ul);
+                }
+                sonamelist.appendChild(fragment);
+            } else {
+                const p = document.createElement("p");
+                p.innerHTML = "Package has no sonames.";
+                p.className = "message";
+                sonamelist.appendChild(p);
+            }
+        });
+    });
+}
+
 function collapseDependsList(list) {
     list = $(list);
     // Hide everything past a given limit. Don't do anything if we don't have
@@ -81,6 +110,7 @@ function collapseRelatedTo(elements) {
 
 $(document).ready(function() {
         ajaxifyFiles();
+        ajaxifySonames();
         collapseDependsList("#pkgdepslist");
         collapseDependsList("#pkgreqslist");
         collapseRelatedTo(".relatedto");

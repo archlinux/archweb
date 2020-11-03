@@ -5,12 +5,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_safe, require_POST
 
-from main.models import Package
+from main.models import Package, Soname
 from ..models import PackageRelation
 from ..utils import multilib_differences, get_wrong_permissions
 
@@ -129,5 +129,23 @@ def stale_relations_update(request):
 
     messages.info(request, "%d package relations deleted." % len(ids))
     return redirect('/packages/stale_relations/')
+
+
+def sonames(request):
+    if request.method == 'GET':
+        packages = []
+        name = request.GET.get('name')
+
+        if name:
+            sonames = Soname.objects.filter(name__startswith=name).values('pkg__pkgname', 'pkg__pkgver', 'pkg__pkgrel', 'pkg__epoch', 'pkg__repo__name')
+            packages = [{'pkgname': soname['pkg__pkgname'], 'pkgrel': soname['pkg__pkgrel'], 'pkgver': soname['pkg__pkgver'], 'epoch': soname['pkg__epoch'], 'repo': soname['pkg__repo__name'].lower()} for soname in sonames]
+        else:
+            return HttpResponseBadRequest('name parameter is required')
+
+        to_json = json.dumps(packages, ensure_ascii=False)
+        return HttpResponse(to_json, content_type='application/json')
+
+    else:
+        return HttpResponseBadRequest('only GET is allowed')
 
 # vim: set ts=4 sw=4 et:

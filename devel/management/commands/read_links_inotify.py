@@ -1,19 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-reporead_inotify command
-
-Watches repo.files.tar.gz files for updates and parses them after a short delay
-in order to catch all updates in a single bulk update.
-
-Usage: ./manage.py reporead_inotify [path_template]
-
-Where 'path_template' is an optional path_template for finding the
-repo.files.tar.gz files. The form is '/srv/ftp/%(repo)s/os/%(arch)s/', which is
-also the default template if none is specified. While 'repo' is not required to
-be present in the path_template, note that 'arch' is so reporead can function
-correctly.
-"""
-
 import logging
 import pyinotify
 import sys
@@ -23,19 +7,23 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
 from main.models import Arch, Repo
-from .reporead import read_repo
+from .readlinks import read_links
 from .archweb_inotify import EventHandler
 
 logging.basicConfig(
-    level=logging.WARNING,
+    level=logging.INFO,
     format='%(asctime)s -> %(levelname)s: %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     stream=sys.stderr)
 logger = logging.getLogger()
 
 
+def wrapper_read_links(arch, filepath, obj):
+    read_links(filepath)
+
+
 class Command(BaseCommand):
-    help = "Watch database files and run an update when necessary."
+    help = "Watch links files and run an update when necessary."
     args = "[path_template]"
 
     def handle(self, path_template=None, **options):
@@ -106,7 +94,7 @@ class Command(BaseCommand):
         for name in all_paths:
             manager.add_watch(name, mask)
 
-        handler = EventHandler(arch_paths=arch_path_map, filename_suffix='.files.tar.gz', callback_func=read_repo)
+        handler = EventHandler(arch_paths=arch_path_map, filename_suffix='.links.tar.gz', callback_func=wrapper_read_links)
         return pyinotify.Notifier(manager, handler)
 
 

@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 
-from main.models import Package, PackageFile, Arch, Repo
+from main.models import Package, PackageFile, Arch, Repo, Soname
 from main.utils import empty_response
 from mirrors.utils import get_mirror_url_for_download
 from ..models import Update
@@ -188,6 +188,25 @@ def files(request, name, repo, arch):
     }
     template = 'packages/files.html'
     return render(request, template, context)
+
+
+def sonames(request, name, repo, arch):
+    pkg = get_object_or_404(Package.objects.normal(), pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    sonames = Soname.objects.filter(pkg=pkg).all()
+    context = {
+        'pkg': pkg,
+        'sonames': sonames
+    }
+
+    template = 'packages/sonames.html'
+    return render(request, template, context)
+
+
+def sonames_json(request, name, repo, arch):
+    pkg = get_object_or_404(Package.objects.normal(), pkgname=name, repo__name__iexact=repo, arch__name=arch)
+    sonames = list(Soname.objects.filter(pkg=pkg).values_list('name', flat=True))
+    to_json = json.dumps(sonames, ensure_ascii=False)
+    return HttpResponse(to_json, content_type='application/json')
 
 
 def details_json(request, name, repo, arch):

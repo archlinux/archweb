@@ -932,7 +932,7 @@ table.results {
     width: 50%;
 }
 
-#pkgdetails #pkgfiles {
+#pkgdetails #pkgfiles, #sonames {
     clear: left;
     padding-top: 1em;
 }
