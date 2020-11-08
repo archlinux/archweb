@@ -13,8 +13,7 @@ class Todolist(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    creator = models.ForeignKey(User, on_delete=models.PROTECT,
-            related_name="created_todolists")
+    creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_todolists")
     created = models.DateTimeField(db_index=True)
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
@@ -65,8 +64,7 @@ class TodolistPackage(models.Model):
     created = models.DateTimeField(editable=False)
     last_modified = models.DateTimeField(editable=False)
     removed = models.DateTimeField(null=True, blank=True)
-    status = models.SmallIntegerField(default=INCOMPLETE,
-            choices=STATUS_CHOICES)
+    status = models.SmallIntegerField(default=INCOMPLETE, choices=STATUS_CHOICES)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     comments = models.TextField(null=True, blank=True)
 
@@ -100,20 +98,13 @@ def check_todolist_complete(sender, instance, **kwargs):
     ctx = {
         'todolist': instance.todolist,
     }
-    msg = EmailMessage(subject,
-            tmpl.render(ctx),
-            'Arch Website Notification <nobody@archlinux.org>',
-            toemail,
-    )
+    msg = EmailMessage(subject, tmpl.render(ctx), 'Arch Website Notification <nobody@archlinux.org>', toemail)
     msg.send(fail_silently=True)
 
 
-pre_save.connect(set_created_field, sender=Todolist,
-        dispatch_uid="todolists.models")
-pre_save.connect(set_created_field, sender=TodolistPackage,
-        dispatch_uid="todolists.models")
+pre_save.connect(set_created_field, sender=Todolist, dispatch_uid="todolists.models")
+pre_save.connect(set_created_field, sender=TodolistPackage, dispatch_uid="todolists.models")
 
-post_save.connect(check_todolist_complete, sender=TodolistPackage,
-        dispatch_uid='todolist.models')
+post_save.connect(check_todolist_complete, sender=TodolistPackage, dispatch_uid='todolist.models')
 
 # vim: set ts=4 sw=4 et:
