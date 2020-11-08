@@ -15,6 +15,7 @@ from main.utils import (database_vendor,
 from .models import (PackageGroup, PackageRelation,
         License, Depend, Conflict, Provision, Replacement,
         SignoffSpecification, Signoff, fake_signoff_spec)
+from todolists.models import TodolistPackage
 
 
 VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
@@ -429,6 +430,7 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             'maintainers', 'packager']
     pkg_list_attributes = ['groups', 'licenses', 'conflicts',
             'provides', 'replaces']
+    todolistpackage_attributes = ['status_str']
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -453,6 +455,11 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             return str(obj)
         elif isinstance(obj, User):
             return obj.username
+        elif isinstance(obj, TodolistPackage):
+            data = self.default(obj.pkg)
+            for attr in self.todolistpackage_attributes:
+                data[attr] = getattr(obj, attr)
+            return data
         return super(PackageJSONEncoder, self).default(obj)
 
 # vim: set ts=4 sw=4 et:

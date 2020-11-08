@@ -80,6 +80,10 @@ class TodolistPackage(models.Model):
     def status_css_class(self):
         return self.get_status_display().lower().replace('-', '')
 
+    @property
+    def status_str(self):
+        return self.STATUS_CHOICES[self.status][1]
+
 
 def check_todolist_complete(sender, instance, **kwargs):
     if instance.status == instance.INCOMPLETE:
