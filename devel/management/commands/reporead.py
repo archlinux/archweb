@@ -570,13 +570,11 @@ def parse_repo(repopath):
                     del files_data
                 elif fname in ('desc', 'depends'):
                     data_file = repodb.extractfile(tarinfo)
-                    data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                            encoding='UTF-8')
+                    data_file = io.TextIOWrapper(io.BytesIO(data_file.read()), encoding='UTF-8')
                     try:
                         pkgs[pkgid].populate(parse_info(data_file))
                     except UnicodeDecodeError:
-                        logger.warning("Could not correctly decode %s, skipping file",
-                                tarinfo.name)
+                        logger.warning("Could not correctly decode %s, skipping file", tarinfo.name)
                     data_file.close()
                     del data_file
 
