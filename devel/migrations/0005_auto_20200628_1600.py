@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='website_rss',
-            field=models.CharField(
-                blank=True, help_text='RSS Feed of your website for planet.archlinux.org',
-                max_length=200, null=True),
+            field=models.CharField(blank=True, help_text='RSS Feed of your website for planet.archlinux.org', max_length=200, null=True),
         ),
     ]
