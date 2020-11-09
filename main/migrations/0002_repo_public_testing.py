@@ -13,7 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='repo',
             name='public_testing',
-            field=models.BooleanField(
-                default=False, help_text='Is this repo meant for package testing (without signoffs)?'),
+            field=models.BooleanField(default=False, help_text='Is this repo meant for package testing (without signoffs)?'),
         ),
     ]
