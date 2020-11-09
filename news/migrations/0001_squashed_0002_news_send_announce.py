@@ -27,8 +27,7 @@ class Migration(migrations.Migration):
                 ('guid', models.CharField(editable=False, max_length=255)),
                 ('content', models.TextField()),
                 ('safe_mode', models.BooleanField(default=True)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                             related_name='news_author', to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='news_author', to=settings.AUTH_USER_MODEL)),
                 ('send_announce', models.BooleanField(default=True)),
             ],
             options={

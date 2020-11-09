@@ -16,7 +16,6 @@ def release_populate_last_modified_forwards(apps, schema_editor):
     Release = apps.get_model('releng', 'Release')
     Release.objects.update(last_modified=models.F('created'))
 
-
 def release_populate_last_modified_backwards(apps, schema_editor):
     pass
 
@@ -145,8 +144,7 @@ class Migration(migrations.Migration):
                 ('available', models.BooleanField(default=True)),
                 ('info', models.TextField(blank=True, verbose_name='Public information')),
                 ('torrent_data', models.TextField(blank=True, help_text='base64-encoded torrent file')),
-                ('last_modified', models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0,
-                                                       tzinfo=utc), editable=False)),
+                ('last_modified', models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0, tzinfo=utc), editable=False)),
             ],
             options={
                 'ordering': ('-release_date', '-version'),
@@ -173,25 +171,18 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(editable=False)),
                 ('success', models.BooleanField(default=True)),
                 ('comments', models.TextField(blank=True, null=True)),
-                ('architecture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                   to='releng.Architecture')),
+                ('architecture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Architecture')),
                 ('boot_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.BootType')),
                 ('bootloader', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Bootloader')),
-                ('clock_choice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                   to='releng.ClockChoice')),
+                ('clock_choice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.ClockChoice')),
                 ('filesystem', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Filesystem')),
-                ('hardware_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                    to='releng.HardwareType')),
-                ('install_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
-                                                   to='releng.InstallType')),
+                ('hardware_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.HardwareType')),
+                ('install_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.InstallType')),
                 ('iso', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Iso')),
                 ('iso_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.IsoType')),
                 ('modules', models.ManyToManyField(blank=True, null=True, to='releng.Module')),
-                ('rollback_filesystem', models.ForeignKey(blank=True, null=True,
-                                                          on_delete=django.db.models.deletion.CASCADE,
-                                                          related_name='rollback_test_set', to='releng.Filesystem')),
-                ('rollback_modules', models.ManyToManyField(blank=True, null=True, related_name='rollback_test_set',
-                                                            to='releng.Module')),
+                ('rollback_filesystem', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='rollback_test_set', to='releng.Filesystem')),
+                ('rollback_modules', models.ManyToManyField(blank=True, null=True, related_name='rollback_test_set', to='releng.Module')),
                 ('source', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releng.Source')),
             ],
         ),
