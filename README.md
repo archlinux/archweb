@@ -116,7 +116,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 
 * generate_keyring - Assemble a GPG keyring with all known developer keys.
 * pgp_import - Import keys and signatures from a given GPG keyring.
-* read_reproducible_status - Import rebuilderd status into Archweb.
+* read_rebuilderd_status - Import rebuilderd status into Archweb.
 * rematch_developers - Rematch flag requests and packages where user_id/packager_id is NULL to a Developer.
 * reporead - Parses a repo.db.tar.gz, repo.files.tar.gz file and updates the Arch database with the relevant changes.
 * reporead_inotify - Watches a templated patch for updates of *.files.tar.gz to update Arch databases with.

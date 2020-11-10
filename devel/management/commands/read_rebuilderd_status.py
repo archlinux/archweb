@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-read_reproducible_status command
+read_rebuilderd_status command
 
 Import reproducible status of packages, rebuilderd url configured in django
 settings.
 
-Usage: ./manage.py read_reproducible_status
+Usage: ./manage.py read_rebuilderd_status
 """
 
 import logging
