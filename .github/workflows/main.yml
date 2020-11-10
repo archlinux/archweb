@@ -21,7 +21,7 @@ jobs:
       run: |
         pip install pylint
         pylint devel main mirrors news packages releng templates todolists visualize *.py
-        flake8 --exclude */migrations/ devel main mirrors news packages releng templates todolists visualize *.py
+        flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
     - name: Run collectstatic
       run: |
         python manage.py collectstatic --noinput
