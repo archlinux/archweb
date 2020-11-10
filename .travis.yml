@@ -9,7 +9,7 @@ script:
   - python manage.py collectstatic --noinput
   - coverage run --rcfile .coveragerc manage.py test
   - pylint devel main mirrors news packages releng templates todolists visualize *.py
-  - flake8 --exclude */migrations/ devel main mirrors news packages releng templates todolists visualize *.py
+  - flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
 
 after_success:
   - coveralls

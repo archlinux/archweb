@@ -9,7 +9,7 @@ before_script:
 lint:
   script:
      - pylint devel main mirrors news packages releng templates todolists visualize *.py
-     - flake8 --exclude */migrations/ devel main mirrors news packages releng templates todolists visualize *.py
+     - flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
 
 # TODO: https://docs.gitlab.com/ee/ci/junit_test_reports.html
 test:
