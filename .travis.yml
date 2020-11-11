@@ -3,12 +3,11 @@ language: python
 python:
   - "3.7"
 cache: pip
-install: "pip install -r requirements.txt && pip install coveralls pylint flake8"
+install: "pip install -r requirements.txt && pip install coveralls flake8"
 
 script:
   - python manage.py collectstatic --noinput
   - coverage run --rcfile .coveragerc manage.py test
-  - pylint devel main mirrors news packages releng templates todolists visualize *.py
   - flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
 
 after_success:
