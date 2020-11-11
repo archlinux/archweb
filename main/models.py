@@ -474,6 +474,7 @@ class RebuilderdStatus(models.Model):
     repo = models.ForeignKey(Repo, on_delete=models.CASCADE)
     status = models.SmallIntegerField(default=UNKNOWN, choices=REBUILDERD_STATUSES)
     was_repro = models.BooleanField(default=False)
+    build_id = models.IntegerField(null=True, blank=True)
 
     @property
     def status_str(self):

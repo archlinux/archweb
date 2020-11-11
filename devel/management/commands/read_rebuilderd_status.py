@@ -91,6 +91,7 @@ def import_rebuilderd_status(url):
         epoch = 0
         pkgname = pkg['name']
         version = pkg['version']
+        build_id = pkg['build_id']
 
         matches = re.search(EPOCH_REGEX, version)
         if matches:
@@ -110,6 +111,9 @@ def import_rebuilderd_status(url):
 
         # Existing status
         if rbstatus:
+            if build_id:
+                rbstatus.build_id = build_id
+
             # If status has become BAD, set was_repro
             if rbstatus.status == RebuilderdStatus.GOOD and status == RebuilderdStatus.BAD:
                 was_repro.append(rbstatus)
@@ -140,6 +144,10 @@ def import_rebuilderd_status(url):
             rbstatus = RebuilderdStatus(pkg=dbpkg, status=status, arch=arch, repo=repository,
                                         pkgname=pkgname, epoch=epoch, pkgrel=pkgrel,
                                         pkgver=pkgver)
+
+            if build_id:
+                rbstatus.build_id = build_id
+
             statuses.append(rbstatus)
 
     if statuses:
