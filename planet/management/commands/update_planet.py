@@ -65,6 +65,12 @@ class Command(BaseCommand):
                 cache.set(f'planet:etag:{url}', feed.etag, 86400)
             return
 
+        if http_status == 301:
+            logging.info("The feed '%s' has moved permanently to '%s'", url, feed.href)
+            feed_instance.website_rss = feed.href
+            feed_instance.save()
+            return
+
         if http_status != 200:
             logger.info("error parsing feed: '%s', status: '%s'", url, http_status)
             return
