@@ -88,3 +88,12 @@ class UpdatePlanetTest(TestCase):
         parse.return_value = value
         self.command.parse_feed(self.feed)
         assert FeedItem.objects.count() == 1
+
+    @mock.patch('feedparser.parse')
+    def test_parse_feed_301(self, parse):
+        return_value = Result()
+        return_value.status = 301
+        return_value.href = 'https://example.com/rss'
+        parse.return_value = return_value
+        self.command.parse_feed(self.feed)
+        assert self.feed.website_rss == return_value.href
