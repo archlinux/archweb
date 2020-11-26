@@ -122,12 +122,10 @@ def flag(request, name, repo, arch):
                 msg = EmailMessage(subject,
                                    tmpl.render(ctx),
                                    'Arch Website Notification <nobody@archlinux.org>',
-                                   toemail,
-                                   headers={"Reply-To": email})
+                                   toemail)
                 msg.send(fail_silently=True)
 
-            return redirect('package-flag-confirmed', name=name, repo=repo,
-                            arch=arch)
+            return redirect('package-flag-confirmed', name=name, repo=repo, arch=arch)
     else:
         form = FlagForm(authenticated=authenticated)
 
