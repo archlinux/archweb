@@ -851,6 +851,12 @@ table.results {
         padding: 0.5em;
     }
 
+    #pkgdetails #pkginfo .recent {
+        color: green;
+        font-weight: bold;
+        text-decoration: underline dotted;
+    }
+
 /* pkgdetails: flag package */
 #flag-pkg-form label {
     width: 10em;
