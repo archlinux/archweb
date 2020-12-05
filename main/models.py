@@ -1,5 +1,7 @@
 from itertools import groupby
 from pgpdump import BinaryData
+from pytz import utc
+from datetime import datetime
 
 from django.db import models
 from django.db.models import Q
@@ -132,6 +134,19 @@ class Package(models.Model):
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
         return f'{proto}://{domain}{self.get_absolute_url()}'
+
+    @property
+    def updated_mins_ago(self):
+        # Note: This uses the archweb metadata update time, not when the
+        # package was actually pushed to any repo. We don't have that
+        # easily available without adding more fields and scripts.
+        # See: https://github.com/archlinux/archweb/pull/323
+        now = datetime.utcnow().replace(tzinfo=utc)
+        return int((now - self.last_update).total_seconds()) // 60
+
+    @property
+    def is_recent(self):
+        return self.updated_mins_ago <= 90
 
     @property
     def signature(self):
