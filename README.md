@@ -122,7 +122,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 * rematch_developers - Rematch flag requests and packages where user_id/packager_id is NULL to a Developer.
 * reporead - Parses a repo.db.tar.gz, repo.files.tar.gz file and updates the Arch database with the relevant changes.
 * reporead_inotify - Watches a templated patch for updates of *.files.tar.gz to update Arch databases with.
-* donor_import - Import donators from a dovecot maildir dump.
+* donor_import - Import a single donator from a mail passed to stdin
 * mirrorcheck - Poll every active mirror URLs to store the lastsnyc time and record network timing details.
 * mirrorresolv - Poll every active mirror URLs and determine wheteher they have IP4 and/or IPv6 addresses.
 * populate_signoffs - retrieves the latest commit message of a signoff-eligible package.
