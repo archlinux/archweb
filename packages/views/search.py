@@ -6,7 +6,7 @@ from django import forms
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import ListView
 
 from devel.models import UserProfile
@@ -179,7 +179,10 @@ def search_json(request):
             container['num_pages'] = paginator.num_pages
 
             page = form.cleaned_data.get('page')
-            page = int(page) if page else 1
+            try:
+                page = int(page) if page else 1
+            except ValueError:
+                return HttpResponseBadRequest('page parameter is not a number')
             container['page'] = page
             try:
                 packages = paginator.page(page)
