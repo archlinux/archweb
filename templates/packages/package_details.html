@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load details_link %}
 <div id="pkgdetails" class="box">
     <h2>{{ pkg.pkgname }} {{ pkg.full_version }}</h2>
@@ -184,7 +185,7 @@
             <td>Unsigned</td>
         </tr>{% endif %}<tr>
             <th>Last Updated:</th>
-            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.updated_mins_ago}} minutes ago)</span>{% endif %}</td>
+            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.last_update|naturaltime }})</span>{% endif %}</td>
         </tr>
         {% if user.is_authenticated %}{% with flag_request=pkg.flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>

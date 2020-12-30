@@ -111,6 +111,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
