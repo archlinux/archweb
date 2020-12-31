@@ -871,6 +871,21 @@ table.results {
     display: none;
 }
 
+#flag-pkg-form div.recentwarning {
+    width: calc(45% - 4px); /* Minus padding to match text fields above */
+    padding: 2px 3px;
+    display: inline-block;
+
+    color: white;
+    font-weight: bold;
+    background: #a80000;
+    border: 2px solid black;
+}
+
+#flag-pkg-form div.recentwarning a {
+    color: #c4d3ff;
+}
+
 /* pkgdetails: deps, required by and file lists */
 #pkgdetails #metadata {
     clear: both;
