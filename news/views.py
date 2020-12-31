@@ -50,8 +50,8 @@ class NewsCreateView(CreateView):
             EmailMessage(
                 subject=f'[arch-announce] {newsitem.title}',
                 body=template.render(ctx),
-                from_email=f'"Arch Linux: Recent news updates: {newsitem.author.get_full_name()}" <arch-announce@archlinux.org>',
-                to=['arch-announce@archlinux.org'],
+                from_email=f'"Arch Linux: Recent news updates: {newsitem.author.get_full_name()}" <{settings.ANNOUNCE_EMAIL}>',
+                to=[settings.ANNOUNCE_EMAIL],
                 headers=headers).send()
         return super(NewsCreateView, self).form_valid(form)
 

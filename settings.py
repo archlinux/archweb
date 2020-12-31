@@ -183,6 +183,9 @@ SECRET_KEY = '00000000000000000000000000000000000000000000000'
 # Mailman poster password for announcements
 MAILMAN_PASSWORD = ''
 
+# Announcements email address
+ANNOUNCE_EMAIL = 'arch-announce@archlinux.org'
+
 DATABASES = {
     'default': {
         'ENGINE':  'django.db.backends.sqlite3',
