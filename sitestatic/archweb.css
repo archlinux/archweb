@@ -134,21 +134,17 @@ a {
 }
 
     a:link,
+    a:visited,
     th a:visited {
-        color: #07b;
+        color: #08c;
     }
 
-    a:visited {
-        color: #666;
-    }
-
-    a:hover {
+    a:hover,
+    a:focus,
+    a:visited,
+    a:visited:hover {
+        color: #08c;
         text-decoration: underline;
-        color: #666;
-    }
-
-    a:active {
-        color: #e90;
     }
 
 /* special anchor elements */
