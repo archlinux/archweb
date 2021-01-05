@@ -869,17 +869,12 @@ table.results {
 
 #flag-pkg-form div.recentwarning {
     width: calc(45% - 4px); /* Minus padding to match text fields above */
-    padding: 2px 3px;
+    padding: 4px 6px;
     display: inline-block;
 
-    color: white;
-    font-weight: bold;
-    background: #a80000;
-    border: 2px solid black;
-}
-
-#flag-pkg-form div.recentwarning a {
-    color: #c4d3ff;
+    color: #a94442;
+    background: #f2dede;
+    border: 1px solid #ebccd1;
 }
 
 /* pkgdetails: deps, required by and file lists */
