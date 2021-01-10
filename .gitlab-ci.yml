@@ -1,4 +1,4 @@
-image: archlinux/base
+image: "archlinux:latest"
 
 before_script:
    - pacman -Syu --needed --noconfirm python-pip git
