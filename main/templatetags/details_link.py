@@ -56,6 +56,12 @@ def wiki_link(package):
 
 
 @register.simple_tag
+def man_link(package):
+    url = "https://man.archlinux.org/listing/{}"
+    return url.format(package.pkgname)
+
+
+@register.simple_tag
 def sec_link(package):
     url = "https://security.archlinux.org/package/{}"
     return url.format(package.pkgname)
