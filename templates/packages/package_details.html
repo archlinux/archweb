@@ -15,7 +15,10 @@
                     <a href="{% bugs_list pkg %}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a> /
                     <a href="{% bug_report pkg %}" title="Report new bug for {{ pkg.pkgname }}">Add New Bug</a>
                 </li>
-                <li><a href="{% wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a></li>
+                <li>
+                    <a href="{% wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a> /
+                    <a href="{% man_link pkg %}" title="List manpages in {{ pkg.pkgname }}">Manual Pages</a>
+                </li>
                 <li><a href="{% sec_link pkg %}" title="View security issues for {{ pkg.pkgname }}">Security Issues</a></li>
                 {% if pkg.flag_date %}
                 <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
