@@ -27,16 +27,16 @@
                 {% endif %}{% endwith %}
                 {% if perms.main.change_package %}
                 <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
-		{% if pkg.pkgname != pkg.pkgbase or pkg.split_packages %}
+                {% if pkg.pkgname != pkg.pkgbase or pkg.split_packages %}
                 <li><a href="unflag/all/" title="Unflag all matching pkgbase">Click here to unflag all split packages</a></li>
-		{% endif %}
+                {% endif %}
                 {% endif %}
                 {% else %}
                 <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
                 <a href="/packages/flaghelp/"
                     title="Get help on package flagging"
-		    target="_blank"
-		    >(?)</a></li>
+                    target="_blank"
+                    >(?)</a></li>
                 {% endif %}
                 <li><a href="download/" rel="nofollow" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
             </ul>
