@@ -59,7 +59,7 @@ class PackageSearchForm(forms.Form):
             return []
         if 'q' not in self.cleaned_data:
             return []
-        return Package.objects.normal().filter(pkgname=self.cleaned_data['q'])
+        return Package.objects.normal().filter(pkgname=self.cleaned_data['q'].lower())
 
 
 def parse_form(form, packages):
