@@ -58,6 +58,7 @@ class TestTodolistAdmin(TestCase):
             'name': 'Foo rebuild',
             'description': 'The Foo Rebuild, please read the instructions',
             'raw': 'linux',
+            'kind': Todolist.KIND_CHOICES[0][0],
         })
 
     def test_create_todolist(self):
@@ -89,6 +90,7 @@ class TestTodolistAdmin(TestCase):
             'name': 'Foo rebuild',
             'description': 'The Foo Rebuild, please read the instructions',
             'raw': 'linux\nglibc',
+            'kind': Todolist.KIND_CHOICES[0][0],
         })
         self.assertEqual(response.status_code, 302)
         todolist = Todolist.objects.first()

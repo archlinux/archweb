@@ -29,6 +29,7 @@
                 <th>Description</th>
                 <th>Package Count</th>
                 <th>Incomplete Count</th>
+                <th>Kind</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -42,6 +43,7 @@
                 <td class="wrap">{{ list.description|urlize }}</td>
                 <td>{{ list.pkg_count }}</td>
                 <td>{{ list.incomplete_count }}</td>
+                <td>{{ list.kind_str }}</td>
                 <td>{% if list.incomplete_count == 0 %}<span class="complete">Complete</span>
                     {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
             </tr>

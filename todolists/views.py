@@ -34,7 +34,7 @@ class TodoListForm(forms.ModelForm):
 
     class Meta:
         model = Todolist
-        fields = ('name', 'description', 'raw')
+        fields = ('name', 'kind', 'description', 'raw')
 
 
 @never_cache
@@ -241,7 +241,8 @@ class TodoListJSONEncoder(PackageJSONEncoder):
                 'description': obj.description,
                 'created': obj.created,
                 'last_modified': obj.last_modified,
-                'packages': [tpkg for tpkg in obj.packages() if tpkg.pkg]
+                'packages': [tpkg for tpkg in obj.packages() if tpkg.pkg],
+                'kind': obj.kind_str
             }
 
         return super(TodoListJSONEncoder, self).default(obj)

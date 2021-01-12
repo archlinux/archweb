@@ -10,11 +10,20 @@ from main.utils import set_created_field
 
 
 class Todolist(models.Model):
+    REBUILD = 0
+    TASK = 1
+
+    KIND_CHOICES = (
+        (REBUILD, 'Rebuild'),
+        (TASK, 'Task'),
+    )
+
     slug = models.SlugField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
     creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_todolists")
     created = models.DateTimeField(db_index=True)
+    kind = models.SmallIntegerField(default=REBUILD, choices=KIND_CHOICES, help_text='(Rebuild for soname bumps, Task for independent tasks)')
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
 
@@ -43,6 +52,11 @@ class Todolist(models.Model):
                 'pkg', 'repo', 'arch', 'user__userprofile').order_by(
                 'pkgname', 'arch')
         return self._packages
+
+    @property
+    def kind_str(self):
+        '''Todo list kind as str'''
+        return self.KIND_CHOICES[self.kind][1]
 
 
 class TodolistPackage(models.Model):

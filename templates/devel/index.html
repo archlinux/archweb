@@ -131,6 +131,7 @@
                 <th>Description</th>
                 <th>Package Count</th>
                 <th>Incomplete Count</th>
+                <th>Kind</th>
             </tr>
         </thead>
         <tbody>
@@ -143,6 +144,7 @@
                 <td class="wrap">{{ todo.description|urlize|truncatewords:"50" }}</td>
                 <td>{{ todo.pkg_count }}</td>
                 <td>{{ todo.incomplete_count }}</td>
+                <td>{{ todo.kind_str }}</td>
             </tr>
             {% empty %}
             <tr class="empty"><td colspan="6"><em>No package todo lists to display</em></td></tr>
