@@ -241,7 +241,7 @@ class TodoListJSONEncoder(PackageJSONEncoder):
                 'description': obj.description,
                 'created': obj.created,
                 'last_modified': obj.last_modified,
-                'packages': obj.packages()
+                'packages': [tpkg for tpkg in obj.packages() if tpkg.pkg]
             }
 
         return super(TodoListJSONEncoder, self).default(obj)
