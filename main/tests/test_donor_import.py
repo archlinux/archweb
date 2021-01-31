@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from email.header import Header
 from email.message import Message
+from io import StringIO
 from tempfile import mkdtemp
 
 from django.test import TransactionTestCase
@@ -37,9 +39,12 @@ class DonorImportTest(TransactionTestCase):
         self.assertEqual(self.command.decode_subject(subject), text)
 
     def test_invalid_args(self):
+        stdin = sys.stdin
         with self.assertRaises(CommandError) as e:
+            sys.stdin = StringIO('')
             call_command('donor_import')
         self.assertIn('Failed to read from STDIN', str(e.exception))
+        sys.stdin = stdin
 
     def test_invalid_path(self):
         with self.assertRaises(CommandError) as e:
