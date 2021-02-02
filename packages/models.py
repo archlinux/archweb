@@ -42,7 +42,7 @@ class PackageRelation(models.Model):
         return Update.objects.filter(pkgbase=self.pkgbase).latest()
 
     def __str__(self):
-        return f'{self.pkgbase}: {self.user} ({self.get_typw_display()})'
+        return f'{self.pkgbase}: {self.user} ({self.get_type_display()})'
 
 
 class SignoffSpecificationManager(models.Manager):
