@@ -52,7 +52,6 @@
                 <th>User</th>
                 <th>Type</th>
                 <th>Created</th>
-                <th>Latest Update</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +62,6 @@
                 <td>{{ relation.user.get_full_name }}</td>
                 <td>{{ relation.get_type_display }}</td>
                 <td>{{ relation.created }}</td>
-                <td>{{ relation.last_update.created }}</td>
             </tr>
             {% empty %}
                 <tr class="empty"><td colspan="6"><em>No non-existent pkgbase relations.</em></td></tr>
