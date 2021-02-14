@@ -85,7 +85,7 @@
       "files_last_update": null,
       "pkgdesc": "A library-based package manager with dependency support",
       "created": "2017-12-30T02:21:43.848Z",
-      "url": "http://www.archlinux.org/pacman/",
+      "url": "http://archlinux.org/pacman/",
       "epoch": 0,
       "filename": "pacman-5.0.2-1-x86_64.pkg.tar.xz",
       "repo": 1,

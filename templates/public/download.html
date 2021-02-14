@@ -101,7 +101,7 @@
     <p>File integrity checksums for the latest releases can be found below:</p>
 
     <ul>
-        <li><a href="https://www.archlinux.org/{{ release.iso_url }}.sig"
+        <li><a href="https://archlinux.org/{{ release.iso_url }}.sig"
             title="PGP signature">PGP signature</a></li>
         {% if release.pgp_key %}<li><strong>PGP fingerprint:</strong> {% pgp_key_link release.pgp_key %}</li>{% endif %}
         {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
