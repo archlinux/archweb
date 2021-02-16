@@ -164,4 +164,54 @@ done
 
 Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://gitlab.archlinux.org/archlinux/infrastructure).
 
+# Keycloak integration
+
+Archweb supports authorising users via OIDC with for example Keycloak. For keycloak the configuration add in local_settings.py. For more details of the configuration options, consult the upstream [documentation](https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html).
+
+```
+OIDC = True
+
+ODIC_RP_SIGN_ALGO = 'RS256'
+OIDC_RP_CLIENT_ID = '<keycloak_client_id>'
+OIDC_RP_CLIENT_SECRET = '<keycloak_client_secret>'
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/userinfo"
+OIDC_OP_JWKS_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/certs"
+OIDC_OP_LOGOUT_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/logout"
+```
+
+For a local development environment with `./manage.py` the following setting is required to have archweb pass the correct redirect_uri back to itself. Requires the header to set by nginx's reverse proxy
+```
+# Required for redirects to be https with a reverse proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+```
+
+nginx configuration
+```
+    server {
+        listen       443 ssl;
+        server_name  <local_domain>;
+
+        ssl_certificate      <local_cert>;
+        ssl_certificate_key  <local_key>;
+
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers  on;
+
+        location / {
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto  $scheme;
+
+            proxy_pass http://localhost:8000;
+        }
+    }
+```
+
 vim: set syntax=markdown et:

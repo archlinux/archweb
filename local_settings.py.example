@@ -54,4 +54,12 @@ MEDIA_URL = '/media/img/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '00000000000000000000000000000000000000000000000'
 
+# OIDC Settings
+OIDC_RP_CLIENT_ID = ''
+OIDC_RP_CLIENT_SECRET = ''
+
+OIDC_OP_AUTHORIZATION_ENDPOINT = "<URL of the OIDC OP authorization endpoint>"
+OIDC_OP_TOKEN_ENDPOINT = "<URL of the OIDC OP token endpoint>"
+OIDC_OP_USER_ENDPOINT = "<URL of the OIDC OP userinfo endpoint>"
+
 # vim: set ts=4 sw=4 et:

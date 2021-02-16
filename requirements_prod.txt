@@ -1,3 +1,4 @@
 -r requirements.txt
 pyinotify==0.9.6
 pymemcache==3.5.0
+mozilla-django-oidc==1.2.4

@@ -7,6 +7,9 @@
 <div id="dev-login" class="box">
     <h2>Developer Login</h2>
 
+    {% if OIDC %}
+    <a href="{% url 'oidc_authentication_init' %}">Login with Keycloak</a>
+    {% else %}
     <form id="dev-login-form" method="post">{% csrf_token %}
         <fieldset>
             <legend>Please enter your credentials to login.</legend>
@@ -14,5 +17,6 @@
             <p><label></label><input type="submit" value="Login"/></p>
         </fieldset>
     </form>
+    {% endif %}
 </div>
 {% endblock %}

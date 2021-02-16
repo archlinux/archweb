@@ -105,9 +105,14 @@ urlpatterns.extend([
 
 # Authentication
 urlpatterns.extend([
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html', extra_context={'OIDC': settings.OIDC}), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 ])
+
+if settings.OIDC:
+    urlpatterns.extend([
+        path('oidc/', include('mozilla_django_oidc.urls')),
+    ])
 
 # django-toolbar
 if settings.DEBUG_TOOLBAR:  # pragma: no cover
