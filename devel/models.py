@@ -57,6 +57,8 @@ class UserProfile(models.Model):
         default=False, help_text='Receive reproducible build package updates')
     repos_auth_token = models.CharField(max_length=32, null=True, blank=True)
     last_modified = models.DateTimeField(editable=False)
+    # Open ID Connect Subject Identifier.
+    sso_accountid = models.CharField(max_length=255, null=True, blank=True, unique=True, editable=False)
 
     class Meta:
         db_table = 'user_profiles'

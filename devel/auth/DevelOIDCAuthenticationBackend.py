@@ -72,12 +72,15 @@ class MyOIDCAB(OIDCAuthenticationBackend):
         is_releasemaintainer = RELEASEMAINTAINER_GROUP in groups
         is_supportstaff = any(group for group in SUPPORTSTAFF_GROUPS if group in groups)
 
+        # Set username to sub as this is guarranteed unique
+        user.username = claims.get('preferred_username', '')
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
 
         profile = UserProfile.objects.create(user=user)
         profile.alias = claims.get('preferred_username', '')
         profile.public_email = claims.get('email', '')
+        profile.sso_accountid = claims.get('sub', '')
 
         if is_devops:
             user.is_staff = True
