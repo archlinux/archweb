@@ -1,6 +1,7 @@
 from datetime import timedelta
 import json
 
+from django.views.decorators.cache import cache_control
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -70,6 +71,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
         return super(LocationJSONEncoder, self).default(obj)
 
 
+@cache_control(max_age=311)
 def status_json(request, tier=None):
     if tier is not None:
         tier = int(tier)
