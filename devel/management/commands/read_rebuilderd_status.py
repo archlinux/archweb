@@ -84,7 +84,7 @@ def import_rebuilderd_status(url):
     req = requests.get(url)
     data = req.json()
 
-    # Lookup 
+    # Lookup dictionary to reduce SQL queries.
     arches = {arch.name: arch for arch in Arch.objects.all()}
     repos = {repo.name.lower(): repo for repo in Repo.objects.all()}
 
