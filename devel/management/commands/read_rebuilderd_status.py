@@ -84,9 +84,13 @@ def import_rebuilderd_status(url):
     req = requests.get(url)
     data = req.json()
 
+    # Lookup 
+    arches = {arch.name: arch for arch in Arch.objects.all()}
+    repos = {repo.name.lower(): repo for repo in Repo.objects.all()}
+
     for pkg in data:
-        arch = Arch.objects.get(name=pkg['architecture'])
-        repository = Repo.objects.get(name__iexact=pkg['suite'])
+        arch = arches[pkg['architecture']]
+        repository = repos[pkg['suite'].lower()]
 
         epoch = 0
         pkgname = pkg['name']
