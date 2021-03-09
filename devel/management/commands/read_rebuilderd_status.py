@@ -115,18 +115,21 @@ def import_rebuilderd_status(url):
 
         # Existing status
         if rbstatus:
-            if build_id:
+            changed = False
+
+            if rbstatus.build_id != build_id:
+                changed = True
                 rbstatus.build_id = build_id
 
             # If status has become BAD, set was_repro
             if rbstatus.status == RebuilderdStatus.GOOD and status == RebuilderdStatus.BAD:
+                changed = True
                 was_repro.append(rbstatus)
                 rbstatus.was_repro = True
                 logger.info("package '%s' was good is now bad", pkg['name'])
-            else:  # reset status
-                rbstatus.was_repro = False
 
             if rbstatus.pkgver != pkgver or rbstatus.pkgrel != pkgrel or rbstatus.epoch != epoch:
+                changed = True
                 logger.info('updating status for package: %s to %s', pkg['name'],
                             RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.epoch = epoch
@@ -136,12 +139,16 @@ def import_rebuilderd_status(url):
                 rbstatus.arch = arch
                 rbstatus.repo = repository
             elif rbstatus.status != status:  # Rebuilderd rebuild the same package?
+                changed = True
                 logger.info('status for package: %s changed to %s', pkg['name'],
                             RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.status = status
+                # reset was_repro status as it's unknown
+                rbstatus.was_repro = False
 
-            # TODO: does django know when a model was really modified?
-            rbstatus.save()
+            if changed:
+                logging.debug('saving updated status for package: %s', pkg['name'])
+                rbstatus.save()
 
         else:  # new package/status
             logger.info('adding status for package: %s', pkg['name'])
