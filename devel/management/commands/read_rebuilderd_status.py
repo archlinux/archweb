@@ -60,7 +60,7 @@ def send_repro_emails(was_repro):
     template = loader.get_template('devel/email_reproduciblebuilds.txt')
     enabled_users = [prof.user for prof in UserProfile.objects.filter(rebuilderd_updates=True).all()]
 
-    # Group statusses by maintainer
+    # Group statuses by maintainer
     maintainers_map = defaultdict(list)
 
     for status in was_repro:
