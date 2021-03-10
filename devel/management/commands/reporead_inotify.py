@@ -24,6 +24,7 @@ import time
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
+from django.db.utils import OperationalError
 
 from main.models import Arch, Repo
 from .reporead import read_repo
@@ -117,11 +118,12 @@ class Database(object):
     various bits of metadata and state representing the file path, when we last
     updated, how long our delay is before performing the update, whether we are
     updating now, etc.'''
-    def __init__(self, arch, path, delay=60.0, nice=3):
+    def __init__(self, arch, path, delay=60.0, nice=3, retry_limit=5):
         self.arch = arch
         self.path = path
         self.delay = delay
         self.nice = nice
+        self.retry_limit = retry_limit
         self.mtime = None
         self.last_import = None
         self.update_thread = None
@@ -158,10 +160,23 @@ class Database(object):
             # invoke reporead's primary method. we do this in a separate
             # process for memory conservation purposes; these processes grow
             # rather large so it is best to free up the memory ASAP.
+            # A retry mechanism exists for when reporead_inotify runs on a different machine.
             def run():
+                retry = True
+                retry_count = 0
                 if self.nice != 0:
                     os.nice(self.nice)
-                read_repo(self.arch, self.path, {})
+                while retry and retry_count < self.retry_limit:
+                    try:
+                        read_repo(self.arch, self.path, {})
+                        retry = False
+                    except OperationalError as exc:
+                        retry_count += 1
+                        logger.error('Unable to update database \'%s\', retrying=%d', self.path, retry_count, exc_info=exc)
+                        time.sleep(5)
+
+                if retry_count == self.retry_limit:
+                    logger.error('Unable to update database, exceeded maximum retries')
 
             process = multiprocessing.Process(target=run)
             process.start()
