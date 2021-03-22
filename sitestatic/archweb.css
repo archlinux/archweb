@@ -13,405 +13,462 @@
  */
 
 /* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
-@media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
-	}
+#archnavbar {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 98% !important;
+  padding: 10px 15px !important;
+  background: #08c !important;
+  border-bottom: 5px solid #07b;
 }
 
+#archnavbarlogo {
+  float: left !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 40px !important;
+  width: 190px !important;
+  background: url("archnavbar/archlogo.png") no-repeat !important;
+}
+@media (-webkit-min-device-pixel-ratio: 1.2),
+  (min--moz-device-pixel-ratio: 1.2),
+  (-o-min-device-pixel-ratio: 2/1) {
+  #archnavbarlogo {
+    float: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 40px !important;
+    width: 190px !important;
+    background: url(archnavbar/archlogo.svg) no-repeat !important;
+    background-size: 100% !important;
+  }
+}
 /* move the heading text offscreen */
-#archnavbarlogo h1 { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
+#archnavbarlogo h1 {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-indent: -9999px !important;
+}
 
 /* make the link the same size as the logo */
-#archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
+#archnavbarlogo a {
+  display: block !important;
+  height: 40px !important;
+  width: 190px !important;
+}
 
 /* display the list inline, float it to the right and style it */
-#archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+#archnavbarlist {
+  display: block !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0px !important;
+  text-align: right !important;
+}
+#archnavbarlist li {
+  display: inline-block !important;
+  font-size: 14px !important;
+  font-family: sans-serif !important;
+  line-height: 14px !important;
+  padding: 14px 15px 0px !important;
+}
 
 /* style the links */
-#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
-#archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+#archnavbarlist li a {
+  color: #fff;
+  font-weight: bold !important;
+  text-decoration: none !important;
+}
+#archnavbarlist li a:hover {
+  background: #007aba !important;
+}
 
 /* END ARCH GLOBAL NAVBAR */
 
 /* simple reset */
 * {
-    margin: 0;
-    padding: 0;
-    line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
 }
 
 /* general styling */
 body {
-    min-width: 650px;
-    background: #f6f9fc;
-    color: #222;
-    font: normal 100% sans-serif;
-    text-align: center;
+  position: relative;
+  min-width: 650px;
+  background: #f6f9fc;
+  color: #222;
+  font: normal 100% sans-serif;
+  text-align: center;
 }
 
 p {
-    margin: .33em 0 1em;
+  margin: 0.33em 0 1em;
 }
 
 ol,
 ul {
-    margin-bottom: 1em;
-    padding-left: 2em;
+  margin-bottom: 1em;
+  padding-left: 2em;
 }
 
-    ul {
-        list-style: square;
-    }
+ul {
+  list-style: square;
+}
 
 code {
-    font: 1.2em monospace;
-    background: #ffd;
-    padding: 0.15em 0.25em;
+  font: 1.2em monospace;
+  /* A little yellow to make it stand out */
+  background: #fffff7;
+  padding: 0.15em 0.25em;
 }
 
 pre {
-    font: 1.2em monospace;
-    border: 1px solid #bdb;
-    background: #dfd;
-    padding: 0.5em;
-    margin: 1em;
+  font: 1.2em monospace;
+  border: 1px solid #bdb;
+  background: #dfd;
+  padding: 0.5em;
+  margin: 1em;
 }
 
-    pre code {
-        display: block;
-        background: none;
-        overflow: auto;
-    }
+pre code {
+  display: block;
+  background: none;
+  overflow: auto;
+}
 
 blockquote {
-    margin: 1.5em 2em;
+  margin: 1.5em 2em;
 }
 
 input {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 select[multiple] {
-    padding: 1px 0;
+  padding: 1px 0;
 }
 
-    select[multiple] option {
-        padding: 0 0.5em 0 0.3em;
-    }
+select[multiple] option {
+  padding: 0 0.5em 0 0.3em;
+}
 
-input[type=submit] {
-    padding: 0 0.6em;
+input[type="submit"] {
+  color: white;
+  background: #0af;
+  border: 1px solid #e0e0e0;
+  padding: 0.2em;
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
 
 .hide {
-    display: none;
+  display: none;
 }
 
 hr {
-    border: none;
-    border-top: 1px solid #888;
+  border: none;
+  border-top: 1px solid #888;
 }
 
 img {
-    border: 0;
+  border: 0;
 }
 
 /* scale fonts down to a sane default (16 * .812 = 13px) */
 #content {
-    font-size: 0.812em;
+  font-size: 0.812em;
 }
 
 /* link style */
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
-    a:link,
-    a:visited,
-    th a:visited {
-        color: #08c;
-    }
+a:link,
+a:visited,
+th a:visited {
+  color: #08c;
+}
 
-    a:hover,
-    a:focus,
-    a:visited,
-    a:visited:hover {
-        color: #08c;
-        text-decoration: underline;
-    }
+a:hover,
+a:focus,
+a:visited,
+a:visited:hover {
+  color: #08c;
+  text-decoration: underline;
+}
 
 /* special anchor elements */
 a.headerlink {
-    visibility: hidden;
-    padding-left: 0.5em;
+  visibility: hidden;
+  padding-left: 0.5em;
 }
 
 h3:hover > a.headerlink {
-    visibility: visible;
+  visibility: visible;
 }
 
 /* headings */
 h2 {
-    font-size: 1.5em;
-    margin-bottom: 0.5em;
-    border-bottom: 1px solid #888;
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #888;
 }
 
 h3 {
-    font-size: 1.25em;
-    margin-top: .5em;
+  font-size: 1.25em;
+  margin-top: 0.5em;
 }
 
 h4 {
-    font-size: 1.15em;
-    margin-top: 1em;
+  font-size: 1.15em;
+  margin-top: 1em;
 }
 
 h5 {
-    font-size: 1em;
-    margin-top: 1em;
+  font-size: 1em;
+  margin-top: 1em;
 }
 
 /* general layout */
 #content {
-    width: 95%;
-    margin: 0 auto;
-    text-align: left;
+  width: 95%;
+  margin: 0 auto;
+  text-align: left;
 }
 
 #content-left-wrapper {
-    float: left;
-    width: 100%; /* req to keep content above sidebar in source code */
+  float: left;
+  width: 100%; /* req to keep content above sidebar in source code */
 }
 
 #content-left {
-    margin: 0 340px 0 0;
+  margin: 0 340px 0 0;
 }
 
 #content-right {
-    float: left;
-    width: 300px;
-    margin-left: -300px;
+  float: left;
+  width: 300px;
+  margin-left: -300px;
 }
 
 div.box {
-    margin-bottom: 1.5em;
-    padding: 0.65em;
-    background: #ecf2f5;
-    border: 1px solid #bcd;
+  margin-bottom: 1.5em;
+  padding: 0.65em;
+  background: #ecf0f3;
 }
 
 #footer {
-    clear: both;
-    margin: 2em 0 1em;
+  clear: both;
+  margin: 2em 0 1em;
 }
 
-    #footer p {
-        margin: 0;
-        text-align: center;
-        font-size: 0.85em;
-    }
+#footer p {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85em;
+}
 
 /* alignment */
 div.center,
 table.center,
 img.center {
-    width: auto;
-    margin-left: auto;
-    margin-right: auto;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 p.center,
 td.center,
 th.center {
-    text-align: center;
+  text-align: center;
 }
 
 /* table generics */
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-    table .wrap {
-        white-space: normal;
-    }
+table .wrap {
+  white-space: normal;
+}
 
 th,
 td {
-    white-space: nowrap;
-    text-align: left;
+  white-space: nowrap;
+  text-align: left;
 }
 
-    th {
-        vertical-align: middle;
-        font-weight: bold;
-    }
+th {
+  vertical-align: middle;
+  font-weight: bold;
+}
 
-    td {
-        vertical-align: top;
-    }
+td {
+  vertical-align: top;
+}
 
 /* table pretty styles */
 table.pretty2 {
-    width: auto;
-    margin-top: 0.25em;
-    margin-bottom: 0.5em;
-    border-collapse: collapse;
-    border: 1px solid #bbb;
+  width: auto;
+  margin-top: 0.25em;
+  margin-bottom: 0.5em;
+  border-collapse: collapse;
+  border: 1px solid #bbb;
 }
 
-    .pretty2 th {
-        padding: 0.35em;
-        background: #eee;
-        border: 1px solid #bbb;
-    }
+.pretty2 th {
+  padding: 0.35em;
+  background: #eee;
+  border: 1px solid #bbb;
+}
 
-    .pretty2 td {
-        padding: 0.35em;
-        border: 1px dotted #bbb;
-    }
+.pretty2 td {
+  padding: 0.35em;
+  border: 1px dotted #bbb;
+}
 
 table.compact {
-    width: auto;
+  width: auto;
 }
 
-    .compact td {
-        padding: 0.25em 0 0.25em 1.5em;
-    }
-
+.compact td {
+  padding: 0.25em 0 0.25em 1.5em;
+}
 
 /* definition lists */
 dl {
-    clear: both;
+  clear: both;
 }
 
-    dl dt,
-    dl dd {
-        margin-bottom: 4px;
-        padding: 8px 0 4px;
-        font-weight: bold;
-        border-top: 1px dotted #bbb;
-    }
+dl dt,
+dl dd {
+  margin-bottom: 4px;
+  padding: 8px 0 4px;
+  font-weight: bold;
+  border-top: 1px dotted #bbb;
+}
 
-    dl dt {
-        color: #333;
-        float:left;
-        padding-right:15px;
-    }
+dl dt {
+  color: #333;
+  float: left;
+  padding-right: 15px;
+}
 
 /* forms and input styling */
 form p {
-    margin: 0.5em 0;
+  margin: 0.5em 0;
 }
 
 fieldset {
-    border: 0;
+  border: 0;
 }
 
 label {
-    width: 12em;
-    vertical-align: top;
-    display: inline-block;
-    font-weight: bold;
+  width: 12em;
+  vertical-align: top;
+  display: inline-block;
+  font-weight: bold;
 }
 
-input[type=text],
-input[type=password],
-textarea {
-    padding: 0.10em;
+input[type="text"],
+input[type="password"],
+textarea,
+select {
+  background: #fefefe;
+  border: 1px solid #e3e3e3;
+  padding: 0.1em;
 }
 
 form.general-form label,
 form.general-form .form-help {
-    width: 10em;
-    vertical-align: top;
-    display: inline-block;
+  width: 10em;
+  vertical-align: top;
+  display: inline-block;
 }
 
-form.general-form input[type=text],
+form.general-form input[type="text"],
 form.general-form textarea {
-    width: 45%;
+  width: 45%;
 }
 
 /* archdev navbar */
 #archdev-navbar {
-    margin: 1.5em 0;
+  margin: 1.5em 0;
 }
 
-    #archdev-navbar ul {
-        list-style: none;
-        margin: -0.5em 0;
-        padding: 0;
-    }
+#archdev-navbar ul {
+  list-style: none;
+  margin: -0.5em 0;
+  padding: 0;
+}
 
-    #archdev-navbar li {
-        display: inline;
-        margin: 0;
-        padding: 0;
-        font-size: 0.9em;
-    }
+#archdev-navbar li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9em;
+}
 
-        #archdev-navbar li a {
-            padding: 0 0.5em;
-            color: #07b;
-        }
+#archdev-navbar li a {
+  padding: 0 0.5em;
+  color: #07b;
+}
 
 /* error/info messages (x pkg is already flagged out-of-date, etc) */
 #sys-message {
-    width: 35em;
-    text-align: center;
-    margin: 1em auto;
-    padding: 0.5em;
-    background: #fff;
-    border: 1px solid #f00;
+  width: 35em;
+  text-align: center;
+  margin: 1em auto;
+  padding: 0.5em;
+  background: #fff;
+  border: 1px solid #f00;
 }
 
-    #sys-message p {
-        margin: 0;
-    }
+#sys-message p {
+  margin: 0;
+}
 
 ul.errorlist {
-    color: red;
+  color: red;
 }
 
 form ul.errorlist {
-    margin: 0.5em 0;
+  margin: 0.5em 0;
 }
 
 /* JS sorting via tablesorter */
 table th.tablesorter-header {
-    padding-right: 20px;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
-    background-repeat: no-repeat;
-    background-position: center right;
-    cursor: pointer;
+  padding-right: 20px;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
 }
 
 table thead th.tablesorter-headerAsc {
-    background-color: #e4eeff;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+  background-color: #e4eeff;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
 }
 
 table thead th.tablesorter-headerDesc {
-    background-color: #e4eeff;
-    background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+  background-color: #e4eeff;
+  background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 }
 
 table thead th.sorter-false {
-    background-image: none;
-    cursor: default;
+  background-image: none;
+  cursor: default;
 }
 
 .tablesorter-header:focus {
-    outline: none;
+  outline: none;
 }
 
 /**
@@ -420,74 +477,74 @@ table thead th.sorter-false {
 
 /* home: introduction */
 #intro p.readmore {
-    margin: -0.5em 0 0 0;
-    font-size: .9em;
-    text-align: right;
+  margin: -0.5em 0 0 0;
+  font-size: 0.9em;
+  text-align: right;
 }
 
 /* home: news */
 #news {
-    margin-top: 1.5em;
+  margin-top: 1.5em;
 }
 
-    #news h3 {
-        float: left;
-        padding-bottom: .5em
-    }
+#news h3 {
+  float: left;
+  padding-bottom: 0.5em;
+}
 
-    #news div {
-        margin-bottom: 1em;
-    }
+#news div {
+  margin-bottom: 1em;
+}
 
-        #news div p {
-            margin-bottom: 0.5em;
-        }
+#news div p {
+  margin-bottom: 0.5em;
+}
 
-    #news .more {
-        font-weight: normal;
-    }
+#news .more {
+  font-weight: normal;
+}
 
-    #news .rss-icon {
-        float: right;
-        margin-top: 1em;
-    }
+#news .rss-icon {
+  float: right;
+  margin-top: 1em;
+}
 
-    #news h4 {
-        clear: both;
-        font-size: 1em;
-        margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
-    }
+#news h4 {
+  clear: both;
+  font-size: 1em;
+  margin-top: 1.5em;
+  border-bottom: 1px dotted #bbb;
+}
 
-    #news .timestamp {
-        float: right;
-        font-size: 0.85em;
-        margin: -1.8em 0.5em 0 0;
-    }
+#news .timestamp {
+  float: right;
+  font-size: 0.85em;
+  margin: -1.8em 0.5em 0 0;
+}
 
 /* home: arrowed headings */
 #news h3 a {
-    display: block;
-    background: #1794D1;
-    font-size: 15px;
-    padding: 2px 10px;
-    color: white;
+  display: block;
+  background: #1794d1;
+  font-size: 15px;
+  padding: 2px 10px;
+  color: white;
 }
 
-    #news a:active {
-        color: white;
-    }
+#news a:active {
+  color: white;
+}
 
 h3 span.arrow {
-    display: block;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #1794D1;
-    margin: 0 auto;
-    font-size: 0;
-    line-height: 0px;
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1794d1;
+  margin: 0 auto;
+  font-size: 0;
+  line-height: 0px;
 }
 
 /* home: headings inside news previews */
@@ -496,426 +553,424 @@ h3 span.arrow {
 #news div.article-content h3,
 #news div.article-content h4,
 #news div.article-content h5 {
-    /* cancel styling for #news h3 */
-    float: none;
-    padding-bottom: 0em;
-    /* cancel styling for #news h4 */
-    clear: none;
-    border-bottom: none;
-    /* force the style of normal h5 */
-    font-size: 1em;
-    margin-top: 1em;
-    margin-bottom: 0em;
+  /* cancel styling for #news h3 */
+  float: none;
+  padding-bottom: 0em;
+  /* cancel styling for #news h4 */
+  clear: none;
+  border-bottom: none;
+  /* force the style of normal h5 */
+  font-size: 1em;
+  margin-top: 1em;
+  margin-bottom: 0em;
 }
 
 /* planet: posts */
 #planet {
-    margin-top: 1.5em;
+  margin-top: 1.5em;
 }
 
-    #planet h3 {
-        float: left;
-        padding-bottom: .5em
-    }
+#planet h3 {
+  float: left;
+  padding-bottom: 0.5em;
+}
 
-    #planet div {
-        margin-bottom: 1em;
-    }
+#planet div {
+  margin-bottom: 1em;
+}
 
-        #planet div p {
-            margin-bottom: 0.5em;
-        }
+#planet div p {
+  margin-bottom: 0.5em;
+}
 
-    #planet .more {
-        font-weight: normal;
-    }
+#planet .more {
+  font-weight: normal;
+}
 
-    #planet .rss-icon {
-        float: right;
-        margin-top: 1em;
-    }
+#planet .rss-icon {
+  float: right;
+  margin-top: 1em;
+}
 
-    #planet h4 {
-        clear: both;
-        font-size: 1em;
-        margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
-    }
+#planet h4 {
+  clear: both;
+  font-size: 1em;
+  margin-top: 1.5em;
+  border-bottom: 1px dotted #bbb;
+}
 
-    #planet .timestamp {
-        float: right;
-        font-size: 0.85em;
-        margin: -1.8em 0.5em 0 0;
-    }
+#planet .timestamp {
+  float: right;
+  font-size: 0.85em;
+  margin: -1.8em 0.5em 0 0;
+}
 
 #planet .article-author {
-    font-style: italic;
-    text-align: right;
+  font-style: italic;
+  text-align: right;
 }
 
 #nav-sidebar .planet-list {
-    list-style: square;
-    padding-left: 1em;
+  list-style: square;
+  padding-left: 1em;
 }
 
 /* home: pkgsearch box */
 #pkgsearch {
-    padding: 1em 0.75em;
-    background: #3ad;
-    color: #fff;
-    border: 1px solid #08b;
+  padding: 1em 0.75em;
+  background: #3ad;
+  color: #fff;
 }
 
-    #pkgsearch label {
-        width: auto;
-        padding: 0.1em 0;
-    }
+#pkgsearch label {
+  width: auto;
+  padding: 0.1em 0;
+}
 
-    #pkgsearch input {
-        width: 10em;
-        float: right;
-        font-size: 1em;
-        color: #000;
-        background: #fff;
-        border: 1px solid #09c;
-    }
+#pkgsearch input {
+  width: 10em;
+  float: right;
+  font-size: 1em;
+  color: #000;
+  background: #fff;
+  border: 1px solid #09c;
+}
 
-    .pkgsearch-typeahead {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        display: none;
-        float: left;
-        padding: 0.15em 0.1em;
-        margin: 0;
-        min-width: 10em;
-        font-size: 1em;
-        text-align: left;
-        list-style: none;
-        background-color: #f6f9fc;
-        border: 1px solid #09c;
-    }
+.pkgsearch-typeahead {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  padding: 0.15em 0.1em;
+  margin: 0;
+  min-width: 10em;
+  font-size: 1em;
+  text-align: left;
+  list-style: none;
+  background-color: #f6f9fc;
+  border: 1px solid #09c;
+}
 
-        .pkgsearch-typeahead li a {
-            color: #000;
-        }
+.pkgsearch-typeahead li a {
+  color: #000;
+}
 
-        .pkgsearch-typeahead li:hover a,
-        .pkgsearch-typeahead li.active a {
-            color: #07b;
-        }
+.pkgsearch-typeahead li:hover a,
+.pkgsearch-typeahead li.active a {
+  color: #07b;
+}
 
 /* home: recent pkg updates */
 #pkg-updates h3 {
-    margin: 0 0 0.3em;
+  margin: 0 0 0.3em;
 }
 
-    #pkg-updates .more {
-        font-weight: normal;
-    }
+#pkg-updates .more {
+  font-weight: normal;
+}
 
-    #pkg-updates .rss-icon {
-        float: right;
-        margin: -2em 0 0 0;
-    }
+#pkg-updates .rss-icon {
+  float: right;
+  margin: -2em 0 0 0;
+}
 
-    #pkg-updates table {
-        margin: 0;
-    }
+#pkg-updates table {
+  margin: 0;
+}
 
-    #pkg-updates td.pkg-name {
-        white-space: normal;
-    }
+#pkg-updates td.pkg-name {
+  white-space: normal;
+}
 
-    #pkg-updates td.pkg-arch {
-        text-align: right;
-    }
+#pkg-updates td.pkg-arch {
+  text-align: right;
+}
 
-    #pkg-updates span.testing {
-        font-style: italic;
-    }
+#pkg-updates span.testing {
+  font-style: italic;
+}
 
-    #pkg-updates span.staging {
-        font-style: italic;
-        color: #ff8040;
-    }
+#pkg-updates span.staging {
+  font-style: italic;
+  color: #ff8040;
+}
 
 /* home: sidebar navigation */
 #nav-sidebar ul {
-    list-style: none;
-    margin: 0.5em 0 0.5em 1em;
-    padding: 0;
+  list-style: none;
+  margin: 0.5em 0 0.5em 1em;
+  padding: 0;
 }
 
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
 div.widget {
-    margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 /* feeds page */
 #rss-feeds .rss {
-    padding-right: 20px;
-    background: url(rss.png) top right no-repeat;
+  padding-right: 20px;
+  background: url(rss.png) top right no-repeat;
 }
 
 /* artwork: logo images */
 #artwork img.inverted {
-    background: #333;
-    padding: 0;
+  background: #333;
+  padding: 0;
 }
 
 #artwork div.imagelist img {
-    display: inline;
-    margin: 0.75em;
+  display: inline;
+  margin: 0.75em;
 }
 
 /* news: article list */
 .news-nav {
-    float: right;
-    margin-top: -2.2em;
+  float: right;
+  margin-top: -2.2em;
 }
 
-    .news-nav .prev,
-    .news-nav .next {
-        margin: 0 1em;
-    }
+.news-nav .prev,
+.news-nav .next {
+  margin: 0 1em;
+}
 
 /* news: article pages */
 div.news-article .article-info {
-    margin: 0;
-    color: #999;
+  margin: 0;
+  color: #999;
 }
 
 /* news: add/edit article */
 #newsform {
-    width: 60em;
+  width: 60em;
 }
 
-    #newsform input[type=text],
-    #newsform textarea {
-        width: 75%;
-    }
+#newsform input[type="text"],
+#newsform textarea {
+  width: 75%;
+}
 
 #news-preview {
-    display: none;
+  display: none;
 }
 
 /* todolists: list */
 .todolist-nav {
-    float: right;
-    margin-top: -2.2em;
+  float: right;
+  margin-top: -2.2em;
 }
 
-    .todolist-nav .prev,
-    .todolist-nav .next {
-        margin: 0 1em;
-    }
+.todolist-nav .prev,
+.todolist-nav .next {
+  margin: 0 1em;
+}
 
 /* donate: donor list */
 #donor-list ul {
-    width: 100%;
+  width: 100%;
 }
-    /* max 4 columns, but possibly fewer if screen size doesn't allow for more */
-    #donor-list li {
-        float: left;
-        width: 25%;
-        min-width: 20em;
-    }
+/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+#donor-list li {
+  float: left;
+  width: 25%;
+  min-width: 20em;
+}
 
 /* download page */
 #arch-downloads h3 {
-    border-bottom: 1px dotted #bbb;
+  border-bottom: 1px dotted #bbb;
 }
 
 /* pkglists/devlists */
 table.results {
-    font-size: 0.846em;
-    border-top: 1px dotted #999;
-    border-bottom: 1px dotted #999;
+  font-size: 0.846em;
+  border-top: 1px dotted #999;
+  border-bottom: 1px dotted #999;
 }
 
-    .results th {
-        padding: 0.5em 1em 0.25em 0.25em;
-        border-bottom: 1px solid #999;
-        white-space: nowrap;
-        background-color:#fff;
-    }
+.results th {
+  padding: 0.5em 1em 0.25em 0.25em;
+  border-bottom: 1px solid #999;
+  white-space: nowrap;
+  background-color: #fff;
+}
 
-    .results td {
-        padding: .3em 1em .3em 3px;
-    }
+.results td {
+  padding: 0.3em 1em 0.3em 3px;
+}
 
-    .results .flagged {
-        color: red;
-    }
+.results .flagged {
+  color: red;
+}
 
-    .results tr.empty td {
-        text-align: center;
-    }
+.results tr.empty td {
+  text-align: center;
+}
 
 /* pkglist: layout */
 #pkglist-about {
-    margin-top: 1.5em;
+  margin-top: 1.5em;
 }
 
 /* pkglist: results navigation */
 .pkglist-stats {
-    font-size: 0.85em;
+  font-size: 0.85em;
 }
 
 #pkglist-results .pkglist-nav {
-    float: right;
-    margin-top: -2.2em;
+  float: right;
+  margin-top: -2.2em;
 }
 
 .pkglist-nav .prev {
-    margin-right: 1em;
+  margin-right: 1em;
 }
 
 .pkglist-nav .next {
-    margin-right: 1em;
+  margin-right: 1em;
 }
 
 /* search fields  and other filter selections */
 .filter-criteria {
-    margin-bottom: 1em;
+  margin-bottom: 1em;
 }
 
 .filter-criteria h3 {
-    font-size: 1em;
-    margin-top: 0;
+  font-size: 1em;
+  margin-top: 0;
 }
 
 .filter-criteria div {
-    float: left;
-    margin-right: 1.65em;
-    font-size: 0.85em;
+  float: left;
+  margin-right: 1.65em;
+  font-size: 0.85em;
 }
 
 .filter-criteria legend {
-    display: none;
+  display: none;
 }
 
 .filter-criteria label {
-    width: auto;
-    display: block;
-    font-weight: normal;
+  width: auto;
+  display: block;
+  font-weight: normal;
 }
 
 /* pkgdetails: details links that float on the right */
 #pkgdetails #detailslinks {
-    float: right;
+  float: right;
 }
 
-    #pkgdetails #detailslinks h4 {
-        margin-top: 0;
-        margin-bottom: 0.25em;
-    }
+#pkgdetails #detailslinks h4 {
+  margin-top: 0;
+  margin-bottom: 0.25em;
+}
 
-    #pkgdetails #detailslinks ul {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 0;
-        font-size: 0.846em;
-    }
+#pkgdetails #detailslinks ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 0;
+  font-size: 0.846em;
+}
 
-    #pkgdetails #detailslinks > div {
-        padding: 0.5em;
-        margin-bottom: 1em;
-        background: #eee;
-        border: 1px solid #bbb;
-    }
+#pkgdetails #detailslinks > div {
+  padding: 0.5em;
+  margin-bottom: 1em;
+  background: #00000010;
+}
 
 #pkgdetails #actionlist .flagged {
-    color: red;
-    font-size: 0.9em;
-    font-style: italic;
+  color: red;
+  font-size: 0.9em;
+  font-style: italic;
 }
 
 /* pkgdetails: pkg info */
 #pkgdetails #pkginfo {
-    width: auto;
+  width: auto;
 }
 
-    #pkgdetails #pkginfo td {
-        padding: 0.25em 0 0.25em 1.5em;
-    }
+#pkgdetails #pkginfo td {
+  padding: 0.25em 0 0.25em 1.5em;
+}
 
-    #pkgdetails #pkginfo .userdata {
-        font-size: 0.85em;
-        padding: 0.5em;
-    }
+#pkgdetails #pkginfo .userdata {
+  font-size: 0.85em;
+  padding: 0.5em;
+}
 
-    #pkgdetails #pkginfo .recent {
-        color: green;
-        font-weight: bold;
-        text-decoration: underline dotted;
-    }
+#pkgdetails #pkginfo .recent {
+  color: green;
+  font-weight: bold;
+  text-decoration: underline dotted;
+}
 
 /* pkgdetails: flag package */
 #flag-pkg-form label {
-    width: 10em;
+  width: 10em;
 }
 
 #flag-pkg-form textarea,
-#flag-pkg-form input[type=text] {
-    width: 45%;
+#flag-pkg-form input[type="text"] {
+  width: 45%;
 }
 
 #flag-pkg-form #id_website {
-    display: none;
+  display: none;
 }
 
 #flag-pkg-form div.recentwarning {
-    width: calc(45% - 4px); /* Minus padding to match text fields above */
-    padding: 4px 6px;
-    display: inline-block;
+  width: calc(45% - 4px); /* Minus padding to match text fields above */
+  padding: 4px 6px;
+  display: inline-block;
 
-    color: #a94442;
-    background: #f2dede;
-    border: 1px solid #ebccd1;
+  color: #a94442;
+  background: #f2dede;
+  border: 1px solid #ebccd1;
 }
 
 /* pkgdetails: deps, required by and file lists */
 #pkgdetails #metadata {
-    clear: both;
+  clear: both;
 }
 
 #pkgdetails #metadata h3 {
-    background: #555;
-    color: #fff;
-    font-size: 1em;
-    margin-bottom: 0.5em;
-    padding: 0.2em 0.35em;
+  background: #555;
+  color: #fff;
+  font-size: 1em;
+  margin-bottom: 0.5em;
+  padding: 0.2em 0.35em;
 }
 
 #pkgdetails #metadata ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 #pkgdetails #metadata li {
-    padding-left: 0.5em;
+  padding-left: 0.5em;
 }
 
 #pkgdetails #metadata p {
-    padding-left: 0.5em;
+  padding-left: 0.5em;
 }
 
 #pkgdetails #metadata .message {
-    font-style: italic;
+  font-style: italic;
 }
 
 #pkgdetails #metadata br {
-    clear: both;
+  clear: both;
 }
 
 #pkgdetails #pkgdeps {
-    float: left;
-    width: 48%;
-    margin-right: 2%;
+  float: left;
+  width: 48%;
+  margin-right: 2%;
 }
 
 #pkgdetails #metadata .virtual-dep,
@@ -925,20 +980,20 @@ table.results {
 #pkgdetails #metadata .make-dep,
 #pkgdetails #metadata .check-dep,
 #pkgdetails #metadata .dep-desc {
-    font-style: italic;
+  font-style: italic;
 }
 #pkgdetails #pkgreqs {
-    float: left;
-    width: 50%;
+  float: left;
+  width: 50%;
 }
 
 #pkgdetails #pkgfiles {
-    clear: left;
-    padding-top: 1em;
+  clear: left;
+  padding-top: 1em;
 }
 
 #pkgfilelist li.d {
-    color: #666;
+  color: #666;
 }
 
 #pkgfilelist li.f {
@@ -946,91 +1001,91 @@ table.results {
 
 /* mirror stuff */
 table td.country {
-    white-space: normal;
+  white-space: normal;
 }
 
 #list-generator div ul {
-    list-style: none;
-    display: inline;
-    padding-left: 0;
+  list-style: none;
+  display: inline;
+  padding-left: 0;
 }
 
-    #list-generator div ul li {
-        display: inline;
-    }
+#list-generator div ul li {
+  display: inline;
+}
 
 .visualize-mirror .axis path,
 .visualize-mirror .axis line {
-    fill: none;
-    stroke: #000;
-    stroke-width: 3px;
-    shape-rendering: crispEdges;
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+  shape-rendering: crispEdges;
 }
 
 .visualize-mirror .url-dot {
-    stroke: #000;
+  stroke: #000;
 }
 
 .visualize-mirror .url-line {
-    fill: none;
-    stroke-width: 1.5px;
+  fill: none;
+  stroke-width: 1.5px;
 }
 
 /* dev/TU biographies */
 #arch-bio-toc {
-    width: 75%;
-    margin: 0 auto;
-    text-align: center;
+  width: 75%;
+  margin: 0 auto;
+  text-align: center;
 }
 
-    #arch-bio-toc a {
-        white-space: nowrap;
-    }
+#arch-bio-toc a {
+  white-space: nowrap;
+}
 
 .arch-bio-entry {
-    width: 75%;
-    min-width: 640px;
-    margin: 0 auto;
+  width: 75%;
+  min-width: 640px;
+  margin: 0 auto;
 }
 
-    .arch-bio-entry td.pic {
-        vertical-align: top;
-        padding-right: 15px;
-        padding-top: 2.25em;
-    }
+.arch-bio-entry td.pic {
+  vertical-align: top;
+  padding-right: 15px;
+  padding-top: 2.25em;
+}
 
-        .arch-bio-entry td.pic img {
-            padding: 4px;
-            border: 1px solid #ccc;
-        }
+.arch-bio-entry td.pic img {
+  padding: 4px;
+  border: 1px solid #ccc;
+}
 
-    .arch-bio-entry td h3 {
-        border-bottom: 1px dotted #ccc;
-        margin-bottom: 0.5em;
-    }
+.arch-bio-entry td h3 {
+  border-bottom: 1px dotted #ccc;
+  margin-bottom: 0.5em;
+}
 
-    .arch-bio-entry table.bio {
-        margin-bottom: 2em;
-    }
+.arch-bio-entry table.bio {
+  margin-bottom: 2em;
+}
 
-        .arch-bio-entry table.bio th {
-            color: #666;
-            font-weight: normal;
-            text-align: right;
-            padding-right: 0.5em;
-            vertical-align: top;
-            white-space: nowrap;
-        }
+.arch-bio-entry table.bio th {
+  color: #666;
+  font-weight: normal;
+  text-align: right;
+  padding-right: 0.5em;
+  vertical-align: top;
+  white-space: nowrap;
+}
 
-        .arch-bio-entry table.bio td {
-            width: 100%;
-            padding-bottom: 0.25em;
-            white-space: normal;
-        }
+.arch-bio-entry table.bio td {
+  width: 100%;
+  padding-bottom: 0.25em;
+  white-space: normal;
+}
 
 /* dev: login/out */
 #dev-login {
-    width: auto;
+  width: auto;
 }
 
 /* tables rows: highlight on mouse-vover */
@@ -1041,138 +1096,137 @@ table td.country {
 #dev-todo-pkglist tr:hover,
 #pkglist-results tr:hover,
 #stats-area tr:hover {
-    background: #ffd;
+  background: lightyellow;
 }
 
 .results tr:nth-child(even),
 #article-list tr:nth-child(even) {
-    background: #e4eeff;
+  background: #e4eeff;
 }
 
 .results tr:nth-child(odd),
 #article-list tr:nth-child(odd) {
-    background: #fff;
+  background: #fff;
 }
 
 /* dev dashboard: */
 table.dash-stats .key {
-    width: 50%;
+  width: 50%;
 }
 
 /* dev dashboard: admin actions (add news items, todo list, etc) */
 ul.admin-actions {
-    float: right;
-    list-style: none;
-    margin-top: -2.5em;
+  float: right;
+  list-style: none;
+  margin-top: -2.5em;
 }
 
-    ul.admin-actions li {
-        display: inline;
-        padding-left: 1.5em;
-    }
+ul.admin-actions li {
+  display: inline;
+  padding-left: 1.5em;
+}
 
 /* colored yes/no type values */
 .todo-table .complete,
 .signoff-yes,
 #key-status .signed-yes,
 #release-list .available-yes {
-    color: green;
+  color: green;
 }
 
 .todo-table .incomplete,
 .signoff-no,
 #key-status .signed-no,
 #release-list .available-no {
-    color: red;
+  color: red;
 }
 
 .todo-table .inprogress,
 .signoff-bad {
-    color: darkorange;
+  color: darkorange;
 }
-
 
 /* todo lists (public and private) */
 .todo-info {
-    color: #999;
-    border-bottom: 1px dotted #bbb;
+  color: #999;
+  border-bottom: 1px dotted #bbb;
 }
 
 .todo-description {
-    margin-top: 1em;
-    padding-left: 2em;
-    max-width: 900px;
+  margin-top: 1em;
+  padding-left: 2em;
+  max-width: 900px;
 }
 
 .todo-pkgbases {
-    border-top: 1px dotted #bbb;
+  border-top: 1px dotted #bbb;
 }
 
 .todo-list h4 {
-    margin-top: 0;
-    margin-bottom: 0.4em;
+  margin-top: 0;
+  margin-bottom: 0.4em;
 }
 
 /* dev: signoff page */
 #dev-signoffs tr:hover {
-    background: #ffd;
+  background: #ffd;
 }
 
 ul.signoff-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .signoff-yes {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .signoff-disabled {
-    color: gray;
+  color: gray;
 }
 
 /* highlight current website in the navbar */
 #archnavbar.anb-home ul li#anb-home a,
 #archnavbar.anb-packages ul li#anb-packages a,
 #archnavbar.anb-download ul li#anb-download a {
-    color: white !important;
+  color: white !important;
 }
 
 /* visualizations page */
 .visualize-buttons {
-    margin: 0.5em 0.33em;
+  margin: 0.5em 0.33em;
 }
 
 .visualize-chart {
-    position: relative;
-    height: 500px;
-    margin: 0.33em;
+  position: relative;
+  height: 500px;
+  margin: 0.33em;
 }
 
 #visualize-archrepo .treemap-cell {
-    border: solid 1px white;
-    overflow: hidden;
-    position: absolute;
+  border: solid 1px white;
+  overflow: hidden;
+  position: absolute;
 }
 
-    #visualize-archrepo .treemap-cell span {
-        padding: 3px;
-        font-size: 0.85em;
-        line-height: 1em;
-    }
+#visualize-archrepo .treemap-cell span {
+  padding: 3px;
+  font-size: 0.85em;
+  line-height: 1em;
+}
 
 #visualize-keys svg {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 /* releases */
 #release-table th:first-of-type {
-    width: 30px;
+  width: 30px;
 }
 
 /* itemprops */
 .itemprop {
-    display: none;
+  display: none;
 }
