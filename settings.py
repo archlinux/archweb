@@ -88,7 +88,7 @@ CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Referrer Policy
-SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_REFERRER_POLICY = 'strict-origin'
 
 # X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
 SECURE_CONTENT_TYPE_NOSNIFF = True
