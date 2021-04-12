@@ -71,6 +71,7 @@ class UpdatePlanetTest(TestCase):
 
     @mock.patch('feedparser.parse')
     def test_parse_entries(self, parse):
+        self.feed.save()
         value = Result()
         value.entries = [Entry()]
         parse.return_value = value
@@ -79,6 +80,7 @@ class UpdatePlanetTest(TestCase):
 
     @mock.patch('feedparser.parse')
     def test_parse_entries_atom(self, parse):
+        self.feed.save()
         value = Result()
         entry = Entry()
         entry.published_parsed = None
