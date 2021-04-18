@@ -16,6 +16,7 @@ from collections import defaultdict
 
 import requests
 
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -53,7 +54,8 @@ class Command(BaseCommand):
 
         was_repro = import_rebuilderd_status(url)
 
-        send_repro_emails(was_repro)
+        if was_repro:
+            send_repro_emails(was_repro)
 
 
 def send_repro_emails(was_repro):
@@ -80,8 +82,22 @@ def send_repro_emails(was_repro):
 def import_rebuilderd_status(url):
     statuses = []
     was_repro = []
+    headers = {}
 
-    req = requests.get(url)
+    last_modified = cache.get('rebuilderd:last-modified')
+    if last_modified:
+        logger.debug('Setting If-Modified-Since header')
+        headers = {'If-Modified-Since': last_modified}
+
+    req = requests.get(url, headers=headers)
+    if req.status_code == 304:
+        logger.debug('The rebuilderd data has not been updated since we last checked it')
+        return was_repro
+
+    last_modified = req.headers.get('last-modified')
+    if last_modified:
+        cache.set('rebuilderd:last-modified', last_modified, 86400)
+
     data = req.json()
 
     # Lookup dictionary to reduce SQL queries.
