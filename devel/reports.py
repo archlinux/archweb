@@ -25,6 +25,25 @@ class Linkify:
         return format_html(link % (self.href, self.title, self.desc))
 
 
+def linkify_non_reproducible_packages(statuses):
+    '''Adds diffoscope/log attribute to non reproducible packages'''
+
+    pkgs = []
+    for status in statuses:
+        pkg = status.pkg
+
+        # Diffoscope url
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/diffoscope'
+        pkg.diffoscope = Linkify(url, 'Diffoscope of package', 'diffoscope')
+
+        # Build log
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/log'
+        pkg.log = Linkify(url, 'Logs of package', 'log')
+        pkgs.append(pkg)
+
+    return pkgs
+
+
 class DeveloperReport(object):
     def __init__(self,
                  slug,
@@ -183,22 +202,18 @@ def non_existing_dependencies(packages):
 
 
 def non_reproducible_packages(packages):
-    pkgs = []
     statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD, pkg__pkgname__in=packages.values('pkgname'))
+    return linkify_non_reproducible_packages(statuses)
 
-    for status in statuses:
-        pkg = status.pkg
 
-        # Diffoscope url
-        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/diffoscope'
-        pkg.diffoscope = Linkify(url, 'Diffoscope of package', 'diffoscope')
+def orphan_non_reproducible_packages(packages):
+    owned = PackageRelation.objects.all().values('pkgbase')
+    required = Depend.objects.all().values('name')
 
-        # Build log
-        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/log'
-        pkg.log = Linkify(url, 'Logs of package', 'log')
-        pkgs.append(pkg)
-
-    return pkgs
+    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD)
+    orphans = packages.exclude(pkgbase__in=owned).exclude(pkgname__in=required)
+    statuses = statuses.filter(pkg__in=orphans)
+    return linkify_non_reproducible_packages(statuses)
 
 
 def orphan_dependencies(packages):
@@ -291,6 +306,15 @@ REBUILDERD_PACKAGES = DeveloperReport(
     ['diffoscope', 'log'],
     ['diffoscope', 'log'])
 
+ORPHAN_REBUILDERD_PACKAGES = DeveloperReport(
+    'orphan-non-reproducible-packages',
+    'Orphan non Reproducible package',
+    'Orphan packages that are not reproducible on our reproducible.archlinux.org test environment',
+    orphan_non_reproducible_packages,
+    ['diffoscope', 'log'],
+    ['diffoscope', 'log'],
+    personal=False)
+
 REPORT_REQUIRED_ORPHAN = DeveloperReport(
     'required-orphan',
     'Required orphan packages',
@@ -312,4 +336,5 @@ def available_reports():
             REPORT_SIGNATURE,
             REPORT_SIG_TIME,
             NON_EXISTING_DEPENDENCIES,
-            REBUILDERD_PACKAGES, )
+            REBUILDERD_PACKAGES,
+            ORPHAN_REBUILDERD_PACKAGES, )
