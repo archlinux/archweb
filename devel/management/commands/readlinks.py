@@ -40,7 +40,7 @@ class Command(BaseCommand):
         elif v >= 2:
             logger.level = logging.DEBUG
 
-        return read_linksdb(filename)
+        return read_links(filename)
 
 
 def get_pkginfo(pkgnamever):
@@ -52,7 +52,7 @@ def get_pkginfo(pkgnamever):
     return pkgname, epoch, pkgver, pkgrel
 
 
-def read_linksdb(repopath):
+def read_links(repopath):
     logger.info("Starting linksdb parsing")
     if not os.path.exists(repopath):
         logger.error("Could not read file %s", repopath)
