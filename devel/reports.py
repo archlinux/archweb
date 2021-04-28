@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 
 import pytz
@@ -173,6 +174,34 @@ def non_reproducible_packages(packages):
     return packages.filter(pkgname__in=statuses)
 
 
+def orphan_dependencies(packages):
+    packages_with_orphan_deps = []
+    required_mapping = defaultdict(list)
+
+    cursor = connection.cursor()
+    query = """
+    SELECT DISTINCT pp.pkgbase, ppr.user_id, child.pkgname
+    FROM packages_depend ppd JOIN packages pp ON ppd.pkg_id = pp.id
+    JOIN packages_packagerelation ppr ON pp.pkgbase = ppr.pkgbase
+    JOIN (SELECT DISTINCT cp.pkgname FROM packages cp LEFT JOIN packages_packagerelation pr ON cp.pkgbase = pr.pkgbase WHERE pr.id IS NULL) child ON ppd.name = child.pkgname
+    ORDER BY child.pkgname;
+    """
+    cursor.execute(query)
+
+    for row in cursor.fetchall():
+        pkgname, _, orphan = row
+        required_mapping[pkgname].append(orphan)
+        packages_with_orphan_deps.append(pkgname)
+
+    pkgs = packages.filter(pkgname__in=packages_with_orphan_deps)
+
+    for pkg in pkgs:
+        # Templates take a string
+        pkg.orphandeps = ' '.join(required_mapping.get(pkg.pkgname, []))
+
+    return pkgs
+
+
 REPORT_OLD = DeveloperReport(
     'old', 'Old', 'Packages last built more than two years ago', old)
 
@@ -233,6 +262,14 @@ REBUILDERD_PACKAGES = DeveloperReport(
     'Packages that are not reproducible on our reproducible.archlinux.org test environment',
     non_reproducible_packages)
 
+REPORT_REQUIRED_ORPHAN = DeveloperReport(
+    'required-orphan',
+    'Required orphan packages',
+    'Packages with orphan dependencies',
+    orphan_dependencies,
+    ['Orphan dependencies'],
+    ['orphandeps'])
+
 
 def available_reports():
     return (REPORT_OLD,
@@ -242,6 +279,7 @@ def available_reports():
             REPORT_MAN,
             REPORT_INFO,
             REPORT_ORPHANS,
+            REPORT_REQUIRED_ORPHAN,
             REPORT_SIGNATURE,
             REPORT_SIG_TIME,
             NON_EXISTING_DEPENDENCIES,
