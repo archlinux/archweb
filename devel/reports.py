@@ -6,10 +6,23 @@ from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.db import connection
 from django.utils.timezone import now
+from django.utils.html import format_html
 from main.models import Package, PackageFile, RebuilderdStatus
 from packages.models import Depend, PackageRelation
 
 from .models import DeveloperKey
+
+
+# Helper object to be able to show links reports.
+class Linkify:
+    def __init__(self, href, title, desc):
+        self.href = href
+        self.title = title
+        self.desc = desc
+
+    def __str__(self):
+        link = '<a href="%s" title="%s">%s</a>'
+        return format_html(link % (self.href, self.title, self.desc))
 
 
 class DeveloperReport(object):
@@ -170,8 +183,22 @@ def non_existing_dependencies(packages):
 
 
 def non_reproducible_packages(packages):
-    statuses = RebuilderdStatus.objects.filter(status=RebuilderdStatus.BAD).values('pkg__pkgname')
-    return packages.filter(pkgname__in=statuses)
+    pkgs = []
+    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD, pkg__pkgname__in=packages.values('pkgname'))
+
+    for status in statuses:
+        pkg = status.pkg
+
+        # Diffoscope url
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/diffoscope'
+        pkg.diffoscope = Linkify(url, 'Diffoscope of package', 'diffoscope')
+
+        # Build log
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/log'
+        pkg.log = Linkify(url, 'Logs of package', 'log')
+        pkgs.append(pkg)
+
+    return pkgs
 
 
 def orphan_dependencies(packages):
@@ -260,7 +287,9 @@ REBUILDERD_PACKAGES = DeveloperReport(
     'non-reproducible-packages',
     'Non Reproducible package',
     'Packages that are not reproducible on our reproducible.archlinux.org test environment',
-    non_reproducible_packages)
+    non_reproducible_packages,
+    ['diffoscope', 'log'],
+    ['diffoscope', 'log'])
 
 REPORT_REQUIRED_ORPHAN = DeveloperReport(
     'required-orphan',
