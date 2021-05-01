@@ -13,26 +13,79 @@
  */
 
 /* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
-@media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
-	}
+#archnavbar {
+    position: sticky !important;
+    /* top and left are required for sticky to work */
+    top: 0 !important;
+    left: 0 !important;
+    min-height: 40px !important;
+    padding: 10px 15px !important;
+    background: #333 !important;
+    border-bottom: 5px #08c solid !important;
+}
+#archnavbarlogo {
+    float: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 40px !important;
+    width: 190px !important;
+    background: url("archnavbar/archlogo.png") no-repeat !important;
+}
+@media (-webkit-min-device-pixel-ratio: 1.2),
+    (min--moz-device-pixel-ratio: 1.2),
+    (-o-min-device-pixel-ratio: 2/1) {
+    #archnavbarlogo {
+        float: left !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 40px !important;
+        width: 190px !important;
+        background: url(archnavbar/archlogo.svg) no-repeat !important;
+        background-size: 100% !important;
+    }
 }
 
 /* move the heading text offscreen */
-#archnavbarlogo h1 { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
+#archnavbarlogo h1 {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-indent: -9999px !important;
+}
 
 /* make the link the same size as the logo */
-#archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
+#archnavbarlogo a {
+    display: block !important;
+    height: 40px !important;
+    width: 190px !important;
+}
 
 /* display the list inline, float it to the right and style it */
-#archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+#archnavbarlist {
+    display: block !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0px !important;
+    text-align: right !important;
+}
+#archnavbarlist li {
+    display: inline-block !important;
+    font-size: 14px !important;
+    font-family: sans-serif !important;
+    line-height: 14px !important;
+    padding: 14px 15px 0px !important;
+}
 
 /* style the links */
-#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
-#archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
+#archnavbarlist li a {
+    color: #999;
+    font-weight: bold !important;
+    text-decoration: none !important;
+}
+#archnavbarlist li a:hover {
+    color: white !important;
+    text-decoration: underline !important;
+}
 
 /* END ARCH GLOBAL NAVBAR */
 
@@ -45,6 +98,8 @@
 
 /* general styling */
 body {
+    /* relative required by parent of a sticky element (archnavabar) to work */
+    position: relative;
     min-width: 650px;
     background: #f6f9fc;
     color: #222;
@@ -53,7 +108,7 @@ body {
 }
 
 p {
-    margin: .33em 0 1em;
+    margin: 0.33em 0 1em;
 }
 
 ol,
@@ -62,13 +117,13 @@ ul {
     padding-left: 2em;
 }
 
-    ul {
-        list-style: square;
-    }
+ul {
+    list-style: square;
+}
 
 code {
     font: 1.2em monospace;
-    background: #ffd;
+    background: #ffffe2;
     padding: 0.15em 0.25em;
 }
 
@@ -80,11 +135,11 @@ pre {
     margin: 1em;
 }
 
-    pre code {
-        display: block;
-        background: none;
-        overflow: auto;
-    }
+pre code {
+    display: block;
+    background: none;
+    overflow: auto;
+}
 
 blockquote {
     margin: 1.5em 2em;
@@ -93,16 +148,20 @@ blockquote {
 input {
     vertical-align: middle;
 }
+/* remove outline on focused input that is present on browsers like chromium */
+input:focus {
+    outline: none;
+}
 
 select[multiple] {
     padding: 1px 0;
 }
 
-    select[multiple] option {
-        padding: 0 0.5em 0 0.3em;
-    }
+select[multiple] option {
+    padding: 0 0.5em 0 0.3em;
+}
 
-input[type=submit] {
+input[type="submit"] {
     padding: 0 0.6em;
 }
 
@@ -133,19 +192,19 @@ a {
     text-decoration: none;
 }
 
-    a:link,
-    a:visited,
-    th a:visited {
-        color: #08c;
-    }
+a:link,
+a:visited,
+th a:visited {
+    color: #08c;
+}
 
-    a:hover,
-    a:focus,
-    a:visited,
-    a:visited:hover {
-        color: #08c;
-        text-decoration: underline;
-    }
+a:hover,
+a:focus,
+a:visited,
+a:visited:hover {
+    color: #08c;
+    text-decoration: underline;
+}
 
 /* special anchor elements */
 a.headerlink {
@@ -161,12 +220,12 @@ h3:hover > a.headerlink {
 h2 {
     font-size: 1.5em;
     margin-bottom: 0.5em;
-    border-bottom: 1px solid #888;
+    border-bottom: 1px solid #999;
 }
 
 h3 {
     font-size: 1.25em;
-    margin-top: .5em;
+    margin-top: 0.5em;
 }
 
 h4 {
@@ -209,15 +268,17 @@ div.box {
 }
 
 #footer {
-    clear: both;
+    border-top: 1px solid #eee;
     margin: 2em 0 1em;
+    padding-top: 1em;
+    clear: both;
 }
 
-    #footer p {
-        margin: 0;
-        text-align: center;
-        font-size: 0.85em;
-    }
+#footer p {
+    margin: 0;
+    text-align: center;
+    font-size: 0.85em;
+}
 
 /* alignment */
 div.center,
@@ -240,9 +301,9 @@ table {
     border-collapse: collapse;
 }
 
-    table .wrap {
-        white-space: normal;
-    }
+table .wrap {
+    white-space: normal;
+}
 
 th,
 td {
@@ -250,14 +311,14 @@ td {
     text-align: left;
 }
 
-    th {
-        vertical-align: middle;
-        font-weight: bold;
-    }
+th {
+    vertical-align: middle;
+    font-weight: bold;
+}
 
-    td {
-        vertical-align: top;
-    }
+td {
+    vertical-align: top;
+}
 
 /* table pretty styles */
 table.pretty2 {
@@ -268,44 +329,43 @@ table.pretty2 {
     border: 1px solid #bbb;
 }
 
-    .pretty2 th {
-        padding: 0.35em;
-        background: #eee;
-        border: 1px solid #bbb;
-    }
+.pretty2 th {
+    padding: 0.35em;
+    background: #eee;
+    border: 1px solid #bbb;
+}
 
-    .pretty2 td {
-        padding: 0.35em;
-        border: 1px dotted #bbb;
-    }
+.pretty2 td {
+    padding: 0.35em;
+    border: 1px dotted #bbb;
+}
 
 table.compact {
     width: auto;
 }
 
-    .compact td {
-        padding: 0.25em 0 0.25em 1.5em;
-    }
-
+.compact td {
+    padding: 0.25em 0 0.25em 1.5em;
+}
 
 /* definition lists */
 dl {
     clear: both;
 }
 
-    dl dt,
-    dl dd {
-        margin-bottom: 4px;
-        padding: 8px 0 4px;
-        font-weight: bold;
-        border-top: 1px dotted #bbb;
-    }
+dl dt,
+dl dd {
+    margin-bottom: 4px;
+    padding: 8px 0 4px;
+    font-weight: bold;
+    border-top: 1px dotted #bbb;
+}
 
-    dl dt {
-        color: #333;
-        float:left;
-        padding-right:15px;
-    }
+dl dt {
+    color: #333;
+    float: left;
+    padding-right: 15px;
+}
 
 /* forms and input styling */
 form p {
@@ -323,10 +383,10 @@ label {
     font-weight: bold;
 }
 
-input[type=text],
-input[type=password],
+input[type="text"],
+input[type="password"],
 textarea {
-    padding: 0.10em;
+    padding: 0.1em;
 }
 
 form.general-form label,
@@ -336,7 +396,7 @@ form.general-form .form-help {
     display: inline-block;
 }
 
-form.general-form input[type=text],
+form.general-form input[type="text"],
 form.general-form textarea {
     width: 45%;
 }
@@ -346,23 +406,23 @@ form.general-form textarea {
     margin: 1.5em 0;
 }
 
-    #archdev-navbar ul {
-        list-style: none;
-        margin: -0.5em 0;
-        padding: 0;
-    }
+#archdev-navbar ul {
+    list-style: none;
+    margin: -0.5em 0;
+    padding: 0;
+}
 
-    #archdev-navbar li {
-        display: inline;
-        margin: 0;
-        padding: 0;
-        font-size: 0.9em;
-    }
+#archdev-navbar li {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9em;
+}
 
-        #archdev-navbar li a {
-            padding: 0 0.5em;
-            color: #07b;
-        }
+#archdev-navbar li a {
+    padding: 0 0.5em;
+    color: #07b;
+}
 
 /* error/info messages (x pkg is already flagged out-of-date, etc) */
 #sys-message {
@@ -374,9 +434,9 @@ form.general-form textarea {
     border: 1px solid #f00;
 }
 
-    #sys-message p {
-        margin: 0;
-    }
+#sys-message p {
+    margin: 0;
+}
 
 ul.errorlist {
     color: red;
@@ -421,7 +481,7 @@ table thead th.sorter-false {
 /* home: introduction */
 #intro p.readmore {
     margin: -0.5em 0 0 0;
-    font-size: .9em;
+    font-size: 0.9em;
     text-align: right;
 }
 
@@ -430,53 +490,53 @@ table thead th.sorter-false {
     margin-top: 1.5em;
 }
 
-    #news h3 {
-        float: left;
-        padding-bottom: .5em
-    }
+#news h3 {
+    float: left;
+    padding-bottom: 0.5em;
+}
 
-    #news div {
-        margin-bottom: 1em;
-    }
+#news div {
+    margin-bottom: 1em;
+}
 
-        #news div p {
-            margin-bottom: 0.5em;
-        }
+#news div p {
+    margin-bottom: 0.5em;
+}
 
-    #news .more {
-        font-weight: normal;
-    }
+#news .more {
+    font-weight: normal;
+}
 
-    #news .rss-icon {
-        float: right;
-        margin-top: 1em;
-    }
+#news .rss-icon {
+    float: right;
+    margin-top: 1em;
+}
 
-    #news h4 {
-        clear: both;
-        font-size: 1em;
-        margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
-    }
+#news h4 {
+    clear: both;
+    font-size: 1em;
+    margin-top: 1.5em;
+    border-bottom: 1px dotted #bbb;
+}
 
-    #news .timestamp {
-        float: right;
-        font-size: 0.85em;
-        margin: -1.8em 0.5em 0 0;
-    }
+#news .timestamp {
+    float: right;
+    font-size: 0.85em;
+    margin: -1.8em 0.5em 0 0;
+}
 
 /* home: arrowed headings */
 #news h3 a {
     display: block;
-    background: #1794D1;
+    background: #1794d1;
     font-size: 15px;
     padding: 2px 10px;
     color: white;
 }
 
-    #news a:active {
-        color: white;
-    }
+#news a:active {
+    color: white;
+}
 
 h3 span.arrow {
     display: block;
@@ -484,7 +544,7 @@ h3 span.arrow {
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid #1794D1;
+    border-top: 6px solid #1794d1;
     margin: 0 auto;
     font-size: 0;
     line-height: 0px;
@@ -513,40 +573,40 @@ h3 span.arrow {
     margin-top: 1.5em;
 }
 
-    #planet h3 {
-        float: left;
-        padding-bottom: .5em
-    }
+#planet h3 {
+    float: left;
+    padding-bottom: 0.5em;
+}
 
-    #planet div {
-        margin-bottom: 1em;
-    }
+#planet div {
+    margin-bottom: 1em;
+}
 
-        #planet div p {
-            margin-bottom: 0.5em;
-        }
+#planet div p {
+    margin-bottom: 0.5em;
+}
 
-    #planet .more {
-        font-weight: normal;
-    }
+#planet .more {
+    font-weight: normal;
+}
 
-    #planet .rss-icon {
-        float: right;
-        margin-top: 1em;
-    }
+#planet .rss-icon {
+    float: right;
+    margin-top: 1em;
+}
 
-    #planet h4 {
-        clear: both;
-        font-size: 1em;
-        margin-top: 1.5em;
-        border-bottom: 1px dotted #bbb;
-    }
+#planet h4 {
+    clear: both;
+    font-size: 1em;
+    margin-top: 1.5em;
+    border-bottom: 1px dotted #bbb;
+}
 
-    #planet .timestamp {
-        float: right;
-        font-size: 0.85em;
-        margin: -1.8em 0.5em 0 0;
-    }
+#planet .timestamp {
+    float: right;
+    font-size: 0.85em;
+    margin: -1.8em 0.5em 0 0;
+}
 
 #planet .article-author {
     font-style: italic;
@@ -566,80 +626,80 @@ h3 span.arrow {
     border: 1px solid #08b;
 }
 
-    #pkgsearch label {
-        width: auto;
-        padding: 0.1em 0;
-    }
+#pkgsearch label {
+    width: auto;
+    padding: 0.1em 0;
+}
 
-    #pkgsearch input {
-        width: 10em;
-        float: right;
-        font-size: 1em;
-        color: #000;
-        background: #fff;
-        border: 1px solid #09c;
-    }
+#pkgsearch input {
+    width: 10em;
+    float: right;
+    font-size: 1em;
+    color: #000;
+    background: #fff;
+    border: 1px solid #09c;
+}
 
-    .pkgsearch-typeahead {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        z-index: 1000;
-        display: none;
-        float: left;
-        padding: 0.15em 0.1em;
-        margin: 0;
-        min-width: 10em;
-        font-size: 1em;
-        text-align: left;
-        list-style: none;
-        background-color: #f6f9fc;
-        border: 1px solid #09c;
-    }
+.pkgsearch-typeahead {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    padding: 0.15em 0.1em;
+    margin: 0;
+    min-width: 10em;
+    font-size: 1em;
+    text-align: left;
+    list-style: none;
+    background-color: #f6f9fc;
+    border: 1px solid #09c;
+}
 
-        .pkgsearch-typeahead li a {
-            color: #000;
-        }
+.pkgsearch-typeahead li a {
+    color: #000;
+}
 
-        .pkgsearch-typeahead li:hover a,
-        .pkgsearch-typeahead li.active a {
-            color: #07b;
-        }
+.pkgsearch-typeahead li:hover a,
+.pkgsearch-typeahead li.active a {
+    color: #07b;
+}
 
 /* home: recent pkg updates */
 #pkg-updates h3 {
     margin: 0 0 0.3em;
 }
 
-    #pkg-updates .more {
-        font-weight: normal;
-    }
+#pkg-updates .more {
+    font-weight: normal;
+}
 
-    #pkg-updates .rss-icon {
-        float: right;
-        margin: -2em 0 0 0;
-    }
+#pkg-updates .rss-icon {
+    float: right;
+    margin: -2em 0 0 0;
+}
 
-    #pkg-updates table {
-        margin: 0;
-    }
+#pkg-updates table {
+    margin: 0;
+}
 
-    #pkg-updates td.pkg-name {
-        white-space: normal;
-    }
+#pkg-updates td.pkg-name {
+    white-space: normal;
+}
 
-    #pkg-updates td.pkg-arch {
-        text-align: right;
-    }
+#pkg-updates td.pkg-arch {
+    text-align: right;
+}
 
-    #pkg-updates span.testing {
-        font-style: italic;
-    }
+#pkg-updates span.testing {
+    font-style: italic;
+}
 
-    #pkg-updates span.staging {
-        font-style: italic;
-        color: #ff8040;
-    }
+#pkg-updates span.staging {
+    font-style: italic;
+    color: #ff8040;
+}
 
 /* home: sidebar navigation */
 #nav-sidebar ul {
@@ -676,10 +736,10 @@ div.widget {
     margin-top: -2.2em;
 }
 
-    .news-nav .prev,
-    .news-nav .next {
-        margin: 0 1em;
-    }
+.news-nav .prev,
+.news-nav .next {
+    margin: 0 1em;
+}
 
 /* news: article pages */
 div.news-article .article-info {
@@ -692,10 +752,10 @@ div.news-article .article-info {
     width: 60em;
 }
 
-    #newsform input[type=text],
-    #newsform textarea {
-        width: 75%;
-    }
+#newsform input[type="text"],
+#newsform textarea {
+    width: 75%;
+}
 
 #news-preview {
     display: none;
@@ -707,21 +767,21 @@ div.news-article .article-info {
     margin-top: -2.2em;
 }
 
-    .todolist-nav .prev,
-    .todolist-nav .next {
-        margin: 0 1em;
-    }
+.todolist-nav .prev,
+.todolist-nav .next {
+    margin: 0 1em;
+}
 
 /* donate: donor list */
 #donor-list ul {
     width: 100%;
 }
-    /* max 4 columns, but possibly fewer if screen size doesn't allow for more */
-    #donor-list li {
-        float: left;
-        width: 25%;
-        min-width: 20em;
-    }
+/* max 4 columns, but possibly fewer if screen size doesn't allow for more */
+#donor-list li {
+    float: left;
+    width: 25%;
+    min-width: 20em;
+}
 
 /* download page */
 #arch-downloads h3 {
@@ -735,24 +795,24 @@ table.results {
     border-bottom: 1px dotted #999;
 }
 
-    .results th {
-        padding: 0.5em 1em 0.25em 0.25em;
-        border-bottom: 1px solid #999;
-        white-space: nowrap;
-        background-color:#fff;
-    }
+.results th {
+    padding: 0.5em 1em 0.25em 0.25em;
+    border-bottom: 1px solid #999;
+    white-space: nowrap;
+    background-color: #fff;
+}
 
-    .results td {
-        padding: .3em 1em .3em 3px;
-    }
+.results td {
+    padding: 0.3em 1em 0.3em 3px;
+}
 
-    .results .flagged {
-        color: red;
-    }
+.results .flagged {
+    color: red;
+}
 
-    .results tr.empty td {
-        text-align: center;
-    }
+.results tr.empty td {
+    text-align: center;
+}
 
 /* pkglist: layout */
 #pkglist-about {
@@ -808,24 +868,24 @@ table.results {
     float: right;
 }
 
-    #pkgdetails #detailslinks h4 {
-        margin-top: 0;
-        margin-bottom: 0.25em;
-    }
+#pkgdetails #detailslinks h4 {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+}
 
-    #pkgdetails #detailslinks ul {
-        list-style: none;
-        padding: 0;
-        margin-bottom: 0;
-        font-size: 0.846em;
-    }
+#pkgdetails #detailslinks ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 0;
+    font-size: 0.846em;
+}
 
-    #pkgdetails #detailslinks > div {
-        padding: 0.5em;
-        margin-bottom: 1em;
-        background: #eee;
-        border: 1px solid #bbb;
-    }
+#pkgdetails #detailslinks > div {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    background: #eee;
+    border: 1px solid #bbb;
+}
 
 #pkgdetails #actionlist .flagged {
     color: red;
@@ -838,20 +898,20 @@ table.results {
     width: auto;
 }
 
-    #pkgdetails #pkginfo td {
-        padding: 0.25em 0 0.25em 1.5em;
-    }
+#pkgdetails #pkginfo td {
+    padding: 0.25em 0 0.25em 1.5em;
+}
 
-    #pkgdetails #pkginfo .userdata {
-        font-size: 0.85em;
-        padding: 0.5em;
-    }
+#pkgdetails #pkginfo .userdata {
+    font-size: 0.85em;
+    padding: 0.5em;
+}
 
-    #pkgdetails #pkginfo .recent {
-        color: green;
-        font-weight: bold;
-        text-decoration: underline dotted;
-    }
+#pkgdetails #pkginfo .recent {
+    color: green;
+    font-weight: bold;
+    text-decoration: underline dotted;
+}
 
 /* pkgdetails: flag package */
 #flag-pkg-form label {
@@ -859,7 +919,7 @@ table.results {
 }
 
 #flag-pkg-form textarea,
-#flag-pkg-form input[type=text] {
+#flag-pkg-form input[type="text"] {
     width: 45%;
 }
 
@@ -955,9 +1015,9 @@ table td.country {
     padding-left: 0;
 }
 
-    #list-generator div ul li {
-        display: inline;
-    }
+#list-generator div ul li {
+    display: inline;
+}
 
 .visualize-mirror .axis path,
 .visualize-mirror .axis line {
@@ -983,9 +1043,9 @@ table td.country {
     text-align: center;
 }
 
-    #arch-bio-toc a {
-        white-space: nowrap;
-    }
+#arch-bio-toc a {
+    white-space: nowrap;
+}
 
 .arch-bio-entry {
     width: 75%;
@@ -993,40 +1053,40 @@ table td.country {
     margin: 0 auto;
 }
 
-    .arch-bio-entry td.pic {
-        vertical-align: top;
-        padding-right: 15px;
-        padding-top: 2.25em;
-    }
+.arch-bio-entry td.pic {
+    vertical-align: top;
+    padding-right: 15px;
+    padding-top: 2.25em;
+}
 
-        .arch-bio-entry td.pic img {
-            padding: 4px;
-            border: 1px solid #ccc;
-        }
+.arch-bio-entry td.pic img {
+    padding: 4px;
+    border: 1px solid #ccc;
+}
 
-    .arch-bio-entry td h3 {
-        border-bottom: 1px dotted #ccc;
-        margin-bottom: 0.5em;
-    }
+.arch-bio-entry td h3 {
+    border-bottom: 1px dotted #ccc;
+    margin-bottom: 0.5em;
+}
 
-    .arch-bio-entry table.bio {
-        margin-bottom: 2em;
-    }
+.arch-bio-entry table.bio {
+    margin-bottom: 2em;
+}
 
-        .arch-bio-entry table.bio th {
-            color: #666;
-            font-weight: normal;
-            text-align: right;
-            padding-right: 0.5em;
-            vertical-align: top;
-            white-space: nowrap;
-        }
+.arch-bio-entry table.bio th {
+    color: #666;
+    font-weight: normal;
+    text-align: right;
+    padding-right: 0.5em;
+    vertical-align: top;
+    white-space: nowrap;
+}
 
-        .arch-bio-entry table.bio td {
-            width: 100%;
-            padding-bottom: 0.25em;
-            white-space: normal;
-        }
+.arch-bio-entry table.bio td {
+    width: 100%;
+    padding-bottom: 0.25em;
+    white-space: normal;
+}
 
 /* dev: login/out */
 #dev-login {
@@ -1066,10 +1126,10 @@ ul.admin-actions {
     margin-top: -2.5em;
 }
 
-    ul.admin-actions li {
-        display: inline;
-        padding-left: 1.5em;
-    }
+ul.admin-actions li {
+    display: inline;
+    padding-left: 1.5em;
+}
 
 /* colored yes/no type values */
 .todo-table .complete,
@@ -1090,7 +1150,6 @@ ul.admin-actions {
 .signoff-bad {
     color: darkorange;
 }
-
 
 /* todo lists (public and private) */
 .todo-info {
@@ -1156,11 +1215,11 @@ ul.signoff-list {
     position: absolute;
 }
 
-    #visualize-archrepo .treemap-cell span {
-        padding: 3px;
-        font-size: 0.85em;
-        line-height: 1em;
-    }
+#visualize-archrepo .treemap-cell span {
+    padding: 3px;
+    font-size: 0.85em;
+    line-height: 1em;
+}
 
 #visualize-keys svg {
     width: 100%;
