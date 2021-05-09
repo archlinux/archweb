@@ -48,7 +48,7 @@ def bug_report(package):
 
 @register.simple_tag
 def wiki_link(package):
-    url = "https://wiki.archlinux.org/index.php/Special:Search"
+    url = "https://wiki.archlinux.org/title/Special:Search"
     data = {
         'search': package.pkgname,
     }
