@@ -36,7 +36,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('allowed_repos', 'user', 'latin_name')
+        exclude = ('allowed_repos', 'user', 'latin_name', 'repos_auth_token')
 
 
 class NewUserForm(forms.ModelForm):

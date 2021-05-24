@@ -1,4 +1,5 @@
 import re
+import secrets
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -191,5 +192,9 @@ class UserFinder(object):
         self.username_cache = {}
         self.email_cache = {}
         self.pgp_cache = {}
+
+
+def generate_repo_auth_token():
+    return secrets.token_hex(16)
 
 # vim: set ts=4 sw=4 et:
