@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Arch Linux - Tier0 Mirror{% endblock %}
+
+{% block content %}
+<div class="box">
+
+    <h2>Tier 0 Mirror usage information</h2>
+    <p>Arch Linux Tier 0 mirror on <a href="https://repos.archlinux.org">repos.archlinux.org</a> which can be used if to obtain the absolute latest packages. The mirror is protected with a HTTP Basic Auth password unique per Staff member.</p>
+    {% if mirror_url %}
+      <code id="serverinfo">Server = {{ mirror_url }}</code> <button id="copybutton">Copy to clipboard</button>
+
+      <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+        <p><label></label> <input title="Generate repository access token" type="submit" value="Re-generate access token" /></p>
+      </form>
+    {% else %}
+      <form enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+        <p><label></label> <input title="Generate repository access token" type="submit" value="Generate access token" /></p>
+      </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block script_block %}
+<script type="text/javascript" nonce={{ CSP_NONCE }} defer>
+  const copybutton = document.getElementById('copybutton');
+  copybutton.addEventListener('click', function() {
+    const text = document.getElementById('serverinfo').textContent;
+    navigator.clipboard.writeText(text)
+      .then(() => {
+          // TODO: implement userfriendly snackbar
+    })
+    .catch(err => {
+      console.error('Error in copying text: ', err);
+    });
+
+
+  });
+
+
+</script>
+{% endblock %}

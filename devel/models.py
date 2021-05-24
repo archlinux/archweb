@@ -53,6 +53,7 @@ class UserProfile(models.Model):
         max_length=255, null=True, blank=True, help_text="Latin-form name; used only for non-Latin full names")
     rebuilderd_updates = models.BooleanField(
         default=False, help_text='Receive reproducible build package updates')
+    repos_auth_token = models.CharField(max_length=32, null=True, blank=True)
     last_modified = models.DateTimeField(editable=False)
 
     class Meta:
@@ -179,8 +180,8 @@ def create_feed_model(sender, **kwargs):
                         website_rss=obj.website_rss)
 
 
-def delete_feed_model(sender, **kwargs):
-    '''When a user is set to inactive remove his feed model'''
+def delete_user_model(sender, **kwargs):
+    '''When a user is set to inactive remove his feed model and repository token'''
 
     obj = kwargs['instance']
 
@@ -194,11 +195,13 @@ def delete_feed_model(sender, **kwargs):
     if not userprofile:
         return
 
+    userprofile.repos_auth_token = ''
+
     Feed.objects.filter(website_rss=userprofile.website_rss).delete()
 
 
 pre_save.connect(create_feed_model, sender=UserProfile, dispatch_uid="devel.models")
 
-post_save.connect(delete_feed_model, sender=User, dispatch_uid='main.models')
+post_save.connect(delete_user_model, sender=User, dispatch_uid='main.models')
 
 # vim: set ts=4 sw=4 et:
