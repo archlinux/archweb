@@ -10,7 +10,7 @@ from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page, never_cache
 
-from ..models import FlagRequest
+from ..models import FlagDenylist, FlagRequest
 from main.models import Package
 
 
@@ -35,8 +35,13 @@ class FlagForm(forms.Form):
     def clean_message(self):
         data = self.cleaned_data['message']
         # make sure the message isn't garbage (only punctuation or whitespace)
+        # or spam (using a simple denylist)
         # and ensure a certain minimum length
-        if re.match(r'^[^0-9A-Za-z]+$', data) or len(data) < 3:
+        if (
+            re.match(r'^[^0-9A-Za-z]+$', data)
+            or any(fd.keyword in data for fd in FlagDenylist.objects.all())
+            or len(data) < 3
+        ):
             raise forms.ValidationError("Enter a valid and useful out-of-date message.")
         return data
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (PackageRelation, FlagRequest, Signoff, SignoffSpecification,
-                     Update)
+from .models import (PackageRelation, FlagDenylist, FlagRequest, Signoff,
+                     SignoffSpecification, Update)
 
 
 class PackageRelationAdmin(admin.ModelAdmin):
@@ -10,6 +10,13 @@ class PackageRelationAdmin(admin.ModelAdmin):
     search_fields = ('pkgbase', 'user__username')
     ordering = ('pkgbase', 'user')
     date_hierarchy = 'created'
+
+
+class FlagDenylistAdmin(admin.ModelAdmin):
+    list_display = ('keyword',)
+    list_filter = ('keyword',)
+    search_fields = ('keyword',)
+    ordering = ('keyword',)
 
 
 class FlagRequestAdmin(admin.ModelAdmin):
@@ -54,6 +61,7 @@ class UpdateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PackageRelation, PackageRelationAdmin)
+admin.site.register(FlagDenylist, FlagDenylistAdmin)
 admin.site.register(FlagRequest, FlagRequestAdmin)
 admin.site.register(Signoff, SignoffAdmin)
 admin.site.register(SignoffSpecification, SignoffSpecificationAdmin)

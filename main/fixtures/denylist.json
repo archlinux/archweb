@@ -1,0 +1,9 @@
+[
+    {
+        "model": "packages.flagdenylist",
+        "pk": 1,
+        "fields": {
+            "keyword": "bit.ly"
+        }
+    }
+]
