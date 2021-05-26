@@ -20,6 +20,12 @@
                     <a href="{% man_link pkg %}" title="List manpages in {{ pkg.pkgname }}">Manual Pages</a>
                 </li>
                 <li><a href="{% sec_link pkg %}" title="View security issues for {{ pkg.pkgname }}">Security Issues</a></li>
+        	{% if user.is_authenticated and notreproducible %}<tr>
+                <li>
+		    <a href="{% rebuilderd_buildlog_link rbstatus %}" title="View build log for {{ pkg.pkgname }}">Build log</a> /
+		    <a href="{% rebuilderd_diffoscope_link rbstatus %}" title="View diffoscope result for {{ pkg.pkgname }}">Diffoscope</a>
+		</li>
+		{% endif %}
                 {% if pkg.flag_date %}
                 <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
                 {% with tp=pkg.in_testing %}{% if tp %}
@@ -190,6 +196,15 @@
             <th>Last Updated:</th>
             <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.last_update|naturaltime }})</span>{% endif %}</td>
         </tr>
+        {% if user.is_authenticated %}<tr>
+            <th>Reproducible Status:</th>
+	    {% if rbstatus %}
+	    	<td id="rebuilderdstatus" class="rebuilderd-{{ rbstatus.status_str|lower }}">{{ rbstatus.status_str }}</td>
+	    {% else %}
+	    	<td id="rebuilderdstatus">Unknown</td>
+	    {% endif %}
+        </tr>
+	{% endif %}
         {% if user.is_authenticated %}{% with flag_request=pkg.flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
             <td class="wrap">From {{ flag_request.who }} on {{ flag_request.created|date }}:<br/>

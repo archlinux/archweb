@@ -6,7 +6,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 
-from main.models import Package, PackageFile, Arch, Repo, Soname
+from main.models import Package, PackageFile, Arch, Repo, Soname, RebuilderdStatus
 from main.utils import empty_response
 from mirrors.utils import get_mirror_url_for_download
 from ..models import Update
@@ -127,9 +127,15 @@ def details(request, name='', repo='', arch=''):
             pkg = Package.objects.select_related(
                 'arch', 'repo', 'packager').get(pkgname=name,
                                                 repo=repo_obj, arch=arch_obj)
+            rbstatus = None
+            try:
+                rbstatus = RebuilderdStatus.objects.get(pkg=pkg)
+            except RebuilderdStatus.DoesNotExist:
+                pass
             if request.method == 'HEAD':
                 return empty_response()
-            return render(request, 'packages/details.html', {'pkg': pkg})
+            return render(request, 'packages/details.html', {'pkg': pkg, 'rbstatus': rbstatus,
+                          'notreproducible': rbstatus.status == RebuilderdStatus.BAD if rbstatus else False})
         except Package.DoesNotExist:
             # attempt a variety of fallback options before 404ing
             options = (redirect_agnostic, split_package_details,

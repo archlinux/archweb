@@ -68,6 +68,18 @@ def sec_link(package):
 
 
 @register.simple_tag
+def rebuilderd_diffoscope_link(rbstatus):
+    url = "https://reproducible.archlinux.org/api/v0/builds/{}/diffoscope"
+    return url.format(rbstatus.build_id)
+
+
+@register.simple_tag
+def rebuilderd_buildlog_link(rbstatus):
+    url = "https://reproducible.archlinux.org/api/v0/builds/{}/build"
+    return url.format(rbstatus.build_id)
+
+
+@register.simple_tag
 def pgp_key_link(key_id, link_text=None):
     return pgp.pgp_key_link(key_id, link_text)
 
