@@ -224,6 +224,10 @@ class FlagRequest(models.Model):
         return '%s from %s on %s' % (self.pkgbase, self.who(), self.created)
 
 
+class FlagDenylist(models.Model):
+    keyword = models.CharField(max_length=255)
+
+
 class UpdateManager(models.Manager):
     def log_update(self, old_pkg, new_pkg):
         '''Utility method to help log an update. This will determine the type

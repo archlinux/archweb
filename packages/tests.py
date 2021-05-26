@@ -271,7 +271,7 @@ class PackageDisplay(TestCase):
 
 class FlagPackage(TestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
-                'main/fixtures/package.json']
+                'main/fixtures/package.json', 'main/fixtures/denylist.json']
 
     def test_flag_package(self):
         data = {
@@ -299,6 +299,19 @@ class FlagPackage(TestCase):
             'website': '',
             'email': 'nobody@archlinux.org',
             'message': 'a',
+        }
+        response = self.client.post('/packages/core/x86_64/linux/flag/',
+                                    data,
+                                    follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Enter a valid and useful out-of-date message', response.content.decode())
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_flag_package_invalid_denylist(self):
+        data = {
+            'website': '',
+            'email': 'nobody@archlinux.org',
+            'message': 'check out https://bit.ly/4z3rty',
         }
         response = self.client.post('/packages/core/x86_64/linux/flag/',
                                     data,
