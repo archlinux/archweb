@@ -21,6 +21,7 @@ class Release(models.Model):
     sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
     pgp_key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",  null=True, blank=True,
                           help_text="consists of 40 hex digits; use `gpg --fingerprint`")
+    wkd_email = models.EmailField(max_length=254, null=True, blank=True)
     created = models.DateTimeField(editable=False)
     last_modified = models.DateTimeField(editable=False)
     available = models.BooleanField(default=True)
