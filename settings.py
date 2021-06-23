@@ -184,7 +184,7 @@ SECRET_KEY = '00000000000000000000000000000000000000000000000'
 MAILMAN_PASSWORD = ''
 
 # Announcements email address
-ANNOUNCE_EMAIL = 'arch-announce@archlinux.org'
+ANNOUNCE_EMAIL = 'arch-announce@lists.archlinux.org'
 
 DATABASES = {
     'default': {
