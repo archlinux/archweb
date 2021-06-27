@@ -243,7 +243,7 @@ def files_json(request, name, repo, arch):
     return HttpResponse(to_json, content_type='application/json')
 
 
-def download(request, name, repo, arch):
+def download(request, name, repo, arch, sig=False):
     pkg = get_object_or_404(Package.objects.normal(),
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     url = get_mirror_url_for_download()
@@ -256,6 +256,10 @@ def download(request, name, repo, arch):
     url = '{host}{repo}/os/{arch}/{filename}'.format(host=url.url,
                                                      repo=pkg.repo.name.lower(),
                                                      arch=arch, filename=pkg.filename)
+
+    if sig:
+        url = url + '.sig'
+
     return redirect(url)
 
 # vim: set ts=4 sw=4 et:

@@ -17,6 +17,7 @@ package_patterns = [
     url(r'^signoff/revoke/$', signoff.signoff_package, {'revoke': True}),
     url(r'^signoff/options/$', signoff.signoff_options),
     url(r'^download/$', display.download),
+    url(r'^download.sig/$', display.download, {'sig': True}),
     url(r'^sonames/$', display.sonames),
     url(r'^sonames/json/$', display.sonames_json),
 ]
