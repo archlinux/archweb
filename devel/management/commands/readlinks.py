@@ -88,11 +88,21 @@ def read_links(repopath):
 
                 files_data = repodb.extractfile(tarinfo)
                 old_sonames = Soname.objects.filter(pkg=dbpkg)
+                pkg_sonames = []
+                found_sonames = []
+
                 for soname in files_data:
                     soname = soname.strip().decode()
                     # New soname which we do not track yet for this package
                     if not old_sonames.filter(name=soname):
-                        sonames.append(Soname(pkg=dbpkg, name=soname))
+                        pkg_sonames.append(Soname(pkg=dbpkg, name=soname))
+
+                    found_sonames.append(soname)
+
+                # Clean up sonames which are not linked to the package anymore
+                old_sonames.exclude(name__in=found_sonames).delete()
+
+                sonames.extend(pkg_sonames)
 
     if sonames:
         Soname.objects.bulk_create(sonames)
