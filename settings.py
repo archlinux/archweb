@@ -193,6 +193,9 @@ DATABASES = {
     },
 }
 
+# Default implementation to use for AutoField
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Planet limit of items per feed to keep the feed size in check.
 RSS_FEED_LIMIT = 25
 
