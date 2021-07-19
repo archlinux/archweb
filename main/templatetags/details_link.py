@@ -75,7 +75,7 @@ def rebuilderd_diffoscope_link(rbstatus):
 
 @register.simple_tag
 def rebuilderd_buildlog_link(rbstatus):
-    url = "https://reproducible.archlinux.org/api/v0/builds/{}/build"
+    url = "https://reproducible.archlinux.org/api/v0/builds/{}/log"
     return url.format(rbstatus.build_id)
 
 
