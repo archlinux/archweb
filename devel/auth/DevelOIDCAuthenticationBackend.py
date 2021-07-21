@@ -36,6 +36,24 @@ class MyOIDCAB(OIDCAuthenticationBackend):
     SUPPORTSTAFF_GROUP = Group.objects.get(name='Support Staff')
     TESTERS_GROUP = Group.objects.get(name='Testers')
 
+    def filter_users_by_claims(self, claims):
+        """Return all users matching the specified email. Overriden to first match on sub
+        """
+        sso_accountid = claims.get('sub')
+        if not sso_accountid:
+            return self.UserModel.objects.none()
+
+        email = claims.get('email')
+        if not email:
+            return self.UserModel.objects.none()
+
+        profile = UserProfile.objects.filter(sso_accountid=sso_accountid).first()
+        if profile:
+            return self.UserModel.objects.filter(id=profile.user.id)
+
+        # Fallback on email
+        return self.UserModel.objects.filter(email__iexact=email)
+
     def update_user_groups(self, user, claims, new=False):
         # TODO: reset groups / repositories if things changed?!
         is_devops = DEVOPS_ROLE in claims.get('roles', [])
