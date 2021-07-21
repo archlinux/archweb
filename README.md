@@ -180,7 +180,31 @@ OIDC_OP_TOKEN_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protoc
 OIDC_OP_USER_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/userinfo"
 OIDC_OP_JWKS_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/certs"
 OIDC_OP_LOGOUT_ENDPOINT = "https://<keycloak_domain>/auth/realms/archlinux/protocol/openid-connect/logout"
+
+# Optionally configure the token expiry
+# OIDC_RENEW_ID_TOKEN_EXPIRY_SECONDS = 900
 ```
+
+## Syncing Keycloak users to Archweb
+
+To keep our Developer, Trusted Users and Support Staff listings up to date a
+management command syncs group membership from Keycloak to Archweb's group
+membership and repository permissions.
+
+From Keycloak side a new `service account` has to be created:
+* Create a new client
+* Set Access Type to `Confidential`
+* Set `Service Accounts Enabled` to `On`
+
+Configuration:
+```
+KEYCLOAK_SERVICE_ACCOUNT_ENDPOINT = 'https://<keycloak_domain>/auth/'
+KEYCLOAK_SERVICE_ACCOUNT_CLIENT_ID = ''
+KEYCLOAK_SERVICE_ACCOUNT_CLIENT_SECRET = ''
+KEYCLOAK_SERVICE_ACCOUNT_REALM = ''
+```
+
+## Setup
 
 For a local development environment with `./manage.py` the following setting is required to have archweb pass the correct redirect_uri back to itself. Requires the header to set by nginx's reverse proxy
 ```

@@ -1,28 +1,13 @@
 from django.contrib.auth.models import Group
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
-from main.models import Repo
-
+from devel.auth.constants import (STAFF_ROLE, DEVOPS_ROLE,
+                                  OIDC_TRUSTEDUSER_GROUP, OIDC_DEVELOPER_GROUP,
+                                  OIDC_MIRRORMAINTAINER_GROUP, OIDC_RELEASEMAINTAINER_GROUP,
+                                  OIDC_TESTERS_GROUP, OIDC_SUPPORTSTAFF_GROUPS,
+                                  )
 from devel.models import UserProfile
-
-
-# Roles
-STAFF_ROLE = 'Staff'
-DEVOPS_ROLE = 'DevOps'
-
-# Groups
-TRUSTEDUSER_GROUP       = '/Arch Linux Staff/Trusted Users'
-DEVELOPER_GROUP         = '/Arch Linux Staff/Developers'
-MIRRORMAINTAINER_GROUP  = '/Arch Linux Staff/Archweb/Mirrorlist Maintainers'
-RELEASEMAINTAINER_GROUP = '/Arch Linux Staff/Archweb/Release Maintainers'
-TESTERS_GROUP           = '/External Contributors/Archweb/Testers'
-SUPPORTSTAFF_GROUPS     = ['/Arch Linux Staff/Bug Wranglers',
-                           '/Arch Linux Staff/Forum/Admins',
-                           '/Arch Linux Staff/Forum/Mods',
-                           '/Arch Linux Staff/IRC/Ops',
-                           '/Arch Linux Staff/Wiki/Admins',
-                           '/Arch Linux Staff/Security Team/Admins',
-                           '/Arch Linux Staff/Security Team/Members']
+from main.models import Repo
 
 DEVELOPER_REPOS = [
     Repo.objects.get(name='Core'),
@@ -51,36 +36,32 @@ class MyOIDCAB(OIDCAuthenticationBackend):
     SUPPORTSTAFF_GROUP = Group.objects.get(name='Support Staff')
     TESTERS_GROUP = Group.objects.get(name='Testers')
 
-    def create_user(self, claims):
-        '''
-        Called when a user logs in for the first time to Archweb using OIDC
-
-        Assigns the correct django Groups to the corresponding Groups in Keycloak and
-        sets Django admin permissions for everyone in the DevOps role.
-        '''
-
-        user = super(MyOIDCAB, self).create_user(claims)
-        print("create", claims)
-
+    def update_user_groups(self, user, claims, new=False):
+        # TODO: reset groups / repositories if things changed?!
         is_devops = DEVOPS_ROLE in claims.get('roles', [])
 
         # Groups
         groups = claims.get('groups', [])
-        is_tu = TRUSTEDUSER_GROUP in groups
-        is_dev = DEVELOPER_GROUP in groups
-        is_mirrormaintainer = MIRRORMAINTAINER_GROUP in groups
-        is_releasemaintainer = RELEASEMAINTAINER_GROUP in groups
-        is_supportstaff = any(group for group in SUPPORTSTAFF_GROUPS if group in groups)
+        is_tu = OIDC_TRUSTEDUSER_GROUP in groups
+        is_dev = OIDC_DEVELOPER_GROUP in groups
+        is_mirrormaintainer = OIDC_MIRRORMAINTAINER_GROUP in groups
+        is_releasemaintainer = OIDC_RELEASEMAINTAINER_GROUP in groups
+        is_supportstaff = any(group for group in OIDC_SUPPORTSTAFF_GROUPS if group in groups)
+        is_tester = OIDC_TESTERS_GROUP in groups
 
         # Set username to sub as this is guarranteed unique
         user.username = claims.get('preferred_username', '')
         user.first_name = claims.get('given_name', '')
         user.last_name = claims.get('family_name', '')
 
-        profile = UserProfile.objects.create(user=user)
+        if new:
+            profile = UserProfile.objects.create(user=user)
+            profile.sso_accountid = claims.get('sub', '')
+        else:
+            profile = UserProfile.objects.filter(sso_accountid=claims.get('sub', '')).first()
+
         profile.alias = claims.get('preferred_username', '')
         profile.public_email = claims.get('email', '')
-        profile.sso_accountid = claims.get('sub', '')
 
         if is_devops:
             user.is_staff = True
@@ -107,17 +88,36 @@ class MyOIDCAB(OIDCAuthenticationBackend):
         if is_supportstaff:
             user.groups.add(self.SUPPORTSTAFF_GROUP)
 
+        if is_tester:
+            user.groups.add(self.TESTERS_GROUP)
+
         user.save()
         profile.save()
+
+    def create_user(self, claims):
+        '''
+        Called when a user logs in for the first time to Archweb using OIDC
+
+        Assigns the correct django Groups to the corresponding Groups in Keycloak and
+        sets Django admin permissions for everyone in the DevOps role.
+        '''
+
+        user = super(MyOIDCAB, self).create_user(claims)
+
+        print("create", user, claims)
+        self.update_user_groups(user, claims, new=True)
 
         return user
 
     def update_user(self, user, claims):
         '''
+        :param user django user
+        :param claims: Keycloak object
         Called when a user logins again and already has an existing account.
         '''
-        print("update", claims)
-        # TODO: Check if user has changed groups/roles
+
+        print("update", user, claims)
+        self.update_user_groups(user, claims)
 
         return user
 
