@@ -128,18 +128,26 @@ Archweb provides multiple management commands for importing various sorts of dat
 * read_links - Reads a repo.links.db.tar.gz file and updates the Soname model.
 * read_links_inotify - Watches a templated patch for updates of *.links.tar.gz to update Arch databases with.
 
-# Updating iPXE image
+# Updating iPXE images
 
-The netboot image can be updated by building the [AUR
-package](https://aur.archlinux.org/packages/ipxe-netboot/) (note that it builds
-from git master) and copying the resulting ipxe.pxe, ipxe.lkrn and ipxe.efi to
-sitestatic/netboot. Then as Arch Linux Developer sign them with your PGP key
-```gpg --output ipxe.efi.sig --detach-sig ipxe.efi```.
+The binaries required for iPXE based netboot are updated by copying them from
+the [ipxe](https://archlinux.org/packages/community/x86_64/ipxe/) package to
+[the static content directory](/sitestatic/netboot/) (with the `run_ipxe`
+script the binaries may be tested beforehand):
 
-Testing a build iPXE image requires the 'qemu' package and running the
-following command:
+```
+cp -v /usr/share/ipxe/x86_64/ipxe-arch.efi /usr/share/ipxe/ipxe-arch.{ipxe,lkrn} sitestatic/releng
+```
 
-        qemu-system-x86_64 -kernel ipxe.lkrn -m 2G
+Afterwards a detached PGP signature using a valid
+[WKD](https://wiki.archlinux.org/title/GnuPG#Web_Key_Directory) enabled
+[packager
+key](https://gitlab.archlinux.org/archlinux/archlinux-keyring/-/wikis/home) is
+created for each file:
+
+```
+gpg --sender "User Name <your@mail.address>" --detach-sign sitestatic/netboot/*.{efi,ipxe,lkrn}
+```
 
 # Production Installation
 
