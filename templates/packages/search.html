@@ -119,7 +119,7 @@
                     <td>{{ pkg.flag_date|date }}</td>
                 </tr>
                 {% empty %}
-                <tr class="empty"><td colspan="{% if perms.main.change_package %}9{% else %}7{% endif %}"><em>No matching packages found</em></td></tr>
+                <tr class="empty"><td colspan="{% if perms.main.change_package %}8{% else %}7{% endif %}"><em>No matching packages found</em></td></tr>
                 {% endfor %}
             </tbody>
         </table>
