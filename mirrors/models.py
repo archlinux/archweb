@@ -189,6 +189,17 @@ class MirrorLog(models.Model):
         get_latest_by = 'check_time'
 
 
+class MirrorIssue(models.Model):
+    ISSUE_CHOICES = (
+        (0, 'Out of sync'),
+        (1, 'Unreachable'),
+        (-1, 'Unknown'),
+    )
+
+    issue_type = models.SmallIntegerField(default=2, choices=ISSUE_CHOICES)
+    check_time = models.DateTimeField()
+
+
 for model in (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync, CheckLocation):
     pre_save.connect(set_created_field, sender=model, dispatch_uid="mirrors.models")
 
