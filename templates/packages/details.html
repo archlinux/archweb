@@ -12,26 +12,43 @@
 {% load cdn %}{% jquery %}
 <script type="text/javascript" nonce="{{ CSP_NONCE }}">
 function ajaxifyFiles() {
-    $('#filelink').click(function(event) {
-        event.preventDefault();
-        $.getJSON(this.href + 'json/', function(data) {
-            // Map each file item into an <li/> with the correct class
-            var list_items = $.map(data.files, function(value, i) {
-                var cls = value.match(/\/$/) ? 'd' : 'f';
-                return ['<li class="', cls, '">', value, '</li>'];
-            });
-            $('#pkgfilelist').empty();
-            if (data.pkg_last_update > data.files_last_update) {
-                $('#pkgfilelist').append('<p class="message">Note: This file list was generated from a previous version of the package; it may be out of date.</p>');
-            }
-            if (list_items.length > 0) {
-                $('#pkgfilelist').append('<ul>' + list_items.join('') + '</ul>');
-            } else if (data.files_last_update === null) {
-                $('#pkgfilelist').append('<p class="message">No file list available.</p>');
-            } else {
-                $('#pkgfilelist').append('<p class="message">Package has no files.</p>');
-            }
-        });
+    filelink.addEventListener("click", function(event) {
+	event.preventDefault();
+	fetch(event.target.href + 'json/').then(response => response.json()).then(data => {
+		const fragment = document.createDocumentFragment();
+		data.files.forEach((value, i) => {
+                	const cls = value.match(/\/$/) ? 'd' : 'f';
+			const elem = document.createElement('li');
+			elem.classList.add(cls);
+			elem.textContent = value
+			fragment.appendChild(elem);
+		});
+
+		const pkgfilelist = document.getElementById("pkgfilelist");
+		while(pkgfilelist.firstChild) {
+			pkgfilelist.removeChild(pkgfilelist.firstChild);
+		}
+
+		const textElem = document.createElement("p");
+		textElem.classList.add("message");
+
+            	if (data.pkg_last_update > data.files_last_update) {
+			textElem.textContent = "Note: This file list was generated from a previous version of the package; it may be out of date.";
+                	pkgfilelist.appendChild(textElem);
+		}
+
+            	if (data.files.length > 0) {
+			const elem = document.createElement("ul");
+			elem.appendChild(fragment);
+			pkgfilelist.appendChild(elem);
+            	} else if (data.files_last_update === null) {
+			textElem.textContent = "No file list available.";
+                	pkgfilelist.appendChild(textElem);
+		} else {
+			textElem.textContent = "Package has no files.";
+                	pkgfilelist.appendChild(textElem);
+		}
+	});
     });
 }
 
