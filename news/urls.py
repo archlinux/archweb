@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 from .views import (NewsDetailView, NewsListView, NewsCreateView, NewsEditView,
-        NewsDeleteView, preview, view_redirect)
+                    NewsDeleteView, preview, view_redirect)
 
 
 urlpatterns = [

@@ -28,6 +28,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     help = """Pull the latest commit message from SVN for a given package that
 is signoff-eligible and does not have an existing comment attached"""
@@ -44,6 +45,7 @@ is signoff-eligible and does not have an existing comment attached"""
         add_signoff_comments()
         cleanup_signoff_comments()
 
+
 def svn_log(pkgbase, repo):
     '''Retrieve the most recent SVN log entry for the given pkgbase and
     repository. The configured setting SVN_BASE_URL is used along with the
@@ -55,13 +57,14 @@ def svn_log(pkgbase, repo):
     xml = XML(log_data)
     revision = int(xml.find('logentry').get('revision'))
     date = datetime.strptime(xml.findtext('logentry/date'),
-            '%Y-%m-%dT%H:%M:%S.%fZ')
+                             '%Y-%m-%dT%H:%M:%S.%fZ')
     return {
         'revision': revision,
         'date': date,
         'author': xml.findtext('logentry/author'),
         'message': xml.findtext('logentry/msg'),
     }
+
 
 def cached_svn_log(pkgbase, repo):
     '''Retrieve the cached version of the SVN log if possible, else delegate to
@@ -72,17 +75,21 @@ def cached_svn_log(pkgbase, repo):
     log = svn_log(pkgbase, repo)
     cached_svn_log.cache[key] = log
     return log
+
+
 cached_svn_log.cache = {}
+
 
 def create_specification(package, log, finder):
     trimmed_message = log['message'].strip()
     required = package.arch.required_signoffs
     spec = SignoffSpecification(pkgbase=package.pkgbase,
-            pkgver=package.pkgver, pkgrel=package.pkgrel,
-            epoch=package.epoch, arch=package.arch, repo=package.repo,
-            comments=trimmed_message, required=required)
+                                pkgver=package.pkgver, pkgrel=package.pkgrel,
+                                epoch=package.epoch, arch=package.arch, repo=package.repo,
+                                comments=trimmed_message, required=required)
     spec.user = finder.find_by_username(log['author'])
     return spec
+
 
 def add_signoff_comments():
     logger.info("getting all signoff groups")
@@ -101,8 +108,9 @@ def add_signoff_comments():
             logger.info("creating spec with SVN message for %s", group.pkgbase)
             spec = create_specification(group.packages[0], log, finder)
             spec.save()
-        except:
+        except: # noqa
             logger.exception("error getting SVN log for %s", group.pkgbase)
+
 
 def cleanup_signoff_comments():
     logger.info("getting all signoff groups")

@@ -8,6 +8,7 @@ TEST_IPV6_MASK = "2a0b:4342:1a31:410::/64"
 TEST_IPV4 = "8.8.8.8"
 TEST_IPV4_MASK = "192.168.1.0/24"
 
+
 class MirrorRsyncTest(TransactionTestCase):
     def setUp(self):
         self.mirror = Mirror.objects.create(name='rmirror',

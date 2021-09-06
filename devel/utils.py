@@ -1,4 +1,5 @@
 import re
+import secrets
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -10,12 +11,13 @@ from main.utils import cache_function
 from main.models import Package
 from packages.models import PackageRelation
 
+
 @cache_function(283)
 def get_annotated_maintainers():
     profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
     maintainers = User.objects.filter(
-            is_active=True, userprofile__id__in=profile_ids).order_by(
-            'first_name', 'last_name')
+        is_active=True, userprofile__id__in=profile_ids).order_by(
+        'first_name', 'last_name')
 
     # annotate the maintainers with # of maintained and flagged packages
     pkg_count_sql = """
@@ -37,7 +39,7 @@ SELECT pr.user_id, COUNT(*), COUNT(p.flag_date)
         flag_count[k] = flagged
 
     update_count = Package.objects.values_list('packager').order_by(
-            'packager').annotate(Count('packager'))
+        'packager').annotate(Count('packager'))
     update_count = dict(update_count)
 
     for m in maintainers:
@@ -104,8 +106,7 @@ class UserFinder(object):
             # ignore quoted parts; e.g. nicknames in strings
             if re.match(r'^[\'"].*[\'"]$', token):
                 continue
-            name_q &= (Q(first_name__icontains=token) |
-                    Q(last_name__icontains=token))
+            name_q &= (Q(first_name__icontains=token) | Q(last_name__icontains=token))
         return User.objects.get(name_q)
 
     def find(self, userstring):
@@ -132,7 +133,7 @@ class UserFinder(object):
 
         user = None
         find_methods = (self.user_email, self.profile_email,
-                self.username_email, self.user_name)
+                        self.username_email, self.user_name)
         for matcher in find_methods:
             user = matcher(name, email)
             if user is not None:
@@ -179,7 +180,7 @@ class UserFinder(object):
 
         try:
             user = User.objects.get(
-                    userprofile__pgp_key__endswith=pgp_key)
+                userprofile__pgp_key__endswith=pgp_key)
         except User.DoesNotExist:
             user = None
 
@@ -191,5 +192,9 @@ class UserFinder(object):
         self.username_cache = {}
         self.email_cache = {}
         self.pgp_cache = {}
+
+
+def generate_repo_auth_token():
+    return secrets.token_hex(16)
 
 # vim: set ts=4 sw=4 et:

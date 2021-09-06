@@ -10,11 +10,11 @@ from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 
 from main.models import Package, PackageFile, Arch, Repo
-from main.utils import (database_vendor,
-        groupby_preserve_order, PackageStandin)
+from main.utils import database_vendor, groupby_preserve_order, PackageStandin
 from .models import (PackageGroup, PackageRelation,
-        License, Depend, Conflict, Provision, Replacement,
-        SignoffSpecification, Signoff, fake_signoff_spec)
+                     License, Depend, Conflict, Provision, Replacement,
+                     SignoffSpecification, Signoff, fake_signoff_spec)
+from todolists.models import TodolistPackage
 
 
 VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
@@ -35,15 +35,17 @@ def parse_version(version):
 
 def get_group_info(include_arches=None):
     raw_groups = PackageGroup.objects.values_list(
-            'name', 'pkg__arch__name').order_by('name').annotate(
-            cnt=Count('pkg'), last_update=Max('pkg__last_update'))
+        'name', 'pkg__arch__name').order_by('name').annotate(
+        cnt=Count('pkg'), last_update=Max('pkg__last_update'))
     # now for post_processing. we need to separate things out and add
     # the count in for 'any' to all of the other architectures.
     group_mapping = {}
     for grp in raw_groups:
         arch_groups = group_mapping.setdefault(grp[1], {})
-        arch_groups[grp[0]] = {'name': grp[0], 'arch': grp[1],
-                'count': grp[2], 'last_update': grp[3]}
+        arch_groups[grp[0]] = {
+            'name': grp[0], 'arch': grp[1],
+            'count': grp[2], 'last_update': grp[3]
+        }
 
     # we want to promote the count of 'any' packages in groups to the
     # other architectures, and also add any 'any'-only groups
@@ -77,7 +79,7 @@ def get_split_packages_info():
     matching the split pkgbase.'''
     pkgnames = Package.objects.values('pkgname')
     split_pkgs = Package.objects.exclude(pkgname=F('pkgbase')).exclude(
-            pkgbase__in=pkgnames).values('pkgbase', 'repo', 'arch').annotate(
+        pkgbase__in=pkgnames).values('pkgbase', 'repo', 'arch').annotate(
             last_update=Max('last_update')).distinct()
     all_arches = Arch.objects.in_bulk({s['arch'] for s in split_pkgs})
     all_repos = Repo.objects.in_bulk({s['repo'] for s in split_pkgs})
@@ -191,7 +193,7 @@ SELECT DISTINCT id
     cursor.execute(sql, [PackageRelation.MAINTAINER])
     to_fetch = [row[0] for row in cursor.fetchall()]
     relations = PackageRelation.objects.select_related(
-            'user', 'user__userprofile').filter(
+        'user', 'user__userprofile').filter(
             id__in=to_fetch)
     return relations
 
@@ -206,8 +208,8 @@ def attach_maintainers(packages):
         packages = list(packages)
         pkgbases = {p.pkgbase for p in packages if p is not None}
     rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
-            pkgbase__in=pkgbases).values_list(
-            'pkgbase', 'user_id').order_by().distinct()
+                                          pkgbase__in=pkgbases).values_list(
+                                              'pkgbase', 'user_id').order_by().distinct()
 
     # get all the user objects we will need
     user_ids = {rel[1] for rel in rels}
@@ -318,8 +320,7 @@ class PackageSignoffGroup(object):
         return user in (s.user for s in self.signoffs if not s.revoked)
 
     def __unicode__(self):
-        return '%s-%s (%s): %d' % (
-                self.pkgbase, self.version, self.arch, len(self.signoffs))
+        return f'{self.pkgbase}-{self.version} (self.arch): {len(self.signoffs)}'
 
 
 def signoffs_id_query(model, repos):
@@ -358,8 +359,7 @@ def get_current_signoffs(repos):
 def get_current_specifications(repos):
     '''Returns a list of signoff specification objects for the given repos.'''
     to_fetch = signoffs_id_query(SignoffSpecification, repos)
-    return SignoffSpecification.objects.select_related('arch').in_bulk(
-            to_fetch).values()
+    return SignoffSpecification.objects.select_related('arch').in_bulk(to_fetch).values()
 
 
 def get_target_repo_map(repos):
@@ -389,14 +389,13 @@ def get_signoff_groups(repos=None, user=None):
     repo_ids = [r.pk for r in repos]
 
     test_pkgs = Package.objects.select_related(
-            'arch', 'repo', 'packager').filter(repo__in=repo_ids)
+        'arch', 'repo', 'packager').filter(repo__in=repo_ids)
     packages = test_pkgs.order_by('pkgname')
     packages = attach_maintainers(packages)
 
     # Filter by user if asked to do so
     if user is not None:
-        packages = [p for p in packages if user == p.packager
-                or user in p.maintainers]
+        packages = [p for p in packages if user == p.packager or user in p.maintainers]
 
     # Collect all pkgbase values in testing repos
     pkgtorepo = get_target_repo_map(repos)
@@ -410,8 +409,7 @@ def get_signoff_groups(repos=None, user=None):
     signoff_groups = []
     for group in grouped:
         signoff_group = PackageSignoffGroup(group)
-        signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase,
-                "Unknown")
+        signoff_group.target_repo = pkgtorepo.get(signoff_group.pkgbase, "Unknown")
         signoff_group.find_signoffs(signoffs)
         signoff_group.find_specification(specs)
         signoff_groups.append(signoff_group)
@@ -419,16 +417,17 @@ def get_signoff_groups(repos=None, user=None):
     return signoff_groups
 
 
-DEPENDENCY_TYPES =  [('D', 'depends'), ('O', 'optdepends'),
-                     ('M', 'makedepends'), ('C', 'checkdepends')]
+DEPENDENCY_TYPES = [('D', 'depends'), ('O', 'optdepends'),
+                    ('M', 'makedepends'), ('C', 'checkdepends')]
+
 
 class PackageJSONEncoder(DjangoJSONEncoder):
-    pkg_attributes = ['pkgname', 'pkgbase', 'repo', 'arch', 'pkgver',
-            'pkgrel', 'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
-            'installed_size', 'build_date', 'last_update', 'flag_date',
-            'maintainers', 'packager']
-    pkg_list_attributes = ['groups', 'licenses', 'conflicts',
-            'provides', 'replaces']
+    pkg_attributes = ['pkgname', 'pkgbase', 'repo', 'arch', 'pkgver', 'pkgrel',
+                      'epoch', 'pkgdesc', 'url', 'filename', 'compressed_size',
+                      'installed_size', 'build_date', 'last_update', 'flag_date',
+                      'maintainers', 'packager']
+    pkg_list_attributes = ['groups', 'licenses', 'conflicts', 'provides', 'replaces']
+    todolistpackage_attributes = ['status_str']
 
     def default(self, obj):
         if hasattr(obj, '__iter__'):
@@ -453,6 +452,11 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             return str(obj)
         elif isinstance(obj, User):
             return obj.username
+        elif isinstance(obj, TodolistPackage):
+            data = self.default(obj.pkg)
+            for attr in self.todolistpackage_attributes:
+                data[attr] = getattr(obj, attr)
+            return data
         return super(PackageJSONEncoder, self).default(obj)
 
 # vim: set ts=4 sw=4 et:

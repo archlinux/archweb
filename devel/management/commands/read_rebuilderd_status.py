@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-read_reproducible_status command
+read_rebuilderd_status command
 
 Import reproducible status of packages, rebuilderd url configured in django
 settings.
 
-Usage: ./manage.py read_reproducible_status
+Usage: ./manage.py read_rebuilderd_status
 """
 
 import logging
@@ -16,6 +16,7 @@ from collections import defaultdict
 
 import requests
 
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -53,14 +54,15 @@ class Command(BaseCommand):
 
         was_repro = import_rebuilderd_status(url)
 
-        send_repro_emails(was_repro)
+        if was_repro:
+            send_repro_emails(was_repro)
 
 
 def send_repro_emails(was_repro):
     template = loader.get_template('devel/email_reproduciblebuilds.txt')
     enabled_users = [prof.user for prof in UserProfile.objects.filter(rebuilderd_updates=True).all()]
 
-    # Group statusses by maintainer
+    # Group statuses by maintainer
     maintainers_map = defaultdict(list)
 
     for status in was_repro:
@@ -80,17 +82,36 @@ def send_repro_emails(was_repro):
 def import_rebuilderd_status(url):
     statuses = []
     was_repro = []
+    headers = {}
 
-    req = requests.get(url)
+    last_modified = cache.get('rebuilderd:last-modified')
+    if last_modified:
+        logger.debug('Setting If-Modified-Since header')
+        headers = {'If-Modified-Since': last_modified}
+
+    req = requests.get(url, headers=headers)
+    if req.status_code == 304:
+        logger.debug('The rebuilderd data has not been updated since we last checked it')
+        return was_repro
+
+    last_modified = req.headers.get('last-modified')
+    if last_modified:
+        cache.set('rebuilderd:last-modified', last_modified, 86400)
+
     data = req.json()
 
+    # Lookup dictionary to reduce SQL queries.
+    arches = {arch.name: arch for arch in Arch.objects.all()}
+    repos = {repo.name.lower(): repo for repo in Repo.objects.all()}
+
     for pkg in data:
-        arch = Arch.objects.get(name=pkg['architecture'])
-        repository = Repo.objects.get(name__iexact=pkg['suite'])
+        arch = arches[pkg['architecture']]
+        repository = repos[pkg['suite'].lower()]
 
         epoch = 0
         pkgname = pkg['name']
         version = pkg['version']
+        build_id = pkg['build_id']
 
         matches = re.search(EPOCH_REGEX, version)
         if matches:
@@ -110,16 +131,23 @@ def import_rebuilderd_status(url):
 
         # Existing status
         if rbstatus:
+            changed = False
+
+            if rbstatus.build_id != build_id:
+                changed = True
+                rbstatus.build_id = build_id
+
             # If status has become BAD, set was_repro
             if rbstatus.status == RebuilderdStatus.GOOD and status == RebuilderdStatus.BAD:
+                changed = True
                 was_repro.append(rbstatus)
                 rbstatus.was_repro = True
                 logger.info("package '%s' was good is now bad", pkg['name'])
-            else:  # reset status
-                rbstatus.was_repro = False
 
             if rbstatus.pkgver != pkgver or rbstatus.pkgrel != pkgrel or rbstatus.epoch != epoch:
-                logger.info('updating status for package: %s to %s', pkg['name'], RebuilderdStatus.REBUILDERD_STATUSES[status][1])
+                changed = True
+                logger.info('updating status for package: %s to %s', pkg['name'],
+                            RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.epoch = epoch
                 rbstatus.pkgver = pkgver
                 rbstatus.pkgrel = pkgrel
@@ -127,17 +155,26 @@ def import_rebuilderd_status(url):
                 rbstatus.arch = arch
                 rbstatus.repo = repository
             elif rbstatus.status != status:  # Rebuilderd rebuild the same package?
-                logger.info('status for package: %s changed to %s', pkg['name'], RebuilderdStatus.REBUILDERD_STATUSES[status][1])
+                changed = True
+                logger.info('status for package: %s changed to %s', pkg['name'],
+                            RebuilderdStatus.REBUILDERD_STATUSES[status][1])
                 rbstatus.status = status
+                # reset was_repro status as it's unknown
+                rbstatus.was_repro = False
 
-            # TODO: does django know when a model was really modified?
-            rbstatus.save()
+            if changed:
+                logging.debug('saving updated status for package: %s', pkg['name'])
+                rbstatus.save()
 
         else:  # new package/status
             logger.info('adding status for package: %s', pkg['name'])
             rbstatus = RebuilderdStatus(pkg=dbpkg, status=status, arch=arch, repo=repository,
                                         pkgname=pkgname, epoch=epoch, pkgrel=pkgrel,
                                         pkgver=pkgver)
+
+            if build_id:
+                rbstatus.build_id = build_id
+
             statuses.append(rbstatus)
 
     if statuses:

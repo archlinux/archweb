@@ -13,9 +13,10 @@ def format_key(key_id):
     elif len(key_id) == 40:
         # normal display format is 5 groups of 4 hex chars seperated by spaces,
         # double space, then 5 more groups of 4 hex chars
-        split = tuple(key_id[i:i+4] for i in range(0, 40, 4))
+        split = tuple(key_id[i:i + 4] for i in range(0, 40, 4))
         return '%s\u00a0 %s' % (' '.join(split[0:5]), ' '.join(split[5:10]))
     return '0x%s' % key_id
+
 
 @register.simple_tag
 def pgp_key_link(key_id, link_text=None):
@@ -36,8 +37,7 @@ def pgp_key_link(key_id, link_text=None):
         return format_key(key_id)
     pgp_server_secure = getattr(settings, 'PGP_SERVER_SECURE', False)
     scheme = 'https' if pgp_server_secure else 'http'
-    url = '%s://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % \
-            (scheme, pgp_server, key_id)
+    url = '%s://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % (scheme, pgp_server, key_id)
     if link_text is None:
         link_text = '0x%s' % key_id[-8:]
     values = (url, format_key(key_id), link_text)

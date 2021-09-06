@@ -20,7 +20,7 @@ import io
 import os
 import re
 import sys
-import tarfile
+import xtarfile as tarfile
 import logging
 from datetime import datetime
 from pytz import utc
@@ -46,6 +46,7 @@ TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     help = "Runs a package repository import for the given arch and file."
     missing_args_message = 'missing arch and file.'
@@ -56,13 +57,17 @@ class Command(BaseCommand):
                             action='store_true',
                             dest='force',
                             default=False,
-                            help='Force a re-import of data for all packages instead of only new ones. Will not touch the \'last updated\' value.')
+                            help='Force a re-import of data for all packages \
+                                    instead of only new ones. Will not touch \
+                                    the \'last updated\' value.')
 
         parser.add_argument('--filesonly',
                             action='store_true',
                             dest='filesonly',
                             default=False,
-                            help='Load filelists if they are outdated, but will not add or remove any packages. Will not touch the \'last updated\' value.')
+                            help='Load filelists if they are outdated, but will \
+                            not add or remove any packages. Will not touch the \
+                            \'last updated\' value.')
 
     def handle(self, arch=None, filename=None, **options):
         if not arch:
@@ -86,11 +91,11 @@ class Command(BaseCommand):
 
 class RepoPackage(object):
     """An interim 'container' object for holding Arch package data."""
-    bare = ( 'name', 'base', 'arch', 'filename',
-            'md5sum', 'sha256sum', 'url', 'packager' )
-    number = ( 'csize', 'isize' )
-    collections = ( 'depends', 'optdepends', 'makedepends', 'checkdepends',
-            'conflicts', 'provides', 'replaces', 'groups', 'license')
+    bare = ('name', 'base', 'arch', 'filename',
+            'md5sum', 'sha256sum', 'url', 'packager')
+    number = ('csize', 'isize')
+    collections = ('depends', 'optdepends', 'makedepends', 'checkdepends',
+                   'conflicts', 'provides', 'replaces', 'groups', 'license')
 
     def __init__(self, repo):
         self.repo = repo
@@ -124,8 +129,8 @@ class RepoPackage(object):
                     self.builddate = builddate.replace(tzinfo=utc)
                 except ValueError:
                     logger.warning(
-                            'Package %s had unparsable build date %s',
-                            self.name, v[0])
+                        'Package %s had unparsable build date %s',
+                        self.name, v[0])
             else:
                 # anything left in collections
                 setattr(self, k, tuple(v))
@@ -137,7 +142,7 @@ class RepoPackage(object):
             info = parse_info(data_file)
         except UnicodeDecodeError:
             logger.warning("Could not correctly decode files list for %s",
-                    self.name)
+                           self.name)
             return None
         return info['files']
 
@@ -150,6 +155,7 @@ class RepoPackage(object):
 
 
 DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")
+
 
 def create_depend(package, dep_str, deptype='D'):
     depend = Depend(pkg=package, deptype=deptype)
@@ -166,9 +172,10 @@ def create_depend(package, dep_str, deptype='D'):
             depend.version = match.group(4)
     else:
         logger.warning('Package %s had unparsable depend string %s',
-                package.pkgname, dep_str)
+                       package.pkgname, dep_str)
         return None
     return depend
+
 
 def create_related(model, package, rel_str, equals_only=False):
     related = model(pkg=package)
@@ -181,13 +188,13 @@ def create_related(model, package, rel_str, equals_only=False):
                 related.comparison = comp
             elif comp != '=':
                 logger.warning(
-                        'Package %s had unexpected comparison operator %s for %s in %s',
-                        package.pkgname, comp, model.__name__, rel_str)
+                    'Package %s had unexpected comparison operator %s for %s in %s',
+                    package.pkgname, comp, model.__name__, rel_str)
         if match.group(4):
             related.version = match.group(4)
     else:
         logger.warning('Package %s had unparsable %s string %s',
-                package.pkgname, model.___name__, rel_str)
+                       package.pkgname, model.___name__, rel_str)
         return None
     return related
 
@@ -206,7 +213,9 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     if new_items:
         model.objects.bulk_create(new_items)
 
+
 finder = UserFinder()
+
 
 def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     # we reset the flag date only if the upstream version components change;
@@ -259,8 +268,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     Conflict.objects.bulk_create(conflicts)
 
     dbpkg.provides.all().delete()
-    provides = [create_related(Provision, dbpkg, y, equals_only=True)
-            for y in repopkg.provides]
+    provides = [create_related(Provision, dbpkg, y, equals_only=True) for y in repopkg.provides]
     Provision.objects.bulk_create(provides)
 
     dbpkg.replaces.all().delete()
@@ -272,7 +280,7 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
 
 
 pkg_same_version = lambda pkg, dbpkg: pkg.ver == dbpkg.pkgver \
-        and pkg.rel == dbpkg.pkgrel and pkg.epoch == dbpkg.epoch
+    and pkg.rel == dbpkg.pkgrel and pkg.epoch == dbpkg.epoch
 
 
 def delete_pkg_files(dbpkg):
@@ -303,8 +311,8 @@ def populate_files(dbpkg, repopkg, force=False):
     if not force:
         if not pkg_same_version(repopkg, dbpkg):
             logger.info("DB version (%s) didn't match repo version "
-                    "(%s) for package %s, skipping file list addition",
-                    dbpkg.full_version, repopkg.full_version, dbpkg.pkgname)
+                        "(%s) for package %s, skipping file list addition",
+                        dbpkg.full_version, repopkg.full_version, dbpkg.pkgname)
             return
         if not dbpkg.files_last_update or not dbpkg.last_update:
             pass
@@ -319,7 +327,7 @@ def populate_files(dbpkg, repopkg, force=False):
             return
         delete_pkg_files(dbpkg)
         logger.info("adding %d files for package %s",
-                len(files), dbpkg.pkgname)
+                    len(files), dbpkg.pkgname)
         pkg_files = []
         # sort in normal alpha-order that pacman uses, rather than makepkg's
         # default breadth-first, directory-first ordering
@@ -332,9 +340,9 @@ def populate_files(dbpkg, repopkg, force=False):
             if filename == '':
                 filename = None
             pkgfile = PackageFile(pkg=dbpkg,
-                    is_directory=(filename is None),
-                    directory=dirname,
-                    filename=filename)
+                                  is_directory=(filename is None),
+                                  directory=dirname,
+                                  filename=filename)
             pkg_files.append(pkgfile)
         batched_bulk_create(PackageFile, pkg_files)
         dbpkg.files_last_update = now()
@@ -348,13 +356,12 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
     with transaction.atomic():
         # force the transaction dirty, even though we will only do reads
         # https://github.com/django/django/blob/3c447b108ac70757001171f7a4791f493880bf5b/docs/releases/1.3.txt#L606
-        #transaction.set_dirty()
+        # transaction.set_dirty()
 
         repository = Repo.objects.get(name__iexact=reponame)
         architecture = Arch.objects.get(name=archname)
         # no-arg order_by() removes even the default ordering; we don't need it
-        dbpkgs = Package.objects.filter(
-                arch=architecture, repo=repository).order_by()
+        dbpkgs = Package.objects.filter(arch=architecture, repo=repository).order_by()
 
         logger.info("%d packages in current web DB", len(dbpkgs))
         logger.info("%d packages in new updating DB", len(pkgs))
@@ -368,7 +375,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
         # Fewer than 20 packages makes the percentage check unreliable, but it
         # also means we expect the repo to fluctuate a lot.
         msg = "Package database %s (%s) has %.1f%% the number of packages " \
-                "the web database"
+              "the web database"
         if not sanity_check:
             pass
         elif repository.testing or repository.public_testing or repository.staging:
@@ -382,6 +389,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
             logger.warning(msg, reponame, archname, dbpercent)
 
     return dbpkgs
+
 
 def db_update(archname, reponame, pkgs, force=False):
     """
@@ -407,7 +415,7 @@ def db_update(archname, reponame, pkgs, force=False):
         logger.info("Adding package %s", pkg.name)
         timestamp = now()
         dbpkg = Package(pkgname=pkg.name, arch=architecture, repo=repository,
-                created=timestamp)
+                        created=timestamp)
         try:
             with transaction.atomic():
                 populate_pkg(dbpkg, pkg, timestamp=timestamp)
@@ -417,8 +425,7 @@ def db_update(archname, reponame, pkgs, force=False):
                         pkgname=pkg.name).exclude(id=dbpkg.id).exists():
                     if not User.objects.filter(
                             package_relations__pkgbase=dbpkg.pkgbase,
-                            package_relations__type=PackageRelation.MAINTAINER
-                            ).exists():
+                            package_relations__type=PackageRelation.MAINTAINER).exists():
                         packager = finder.find(pkg.packager)
                         if packager:
                             prel = PackageRelation(pkgbase=dbpkg.pkgbase,
@@ -426,12 +433,11 @@ def db_update(archname, reponame, pkgs, force=False):
                                                    type=PackageRelation.MAINTAINER)
                             prel.save()
 
-
         except IntegrityError:
             if architecture.agnostic:
                 logger.warning("Could not add package %s; "
-                        "not fatal if another thread beat us to it.",
-                        pkg.name)
+                               "not fatal if another thread beat us to it.",
+                               pkg.name)
             else:
                 logger.exception("Could not add package %s", pkg.name)
 
@@ -550,35 +556,33 @@ def parse_repo(repopath):
         logger.error("File does not have the proper extension")
         raise Exception("File does not have the proper extension")
 
-    repodb = tarfile.open(repopath, "r")
-    logger.debug("Starting package parsing")
-    newpkg = lambda: RepoPackage(reponame)
-    pkgs = defaultdict(newpkg)
-    for tarinfo in repodb.getmembers():
-        if tarinfo.isreg():
-            pkgid, fname = os.path.split(tarinfo.name)
-            if fname == 'files':
-                # don't parse yet for speed and memory consumption reasons
-                files_data = repodb.extractfile(tarinfo)
-                pkgs[pkgid].files = files_data.read()
-                del files_data
-            elif fname in ('desc', 'depends'):
-                data_file = repodb.extractfile(tarinfo)
-                data_file = io.TextIOWrapper(io.BytesIO(data_file.read()),
-                        encoding='UTF-8')
-                try:
-                    pkgs[pkgid].populate(parse_info(data_file))
-                except UnicodeDecodeError:
-                    logger.warning("Could not correctly decode %s, skipping file",
-                            tarinfo.name)
-                data_file.close()
-                del data_file
+    with tarfile.open(repopath, 'r') as repodb:
+        logger.debug("Starting package parsing")
+        newpkg = lambda: RepoPackage(reponame)
+        pkgs = defaultdict(newpkg)
+        for tarinfo in repodb.getmembers():
+            if tarinfo.isreg():
+                pkgid, fname = os.path.split(tarinfo.name)
+                if fname == 'files':
+                    # don't parse yet for speed and memory consumption reasons
+                    files_data = repodb.extractfile(tarinfo)
+                    pkgs[pkgid].files = files_data.read()
+                    del files_data
+                elif fname in ('desc', 'depends'):
+                    data_file = repodb.extractfile(tarinfo)
+                    data_file = io.TextIOWrapper(io.BytesIO(data_file.read()), encoding='UTF-8')
+                    try:
+                        pkgs[pkgid].populate(parse_info(data_file))
+                    except UnicodeDecodeError:
+                        logger.warning("Could not correctly decode %s, skipping file", tarinfo.name)
+                    data_file.close()
+                    del data_file
 
-            logger.debug("Done parsing file %s/%s", pkgid, fname)
+                logger.debug("Done parsing file %s/%s", pkgid, fname)
 
-    repodb.close()
     logger.info("Finished repo parsing, %d total packages", len(pkgs))
     return (reponame, pkgs.values())
+
 
 def locate_arch(arch):
     "Check if arch is valid."
@@ -587,8 +591,7 @@ def locate_arch(arch):
     try:
         return Arch.objects.get(name=arch)
     except Arch.DoesNotExist:
-        raise CommandError(
-                'Specified architecture %s is not currently known.' % arch)
+        raise CommandError('Specified architecture %s is not currently known.' % arch)
 
 
 def read_repo(primary_arch, repo_file, options):
@@ -613,8 +616,7 @@ def read_repo(primary_arch, repo_file, options):
             packages_arches[package.arch].append(package)
         else:
             raise Exception(
-                    "Package %s in database %s had wrong architecture %s" % (
-                    package.name, repo_file, package.arch))
+                f"Package {package.name} in database {repo_file} had wrong architecture {package.arch}")
     del packages
 
     database = router.db_for_write(Package)

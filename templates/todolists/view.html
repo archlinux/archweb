@@ -8,7 +8,7 @@
 {% block content %}
 <div id="dev-todo-details" class="box">
 
-    <h2>Todo List: {{ list.name }}</h2>
+    <h2>{{ list.kind_str | title }} Todo List {{ list.name }}</h2>
 
     <ul class="admin-actions">
         {% if perms.todolists.delete_todolist %}

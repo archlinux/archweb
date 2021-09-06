@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import timedelta
 
 import pytz
@@ -5,10 +6,42 @@ from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.db import connection
 from django.utils.timezone import now
+from django.utils.html import format_html
 from main.models import Package, PackageFile, RebuilderdStatus
 from packages.models import Depend, PackageRelation
 
 from .models import DeveloperKey
+
+
+# Helper object to be able to show links reports.
+class Linkify:
+    def __init__(self, href, title, desc):
+        self.href = href
+        self.title = title
+        self.desc = desc
+
+    def __str__(self):
+        link = '<a href="%s" title="%s">%s</a>'
+        return format_html(link % (self.href, self.title, self.desc))
+
+
+def linkify_non_reproducible_packages(statuses):
+    '''Adds diffoscope/log attribute to non reproducible packages'''
+
+    pkgs = []
+    for status in statuses:
+        pkg = status.pkg
+
+        # Diffoscope url
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/diffoscope'
+        pkg.diffoscope = Linkify(url, 'Diffoscope of package', 'diffoscope')
+
+        # Build log
+        url = f'https://reproducible.archlinux.org/api/v0/builds/{status.build_id}/log'
+        pkg.log = Linkify(url, 'Logs of package', 'log')
+        pkgs.append(pkg)
+
+    return pkgs
 
 
 class DeveloperReport(object):
@@ -169,8 +202,46 @@ def non_existing_dependencies(packages):
 
 
 def non_reproducible_packages(packages):
-    statuses = RebuilderdStatus.objects.filter(status=RebuilderdStatus.BAD).values('pkg__pkgname')
-    return packages.filter(pkgname__in=statuses)
+    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD, pkg__pkgname__in=packages.values('pkgname'))
+    return linkify_non_reproducible_packages(statuses)
+
+
+def orphan_non_reproducible_packages(packages):
+    owned = PackageRelation.objects.all().values('pkgbase')
+    required = Depend.objects.all().values('name')
+
+    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD)
+    orphans = packages.exclude(pkgbase__in=owned).exclude(pkgname__in=required)
+    statuses = statuses.filter(pkg__in=orphans)
+    return linkify_non_reproducible_packages(statuses)
+
+
+def orphan_dependencies(packages):
+    packages_with_orphan_deps = []
+    required_mapping = defaultdict(list)
+
+    cursor = connection.cursor()
+    query = """
+    SELECT DISTINCT pp.pkgbase, ppr.user_id, child.pkgname
+    FROM packages_depend ppd JOIN packages pp ON ppd.pkg_id = pp.id
+    JOIN packages_packagerelation ppr ON pp.pkgbase = ppr.pkgbase
+    JOIN (SELECT DISTINCT cp.pkgname FROM packages cp LEFT JOIN packages_packagerelation pr ON cp.pkgbase = pr.pkgbase WHERE pr.id IS NULL) child ON ppd.name = child.pkgname
+    ORDER BY child.pkgname;
+    """
+    cursor.execute(query)
+
+    for row in cursor.fetchall():
+        pkgname, _, orphan = row
+        required_mapping[pkgname].append(orphan)
+        packages_with_orphan_deps.append(pkgname)
+
+    pkgs = packages.filter(pkgname__in=packages_with_orphan_deps)
+
+    for pkg in pkgs:
+        # Templates take a string
+        pkg.orphandeps = ' '.join(required_mapping.get(pkg.pkgname, []))
+
+    return pkgs
 
 
 REPORT_OLD = DeveloperReport(
@@ -203,8 +274,7 @@ REPORT_INFO = DeveloperReport('uncompressed-info', 'Uncompressed Info Pages',
 REPORT_ORPHANS = DeveloperReport(
     'unneeded-orphans',
     'Unneeded Orphans',
-    'Packages that have no maintainer and are not required by any ' +
-    'other package in any repository',
+    'Packages that have no maintainer and are not required by any other package in any repository',
     unneeded_orphans,
     personal=False)
 
@@ -215,8 +285,8 @@ REPORT_SIGNATURE = DeveloperReport(
 
 REPORT_SIG_TIME = DeveloperReport(
     'signature-time', 'Signature Time',
-    'Packages where the signature timestamp is more than 24 hours ' +
-    'after the build timestamp', signature_time,
+    'Packages where the signature timestamp is more than 24 hours after the build timestamp',
+    signature_time,
     ['Signature Date', 'Packager'], ['sig_date', 'packager'])
 
 NON_EXISTING_DEPENDENCIES = DeveloperReport(
@@ -233,7 +303,25 @@ REBUILDERD_PACKAGES = DeveloperReport(
     'Non Reproducible package',
     'Packages that are not reproducible on our reproducible.archlinux.org test environment',
     non_reproducible_packages,
-    )
+    ['diffoscope', 'log'],
+    ['diffoscope', 'log'])
+
+ORPHAN_REBUILDERD_PACKAGES = DeveloperReport(
+    'orphan-non-reproducible-packages',
+    'Orphan non Reproducible package',
+    'Orphan packages that are not reproducible on our reproducible.archlinux.org test environment',
+    orphan_non_reproducible_packages,
+    ['diffoscope', 'log'],
+    ['diffoscope', 'log'],
+    personal=False)
+
+REPORT_REQUIRED_ORPHAN = DeveloperReport(
+    'required-orphan',
+    'Required orphan packages',
+    'Packages with orphan dependencies',
+    orphan_dependencies,
+    ['Orphan dependencies'],
+    ['orphandeps'])
 
 
 def available_reports():
@@ -244,7 +332,9 @@ def available_reports():
             REPORT_MAN,
             REPORT_INFO,
             REPORT_ORPHANS,
+            REPORT_REQUIRED_ORPHAN,
             REPORT_SIGNATURE,
             REPORT_SIG_TIME,
             NON_EXISTING_DEPENDENCIES,
-            REBUILDERD_PACKAGES, )
+            REBUILDERD_PACKAGES,
+            ORPHAN_REBUILDERD_PACKAGES, )

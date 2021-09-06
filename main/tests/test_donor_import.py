@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import sys
 from email.header import Header
 from email.message import Message
-from mailbox import Maildir
+from io import StringIO
 from tempfile import mkdtemp
-from shutil import rmtree
 
 from django.test import TransactionTestCase
 from django.core.management import call_command
@@ -18,9 +18,6 @@ class DonorImportTest(TransactionTestCase):
 
     def setUp(self):
         self.command = Command()
-
-    def gen_parse_subject(self, data):
-        return self.command.parse_subject(valid.format(data))
 
     def test_parse_subject(self):
         self.assertIsNone(self.command.parse_subject('garbage'))
@@ -42,39 +39,42 @@ class DonorImportTest(TransactionTestCase):
         self.assertEqual(self.command.decode_subject(subject), text)
 
     def test_invalid_args(self):
+        stdin = sys.stdin
         with self.assertRaises(CommandError) as e:
+            sys.stdin = StringIO('')
             call_command('donor_import')
-        self.assertIn('Error: the following arguments are required', str(e.exception))
+        self.assertIn('Failed to read from STDIN', str(e.exception))
+        sys.stdin = stdin
 
     def test_invalid_path(self):
         with self.assertRaises(CommandError) as e:
             call_command('donor_import', '/tmp/non-existant')
-        self.assertIn('Failed to open maildir', str(e.exception))
+        self.assertIn('argument input: can\'t open', str(e.exception))
 
-    def test_maildir(self):
-        tmpdir = mkdtemp('archweb')
-        mdir = tmpdir + '/maildir'
+    def test_import(self):
+        tmpmail = mkdtemp('archweb') + "/mail"
 
-        maildir = Maildir(mdir)
         msg = Message()
         msg['subject'] = 'John Doe'
         msg['to'] = 'John Doe <john@doe.com>'
-        maildir.add(msg)
+        with open(tmpmail, 'wb') as fp:
+            fp.write(msg.as_bytes())
 
         # Invalid
-        call_command('donor_import', mdir)
+        with self.assertRaises(SystemExit):
+            call_command('donor_import', tmpmail)
         self.assertEqual(len(Donor.objects.all()), 0)
 
         # Valid
         msg = Message()
         msg['subject'] = 'Receipt [$25.00] By: David Doe [david@doe.com]'
         msg['to'] = 'John Doe <david@doe.com>'
-        maildir.add(msg)
-        call_command('donor_import', mdir)
+        with open(tmpmail, 'wb') as fp:
+            fp.write(msg.as_bytes())
+
+        call_command('donor_import', tmpmail)
         self.assertEqual(len(Donor.objects.all()), 1)
 
         # Re-running should result in no new donor
-        call_command('donor_import', mdir)
+        call_command('donor_import', tmpmail)
         self.assertEqual(len(Donor.objects.all()), 1)
-
-        rmtree(tmpdir)

@@ -142,14 +142,14 @@ class MirrorCheckTest(TestCase):
 
     def test_checklocation(self):
         with self.assertRaises(CheckLocation.DoesNotExist) as e:
-            call_command('mirrorcheck', '-l', '1')
+            call_command('mirrorcheck', '-l', '9999999')
         self.assertEqual('CheckLocation matching query does not exist.', str(e.exception))
 
     def test_checklocation_model(self):
         checkloc = CheckLocation.objects.create(hostname='archlinux.org',
-                                                     source_ip='1.1.1.1')
+                                                source_ip='1.1.1.1')
         with mock.patch('mirrors.management.commands.mirrorcheck.logger') as logger:
-            call_command('mirrorcheck', '-l', '1')
+            call_command('mirrorcheck', '-l', f'{checkloc.id}')
         logger.info.assert_called()
 
         checkloc.delete()

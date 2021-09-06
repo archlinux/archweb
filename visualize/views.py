@@ -14,10 +14,10 @@ def index(request):
 
 def arch_repo_data():
     qs = Package.objects.select_related().values(
-            'arch__name', 'repo__name').annotate(
-            count=Count('pk'), csize=Sum('compressed_size'),
-            isize=Sum('installed_size'),
-            flagged=Count('flag_date')).order_by()
+        'arch__name', 'repo__name').annotate(
+        count=Count('pk'), csize=Sum('compressed_size'),
+        isize=Sum('installed_size'),
+        flagged=Count('flag_date')).order_by()
     arches = Arch.objects.values_list('name', flat=True)
     repos = Repo.objects.values_list('name', flat=True)
 
@@ -52,8 +52,8 @@ def arch_repo_data():
         repo_groups[repo]['data'].append(values)
 
     data = {
-        'by_arch': { 'name': 'Architectures', 'data': list(arch_groups.values()) },
-        'by_repo': { 'name': 'Repositories', 'data': list(repo_groups.values()) },
+        'by_arch': {'name': 'Architectures', 'data': list(arch_groups.values())},
+        'by_repo': {'name': 'Repositories', 'data': list(repo_groups.values())},
     }
     return data
 

@@ -10,12 +10,20 @@ from main.utils import set_created_field
 
 
 class Todolist(models.Model):
+    REBUILD = 0
+    TASK = 1
+
+    KIND_CHOICES = (
+        (REBUILD, 'Rebuild'),
+        (TASK, 'Task'),
+    )
+
     slug = models.SlugField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    creator = models.ForeignKey(User, on_delete=models.PROTECT,
-            related_name="created_todolists")
+    creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_todolists")
     created = models.DateTimeField(db_index=True)
+    kind = models.SmallIntegerField(default=REBUILD, choices=KIND_CHOICES, help_text='(Rebuild for soname bumps, Task for independent tasks)')
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
 
@@ -40,10 +48,15 @@ class Todolist(models.Model):
     def packages(self):
         if not hasattr(self, '_packages'):
             self._packages = self.todolistpackage_set.filter(
-                    removed__isnull=True).select_related(
-                    'pkg', 'repo', 'arch', 'user__userprofile').order_by(
-                    'pkgname', 'arch')
+                removed__isnull=True).select_related(
+                'pkg', 'repo', 'arch', 'user__userprofile').order_by(
+                'pkgname', 'arch')
         return self._packages
+
+    @property
+    def kind_str(self):
+        '''Todo list kind as str'''
+        return self.KIND_CHOICES[self.kind][1]
 
 
 class TodolistPackage(models.Model):
@@ -65,8 +78,7 @@ class TodolistPackage(models.Model):
     created = models.DateTimeField(editable=False)
     last_modified = models.DateTimeField(editable=False)
     removed = models.DateTimeField(null=True, blank=True)
-    status = models.SmallIntegerField(default=INCOMPLETE,
-            choices=STATUS_CHOICES)
+    status = models.SmallIntegerField(default=INCOMPLETE, choices=STATUS_CHOICES)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     comments = models.TextField(null=True, blank=True)
 
@@ -79,6 +91,10 @@ class TodolistPackage(models.Model):
 
     def status_css_class(self):
         return self.get_status_display().lower().replace('-', '')
+
+    @property
+    def status_str(self):
+        return self.STATUS_CHOICES[self.status][1]
 
 
 def check_todolist_complete(sender, instance, **kwargs):
@@ -96,20 +112,13 @@ def check_todolist_complete(sender, instance, **kwargs):
     ctx = {
         'todolist': instance.todolist,
     }
-    msg = EmailMessage(subject,
-            tmpl.render(ctx),
-            'Arch Website Notification <nobody@archlinux.org>',
-            toemail,
-    )
+    msg = EmailMessage(subject, tmpl.render(ctx), 'Arch Website Notification <nobody@archlinux.org>', toemail)
     msg.send(fail_silently=True)
 
 
-pre_save.connect(set_created_field, sender=Todolist,
-        dispatch_uid="todolists.models")
-pre_save.connect(set_created_field, sender=TodolistPackage,
-        dispatch_uid="todolists.models")
+pre_save.connect(set_created_field, sender=Todolist, dispatch_uid="todolists.models")
+pre_save.connect(set_created_field, sender=TodolistPackage, dispatch_uid="todolists.models")
 
-post_save.connect(check_todolist_complete, sender=TodolistPackage,
-        dispatch_uid='todolist.models')
+post_save.connect(check_todolist_complete, sender=TodolistPackage, dispatch_uid='todolist.models')
 
 # vim: set ts=4 sw=4 et:

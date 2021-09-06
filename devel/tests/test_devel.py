@@ -19,8 +19,8 @@ class DevelView(TransactionTestCase):
         self.profile = UserProfile.objects.create(user=self.user,
                                                   public_email="{}@awesome.com".format(self.user.username))
         self.client.post('/login/', {
-                                    'username': self.user.username,
-                                    'password': password
+            'username': self.user.username,
+            'password': password
         })
 
     def tearDown(self):

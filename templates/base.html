@@ -35,22 +35,25 @@
             {% if user.is_authenticated %}
                 <ul>
                     <li><a href="{% url 'devel-index' %}" title="Developer Dashboard">Dashboard</a></li>
-                    <li><a href="https://wiki.archlinux.org/index.php/DeveloperWiki"
+                    <li><a href="https://wiki.archlinux.org/title/DeveloperWiki"
                         title="Developer Wiki">DevWiki</a></li>
                     <li><a href="{% url 'news-list' as newsl %}{{ newsl }}" title="Manage news articles">News</a></li>
                     <li><a href="/packages/signoffs/" title="Package signoffs">Signoffs</a></li>
                     <li><a href="/todo/" title="Developer todo lists">Todos</a></li>
                     <li><a href="{% url 'devel-clocks' %}" title="Developer world clocks">Dev Clocks</a></li>
-		    {% if user|in_group:'Developers' %}
+                    {% if user|in_group:'Developers' %}
                     <li><a href="https://mailman.archlinux.org/mailman/private/arch-dev/"
                         title="arch-dev mailing list archives">Archives</a></li>
-		    {% endif %}
-                    <li><a href="https://zabbix.archlinux.org/"
+                    {% endif %}
+                    <li><a href="https://monitoring.archlinux.org/"
                         title="Arch server monitoring">Server Monitoring</a></li>
                     {% if user.is_staff %}
                     <li><a href="{% url 'admin:index' %}" title="Django Admin Interface">Django Admin</a></li>
                     {% endif %}
                     <li><a href="/devel/profile/" title="Modify your account profile">Profile</a></li>
+                    {% if user|in_groups:'Developers:Trusted Users:Support Staff' %}
+                    <li><a href="/devel/tier0mirror/" title="Your Tier 0 Mirror information">Tier0 mirror</a></li>
+                    {% endif %}
                     <li><a href="/logout/" title="Logout of the developer interface">Logout</a></li>
                 </ul>
             {% endif %}
@@ -74,11 +77,12 @@
         {% endblock %}
         <div id="footer">
             <p>Copyright © 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
-                title="Contact Judd Vinet">Judd Vinet</a> and <a href="mailto:aaron@archlinux.org"
-                title="Contact Aaron Griffin">Aaron Griffin</a>.</p>
+                title="Contact Judd Vinet">Judd Vinet</a>, <a href="mailto:aaron@archlinux.org"
+                title="Contact Aaron Griffin">Aaron Griffin</a> and
+                <a href="mailto:anthraxx@archlinux.org" title="Contact Levente Polyák">Levente Polyák</a>.</p>
 
             <p>The Arch Linux name and logo are recognized
-            <a href="https://wiki.archlinux.org/index.php/DeveloperWiki:TrademarkPolicy"
+            <a href="https://wiki.archlinux.org/title/DeveloperWiki:TrademarkPolicy"
                 title="Arch Linux Trademark Policy">trademarks</a>. Some rights reserved.</p>
 
             <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,

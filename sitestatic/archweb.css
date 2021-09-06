@@ -16,7 +16,7 @@
 #archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
 #archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important; 
+	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important;
 	}
 }
 
@@ -134,21 +134,17 @@ a {
 }
 
     a:link,
+    a:visited,
     th a:visited {
-        color: #07b;
+        color: #08c;
     }
 
-    a:visited {
-        color: #666;
-    }
-
-    a:hover {
+    a:hover,
+    a:focus,
+    a:visited,
+    a:visited:hover {
+        color: #08c;
         text-decoration: underline;
-        color: #666;
-    }
-
-    a:active {
-        color: #e90;
     }
 
 /* special anchor elements */
@@ -494,6 +490,24 @@ h3 span.arrow {
     line-height: 0px;
 }
 
+/* home: headings inside news previews */
+#news div.article-content h1,
+#news div.article-content h2,
+#news div.article-content h3,
+#news div.article-content h4,
+#news div.article-content h5 {
+    /* cancel styling for #news h3 */
+    float: none;
+    padding-bottom: 0em;
+    /* cancel styling for #news h4 */
+    clear: none;
+    border-bottom: none;
+    /* force the style of normal h5 */
+    font-size: 1em;
+    margin-top: 1em;
+    margin-bottom: 0em;
+}
+
 /* planet: posts */
 #planet {
     margin-top: 1.5em;
@@ -833,6 +847,12 @@ table.results {
         padding: 0.5em;
     }
 
+    #pkgdetails #pkginfo .recent {
+        color: green;
+        font-weight: bold;
+        text-decoration: underline dotted;
+    }
+
 /* pkgdetails: flag package */
 #flag-pkg-form label {
     width: 10em;
@@ -845,6 +865,16 @@ table.results {
 
 #flag-pkg-form #id_website {
     display: none;
+}
+
+#flag-pkg-form div.recentwarning {
+    width: calc(45% - 4px); /* Minus padding to match text fields above */
+    padding: 4px 6px;
+    display: inline-block;
+
+    color: #a94442;
+    background: #f2dede;
+    border: 1px solid #ebccd1;
 }
 
 /* pkgdetails: deps, required by and file lists */
@@ -882,6 +912,18 @@ table.results {
     clear: both;
 }
 
+#pkginfo #rebuilderdstatus {
+    font-weight: bold;
+}
+
+#pkginfo .rebuilderd-good {
+    color: green;
+}
+
+#pkginfo .rebuilderd-bad {
+    color: red;
+}
+
 #pkgdetails #pkgdeps {
     float: left;
     width: 48%;
@@ -902,7 +944,7 @@ table.results {
     width: 50%;
 }
 
-#pkgdetails #pkgfiles {
+#pkgdetails #pkgfiles, #sonames {
     clear: left;
     padding-top: 1em;
 }

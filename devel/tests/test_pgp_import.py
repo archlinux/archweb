@@ -12,10 +12,10 @@ ID2 = 'D8AFDDA07A5B6EDFA7D8CCDAD6D055F927843F1C'
 ID3 = 'B588C0234ECADD3F0BBBEEBA44F9F02E089294E7'
 
 SIG_DATA = [
-        'pub:-:4096:1:{id1}:{created}:::-:::scESCA::::::23::0:'.format(id1=ID1, created=CREATED),
-        'fpr:::::::::{id2}:'.format(id2=ID2),
-        'uid:-::::{created}::{id3}::{user}::::::::::0:'.format(created=CREATED, id3=ID3, user=USER),
-        'sig:::1:{id1}:{created}::::{user}:13x::{id2}:::10:'.format(id1=ID1, created=CREATED, user=USER, id2=ID2)
+    'pub:-:4096:1:{id1}:{created}:::-:::scESCA::::::23::0:'.format(id1=ID1, created=CREATED),
+    'fpr:::::::::{id2}:'.format(id2=ID2),
+    'uid:-::::{created}::{id3}::{user}::::::::::0:'.format(created=CREATED, id3=ID3, user=USER),
+    'sig:::1:{id1}:{created}::::{user}:13x::{id2}:::10:'.format(id1=ID1, created=CREATED, user=USER, id2=ID2)
 ]
 
 

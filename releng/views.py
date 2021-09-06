@@ -59,7 +59,7 @@ def releases_json(request):
     releases = Release.objects.all()
     try:
         latest_version = Release.objects.filter(available=True).values_list(
-                'version', flat=True).latest()
+            'version', flat=True).latest()
     except Release.DoesNotExist:
         latest_version = None
 
@@ -90,7 +90,7 @@ def netboot_config(request):
 
 
 def netboot_info(request):
-    return render(request, "releng/netboot.html", 
-            {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
+    return render(request, "releng/netboot.html",
+                  {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
 
 # vim: set ts=4 sw=4 et:

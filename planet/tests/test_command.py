@@ -14,6 +14,7 @@ class Result(dict):
     def get(self, value):
         return getattr(self, value)
 
+
 class Entry(dict):
     title = 'title'
     description = 'lorem ipsum'
@@ -70,6 +71,7 @@ class UpdatePlanetTest(TestCase):
 
     @mock.patch('feedparser.parse')
     def test_parse_entries(self, parse):
+        self.feed.save()
         value = Result()
         value.entries = [Entry()]
         parse.return_value = value
@@ -78,6 +80,7 @@ class UpdatePlanetTest(TestCase):
 
     @mock.patch('feedparser.parse')
     def test_parse_entries_atom(self, parse):
+        self.feed.save()
         value = Result()
         entry = Entry()
         entry.published_parsed = None
@@ -87,3 +90,12 @@ class UpdatePlanetTest(TestCase):
         parse.return_value = value
         self.command.parse_feed(self.feed)
         assert FeedItem.objects.count() == 1
+
+    @mock.patch('feedparser.parse')
+    def test_parse_feed_301(self, parse):
+        return_value = Result()
+        return_value.status = 301
+        return_value.href = 'https://example.com/rss'
+        parse.return_value = return_value
+        self.command.parse_feed(self.feed)
+        assert self.feed.website_rss == return_value.href

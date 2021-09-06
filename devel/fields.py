@@ -5,8 +5,8 @@ from django.core.validators import RegexValidator
 class PGPKeyField(models.CharField):
     def __init__(self, *args, **kwargs):
         super(PGPKeyField, self).__init__(*args, **kwargs)
-        self.validators.append(RegexValidator(r'^[0-9A-F]{40}$',
-            "Ensure this value consists of 40 hex characters.", 'hex_char'))
+        self.validators.append(
+            RegexValidator(r'^[0-9A-F]{40}$', "Ensure this value consists of 40 hex characters.", 'hex_char'))
 
     def to_python(self, value):
         if value == '' or value is None:

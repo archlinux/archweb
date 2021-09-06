@@ -25,9 +25,9 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 MAPPING = {
-        'Developers': 'Retired Developers',
-        'Trusted Users': 'Retired Trusted Users',
-        'Support Staff': 'Retired Support Staff',
+    'Developers': 'Retired Developers',
+    'Trusted Users': 'Retired Trusted Users',
+    'Support Staff': 'Retired Support Staff',
 }
 
 
@@ -37,7 +37,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('user', type=str)
-
 
     def handle(self, *args, **options):
         v = int(options.get('verbosity', 0))

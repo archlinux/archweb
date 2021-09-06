@@ -7,11 +7,11 @@
         title="Go to previous page" rel="prev">&lt; Prev</a>
     {% endif %}
     {% for num in paginator.page_range %}
-    {% ifequal num page_obj.number %}
+    {% if num == page_obj.number %}
     <span>{{ num }}</span>
     {% else %}
     <a href="?page={{ num }}" title="Go to page {{ num }}">{{ num }}</a>
-    {% endifequal %}
+    {% endif %}
     {% endfor %}
     {% if page_obj.has_next %}
     <a class="next" href="?page={{ page_obj.next_page_number }}"

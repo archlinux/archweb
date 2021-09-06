@@ -8,15 +8,18 @@ class FeedItemAdmin(admin.ModelAdmin):
     list_filter = ('publishdate',)
     search_fields = ('title',)
 
+
 class FeedAdmin(admin.ModelAdmin):
     list_display = ('title', 'website',)
     list_filter = ('title',)
     search_fields = ('title',)
 
+
 class PlanetAdmin(admin.ModelAdmin):
     list_display = ('name', 'website',)
     list_filter = ('name',)
     search_fields = ('name',)
+
 
 admin.site.register(Feed, FeedAdmin)
 admin.site.register(FeedItem, FeedItemAdmin)

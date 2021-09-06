@@ -48,7 +48,7 @@ def bug_report(package):
 
 @register.simple_tag
 def wiki_link(package):
-    url = "https://wiki.archlinux.org/index.php/Special:Search"
+    url = "https://wiki.archlinux.org/title/Special:Search"
     data = {
         'search': package.pkgname,
     }
@@ -56,9 +56,27 @@ def wiki_link(package):
 
 
 @register.simple_tag
+def man_link(package):
+    url = "https://man.archlinux.org/listing/{}"
+    return url.format(package.pkgname)
+
+
+@register.simple_tag
 def sec_link(package):
     url = "https://security.archlinux.org/package/{}"
     return url.format(package.pkgname)
+
+
+@register.simple_tag
+def rebuilderd_diffoscope_link(rbstatus):
+    url = "https://reproducible.archlinux.org/api/v0/builds/{}/diffoscope"
+    return url.format(rbstatus.build_id)
+
+
+@register.simple_tag
+def rebuilderd_buildlog_link(rbstatus):
+    url = "https://reproducible.archlinux.org/api/v0/builds/{}/log"
+    return url.format(rbstatus.build_id)
 
 
 @register.simple_tag

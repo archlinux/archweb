@@ -88,7 +88,7 @@ CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 
 # Referrer Policy
-SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_REFERRER_POLICY = 'strict-origin'
 
 # X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -111,6 +111,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -182,6 +183,9 @@ SECRET_KEY = '00000000000000000000000000000000000000000000000'
 # Mailman poster password for announcements
 MAILMAN_PASSWORD = ''
 
+# Announcements email address
+ANNOUNCE_EMAIL = 'arch-announce@lists.archlinux.org'
+
 DATABASES = {
     'default': {
         'ENGINE':  'django.db.backends.sqlite3',
@@ -189,15 +193,22 @@ DATABASES = {
     },
 }
 
+# Default implementation to use for AutoField
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Planet limit of items per feed to keep the feed size in check.
 RSS_FEED_LIMIT = 25
 
 # Rebuilderd API endpoint
 REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
 
+# Protected TIER0 Mirror
+TIER0_MIRROR_DOMAIN = 'repos.archlinux.org'
+# TIER0_MIRROR_SECRET = ''
+
 # Import local settings
 try:
-    from local_settings import *
+    from local_settings import * # noqa
 except ImportError:
     pass
 
@@ -212,6 +223,7 @@ TEMPLATES = [
             'debug': DEBUG,
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',
                 'django.template.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
                 'csp.context_processors.nonce',
@@ -222,9 +234,7 @@ TEMPLATES = [
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
-    MIDDLEWARE = \
-            ['debug_toolbar.middleware.DebugToolbarMiddleware'] + \
-            list(MIDDLEWARE)
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + list(MIDDLEWARE)
 
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load package_extras %}
+{% load humanize %}
 
 {% block title %}Arch Linux - Flag Package - {{ package.pkgname }} {{ package.full_version }} ({{ package.arch.name }}){% endblock %}
 {% block head %}<meta name="robots" content="noindex"/>{% endblock %}
@@ -38,6 +39,14 @@
         <fieldset>
             {{ form.as_p }}
         </fieldset>
+        {% if package.is_recent %}
+            <div>
+                <label></label>
+                <div class="recentwarning">
+		     This package was <strong>updated {{ package.last_update|naturaltime }}</strong> and may not yet be available on your mirror. Are you sure <strong>{{ package.pkgver }}</strong> is not the latest available version{% if package.url %} <a href="{{ package.url }}">from upstream</a>{% endif %}?
+                </div>
+            </div>
+        {% endif %}
         <p><label></label> <input title="Flag {{ package.pkgname }} as out-of-date" type="submit" value="Flag Package" /></p>
     </form>
 </div>

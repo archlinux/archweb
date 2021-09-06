@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import permission_required
 
 from .views import (view, view_json, add, edit, flag,
-        list_pkgbases, DeleteTodolist, TodolistListView)
+                    list_pkgbases, DeleteTodolist, TodolistListView)
 
 urlpatterns = [
     url(r'^$', TodolistListView.as_view(), name='todolist-list'),

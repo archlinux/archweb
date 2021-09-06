@@ -1,7 +1,9 @@
+import base64
 import operator
 import time
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import ADDITION, LogEntry
 from django.contrib.auth.decorators import (login_required,
@@ -13,12 +15,12 @@ from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.db import transaction
 from django.db.models import Count, Max
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.encoding import force_text
 from django.utils.http import http_date
 from django.utils.timezone import now
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_control, never_cache
 from main.models import Arch, Package, Repo
 from news.models import News
 from packages.models import FlagRequest, PackageRelation, Signoff
@@ -29,7 +31,7 @@ from todolists.utils import get_annotated_todolists
 from .forms import NewUserForm, ProfileForm, UserProfileForm
 from .models import UserProfile
 from .reports import available_reports
-from .utils import get_annotated_maintainers
+from .utils import get_annotated_maintainers, generate_repo_auth_token
 
 
 @login_required
@@ -106,7 +108,9 @@ def stats(request):
 
     return render(request, 'devel/stats.html', page_dict)
 
+
 SELECTED_GROUPS = ['Developers', 'Trusted Users', 'Support Staff']
+
 
 @login_required
 def clock(request):
@@ -155,6 +159,68 @@ def clock(request):
         expire_time = time.mktime(expire_time.timetuple())
         response['Expires'] = http_date(expire_time)
     return response
+
+
+@login_required
+def tier0_mirror(request):
+    username = request.user.username
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.POST:
+        profile.repos_auth_token = generate_repo_auth_token()
+        profile.save()
+
+    token = profile.repos_auth_token
+    mirror_domain = getattr(settings, 'TIER0_MIRROR_DOMAIN', None)
+    mirror_url = ''
+
+    if mirror_domain and token:
+        mirror_url = f'https://{username}:{token}@{mirror_domain}/$repo/os/$arch'
+
+    page_dict = {
+        'mirror_url': mirror_url,
+    }
+    return render(request, 'devel/tier0_mirror.html', page_dict)
+
+
+@cache_control(max_age=300)
+def tier0_mirror_auth(request):
+    unauthorized = HttpResponse('Unauthorized', status=401)
+    unauthorized['WWW-Authenticate'] = 'Basic realm="Protected", charset="UTF-8"'
+
+    send_from_header = request.headers.get('X-Sent-From', '')
+
+    mirror_sent_from_secret = getattr(settings, 'TIER0_MIRROR_SECRET', None)
+    if mirror_sent_from_secret and send_from_header == mirror_sent_from_secret:
+        return unauthorized
+
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if not auth_header:
+        return unauthorized
+
+    parts = auth_header.split()
+    if len(parts) != 2:
+        return unauthorized
+
+    if parts[0].lower() != 'basic':
+        return unauthorized
+
+    credentials = base64.b64decode(parts[1]).decode().split(':')
+    if len(credentials) != 2:
+        return unauthorized
+
+    username = credentials[0]
+    token = credentials[1]
+
+    groups = Group.objects.filter(name__in=SELECTED_GROUPS)
+    user = User.objects.filter(username=username, is_active=True, groups__in=groups).select_related('userprofile').first()
+    if not user:
+        return unauthorized
+
+    if user and token == user.userprofile.repos_auth_token:
+        return HttpResponse('Authorized')
+    else:
+        return unauthorized
 
 
 @login_required
@@ -247,8 +313,7 @@ def new_user_form(request):
             with transaction.atomic():
                 form.save()
                 log_addition(request, form.instance.user)
-            return HttpResponseRedirect('/admin/auth/user/%d/' % \
-                    form.instance.user.id)
+            return HttpResponseRedirect('/admin/auth/user/%d/' % form.instance.user.id)
     else:
         form = NewUserForm()
 

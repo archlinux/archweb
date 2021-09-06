@@ -1,8 +1,6 @@
 # Archweb README
 
-[![Actions Status](https://github.com/archlinux/archweb/workflows/Github-Actions/badge.svg)](https://github.com/archlinux/archweb/actions)
-[![Build Status](https://travis-ci.com/archlinux/archweb.svg?branch=master)](https://travis-ci.com/archlinux/archweb)
-[![Coverage Status](https://coveralls.io/repos/github/archlinux/archweb/badge.svg?branch=master)](https://coveralls.io/github/archlinux/archweb?branch=master)
+[![Build Status](https://github.com/archlinux/archweb/workflows/Github-Actions/badge.svg)](https://github.com/archlinux/archweb/actions)
 
 To get a pretty version of this document, run
 
@@ -54,7 +52,7 @@ packages, you will probably want the following:
 
         ./manage.py migrate
 
-5. Load the fixtures to prepopulate some data. If you don't want some of the
+5. Load the fixtures to pre populate some data. If you don't want some of the
    provided data, adjust the file glob accordingly.
 
         ./manage.py loaddata main/fixtures/*.json
@@ -112,18 +110,44 @@ Running coverage:
 To use the Django Debug toolbar install django-debug-toolbar and in local_settings.py
 set DEBUG_TOOLBAR to True.
 
-# Updating iPXE image
+# Management commands
 
-The netboot image can be updated by building the [AUR
-package](https://aur.archlinux.org/packages/ipxe-netboot/) (note that it builds
-from git master) and copying the resulting ipxe.pxe, ipxe.lkrn and ipxe.efi to
-sitestatic/netboot. Then as Arch Linux Developer sign them with your PGP key
-```gpg --output ipxe.efi.sig --detach-sig ipxe.efi```.
+Archweb provides multiple management commands for importing various sorts of data. An overview of commands:
 
-Testing a build iPXE image requires the 'qemu' package and running the
-following command:
+* generate_keyring - Assemble a GPG keyring with all known developer keys.
+* pgp_import - Import keys and signatures from a given GPG keyring.
+* read_rebuilderd_status - Import rebuilderd status into Archweb.
+* rematch_developers - Rematch flag requests and packages where user_id/packager_id is NULL to a Developer.
+* reporead - Parses a repo.db.tar.gz, repo.files.tar.gz file and updates the Arch database with the relevant changes.
+* reporead_inotify - Watches a templated patch for updates of *.files.tar.gz to update Arch databases with.
+* donor_import - Import a single donator from a mail passed to stdin
+* mirrorcheck - Poll every active mirror URLs to store the lastsnyc time and record network timing details.
+* mirrorresolv - Poll every active mirror URLs and determine wheteher they have IP4 and/or IPv6 addresses.
+* populate_signoffs - retrieves the latest commit message of a signoff-eligible package.
+* update_planet - Import all feeds for users who have a valid website and website_rss in their user profile.
+* read_links - Reads a repo.links.db.tar.gz file and updates the Soname model.
+* read_links_inotify - Watches a templated patch for updates of *.links.tar.gz to update Arch databases with.
 
-        qemu-system-x86_64 -kernel ipxe.lkrn -m 2G
+# Updating iPXE images
+
+The binaries required for iPXE based netboot are updated by copying them from
+the [ipxe](https://archlinux.org/packages/community/x86_64/ipxe/) package to
+[the static content directory](/sitestatic/netboot/) (with the `run_ipxe`
+script the binaries may be tested beforehand):
+
+```
+cp -v /usr/share/ipxe/x86_64/ipxe-arch.efi /usr/share/ipxe/ipxe-arch.{ipxe,lkrn} sitestatic/releng
+```
+
+Afterwards a detached PGP signature using a valid
+[WKD](https://wiki.archlinux.org/title/GnuPG#Web_Key_Directory) enabled
+[packager
+key](https://gitlab.archlinux.org/archlinux/archlinux-keyring/-/wikis/home) is
+created for each file:
+
+```
+gpg --sender "User Name <your@mail.address>" --detach-sign sitestatic/netboot/*.{efi,ipxe,lkrn}
+```
 
 # Production Installation
 

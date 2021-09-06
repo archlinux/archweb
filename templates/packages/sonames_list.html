@@ -1,0 +1,8 @@
+{% if sonames|length %}
+<ul>
+{% for soname in sonames %}
+<li>{{ soname.name }}</li>{% endfor %}
+</ul>
+{% else %}
+<p class="message">Package has no sonames.</p>
+{% endif %}

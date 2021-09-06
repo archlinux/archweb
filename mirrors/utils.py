@@ -20,6 +20,7 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+
 def status_data(cutoff_time, mirror_id=None):
     if mirror_id is not None:
         params = [cutoff_time, mirror_id]
@@ -117,12 +118,11 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
 
     urls = MirrorUrl.objects.select_related(
-            'mirror', 'protocol').order_by('mirror__id', 'url')
+        'mirror', 'protocol').order_by('mirror__id', 'url')
     if mirror_id:
         urls = urls.filter(mirror_id=mirror_id)
     if not show_all:
-        urls = urls.filter(active=True, mirror__active=True,
-                mirror__public=True)
+        urls = urls.filter(active=True, mirror__active=True, mirror__public=True)
 
     if urls:
         url_data = status_data(cutoff_time, mirror_id)
@@ -133,10 +133,10 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
         if mirror_id:
             check_info = check_info.filter(url__mirror_id=mirror_id)
         check_info = check_info.aggregate(
-                mn=Min('check_time'), mx=Max('check_time'))
+            mn=Min('check_time'), mx=Max('check_time'))
         if num_checks > 1:
             check_frequency = (check_info['mx'] - check_info['mn']) \
-                    / (num_checks - 1)
+                / (num_checks - 1)
         else:
             check_frequency = None
     else:
@@ -157,21 +157,21 @@ def get_mirror_statuses(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
 def get_mirror_errors(cutoff=DEFAULT_CUTOFF, mirror_id=None, show_all=False):
     cutoff_time = now() - cutoff
     errors = MirrorLog.objects.filter(
-            is_success=False, check_time__gte=cutoff_time,
-            url__mirror__public=True).values('url__id', 'error').annotate(
-            error_count=Count('error'), last_occurred=Max('check_time')
-            ).order_by('-last_occurred', '-error_count')
+        is_success=False, check_time__gte=cutoff_time,  url__mirror__public=True).values(
+        'url__id', 'error').annotate(
+        error_count=Count('error'), last_occurred=Max('check_time')).order_by(
+        '-last_occurred', '-error_count')
 
     if mirror_id:
         errors = errors.filter(url__mirror_id=mirror_id)
     if not show_all:
-        errors = errors.filter(url__active=True, url__mirror__active=True,
-                url__mirror__public=True)
+        errors = errors.filter(
+            url__active=True, url__mirror__active=True, url__mirror__public=True)
 
     errors = list(errors)
     to_fetch = [err['url__id'] for err in errors]
     urls = MirrorUrl.objects.select_related(
-            'mirror', 'protocol').in_bulk(to_fetch)
+        'mirror', 'protocol').in_bulk(to_fetch)
     for err in errors:
         err['url'] = urls[err['url__id']]
     return errors
@@ -184,24 +184,26 @@ def get_mirror_url_for_download(cutoff=DEFAULT_CUTOFF):
     the last batch of status rows.'''
     cutoff_time = now() - cutoff
     log_data = MirrorLog.objects.filter(
-            check_time__gte=cutoff_time).aggregate(
-            Max('check_time'), Max('last_sync'))
+        check_time__gte=cutoff_time).aggregate(
+        Max('check_time'), Max('last_sync'))
     if log_data['check_time__max'] is not None:
         min_check_time = log_data['check_time__max'] - timedelta(minutes=5)
         min_sync_time = log_data['last_sync__max'] - timedelta(minutes=20)
         best_logs = MirrorLog.objects.select_related('url').filter(
-                is_success=True,
-                check_time__gte=min_check_time, last_sync__gte=min_sync_time,
-                url__active=True,
-                url__mirror__public=True, url__mirror__active=True,
-                url__protocol__default=True).order_by(
-                'duration')[:1]
+            is_success=True,
+            check_time__gte=min_check_time, last_sync__gte=min_sync_time,
+            url__active=True,
+            url__mirror__public=True, url__mirror__active=True,
+            url__protocol__default=True,
+            url__protocol__protocol='https').order_by(
+            'duration')[:1]
         if best_logs:
             return best_logs[0].url
 
-    mirror_urls = MirrorUrl.objects.filter(active=True,
-            mirror__public=True, mirror__active=True,
-            protocol__default=True)[:1]
+    mirror_urls = MirrorUrl.objects.filter(active=True, mirror__public=True,
+                                           mirror__active=True,
+                                           protocol__protocol='https',
+                                           protocol__default=True)[:1]
     if not mirror_urls:
         return None
     return mirror_urls[0]

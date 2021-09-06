@@ -8,4 +8,3 @@ omit =
 	env*
         settings.py
         local_settings.py
-	/home/travis/virtualenv*

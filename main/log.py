@@ -52,7 +52,7 @@ class RateLimitFilter(object):
         try:
             cache.set(self.prefix, 1, 300)
             use_cache = (cache.get(self.prefix) == 1)
-        except:
+        except: # noqa
             use_cache = False
 
         if use_cache:

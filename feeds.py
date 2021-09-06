@@ -153,8 +153,8 @@ class PackageFeed(Feed):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.last_update
         return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
-                date.strftime('%Y-%m-%d'), item.get_absolute_url(),
-                date.strftime('%Y%m%d%H%M'))
+                                   date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                                   date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
         return item.last_update
@@ -167,6 +167,7 @@ class PackageFeed(Feed):
 
     def item_categories(self, item):
         return (item.repo.name, item.arch.name)
+
 
 def removal_last_modified(request, *args, **kwargs):
     try:
@@ -282,8 +283,8 @@ class PackageUpdatesFeed(Feed):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.created
         return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
-                date.strftime('%Y-%m-%d'), item.get_absolute_url(),
-                date.strftime('%Y%m%d%H%M'))
+                                   date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                                   date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
         return item.created
@@ -319,8 +320,7 @@ class NewsFeed(Feed):
     __name__ = 'news_feed'
 
     def items(self):
-        return News.objects.select_related('author').order_by(
-                '-postdate', '-id')[:10]
+        return News.objects.select_related('author').order_by('-postdate', '-id')[:10]
 
     item_guid_is_permalink = False
 
@@ -374,7 +374,7 @@ class ReleaseFeed(Feed):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.release_date
         return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
-                date.strftime('%Y-%m-%d'), item.get_absolute_url())
+                                 date.strftime('%Y-%m-%d'), item.get_absolute_url())
 
     def item_enclosure_url(self, item):
         domain = Site.objects.get_current().domain
@@ -427,7 +427,7 @@ class PlanetFeed(Feed):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.publishdate
         return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
-                date.strftime('%Y-%m-%d'), item.url)
+                                 date.strftime('%Y-%m-%d'), item.url)
 
 
 def planet_last_modified(request, *args, **kwargs):

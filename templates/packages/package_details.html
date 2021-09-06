@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load details_link %}
 <div id="pkgdetails" class="box">
     <h2>{{ pkg.pkgname }} {{ pkg.full_version }}</h2>
@@ -14,8 +15,17 @@
                     <a href="{% bugs_list pkg %}" title="View existing bug tickets for {{ pkg.pkgname }}">Bug Reports</a> /
                     <a href="{% bug_report pkg %}" title="Report new bug for {{ pkg.pkgname }}">Add New Bug</a>
                 </li>
-                <li><a href="{% wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a></li>
+                <li>
+                    <a href="{% wiki_link pkg %}" title="Search wiki for {{ pkg.pkgname }}">Search Wiki</a> /
+                    <a href="{% man_link pkg %}" title="List manpages in {{ pkg.pkgname }}">Manual Pages</a>
+                </li>
                 <li><a href="{% sec_link pkg %}" title="View security issues for {{ pkg.pkgname }}">Security Issues</a></li>
+        	{% if user.is_authenticated and notreproducible %}<tr>
+                <li>
+		    <a href="{% rebuilderd_buildlog_link rbstatus %}" title="View build log for {{ pkg.pkgname }}">Build log</a> /
+		    <a href="{% rebuilderd_diffoscope_link rbstatus %}" title="View diffoscope result for {{ pkg.pkgname }}">Diffoscope</a>
+		</li>
+		{% endif %}
                 {% if pkg.flag_date %}
                 <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
                 {% with tp=pkg.in_testing %}{% if tp %}
@@ -26,18 +36,18 @@
                 {% endif %}{% endwith %}
                 {% if perms.main.change_package %}
                 <li><a href="unflag/" title="Unflag this package">Click here to unflag</a></li>
-		{% if pkg.pkgname != pkg.pkgbase or pkg.split_packages %}
+                {% if pkg.pkgname != pkg.pkgbase or pkg.split_packages %}
                 <li><a href="unflag/all/" title="Unflag all matching pkgbase">Click here to unflag all split packages</a></li>
-		{% endif %}
+                {% endif %}
                 {% endif %}
                 {% else %}
                 <li><a href="flag/" title="Flag {{ pkg.pkgname }} as out-of-date">Flag Package Out-of-Date</a>
                 <a href="/packages/flaghelp/"
                     title="Get help on package flagging"
-		    target="_blank"
-		    >(?)</a></li>
+                    target="_blank"
+                    >(?)</a></li>
                 {% endif %}
-                <li><a href="download/" rel="nofollow" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
+                <li><a href="download" rel="nofollow" title="Download {{ pkg.pkgname }} from mirror">Download From Mirror</a></li>
             </ul>
 
             {% if perms.main.change_package %}
@@ -184,8 +194,17 @@
             <td>Unsigned</td>
         </tr>{% endif %}<tr>
             <th>Last Updated:</th>
-            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC</td>
+            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.last_update|naturaltime }})</span>{% endif %}</td>
         </tr>
+        {% if user.is_authenticated %}<tr>
+            <th>Reproducible Status:</th>
+	    {% if rbstatus %}
+	    	<td id="rebuilderdstatus" class="rebuilderd-{{ rbstatus.status_str|lower }}">{{ rbstatus.status_str }}</td>
+	    {% else %}
+	    	<td id="rebuilderdstatus">Unknown</td>
+	    {% endif %}
+        </tr>
+	{% endif %}
         {% if user.is_authenticated %}{% with flag_request=pkg.flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
             <td class="wrap">From {{ flag_request.who }} on {{ flag_request.created|date }}:<br/>
@@ -220,6 +239,15 @@
                 <p><a id="filelink" href="files/"
                     title="Click to view the complete file list for {{ pkg.pkgname }}">
                     View the file list for {{ pkg.pkgname }}</a></p>
+            </div>
+        </div>
+        <div id="sonames" class="listing">
+            <h3 title="Complete list of so-names the package links too">
+                Links to so-names</h3>
+            <div id="pkgsonamelist">
+                <p><a id="sonamelink" href="sonames/"
+                    title="Click to view the complete soname list for {{ pkg.pkgname }}">
+                    View the soname list for {{ pkg.pkgname }}</a></p>
             </div>
         </div>
     </div>

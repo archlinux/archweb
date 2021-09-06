@@ -29,6 +29,7 @@
                 <th>Description</th>
                 <th>Package Count</th>
                 <th>Incomplete Count</th>
+                <th>Kind</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -42,8 +43,9 @@
                 <td class="wrap">{{ list.description|urlize }}</td>
                 <td>{{ list.pkg_count }}</td>
                 <td>{{ list.incomplete_count }}</td>
-                <td>{% ifequal list.incomplete_count 0 %}<span class="complete">Complete</span>
-                    {% else %}<span class="incomplete">Incomplete</span>{% endifequal %}</td>
+                <td>{{ list.kind_str }}</td>
+                <td>{% if list.incomplete_count == 0 %}<span class="complete">Complete</span>
+                    {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -58,10 +60,7 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
-    // I'm not sure why it didn't autodetect digit, but it has to be explicit
-    // http://stackoverflow.com/questions/302749/jquery-tablesorter-problem
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[6, 1], [1, 1]],
-        headers: { 4: { sorter: 'digit' }, 5: { sorter: 'digit' } } });
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[7, 1], [1, 1]]});
 });
 </script>
 {% endblock %}

@@ -23,6 +23,7 @@ logging.basicConfig(
     stream=sys.stderr)
 logger = logging.getLogger()
 
+
 class Command(BaseCommand):
     help = "Runs a check on all active mirror URLs to determine if they are reachable via IPv4 and/or v6."
 
@@ -37,6 +38,7 @@ class Command(BaseCommand):
 
         return resolve_mirrors()
 
+
 def resolve_mirrors():
     logger.debug("requesting list of mirror URLs")
     for mirrorurl in MirrorUrl.objects.filter(active=True, mirror__active=True):
@@ -48,7 +50,7 @@ def resolve_mirrors():
             mirrorurl.has_ipv4 = socket.AF_INET in families
             mirrorurl.has_ipv6 = socket.AF_INET6 in families
             logger.debug("%s: v4: %s v6: %s", mirrorurl.hostname,
-                    mirrorurl.has_ipv4, mirrorurl.has_ipv6)
+                         mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             # now check new values, only update if new != old
             newvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             if newvals != oldvals:
