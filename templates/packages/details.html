@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block script_block %}
-{% load cdn %}{% jquery %}
 <script type="text/javascript" nonce="{{ CSP_NONCE }}">
 function ajaxifyFiles() {
     filelink.addEventListener("click", function(event) {
@@ -137,7 +136,7 @@ function collapseRelatedTo(elements) {
     });
 }
 
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function() {
         ajaxifyFiles();
         ajaxifySonames();
         collapseDependsList("#pkgdepslist");
