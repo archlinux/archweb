@@ -82,24 +82,33 @@ function ajaxifySonames() {
 }
 
 function collapseDependsList(list) {
-    list = $(list);
     // Hide everything past a given limit. Don't do anything if we don't have
     // enough items, or the link already exists.
-    var limit = 20,
-        linkid = list.attr('id') + 'link',
-        items = list.find('li').slice(limit);
-    if (items.length <= 1 || $('#' + linkid).length > 0) {
+    const limit = 20;
+    const elem = document.querySelector(list);
+    const linkid = elem.getAttribute('id') + 'link';
+    const items = Array.from(elem.querySelectorAll('li')).slice(limit);
+
+    if (items.length <= 1 || document.querySelectorAll('#' + linkid).length > 0) {
         return;
     }
-    items.hide();
-    list.after('<p><a id="' + linkid + '" href="#">Show More…</a></p>');
+
+    items.forEach(item => item.style.display = 'none');
+
+    const link = document.createElement("A");
+    link.setAttribute('href', '#'); 
+    link.id = linkid;
+    link.textContent = "Show More…";
+    const p = document.createElement("p");
+    p.appendChild(link);
+    elem.insertAdjacentElement('afterend', p);
 
     // add link and wire it up to show the hidden items
-    $('#' + linkid).click(function(event) {
+    document.getElementById(linkid).addEventListener('click', function(event) {
         event.preventDefault();
-        list.find('li').show();
+	Array.from(elem.querySelectorAll('li')).forEach(item => item.style.display = '');
         // remove the full <p/> node from the DOM
-        $(this).parent().remove();
+	event.target.parentElement.removeChild(event.target);
     });
 }
 
