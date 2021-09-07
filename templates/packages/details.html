@@ -113,23 +113,26 @@ function collapseDependsList(list) {
 }
 
 function collapseRelatedTo(elements) {
-    var limit = 5;
-    $(elements).each(function(idx, ele) {
-        ele = $(ele);
+    const limit = 5;
+    Array.from(document.querySelectorAll(elements)).forEach(elem => {
         // Hide everything past a given limit. Don't do anything if we don't
         // have enough items, or the link already exists.
-        var items = ele.find('span.related').slice(limit);
-        if (items.length <= 1 || ele.find('a.morelink').length > 0) {
+        var items = Array.from(elem.querySelectorAll('span.related')).slice(limit);
+        if (items.length <= 1 || elem.querySelectorAll('a.morelink').length > 0) {
             return;
         }
-        items.hide();
-        ele.append('<a class="morelink" href="#">More…</a>');
+        items.forEach(item => item.style.display = 'none');
+        const link = document.createElement("A");
+        link.setAttribute("href", "#");
+        link.classList.add("morelink");
+        link.textContent = "More…";
+        elem.appendChild(link);
 
         // add link and wire it up to show the hidden items
-        ele.find('a.morelink').click(function(event) {
+        elem.querySelector('a.morelink').addEventListener('click', function(event) {
             event.preventDefault();
-            ele.find('span.related').show();
-            $(this).remove();
+	    Array.from(elem.querySelectorAll('span.related')).forEach(item => item.style.display = '');
+	    event.target.parentElement.removeChild(event.target);
         });
     });
 }
