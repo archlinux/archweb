@@ -26,7 +26,7 @@ from devel.models import UserProfile
 from main.models import Arch, Repo, Package, RebuilderdStatus
 
 
-EPOCH_REGEX = r'^(\d+):'
+EPOCH_REGEX = r'^(\d+):(.+)'
 
 logging.basicConfig(
     level=logging.INFO,
@@ -116,8 +116,9 @@ def import_rebuilderd_status(url):
         matches = re.search(EPOCH_REGEX, version)
         if matches:
             epoch = matches.group(1)
+            version = matches.group(2)
 
-        pkgver, pkgrel = pkg['version'].rsplit('-', 1)
+        pkgver, pkgrel = version.rsplit('-', 1)
 
         dbpkg = Package.objects.filter(pkgname=pkgname, pkgver=pkgver,
                                        pkgrel=pkgrel, epoch=epoch,
