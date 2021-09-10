@@ -9,7 +9,7 @@ jsmin==2.2.2
 pgpdump==1.5
 pytz>=2019.2
 parse==1.19.0
-sqlparse==0.4.1
+sqlparse==0.4.2
 django-csp==3.7
 ptpython==2.0.4
 feedparser==6.0.8
