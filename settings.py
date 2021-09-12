@@ -158,7 +158,7 @@ LOGGING = {
 }
 
 # Server used for linking to PGP keysearch results
-PGP_SERVER = 'sks-keyservers.net'
+PGP_SERVER = 'keyserver.ubuntu.com'
 PGP_SERVER_SECURE = True
 
 # URL for SVN access for fetching commit messages (note absence of packages or
