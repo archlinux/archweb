@@ -1188,3 +1188,12 @@ ul.signoff-list {
 .itemprop {
     display: none;
 }
+
+.pgp-key-ids span:before {
+    content: " ";
+}
+
+/* make the div not take the whole width */
+.pgp-key-ids {
+    display: inline-block;
+}

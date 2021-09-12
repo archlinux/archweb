@@ -18,10 +18,7 @@ def format_key(key_id):
     return '0x%s' % key_id
 
 
-@register.simple_tag
-def pgp_key_link(key_id, link_text=None):
-    if not key_id:
-        return "Unknown"
+def pad_key_id(key_id):
     if isinstance(key_id, int):
         key_id = '%X' % key_id
         # zero-fill to nearest 8, 16, or 40 chars if necessary
@@ -31,6 +28,22 @@ def pgp_key_link(key_id, link_text=None):
             key_id = key_id.zfill(16)
         elif len(key_id) <= 40:
             key_id = key_id.zfill(40)
+    return key_id
+
+
+@register.simple_tag
+def pgp_dev_key_link(key_id):
+    key_id = pad_key_id(key_id)
+    link_text = (''.join((f'<span>{key_id[i:i+4]}</span>' for i in range(0, len(key_id), 4))))
+    link_text = f'<div class="pgp-key-ids">{link_text}</div>'
+    return pgp_key_link(key_id, link_text)
+
+
+@register.simple_tag
+def pgp_key_link(key_id, link_text=None):
+    if not key_id:
+        return "Unknown"
+    key_id = pad_key_id(key_id)
     # Something like 'pgp.mit.edu:11371'
     pgp_server = getattr(settings, 'PGP_SERVER', None)
     if not pgp_server:
