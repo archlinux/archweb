@@ -217,7 +217,7 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
 finder = UserFinder()
 
 
-def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
+def populate_pkg(dbpkg, repopkg, force=False, timestamp=None, package_sigs=False, repo_dir=None):
     # we reset the flag date only if the upstream version components change;
     # e.g. epoch or pkgver, but not pkgrel
     if dbpkg.epoch is None or dbpkg.epoch != repopkg.epoch:
@@ -248,7 +248,16 @@ def populate_pkg(dbpkg, repopkg, force=False, timestamp=None):
     dbpkg.packager_str = repopkg.packager
     # attempt to find the corresponding django user for this string
     dbpkg.packager = finder.find(repopkg.packager)
-    dbpkg.signature_bytes = b64decode(repopkg.pgpsig.encode('utf-8'))
+    if repopkg.pgpsig:
+        dbpkg.signature_bytes = b64decode(repopkg.pgpsig.encode('utf-8'))
+    else:
+        filepath = os.path.join(repo_dir, repopkg.filename + '.sig')
+        if os.path.exists(filepath):
+            with open(filepath, 'rb') as fp:
+                dbpkg.signature_bytes = fp.read()
+
+    if not repopkg.pgpsig:
+        logger.warning("no PGP signature found for '%s'", repopkg.name)
 
     if timestamp:
         dbpkg.last_update = timestamp
@@ -391,7 +400,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
     return dbpkgs
 
 
-def db_update(archname, reponame, pkgs, force=False):
+def db_update(archname, reponame, pkgs, force=False, repo_dir=None):
     """
     Parses a list of packages and updates the packages database accordingly.
     """
@@ -418,7 +427,7 @@ def db_update(archname, reponame, pkgs, force=False):
                         created=timestamp)
         try:
             with transaction.atomic():
-                populate_pkg(dbpkg, pkg, timestamp=timestamp)
+                populate_pkg(dbpkg, pkg, timestamp=timestamp, repo_dir=repo_dir)
                 Update.objects.log_update(None, dbpkg)
 
                 if not Package.objects.filter(
@@ -480,7 +489,7 @@ def db_update(archname, reponame, pkgs, force=False):
                 continue
             logger.info("Updating package %s", pkg.name)
             prevpkg = copy(dbpkg)
-            populate_pkg(dbpkg, pkg, force=force, timestamp=timestamp)
+            populate_pkg(dbpkg, pkg, force=force, timestamp=timestamp, repo_dir=repo_dir)
             Update.objects.log_update(prevpkg, dbpkg)
 
     logger.info('Finished updating arch: %s', archname)
@@ -604,6 +613,7 @@ def read_repo(primary_arch, repo_file, options):
     filesonly = options.get('filesonly', False)
 
     repo, packages = parse_repo(repo_file)
+    repo_dir = os.path.dirname(repo_file)
 
     # group packages by arch -- to handle noarch stuff
     packages_arches = {}
@@ -630,7 +640,7 @@ def read_repo(primary_arch, repo_file, options):
         if filesonly:
             filesonly_update(arch, repo, packages_arches[arch], force)
         else:
-            db_update(arch, repo, packages_arches[arch], force)
+            db_update(arch, repo, packages_arches[arch], force, repo_dir=repo_dir)
     logger.info('Finished database updates for %s.', repo_file)
     connection.commit()
     connection.close()
