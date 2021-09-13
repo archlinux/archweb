@@ -111,7 +111,7 @@ urlpatterns.extend([
 ])
 
 # django-toolbar
-if settings.DEBUG_TOOLBAR:
+if settings.DEBUG_TOOLBAR:  # pragma: no cover
     import debug_toolbar
     urlpatterns.extend([
         path('__debug__/', include(debug_toolbar.urls)),
