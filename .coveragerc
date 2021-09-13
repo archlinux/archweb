@@ -8,3 +8,5 @@ omit =
 	env*
         settings.py
         local_settings.py
+	manage.py
+	conftest.py
