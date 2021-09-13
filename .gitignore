@@ -10,6 +10,7 @@ tags
 collected_static/
 testing/
 env/
+htmlcov
 
 .mypy_cache/
 
