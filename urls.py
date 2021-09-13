@@ -17,6 +17,7 @@ import mirrors.urls_mirrorlist
 import news.urls
 import packages.urls
 import packages.urls_groups
+import packages.views
 import planet.views
 import public.views
 import releng.urls
