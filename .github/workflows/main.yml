@@ -16,13 +16,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt && pip install coveralls flake8
+        pip install -r requirements.txt && pip install flake8 pytest pytest-cov pytest-django
     - name: Lint with flake8
       run: |
-        flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
+        make lint
     - name: Run collectstatic
       run: |
-        python manage.py collectstatic --noinput
+        make collectstatic
     - name: Run tests
       run: |
-        coverage run --rcfile .coveragerc manage.py test
+        make coverage
