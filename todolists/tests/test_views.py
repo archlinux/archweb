@@ -1,104 +1,107 @@
-from django.contrib.auth.models import User
-from django.test import TestCase
-
-
 from todolists.models import Todolist, TodolistPackage
 
 
-class TestTodolist(TestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
-                'main/fixtures/package.json']
-
-    def setUp(self):
-        self.user = User.objects.create(username="joeuser", first_name="Joe",
-                                        last_name="User", email="user1@example.com")
-        self.todolist = Todolist.objects.create(name='Boost rebuild',
-                                                description='Boost 1.66 rebuid',
-                                                creator=self.user,
-                                                slug='boost-rebuild',
-                                                raw='linux')
-
-    def test_todolist_overview(self):
-        response = self.client.get('/todo/')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.todolist.name, response.content.decode())
-
-    def test_todolist_detail(self):
-        response = self.client.get(self.todolist.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(self.todolist.name, response.content.decode())
-
-    def test_todolist_json(self):
-        response = self.client.get(self.todolist.get_absolute_url() + 'json')
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertEqual(data['name'], self.todolist.name)
+def assert_create_todo(client):
+    response = client.post('/todo/add/', {
+        'name': 'Foo rebuild',
+        'description': 'The Foo Rebuild, please read the instructions',
+        'raw': 'linux',
+        'kind': Todolist.KIND_CHOICES[0][0],  # rebuild
+    }, follow=True)
+    assert response.status_code == 200
 
 
-class TestTodolistAdmin(TestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
-                'main/fixtures/package.json']
+def test_todolist_overview(user_client, todolist):
+    response = user_client.get('/todo/')
+    assert response.status_code == 200
+    assert todolist.name in response.content.decode()
 
-    def setUp(self):
-        password = 'test'
-        self.user = User.objects.create_superuser("admin",
-                                                  "admin@archlinux.org",
-                                                  password)
 
-        self.client.post('/login/', {
-                         'username': self.user.username,
-                         'password': password})
+def test_todolist_detail(todolist, user_client):
+    response = user_client.get(todolist.get_absolute_url())
+    assert response.status_code == 200
+    assert todolist.name in response.content.decode()
 
-    def tearDown(self):
-        Todolist.objects.all().delete()
-        self.user.delete()
 
-    def create_todo(self):
-        return self.client.post('/todo/add/', {
-            'name': 'Foo rebuild',
-            'description': 'The Foo Rebuild, please read the instructions',
-            'raw': 'linux',
-            'kind': Todolist.KIND_CHOICES[0][0],
-        })
+def test_todolist_json(todolist, user_client):
+    response = user_client.get(todolist.get_absolute_url() + 'json')
+    assert response.status_code == 200
+    data = response.json()
+    assert data['name'] == todolist.name
 
-    def test_create_todolist(self):
-        response = self.create_todo()
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(len(Todolist.objects.all()), 1)
 
-    def test_flag_pkg(self):
-        response = self.create_todo()
-        self.assertEqual(response.status_code, 302)
+def test_create_todolist(user_client):
+    assert_create_todo(user_client)
+    assert Todolist.objects.count() == 1
+    Todolist.objects.all().delete()
 
-        todolist = Todolist.objects.first()
-        package = todolist.packages().first()
-        self.assertEqual(package.status, TodolistPackage.INCOMPLETE)
 
-        response = self.client.get('/todo/{}/flag/{}/'.format(todolist.slug, package.id))
-        self.assertEqual(response.status_code, 302)
+def test_flag_pkg(user_client, arches, repos, package):
+    assert_create_todo(user_client)
 
-        package = todolist.packages().first()
-        self.assertEqual(package.status, TodolistPackage.COMPLETE)
+    todolist = Todolist.objects.first()
+    package = todolist.packages().first()
+    assert package.status == TodolistPackage.INCOMPLETE
+    flag_url = '/todo/{}/flag/{}/'.format(todolist.slug, package.id)
 
-    def test_edit(self):
-        response = self.create_todo()
-        self.assertEqual(response.status_code, 302)
-        todolist = Todolist.objects.first()
-        self.assertEqual(len(todolist.packages().all()), 1)
+    response = user_client.get(flag_url)
+    assert response.status_code == 302
 
-        response = self.client.post('/todo/{}/edit/'.format(todolist.slug), {
-            'name': 'Foo rebuild',
-            'description': 'The Foo Rebuild, please read the instructions',
-            'raw': 'linux\nglibc',
-            'kind': Todolist.KIND_CHOICES[0][0],
-        })
-        self.assertEqual(response.status_code, 302)
-        todolist = Todolist.objects.first()
-        self.assertEqual(len(todolist.packages().all()), 2)
+    package = todolist.packages().first()
+    assert package.status == TodolistPackage.COMPLETE
 
-    def test_delete(self):
-        response = self.create_todo()
-        self.assertEqual(response.status_code, 302)
-        todolist = Todolist.objects.first()
-        response = self.client.post('/todo/{}/delete'.format(todolist.slug))
-        self.assertEqual(response.status_code, 301)
+    # Flag incomplete again
+    response = user_client.get(flag_url)
+    assert response.status_code == 302
+    package = todolist.packages().first()
+    assert package.status == TodolistPackage.INCOMPLETE
+
+    # Test flagging from JS
+    response = user_client.get(flag_url, {}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+    assert response.status_code == 200
+    data = response.json()
+    assert data['status']
+    assert data['css_class']
+
+    Todolist.objects.all().delete()
+
+
+def test_edit(user_client, arches, repos, package):
+    assert_create_todo(user_client)
+
+    todolist = Todolist.objects.first()
+    assert todolist.packages().count() == 1
+
+    response = user_client.post('/todo/{}/edit/'.format(todolist.slug), {
+        'name': 'Foo rebuild',
+        'description': 'The Foo Rebuild, please read the instructions',
+        'raw': 'linux\nglibc',
+        'kind': Todolist.KIND_CHOICES[0][0],  # rebuild
+    })
+    assert response.status_code == 302
+    todolist = Todolist.objects.first()
+    assert todolist.packages().count() == 2
+
+    Todolist.objects.all().delete()
+
+
+def test_delete(user_client, todolist):
+    response = user_client.post('/todo/{}/delete'.format(todolist.slug))
+    assert response.status_code == 301
+
+
+def test_json_endpoint(user_client, todolist):
+    response = user_client.post('/todo/{}/json'.format(todolist.slug))
+    assert response.status_code == 200
+    data = response.json()
+    assert data['name'] == todolist.name
+
+
+def test_add_view(user_client):
+    response = user_client.post('/todo/add/')
+    assert response.status_code == 200
+
+
+def test_edit_view(user_client, todolist):
+    response = user_client.get('/todo/{}/edit/'.format(todolist.slug))
+    assert response.status_code == 200
