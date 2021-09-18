@@ -42,7 +42,7 @@ def staff_groups(db):
 
 @pytest.fixture
 def user(django_user_model):
-    user = django_user_model.objects.create_user(username=USERNAME, password=USERNAME)
+    user = django_user_model.objects.create_user(username=USERNAME, password=USERNAME, email=EMAIL)
     yield user
     user.delete()
 

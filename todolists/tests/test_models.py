@@ -1,5 +1,10 @@
 from todolists.tests.conftest import NAME
 
+from django.core import mail
+
+from main.models import Package
+from todolists.models import TodolistPackage
+
 
 def test_stripped_description(todolist):
     todolist.description = 'Boost rebuild '
@@ -32,3 +37,22 @@ def test_todolist_str(admin_user, todolist, todolistpackage):
 
 def test_status_css_class(admin_user, todolist, todolistpackage):
     assert todolistpackage.status_css_class() == 'incomplete'
+
+
+def test_status_str(admin_user, todolist, todolistpackage):
+    assert todolistpackage.status_str == 'Incomplete'
+
+
+def test_todolist_complete(admin_user, todolist, todolistpackage, mailoutbox):
+    pkg = Package.objects.last()
+    todopkg = TodolistPackage.objects.create(pkg=pkg, pkgname=pkg.pkgname,
+                                             pkgbase=pkg.pkgbase, arch=pkg.arch,
+                                             repo=pkg.repo, user=admin_user,
+                                             todolist=todolist,
+                                             status=TodolistPackage.COMPLETE)
+    assert todopkg
+    assert len(mailoutbox) == 0
+    todolistpackage.status = TodolistPackage.COMPLETE
+    todolistpackage.save()
+    assert len(mailoutbox) == 1
+    todopkg.delete()
