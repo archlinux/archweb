@@ -5,6 +5,7 @@
 local_settings.py
 archweb.db
 archweb.db-*
+database.db
 tags
 collected_static/
 testing/
