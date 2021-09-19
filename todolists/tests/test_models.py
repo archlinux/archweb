@@ -1,7 +1,5 @@
 from todolists.tests.conftest import NAME
 
-from django.core import mail
-
 from main.models import Package
 from todolists.models import TodolistPackage
 
