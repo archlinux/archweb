@@ -1,40 +1,49 @@
-from django.test import TestCase
+def test_release_json(client, release, torrent_data):
+    version = release.version
+    response = client.get('/releng/releases/json/')
+    assert response.status_code == 200
 
-from releng.models import Release
+    data = response.json()
+    assert data['version'] == 1
+    release_data = data['releases'][0]
+    assert release_data['version'] == version
+
+    # Test with torrent data
+    release.torrent_data = torrent_data
+    release.save()
+    response = client.get('/releng/releases/json/')
+    assert response.status_code == 200
 
 
-class RelengViewTest(TestCase):
-    fixtures = ['releng/fixtures/release.json']
+def test_json(db, client):
+    response = client.get('/releng/releases/json/')
+    assert response.status_code == 200
 
-    def setUp(self):
-        self.release = Release.objects.first()
+    data = response.json()
+    assert data['releases'] == []
 
-    def test_release_json(self):
-        version = self.release.version
-        response = self.client.get('/releng/releases/json/')
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
 
-        self.assertEqual(data['version'], 1)
-        release = data['releases'][0]
-        self.assertEqual(release['version'], version)
+def test_netboot_page(db, client):
+    response = client.get('/releng/netboot/')
+    assert response.status_code == 200
 
-    def test_netboot_page(self):
-        response = self.client.get('/releng/netboot/')
-        self.assertEqual(response.status_code, 200)
 
-    def test_netboot_config(self):
-        response = self.client.get('/releng/netboot/archlinux.ipxe')
-        self.assertEqual(response.status_code, 200)
+def test_netboot_config(db, client):
+    response = client.get('/releng/netboot/archlinux.ipxe')
+    assert response.status_code == 200
 
-    def test_release_torrent_not_found(self):
-        # TODO: Add torrent data to release fixture
-        version = self.release.version
-        response = self.client.get('/releng/releases/{}/torrent/'.format(version))
-        self.assertEqual(response.status_code, 404)
 
-    def test_release_details(self):
-        version = self.release.version
-        response = self.client.get('/releng/releases/{}/'.format(version))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(version, response.content.decode('utf-8'))
+def test_release_torrent(client, release, torrent_data):
+    response = client.get('/releng/releases/{}/torrent/'.format(release.version))
+    assert response.status_code == 404
+
+    release.torrent_data = torrent_data
+    release.save()
+    response = client.get('/releng/releases/{}/torrent/'.format(release.version))
+    assert response.status_code == 200
+
+
+def test_release_details(client, release):
+    response = client.get('/releng/releases/{}/'.format(release.version))
+    assert response.status_code == 200
+    assert release.version in response.content.decode()

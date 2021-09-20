@@ -1,6 +1,7 @@
 from base64 import b64decode
 from bencode import bdecode, bencode
 from datetime import datetime
+import binascii
 import hashlib
 from pytz import utc
 
@@ -59,7 +60,7 @@ class Release(models.Model):
     def torrent(self):
         try:
             data = b64decode(self.torrent_data.encode('utf-8'))
-        except TypeError:
+        except (TypeError, binascii.Error):
             return None
         if not data:
             return None
