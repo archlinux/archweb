@@ -3,6 +3,7 @@ import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 
+from main.models import Repo
 from devel.models import UserProfile
 
 
@@ -19,7 +20,7 @@ def arches(db):
 
 
 @pytest.fixture
-def repos(db):
+def repos(arches):
     # TODO: create Repo object
     call_command('loaddata', 'main/fixtures/repos.json')
 
@@ -56,7 +57,19 @@ def userprofile(user):
 
 
 @pytest.fixture
-def user_client(client, user, userprofile, groups):
+def developer(user, userprofile, repos, groups):
     user.groups.add(Group.objects.get(name='Developers'))
+    userprofile.allowed_repos.add(Repo.objects.get(name='Core'))
+    return user
+
+
+@pytest.fixture
+def developer_client(client, developer, userprofile, groups):
     client.login(username=USERNAME, password=USERNAME)
     return client
+
+
+@pytest.fixture
+def denylist(db):
+    # TODO: create Denylist object
+    call_command('loaddata', 'main/fixtures/denylist.json')
