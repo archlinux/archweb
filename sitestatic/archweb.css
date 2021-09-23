@@ -656,7 +656,7 @@ div.widget {
 /* feeds page */
 #rss-feeds .rss {
     padding-right: 20px;
-    background: url(rss.png) top right no-repeat;
+    background: url(rss.svg) top right no-repeat;
 }
 
 /* artwork: logo images */
