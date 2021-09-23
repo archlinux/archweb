@@ -43,7 +43,7 @@
     </h3>
 
     <a href="/feeds/news/" title="Arch News RSS Feed"
-        class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% static "rss.svg" %}" alt="RSS Feed" /></a>
 
     {% for news in news_updates %}{% if forloop.counter0 < 5 %}
     <h4>
@@ -90,7 +90,7 @@
             title="Browse all of the latest packages">more</a>)</span></h3>
 
     <a href="/feeds/packages/" title="Arch Package Updates RSS Feed"
-        class="rss-icon"><img width="16" height="16" src="{% static "rss.png" %}" alt="RSS Feed" /></a>
+        class="rss-icon"><img width="16" height="16" src="{% static "rss.svg" %}" alt="RSS Feed" /></a>
 
     <table>
         {% for update in pkg_updates %}
