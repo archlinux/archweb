@@ -34,6 +34,8 @@ def pad_key_id(key_id):
 @register.simple_tag
 def pgp_dev_key_link(key_id):
     key_id = pad_key_id(key_id)
+    if not key_id:
+        return "Unknown"
     link_text = (''.join((f'<span>{key_id[i:i+4]}</span>' for i in range(0, len(key_id), 4))))
     link_text = f'<div class="pgp-key-ids">{link_text}</div>'
     return pgp_key_link(key_id, link_text)
