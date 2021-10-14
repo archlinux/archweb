@@ -247,7 +247,11 @@ def change_profile(request):
 
             return HttpResponseRedirect('/devel/')
     else:
-        form = ProfileForm(initial={'email': request.user.email})
+        form = ProfileForm(initial={
+            'email': request.user.email,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        })
         profile_form = UserProfileForm(instance=profile)
     return render(request, 'devel/profile.html',
                   {'form': form,

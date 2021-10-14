@@ -19,6 +19,10 @@ class ProfileForm(forms.Form):
         label='New Password', required=False, widget=forms.PasswordInput)
     passwd2 = forms.CharField(
         label='Confirm Password', required=False, widget=forms.PasswordInput)
+    first_name = forms.CharField(
+        label='First name', required=True)
+    last_name = forms.CharField(
+        label='Last name', required=False)
 
     def clean(self):
         if self.cleaned_data['passwd1'] != self.cleaned_data['passwd2']:
@@ -36,7 +40,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('allowed_repos', 'user', 'latin_name', 'repos_auth_token')
+        exclude = ('allowed_repos', 'user', 'repos_auth_token')
 
 
 class NewUserForm(forms.ModelForm):
