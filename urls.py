@@ -61,7 +61,7 @@ feeds_patterns = [
     re_path(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageUpdatesFeed())),
     re_path(r'^packages/(added|removed)/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageUpdatesFeed())),
     re_path(r'^packages/(added|removed)/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$',
-        cache_page(313)(PackageUpdatesFeed())),
+            cache_page(313)(PackageUpdatesFeed())),
     re_path(r'^packages/(?P<arch>[A-z0-9]+)/$', cache_page(313)(PackageFeed())),
     re_path(r'^packages/all/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
     re_path(r'^packages/(?P<arch>[A-z0-9]+)/(?P<repo>[A-z0-9\-]+)/$', cache_page(313)(PackageFeed())),
@@ -95,13 +95,13 @@ urlpatterns.extend([
 # Sitemaps
 urlpatterns.extend([
     re_path(r'^sitemap.xml$', cache_page(1831)(sitemap_views.index),
-        {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
+            {'sitemaps': our_sitemaps, 'sitemap_url_name': 'sitemaps'}),
     re_path(r'^sitemap-(?P<section>.+)\.xml$', cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml'},
-        name='sitemaps'),
+            {'sitemaps': our_sitemaps, 'template_name': 'sitemaps/sitemap.xml'},
+            name='sitemaps'),
     re_path(r'^news-sitemap\.xml$', cache_page(1831)(sitemap_views.sitemap),
-        {'sitemaps': news_sitemaps, 'template_name': 'sitemaps/news_sitemap.xml'},
-        name='news-sitemap'),
+            {'sitemaps': news_sitemaps, 'template_name': 'sitemaps/news_sitemap.xml'},
+            name='news-sitemap'),
 ])
 
 # Authentication

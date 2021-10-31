@@ -12,13 +12,13 @@ urlpatterns = [
     re_path(r'^(?P<object_id>\d+)/$', view_redirect),
 
     re_path(r'^add/$',
-        permission_required('news.add_news')(NewsCreateView.as_view())),
+            permission_required('news.add_news')(NewsCreateView.as_view())),
     re_path(r'^(?P<slug>[-\w]+)/$',
-        NewsDetailView.as_view()),
+            NewsDetailView.as_view()),
     re_path(r'^(?P<slug>[-\w]+)/edit/$',
-        permission_required('news.change_news')(NewsEditView.as_view())),
+            permission_required('news.change_news')(NewsEditView.as_view())),
     re_path(r'^(?P<slug>[-\w]+)/delete/$',
-        permission_required('news.delete_news')(NewsDeleteView.as_view())),
+            permission_required('news.delete_news')(NewsDeleteView.as_view())),
 ]
 
 # vim: set ts=4 sw=4 et:
