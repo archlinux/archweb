@@ -1,8 +1,8 @@
-from django.urls import re_path
+from django.urls import re_path, path
 from packages.views.display import groups, group_details
 
 urlpatterns = [
-    re_path(r'^$', groups, name='groups-list'),
+    path('', groups, name='groups-list'),
     re_path(r'^(?P<arch>[A-z0-9]+)/$', groups),
     re_path(r'^(?P<arch>[A-z0-9]+)/(?P<name>[^ /]+)/$', group_details),
 ]
