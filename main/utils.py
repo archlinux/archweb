@@ -108,9 +108,9 @@ class EscapeHtml(Extension):
 
 def parse_markdown(text, allow_html=False):
     if allow_html:
-        return markdown.markdown(text, enable_attributes=False)
+        return markdown.markdown(text)
     ext = [EscapeHtml()]
-    return markdown.markdown(text, extensions=ext, enable_attributes=False)
+    return markdown.markdown(text, extensions=ext)
 
 
 def groupby_preserve_order(iterable, keyfunc):
