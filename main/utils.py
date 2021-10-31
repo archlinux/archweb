@@ -101,9 +101,9 @@ def database_vendor(model, mode='read'):
 
 
 class EscapeHtml(Extension):
-    def extendMarkdown(self, md, md_globals):
-        del md.preprocessors['html_block']
-        del md.inlinePatterns['html']
+    def extendMarkdown(self, md):
+        md.preprocessors.deregister('html_block')
+        md.inlinePatterns.deregister('html')
 
 
 def parse_markdown(text, allow_html=False):
@@ -138,6 +138,7 @@ def groupby_preserve_order(iterable, keyfunc):
 class PackageStandin(object):
     '''Resembles a Package object, and has a few of the same fields, but is
     really a link to a pkgbase that has no package with matching pkgname.'''
+
     def __init__(self, package):
         self.package = package
         self.pkgname = package.pkgbase
@@ -152,6 +153,7 @@ class PackageStandin(object):
 class DependStandin(object):
     '''Resembles a Depend object, and has a few of the same fields, but is
     really a link to a base package rather than a single package.'''
+
     def __init__(self, depends):
         self._depends = depends
         first = depends[0]
@@ -165,6 +167,7 @@ class DependStandin(object):
 
 class SignatureWrapper(SignaturePacket):
     'Decode key_id from raw SignaturePacket'
+
     def __init__(self, packet):
         for field in ("sig_version", "creation_time", "expiration_time"):
             setattr(self, field, getattr(packet, field))
