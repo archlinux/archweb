@@ -429,6 +429,9 @@ class PlanetFeed(Feed):
         return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
                                  date.strftime('%Y-%m-%d'), item.url)
 
+    def item_author_name(self, item):
+        return item.author
+
 
 def planet_last_modified(request, *args, **kwargs):
     try:
