@@ -149,11 +149,11 @@ h5 {
 }
 
 /* extra padding left and right in archnavbar on desktop */
-@media (min-width: 1470px){
+@media (min-width: 1480px){
     #archnavbar {
         width: 1440px;
-        padding-left: calc(calc(100vw - 1440px) / 2) !important;
-        padding-right: calc(calc(100vw - 1440px) / 2) !important;
+        padding-left: calc(calc(100% - 1440px) / 2) !important;
+        padding-right: calc(calc(100% - 1440px) / 2) !important;
     }
 }
 
