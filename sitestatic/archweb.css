@@ -148,6 +148,15 @@ h5 {
     margin-top: 1em;
 }
 
+/* extra padding left and right in archnavbar on desktop */
+@media (min-width: 1470px){
+    #archnavbar {
+        width: 1440px;
+        padding-left: calc(calc(100vw - 1440px) / 2) !important;
+        padding-right: calc(calc(100vw - 1440px) / 2) !important;
+    }
+}
+
 /* general layout */
 #content {
     max-width: 1440px;
