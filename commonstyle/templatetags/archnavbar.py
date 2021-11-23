@@ -13,4 +13,5 @@ def archnavbar():
             f.read()
             .replace('href="https://archlinux.org"', 'href="/"')
             .replace('href="https://archlinux.org/packages/"', 'href="/packages/"')
+            .replace('href="https://archlinux.org/download/"', 'href="/download/"')
         )

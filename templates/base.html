@@ -20,7 +20,7 @@
     {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
-    <div class="{% block navbarclass %}{% endblock %}">
+    <div class="{% block navbarclass %}anb-home{% endblock %}">
         {% archnavbar %}
     </div>
     <div id="archdev-navbar">
