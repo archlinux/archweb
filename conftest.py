@@ -73,3 +73,12 @@ def developer_client(client, developer, userprofile, groups):
 def denylist(db):
     # TODO: create Denylist object
     call_command('loaddata', 'main/fixtures/denylist.json')
+
+
+@pytest.fixture(autouse=True)
+def use_dummy_cache_backend(settings):
+    settings.CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
+    }
