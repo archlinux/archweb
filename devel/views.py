@@ -17,7 +17,7 @@ from django.db import transaction
 from django.db.models import Count, Max
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.http import http_date
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_control, never_cache
@@ -303,7 +303,7 @@ def log_addition(request, obj):
         user_id=request.user.pk,
         content_type_id=ContentType.objects.get_for_model(obj).pk,
         object_id=obj.pk,
-        object_repr=force_text(obj),
+        object_repr=force_str(obj),
         action_flag=ADDITION,
         change_message="Added via Create New User form.")
 
