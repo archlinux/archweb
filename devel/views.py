@@ -234,6 +234,8 @@ def change_profile(request):
                                        instance=profile)
         if form.is_valid() and profile_form.is_valid():
             request.user.email = form.cleaned_data['email']
+            request.user.first_name = form.cleaned_data['first_name']
+            request.user.last_name = form.cleaned_data['last_name']
             if form.cleaned_data['passwd1']:
                 request.user.set_password(form.cleaned_data['passwd1'])
             with transaction.atomic():
