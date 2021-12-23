@@ -12,7 +12,6 @@ from datetime import datetime
 import logging
 from pytz import utc
 import subprocess
-import sys
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
@@ -21,12 +20,7 @@ from devel.models import DeveloperKey, PGPSignature
 from devel.utils import UserFinder
 
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):

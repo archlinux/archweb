@@ -14,19 +14,14 @@ Usage: ./manage.py rematch_developers
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-import sys
 import logging
 
 from devel.utils import UserFinder
 from main.models import Package
 from packages.models import FlagRequest
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):

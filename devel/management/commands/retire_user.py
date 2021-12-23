@@ -9,7 +9,6 @@ Usage ./manage.py retire_user user
 """
 
 import logging
-import sys
 
 from django.contrib.auth.models import User, Group
 from django.core.management.base import BaseCommand, CommandError
@@ -17,12 +16,8 @@ from django.core.management.base import BaseCommand, CommandError
 from devel.models import UserProfile
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format=u'%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt=u'%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 MAPPING = {
     'Developers': 'Retired Developers',

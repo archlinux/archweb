@@ -10,7 +10,6 @@ Usage: ./manage.py read_rebuilderd_status
 
 import logging
 import re
-import sys
 
 from collections import defaultdict
 
@@ -28,12 +27,7 @@ from main.models import Arch, Repo, Package, RebuilderdStatus
 
 EPOCH_REGEX = r'^(\d+):(.+)'
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):

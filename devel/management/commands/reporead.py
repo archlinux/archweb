@@ -19,7 +19,6 @@ from copy import copy
 import io
 import os
 import re
-import sys
 import xtarfile as tarfile
 import logging
 from datetime import datetime
@@ -37,14 +36,10 @@ from packages.models import Depend, Conflict, FlagRequest, Provision, Replacemen
 from packages.utils import parse_version
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
 TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
