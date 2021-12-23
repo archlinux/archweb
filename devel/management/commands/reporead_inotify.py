@@ -16,7 +16,6 @@ correctly.
 
 import logging
 import pyinotify
-import sys
 import threading
 
 from django.core.management.base import BaseCommand, CommandError
@@ -26,12 +25,9 @@ from main.models import Arch, Repo
 from .reporead import read_repo
 from .archweb_inotify import EventHandler
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):

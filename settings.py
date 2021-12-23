@@ -1,5 +1,6 @@
 # Django settings for archweb project.
 from os import path
+import sys
 
 # Set the debug values
 DEBUG = False
@@ -144,19 +145,34 @@ LOGGING = {
             '()': 'main.log.RateLimitFilter',
         }
     },
+    'formatters': {
+        'command': {
+            'format': '%(asctime)s -> %(levelname)s: %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['ratelimit'],
             'class': 'django.utils.log.AdminEmailHandler',
-        }
+        },
+        'command': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'command',
+            'stream': sys.stderr,
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        }
+        },
+        'command': {
+            'handlers': ['command'],
+            'level': 'INFO',
+        },
     },
 }
 

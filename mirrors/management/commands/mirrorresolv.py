@@ -10,18 +10,14 @@ Usage: ./manage.py mirrorresolv
 
 from django.core.management.base import BaseCommand
 
-import sys
 import logging
 import socket
 
 from mirrors.models import MirrorUrl
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):

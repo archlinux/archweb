@@ -11,16 +11,10 @@ from django.core.management.base import BaseCommand, CommandError
 
 import logging
 import subprocess
-import sys
 
 from devel.models import MasterKey, UserProfile
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):

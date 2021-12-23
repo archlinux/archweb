@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-import sys
 import tarfile
 
 from django.core.management.base import BaseCommand, CommandError
@@ -9,12 +8,7 @@ from django.core.management.base import BaseCommand, CommandError
 from main.models import Repo, Package, Soname
 
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):
