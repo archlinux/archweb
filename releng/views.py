@@ -36,7 +36,7 @@ def release_torrent(request, version):
 
 class ReleaseJSONEncoder(DjangoJSONEncoder):
     release_attributes = ('release_date', 'version', 'kernel_version',
-                          'created', 'md5_sum', 'sha1_sum')
+                          'created', 'md5_sum', 'sha1_sum', 'sha256_sum', 'b2_sum')
 
     def default(self, obj):
         if isinstance(obj, Release):

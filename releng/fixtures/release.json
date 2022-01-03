@@ -10,6 +10,8 @@
             "release_date": "2017-06-11",
             "wkd_email": "pierre@archlinux.de",
             "sha1_sum": "2c2c8ce676e891ac354cf4a8bac3824a4aae0c90",
+            "sha256_sum": "1f2ecf3eec6013c49224445c469069b269dae47efb8e161bc6334c6611c3a1ec",
+            "b2_sum": "8c9ffd1f8213247004e2439bdf5688db45208a0135013c100837227cc7a38d2616888cb16bb69204def929083e749c13903bad68f47f2924204d6abd58d816b3",
             "version": "juni"
         },
         "model": "releng.release",
