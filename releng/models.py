@@ -20,6 +20,8 @@ class Release(models.Model):
     kernel_version = models.CharField(max_length=50, blank=True)
     md5_sum = models.CharField('MD5 digest', max_length=32, blank=True)
     sha1_sum = models.CharField('SHA1 digest', max_length=40, blank=True)
+    sha256_sum = models.CharField('SHA256 digest', max_length=64, blank=True)
+    b2_sum = models.CharField('BLAKE2b digest', max_length=128, blank=True)
     pgp_key = PGPKeyField(max_length=40, verbose_name="PGP key fingerprint",  null=True, blank=True,
                           help_text="consists of 40 hex digits; use `gpg --fingerprint`")
     wkd_email = models.EmailField(max_length=254, null=True, blank=True)
