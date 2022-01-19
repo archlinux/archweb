@@ -23,7 +23,7 @@ class PackageSearchForm(forms.Form):
     arch = forms.MultipleChoiceField(required=False)
     name = forms.CharField(required=False)
     desc = forms.CharField(required=False)
-    q = forms.CharField(required=False, max_length=100)
+    q = forms.CharField(required=False, max_length=100, widget=forms.TextInput(attrs={'autofocus': True}))
     sort = forms.CharField(required=False, widget=forms.HiddenInput())
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
