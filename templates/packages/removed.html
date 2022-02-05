@@ -20,7 +20,7 @@
     {% else %}
     <p>Unfortunately, this package cannot be found in any other repositories.
     Try using the <a href="{% url 'packages-search' %}?name={{ update.pkgname|urlencode }}">package search page</a>,
-    or try <a href="https://aur.archlinux.org/packages.php?K={{ update.pkgname|urlencode }}">searching the AUR</a>
+    or try <a href="https://aur.archlinux.org/packages?K={{ update.pkgname|urlencode }}">searching the AUR</a>
     to see if the package can be found there.</p>
     {% endif %}
 </div>
