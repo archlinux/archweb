@@ -37,9 +37,8 @@ class GroupSearchForm(forms.Form):
         self.fields['repo'].choices = make_choice([repo.name for repo in repos])
         self.fields['arch'].choices = make_choice([arch.name for arch in Arch.objects.all()])
 
-    def exact_matches(self, name :str):
-        return Package.objects.normal().filter(
-                    groups__name__iexact=name).order_by('groups')
+    def exact_matches(self, name: str):
+        return Package.objects.normal().filter(groups__name__iexact=name).order_by('groups')
 
 
 class PackageSearchForm(forms.Form):
@@ -177,6 +176,7 @@ class SearchListView(ListView):
         context['search_form'] = self.form
         return context
 
+
 def group_search_json(request) -> HttpResponse:
     limit = 250
 
@@ -188,8 +188,7 @@ def group_search_json(request) -> HttpResponse:
     }
 
     if request.GET:
-        form = GroupSearchForm(data=request.GET,
-                                 show_staging=request.user.is_authenticated)
+        form = GroupSearchForm(data=request.GET, show_staging=request.user.is_authenticated)
 
         if form.is_valid():
             form_limit = form.cleaned_data.get('limit', limit)
@@ -207,6 +206,7 @@ def group_search_json(request) -> HttpResponse:
 
     to_json = json.dumps(container, ensure_ascii=False, cls=PackageJSONEncoder)
     return HttpResponse(to_json, content_type='application/json')
+
 
 def search_json(request):
     limit = 250
