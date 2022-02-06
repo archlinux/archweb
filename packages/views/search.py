@@ -16,6 +16,32 @@ from ..models import PackageRelation
 from ..utils import attach_maintainers, PackageJSONEncoder
 
 
+class GroupSearchForm(forms.Form):
+    limit = forms.IntegerField(required=False, min_value=0)
+    page = forms.CharField(required=False)
+    repo = forms.MultipleChoiceField(required=False)
+    arch = forms.MultipleChoiceField(required=False)
+    name = forms.CharField(required=False)
+    desc = forms.CharField(required=False)
+    sort = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        show_staging = kwargs.pop('show_staging', False)
+        super(GroupSearchForm, self).__init__(*args, **kwargs)
+
+        repos = Repo.objects.all()
+
+        if not show_staging:
+            repos = repos.filter(staging=False)
+
+        self.fields['repo'].choices = make_choice([repo.name for repo in repos])
+        self.fields['arch'].choices = make_choice([arch.name for arch in Arch.objects.all()])
+
+    def exact_matches(self, name :str):
+        return Package.objects.normal().filter(
+                    groups__name__iexact=name).order_by('groups')
+
+
 class PackageSearchForm(forms.Form):
     limit = forms.IntegerField(required=False, min_value=0)
     page = forms.CharField(required=False)
@@ -69,22 +95,22 @@ def parse_form(form, packages):
     if form.cleaned_data['arch']:
         packages = packages.filter(arch__name__in=form.cleaned_data['arch'])
 
-    if form.cleaned_data['maintainer'] == 'orphan':
+    if form.cleaned_data.get('maintainer') == 'orphan':
         inner_q = PackageRelation.objects.all().values('pkgbase')
         packages = packages.exclude(pkgbase__in=inner_q)
-    elif form.cleaned_data['maintainer']:
+    elif form.cleaned_data.get('maintainer'):
         inner_q = PackageRelation.objects.filter(
             user__username=form.cleaned_data['maintainer']).values('pkgbase')
         packages = packages.filter(pkgbase__in=inner_q)
 
-    if form.cleaned_data['packager'] == 'unknown':
+    if form.cleaned_data.get('packager') == 'unknown':
         packages = packages.filter(packager__isnull=True)
-    elif form.cleaned_data['packager']:
+    elif form.cleaned_data.get('packager'):
         packages = packages.filter(packager__username=form.cleaned_data['packager'])
 
-    if form.cleaned_data['flagged'] == 'Flagged':
+    if form.cleaned_data.get('flagged') == 'Flagged':
         packages = packages.filter(flag_date__isnull=False)
-    elif form.cleaned_data['flagged'] == 'Not Flagged':
+    elif form.cleaned_data.get('flagged') == 'Not Flagged':
         packages = packages.filter(flag_date__isnull=True)
 
     if form.cleaned_data['name']:
@@ -95,7 +121,7 @@ def parse_form(form, packages):
         desc = form.cleaned_data['desc']
         packages = packages.filter(pkgdesc__icontains=desc)
 
-    if form.cleaned_data['q']:
+    if form.cleaned_data.get('q'):
         query = form.cleaned_data['q']
         q_pkgname = reduce(operator.__and__,
                            (Q(pkgname__icontains=q) for q in query.split()))
@@ -151,6 +177,36 @@ class SearchListView(ListView):
         context['search_form'] = self.form
         return context
 
+def group_search_json(request) -> HttpResponse:
+    limit = 250
+
+    container = {
+        'version': 2,
+        'limit': limit,
+        'valid': False,
+        'results': [],
+    }
+
+    if request.GET:
+        form = GroupSearchForm(data=request.GET,
+                                 show_staging=request.user.is_authenticated)
+
+        if form.is_valid():
+            form_limit = form.cleaned_data.get('limit', limit)
+            limit = min(limit, form_limit) if form_limit else limit
+            container['limit'] = limit
+
+            packages = Package.objects.select_related('arch', 'repo', 'packager')
+            if not request.user.is_authenticated:
+                packages = packages.filter(repo__staging=False)
+
+            packages = parse_form(form, packages)
+            packages = form.exact_matches(form.cleaned_data['name'])
+
+            container['results'] = packages
+
+    to_json = json.dumps(container, ensure_ascii=False, cls=PackageJSONEncoder)
+    return HttpResponse(to_json, content_type='application/json')
 
 def search_json(request):
     limit = 250
