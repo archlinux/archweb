@@ -181,7 +181,7 @@ def group_search_json(request) -> HttpResponse:
     limit = 250
 
     container = {
-        'version': 2,
+        'version': 1,
         'limit': limit,
         'valid': False,
         'results': [],
@@ -192,8 +192,7 @@ def group_search_json(request) -> HttpResponse:
 
         if form.is_valid():
             form_limit = form.cleaned_data.get('limit', limit)
-            limit = min(limit, form_limit) if form_limit else limit
-            container['limit'] = limit
+            container['limit'] = min(limit, form_limit) if form_limit else limit
 
             packages = Package.objects.select_related('arch', 'repo', 'packager')
             if not request.user.is_authenticated:
