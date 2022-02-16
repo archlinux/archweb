@@ -30,12 +30,8 @@ from django.core.management.base import BaseCommand, CommandError
 from main.models import Donor
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format=u'%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt=u'%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):

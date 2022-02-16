@@ -19,7 +19,6 @@ from copy import copy
 import io
 import os
 import re
-import sys
 import xtarfile as tarfile
 import logging
 from datetime import datetime
@@ -37,14 +36,10 @@ from packages.models import Depend, Conflict, FlagRequest, Provision, Replacemen
 from packages.utils import parse_version
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
 TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
@@ -139,7 +134,7 @@ class RepoPackage(object):
     def files_list(self):
         data_file = io.TextIOWrapper(io.BytesIO(self.files), encoding='UTF-8')
         try:
-            info = parse_info(data_file)
+            info = parse_info(self.name, 'BytesIO', data_file)
         except UnicodeDecodeError:
             logger.warning("Could not correctly decode files list for %s",
                            self.name)
@@ -523,7 +518,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
     logger.info('Finished updating arch: %s', archname)
 
 
-def parse_info(iofile):
+def parse_info(pkgname, filename, iofile):
     """
     Parses an Arch repo db information file, and returns variables as a list.
     """
@@ -540,7 +535,7 @@ def parse_info(iofile):
         elif blockname:
             store[blockname].append(line)
         else:
-            raise Exception("Read package info outside a block: %s" % line)
+            raise Exception("%s: Read package info outside a block while reading from %s: %s" % (pkgname, filename, line))
     return store
 
 
@@ -581,7 +576,7 @@ def parse_repo(repopath):
                     data_file = repodb.extractfile(tarinfo)
                     data_file = io.TextIOWrapper(io.BytesIO(data_file.read()), encoding='UTF-8')
                     try:
-                        pkgs[pkgid].populate(parse_info(data_file))
+                        pkgs[pkgid].populate(parse_info(pkgid, fname, data_file))
                     except UnicodeDecodeError:
                         logger.warning("Could not correctly decode %s, skipping file", tarinfo.name)
                     data_file.close()

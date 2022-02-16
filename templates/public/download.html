@@ -105,8 +105,10 @@
             title="PGP signature">PGP signature</a></li>
         {% if release.pgp_key %}<li><strong>PGP fingerprint:</strong> {% pgp_key_link release.pgp_key %}</li>{% endif %}
         {% if release.wkd_email %}<li><strong>WKD Lookup: </strong><code>gpg --auto-key-locate clear,wkd -v --locate-external-key {{ release.wkd_email }}</code></li>{% endif %}
-        {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
+        {% if release.sha256_sum %}<li><strong>SHA256:</strong> {{ release.sha256_sum }}</li>{% endif %}
+        {% if release.b2_sum %}<li><strong>BLAKE2b:</strong> {{ release.b2_sum }}</li>{% endif %}
         {% if release.sha1_sum %}<li><strong>SHA1:</strong> {{ release.sha1_sum }}</li>{% endif %}
+        {% if release.md5_sum %}<li><strong>MD5:</strong> {{ release.md5_sum }}</li>{% endif %}
     </ul>
 
     {% cache 600 download-mirrors %}

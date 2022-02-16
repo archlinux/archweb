@@ -9,7 +9,6 @@ Usage: ./manage.py update_planet
 
 
 import logging
-import sys
 import time
 
 from datetime import datetime
@@ -26,12 +25,8 @@ from django.conf import settings
 from planet.models import Feed, FeedItem, FEEDITEM_SUMMARY_LIMIT
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format=u'%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt=u'%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class ItemOlderThenLatest(Exception):

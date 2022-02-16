@@ -1,6 +1,5 @@
 import logging
 import pyinotify
-import sys
 import threading
 
 from django.core.management.base import BaseCommand, CommandError
@@ -10,12 +9,7 @@ from main.models import Arch, Repo
 from .readlinks import read_links
 from .archweb_inotify import EventHandler
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
 
 
 def wrapper_read_links(arch, filepath, obj):

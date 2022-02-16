@@ -19,7 +19,6 @@ import re
 import socket
 import ssl
 import subprocess
-import sys
 import time
 import tempfile
 from threading import Thread
@@ -34,12 +33,8 @@ from django.utils.timezone import now
 from mirrors.models import MirrorUrl, MirrorLog, CheckLocation
 
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+logger = logging.getLogger("command")
+logger.setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):

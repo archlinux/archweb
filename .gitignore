@@ -11,6 +11,7 @@ collected_static/
 testing/
 env/
 htmlcov
+*.tar.gz
 
 .mypy_cache/
 

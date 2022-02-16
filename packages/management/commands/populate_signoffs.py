@@ -11,7 +11,6 @@ Usage: ./manage.py populate_signoffs
 from datetime import datetime
 import logging
 import subprocess
-import sys
 from xml.etree.ElementTree import XML
 
 from django.conf import settings
@@ -21,12 +20,8 @@ from ...models import FakeSignoffSpecification, SignoffSpecification, Signoff
 from ...utils import get_signoff_groups
 from devel.utils import UserFinder
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s -> %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    stream=sys.stderr)
-logger = logging.getLogger()
+
+logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):
