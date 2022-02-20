@@ -91,10 +91,13 @@ def netboot_config(request):
 
 
 def netboot_info(request):
-    ipxepkg = Package.objects.get(pkgname='ipxe')
-    context = {
-        'pkg': ipxepkg
-    }
+    try:
+        ipxepkg = Package.objects.get(pkgname='ipxe')
+        context = {
+            'pkg': ipxepkg
+        }
+    except Package.DoesNotExist:
+        ipxepkg = None
     return render(request, "releng/netboot.html", context,
                   {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
 
