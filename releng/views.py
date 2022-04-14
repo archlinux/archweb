@@ -97,9 +97,9 @@ def netboot_info(request):
         ipxepkg = None
 
     context = {
-        'pkg': ipxepkg
+        'pkg': ipxepkg,
+        'security_banner':  settings.NETBOOT_SECURITY_BANNER
     }
-    return render(request, "releng/netboot.html", context,
-                  {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
+    return render(request, "releng/netboot.html", context)
 
 # vim: set ts=4 sw=4 et:
