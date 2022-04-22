@@ -154,6 +154,6 @@ gpg --sender "User Name <your@mail.address>" --detach-sign sitestatic/netboot/*.
 
 # Production Installation
 
-Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://git.archlinux.org/infrastructure.git/).
+Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://gitlab.archlinux.org/archlinux/infrastructure).
 
 vim: set syntax=markdown et:
