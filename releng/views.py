@@ -91,10 +91,12 @@ def netboot_config(request):
 
 
 def netboot_info(request):
-    try:
-        ipxepkg = Package.objects.get(pkgname='ipxe')
-    except Package.DoesNotExist:
-        ipxepkg = None
+    ipxepkg = None
+    ipxepkgs = Package.objects.filter(pkgname='ipxe').all()
+    ipxepkgs = [pkg for pkg in ipxepkgs if not pkg.repo.testing and 'Staging' not in pkg.repo.name]
+
+    if ipxepkgs:
+        ipxepkg = ipxepkgs[0]
 
     context = {
         'pkg': ipxepkg,
