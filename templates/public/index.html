@@ -108,88 +108,102 @@
 
 {% cache 115 main-page-right %}
 <div id="nav-sidebar" class="widget">
-    <h4>Documentation</h4>
-    <ul>
-        <li><a href="https://wiki.archlinux.org/"
-            title="Community documentation">Wiki</a></li>
-        <li><a href="https://man.archlinux.org/"
-            title="All manpages from Arch packages">Manual Pages</a></li>
-        <li><a href="https://wiki.archlinux.org/title/Installation_guide"
-            title="Installation guide">Installation Guide</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>Documentation</h4>
+        <ul>
+            <li><a href="https://wiki.archlinux.org/"
+                title="Community documentation">Wiki</a></li>
+            <li><a href="https://wiki.archlinux.org/index.php/Installation_guide"
+                title="Installation guide">Installation Guide</a></li>
+        </ul>
+    </div>
 
-    <h4>Community</h4>
-    <ul>
-        <li><a href="https://mailman.archlinux.org/mailman/listinfo/"
-            title="Community and developer mailing lists">Mailing Lists</a></li>
-        <li><a href="https://wiki.archlinux.org/title/IRC_channels"
-            title="Official and regional IRC communities">IRC Channels</a></li>
-        <li><a href="https://planet.archlinux.org/"
-            title="Arch in the blogosphere">Planet Arch</a></li>
-        <li><a href="https://wiki.archlinux.org/title/International_communities"
-            title="Arch communities in your native language">International Communities</a></li>
-    </ul>
+    <div class="nav-sidebar-item">
+        <h4>Community</h4>
+        <ul>
+            <li><a href="https://mailman.archlinux.org/mailman/listinfo/"
+                title="Community and developer mailing lists">Mailing Lists</a></li>
+            <li><a href="https://wiki.archlinux.org/index.php/IRC_channels"
+                title="Official and regional IRC communities">IRC Channels</a></li>
+            <li><a href="https://planet.archlinux.org/"
+                title="Arch in the blogosphere">Planet Arch</a></li>
+            <li><a href="https://wiki.archlinux.org/index.php/International_communities"
+                title="Arch communities in your native language">International Communities</a></li>
+        </ul>
+    </div>
 
-    <h4>Support</h4>
-    <ul>
-        <li><a href="{% url 'page-donate' %}" title="Help support Arch Linux">Donate</a></li>
-        <li><a href="https://www.unixstickers.com/tag/archlinux" title="Arch
-	Linux stickers, t-shirts, hoodies, mugs, posters and pins">Products via Unixstickers</a></li>
-        <li><a href="https://www.freewear.org/?page=list_items&amp;org=Archlinux"
-            title="T-shirts">T-shirts via Freewear</a></li>
-        <li><a href="https://www.hellotux.com/arch"
-            title="T-shirts">T-shirts via HELLOTUX</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>Support</h4>
+        <ul>
+            <li><a href="{% url 'page-donate' %}" title="Help support Arch Linux">Donate</a></li>
+            <li><a href="https://www.zazzle.com/archlinux*"
+                title="T-shirts, mugs, mouse pads, hoodies, posters, skateboards, shoes, etc.">Products via Zazzle</a></li>
+            <li><a href="https://www.unixstickers.com/tag/archlinux" title="Arch
+      Linux stickers, t-shirts, hoodies, mugs, posters and pins">Products via Unixstickers</a></li>
+            <li><a href="https://www.freewear.org/?page=list_items&amp;org=Archlinux"
+                title="T-shirts">T-shirts via Freewear</a></li>
+            <li><a href="https://www.hellotux.com/arch"
+                title="T-shirts">T-shirts via HELLOTUX</a></li>
+        </ul>
+    </div>
 
-    <h4>Tools</h4>
-    <ul>
-        <li><a href="{% url 'mirrorlist' %}"
-            title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
-        <li><a href="{% url 'mirror-list' %}"
-            title="See a listing of all available mirrors">Mirror List</a></li>
-        <li><a href="{% url 'mirror-status' %}"
-            title="Check the status of all known mirrors">Mirror Status</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>Tools</h4>
+        <ul>
+            <li><a href="{% url 'mirrorlist' %}"
+                title="Get a custom mirrorlist from our database">Mirrorlist Updater</a></li>
+            <li><a href="{% url 'mirror-list' %}"
+                title="See a listing of all available mirrors">Mirror List</a></li>
+            <li><a href="{% url 'mirror-status' %}"
+                title="Check the status of all known mirrors">Mirror Status</a></li>
+        </ul>
+    </div>
 
-    <h4>Development</h4>
-    <ul>
-        <li><a href="https://wiki.archlinux.org/title/Getting_involved"
-            title="Getting involved">Getting involved</a></li>
-        <li><a href="https://gitlab.archlinux.org/archlinux/"
-            title="Official Arch projects (git)">Projects in Git</a></li>
-        <li><a href="{% url 'page-svn' %}"
-            title="View SVN entries for packages">SVN Repositories</a></li>
-        <li><a href="https://wiki.archlinux.org/title/DeveloperWiki"
-            title="Developer Wiki articles">Developer Wiki</a></li>
-        <li><a href="/groups/"
-            title="View the available package groups">Package Groups</a></li>
-        <li><a href="/todo/"
-            title="Developer Todo Lists">Todo Lists</a></li>
-        <li><a href="{% url 'releng-release-list' %}"
-            title="Release Engineering ISO listing">ISO Release List</a></li>
-        <li><a href="{% url 'visualize-index' %}"
-            title="View visualizations">Visualizations</a></li>
-        <li><a href="{% url 'packages-differences' %}"
-            title="See differences in packages between available architectures">Differences Reports</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>Development</h4>
+        <ul>
+            <li><a href="https://wiki.archlinux.org/index.php/Getting_involved"
+                title="Getting involved">Getting involved</a></li>
+            <li><a href="https://projects.archlinux.org/"
+                title="Official Arch projects (git)">Projects in Git</a></li>
+            <li><a href="{% url 'page-svn' %}"
+                title="View SVN entries for packages">SVN Repositories</a></li>
+            <li><a href="https://wiki.archlinux.org/index.php/DeveloperWiki"
+                title="Developer Wiki articles">Developer Wiki</a></li>
+            <li><a href="/groups/"
+                title="View the available package groups">Package Groups</a></li>
+            <li><a href="/todo/"
+                title="Developer Todo Lists">Todo Lists</a></li>
+            <li><a href="{% url 'releng-release-list' %}"
+                title="Release Engineering ISO listing">ISO Release List</a></li>
+            <li><a href="{% url 'visualize-index' %}"
+                title="View visualizations">Visualizations</a></li>
+            <li><a href="{% url 'packages-differences' %}"
+                title="See differences in packages between available architectures">Differences Reports</a></li>
+        </ul>
+    </div>
 
-    <h4>People</h4>
-    <ul>
-        {% for group in staff_groups %}
-        <li><a href="{% url 'people' group.slug %}" title="More info about {{ group.name }}">{{ group.name }}</a></li>
-        {% endfor %}
-        <li><a href="{% url 'page-keys' %}"
-            title="Package/Database signing master keys">Signing Master Keys</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>People</h4>
+        <ul>
+            {% for group in staff_groups %}
+            <li><a href="{% url 'people' group.slug %}" title="More info about {{ group.name }}">{{ group.name }}</a></li>
+            {% endfor %}
+            <li><a href="{% url 'page-keys' %}"
+                title="Package/Database signing master keys">Signing Master Keys</a></li>
+        </ul>
+    </div>
 
-    <h4>More Resources</h4>
-    <ul>
-        <li><a href="https://wiki.archlinux.org/title/Arch_Linux_press_coverage"
-            title="Arch Linux in the media">Press Coverage</a></li>
-        <li><a href="{% url 'page-art' %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
-        <li><a href="{% url 'news-list' %}" title="News Archives">News Archives</a></li>
-        <li><a href="/feeds/" title="Various RSS Feeds">RSS Feeds</a></li>
-    </ul>
+    <div  class="nav-sidebar-item">
+        <h4>More Resources</h4>
+        <ul>
+            <li><a href="https://wiki.archlinux.org/index.php/Arch_Linux_press_coverage"
+                title="Arch Linux in the media">Press Coverage</a></li>
+            <li><a href="{% url 'page-art' %}" title="Arch logos and other artwork for promotional use">Logos &amp; Artwork</a></li>
+            <li><a href="{% url 'news-list' %}" title="News Archives">News Archives</a></li>
+            <li><a href="/feeds/" title="Various RSS Feeds">RSS Feeds</a></li>
+        </ul>
+    </div>
 </div>
 
 <div id="home-donate-button" class="widget">

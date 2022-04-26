@@ -72,6 +72,8 @@ STATIC_ROOT = path.join(DEPLOY_PATH, 'collected_static')
 # Look for more static files in these locations
 STATICFILES_DIRS = (
     path.join(DEPLOY_PATH, 'sitestatic'),
+    path.join(DEPLOY_PATH, 'commonstyle', 'archlinux-common-style', 'img'),
+    path.join(DEPLOY_PATH, 'commonstyle', 'archlinux-common-style', 'sass'),
 )
 
 # Static files backend that allows us to use far future Expires headers
@@ -135,6 +137,8 @@ INSTALLED_APPS = (
     'public',
     'releng',
     'visualize',
+    'commonstyle',
+    'compressor',
 )
 
 # Logging configuration for not getting overspammed
@@ -258,3 +262,13 @@ if DEBUG_TOOLBAR:
     INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
 
 # vim: set ts=4 sw=4 et:
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    "compressor.finders.CompressorFinder"
+]
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)

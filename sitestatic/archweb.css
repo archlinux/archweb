@@ -6,36 +6,6 @@
  *   11px = 0.6875em
  */
 
-/*
- * ARCH GLOBAL NAVBAR
- * We're forcing all generic selectors with !important
- * to help prevent other stylesheets from interfering.
- */
-
-/* container for the entire bar */
-#archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
-@media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
-	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important;
-	}
-}
-
-/* move the heading text offscreen */
-#archnavbarlogo h1 { margin: 0 !important; padding: 0 !important; text-indent: -9999px !important; }
-
-/* make the link the same size as the logo */
-#archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
-
-/* display the list inline, float it to the right and style it */
-#archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
-
-/* style the links */
-#archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
-#archnavbarlist li a:hover { color: white !important; text-decoration: underline !important; }
-
-/* END ARCH GLOBAL NAVBAR */
-
 /* simple reset */
 * {
     margin: 0;
@@ -45,7 +15,6 @@
 
 /* general styling */
 body {
-    min-width: 650px;
     background: #f6f9fc;
     color: #222;
     font: normal 100% sans-serif;
@@ -179,26 +148,49 @@ h5 {
     margin-top: 1em;
 }
 
+/* extra padding left and right in archnavbar on desktop */
+@media (min-width: 1480px){
+    #archnavbar {
+        width: 1440px;
+        padding-left: calc(calc(100% - 1440px) / 2) !important;
+        padding-right: calc(calc(100% - 1440px) / 2) !important;
+    }
+}
+
 /* general layout */
 #content {
-    width: 95%;
+    max-width: 1440px;
+    padding: 0 20px;
     margin: 0 auto;
     text-align: left;
+    display: flex;
+    flex-direction: row;
+}
+
+.anb-packages ~ #content {
+    flex-direction: column;
 }
 
 #content-left-wrapper {
-    float: left;
-    width: 100%; /* req to keep content above sidebar in source code */
+    padding-right: 45px;
 }
 
 #content-left {
-    margin: 0 340px 0 0;
 }
 
 #content-right {
-    float: left;
-    width: 300px;
-    margin-left: -300px;
+    min-width: 300px;
+}
+
+@media (max-width: 768px) {
+    #content {
+        flex-direction: column;
+    }
+
+    #content-left-wrapper {
+        padding-right: 0;
+    }
+
 }
 
 div.box {
@@ -209,7 +201,7 @@ div.box {
 }
 
 #footer {
-    clear: both;
+    font-size: .812em;
     margin: 2em 0 1em;
 }
 
@@ -459,6 +451,11 @@ table thead th.sorter-false {
         border-bottom: 1px dotted #bbb;
     }
 
+    #news h4 a {
+        max-width: 80%;
+        display: inline-block;
+    }
+
     #news .timestamp {
         float: right;
         font-size: 0.85em;
@@ -477,6 +474,10 @@ table thead th.sorter-false {
     #news a:active {
         color: white;
     }
+
+.article-content {
+    word-break: break-word;
+}
 
 h3 span.arrow {
     display: block;
@@ -646,6 +647,25 @@ h3 span.arrow {
     list-style: none;
     margin: 0.5em 0 0.5em 1em;
     padding: 0;
+}
+
+@media (max-width: 768px) {
+    #nav-sidebar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .nav-sidebar-item {
+        flex-basis: 31%;
+    }
+}
+
+@media (max-width: 640px) {
+    .nav-sidebar-item {
+        flex-basis: 45%;
+    }
 }
 
 /* home: sidebar components (navlist, sponsors, pkgsearch, etc) */
@@ -1145,9 +1165,9 @@ ul.signoff-list {
 }
 
 /* highlight current website in the navbar */
-#archnavbar.anb-home ul li#anb-home a,
-#archnavbar.anb-packages ul li#anb-packages a,
-#archnavbar.anb-download ul li#anb-download a {
+.anb-home #archnavbar ul li#anb-home a,
+.anb-packages #archnavbar ul li#anb-packages a,
+.anb-download #archnavbar ul li#anb-download a {
     color: white !important;
 }
 
