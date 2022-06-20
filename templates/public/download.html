@@ -98,6 +98,14 @@
 
     <p><code>b2sum -c b2sums.txt</code></p>
 
+    <p>The release signing key can be downloaded with WKD:</p>
+
+    <p><code>sq wkd get {{ release.wkd_email }} &gt; release-key.pgp</code></p>
+
+    <p>With this key the signature can be verified like this:</p>
+
+    <p><code>sq verify --signer-cert release-key.pgp --detached archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></p>
+
     <h4>Checksums</h4>
 
     <p>File integrity checksums for the latest releases can be found below:</p>
