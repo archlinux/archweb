@@ -128,7 +128,6 @@
                 <th>Name</th>
                 <th>Creation Date</th>
                 <th>Creator</th>
-                <th>Description</th>
                 <th>Package Count</th>
                 <th>Incomplete Count</th>
                 <th>Kind</th>
@@ -141,7 +140,6 @@
                         title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
                 <td>{{ todo.created|date }}</td>
                 <td>{{ todo.creator.get_full_name }}</td>
-                <td class="wrap">{{ todo.description|urlize|truncatewords:"50" }}</td>
                 <td>{{ todo.pkg_count }}</td>
                 <td>{{ todo.incomplete_count }}</td>
                 <td>{{ todo.kind_str }}</td>
