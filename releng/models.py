@@ -47,6 +47,9 @@ class Release(models.Model):
     def iso_url(self):
         return "iso/%s/archlinux-%s-x86_64.iso" % (self.version, self.version)
 
+    def tarball_url(self):
+        return "iso/%s/archlinux-bootstrap-%s-x86_64.tar.gz" % (self.version, self.version)
+
     def magnet_uri(self):
         query = [
             ('dn', "archlinux-%s-x86_64.iso" % self.version),
