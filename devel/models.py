@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User, Group
 from django_countries.fields import CountryField
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from .fields import PGPKeyField
 from main.utils import make_choice, set_created_field
@@ -39,7 +40,8 @@ class UserProfile(models.Model):
     website = models.CharField(max_length=200, null=True, blank=True)
     website_rss = models.CharField(max_length=200, null=True, blank=True,
                                    help_text='RSS Feed of your website for planet.archlinux.org')
-    yob = models.IntegerField("Year of birth", null=True, blank=True)
+    yob = models.IntegerField("Year of birth", null=True, blank=True,
+                              validators=[MinValueValidator(1950), MaxValueValidator(2500)])
     country = CountryField(blank=True)
     location = models.CharField(max_length=50, null=True, blank=True)
     languages = models.CharField(max_length=50, null=True, blank=True)
