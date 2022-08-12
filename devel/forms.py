@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
 from django.template import loader
+from django.forms.widgets import EmailInput, NumberInput, URLInput
 
 from .models import UserProfile
 
@@ -41,6 +42,12 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         exclude = ('allowed_repos', 'user', 'repos_auth_token')
+        widgets = {
+            'yob': NumberInput(attrs={'min': 1950, 'max': 2500}),
+            'public_email': EmailInput(),  # HACK: field definition should be fixed
+            'website': URLInput(),
+            'website_rss': URLInput(),
+        }
 
 
 class NewUserForm(forms.ModelForm):
