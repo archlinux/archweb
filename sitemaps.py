@@ -21,6 +21,9 @@ class PackagesSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_update
 
+    def get_latest_lastmod(self):
+        return None
+
     def changefreq(self, obj):
         if obj.repo.testing or obj.repo.staging:
             return "daily"
@@ -44,6 +47,9 @@ class PackageFilesSitemap(PackagesSitemap):
     def lastmod(self, obj):
         return obj.files_last_update
 
+    def get_latest_lastmod(self):
+        return None
+
 
 class PackageGroupsSitemap(Sitemap):
     changefreq = "weekly"
@@ -54,6 +60,9 @@ class PackageGroupsSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj['last_update']
+
+    def get_latest_lastmod(self):
+        return None
 
     def location(self, obj):
         return '/groups/%s/%s/' % (obj['arch'], obj['name'])
@@ -68,6 +77,9 @@ class SplitPackagesSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj['last_update']
+
+    def get_latest_lastmod(self):
+        return None
 
     def location(self, obj):
         return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/obj['pkgbase']/"
@@ -84,6 +96,9 @@ class NewsSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.last_modified
+
+    def get_latest_lastmod(self):
+        return None
 
     def priority(self, obj):
         if obj.last_modified > self.one_week_ago:
@@ -114,6 +129,9 @@ class ReleasesSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_modified
 
+    def get_latest_lastmod(self):
+        return None
+
     def priority(self, obj):
         if obj.available:
             return "0.6"
@@ -132,6 +150,9 @@ class TodolistSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.last_modified
+
+    def get_latest_lastmod(self):
+        return None
 
     def changefreq(self, obj):
         if obj.last_modified > self.two_weeks_ago:
