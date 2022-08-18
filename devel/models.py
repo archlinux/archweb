@@ -29,7 +29,7 @@ class UserProfile(models.Model):
     alias = models.CharField(
         max_length=50,
         help_text="Required field")
-    public_email = models.CharField(
+    public_email = models.EmailField(
         max_length=50,
         help_text="Required field")
     other_contact = models.CharField(max_length=100, null=True, blank=True)
@@ -37,9 +37,9 @@ class UserProfile(models.Model):
         max_length=40, null=True, blank=True,
         verbose_name="PGP key fingerprint",
         help_text="consists of 40 hex digits; use `gpg --fingerprint`")
-    website = models.CharField(max_length=200, null=True, blank=True)
-    website_rss = models.CharField(max_length=200, null=True, blank=True,
-                                   help_text='RSS Feed of your website for planet.archlinux.org')
+    website = models.URLField(max_length=200, null=True, blank=True)
+    website_rss = models.URLField(max_length=200, null=True, blank=True,
+                                  help_text='RSS Feed of your website for planet.archlinux.org')
     yob = models.IntegerField("Year of birth", null=True, blank=True,
                               validators=[MinValueValidator(1950), MaxValueValidator(2500)])
     country = CountryField(blank=True)
