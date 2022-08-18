@@ -20,8 +20,12 @@ def details_link(pkg):
 
 @register.simple_tag
 def scm_link(package, operation):
-    parts = (package.repo.svn_root, operation, package.pkgbase)
-    linkbase = ("https://github.com/archlinux/svntogit-%s/%s/packages/%s/trunk")
+    if package.repo.name == "KDE-Unstable":
+        branch = "kde-unstable"
+    else:
+        branch = "trunk"
+    parts = (package.repo.svn_root, operation, package.pkgbase, branch)
+    linkbase = ("https://github.com/archlinux/svntogit-%s/%s/packages/%s/%s")
     return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
 
 
