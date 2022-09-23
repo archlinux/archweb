@@ -244,11 +244,6 @@ def orphan_dependencies(packages):
     return pkgs
 
 
-def unused_python2_packages(packages):
-    required = Depend.objects.all().values('name')
-    return packages.filter(pkgname__startswith='python2').exclude(pkgname__in=required)
-
-
 REPORT_OLD = DeveloperReport(
     'old', 'Old', 'Packages last built more than two years ago', old)
 
@@ -328,13 +323,6 @@ REPORT_REQUIRED_ORPHAN = DeveloperReport(
     ['Orphan dependencies'],
     ['orphandeps'])
 
-UNUSED_PYTHON2_PACKAGES = DeveloperReport(
-    'unused-python2',
-    'Unused Python2 packages',
-    'python2 modules which are not used required by any other packages in the repository',
-    unused_python2_packages,
-    personal=False)
-
 
 def available_reports():
     return (REPORT_OLD,
@@ -349,5 +337,4 @@ def available_reports():
             REPORT_SIG_TIME,
             NON_EXISTING_DEPENDENCIES,
             REBUILDERD_PACKAGES,
-            ORPHAN_REBUILDERD_PACKAGES,
-            UNUSED_PYTHON2_PACKAGES)
+            ORPHAN_REBUILDERD_PACKAGES)
