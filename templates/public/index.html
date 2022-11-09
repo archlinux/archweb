@@ -6,6 +6,7 @@
 <link rel="alternate" type="application/rss+xml" title="Arch Linux News Updates" href="/feeds/news/" />
 <link rel="alternate" type="application/rss+xml" title="Arch Linux Package Updates" href="/feeds/packages/" />
 <script type="text/javascript" src="{% static "homepage.js" %}" defer></script>
+{% if MASTODON_LINK %}<link rel="me" href="{{MASTODON_LINK}}" title="Arch Linux Mastodon" />{% endif %}
 {% endblock %}
 
 {% block content_left %}
