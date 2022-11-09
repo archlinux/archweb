@@ -225,6 +225,9 @@ REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
 TIER0_MIRROR_DOMAIN = 'repos.archlinux.org'
 # TIER0_MIRROR_SECRET = ''
 
+# Mastodon link to profile
+MASTODON_LINK = ''
+
 # Import local settings
 try:
     from local_settings import *  # noqa
@@ -246,6 +249,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
                 'csp.context_processors.nonce',
+                'main.context_processors.mastodon_link',
             ],
         }
     }
