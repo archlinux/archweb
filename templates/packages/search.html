@@ -63,7 +63,7 @@
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
                 {% if pkg.flag_date %}
-                <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                <td><span class="flagged" title="Flagged out-of-date">{{ pkg.full_version }}</span></td>
                 {% else %}
                 <td>{{ pkg.full_version }}</td>
                 {% endif %}
@@ -110,7 +110,7 @@
                     <td>{{ pkg.repo.name|capfirst }}</td>
                     <td>{% pkg_details_link pkg %}</td>
                     {% if pkg.flag_date %}
-                    <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                    <td><span class="flagged" title="Flagged out-of-date">{{ pkg.full_version }}</span></td>
                     {% else %}
                     <td>{{ pkg.full_version }}</td>
                     {% endif %}
