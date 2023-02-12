@@ -1,9 +1,8 @@
 # Derived from Django snippets: http://djangosnippets.org/snippets/2242/
 from collections import OrderedDict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import md5
 import traceback
-from pytz import utc
 
 
 class LimitedSizeDict(OrderedDict):
@@ -60,7 +59,7 @@ class RateLimitFilter(object):
             duplicate = (cache.get(cache_key) == 1)
             cache.set(cache_key, 1, self.rate)
         else:
-            now = datetime.utcnow().replace(tzinfo=utc)
+            now = datetime.now(timezone.utc)
             min_date = now - timedelta(seconds=self.rate)
             duplicate = (key in self.errors and self.errors[key] >= min_date)
             self.errors[key] = now

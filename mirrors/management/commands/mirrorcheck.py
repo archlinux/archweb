@@ -10,11 +10,10 @@ Usage: ./manage.py mirrorcheck
 """
 
 from collections import deque
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from http.client import HTTPException
 import logging
 import os
-from pytz import utc
 import re
 import socket
 import ssl
@@ -97,8 +96,7 @@ def monkeypatch_getaddrinfo(force_family=socket.AF_INET):
 def parse_lastsync(log, data):
     '''lastsync file should be an epoch value created by us.'''
     try:
-        parsed_time = datetime.utcfromtimestamp(int(data))
-        log.last_sync = parsed_time.replace(tzinfo=utc)
+        log.last_sync = datetime.fromtimestamp(int(data), tz=timezone.utc)
     except (TypeError, ValueError):
         # it is bad news to try logging the lastsync value;
         # sometimes we get a crazy-encoded web page.

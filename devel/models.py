@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import pytz
+import zoneinfo
 
 from django.urls import reverse
 from django.db import models
@@ -23,7 +23,7 @@ class UserProfile(models.Model):
         help_text="When enabled, send user 'flag out-of-date' notifications")
     time_zone = models.CharField(
         max_length=100,
-        choices=make_choice(pytz.common_timezones),
+        choices=make_choice(sorted(zoneinfo.available_timezones())),  # sort as available_timezones output varies
         default="UTC",
         help_text="Used for developer clock page")
     alias = models.CharField(

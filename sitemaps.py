@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-from pytz import utc
+from datetime import datetime, timedelta, timezone
 
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
@@ -87,7 +86,7 @@ class SplitPackagesSitemap(Sitemap):
 
 class NewsSitemap(Sitemap):
     def __init__(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
+        now = datetime.now(timezone.utc)
         self.one_day_ago = now - timedelta(days=1)
         self.one_week_ago = now - timedelta(days=7)
 
@@ -115,7 +114,7 @@ class NewsSitemap(Sitemap):
 
 class RecentNewsSitemap(NewsSitemap):
     def items(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
+        now = datetime.now(timezone.utc)
         cutoff = now - timedelta(days=30)
         return super(RecentNewsSitemap, self).items().filter(postdate__gte=cutoff)
 
@@ -142,7 +141,7 @@ class TodolistSitemap(Sitemap):
     priority = "0.4"
 
     def __init__(self):
-        now = datetime.utcnow().replace(tzinfo=utc)
+        now = datetime.now(timezone.utc)
         self.two_weeks_ago = now - timedelta(days=14)
 
     def items(self):
