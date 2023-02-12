@@ -1,7 +1,6 @@
 from collections import defaultdict
-from datetime import timedelta
+from datetime import timedelta, timezone
 
-import pytz
 from django.db.models import F
 from django.template.defaultfilters import filesizeformat
 from django.db import connection
@@ -171,7 +170,7 @@ def signature_time(packages):
         'arch', 'repo', 'packager').filter(signature_bytes__isnull=False)
     for package in packages:
         sig = package.signature
-        sig_date = sig.creation_time.replace(tzinfo=pytz.utc)
+        sig_date = sig.creation_time.replace(tzinfo=timezone.utc)
         package.sig_date = sig_date.date()
         if sig_date > package.build_date + cutoff:
             filtered.append(package)

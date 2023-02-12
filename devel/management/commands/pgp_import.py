@@ -8,9 +8,8 @@ Usage: ./manage.py pgp_import <keyring_path>
 """
 
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
-from pytz import utc
 import subprocess
 
 from django.core.management.base import BaseCommand, CommandError
@@ -50,14 +49,14 @@ def get_date(epoch_string):
     '''Convert a epoch string into a python 'date' object (not datetime).'''
     if not epoch_string:
         return None
-    return datetime.utcfromtimestamp(int(epoch_string)).date()
+    return datetime.fromtimestamp(int(epoch_string), tz=timezone.utc).date()
 
 
 def get_datetime(epoch_string):
     '''Convert a epoch string into a python 'datetime' object.'''
     if not epoch_string:
         return None
-    return datetime.utcfromtimestamp(int(epoch_string)).replace(tzinfo=utc)
+    return datetime.fromtimestamp(int(epoch_string), tz=timezone.utc)
 
 
 def call_gpg(keyring, *args):

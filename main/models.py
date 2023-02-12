@@ -1,7 +1,6 @@
 from itertools import groupby
 from pgpdump import BinaryData
-from pytz import utc
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.db import models
 from django.db.models import Q
@@ -141,7 +140,7 @@ class Package(models.Model):
         # package was actually pushed to any repo. We don't have that
         # easily available without adding more fields and scripts.
         # See: https://github.com/archlinux/archweb/pull/323
-        now = datetime.utcnow().replace(tzinfo=utc)
+        now = datetime.now(timezone.utc)
         return int((now - self.last_update).total_seconds()) // 60
 
     @property

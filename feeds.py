@@ -1,5 +1,4 @@
-from datetime import datetime, time
-from pytz import utc
+from datetime import datetime, timezone, time
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.models import ADDITION, DELETION
@@ -363,7 +362,7 @@ class ReleaseFeed(Feed):
         return item.info_html()
 
     def item_pubdate(self, item):
-        return datetime.combine(item.release_date, time()).replace(tzinfo=utc)
+        return datetime.combine(item.release_date, time()).replace(tzinfo=timezone.utc)
 
     def item_updateddate(self, item):
         return item.last_modified
@@ -416,7 +415,7 @@ class PlanetFeed(Feed):
         return item.summary
 
     def item_pubdate(self, item):
-        return datetime.combine(item.publishdate, time()).replace(tzinfo=utc)
+        return datetime.combine(item.publishdate, time()).replace(tzinfo=timezone.utc)
 
     def item_updateddate(self, item):
         return item.publishdate
