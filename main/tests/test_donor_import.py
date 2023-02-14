@@ -2,7 +2,7 @@
 
 from email.header import Header
 from email.message import Message
-from mailbox import Maildir
+from io import StringIO
 
 import pytest
 
@@ -16,12 +16,8 @@ from main.management.commands.donor_import import Command
 command = Command()
 
 
-def gen_parse_subject(data):
-    return command.parse_subject(data)
-
-
-def test_parse_subject(self):
-    assert self.command.parse_subject('garbage') is None
+def test_parse_subject():
+    assert command.parse_subject('garbage') is None
 
     # Valid
     valid = 'Receipt [$25.00] By: John Doe [john.doe@archlinux.org]'
@@ -42,41 +38,39 @@ def test_decode_subject():
     assert command.decode_subject(subject) == text
 
 
-def test_invalid_args():
+def test_invalid_args(monkeypatch):
+    monkeypatch.setattr('sys.stdin', StringIO(''))
     with pytest.raises(CommandError) as e:
         call_command('donor_import')
-    assert 'Error: the following arguments are required' in str(e.value)
+    assert 'Failed to read from STDIN' in str(e.value)
 
 
 def test_invalid_path():
     with pytest.raises(CommandError) as e:
         call_command('donor_import', '/tmp/non-existant')
-    assert 'Failed to open maildir' in str(e.value)
+    assert 'argument input: can\'t open' in str(e.value)
 
 
-def test_maildir(db, tmp_path):
-    tmpdir = tmp_path / 'archweb'
-    tmpdir.mkdir()
-    mdir = tmpdir / 'maildir'
-
-    maildir = Maildir(mdir)
+def test_maildir(db, monkeypatch):
     msg = Message()
     msg['subject'] = 'John Doe'
     msg['to'] = 'John Doe <john@doe.com>'
-    maildir.add(msg)
 
     # Invalid
-    call_command('donor_import', mdir)
+    monkeypatch.setattr('sys.stdin', StringIO(msg.as_string()))
+    with pytest.raises(SystemExit):
+        call_command('donor_import')
     assert len(Donor.objects.all()) == 0
 
-    # Valid
+    # # Valid
     msg = Message()
     msg['subject'] = 'Receipt [$25.00] By: David Doe [david@doe.com]'
     msg['to'] = 'John Doe <david@doe.com>'
-    maildir.add(msg)
-    call_command('donor_import', mdir)
+    monkeypatch.setattr('sys.stdin', StringIO(msg.as_string()))
+    call_command('donor_import')
     assert len(Donor.objects.all()) == 1
 
-    # Re-running should result in no new donor
-    call_command('donor_import', mdir)
+    # # Re-running should result in no new donor
+    monkeypatch.setattr('sys.stdin', StringIO(msg.as_string()))
+    call_command('donor_import')
     assert len(Donor.objects.all()) == 1
