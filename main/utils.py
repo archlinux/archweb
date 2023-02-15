@@ -1,5 +1,6 @@
 import pickle
 import hashlib
+import re
 
 import markdown
 from markdown.extensions import Extension
@@ -133,6 +134,18 @@ def groupby_preserve_order(iterable, keyfunc):
         group.append(item)
 
     return result
+
+
+def gitlab_project_name_to_path(name: str) -> str:
+    '''Convert a Gitlab project name to variant which the Gitlab encodes in
+    its url / API for example mysql++ becomes mysqlplusplus.'''
+
+    name = re.sub(r'([a-zA-Z0-9]+)\+([a-zA-Z]+)', r'\1-\2', name)
+    name = re.sub(r'\+', r'plus', name)
+    name = re.sub(r'[^a-zA-Z0-9_\-\.]', r'-', name)
+    name = re.sub(r'[_\-]{2,}', r'-', name)
+    name = re.sub(r'^tree$', r'unix-tree', name)
+    return name
 
 
 class PackageStandin(object):

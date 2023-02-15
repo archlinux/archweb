@@ -1,6 +1,8 @@
 from urllib.parse import urlencode, quote as urlquote, unquote
 from django import template
+from django.conf import settings
 from main.templatetags import pgp
+from main.utils import gitlab_project_name_to_path
 
 register = template.Library()
 
@@ -19,10 +21,12 @@ def details_link(pkg):
 
 
 @register.simple_tag
-def scm_link(package, operation):
-    parts = (package.repo.svn_root, operation, package.pkgbase)
-    linkbase = ("https://github.com/archlinux/svntogit-%s/%s/packages/%s/trunk")
-    return linkbase % tuple(urlquote(part.encode('utf-8')) for part in parts)
+def scm_link(package, operation: str):
+    pkgbase = urlquote(gitlab_project_name_to_path(package.pkgbase))
+    if operation == 'tree':
+        return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/'
+    elif operation == 'commits':
+        return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/-/commits/main'
 
 
 @register.simple_tag
