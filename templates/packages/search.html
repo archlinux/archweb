@@ -63,7 +63,7 @@
                 <td>{{ pkg.repo.name|capfirst }}</td>
                 <td>{% pkg_details_link pkg %}</td>
                 {% if pkg.flag_date %}
-                <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                <td><span class="flagged" title="Flagged out-of-date">{{ pkg.full_version }}</span></td>
                 {% else %}
                 <td>{{ pkg.full_version }}</td>
                 {% endif %}
@@ -110,7 +110,7 @@
                     <td>{{ pkg.repo.name|capfirst }}</td>
                     <td>{% pkg_details_link pkg %}</td>
                     {% if pkg.flag_date %}
-                    <td><span class="flagged">{{ pkg.full_version }}</span></td>
+                    <td><span class="flagged" title="Flagged out-of-date">{{ pkg.full_version }}</span></td>
                     {% else %}
                     <td>{{ pkg.full_version }}</td>
                     {% endif %}
@@ -138,7 +138,7 @@
     <p>Can't find what you are looking for? Try searching again
     using different criteria, or try
     {% if search_form.q.data %}
-    <a href="https://aur.archlinux.org/packages.php?K={{ search_form.q.data|urlencode }}">searching the AUR</a>
+    <a href="https://aur.archlinux.org/packages?K={{ search_form.q.data|urlencode }}">searching the AUR</a>
     {% else %}searching the <a href="https://aur.archlinux.org/">AUR</a>{% endif %}
     to see if the package can be found there.</p>
 

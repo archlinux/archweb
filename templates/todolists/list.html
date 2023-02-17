@@ -26,7 +26,6 @@
                 <th>Name</th>
                 <th>Creation Date</th>
                 <th>Creator</th>
-                <th>Description</th>
                 <th>Package Count</th>
                 <th>Incomplete Count</th>
                 <th>Kind</th>
@@ -40,7 +39,6 @@
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
                 <td>{{ list.created|date }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
-                <td class="wrap">{{ list.description|urlize }}</td>
                 <td>{{ list.pkg_count }}</td>
                 <td>{{ list.incomplete_count }}</td>
                 <td>{{ list.kind_str }}</td>
@@ -60,7 +58,7 @@
 <script type="text/javascript" src="{% static "archweb.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
 $(document).ready(function() {
-    $(".results").tablesorter({widgets: ['zebra'], sortList: [[7, 1], [1, 1]]});
+    $(".results").tablesorter({widgets: ['zebra'], sortList: [[6, 1], [1, 1]]});
 });
 </script>
 {% endblock %}

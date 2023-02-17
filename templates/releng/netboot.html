@@ -56,8 +56,10 @@ protection/authentication.
 <li><a href="{% static "netboot/ipxe-arch.efi" %}">ipxe-arch.efi</a> (<a href="{% static "netboot/ipxe-arch.efi.sig" %}">PGP signature</a>) - x86_64 UEFI executable</li>
 </ul>
 
+{% if pkg %}
 <p>You can build your own iPXE images compatible with netboot.
-For details, check out the <a href="https://archlinux.org/packages/community/x86_64/ipxe/">ipxe package</a>.</p>
+For details, check out the <a href="{{ pkg.get_full_url }}">ipxe package</a>.</p>
+{% endif %}
 
 <h3>More information</h3>
 

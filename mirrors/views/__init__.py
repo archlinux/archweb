@@ -2,7 +2,7 @@ from datetime import timedelta
 from itertools import groupby
 from operator import attrgetter, itemgetter
 
-from django.db import connection
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now
@@ -104,9 +104,10 @@ def url_details(request, name, url_id):
 
 
 def status_last_modified(request, *args, **kwargs):
-    cursor = connection.cursor()
-    cursor.execute("SELECT MAX(check_time) FROM mirrors_mirrorlog")
-    return cursor.fetchone()[0]
+    try:
+        return MirrorLog.objects.latest('check_time').check_time
+    except ObjectDoesNotExist:
+        return
 
 
 @condition(last_modified_func=status_last_modified)

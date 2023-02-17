@@ -11,8 +11,7 @@ Usage: ./manage.py update_planet
 import logging
 import time
 
-from datetime import datetime
-from pytz import utc
+from datetime import datetime, timezone
 
 import bleach
 import feedparser
@@ -104,7 +103,7 @@ class Command(BaseCommand):
             logger.error("feed: '%s' has no published or updated date", url)
             return
 
-        published = datetime.fromtimestamp(time.mktime(published_parsed)).replace(tzinfo=utc)
+        published = datetime.fromtimestamp(time.mktime(published_parsed)).replace(tzinfo=timezone.utc)
 
         if latest and latest.publishdate >= published:
             logger.debug("feed: '%s' has no more new entries", url)

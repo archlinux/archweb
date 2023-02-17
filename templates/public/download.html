@@ -21,8 +21,8 @@
     <h3>Release Info</h3>
 
     <p>The image can be burned to a CD, mounted as an ISO file,
-    or be directly written to a USB stick using a utility like <code>dd</code>. It
-    is intended for new installations only; an existing Arch Linux system
+    or be <a href="https://wiki.archlinux.org/title/USB_flash_installation_medium">directly written to a USB flash drive</a>.
+    It is intended for new installations only; an existing Arch Linux system
     can always be updated with <code>pacman -Syu</code>.</p>
 
     <ul>
@@ -34,7 +34,7 @@
             <ul>
                 <li><a href="https://bugs.archlinux.org/index.php?project=6"
                     title="Arch Linux Bugtracker:Release Engineering">Bug Tracker</a></li>
-                <li><a href="https://mailman.archlinux.org/mailman/listinfo/arch-releng"
+                <li><a href="https://lists.archlinux.org/mailman3/lists/arch-releng.lists.archlinux.org/"
                     title="Arch Linux Release Engineering mailing list">Mailing List</a></li>
             </ul>
         </li>
@@ -56,7 +56,9 @@
 
     <p>If you can spare the bytes, please leave the client open after your
     download is finished, so you can seed it back to others.
-    <em>A web-seed capable client is recommended for fastest download speeds.</em></p>
+    <br/>
+    <strong>A DHT capable client is required.</strong>
+    A WebSeed capable client is recommended for fastest download speeds.</p>
 
     {% if release %}<ul>
         <li><a href="{{ release.magnet_uri }}"
@@ -77,7 +79,7 @@
 
     <p>Vagrant images for libvirt and virtualbox are available on the <a href="https://app.vagrantup.com/archlinux/boxes/archlinux">Vagrant Cloud</a>. You can bootstrap the image with the following commands:</p>
     <code>vagrant init archlinux/archlinux</code>
-    </br>
+    <br/>
     <code>vagrant up</code>
 
     <h3>Docker image</h3>
@@ -93,16 +95,28 @@
 
     <p>In addition to the BitTorrent links above, install images can also be
     downloaded via HTTP from the mirror sites listed below. Please
-    ensure the download image matches the checksum from the md5sums.txt or
-    sha1sums.txt file in the same directory as the image.</p>
+    ensure the download image matches the checksum from the sha256sums.txt or
+    b2sums.txt file in the same directory as the image.</p>
 
-    <h4>Checksums</h4>
+    <p><code>b2sum -c b2sums.txt</code></p>
+
+    <p>The release signing key can be downloaded with WKD:</p>
+
+    <p><code>sq wkd get {{ release.wkd_email }} &gt; release-key.pgp</code></p>
+
+    <p>With this key the signature can be verified like this:</p>
+
+    <p><code>sq verify --signer-cert release-key.pgp --detached archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></p>
+
+    <h4 id="checksums">Checksums</h4>
 
     <p>File integrity checksums for the latest releases can be found below:</p>
 
     <ul>
         <li><a href="https://archlinux.org/{{ release.iso_url }}.sig"
-            title="PGP signature">PGP signature</a></li>
+            title="ISO PGP signature">ISO PGP signature</a></li>
+        <li><a href="https://archlinux.org/{{ release.tarball_url }}.sig"
+            title="Bootstrap tarball PGP signature">Bootstrap tarball PGP signature</a></li>
         {% if release.pgp_key %}<li><strong>PGP fingerprint:</strong> {% pgp_key_link release.pgp_key %}</li>{% endif %}
         {% if release.wkd_email %}<li><strong>WKD Lookup: </strong><code>gpg --auto-key-locate clear,wkd -v --locate-external-key {{ release.wkd_email }}</code></li>{% endif %}
         {% if release.sha256_sum %}<li><strong>SHA256:</strong> {{ release.sha256_sum }}</li>{% endif %}

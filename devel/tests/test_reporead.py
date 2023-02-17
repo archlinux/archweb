@@ -1,12 +1,11 @@
 import tarfile
 from unittest.mock import patch
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TransactionTestCase
-from django.utils import timezone
 
 
 from main.models import Arch, Package, Repo

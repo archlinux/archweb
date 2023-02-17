@@ -10,6 +10,7 @@ from django.conf import settings
 
 from .models import Release
 from mirrors.models import MirrorUrl
+from main.models import Package
 
 
 class ReleaseListView(ListView):
@@ -90,7 +91,17 @@ def netboot_config(request):
 
 
 def netboot_info(request):
-    return render(request, "releng/netboot.html",
-                  {'security_banner':  settings.NETBOOT_SECURITY_BANNER})
+    ipxepkg = None
+    ipxepkgs = Package.objects.filter(pkgname='ipxe').all()
+    ipxepkgs = [pkg for pkg in ipxepkgs if not pkg.repo.testing and 'Staging' not in pkg.repo.name]
+
+    if ipxepkgs:
+        ipxepkg = ipxepkgs[0]
+
+    context = {
+        'pkg': ipxepkg,
+        'security_banner':  settings.NETBOOT_SECURITY_BANNER
+    }
+    return render(request, "releng/netboot.html", context)
 
 # vim: set ts=4 sw=4 et:

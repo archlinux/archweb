@@ -21,8 +21,7 @@ import os
 import re
 import xtarfile as tarfile
 import logging
-from datetime import datetime
-from pytz import utc
+from datetime import datetime, timezone
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, router, transaction
@@ -120,8 +119,7 @@ class RepoPackage(object):
                 self.ver, self.rel, self.epoch = parse_version(v[0])
             elif k == 'builddate':
                 try:
-                    builddate = datetime.utcfromtimestamp(int(v[0]))
-                    self.builddate = builddate.replace(tzinfo=utc)
+                    self.builddate = datetime.fromtimestamp(int(v[0]), tz=timezone.utc)
                 except ValueError:
                     logger.warning(
                         'Package %s had unparsable build date %s',

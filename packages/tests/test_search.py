@@ -93,3 +93,8 @@ def test_packages_suggest_uppercase(client, package):
     response = client.get('/opensearch/packages/suggest?q=LINux')
     assert response.status_code == 200
     assert 'linux' in response.content.decode()
+
+
+def test_group_search(client, package):
+    response = client.get('/groups/search/json/?name=base-devel')
+    assert response.status_code == 200

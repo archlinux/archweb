@@ -1,9 +1,8 @@
 from base64 import b64decode
 from bencode import bdecode, bencode
-from datetime import datetime
+from datetime import datetime, timezone
 import binascii
 import hashlib
-from pytz import utc
 
 from django.urls import reverse
 from django.db import models
@@ -47,6 +46,9 @@ class Release(models.Model):
     def iso_url(self):
         return "iso/%s/archlinux-%s-x86_64.iso" % (self.version, self.version)
 
+    def tarball_url(self):
+        return "iso/%s/archlinux-bootstrap-%s-x86_64.tar.gz" % (self.version, self.version)
+
     def magnet_uri(self):
         query = [
             ('dn', "archlinux-%s-x86_64.iso" % self.version),
@@ -82,8 +84,7 @@ class Release(models.Model):
             'info_hash': None,
         }
         if 'creation date' in data:
-            created = datetime.utcfromtimestamp(data['creation date'])
-            metadata['creation_date'] = created.replace(tzinfo=utc)
+            metadata['creation_date'] = datetime.fromtimestamp(data['creation date'], tz=timezone.utc)
         if info:
             metadata['info_hash'] = hashlib.sha1(bencode(info)).hexdigest()
 

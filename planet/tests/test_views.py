@@ -1,7 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import feedparser
-import pytz
 
 from planet.models import FeedItem
 
@@ -14,7 +13,7 @@ def test_feed(db, client):
 
 
 def test_feed_item(db, client):
-    publishdate = datetime.now(pytz.utc)
+    publishdate = datetime.now(timezone.utc)
     FeedItem.objects.create(publishdate=publishdate, title='A title', summary='A summary', author='John Doe')
 
     response = client.get('/feeds/planet/')
