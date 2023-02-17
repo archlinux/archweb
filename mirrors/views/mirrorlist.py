@@ -19,7 +19,6 @@ from ..utils import get_mirror_statuses
 
 import random
 
-
 # This is populated later, and re-populated every refresh
 # This was the only way to get 3 different examples without
 # changing the models.py
@@ -234,41 +233,64 @@ def find_mirrors_simple(request, protocol):
     proto = get_object_or_404(MirrorProtocol, protocol=protocol)
     return find_mirrors(request, protocols=[proto])
 
+
 def submit_mirror(request):
     if request.method == 'POST' or len(request.GET) > 0:
         data = request.POST if request.method == 'POST' else request.GET
-        
-        form1 = MirrorRequestForm(data=data)
-        url1 = MirrorUrlForm(data=data)
-        url2 = MirrorUrlForm(data=data)
-        url3 = MirrorUrlForm(data=data)
-        rsync = MirrorRsyncForm(data=data)
 
-        if form1.is_valid() and url1.is_valid() and url2.is_valid() and url3.is_valid() and rsync.is_valid():
-            print("Successful")
-            # countries = form.cleaned_data['country']
-            # protocols = form.cleaned_data['protocol']
-            # use_status = form.cleaned_data['use_mirror_status']
-            # ipv4 = '4' in form.cleaned_data['ip_version']
-            # ipv6 = '6' in form.cleaned_data['ip_version']
-            # return find_mirrors(request, countries, protocols,
-            #                     use_status, ipv4, ipv6)
+        mirror_form = MirrorRequestForm(data=data)
+        mirror_url1_form = MirrorUrlForm(data={
+            "url": data.get("url1-url", None),
+            "country": data.get("url1-country", None),
+            "bandwidth": data.get("url1-bandwidth", None),
+            "active": data.get("url1-active", None)})
+        mirror_url2_form = MirrorUrlForm(data={
+            "url": data.get("url2-url", None),
+            "country": data.get("url2-country", None),
+            "bandwidth": data.get("url2-bandwidth", None),
+            "active": data.get("url2-active", None)})
+        mirror_url3_form = MirrorUrlForm(data={
+            "url": data.get("url3-url", None),
+            "country": data.get("url3-country", None),
+            "bandwidth": data.get("url3-bandwidth", None),
+            "active": data.get("url3-active", None)})
+        rsync_form = MirrorRsyncForm(data=data)
+
+        if mirror_form.is_valid() \
+                and mirror_url1_form.is_valid() \
+                and mirror_url2_form.is_valid() \
+                and mirror_url3_form.is_valid() \
+                and rsync_form.is_valid():
+            # TODO make this in a transaction
+            mirror = mirror_form.save()
+            mirror_url1 = mirror_url1_form.save(commit=False)
+            mirror_url2 = mirror_url2_form.save(commit=False)
+            mirror_url3 = mirror_url3_form.save(commit=False)
+            rsync = rsync_form.save(commit=False)
+            mirror_url1.mirror = mirror
+            mirror_url1.save()
+            mirror_url2.mirror = mirror
+            mirror_url2.save()
+            mirror_url3.mirror = mirror
+            mirror_url3.save()
+            rsync.mirror = mirror
+            rsync.save()
     else:
-        form1 = MirrorRequestForm()
-        url1 = MirrorUrlForm()
-        url2 = MirrorUrlForm()
-        url3 = MirrorUrlForm()
-        rsync = MirrorRsyncForm()
+        mirror_form = MirrorRequestForm()
+        mirror_url1_form = MirrorUrlForm(prefix="url1")
+        mirror_url2_form = MirrorUrlForm(prefix="url2")
+        mirror_url3_form = MirrorUrlForm(prefix="url3")
+        rsync_form = MirrorRsyncForm()
 
     return render(
         request,
         'mirrors/mirror_submit.html',
         {
-            'submission_form1': form1,
-            'url1': url1,
-            'url2': url2,
-            'url3': url3,
-            'rsync' : rsync
+            'submission_form1': mirror_form,
+            'url1': mirror_url1_form,
+            'url2': mirror_url2_form,
+            'url3': mirror_url3_form,
+            'rsync': rsync_form
         }
     )
 
