@@ -2,15 +2,102 @@ from operator import attrgetter, itemgetter
 
 from django import forms
 from django.db.models import Q
-from django.forms.widgets import SelectMultiple, CheckboxSelectMultiple
+from django.forms.widgets import (
+    Select,
+    SelectMultiple,
+    CheckboxSelectMultiple,
+    TextInput,
+    EmailInput
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
 
-from ..models import MirrorUrl, MirrorProtocol
+from ..models import Mirror, MirrorUrl, MirrorProtocol
 from ..utils import get_mirror_statuses
 
 import random
+
+
+# This is populated later, and re-populated every refresh
+# This was the only way to get 3 different examples without
+# changing the models.py
+url_examples = []
+
+
+class MirrorRequestForm(forms.ModelForm):
+    upstream = forms.ModelChoiceField(
+        queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
+        required=False)
+
+    class Meta:
+        model = Mirror
+        fields = ('name', 'tier', 'upstream', 'admin_email', 'alternate_email',
+                  'isos', 'rsync_user', 'rsync_password', 'notes')
+
+    def __init__(self, *args, **kwargs):
+        super(MirrorRequestForm, self).__init__(*args, **kwargs)
+        fields = self.fields
+        fields['name'].widget.attrs.update({'placeholder': 'Ex: mirror.argentina.co'})
+        fields['rsync_user'].widget.attrs.update({'placeholder': 'Optional'})
+        fields['rsync_password'].widget.attrs.update({'placeholder': 'Optional'})
+        fields['notes'].widget.attrs.update({'placeholder': 'Ex: Hosted by ISP GreatISO.bg'})
+
+    def as_div(self):
+        "Returns this form rendered as HTML <divs>s."
+        return self._html_output(
+            normal_row=u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
+            error_row=u'%s',
+            row_ender='</div>',
+            help_text_html=u' <span class="helptext">%s</span>',
+            errors_on_separate_row=True)
+
+
+class MirrorUrlForm(forms.ModelForm):
+    class Meta:
+        model = MirrorUrl
+        fields = ('url', 'country', 'bandwidth', 'active')
+
+    def __init__(self, *args, **kwargs):
+        global url_examples
+
+        super(MirrorUrlForm, self).__init__(*args, **kwargs)
+        fields = self.fields
+
+        if len(url_examples) == 0:
+            url_examples = [
+                'Ex: http://mirror.argentina.co/archlinux',
+                'Ex: https://mirror.argentina.co/archlinux',
+                'Ex: rsync://mirror.argentina.co/archlinux'
+            ]
+
+        fields['url'].widget.attrs.update({'placeholder': url_examples.pop()})
+
+    def clean_url(self):
+        # is this a valid-looking URL?
+        url_parts = urlparse(self.cleaned_data["url"])
+        if not url_parts.scheme:
+            raise forms.ValidationError("No URL scheme (protocol) provided.")
+        if not url_parts.netloc:
+            raise forms.ValidationError("No URL host provided.")
+        if url_parts.params or url_parts.query or url_parts.fragment:
+            raise forms.ValidationError(
+                "URL parameters, query, and fragment elements are not supported.")
+        # ensure we always save the URL with a trailing slash
+        path = url_parts.path
+        if not path.endswith('/'):
+            path += '/'
+        url = urlunsplit((url_parts.scheme, url_parts.netloc, path, '', ''))
+        return url
+
+    def as_div(self):
+        "Returns this form rendered as HTML <divs>s."
+        return self._html_output(
+            normal_row=u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
+            error_row=u'%s',
+            row_ender='</div>',
+            help_text_html=u' <span class="helptext">%s</span>',
+            errors_on_separate_row=True)
 
 
 class MirrorlistForm(forms.Form):
@@ -126,5 +213,34 @@ def find_mirrors_simple(request, protocol):
         return redirect('mirrorlist_simple', 'http', permanent=True)
     proto = get_object_or_404(MirrorProtocol, protocol=protocol)
     return find_mirrors(request, protocols=[proto])
+
+def submit_mirror(request):
+    # if request.method == 'POST' or len(request.GET) > 0:
+    #     data = request.POST if request.method == 'POST' else request.GET
+    #     form1 = MirrorUrlForm(data=data)
+    #     if form.is_valid():
+    #         countries = form.cleaned_data['country']
+    #         protocols = form.cleaned_data['protocol']
+    #         use_status = form.cleaned_data['use_mirror_status']
+    #         ipv4 = '4' in form.cleaned_data['ip_version']
+    #         ipv6 = '6' in form.cleaned_data['ip_version']
+    #         return find_mirrors(request, countries, protocols,
+    #                             use_status, ipv4, ipv6)
+    # else:
+    form1 = MirrorRequestForm()
+    url1 = MirrorUrlForm()
+    url2 = MirrorUrlForm()
+    url3 = MirrorUrlForm()
+
+    return render(
+        request,
+        'mirrors/mirror_submit.html',
+        {
+            'submission_form1': form1,
+            'url1': url1,
+            'url2': url2,
+            'url3': url3
+        }
+    )
 
 # vim: set ts=4 sw=4 et:

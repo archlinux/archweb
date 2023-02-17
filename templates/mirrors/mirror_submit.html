@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load package_extras %}
+{% block title %}Arch Linux - Pacman Mirrorlist Generator{% endblock %}
+
+{% block content %}
+<div id="mirrorlist-gen" class="box">
+
+    <h2>Mirror Request</h2>
+
+    <p>This page is meant as a replacement of the old way of registring as a Tier 1 or Tier 2 mirror. Previously this was done through <a href="https://bugs.archlinux.org/index.php?string=&project=1&search_name=&type%5B%5D=&sev%5B%5D=&pri%5B%5D=&due%5B%5D=&reported%5B%5D=&cat%5B%5D=43&status%5B%5D=open&percent%5B%5D=&opened=&dev=&closed=&duedatefrom=&duedateto=&changedfrom=&changedto=&openedfrom=&openedto=&closedfrom=&closedto=&do=index">https://bugs.archlinux.org</a> and would require manual intervention from the mirror maintainer(s). This process is now semi-automated and various checks against your mirror will be performed when submitting via the below form.</p>
+
+    <h3>Available mirrors</h3>
+
+    <p>Below are direct links to the two different tiers you will need to be acquainted with.<p>
+
+    <ul>
+        <li><a href="/mirrors/tier/1/">Tier 1 mirrors</a></li>
+        <li><a href="/mirrors/tier/2/">Tier 2 mirrors</a></li>
+    </ul>
+
+    <h3>Mirror information</h3>
+
+    <p>Before you can submit a <b>Tier 1</b> request the mirror in question must first be a registered <b>Tier 2</b> for a certain amount of time with proven reliablity. Once the submitted information is verified the mirror will be visible under the appropriate tier list above. This process usually takes 5 minutes.</p>
+
+    <form id="list-generator" method="get">
+        {{ submission_form1.as_div }}
+        {{ url1.as_div }}
+        {{ url2.as_div }}
+        {{ url3.as_div }}
+        <p><label></label> <input type="submit" value="Submit Request" /></p>
+    </form>
+</div>
+{% endblock %}
+
