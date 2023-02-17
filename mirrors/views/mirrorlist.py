@@ -1,4 +1,5 @@
 from operator import attrgetter, itemgetter
+from urllib.parse import urlparse, urlunsplit
 
 from django import forms
 from django.db.models import Q
@@ -13,7 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
 
-from ..models import Mirror, MirrorUrl, MirrorProtocol
+from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync
 from ..utils import get_mirror_statuses
 
 import random
@@ -27,8 +28,12 @@ url_examples = []
 
 class MirrorRequestForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
-        queryset=Mirror.objects.filter(tier__gte=0, tier__lte=1),
-        required=False)
+        queryset=Mirror.objects.filter(
+            tier__gte=0,
+            tier__lte=1
+        ),
+        required=False
+    )
 
     class Meta:
         model = Mirror
@@ -89,6 +94,21 @@ class MirrorUrlForm(forms.ModelForm):
             path += '/'
         url = urlunsplit((url_parts.scheme, url_parts.netloc, path, '', ''))
         return url
+
+    def as_div(self):
+        "Returns this form rendered as HTML <divs>s."
+        return self._html_output(
+            normal_row=u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
+            error_row=u'%s',
+            row_ender='</div>',
+            help_text_html=u' <span class="helptext">%s</span>',
+            errors_on_separate_row=True)
+
+
+class MirrorRsyncForm(forms.ModelForm):
+    class Meta:
+        model = MirrorRsync
+        fields = ('ip',)
 
     def as_div(self):
         "Returns this form rendered as HTML <divs>s."
@@ -215,22 +235,30 @@ def find_mirrors_simple(request, protocol):
     return find_mirrors(request, protocols=[proto])
 
 def submit_mirror(request):
-    # if request.method == 'POST' or len(request.GET) > 0:
-    #     data = request.POST if request.method == 'POST' else request.GET
-    #     form1 = MirrorUrlForm(data=data)
-    #     if form.is_valid():
-    #         countries = form.cleaned_data['country']
-    #         protocols = form.cleaned_data['protocol']
-    #         use_status = form.cleaned_data['use_mirror_status']
-    #         ipv4 = '4' in form.cleaned_data['ip_version']
-    #         ipv6 = '6' in form.cleaned_data['ip_version']
-    #         return find_mirrors(request, countries, protocols,
-    #                             use_status, ipv4, ipv6)
-    # else:
-    form1 = MirrorRequestForm()
-    url1 = MirrorUrlForm()
-    url2 = MirrorUrlForm()
-    url3 = MirrorUrlForm()
+    if request.method == 'POST' or len(request.GET) > 0:
+        data = request.POST if request.method == 'POST' else request.GET
+        
+        form1 = MirrorRequestForm(data=data)
+        url1 = MirrorUrlForm(data=data)
+        url2 = MirrorUrlForm(data=data)
+        url3 = MirrorUrlForm(data=data)
+        rsync = MirrorRsyncForm(data=data)
+
+        if form1.is_valid() and url1.is_valid() and url2.is_valid() and url3.is_valid() and rsync.is_valid():
+            print("Successful")
+            # countries = form.cleaned_data['country']
+            # protocols = form.cleaned_data['protocol']
+            # use_status = form.cleaned_data['use_mirror_status']
+            # ipv4 = '4' in form.cleaned_data['ip_version']
+            # ipv6 = '6' in form.cleaned_data['ip_version']
+            # return find_mirrors(request, countries, protocols,
+            #                     use_status, ipv4, ipv6)
+    else:
+        form1 = MirrorRequestForm()
+        url1 = MirrorUrlForm()
+        url2 = MirrorUrlForm()
+        url3 = MirrorUrlForm()
+        rsync = MirrorRsyncForm()
 
     return render(
         request,
@@ -239,7 +267,8 @@ def submit_mirror(request):
             'submission_form1': form1,
             'url1': url1,
             'url2': url2,
-            'url3': url3
+            'url3': url3,
+            'rsync' : rsync
         }
     )
 
