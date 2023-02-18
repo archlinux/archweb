@@ -1,8 +1,12 @@
 from operator import attrgetter, itemgetter
 from urllib.parse import urlparse, urlunsplit
+from functools import partial
 
 from django import forms
+from django.db import DatabaseError, transaction
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.template import loader
 from django.forms.widgets import (
     Select,
     SelectMultiple,
@@ -37,7 +41,7 @@ class MirrorRequestForm(forms.ModelForm):
     class Meta:
         model = Mirror
         fields = ('name', 'tier', 'upstream', 'admin_email', 'alternate_email',
-                  'isos', 'rsync_user', 'rsync_password', 'notes')
+                  'isos', 'active', 'public', 'rsync_user', 'rsync_password', 'notes')
 
     def __init__(self, *args, **kwargs):
         super(MirrorRequestForm, self).__init__(*args, **kwargs)
@@ -108,6 +112,11 @@ class MirrorRsyncForm(forms.ModelForm):
     class Meta:
         model = MirrorRsync
         fields = ('ip',)
+
+    def __init__(self, *args, **kwargs):
+        super(MirrorRsyncForm, self).__init__(*args, **kwargs)
+        fields = self.fields
+        fields['ip'].widget.attrs.update({'placeholder': 'Ex: 1.2.4.5'})
 
     def as_div(self):
         "Returns this form rendered as HTML <divs>s."
@@ -234,47 +243,70 @@ def find_mirrors_simple(request, protocol):
     return find_mirrors(request, protocols=[proto])
 
 
+def mail_mirror_admins(data):
+    template = loader.get_template('mirrors/new_mirror_mail_template.txt')
+    for mirror_maintainer in ['anton@hvornum.se', 'pitastrudl@gmail.com']:
+        send_mail('A mirror entry was submitted: \'%s\'' % data.get('name'),
+                      template.render(data),
+                      'Arch Mirror Notification <mirrors@archlinux.org>',
+                      [mirror_maintainer],
+                      fail_silently=True)
+
+
 def submit_mirror(request):
     if request.method == 'POST' or len(request.GET) > 0:
         data = request.POST if request.method == 'POST' else request.GET
 
+        # data is immutable, need to be copied and modified to enforce
+        # active and public is False.
+        tmp = data.copy()
+        tmp['active'] = False
+        tmp['public'] = False
+        data = tmp
+
         mirror_form = MirrorRequestForm(data=data)
-        mirror_url1_form = MirrorUrlForm(data={
-            "url": data.get("url1-url", None),
-            "country": data.get("url1-country", None),
-            "bandwidth": data.get("url1-bandwidth", None),
-            "active": data.get("url1-active", None)})
-        mirror_url2_form = MirrorUrlForm(data={
-            "url": data.get("url2-url", None),
-            "country": data.get("url2-country", None),
-            "bandwidth": data.get("url2-bandwidth", None),
-            "active": data.get("url2-active", None)})
-        mirror_url3_form = MirrorUrlForm(data={
-            "url": data.get("url3-url", None),
-            "country": data.get("url3-country", None),
-            "bandwidth": data.get("url3-bandwidth", None),
-            "active": data.get("url3-active", None)})
+        mirror_url1_form = MirrorUrlForm(data=data, prefix="url1")
+        if data.get('url2-url') != '':
+            mirror_url2_form = MirrorUrlForm(data=data, prefix="url2")
+        else:
+            mirror_url2_form = MirrorUrlForm(prefix="url2")
+        if data.get('url3-url') != '':
+            mirror_url3_form = MirrorUrlForm(data=data, prefix="url3")
+        else:
+            mirror_url3_form = MirrorUrlForm(prefix="url3")
         rsync_form = MirrorRsyncForm(data=data)
 
-        if mirror_form.is_valid() \
-                and mirror_url1_form.is_valid() \
-                and mirror_url2_form.is_valid() \
-                and mirror_url3_form.is_valid() \
-                and rsync_form.is_valid():
-            # TODO make this in a transaction
-            mirror = mirror_form.save()
-            mirror_url1 = mirror_url1_form.save(commit=False)
-            mirror_url2 = mirror_url2_form.save(commit=False)
-            mirror_url3 = mirror_url3_form.save(commit=False)
-            rsync = rsync_form.save(commit=False)
-            mirror_url1.mirror = mirror
-            mirror_url1.save()
-            mirror_url2.mirror = mirror
-            mirror_url2.save()
-            mirror_url3.mirror = mirror
-            mirror_url3.save()
-            rsync.mirror = mirror
-            rsync.save()
+        mirror_url2_form.fields['url'].required = False
+        mirror_url3_form.fields['url'].required = False
+        rsync_form.fields['ip'].required = False
+
+        if mirror_form.is_valid() and mirror_url1_form.is_valid():
+            try:
+                with transaction.atomic():
+                    transaction.on_commit(partial(mail_mirror_admins, data))
+
+                    mirror = mirror_form.save()
+                    mirror_url1 = mirror_url1_form.save(commit=False)
+                    mirror_url1.mirror = mirror
+                    mirror_url1.save()
+
+                    if data.get('url2-url') != '' and mirror_url2_form.is_valid():
+                        mirror_url2 = mirror_url2_form.save(commit=False)
+                        mirror_url2.mirror = mirror
+                        mirror_url2.save()
+                    if data.get('url3-url') != '' and mirror_url3_form.is_valid():
+                        mirror_url3 = mirror_url3_form.save(commit=False)
+                        mirror_url3.mirror = mirror
+                        mirror_url3.save()
+
+                    if data.get('ip') != '' and rsync.is_valid():
+                        rsync = rsync_form.save(commit=False)
+                        rsync.mirror = mirror
+                        rsync.save()
+
+            except DatabaseError as error:
+                print(error)
+
     else:
         mirror_form = MirrorRequestForm()
         mirror_url1_form = MirrorUrlForm(prefix="url1")
@@ -282,15 +314,19 @@ def submit_mirror(request):
         mirror_url3_form = MirrorUrlForm(prefix="url3")
         rsync_form = MirrorRsyncForm()
 
+        mirror_url2_form.fields['url'].required = False
+        mirror_url3_form.fields['url'].required = False
+        rsync_form.fields['ip'].required = False
+
     return render(
         request,
         'mirrors/mirror_submit.html',
         {
-            'submission_form1': mirror_form,
-            'url1': mirror_url1_form,
-            'url2': mirror_url2_form,
-            'url3': mirror_url3_form,
-            'rsync': rsync_form
+            'mirror_form': mirror_form,
+            'mirror_url1_form': mirror_url1_form,
+            'mirror_url2_form': mirror_url2_form,
+            'mirror_url3_form': mirror_url3_form,
+            'rsync_form': rsync_form
         }
     )
 

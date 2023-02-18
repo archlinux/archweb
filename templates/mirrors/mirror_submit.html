@@ -20,21 +20,22 @@
 
     <h3>Mirror information</h3>
 
-    {% if not submission_form1.is_valid %}
-    <p>Before you can submit a <b>Tier 1</b> request the mirror in question must first be a registered <b>Tier 2</b> for a certain amount of time with proven reliablity. Once the submitted information is verified the mirror will be visible under the appropriate tier list above. This process usually takes 5 minutes.</p>
-
-    <form id="list-generator" method="get">
-        {{ submission_form1.as_div }}
-        {{ url1.as_div }}
-        {{ url2.as_div }}
-        {{ url3.as_div }}
-        {{ rsync.as_div }}
-        <p><label></label> <input type="submit" value="Submit Request" /></p>
-    </form>
-    {% else %}
+    {% if mirror_form.is_valid or mirror_url1_form.is_valid %}
     <code>
     Your request have successfully been submitted and should be visible within 5 minutes in the mirrorlist.
     </code>
+    {% else %}
+    <p>Before you can submit a <b>Tier 1</b> request the mirror in question must first be a registered <b>Tier 2</b> for a certain amount of time with proven reliablity. Once the submitted information is verified the mirror will be visible under the appropriate tier list above. This process usually takes 5 minutes.</p>
+
+    <form id="list-generator" method="get">
+        {{ mirror_form.as_div }}
+        {{ mirror_url1_form.as_div }}
+        {{ mirror_url2_form.as_div }}
+        {{ mirror_url3_form.as_div }}
+        <p>If you are registring a <b>Tier 1</b> mirror, you need to supply the static IP to the machine that will be using rsync towards the Tier 0 mirror. This is so we can allow it to sync.
+        {{ rsync_form.as_div }}
+        <p><label></label> <input type="submit" value="Submit Request" /></p>
+    </form>
     {% endif %}
 </div>
 {% endblock %}
