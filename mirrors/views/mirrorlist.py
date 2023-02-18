@@ -9,11 +9,8 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.template import loader
 from django.forms.widgets import (
-    Select,
     SelectMultiple,
-    CheckboxSelectMultiple,
-    TextInput,
-    EmailInput
+    CheckboxSelectMultiple
 )
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404, redirect, render
@@ -22,7 +19,7 @@ from django_countries import countries
 from django.contrib.auth.models import Group, User
 from captcha.fields import CaptchaField
 
-from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync, MirrorLog
+from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync
 from ..utils import get_mirror_statuses, get_mirror_errors
 
 import random
@@ -34,6 +31,7 @@ url_examples = []
 TIER_1_MAX_ERROR_RATE = 2
 TIER_1_ERROR_TIME_RANGE = 30
 TIER_1_MIN_DAYS_AS_TIER_2 = 60
+
 
 class CaptchaForm(forms.Form):
     captcha = CaptchaField()
@@ -47,6 +45,7 @@ class CaptchaForm(forms.Form):
             row_ender='</div>',
             help_text_html=u' <span class="helptext">%s</span>',
             errors_on_separate_row=True)
+
 
 class MirrorRequestForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
@@ -271,10 +270,11 @@ def mail_mirror_admins(data):
 
     for maintainer in mirror_maintainers:
         send_mail('A mirror entry was submitted: \'%s\'' % data.get('name'),
-                      template.render(data),
-                      'Arch Mirror Notification <mirrors@archlinux.org>',
-                      [maintainer.email],
-                      fail_silently=True)
+                  template.render(data),
+                  'Arch Mirror Notification <mirrors@archlinux.org>',
+                  [maintainer.email],
+                  fail_silently=True)
+
 
 def validate_tier_1_request(data):
     if data.get('tier') != '1':
@@ -298,16 +298,6 @@ def validate_tier_1_request(data):
     if len(main_url) <= 0:
         return False
 
-    # DEBUG entry:
-    MirrorLog.objects.create(
-        url=main_url[0],
-        location=None, 
-        check_time=now(), 
-        last_sync=None, 
-        duration=0.2, is_success=False, error="Test - 404"
-    )
-    # /DEBUG enry
-
     error_logs = get_mirror_errors(mirror_id=tier_2_mirror[0].id, cutoff=timedelta(days=TIER_1_ERROR_TIME_RANGE),
                                    show_all=True)
 
@@ -322,10 +312,10 @@ def validate_tier_1_request(data):
     # Final check, is the mirror old enough to qualify for Tier 1?
     print(tier_2_mirror[0].created)
 
-    return found_mirror
+    return tier_2_mirror
+
 
 def submit_mirror(request):
-
     if request.method == 'POST' or len(request.GET) > 0:
         data = request.POST if request.method == 'POST' else request.GET
 
@@ -349,7 +339,7 @@ def submit_mirror(request):
             mirror_url3_form = MirrorUrlForm(data=data, prefix="url3")
         else:
             mirror_url3_form = MirrorUrlForm(prefix="url3")
-        
+
         rsync_form = MirrorRsyncForm(data=data)
 
         mirror_url2_form.fields['url'].required = False
@@ -414,7 +404,7 @@ def submit_mirror(request):
         request,
         'mirrors/mirror_submit.html',
         {
-            'captcha' : captcha_form,
+            'captcha': captcha_form,
             'mirror_form': mirror_form,
             'mirror_url1_form': mirror_url1_form,
             'mirror_url2_form': mirror_url2_form,
