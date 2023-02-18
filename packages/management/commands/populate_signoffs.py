@@ -2,20 +2,21 @@
 """
 populate_signoffs command
 
-Pull the latest commit message from SVN for a given package that is
+Pull the latest commit message from Gitlab for a given package that is
 signoff-eligible and does not have an existing comment attached.
 
 Usage: ./manage.py populate_signoffs
 """
 
-from datetime import datetime
 import logging
-import subprocess
-from xml.etree.ElementTree import XML
+import urllib.parse
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+import requests
+
+from main.utils import gitlab_project_name_to_path
 from ...models import FakeSignoffSpecification, SignoffSpecification, Signoff
 from ...utils import get_signoff_groups
 from devel.utils import UserFinder
@@ -25,7 +26,7 @@ logger = logging.getLogger("command")
 
 
 class Command(BaseCommand):
-    help = """Pull the latest commit message from SVN for a given package that
+    help = """Pull the latest commit message from Git for a given package that
 is signoff-eligible and does not have an existing comment attached"""
 
     def handle(self, **options):
@@ -41,40 +42,6 @@ is signoff-eligible and does not have an existing comment attached"""
         cleanup_signoff_comments()
 
 
-def svn_log(pkgbase, repo):
-    '''Retrieve the most recent SVN log entry for the given pkgbase and
-    repository. The configured setting SVN_BASE_URL is used along with the
-    svn_root for each repository to form the correct URL.'''
-    path = '%s%s/%s/trunk/' % (settings.SVN_BASE_URL, repo.svn_root, pkgbase)
-    cmd = ['svn', 'log', '--limit=1', '--xml', path]
-    log_data = subprocess.check_output(cmd)
-    # the XML format is very very simple, especially with only one revision
-    xml = XML(log_data)
-    revision = int(xml.find('logentry').get('revision'))
-    date = datetime.strptime(xml.findtext('logentry/date'),
-                             '%Y-%m-%dT%H:%M:%S.%fZ')
-    return {
-        'revision': revision,
-        'date': date,
-        'author': xml.findtext('logentry/author'),
-        'message': xml.findtext('logentry/msg'),
-    }
-
-
-def cached_svn_log(pkgbase, repo):
-    '''Retrieve the cached version of the SVN log if possible, else delegate to
-    svn_log() to do the work and cache the result.'''
-    key = (pkgbase, repo)
-    if key in cached_svn_log.cache:
-        return cached_svn_log.cache[key]
-    log = svn_log(pkgbase, repo)
-    cached_svn_log.cache[key] = log
-    return log
-
-
-cached_svn_log.cache = {}
-
-
 def create_specification(package, log, finder):
     trimmed_message = log['message'].strip()
     required = package.arch.required_signoffs
@@ -82,8 +49,34 @@ def create_specification(package, log, finder):
                                 pkgver=package.pkgver, pkgrel=package.pkgrel,
                                 epoch=package.epoch, arch=package.arch, repo=package.repo,
                                 comments=trimmed_message, required=required)
-    spec.user = finder.find_by_username(log['author'])
+    spec.user = finder.find_by_email(log['author'])
     return spec
+
+
+def get_last_log(repo, pkgbase):
+    # Gitlab requires the path to the gitlab repo to be html encoded and project name encoded in a different special way
+    pkgrepo = urllib.parse.quote_plus(f'{settings.GITLAB_PACKAGE_REPO}/') + gitlab_project_name_to_path(pkgbase)
+    url = f'https://{settings.GITLAB_INSTANCE}/api/v4/projects/{pkgrepo}/repository/tags'
+
+    logger.debug("getting tags for %s (%s) - %s", pkgbase, repo, url)
+    r = requests.get(url)
+    if r.status_code != 200:
+        # https://gitlab.archlinux.org/api/v4/projects/bot-test%2fpackages%2ftransmission/repository/tags
+        logger.error("error getting Git tags for %s (%s)", pkgbase, repo)
+        return None
+
+    tags = r.json()
+    if len(tags) == 0:
+        logger.error("No tags found for pkgbase %s (%s)", pkgbase, repo)
+        return None
+
+    tag = tags[0]
+    log = {
+        'message': tag['commit']['message'],
+        'author': tag['commit']['committer_email'],
+    }
+
+    return log
 
 
 def add_signoff_comments():
@@ -97,14 +90,16 @@ def add_signoff_comments():
         if not group.default_spec:
             continue
 
-        logger.debug("getting SVN log for %s (%s)", group.pkgbase, group.repo)
+        log = get_last_log(group.repo, group.pkgbase)
+        if log is None:
+            continue
+
         try:
-            log = cached_svn_log(group.pkgbase, group.repo)
-            logger.info("creating spec with SVN message for %s", group.pkgbase)
+            logger.info("creating spec with Git commit message for %s", group.pkgbase)
             spec = create_specification(group.packages[0], log, finder)
             spec.save()
         except: # noqa
-            logger.exception("error getting SVN log for %s", group.pkgbase)
+            logger.exception("error getting Git commits for %s", group.pkgbase)
 
 
 def cleanup_signoff_comments():
