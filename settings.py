@@ -185,6 +185,8 @@ PGP_SERVER_SECURE = True
 SVN_BASE_URL = 'svn://svn.archlinux.org/'
 
 GITLAB_PACKAGES_REPO = 'https://gitlab.archlinux.org/bot-test/packages'
+GITLAB_PACKAGE_REPO = 'bot-test/packages'
+GITLAB_INSTANCE = 'gitlab.archlinux.org'
 
 # How long to keep mirrorlog's in days
 MIRRORLOG_RETENTION_PERIOD = 365
