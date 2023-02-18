@@ -19,6 +19,7 @@ from django.utils.timezone import now
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
+from django.contrib.auth.models import Group, User
 
 from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync, MirrorLog
 from ..utils import get_mirror_statuses, get_mirror_errors
@@ -249,11 +250,15 @@ def find_mirrors_simple(request, protocol):
 
 def mail_mirror_admins(data):
     template = loader.get_template('mirrors/new_mirror_mail_template.txt')
-    for mirror_maintainer in ['anton@hvornum.se', 'pitastrudl@gmail.com']:
+
+    mirror_maintainer_group = Group.objects.filter(name='Mirror Maintainers')
+    mirror_maintainers = User.objects.filter(is_active=True).filter(groups__in=mirror_maintainer_group)
+
+    for maintainer in mirror_maintainers:
         send_mail('A mirror entry was submitted: \'%s\'' % data.get('name'),
                       template.render(data),
                       'Arch Mirror Notification <mirrors@archlinux.org>',
-                      [mirror_maintainer],
+                      [maintainer.email],
                       fail_silently=True)
 
 def validate_tier_1(data):
