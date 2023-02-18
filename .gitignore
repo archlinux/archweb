@@ -6,7 +6,6 @@ local_settings.py
 archweb.db
 archweb.db-*
 database.db
-/*.tar.gz
 tags
 collected_static/
 testing/
