@@ -325,10 +325,11 @@ def validate_tier_1_request(data):
     return found_mirror
 
 def submit_mirror(request):
-    captcha_form = CaptchaForm()
 
     if request.method == 'POST' or len(request.GET) > 0:
         data = request.POST if request.method == 'POST' else request.GET
+
+        captcha_form = CaptchaForm(data=data)
 
         # data is immutable, need to be copied and modified to enforce
         # active and public is False.
@@ -368,7 +369,7 @@ def submit_mirror(request):
                     }
                 )
         else:
-            if mirror_form.is_valid() and mirror_url1_form.is_valid():
+            if captcha_form.is_valid() and mirror_form.is_valid() and mirror_url1_form.is_valid():
                 try:
                     with transaction.atomic():
                         transaction.on_commit(partial(mail_mirror_admins, data))
@@ -396,6 +397,7 @@ def submit_mirror(request):
                     print(error)
 
     else:
+        captcha_form = CaptchaForm()
         mirror_form = MirrorRequestForm()
         mirror_url1_form = MirrorUrlForm(prefix="url1")
         mirror_url2_form = MirrorUrlForm(prefix="url2")
