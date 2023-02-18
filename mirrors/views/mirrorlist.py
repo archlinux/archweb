@@ -28,7 +28,7 @@ import random
 # This was the only way to get 3 different examples without
 # changing the models.py
 url_examples = []
-TIER_1_MAX_ERROR_RATE = 2
+TIER_1_MAX_ERROR_RATE = 10
 TIER_1_ERROR_TIME_RANGE = 30
 TIER_1_MIN_DAYS_AS_TIER_2 = 60
 
