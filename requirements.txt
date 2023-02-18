@@ -1,4 +1,4 @@
--e git+git://github.com/fredj/cssmin.git@master#egg=cssmin
+-e git+https://github.com/fredj/cssmin.git@master#egg=cssmin
 Django==4.1.6
 IPy==1.1
 Markdown==3.3.7
