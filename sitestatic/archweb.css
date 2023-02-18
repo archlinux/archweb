@@ -72,6 +72,15 @@ code {
     padding: 0.15em 0.25em;
 }
 
+.error {
+    font-family: monospace, monospace;
+    padding: 0.15em 0.25em;
+    overflow: auto;
+    color: #a94442;
+    background: #f2dede;
+    border: 1px solid #ebccd1;
+}
+
 pre {
     font-family: monospace, monospace;
     border: 1px solid #bdb;

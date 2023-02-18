@@ -1,6 +1,7 @@
 from operator import attrgetter, itemgetter
 from urllib.parse import urlparse, urlunsplit
 from functools import partial
+from datetime import timedelta
 
 from django import forms
 from django.db import DatabaseError, transaction
@@ -14,12 +15,13 @@ from django.forms.widgets import (
     TextInput,
     EmailInput
 )
+from django.utils.timezone import now
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
 
-from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync
-from ..utils import get_mirror_statuses
+from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync, MirrorLog
+from ..utils import get_mirror_statuses, get_mirror_errors
 
 import random
 
@@ -27,7 +29,8 @@ import random
 # This was the only way to get 3 different examples without
 # changing the models.py
 url_examples = []
-
+TIER_1_MAX_ERROR_RATE = 2
+TIER_1_ERROR_TIME_RANGE = 30
 
 class MirrorRequestForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
@@ -47,9 +50,10 @@ class MirrorRequestForm(forms.ModelForm):
         super(MirrorRequestForm, self).__init__(*args, **kwargs)
         fields = self.fields
         fields['name'].widget.attrs.update({'placeholder': 'Ex: mirror.argentina.co'})
+        fields['alternate_email'].widget.attrs.update({'placeholder': 'Optional'})
         fields['rsync_user'].widget.attrs.update({'placeholder': 'Optional'})
         fields['rsync_password'].widget.attrs.update({'placeholder': 'Optional'})
-        fields['notes'].widget.attrs.update({'placeholder': 'Ex: Hosted by ISP GreatISO.bg'})
+        fields['notes'].widget.attrs.update({'placeholder': 'Optional (Ex: Hosted by ISP GreatISO.bg)'})
 
     def as_div(self):
         "Returns this form rendered as HTML <divs>s."
@@ -252,6 +256,46 @@ def mail_mirror_admins(data):
                       [mirror_maintainer],
                       fail_silently=True)
 
+def validate_tier_1(data):
+    if data.get('tier') != '1':
+        return None
+
+    # If there is no Tier 2 with the same name,
+    # We invalidate this Tier 1.
+    if not len((found_mirror := Mirror.objects.filter(name=data.get('name'), tier=2, active=True, public=True))):
+        return False
+
+    main_url = MirrorUrl.objects.filter(
+        url__startswith=data.get('url1-url'),
+        mirror=found_mirror[0]
+    )
+
+    # If the Tier 2 and Tier 1 does not have matching URL,
+    # it requires manual intervention as it's not a direct upgrade.
+    if len(main_url) <= 0:
+        return False
+
+    # DEBUG entry:
+    MirrorLog.objects.create(
+        url=main_url[0],
+        location=None, 
+        check_time=now(), 
+        last_sync=None, 
+        duration=0.2, is_success=False, error="Test - 404"
+    )
+
+    error_logs = get_mirror_errors(mirror_id=found_mirror[0].id, cutoff=timedelta(days=TIER_1_ERROR_TIME_RANGE),
+                                   show_all=True)
+
+    if error_logs:
+        num_o_errors = 0
+        for error in error_logs:
+            num_o_errors += error['error_count']
+
+            if num_o_errors >= TIER_1_MAX_ERROR_RATE:
+                return False
+
+    return found_mirror
 
 def submit_mirror(request):
     if request.method == 'POST' or len(request.GET) > 0:
@@ -265,6 +309,7 @@ def submit_mirror(request):
         data = tmp
 
         mirror_form = MirrorRequestForm(data=data)
+
         mirror_url1_form = MirrorUrlForm(data=data, prefix="url1")
         if data.get('url2-url') != '':
             mirror_url2_form = MirrorUrlForm(data=data, prefix="url2")
@@ -274,38 +319,52 @@ def submit_mirror(request):
             mirror_url3_form = MirrorUrlForm(data=data, prefix="url3")
         else:
             mirror_url3_form = MirrorUrlForm(prefix="url3")
+        
         rsync_form = MirrorRsyncForm(data=data)
 
         mirror_url2_form.fields['url'].required = False
         mirror_url3_form.fields['url'].required = False
         rsync_form.fields['ip'].required = False
 
-        if mirror_form.is_valid() and mirror_url1_form.is_valid():
-            try:
-                with transaction.atomic():
-                    transaction.on_commit(partial(mail_mirror_admins, data))
+        if data.get('tier') == '1':
+            if existing_mirror := validate_tier_1(data):
+                existing_mirror.update(tier=1)
+            else:
+                return render(
+                    request,
+                    'mirrors/mirror_submit_error_upgrading.html',
+                    {
+                        'TIER_1_ERROR_TIME_RANGE': TIER_1_ERROR_TIME_RANGE,
+                        'TIER_1_MAX_ERROR_RATE': TIER_1_MAX_ERROR_RATE,
+                    }
+                )
+        else:
+            if mirror_form.is_valid() and mirror_url1_form.is_valid():
+                try:
+                    with transaction.atomic():
+                        transaction.on_commit(partial(mail_mirror_admins, data))
 
-                    mirror = mirror_form.save()
-                    mirror_url1 = mirror_url1_form.save(commit=False)
-                    mirror_url1.mirror = mirror
-                    mirror_url1.save()
+                        mirror = mirror_form.save()
+                        mirror_url1 = mirror_url1_form.save(commit=False)
+                        mirror_url1.mirror = mirror
+                        mirror_url1.save()
 
-                    if data.get('url2-url') != '' and mirror_url2_form.is_valid():
-                        mirror_url2 = mirror_url2_form.save(commit=False)
-                        mirror_url2.mirror = mirror
-                        mirror_url2.save()
-                    if data.get('url3-url') != '' and mirror_url3_form.is_valid():
-                        mirror_url3 = mirror_url3_form.save(commit=False)
-                        mirror_url3.mirror = mirror
-                        mirror_url3.save()
+                        if data.get('url2-url') != '' and mirror_url2_form.is_valid():
+                            mirror_url2 = mirror_url2_form.save(commit=False)
+                            mirror_url2.mirror = mirror
+                            mirror_url2.save()
+                        if data.get('url3-url') != '' and mirror_url3_form.is_valid():
+                            mirror_url3 = mirror_url3_form.save(commit=False)
+                            mirror_url3.mirror = mirror
+                            mirror_url3.save()
 
-                    if data.get('ip') != '' and rsync.is_valid():
-                        rsync = rsync_form.save(commit=False)
-                        rsync.mirror = mirror
-                        rsync.save()
+                        if data.get('ip') != '' and rsync_form.is_valid():
+                            rsync = rsync_form.save(commit=False)
+                            rsync.mirror = mirror
+                            rsync.save()
 
-            except DatabaseError as error:
-                print(error)
+                except DatabaseError as error:
+                    print(error)
 
     else:
         mirror_form = MirrorRequestForm()
@@ -314,6 +373,8 @@ def submit_mirror(request):
         mirror_url3_form = MirrorUrlForm(prefix="url3")
         rsync_form = MirrorRsyncForm()
 
+        mirror_form.fields['active'].widget = forms.HiddenInput()
+        mirror_form.fields['public'].widget = forms.HiddenInput()
         mirror_url2_form.fields['url'].required = False
         mirror_url3_form.fields['url'].required = False
         rsync_form.fields['ip'].required = False
