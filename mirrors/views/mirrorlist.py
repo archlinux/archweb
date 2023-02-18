@@ -32,6 +32,7 @@ import random
 url_examples = []
 TIER_1_MAX_ERROR_RATE = 2
 TIER_1_ERROR_TIME_RANGE = 30
+TIER_1_MIN_DAYS_AS_TIER_2 = 60
 
 class MirrorRequestForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
@@ -261,18 +262,21 @@ def mail_mirror_admins(data):
                       [maintainer.email],
                       fail_silently=True)
 
-def validate_tier_1(data):
+def validate_tier_1_request(data):
     if data.get('tier') != '1':
         return None
 
     # If there is no Tier 2 with the same name,
     # We invalidate this Tier 1.
-    if not len((found_mirror := Mirror.objects.filter(name=data.get('name'), tier=2, active=True, public=True))):
+    if not len((tier_2_mirror := Mirror.objects.filter(name=data.get('name'), tier=2, active=True, public=True))):
+        return False
+
+    if tier_2_mirror[0].created - now() < timedelta(days=TIER_1_MIN_DAYS_AS_TIER_2):
         return False
 
     main_url = MirrorUrl.objects.filter(
         url__startswith=data.get('url1-url'),
-        mirror=found_mirror[0]
+        mirror=tier_2_mirror[0]
     )
 
     # If the Tier 2 and Tier 1 does not have matching URL,
@@ -288,8 +292,9 @@ def validate_tier_1(data):
         last_sync=None, 
         duration=0.2, is_success=False, error="Test - 404"
     )
+    # /DEBUG enry
 
-    error_logs = get_mirror_errors(mirror_id=found_mirror[0].id, cutoff=timedelta(days=TIER_1_ERROR_TIME_RANGE),
+    error_logs = get_mirror_errors(mirror_id=tier_2_mirror[0].id, cutoff=timedelta(days=TIER_1_ERROR_TIME_RANGE),
                                    show_all=True)
 
     if error_logs:
@@ -299,6 +304,9 @@ def validate_tier_1(data):
 
             if num_o_errors >= TIER_1_MAX_ERROR_RATE:
                 return False
+
+    # Final check, is the mirror old enough to qualify for Tier 1?
+    print(tier_2_mirror[0].created)
 
     return found_mirror
 
@@ -332,7 +340,7 @@ def submit_mirror(request):
         rsync_form.fields['ip'].required = False
 
         if data.get('tier') == '1':
-            if existing_mirror := validate_tier_1(data):
+            if existing_mirror := validate_tier_1_request(data):
                 existing_mirror.update(tier=1)
             else:
                 return render(
