@@ -22,10 +22,10 @@
 
     {% if mirror_form.is_valid or mirror_url1_form.is_valid %}
     <code>
-    Your request have successfully been submitted and should be visible within 5 minutes in the mirrorlist.
+    Your request have successfully been submitted and we will mark the mirror as public and active once we have manually verified the mirror.
     </code>
     {% else %}
-    <p>Before you can submit a <b>Tier 1</b> request the mirror in question must first be a registered <b>Tier 2</b> for a certain amount of time with proven reliablity. Once the submitted information is verified the mirror will be visible under the appropriate tier list above. This process usually takes 5 minutes.</p>
+    <p>Before you can submit a <b>Tier 1</b> request the mirror in question must first be a registered <b>Tier 2</b> for a certain amount of time with proven reliablity. Once the submitted information is verified by the Arch Linux mirror maintainers the mirror will be visible under the appropriate tier list above.</p>
 
     <form id="list-generator" method="get">
         {{ mirror_form.as_div }}
