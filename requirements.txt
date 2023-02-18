@@ -5,6 +5,7 @@ Markdown==3.3.7
 bencode.py==4.0.0
 django-countries==7.3.2
 django-extensions==3.1.3
+django-simple-captcha==0.5.17
 jsmin==3.0.1
 pgpdump==1.5
 parse==1.19.0

@@ -34,6 +34,7 @@
         {{ mirror_url3_form.as_div }}
         <p>If you are registring a <b>Tier 1</b> mirror, you need to supply the static IP to the machine that will be using rsync towards the Tier 0 mirror. This is so we can allow it to sync.
         {{ rsync_form.as_div }}
+        {{ captcha.as_div }}
         <p><label></label> <input type="submit" value="Submit Request" /></p>
     </form>
     {% endif %}

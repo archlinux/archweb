@@ -20,6 +20,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
 from django.contrib.auth.models import Group, User
+from captcha.fields import CaptchaField
 
 from ..models import Mirror, MirrorUrl, MirrorProtocol, MirrorRsync, MirrorLog
 from ..utils import get_mirror_statuses, get_mirror_errors
@@ -33,6 +34,19 @@ url_examples = []
 TIER_1_MAX_ERROR_RATE = 2
 TIER_1_ERROR_TIME_RANGE = 30
 TIER_1_MIN_DAYS_AS_TIER_2 = 60
+
+class CaptchaForm(forms.Form):
+    captcha = CaptchaField()
+
+    def as_div(self):
+        "Returns this form rendered as HTML <divs>s."
+
+        return self._html_output(
+            normal_row=u'<div class="captcha">%(label)s <div class="captcha-input">%(field)s%(help_text)s</div></div>',
+            error_row=u'%s',
+            row_ender='</div>',
+            help_text_html=u' <span class="helptext">%s</span>',
+            errors_on_separate_row=True)
 
 class MirrorRequestForm(forms.ModelForm):
     upstream = forms.ModelChoiceField(
@@ -311,6 +325,8 @@ def validate_tier_1_request(data):
     return found_mirror
 
 def submit_mirror(request):
+    captcha_form = CaptchaForm()
+
     if request.method == 'POST' or len(request.GET) > 0:
         data = request.POST if request.method == 'POST' else request.GET
 
@@ -396,6 +412,7 @@ def submit_mirror(request):
         request,
         'mirrors/mirror_submit.html',
         {
+            'captcha' : captcha_form,
             'mirror_form': mirror_form,
             'mirror_url1_form': mirror_url1_form,
             'mirror_url2_form': mirror_url2_form,

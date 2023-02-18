@@ -135,6 +135,7 @@ INSTALLED_APPS = (
     'public',
     'releng',
     'visualize',
+    'captcha'
 )
 
 # Logging configuration for not getting overspammed

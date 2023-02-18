@@ -110,6 +110,11 @@ urlpatterns.extend([
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
 ])
 
+# Captcha
+urlpatterns.extend([
+    path('captcha/', include('captcha.urls')),
+])
+
 # django-toolbar
 if settings.DEBUG_TOOLBAR:  # pragma: no cover
     import debug_toolbar

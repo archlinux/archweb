@@ -1206,3 +1206,12 @@ ul.signoff-list {
 .pgp-key-ids {
     display: inline-block;
 }
+
+.captcha {
+    display: flex;
+}
+
+.captcha-input {
+    display: flex;
+    flex-direction: column;
+}
