@@ -23,5 +23,20 @@
         <p><label></label> <input title="Save changes" type="submit" value="Save" /></p>
     </form>
 
+    <form id="api-profile-form" enctype="multipart/form-data" method="post" action="">{% csrf_token %}
+        <h3>API token</h3>
+        <p>Token for completing todolist items with for example, rebuild-todo</p>
+        {% if profile.api_token is None %}
+        <fieldset>
+            <input type="hidden" name="api_token" id="api_token" value="generate">
+        </fieldset>
+        <p><label></label> <input title="Generate token" type="submit" value="Generate API Token" /></p>
+        {% else %}
+        <fieldset>
+            <label>Token:</label>
+            {{ profile.api_token }}
+        </fieldset>
+        {% endif %}
+    </form>
 </div>
 {% endblock %}
