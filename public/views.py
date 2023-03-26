@@ -152,12 +152,6 @@ def keys_json(request):
             'group': 'master'
         } for key in master_keys)
 
-    node_list.append({
-        'name': 'CA Cert Signing Authority',
-        'key': 'A31D4F81EF4EBD07B456FA04D2BB0D0165D0FD58',
-        'group': 'cacert',
-    })
-
     not_expired = Q(expires__gt=datetime.utcnow()) | Q(expires__isnull=True)
     signatures = PGPSignature.objects.filter(not_expired, revoked__isnull=True)
     edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }

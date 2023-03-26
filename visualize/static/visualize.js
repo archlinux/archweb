@@ -214,8 +214,6 @@ function developer_keys(chart_id, data_url) {
                 switch (d.group) {
                 case "master":
                     return r * 1.6 - 0.75;
-                case "cacert":
-                    return r * 1.4 - 0.75;
                 case "packager":
                 default:
                     return r - 0.75;
@@ -253,8 +251,7 @@ function developer_keys(chart_id, data_url) {
         var distance = function(d, i) {
             /* place a long line between all master keys and other keys.
              * however, other connected clusters should be close together. */
-            if (d.source.group === "master" || d.target.group === "master" ||
-                    d.source.group === "cacert" || d.target.group === "cacert") {
+            if (d.source.group === "master" || d.target.group === "master") {
                 return 200;
             } else {
                 return 40;
@@ -262,8 +259,7 @@ function developer_keys(chart_id, data_url) {
         };
 
         var strength = function(d, i) {
-            if (d.source.group === "master" || d.target.group === "master" ||
-                    d.source.group === "cacert" || d.target.group === "cacert") {
+            if (d.source.group === "master" || d.target.group === "master") {
                 return 0.2;
             } else {
                 return 0.8;
