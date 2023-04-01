@@ -15,7 +15,18 @@ URL = '{}://{}'.format(PROTOCOL, HOSTNAME)
 @pytest.fixture
 def mirror(db, name=NAME, admin_email=ADMIN_EMAIL):
     mirror = Mirror.objects.create(name=name,
+                                   tier=0,
                                    admin_email=admin_email)
+    yield mirror
+    mirror.delete()
+
+
+@pytest.fixture
+def downstream_mirror(db, mirror, name="downstream", admin_email="admin@example.org"):
+    mirror = Mirror.objects.create(name=name,
+                                   admin_email=admin_email,
+                                   tier=2,
+                                   upstream=mirror)
     yield mirror
     mirror.delete()
 

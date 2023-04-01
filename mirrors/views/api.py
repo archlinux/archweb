@@ -94,7 +94,10 @@ def mirror_details_json(request, name):
         raise Http404
     status_info = get_mirror_statuses(mirror_id=mirror.id, show_all=authorized)
     data = status_info.copy()
-    data['version'] = 4
+    data['version'] = 5
+    data['tier'] = mirror.tier
+    if mirror.upstream:
+        data['upstream'] = mirror.upstream.name
     data['details'] = mirror.get_full_url()
     if authorized and request.user.has_perm('mirrors.change_mirror'):
         data['admin_email'] = mirror.admin_email
