@@ -85,9 +85,15 @@ For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
 # Testing SMTP server
 
 To be able to create an account on your test environment an SMTP server is
-required. A simple debugging SMTP server can be setup using Python.
+required. A simple debugging SMTP server can be setup using Python and `aiosmtpd`.
 
-        python -m smtpd -n -c DebuggingServer localhost:1025
+Install `aiosmtpd`
+
+        pip install aiosmtpd
+
+Run the server
+
+        python -m aiosmtpd -n -l localhost:1025
 
 In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_PORT to
 1025.
