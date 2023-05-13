@@ -43,7 +43,6 @@ urlpatterns.extend([
     path('', public.views.index, name='index'),
     path('about/', TemplateView.as_view(template_name='public/about.html'), name='page-about'),
     path('art/',   TemplateView.as_view(template_name='public/art.html'), name='page-art'),
-    path('svn/',   TemplateView.as_view(template_name='public/svn.html'), name='page-svn'),
     path('donate/', public.views.donate, name='page-donate'),
     path('download/', public.views.download, name='page-download'),
     path('master-keys/', public.views.keys, name='page-keys'),

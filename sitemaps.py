@@ -172,7 +172,6 @@ class BaseSitemap(Sitemap):
         ('mirror-status', 0.4, 'hourly'),
         'page-about',
         'page-art',
-        'page-svn',
         'page-donate',
         'feeds-list',
         'mirror-list',
