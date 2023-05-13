@@ -13,11 +13,6 @@ def test_art(client, arches, repos, package, groups, staff_groups):
     assert response.status_code == 200
 
 
-def test_svn(client, arches, repos, package, groups, staff_groups):
-    response = client.get('/svn/')
-    assert response.status_code == 200
-
-
 def test_donate(client, arches, repos, package, groups, staff_groups):
     response = client.get('/donate/')
     assert response.status_code == 200
