@@ -24,7 +24,7 @@ def details_link(pkg):
 def scm_link(package, operation: str):
     pkgbase = urlquote(gitlab_project_name_to_path(package.pkgbase))
     if operation == 'tree':
-        return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/'
+        return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}'
     elif operation == 'commits':
         return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/-/commits/main'
 
