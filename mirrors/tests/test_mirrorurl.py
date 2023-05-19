@@ -2,7 +2,7 @@ from mirrors.tests.conftest import HOSTNAME, URL
 
 
 def test_mirrorurl_address_families(mirrorurl):
-    assert not mirrorurl.address_families() is None
+    assert mirrorurl.address_families() is not None
 
 
 def test_mirrorurl_hostname(mirrorurl):
