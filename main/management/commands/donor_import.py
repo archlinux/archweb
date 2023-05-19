@@ -58,14 +58,14 @@ class Command(BaseCommand):
         valid characters and finally trims all excess whitespace"""
 
         # Some submissions contain no alphabetic characters, skip them
-        if all(not l.isalpha() for l in name):
+        if all(not l.isalpha() for l in name):  # noqa: E741
             return u''
 
         # Strip any numbers, they could be a bank account number
-        name = u''.join([l for l in name if not l.isdigit()])
+        name = u''.join([l for l in name if not l.isdigit()])  # noqa: E741
 
         # Normalize all capitalized names. (JOHN DOE)
-        name = u' '.join(l.capitalize() for l in name.split(u' '))
+        name = u' '.join(l.capitalize() for l in name.split(u' '))  # noqa: E741
 
         # Trim excess spaces
         name = name.rstrip().lstrip()

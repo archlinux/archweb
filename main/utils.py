@@ -59,7 +59,7 @@ def empty_response():
 
 
 # utility to make a pair of django choices
-make_choice = lambda l: [(str(m), str(m)) for m in l]
+make_choice = lambda l: [(str(m), str(m)) for m in l]   # noqa E741
 
 
 def set_created_field(sender, **kwargs):
