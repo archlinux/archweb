@@ -184,8 +184,8 @@ PGP_SERVER_SECURE = True
 # community bit on the end, repo.svn_root is appended)
 SVN_BASE_URL = 'svn://svn.archlinux.org/'
 
-GITLAB_PACKAGES_REPO = 'https://gitlab.archlinux.org/packaging/packages'
-GITLAB_PACKAGE_REPO = 'packaging/packages'
+GITLAB_PACKAGES_REPO = 'https://gitlab.archlinux.org/archlinux/packaging/packages'
+GITLAB_PACKAGE_REPO = 'archlinux/packaging/packages'
 GITLAB_INSTANCE = 'gitlab.archlinux.org'
 
 # How long to keep mirrorlog's in days
