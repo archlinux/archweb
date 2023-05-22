@@ -140,7 +140,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 # Updating iPXE images
 
 The binaries required for iPXE based netboot are updated by copying them from
-the [ipxe](https://archlinux.org/packages/community/x86_64/ipxe/) package to
+the [ipxe](https://archlinux.org/packages/extra/x86_64/ipxe/) package to
 [the static content directory](/sitestatic/netboot/) (with the `run_ipxe`
 script the binaries may be tested beforehand):
 
