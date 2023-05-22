@@ -5,33 +5,9 @@
         "fields": {
             "bugs_category": 33, 
             "staging": false, 
-            "name": "Community", 
+            "name": "Extra-Testing",
             "bugs_project": 5, 
-            "svn_root": "community", 
-            "testing": false
-        }
-    }, 
-    {
-        "pk": 11, 
-        "model": "main.repo", 
-        "fields": {
-            "bugs_category": 41, 
-            "staging": true, 
-            "name": "Community-Staging", 
-            "bugs_project": 5, 
-            "svn_root": "community", 
-            "testing": false
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "main.repo", 
-        "fields": {
-            "bugs_category": 41, 
-            "staging": false, 
-            "name": "Community-Testing", 
-            "bugs_project": 5, 
-            "svn_root": "community", 
+            "svn_root": "packages",
             "testing": true
         }
     }, 
@@ -137,7 +113,7 @@
         "fields": {
             "bugs_category": 10, 
             "staging": false, 
-            "name": "Testing", 
+            "name": "Core-Testing",
             "bugs_project": 1, 
             "svn_root": "packages", 
             "testing": true
