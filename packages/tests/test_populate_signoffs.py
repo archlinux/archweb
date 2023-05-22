@@ -13,7 +13,7 @@ class RematchDeveloperTest(TransactionTestCase):
     fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
 
     def setUp(self):
-        repo = Repo.objects.get(name='Testing')
+        repo = Repo.objects.get(name='Extra-Testing')
         arch = Arch.objects.get(name__iexact='any')
         now = datetime.now(tz=timezone.utc)
         self.package = Package.objects.create(arch=arch, repo=repo, pkgname='systemd',
