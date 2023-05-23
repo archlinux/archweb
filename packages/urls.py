@@ -28,6 +28,7 @@ urlpatterns = [
     path('signoffs/json/', signoff.signoffs_json, name='package-signoffs-json'),
     path('update/', views.update),
     path('sonames', views.sonames),
+    path('pkgbase-maintainer', views.pkgbase_mapping),
 
     path('', search.SearchListView.as_view(), name='packages-search'),
     path('search/json/', search.search_json),
