@@ -1,8 +1,10 @@
 import hashlib
 import json
+from collections import defaultdict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -11,7 +13,7 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_safe, require_POST
 
 from main.models import Package, Soname
-from ..models import PackageRelation
+from packages.models import PackageRelation
 from ..utils import multilib_differences, get_wrong_permissions
 
 
@@ -145,6 +147,37 @@ def sonames(request):
         to_json = json.dumps(packages, ensure_ascii=False)
         return HttpResponse(to_json, content_type='application/json')
 
+    else:
+        return HttpResponseBadRequest('only GET is allowed')
+
+
+@cache_control(public=True, max_age=300)
+def pkgbase_mapping(request):
+    if request.method == 'GET':
+        pkgbases = Package.objects.all().values('pkgbase')
+        rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
+                                              pkgbase__in=pkgbases).values_list(
+                                                  'pkgbase', 'user_id').order_by().distinct()
+
+        # get all the user objects we will need
+        user_ids = {rel[1] for rel in rels}
+        users = User.objects.in_bulk(user_ids)
+
+        # now build a pkgbase -> [maintainers...] map
+        maintainers = defaultdict(list)
+        for rel in rels:
+            user = users[rel[1]]
+            maintainers[rel[0]].append(user.username)
+
+        pkgbase_maintainer_mapping = {}
+        for pkgbase in pkgbases:
+            pkgbase = pkgbase['pkgbase']
+            if pkgbase in pkgbase_maintainer_mapping:
+                continue
+            pkgbase_maintainer_mapping[pkgbase] = maintainers[pkgbase]
+
+        to_json = json.dumps(pkgbase_maintainer_mapping, ensure_ascii=False)
+        return HttpResponse(to_json, content_type='application/json')
     else:
         return HttpResponseBadRequest('only GET is allowed')
 
