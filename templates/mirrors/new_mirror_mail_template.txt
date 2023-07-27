@@ -1,0 +1,9 @@
+{% autoescape off %}A new mirror has been requested called "{{ name }}". As the mirror administrator, check in on https://archlinux.org/mirrors/{{ name }}/ after a few minutes and check:
+
+ * Is the Completion % more than 98% for Tier 2 and 100% for Tier 1?
+ * Does it have HTTP or HTTPS protocols?
+
+If so, go to https://archlinux.org/admin/mirrors/, find the new mirror and mark it as Active and Public!
+If the mirror hasn't synced in a couple of days, email the mirror admin asking if we can assist in any way.
+
+{% endautoescape %}
