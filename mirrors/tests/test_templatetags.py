@@ -22,5 +22,5 @@ def test_hours():
 
 def test_percentage():
     assert percentage(None) == ''
-    assert percentage(10) == '1000.0%'
-    assert percentage(10, 2) == '1000.00%'
+    assert percentage(10.0) == '1000.0%'
+    assert percentage(10.0, 2) == '1000.00%'
