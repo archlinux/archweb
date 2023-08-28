@@ -155,7 +155,9 @@ key](https://gitlab.archlinux.org/archlinux/archlinux-keyring/-/wikis/home) is
 created for each file:
 
 ```
-gpg --sender "User Name <your@mail.address>" --detach-sign sitestatic/netboot/*.{efi,ipxe,lkrn}
+for artifact in sitestatic/netboot/*.{efi,pxe,lkrn}; do
+  gpg --sender "User Name <your@mail.address>" --detach-sign "$artifact"
+done
 ```
 
 # Production Installation
