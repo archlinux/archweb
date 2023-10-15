@@ -18,7 +18,7 @@
         "group": [
             "Package Maintainers"
         ],
-        "description": "Here are all your friendly Arch Linux Package Maintainers who are in charge of the Archlinux's official repositories (aside from [core] / [core-testing].",
+        "description": "Here are all your friendly Arch Linux Package Maintainers who are in charge of the Archlinux's official repositories (aside from [core] / [core-testing]).",
         "sort_order": 2,
         "member_title": "Package Maintainer",
         "slug": "package-maintainers",
