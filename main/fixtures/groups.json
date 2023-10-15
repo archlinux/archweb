@@ -70,7 +70,7 @@
 },
 {
     "fields": {
-        "name": "Trusted Users",
+        "name": "Package Maintainers",
         "permissions": [
             [
                 "change_package",
@@ -307,7 +307,7 @@
 },
 {
     "fields": {
-        "name": "Retired Trusted Users",
+        "name": "Retired Package Maintainers",
         "permissions": []
     },
     "model": "auth.group",

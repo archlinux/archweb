@@ -2,7 +2,7 @@
 
 Archweb can be used as external authentication provider in combination with
 [ngx_http_auth_request_module](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html).
-A user with a Developer, Trusted User and Support Staff role can generate an
+A user with a Developer, Package Maintainer and Support Staff role can generate an
 access token used in combination with his username on the `/devel/tier0mirror`
 url. The mirror authentication is done against `/devel/mirrorauth` using HTTP
 Basic authentication.
