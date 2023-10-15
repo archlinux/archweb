@@ -109,7 +109,7 @@ def stats(request):
     return render(request, 'devel/stats.html', page_dict)
 
 
-SELECTED_GROUPS = ['Developers', 'Package Maintainer', 'Support Staff']
+SELECTED_GROUPS = ['Developers', 'Package Maintainers', 'Support Staff']
 
 
 @login_required
