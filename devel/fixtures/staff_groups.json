@@ -16,13 +16,13 @@
 {
     "fields": {
         "group": [
-            "Trusted Users"
+            "Package Maintainers"
         ],
-        "description": "Here are all your friendly Arch Linux Trusted Users who are in charge of the [community] repository.",
+        "description": "Here are all your friendly Arch Linux Package Maintainers who are in charge of the Archlinux's official repositories (aside from [core] / [core-testing].",
         "sort_order": 2,
-        "member_title": "Trusted User",
-        "slug": "trusted-users",
-        "name": "Trusted Users"
+        "member_title": "Package Maintainer",
+        "slug": "package-maintainers",
+        "name": "Package Maintainers"
     },
     "model": "devel.staffgroup",
     "pk": 2
@@ -44,13 +44,13 @@
 {
     "fields": {
         "group": [
-            "Retired Trusted Users"
+            "Retired Package Maintainers"
         ],
-        "description": "Below you can find a list of ex-trusted users (aka fellows). These folks helped make Arch what it is today. Thanks!",
+        "description": "Below you can find a list of ex-package maintainers (aka fellows). These folks helped make Arch what it is today. Thanks!",
         "sort_order": 12,
         "member_title": "Fellow",
-        "slug": "trusted-user-fellows",
-        "name": "Trusted User Fellows"
+        "slug": "package-maintainer-fellows",
+        "name": "Package Maintainer Fellows"
     },
     "model": "devel.staffgroup",
     "pk": 4

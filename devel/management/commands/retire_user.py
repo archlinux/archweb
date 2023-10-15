@@ -21,7 +21,7 @@ logger.setLevel(logging.WARNING)
 
 MAPPING = {
     'Developers': 'Retired Developers',
-    'Trusted Users': 'Retired Trusted Users',
+    'Package Maintainers': 'Retired Package Maintainers',
     'Support Staff': 'Retired Support Staff',
 }
 
