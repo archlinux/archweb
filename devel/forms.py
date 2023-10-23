@@ -42,7 +42,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ('allowed_repos', 'user', 'repos_auth_token')
+        exclude = ('allowed_repos', 'user', 'repos_auth_token', 'api_token')
         widgets = {
             'yob': NumberInput(attrs={'min': 1950, 'max': date.today().year - 10}),
         }

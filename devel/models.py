@@ -7,11 +7,53 @@ from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User, Group
 from django_countries.fields import CountryField
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.deprecation import MiddlewareMixin
 
 from .fields import PGPKeyField
 from main.utils import make_choice, set_created_field
 
 from planet.models import Feed
+
+
+class AuthTokenBackend(object):
+    def authenticate(self, request, username=None, password=None):
+        if 'X-Archweb-Token' in request.headers:
+            try:
+                profile = UserProfile.objects.get(api_token=request.headers['X-Archweb-Token'])
+            except UserProfile.DoesNotExist:
+                return None
+
+            print(profile)
+            return profile.user
+        return None
+
+class AuthTokenMiddleware(MiddlewareMixin):
+    header = "X-Archweb-Token"
+
+    def process_request(self, request):
+        print("process", request)
+        # AuthenticationMiddleware is required so that request.user exists.
+        if not hasattr(request, "user"):
+            raise ImproperlyConfigured(
+                "The Django token user auth middleware requires the"
+                " authentication middleware to be installed.  Edit your"
+                " MIDDLEWARE setting to insert"
+                " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
+                " before the RemoteUserMiddleware class."
+            )
+        try:
+            token = request.headers[self.header]
+            print(token)
+        except KeyError:
+            return
+
+        try:
+            profile = UserProfile.objects.get(api_token=token)
+        except UserProfile.DoesNotExist:
+            return None
+
+        request.user = profile.user
 
 
 class UserProfile(models.Model):
@@ -56,6 +98,7 @@ class UserProfile(models.Model):
     rebuilderd_updates = models.BooleanField(
         default=False, help_text='Receive reproducible build package updates')
     repos_auth_token = models.CharField(max_length=32, null=True, blank=True)
+    api_token = models.CharField(max_length=32, null=True, blank=True)
     last_modified = models.DateTimeField(editable=False)
 
     class Meta:
@@ -198,6 +241,7 @@ def delete_user_model(sender, **kwargs):
         return
 
     userprofile.repos_auth_token = ''
+    userprofile.api_token = ''
 
     Feed.objects.filter(website_rss=userprofile.website_rss).delete()
 

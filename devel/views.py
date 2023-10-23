@@ -228,6 +228,11 @@ def tier0_mirror_auth(request):
 def change_profile(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.POST:
+        # Generate token
+        if request.POST.get('api_token'):
+            profile.api_token = generate_repo_auth_token()
+            profile.save()
+
         form = ProfileForm(request.POST)
         profile_form = UserProfileForm(request.POST,
                                        request.FILES,
@@ -257,7 +262,8 @@ def change_profile(request):
         profile_form = UserProfileForm(instance=profile)
     return render(request, 'devel/profile.html',
                   {'form': form,
-                   'profile_form': profile_form})
+                   'profile_form': profile_form,
+                   'profile': profile})
 
 
 @login_required
