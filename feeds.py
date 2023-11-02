@@ -66,7 +66,7 @@ class PackageFeed(Feed):
     __name__ = 'package_feed'
 
     def get_object(self, request, arch='', repo=''):
-        obj = dict()
+        obj = {}
         qs = Package.objects.normal().order_by('-last_update')
 
         if arch != '':
@@ -99,10 +99,11 @@ class PackageFeed(Feed):
 
     def title(self, obj):
         s = 'Arch Linux: Recent package updates'
-        fields = dict(
-            arch=obj['arch'].name if 'arch' in obj else None,
-            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
-            repos=obj['repos'].name if 'repos' in obj else None,)
+        fields = {
+            'arch': obj['arch'].name if 'arch' in obj else None,
+            'repo': '[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            'repos': obj['repos'].name if 'repos' in obj else None
+        }
 
         if fields['arch']:
             if fields['repo']:
@@ -123,10 +124,11 @@ class PackageFeed(Feed):
     def description(self, obj):
         s = 'Recently updated packages'
 
-        fields = dict(
-            arch=obj['arch'].name if 'arch' in obj else None,
-            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
-            repos=', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None,)
+        fields = {
+            'arch': obj['arch'].name if 'arch' in obj else None,
+            'repo': '[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            'repos': ', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None
+        }
 
         if fields['arch']:
             s += ' for the \'%(arch)s\' architecture'
@@ -186,7 +188,7 @@ class PackageUpdatesFeed(Feed):
     __name__ = 'packages_updates_feed'
 
     def get_object(self, request, operation='', arch='', repo=''):
-        obj = dict()
+        obj = {}
 
         if 'added' in request.path:
             flag = ADDITION
@@ -229,10 +231,11 @@ class PackageUpdatesFeed(Feed):
     def title(self, obj):
         s = 'Arch Linux: Recently %(action)s packages' % obj
 
-        fields = dict(
-            arch=obj['arch'].name if 'arch' in obj else None,
-            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
-            repos=obj['repos'].name if 'repos' in obj else None,)
+        fields = {
+            'arch': obj['arch'].name if 'arch' in obj else None,
+            'repo': '[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            'repos': obj['repos'].name if 'repos' in obj else None
+        }
 
         if fields['arch']:
             if fields['repo']:
@@ -253,10 +256,11 @@ class PackageUpdatesFeed(Feed):
     def description(self, obj):
         s = 'Recently %(action)s packages' % obj
 
-        fields = dict(
-            arch=obj['arch'].name if 'arch' in obj else None,
-            repo='[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
-            repos=', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None,)
+        fields = {
+            'arch': obj['arch'].name if 'arch' in obj else None,
+            'repo': '[%s]' % obj['repo'].name.lower() if 'repo' in obj else None,
+            'repos': ', '.join(['[%s]' % r.name.lower() for r in obj['repos'].all()]) if 'repos' in obj else None
+        }
 
         if fields['arch']:
             s += ' for the \'%(arch)s\' architecture'

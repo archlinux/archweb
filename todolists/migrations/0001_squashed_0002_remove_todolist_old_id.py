@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='todolistpackage',
-            unique_together=set([('todolist', 'pkgname', 'arch')]),
+            unique_together=[('todolist', 'pkgname', 'arch')],
         ),
         migrations.RemoveField(
             model_name='todolist',

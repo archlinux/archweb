@@ -43,7 +43,7 @@ class NewsCreateView(CreateView):
             ctx = {
                 'news': newsitem,
             }
-            headers = dict()
+            headers = {}
             if settings.MAILMAN_PASSWORD:
                 headers['Approved'] = settings.MAILMAN_PASSWORD
             template = loader.get_template('news/news_email_notification.txt')
