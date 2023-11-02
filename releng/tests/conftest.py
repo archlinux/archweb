@@ -1,11 +1,10 @@
-from datetime import datetime
 from base64 import b64encode
-from bencode import bencode
+from datetime import datetime
 
 import pytest
+from bencode import bencode
 
 from releng.models import Release
-
 
 VERSION = '1.0'
 KERNEL_VERSION = '4.18'

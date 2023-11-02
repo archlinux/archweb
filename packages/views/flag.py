@@ -10,8 +10,9 @@ from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_page, never_cache
 
-from ..models import FlagDenylist, FlagRequest
 from main.models import Package
+
+from ..models import FlagDenylist, FlagRequest
 
 
 class FlagForm(forms.Form):

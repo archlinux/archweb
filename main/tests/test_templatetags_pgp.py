@@ -1,4 +1,4 @@
-from main.templatetags.pgp import pgp_key_link, format_key, pgp_fingerprint
+from main.templatetags.pgp import format_key, pgp_fingerprint, pgp_key_link
 
 
 def test_format_key():

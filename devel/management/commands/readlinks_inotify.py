@@ -1,13 +1,14 @@
 import logging
-import pyinotify
 import threading
 
+import pyinotify
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
 from main.models import Arch, Repo
-from .readlinks import read_links
+
 from .archweb_inotify import EventHandler
+from .readlinks import read_links
 
 logger = logging.getLogger("command")
 

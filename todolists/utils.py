@@ -1,7 +1,8 @@
 from django.db import connections, router
 
-from .models import Todolist, TodolistPackage
 from packages.models import Package
+
+from .models import Todolist, TodolistPackage
 
 
 def todo_counts():

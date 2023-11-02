@@ -6,8 +6,8 @@ from django.utils.dateparse import parse_datetime
 from django.utils.timezone import now
 
 from main.utils import cache_function, database_vendor
-from .models import MirrorLog, MirrorUrl
 
+from .models import MirrorLog, MirrorUrl
 
 DEFAULT_CUTOFF = timedelta(hours=24)
 

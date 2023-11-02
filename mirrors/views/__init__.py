@@ -9,8 +9,8 @@ from django.utils.timezone import now
 from django.views.decorators.http import condition
 from django_countries.fields import Country
 
-from ..models import Mirror, MirrorUrl, MirrorLog
-from ..utils import get_mirror_statuses, get_mirror_errors
+from ..models import Mirror, MirrorLog, MirrorUrl
+from ..utils import get_mirror_errors, get_mirror_statuses
 
 
 def mirrors(request, tier=None):

@@ -9,28 +9,27 @@ we encounter errors, record those as well.
 Usage: ./manage.py mirrorcheck
 """
 
-from collections import deque
-from datetime import datetime, timedelta, timezone
-from http.client import HTTPException
 import logging
 import os
 import re
 import socket
 import ssl
 import subprocess
-import time
 import tempfile
-from threading import Thread
-from queue import Queue, Empty
+import time
 import urllib
+from collections import deque
+from datetime import datetime, timedelta, timezone
+from http.client import HTTPException
+from queue import Empty, Queue
+from threading import Thread
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.conf import settings
 from django.utils.timezone import now
 
-from mirrors.models import MirrorUrl, MirrorLog, CheckLocation
-
+from mirrors.models import CheckLocation, MirrorLog, MirrorUrl
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

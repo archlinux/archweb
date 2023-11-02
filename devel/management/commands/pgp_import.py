@@ -7,17 +7,16 @@ Import keys and signatures from a given GPG keyring.
 Usage: ./manage.py pgp_import <keyring_path>
 """
 
-from collections import OrderedDict
-from datetime import datetime, timezone
 import logging
 import subprocess
+from collections import OrderedDict
+from datetime import datetime, timezone
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from devel.models import DeveloperKey, PGPSignature
 from devel.utils import UserFinder
-
 
 logger = logging.getLogger("command")
 

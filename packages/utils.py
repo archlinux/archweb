@@ -1,21 +1,30 @@
+import re
 from collections import defaultdict
 from itertools import chain
 from operator import itemgetter
-import re
 
+from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
-from django.db.models import Count, Max, F
+from django.db.models import Count, F, Max
 from django.db.models.query import QuerySet
-from django.contrib.auth.models import User
 
-from main.models import Package, PackageFile, Arch, Repo
-from main.utils import database_vendor, groupby_preserve_order, PackageStandin
-from .models import (PackageGroup, PackageRelation,
-                     License, Depend, Conflict, Provision, Replacement,
-                     SignoffSpecification, Signoff, fake_signoff_spec)
+from main.models import Arch, Package, PackageFile, Repo
+from main.utils import PackageStandin, database_vendor, groupby_preserve_order
 from todolists.models import TodolistPackage
 
+from .models import (
+    Conflict,
+    Depend,
+    License,
+    PackageGroup,
+    PackageRelation,
+    Provision,
+    Replacement,
+    Signoff,
+    SignoffSpecification,
+    fake_signoff_spec,
+)
 
 VERSION_RE = re.compile(r'^((\d+):)?(.+)-([^-]+)$')
 

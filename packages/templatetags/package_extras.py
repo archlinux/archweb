@@ -1,8 +1,7 @@
-from urllib.parse import urlencode, parse_qs
+from urllib.parse import parse_qs, urlencode
 
 from django import template
 from django.utils.html import format_html
-
 
 register = template.Library()
 

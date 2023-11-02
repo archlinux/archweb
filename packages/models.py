@@ -1,12 +1,12 @@
 from collections import namedtuple
 
-from django.db import models
-from django.db.models.signals import pre_save
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import pre_save
 
-from main.models import Arch, Repo, Package
-from main.utils import set_created_field, database_vendor
+from main.models import Arch, Package, Repo
+from main.utils import database_vendor, set_created_field
 from packages.alpm import AlpmAPI
 
 

@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
 import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta
 
 
 def test_mirror_status(db, client, create_mirrorlog):

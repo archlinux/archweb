@@ -3,17 +3,18 @@ import operator
 from functools import reduce
 
 from django import forms
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import ListView
 
 from devel.models import UserProfile
-from main.models import Package, Arch, Repo
+from main.models import Arch, Package, Repo
 from main.utils import empty_response, make_choice
+
 from ..models import PackageRelation
-from ..utils import attach_maintainers, PackageJSONEncoder
+from ..utils import PackageJSONEncoder, attach_maintainers
 
 
 class GroupSearchForm(forms.Form):

@@ -13,27 +13,34 @@ Example:
   ./manage.py reporead x86_64 /tmp/core.db.tar.gz
 """
 
+import io
+import logging
+import os
+import re
 from base64 import b64decode
 from collections import defaultdict
 from copy import copy
-import io
-import os
-import re
-import xtarfile as tarfile
-import logging
 from datetime import datetime, timezone
 
+import xtarfile as tarfile
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connections, router, transaction
 from django.db.utils import IntegrityError
 from django.utils.timezone import now
-from django.contrib.auth.models import User
 
 from devel.utils import UserFinder
 from main.models import Arch, Package, PackageFile, Repo
-from packages.models import Depend, Conflict, FlagRequest, Provision, Replacement, Update, PackageRelation
+from packages.models import (
+    Conflict,
+    Depend,
+    FlagRequest,
+    PackageRelation,
+    Provision,
+    Replacement,
+    Update,
+)
 from packages.utils import parse_version
-
 
 TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')

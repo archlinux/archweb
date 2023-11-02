@@ -1,7 +1,6 @@
 from django.test import TransactionTestCase
 
-from mirrors.models import MirrorRsync, Mirror
-
+from mirrors.models import Mirror, MirrorRsync
 
 TEST_IPV6 = "2a0b:4342:1a31:410::"
 TEST_IPV4 = "8.8.8.8"

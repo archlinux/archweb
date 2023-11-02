@@ -1,6 +1,7 @@
-from django.urls import re_path, path
+from django.urls import path, re_path
+
 from packages.views import search
-from packages.views.display import groups, group_details
+from packages.views.display import group_details, groups
 
 urlpatterns = [
     path('', groups, name='groups-list'),

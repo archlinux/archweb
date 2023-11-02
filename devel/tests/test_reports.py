@@ -1,5 +1,5 @@
-from django.test import TransactionTestCase
 from django.contrib.auth.models import User
+from django.test import TransactionTestCase
 
 
 class DeveloperReport(TransactionTestCase):

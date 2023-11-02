@@ -1,5 +1,5 @@
-from datetime import datetime
 import json
+from datetime import datetime
 from operator import attrgetter
 
 from django.contrib.auth.models import User
@@ -8,11 +8,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_control, cache_page
 
-from devel.models import MasterKey, DeveloperKey, PGPSignature, StaffGroup, UserProfile
-from main.models import Arch, Repo, Donor
+from devel.models import DeveloperKey, MasterKey, PGPSignature, StaffGroup, UserProfile
+from main.models import Arch, Donor, Repo
 from mirrors.models import MirrorUrl
 from news.models import News
 from releng.models import Release
+
 from .utils import get_recent_updates
 
 

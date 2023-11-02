@@ -1,4 +1,4 @@
-from mirrors.tests.conftest import NAME, HOSTNAME, PROTOCOL
+from mirrors.tests.conftest import HOSTNAME, NAME, PROTOCOL
 
 
 def test_mirror_get_full_url(mirror):

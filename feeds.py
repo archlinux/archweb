@@ -1,20 +1,20 @@
-from datetime import datetime, timezone, time
+from datetime import datetime, time, timezone
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.models import ADDITION, DELETION
 from django.contrib.sites.models import Site
 from django.contrib.syndication.views import Feed
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import connection
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.feedgenerator import Rss201rev2Feed
 from django.views.decorators.http import condition
 
-from main.models import Arch, Repo, Package
+from main.models import Arch, Package, Repo
 from news.models import News
 from packages.models import Update
-from releng.models import Release
 from planet.models import FeedItem
+from releng.models import Release
 
 
 class BatchWritesWrapper(object):

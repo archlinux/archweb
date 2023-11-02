@@ -1,16 +1,15 @@
-import pickle
 import hashlib
+import pickle
 import re
 
 import markdown
-from markdown.extensions import Extension
-from pgpdump.packet import SignaturePacket
-
 from django.core.cache import cache
 from django.db import connections, router
 from django.http import HttpResponse
-from django.utils.timezone import now
 from django.template.defaultfilters import slugify
+from django.utils.timezone import now
+from markdown.extensions import Extension
+from pgpdump.packet import SignaturePacket
 
 
 def cache_function_key(func, args, kwargs):

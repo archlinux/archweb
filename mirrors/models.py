@@ -1,15 +1,16 @@
-from datetime import timedelta
 import socket
+from datetime import timedelta
 from urllib.parse import urlparse
 
-from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
 from django_countries.fields import CountryField
 
-from .fields import IPNetworkField
 from main.utils import set_created_field
+
+from .fields import IPNetworkField
 
 
 class Mirror(models.Model):

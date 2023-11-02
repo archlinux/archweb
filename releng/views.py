@@ -1,16 +1,17 @@
-from base64 import b64decode
 import json
+from base64 import b64decode
 
+from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from django.urls import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views.generic import DetailView, ListView
-from django.conf import settings
+
+from main.models import Package
+from mirrors.models import MirrorUrl
 
 from .models import Release
-from mirrors.models import MirrorUrl
-from main.models import Package
 
 
 class ReleaseListView(ListView):

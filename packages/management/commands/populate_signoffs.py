@@ -11,16 +11,15 @@ Usage: ./manage.py populate_signoffs
 import logging
 import urllib.parse
 
+import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import requests
-
-from main.utils import gitlab_project_name_to_path
-from ...models import FakeSignoffSpecification, SignoffSpecification, Signoff
-from ...utils import get_signoff_groups
 from devel.utils import UserFinder
+from main.utils import gitlab_project_name_to_path
 
+from ...models import FakeSignoffSpecification, Signoff, SignoffSpecification
+from ...utils import get_signoff_groups
 
 logger = logging.getLogger("command")
 

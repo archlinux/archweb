@@ -1,11 +1,9 @@
 import pytest
-
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 
-from main.models import Repo
 from devel.models import UserProfile
-
+from main.models import Repo
 
 USERNAME = 'joeuser'
 FIRSTNAME = 'Joe'

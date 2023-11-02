@@ -1,6 +1,6 @@
-from news.models import News
-
 from django.core import mail
+
+from news.models import News
 
 
 def create(admin_client, title='Bash broken', content='Broken in [testing]', announce=False):

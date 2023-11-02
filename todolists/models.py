@@ -2,10 +2,10 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save, pre_save
 from django.template import loader
 
-from main.models import Arch, Repo, Package
+from main.models import Arch, Package, Repo
 from main.utils import set_created_field
 
 

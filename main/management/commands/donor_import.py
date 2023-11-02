@@ -16,19 +16,17 @@ Usage: As it takes an email on stdin, this can be used as a mda command in e.g. 
 """
 
 import codecs
-import logging
 import email
+import logging
 import sys
-
+from argparse import FileType
 from email.header import decode_header
 
-from parse import parse
-from argparse import FileType
-
-from django.db.utils import Error as DBError
 from django.core.management.base import BaseCommand, CommandError
-from main.models import Donor
+from django.db.utils import Error as DBError
+from parse import parse
 
+from main.models import Donor
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

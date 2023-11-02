@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
-from main.models import Package, Arch, Repo
+from main.models import Arch, Package, Repo
 
 
 def index(request):

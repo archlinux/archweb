@@ -1,8 +1,9 @@
 from collections import defaultdict
 from operator import attrgetter
 
-from main.models import Arch, Repo, Package
-from main.utils import groupby_preserve_order, PackageStandin
+from main.models import Arch, Package, Repo
+from main.utils import PackageStandin, groupby_preserve_order
+
 
 class RecentUpdate(object):
     def __init__(self, packages):

@@ -1,16 +1,16 @@
-from base64 import b64decode
-from bencode import bdecode, bencode
-from datetime import datetime, timezone
 import binascii
 import hashlib
+from base64 import b64decode
+from datetime import datetime, timezone
 
-from django.urls import reverse
+from bencode import bdecode, bencode
 from django.db import models
 from django.db.models.signals import pre_save
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from main.utils import set_created_field, parse_markdown
 from devel.fields import PGPKeyField
+from main.utils import parse_markdown, set_created_field
 
 
 class Release(models.Model):

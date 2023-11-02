@@ -10,11 +10,10 @@ Usage ./manage.py retire_user user
 
 import logging
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.core.management.base import BaseCommand, CommandError
 
 from devel.models import UserProfile
-
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

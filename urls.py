@@ -1,14 +1,10 @@
-from django.urls import include, path, re_path
-from django.contrib import admin
-from django.contrib.sitemaps import views as sitemap_views
-from django.contrib.auth import views as auth_views
 from django.conf import settings
-
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps import views as sitemap_views
+from django.urls import include, path, re_path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
-
-from feeds import PackageFeed, NewsFeed, ReleaseFeed, PackageUpdatesFeed, PlanetFeed
-import sitemaps
 
 import devel.urls
 import mirrors.urls
@@ -20,8 +16,10 @@ import packages.views
 import planet.views
 import public.views
 import releng.urls
+import sitemaps
 import todolists.urls
 import visualize.urls
+from feeds import NewsFeed, PackageFeed, PackageUpdatesFeed, PlanetFeed, ReleaseFeed
 
 our_sitemaps = {
     'base':           sitemaps.BaseSitemap,

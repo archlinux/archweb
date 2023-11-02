@@ -1,6 +1,6 @@
 # Django settings for archweb project.
-from os import path
 import sys
+from os import path
 
 # Set the debug values
 DEBUG = False

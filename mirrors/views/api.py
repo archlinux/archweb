@@ -1,14 +1,14 @@
-from datetime import timedelta
 import json
+from datetime import timedelta
 
-from django.views.decorators.cache import cache_control
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_control
 
-from ..models import (Mirror, MirrorUrl, MirrorProtocol, MirrorLog, CheckLocation)
-from ..utils import get_mirror_statuses, DEFAULT_CUTOFF
+from ..models import CheckLocation, Mirror, MirrorLog, MirrorProtocol, MirrorUrl
+from ..utils import DEFAULT_CUTOFF, get_mirror_statuses
 
 
 class MirrorStatusJSONEncoder(DjangoJSONEncoder):

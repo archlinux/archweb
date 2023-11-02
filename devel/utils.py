@@ -2,13 +2,13 @@ import re
 import secrets
 
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.db import connection
 from django.db.models import Count, Q
 
 from devel.models import UserProfile
-from main.utils import cache_function
 from main.models import Package
+from main.utils import cache_function
 from packages.models import PackageRelation
 
 

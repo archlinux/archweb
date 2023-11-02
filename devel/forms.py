@@ -4,11 +4,11 @@ from datetime import date
 from string import ascii_letters, digits
 
 from django import forms
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 from django.core.mail import send_mail
-from django.template import loader
 from django.forms.widgets import NumberInput
+from django.template import loader
 
 from .models import UserProfile
 

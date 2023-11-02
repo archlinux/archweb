@@ -1,8 +1,15 @@
-from django.urls import re_path, path
 from django.contrib.auth.decorators import permission_required
-from .views import (NewsDetailView, NewsListView, NewsCreateView, NewsEditView,
-                    NewsDeleteView, preview, view_redirect)
+from django.urls import path, re_path
 
+from .views import (
+    NewsCreateView,
+    NewsDeleteView,
+    NewsDetailView,
+    NewsEditView,
+    NewsListView,
+    preview,
+    view_redirect,
+)
 
 urlpatterns = [
     path('', NewsListView.as_view(), name='news-list'),

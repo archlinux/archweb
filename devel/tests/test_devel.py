@@ -1,5 +1,6 @@
+from django.contrib.auth.models import Group, User
 from django.test import TransactionTestCase
-from django.contrib.auth.models import User, Group
+
 from devel.models import UserProfile
 
 

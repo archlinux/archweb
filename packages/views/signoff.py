@@ -7,16 +7,16 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_list_or_404, redirect, render
 from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
 
-from main.models import Package, Arch, Repo
-from ..models import SignoffSpecification, Signoff
-from ..utils import (get_signoff_groups, approved_by_signoffs,
-                     PackageSignoffGroup)
+from main.models import Arch, Package, Repo
+
+from ..models import Signoff, SignoffSpecification
+from ..utils import PackageSignoffGroup, approved_by_signoffs, get_signoff_groups
 
 
 @permission_required('packages.change_signoff')

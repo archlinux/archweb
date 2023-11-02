@@ -15,16 +15,16 @@ correctly.
 """
 
 import logging
-import pyinotify
 import threading
 
+import pyinotify
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection, transaction
 
 from main.models import Arch, Repo
-from .reporead import read_repo
-from .archweb_inotify import EventHandler
 
+from .archweb_inotify import EventHandler
+from .reporead import read_repo
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)
