@@ -105,6 +105,6 @@ class Command(BaseCommand):
         try:
             _, created = Donor.objects.get_or_create(name=name)
             if created:
-                logger.info(u'Adding donor: {}'.format(name))
+                logger.info('Adding donor: %s', name)
         except DBError as e:
             logger.info(u'Error while adding donor: %s, %s', name, e)
