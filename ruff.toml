@@ -1,4 +1,7 @@
-select = ["E", "F"]
+select = [
+    "E",       # pycodestyle
+    "F",       # pyflakes
+]
 
 # Never enforce `E501` (line length violations).
 ignore = ["E501", "E731"]
