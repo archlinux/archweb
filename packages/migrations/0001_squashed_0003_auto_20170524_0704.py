@@ -186,6 +186,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='packagerelation',
-            unique_together=set([('pkgbase', 'user', 'type')]),
+            unique_together=[('pkgbase', 'user', 'type')],
         ),
     ]

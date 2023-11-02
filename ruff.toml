@@ -1,4 +1,5 @@
 select = [
+    "C4",      # flake8-comprehensions
     "E",       # pycodestyle
     "F",       # pyflakes
 ]

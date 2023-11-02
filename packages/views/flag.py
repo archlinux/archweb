@@ -70,8 +70,7 @@ def flag(request, name, repo, arch):
             flagged_pkgs = list(pkgs)
 
             # find a common version if there is one available to store
-            versions = set((pkg.pkgver, pkg.pkgrel, pkg.epoch)
-                           for pkg in flagged_pkgs)
+            versions = {(pkg.pkgver, pkg.pkgrel, pkg.epoch) for pkg in flagged_pkgs}
             if len(versions) == 1:
                 version = versions.pop()
             else:

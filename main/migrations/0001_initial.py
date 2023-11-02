@@ -113,6 +113,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='package',
-            unique_together=set([('pkgname', 'repo', 'arch')]),
+            unique_together={('pkgname', 'repo', 'arch')},
         ),
     ]

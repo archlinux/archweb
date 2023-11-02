@@ -24,7 +24,7 @@ def test_reponame(client, package):
 
     data = response.json()
     assert len(data['results']) == 5
-    assert set([r['pkgname'] for r in data['results']]) == {"coreutils", "glibc", "linux", "pacman", "systemd"}
+    assert {r['pkgname'] for r in data['results']} == {"coreutils", "glibc", "linux", "pacman", "systemd"}
 
 
 def test_packagename(client, package):
