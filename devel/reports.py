@@ -1,11 +1,12 @@
 from collections import defaultdict
 from datetime import timedelta, timezone
 
+from django.db import connection
 from django.db.models import F
 from django.template.defaultfilters import filesizeformat
-from django.db import connection
-from django.utils.timezone import now
 from django.utils.html import format_html
+from django.utils.timezone import now
+
 from main.models import Package, PackageFile, RebuilderdStatus
 from packages.models import Depend, PackageRelation
 

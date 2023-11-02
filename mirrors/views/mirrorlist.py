@@ -1,16 +1,15 @@
+import random
 from operator import attrgetter, itemgetter
 
 from django import forms
 from django.db.models import Q
-from django.forms.widgets import SelectMultiple, CheckboxSelectMultiple
+from django.forms.widgets import CheckboxSelectMultiple, SelectMultiple
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django_countries import countries
 
-from ..models import MirrorUrl, MirrorProtocol
+from ..models import MirrorProtocol, MirrorUrl
 from ..utils import get_mirror_statuses
-
-import random
 
 
 class MirrorlistForm(forms.Form):

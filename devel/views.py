@@ -6,9 +6,11 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import ADDITION, LogEntry
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
+from django.contrib.auth.decorators import (
+    login_required,
+    permission_required,
+    user_passes_test,
+)
 from django.contrib.auth.models import Group, User
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
@@ -21,6 +23,7 @@ from django.utils.encoding import force_str
 from django.utils.http import http_date
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_control, never_cache
+
 from main.models import Arch, Package, Repo
 from news.models import News
 from packages.models import FlagRequest, PackageRelation, Signoff
@@ -31,7 +34,7 @@ from todolists.utils import get_annotated_todolists
 from .forms import NewUserForm, ProfileForm, UserProfileForm
 from .models import UserProfile
 from .reports import available_reports
-from .utils import get_annotated_maintainers, generate_repo_auth_token
+from .utils import generate_repo_auth_token, get_annotated_maintainers
 
 
 @login_required

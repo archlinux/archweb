@@ -2,15 +2,16 @@ import datetime
 import json
 from urllib.parse import urlencode
 
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 
-from main.models import Package, PackageFile, Arch, Repo, Soname, RebuilderdStatus
+from main.models import Arch, Package, PackageFile, RebuilderdStatus, Repo, Soname
 from main.utils import empty_response
 from mirrors.utils import get_mirror_url_for_download
+
 from ..models import Update
-from ..utils import get_group_info, PackageJSONEncoder
+from ..utils import PackageJSONEncoder, get_group_info
 
 
 def arch_plus_agnostic(arch):

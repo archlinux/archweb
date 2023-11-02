@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 import zoneinfo
-
-from django.urls import reverse
+from django.contrib.auth.models import Group, User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models.signals import pre_save, post_save
-from django.contrib.auth.models import User, Group
+from django.db.models.signals import post_save, pre_save
+from django.urls import reverse
 from django_countries.fields import CountryField
-from django.core.validators import MinValueValidator, MaxValueValidator
+
+from main.utils import make_choice, set_created_field
+from planet.models import Feed
 
 from .fields import PGPKeyField
-from main.utils import make_choice, set_created_field
-
-from planet.models import Feed
 
 
 class UserProfile(models.Model):

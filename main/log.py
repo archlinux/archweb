@@ -1,8 +1,8 @@
 # Derived from Django snippets: http://djangosnippets.org/snippets/2242/
+import traceback
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from hashlib import md5
-import traceback
 
 
 class LimitedSizeDict(OrderedDict):

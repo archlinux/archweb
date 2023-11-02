@@ -1,17 +1,14 @@
 import time
-
+from datetime import timedelta
 from http.client import BadStatusLine
+from socket import error, timeout
+from ssl import CertificateError
 from unittest import mock
 from urllib.error import HTTPError, URLError
-from ssl import CertificateError
-from socket import timeout, error
 
 import pytest
-
-from django.utils.timezone import now
-from datetime import timedelta
-
 from django.core.management import call_command
+from django.utils.timezone import now
 
 from mirrors.models import CheckLocation, MirrorLog
 from mirrors.tests.conftest import HOSTNAME, PROTOCOL

@@ -11,15 +11,14 @@ matching up to a developer if we can find one.
 Usage: ./manage.py rematch_developers
 """
 
+import logging
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
-
-import logging
 
 from devel.utils import UserFinder
 from main.models import Package
 from packages.models import FlagRequest
-
 
 logger = logging.getLogger("command")
 

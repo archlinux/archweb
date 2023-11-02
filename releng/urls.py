@@ -1,7 +1,9 @@
 from django.conf.urls import include
-from django.urls import re_path, path
-from .views import ReleaseListView, ReleaseDetailView
+from django.urls import path, re_path
+
 from releng import views
+
+from .views import ReleaseDetailView, ReleaseListView
 
 releases_patterns = [
     path('', ReleaseListView.as_view(), name='releng-release-list'),

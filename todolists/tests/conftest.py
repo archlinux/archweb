@@ -3,7 +3,6 @@ import pytest
 from main.models import Package
 from todolists.models import Todolist, TodolistPackage
 
-
 NAME = 'Boost rebuild'
 SLUG = 'boost-rebuild'
 DESCRIPTION = 'Boost 1.66 rebuild'

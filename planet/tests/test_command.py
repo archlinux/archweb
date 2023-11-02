@@ -1,11 +1,11 @@
 import time
 from unittest import mock
 
-import pytest
 import feedparser
+import pytest
 
-from planet.models import Feed, FeedItem, FEEDITEM_SUMMARY_LIMIT
 from planet.management.commands.update_planet import Command
+from planet.models import FEEDITEM_SUMMARY_LIMIT, Feed, FeedItem
 
 
 @pytest.fixture

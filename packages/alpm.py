@@ -1,6 +1,6 @@
 import ctypes
-from ctypes.util import find_library
 import operator
+from ctypes.util import find_library
 
 
 def load_alpm(name=None):  # pragma: no cover

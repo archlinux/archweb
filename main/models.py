@@ -1,15 +1,16 @@
-from itertools import groupby
-from pgpdump import BinaryData
 from datetime import datetime, timezone
+from itertools import groupby
 
-from django.db import models
-from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.db import models
+from django.db.models import Q
+from pgpdump import BinaryData
 
-from .utils import set_created_field, DependStandin, SignatureWrapper
 from devel.models import DeveloperKey
 from packages.alpm import AlpmAPI
+
+from .utils import DependStandin, SignatureWrapper, set_created_field
 
 
 class PackageManager(models.Manager):

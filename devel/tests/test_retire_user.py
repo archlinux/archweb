@@ -1,11 +1,10 @@
+from django.contrib.auth.models import Group, User
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.contrib.auth.models import User, Group
 from django.test import TransactionTestCase
 
-from main.models import Repo
-
 from devel.models import UserProfile
+from main.models import Repo
 
 
 class RetireUsertest(TransactionTestCase):

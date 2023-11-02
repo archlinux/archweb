@@ -1,8 +1,16 @@
-from django.urls import re_path, path
 from django.contrib.auth.decorators import permission_required
+from django.urls import path, re_path
 
-from .views import (view, view_json, add, edit, flag,
-                    list_pkgbases, DeleteTodolist, TodolistListView)
+from .views import (
+    DeleteTodolist,
+    TodolistListView,
+    add,
+    edit,
+    flag,
+    list_pkgbases,
+    view,
+    view_json,
+)
 
 urlpatterns = [
     path('', TodolistListView.as_view(), name='todolist-list'),

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-from .models import UserProfile, StaffGroup, MasterKey, DeveloperKey, PGPSignature
+from .models import DeveloperKey, MasterKey, PGPSignature, StaffGroup, UserProfile
 
 
 class UserProfileInline(admin.StackedInline):

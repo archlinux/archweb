@@ -7,10 +7,10 @@ Assemble a GPG keyring with all known developer keys.
 Usage: ./manage.py generate_keyring <keyserver> <keyring_path>
 """
 
-from django.core.management.base import BaseCommand, CommandError
-
 import logging
 import subprocess
+
+from django.core.management.base import BaseCommand, CommandError
 
 from devel.models import MasterKey, UserProfile
 

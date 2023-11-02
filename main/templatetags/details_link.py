@@ -1,6 +1,9 @@
-from urllib.parse import urlencode, quote as urlquote, unquote
+from urllib.parse import quote as urlquote
+from urllib.parse import unquote, urlencode
+
 from django import template
 from django.conf import settings
+
 from main.templatetags import pgp
 from main.utils import gitlab_project_name_to_path
 

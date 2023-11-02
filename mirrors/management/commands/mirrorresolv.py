@@ -8,13 +8,12 @@ available.
 Usage: ./manage.py mirrorresolv
 """
 
-from django.core.management.base import BaseCommand
-
 import logging
 import socket
 
-from mirrors.models import MirrorUrl
+from django.core.management.base import BaseCommand
 
+from mirrors.models import MirrorUrl
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

@@ -1,7 +1,13 @@
 from django.contrib import admin
 
-from .models import (PackageRelation, FlagDenylist, FlagRequest, Signoff,
-                     SignoffSpecification, Update)
+from .models import (
+    FlagDenylist,
+    FlagRequest,
+    PackageRelation,
+    Signoff,
+    SignoffSpecification,
+    Update,
+)
 
 
 class PackageRelationAdmin(admin.ModelAdmin):

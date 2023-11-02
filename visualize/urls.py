@@ -1,6 +1,6 @@
 from django.urls import path
-from visualize import views
 
+from visualize import views
 
 urlpatterns = [
     path('',          views.index,   name='visualize-index'),

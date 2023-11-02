@@ -10,19 +10,16 @@ Usage: ./manage.py update_planet
 
 import logging
 import time
-
 from datetime import datetime, timezone
 
 import bleach
 import feedparser
-
+from django.conf import settings
 from django.core.cache import cache
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import truncatewords_html
-from django.conf import settings
 
-from planet.models import Feed, FeedItem, FEEDITEM_SUMMARY_LIMIT
-
+from planet.models import FEEDITEM_SUMMARY_LIMIT, Feed, FeedItem
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

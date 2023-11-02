@@ -1,12 +1,11 @@
 import logging
 import multiprocessing
 import os
-import pyinotify
 import threading
 import time
 
+import pyinotify
 from django.db.utils import OperationalError
-
 
 logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)

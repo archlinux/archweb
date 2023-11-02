@@ -3,6 +3,7 @@ select = [
     "E",       # pycodestyle
     "F",       # pyflakes
     "G",       # flake8-logging-format
+    "I",       # isort
 ]
 
 # Never enforce `E501` (line length violations).

@@ -5,8 +5,7 @@ import tarfile
 
 from django.core.management.base import BaseCommand, CommandError
 
-from main.models import Repo, Package, Soname
-
+from main.models import Package, Repo, Soname
 
 logger = logging.getLogger("command")
 

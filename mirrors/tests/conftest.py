@@ -1,7 +1,6 @@
 import pytest
 
-from mirrors.models import CheckLocation, MirrorLog, MirrorUrl, MirrorProtocol, Mirror
-
+from mirrors.models import CheckLocation, Mirror, MirrorLog, MirrorProtocol, MirrorUrl
 
 NAME = 'mirror1'
 ADMIN_EMAIL = 'admin@archlinux.org'

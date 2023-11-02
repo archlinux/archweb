@@ -1,4 +1,5 @@
-from django.urls import re_path, path
+from django.urls import path, re_path
+
 from mirrors.views import mirrorlist as views
 
 urlpatterns = [

@@ -4,7 +4,6 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TransactionTestCase
 
-
 CREATED = 1541685162
 USER = 'John Doe <jdoe@archlinux.org>'
 ID1 = 'D6C055F238843F1C'

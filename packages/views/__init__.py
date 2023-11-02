@@ -10,11 +10,12 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_safe, require_POST
+from django.views.decorators.http import require_POST, require_safe
 
 from main.models import Package, Soname
 from packages.models import PackageRelation
-from ..utils import multilib_differences, get_wrong_permissions
+
+from ..utils import get_wrong_permissions, multilib_differences
 
 
 @require_safe

@@ -1,8 +1,8 @@
 from django.conf.urls import include
-from django.urls import re_path, path
-from packages import views
-from packages.views import display, flag, signoff, search
+from django.urls import path, re_path
 
+from packages import views
+from packages.views import display, flag, search, signoff
 
 package_patterns = [
     path('', display.details),

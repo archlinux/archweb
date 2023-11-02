@@ -1,7 +1,6 @@
-from packages.alpm import AlpmAPI
-
 import pytest
 
+from packages.alpm import AlpmAPI
 
 alpm = AlpmAPI()
 

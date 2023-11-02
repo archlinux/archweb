@@ -3,7 +3,6 @@ from django.conf import settings
 from django.utils.html import conditional_escape, format_html
 from django.utils.safestring import mark_safe
 
-
 register = template.Library()
 
 

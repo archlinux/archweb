@@ -1,12 +1,12 @@
-from unittest import mock
 from datetime import datetime, timezone
+from unittest import mock
 
 from django.core.management import call_command
 from django.test import TransactionTestCase
 
+import packages.management.commands.populate_signoffs  # noqa
 from main.models import Arch, Repo
 from packages.models import Package, SignoffSpecification
-import packages.management.commands.populate_signoffs  # noqa
 
 
 class RematchDeveloperTest(TransactionTestCase):

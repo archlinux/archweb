@@ -1,7 +1,6 @@
-from todolists.tests.conftest import NAME
-
 from main.models import Package
 from todolists.models import TodolistPackage
+from todolists.tests.conftest import NAME
 
 
 def test_stripped_description(todolist):

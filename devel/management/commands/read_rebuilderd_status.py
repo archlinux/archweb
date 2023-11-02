@@ -10,20 +10,17 @@ Usage: ./manage.py read_rebuilderd_status
 
 import logging
 import re
-
 from collections import defaultdict
 
 import requests
-
+from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template import loader
 
 from devel.models import UserProfile
-from main.models import Arch, Repo, Package, RebuilderdStatus
-
+from main.models import Arch, Package, RebuilderdStatus, Repo
 
 EPOCH_REGEX = r'^(\d+):(.+)'
 

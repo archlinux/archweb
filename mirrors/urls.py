@@ -1,8 +1,8 @@
-from django.urls import re_path, path
+from django.urls import path, re_path
 from django.views.decorators.cache import cache_page
 
-from .views import mirrors, status, mirror_details, url_details
-from .views.api import status_json, mirror_details_json, locations_json
+from .views import mirror_details, mirrors, status, url_details
+from .views.api import locations_json, mirror_details_json, status_json
 
 urlpatterns = [
     path('', mirrors, name='mirror-list'),

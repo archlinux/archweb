@@ -5,13 +5,11 @@ from email.message import Message
 from io import StringIO
 
 import pytest
-
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
-from main.models import Donor
 from main.management.commands.donor_import import Command
-
+from main.models import Donor
 
 command = Command()
 

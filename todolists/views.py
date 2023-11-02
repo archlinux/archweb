@@ -2,21 +2,21 @@ import json
 from operator import attrgetter
 
 from django import forms
-from django.http import HttpResponse
 from django.core.mail import send_mail
-from django.shortcuts import (get_list_or_404, get_object_or_404,
-                              redirect, render)
 from django.db import transaction
-from django.views.decorators.cache import never_cache
-from django.views.generic import DeleteView, ListView
+from django.http import HttpResponse
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.template import loader
 from django.utils.timezone import now
+from django.views.decorators.cache import never_cache
+from django.views.generic import DeleteView, ListView
 
 from main.models import Package, Repo
 from main.utils import find_unique_slug
-from packages.utils import attach_maintainers, PackageJSONEncoder
+from packages.utils import PackageJSONEncoder, attach_maintainers
+
 from .models import Todolist, TodolistPackage
-from .utils import get_annotated_todolists, attach_staging
+from .utils import attach_staging, get_annotated_todolists
 
 
 class TodoListForm(forms.ModelForm):

@@ -5,10 +5,17 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
 from django.views.decorators.http import require_POST
-from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
+
+from main.utils import find_unique_slug, parse_markdown
 
 from .models import News
-from main.utils import find_unique_slug, parse_markdown
 
 
 class NewsForm(forms.ModelForm):

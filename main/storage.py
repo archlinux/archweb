@@ -1,6 +1,5 @@
 import cssmin
 import jsmin
-
 from django.contrib.staticfiles.storage import ManifestStaticFilesStorage
 from django.core.files.base import ContentFile
 from django.utils.encoding import smart_str

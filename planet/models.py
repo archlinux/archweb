@@ -1,6 +1,5 @@
 from django.db import models
 
-
 # FeedItem summary field length
 FEEDITEM_SUMMARY_LIMIT = 2048
 

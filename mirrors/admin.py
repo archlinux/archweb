@@ -1,11 +1,10 @@
 from datetime import datetime
-from urllib.parse import urlunsplit, urlparse
+from urllib.parse import urlparse, urlunsplit
 
 from django import forms
 from django.contrib import admin
 
-from .models import (Mirror, MirrorProtocol, MirrorUrl, MirrorRsync,
-                     CheckLocation)
+from .models import CheckLocation, Mirror, MirrorProtocol, MirrorRsync, MirrorUrl
 
 
 class MirrorUrlForm(forms.ModelForm):
