@@ -10,6 +10,7 @@ select = [
     "PLE",     # pylint errors
     "T10",     # flake8-debugger
     "TCH",     # flake8-type-checking
+    "UP032",   # f-string
     "W",       # warnings (mostly whitespace)
 ]
 

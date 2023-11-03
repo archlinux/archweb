@@ -10,7 +10,7 @@ def test_mirrorlist(client, mirrorurl):
 
 def test_mirrorlist_tier_last(client, mirrorurl):
     last_tier = Mirror.TIER_CHOICES[-1][0]
-    response = client.get('/mirrorlist/tier/{}/'.format(last_tier + 1))
+    response = client.get(f'/mirrorlist/tier/{last_tier + 1}/')
     assert response.status_code == 404
 
 

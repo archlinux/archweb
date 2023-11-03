@@ -46,5 +46,5 @@ def test_people(client, arches, repos, package, groups, staff_groups):
 def test_sitemap(client, arches, repos, package, groups, staff_groups):
     sitemaps = ['sitemap', 'sitemap-base']
     for sitemap in sitemaps:
-        response = client.get('/{}.xml'.format(sitemap))
+        response = client.get(f'/{sitemap}.xml')
         assert response.status_code == 200

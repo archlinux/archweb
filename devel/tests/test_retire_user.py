@@ -16,7 +16,7 @@ class RetireUsertest(TransactionTestCase):
                                         last_name="User", email="user1@example.com")
 
         self.profile = UserProfile.objects.create(user=self.user,
-                                                  public_email="{}@awesome.com".format(self.user.username))
+                                                  public_email=f"{self.user.username}@awesome.com")
         for name in ['Developers', 'Retired Developers']:
             Group.objects.create(name=name)
 

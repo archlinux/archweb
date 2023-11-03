@@ -8,7 +8,7 @@ HOSTNAME = 'archlinux.org'
 SOURCE_IP = '127.0.0.1'
 COUNTRY = 'DE'
 PROTOCOL = 'https'
-URL = '{}://{}'.format(PROTOCOL, HOSTNAME)
+URL = f'{PROTOCOL}://{HOSTNAME}'
 
 
 @pytest.fixture

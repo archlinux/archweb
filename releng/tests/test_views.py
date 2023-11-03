@@ -34,16 +34,16 @@ def test_netboot_config(db, client):
 
 
 def test_release_torrent(client, release, torrent_data):
-    response = client.get('/releng/releases/{}/torrent/'.format(release.version))
+    response = client.get(f'/releng/releases/{release.version}/torrent/')
     assert response.status_code == 404
 
     release.torrent_data = torrent_data
     release.save()
-    response = client.get('/releng/releases/{}/torrent/'.format(release.version))
+    response = client.get(f'/releng/releases/{release.version}/torrent/')
     assert response.status_code == 200
 
 
 def test_release_details(client, release):
-    response = client.get('/releng/releases/{}/'.format(release.version))
+    response = client.get(f'/releng/releases/{release.version}/')
     assert response.status_code == 200
     assert release.version in response.content.decode()

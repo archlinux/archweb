@@ -5,7 +5,7 @@ def test_feed(db, client):
 
 def test_sitemap(db, client):
     for sitemap in ['packages', 'package-groups', 'package-files', 'split-packages']:
-        response = client.get('/sitemap-{}.xml'.format(sitemap))
+        response = client.get(f'/sitemap-{sitemap}.xml')
         assert response.status_code == 200
 
 
