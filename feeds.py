@@ -80,13 +80,13 @@ class PackageFeed(Feed):
                 r = Repo.objects.filter(testing=False, staging=False)
                 qs = qs.filter(repo__in=r)
                 obj['repos'] = r
-                setattr(obj['repos'], 'name', 'all stable repositories')
+                obj['repos'].name = 'all stable repositories'
             elif repo == 'testing-repos':
                 # feed for a single arch AND all testing repos
                 r = Repo.objects.filter(testing=True, staging=False)
                 qs = qs.filter(repo__in=r)
                 obj['repos'] = r
-                setattr(obj['repos'], 'name', 'all testing repositories')
+                obj['repos'].name = 'all testing repositories'
             else:
                 # feed for a single arch AND repo
                 r = Repo.objects.get(name__iexact=repo)
@@ -210,13 +210,13 @@ class PackageUpdatesFeed(Feed):
                 r = Repo.objects.filter(testing=False, staging=False)
                 qs = qs.filter(repo__in=r)
                 obj['repos'] = r
-                setattr(obj['repos'], 'name', 'all stable repositories')
+                obj['repos'].name = 'all stable repositories'
             elif repo == 'testing-repos':
                 # feed for a single arch AND all testing repos
                 r = Repo.objects.filter(testing=True, staging=False)
                 qs = qs.filter(repo__in=r)
                 obj['repos'] = r
-                setattr(obj['repos'], 'name', 'all testing repositories')
+                obj['repos'].name = 'all testing repositories'
             else:
                 # feed for a single arch AND repo
                 r = Repo.objects.get(name__iexact=repo)
