@@ -6,6 +6,8 @@ select = [
     "I",       # isort
     "ICN",     # flake8-import-conventions
     "ISC",     # flake8-implicit-str-concat
+    "PIE",     # flake8-pie
+    "PLE",     # pylint errors
 ]
 
 # Never enforce `E501` (line length violations).
