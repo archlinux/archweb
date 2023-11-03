@@ -383,8 +383,7 @@ def update_common(archname, reponame, pkgs, sanity_check=True):
 
         # Fewer than 20 packages makes the percentage check unreliable, but it
         # also means we expect the repo to fluctuate a lot.
-        msg = "Package database %s (%s) has %.1f%% the number of packages " \
-              "the web database"
+        msg = "Package database %s (%s) has %.1f%% the number of packages the web database"
         if not sanity_check:
             pass
         elif repository.testing or repository.public_testing or repository.staging:

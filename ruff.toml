@@ -4,6 +4,8 @@ select = [
     "F",       # pyflakes
     "G",       # flake8-logging-format
     "I",       # isort
+    "ICN",     # flake8-import-conventions
+    "ISC",     # flake8-implicit-str-concat
 ]
 
 # Never enforce `E501` (line length violations).
