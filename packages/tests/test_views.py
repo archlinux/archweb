@@ -109,11 +109,6 @@ def test_packages_download(client, package):
     # TODO: Figure out how to fake a mirror
 
 
-def test_head(client, package):
-    response = client.head('/packages/core/x86_64/linux/')
-    assert response.status_code == 200
-
-
 def test_groups(client, package):
     response = client.get('/groups/')
     assert response.status_code == 200

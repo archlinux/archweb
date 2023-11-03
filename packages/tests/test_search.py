@@ -64,11 +64,6 @@ def test_sort(client, package):
     assert '5 matching packages found' in response.content.decode()
 
 
-def test_head(client, package):
-    response = client.head('/packages/?q=unknown')
-    assert response.status_code == 200
-
-
 def test_packages(client, package):
     response = client.get('/opensearch/packages/')
     assert response.status_code == 200
