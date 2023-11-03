@@ -8,6 +8,9 @@ select = [
     "ISC",     # flake8-implicit-str-concat
     "PIE",     # flake8-pie
     "PLE",     # pylint errors
+    "T10",     # flake8-debugger
+    "TCH",     # flake8-type-checking
+    "W",       # warnings (mostly whitespace)
 ]
 
 # Never enforce `E501` (line length violations).
