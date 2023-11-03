@@ -48,5 +48,5 @@ def test_details_downstream_json(db, client, downstream_mirror, mirrorprotocol):
 
 def test_url_details(db, client, mirrorurl):
     url = mirrorurl.mirror.get_absolute_url()
-    response = client.get(url + '{}/'.format(mirrorurl.id))
+    response = client.get(url + f'{mirrorurl.id}/')
     assert response.status_code == 200

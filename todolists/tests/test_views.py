@@ -42,7 +42,7 @@ def test_flag_pkg(developer_client, arches, repos, package):
     todolist = Todolist.objects.first()
     package = todolist.packages().first()
     assert package.status == TodolistPackage.INCOMPLETE
-    flag_url = '/todo/{}/flag/{}/'.format(todolist.slug, package.id)
+    flag_url = f'/todo/{todolist.slug}/flag/{package.id}/'
 
     response = developer_client.get(flag_url)
     assert response.status_code == 302
@@ -72,7 +72,7 @@ def test_edit(developer_client, arches, repos, package):
     todolist = Todolist.objects.first()
     assert todolist.packages().count() == 1
 
-    response = developer_client.post('/todo/{}/edit/'.format(todolist.slug), {
+    response = developer_client.post(f'/todo/{todolist.slug}/edit/', {
         'name': 'Foo rebuild',
         'description': 'The Foo Rebuild, please read the instructions',
         'raw': 'linux\nglibc',
@@ -86,12 +86,12 @@ def test_edit(developer_client, arches, repos, package):
 
 
 def test_delete(developer_client, todolist):
-    response = developer_client.post('/todo/{}/delete'.format(todolist.slug))
+    response = developer_client.post(f'/todo/{todolist.slug}/delete')
     assert response.status_code == 301
 
 
 def test_json_endpoint(developer_client, todolist):
-    response = developer_client.post('/todo/{}/json'.format(todolist.slug))
+    response = developer_client.post(f'/todo/{todolist.slug}/json')
     assert response.status_code == 200
     data = response.json()
     assert data['name'] == todolist.name
@@ -103,5 +103,5 @@ def test_add_view(developer_client):
 
 
 def test_edit_view(developer_client, todolist):
-    response = developer_client.get('/todo/{}/edit/'.format(todolist.slug))
+    response = developer_client.get(f'/todo/{todolist.slug}/edit/')
     assert response.status_code == 200

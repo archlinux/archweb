@@ -12,7 +12,7 @@ def test_mirror_downstream(mirror):
 
 def test_mirror_get_absolute_url(mirror):
     absolute_url = mirror.get_absolute_url()
-    expected = '/mirrors/{}/'.format(mirror.name)
+    expected = f'/mirrors/{mirror.name}/'
     assert absolute_url == expected
 
 

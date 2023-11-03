@@ -22,7 +22,7 @@ def test_mirrorurl_overview(client, mirrorurl):
 
 
 def test_mirrorurl_get_full_url(mirrorurl):
-    assert 'mirrors/{}'.format(mirrorurl.mirror.name) in mirrorurl.get_full_url()
+    assert f'mirrors/{mirrorurl.mirror.name}' in mirrorurl.get_full_url()
 
 
 def test_mirror_url_clean(mirrorurl):

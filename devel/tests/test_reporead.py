@@ -55,7 +55,7 @@ class RepoReadTest(TransactionTestCase):
                      if name != 'core.db' and 'desc' not in name]
 
         packages = Package.objects.all()
-        import_packages = ["{}-{}-{}".format(pkg.pkgname, pkg.pkgver, pkg.pkgrel) for pkg in packages]
+        import_packages = [f"{pkg.pkgname}-{pkg.pkgver}-{pkg.pkgrel}" for pkg in packages]
         self.assertCountEqual(files, import_packages)
 
     def test_flagoutofdate(self):

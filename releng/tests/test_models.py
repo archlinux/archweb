@@ -14,7 +14,7 @@ def test_absolute_url(release):
 def test_iso_url(release):
     url = release.iso_url()
     ver = release.version
-    expected = 'iso/{}/archlinux-{}-x86_64.iso'.format(ver, ver)
+    expected = f'iso/{ver}/archlinux-{ver}-x86_64.iso'
     assert url == expected
 
 
@@ -23,7 +23,7 @@ def test_info_html(release):
 
 
 def test_dir_path(release):
-    dir_path = u'iso/{}/'.format(release.version)
+    dir_path = f'iso/{release.version}/'
     assert dir_path == release.dir_path()
 
 

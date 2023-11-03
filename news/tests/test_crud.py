@@ -36,7 +36,7 @@ def test_redirect_id(db, admin_client):
     create(admin_client)
     news = News.objects.first()
 
-    response = admin_client.get('/news/{}'.format(news.id), follow=True)
+    response = admin_client.get(f'/news/{news.id}', follow=True)
     assert response.status_code == 200
 
 
