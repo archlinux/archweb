@@ -12,6 +12,7 @@ select = [
     "TCH",     # flake8-type-checking
     "UP032",   # f-string
     "W",       # warnings (mostly whitespace)
+    "YTT",     # flake8-2020
 ]
 
 # Never enforce `E501` (line length violations).
