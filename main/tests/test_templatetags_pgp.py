@@ -54,7 +54,7 @@ def test_pgp_key_link(settings):
     assert_pgp_key_link('0xA10E234343EA8BDC7FF5E34A12F')
 
     pgp_key = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
-    server = getattr(settings, 'PGP_SERVER')
+    server = settings.PGP_SERVER
 
     settings.PGP_SERVER = ''
     assert server not in pgp_key_link(pgp_key)

@@ -1,4 +1,5 @@
 select = [
+    "B",       # flake8-bugbear
     "C4",      # flake8-comprehensions
     "E",       # pycodestyle
     "F",       # pyflakes
@@ -16,4 +17,4 @@ select = [
 ]
 
 # Never enforce `E501` (line length violations).
-ignore = ["E501", "E731"]
+ignore = ["E501", "E731", "B904"]
