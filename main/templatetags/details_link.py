@@ -34,23 +34,14 @@ def scm_link(package, operation: str):
 
 @register.simple_tag
 def bugs_list(package):
-    url = "https://bugs.archlinux.org/"
-    data = {
-        'project': package.repo.bugs_project,
-        'string': package.pkgname,
-    }
-    return link_encode(url, data)
+    pkgbase = urlquote(gitlab_project_name_to_path(package.pkgbase))
+    return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/-/issues'
 
 
 @register.simple_tag
 def bug_report(package):
-    url = "https://bugs.archlinux.org/newtask"
-    data = {
-        'project': package.repo.bugs_project,
-        'product_category': package.repo.bugs_category,
-        'item_summary': '[%s] PLEASE ENTER SUMMARY' % package.pkgname,
-    }
-    return link_encode(url, data)
+    pkgbase = urlquote(gitlab_project_name_to_path(package.pkgbase))
+    return f'{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/-/issues/new'
 
 
 @register.simple_tag
