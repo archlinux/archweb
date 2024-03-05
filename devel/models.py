@@ -144,6 +144,8 @@ class PGPSignature(models.Model):
 
 
 def create_feed_model(sender, **kwargs):
+    allowed_groups = ['Developers', 'Package Maintainers', 'Support Staff']
+
     set_created_field(sender, **kwargs)
 
     obj = kwargs['instance']
@@ -152,6 +154,11 @@ def create_feed_model(sender, **kwargs):
         return
 
     dbmodel = UserProfile.objects.get(id=obj.id)
+    groups = dbmodel.user.groups.filter(name__in=allowed_groups)
+
+    # Only Staff is allowed to publish on planet
+    if len(groups) == 0:
+        return
 
     if not obj.website_rss and dbmodel.website_rss:
         Feed.objects.filter(website_rss=dbmodel.website_rss).all().delete()
