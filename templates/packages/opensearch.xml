@@ -4,7 +4,7 @@
 	<LongName>Arch Linux Package Repository Search</LongName>
 	<Description>Search the Arch Linux package repositories by keyword in package names and descriptions.</Description>
 	<Tags>linux archlinux package software</Tags>
-	<Image height="16" width="16" type="image/x-icon">{{ domain }}{% static "favicon.ico" %}</Image>
+	<Image height="16" width="16" type="image/png">{{ domain }}{% static "favicon.png" %}</Image>
 	<Image height="64" width="64" type="image/png">{{ domain }}{% static "logos/icon-transparent-64x64.png" %}</Image>
 	<Language>en-us</Language>
 	<InputEncoding>UTF-8</InputEncoding>
