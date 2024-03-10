@@ -70,9 +70,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = path.join(DEPLOY_PATH, 'collected_static')
 
 # Look for more static files in these locations
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     path.join(DEPLOY_PATH, 'sitestatic'),
-)
+]
 
 # Static files backend that allows us to use far future Expires headers
 STATICFILES_STORAGE = 'main.storage.MinifiedStaticFilesStorage'
@@ -123,6 +123,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django_countries',
+
+    'archlinux_common_style.django',
 
     'main',
     'mirrors',
@@ -243,7 +245,6 @@ TEMPLATES = [
         'DIRS': [
             path.join(DEPLOY_PATH, 'templates')
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'debug': DEBUG,
             'context_processors': [
@@ -253,6 +254,16 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'csp.context_processors.nonce',
                 'main.context_processors.mastodon_link',
+            ],
+            "loaders": [
+                (
+                    "django.template.loaders.cached.Loader",
+                    [
+                        "django.template.loaders.filesystem.Loader",
+                        "django.template.loaders.app_directories.Loader",
+                        "archlinux_common_style.django.template_loader.Loader",
+                    ],
+                ),
             ],
         }
     }
