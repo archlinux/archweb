@@ -8,7 +8,7 @@ django-extensions==3.2.3
 jsmin==3.0.1
 pgpdump==1.5
 parse==1.19.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 django-csp==3.7
 ptpython==2.0.4
 feedparser==6.0.10
