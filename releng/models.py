@@ -47,7 +47,7 @@ class Release(models.Model):
         return "iso/%s/archlinux-%s-x86_64.iso" % (self.version, self.version)
 
     def tarball_url(self):
-        return "iso/%s/archlinux-bootstrap-%s-x86_64.tar.gz" % (self.version, self.version)
+        return "iso/%s/archlinux-bootstrap-%s-x86_64.tar.zst" % (self.version, self.version)
 
     def dir_url(self):
         return "iso/%s" % (self.version)
