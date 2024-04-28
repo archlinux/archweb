@@ -3,7 +3,7 @@ Django==4.2.11
 IPy==1.1
 Markdown==3.3.7
 bencode.py==4.0.0
-django-countries==7.5.1
+django-countries==7.6.1
 django-extensions==3.2.3
 jsmin==3.0.1
 pgpdump==1.5
