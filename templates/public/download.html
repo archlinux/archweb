@@ -126,18 +126,19 @@
 
     <h5>Download verification</h5>
 
-    <p>Verify the BLAKE2b checksums as follows: <pre><code>$ b2sum -c b2sums.txt</code></pre></p>
+    Verify the BLAKE2b checksums as follows:
+    <pre><code>$ b2sum -c b2sums.txt</code></pre>
 
-    <p>To verify the PGP signature using Sequoia, first download the release signing key from WKD:<br/>
+    To verify the PGP signature using Sequoia, first download the release signing key from WKD:
     <pre><code>$ sq network wkd fetch {{ release.wkd_email }} -o release-key.pgp</code></pre>
 
     With this signing key, verify the signature:
-    <pre><code>$ sq verify --signer-file release-key.pgp --detached archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre></p>
+    <pre><code>$ sq verify --signer-file release-key.pgp --detached archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
 
-    <p>Alternatively, using GnuPG, download the signing key from WKD:
+    Alternatively, using GnuPG, download the signing key from WKD:
     <pre><code>$ gpg --auto-key-locate clear,wkd -v --locate-external-key {{ release.wkd_email }}</code></pre>
     Verify the signature:
-    <pre><code>$ gpg --keyserver-options auto-key-retrieve --verify archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre></p>
+    <pre><code>$ gpg --keyserver-options auto-key-retrieve --verify archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
 
     {% cache 600 download-mirrors %}
     <div id="download-mirrors">
