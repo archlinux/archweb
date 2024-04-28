@@ -11,6 +11,8 @@
     <h2>{{ list.kind_str | title }} Todo List {{ list.name }}</h2>
 
     <ul class="admin-actions">
+        <li><a href="https://md.archlinux.org/archweb-{{ list.slug }}"
+            title="Notes">Todo Notes</a></li>
         {% if perms.todolists.delete_todolist %}
         <li><a href="/todo/{{ list.slug }}/delete/"
             title="Delete this todo list">Delete Todo List</a></li>
