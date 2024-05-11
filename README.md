@@ -1,6 +1,6 @@
 # Archweb README
 
-[![Build Status](https://github.com/archlinux/archweb/workflows/Github-Actions/badge.svg)](https://github.com/archlinux/archweb/actions)
+[![Build Status](https://github.com/archlinux/archweb/actions/workflows/main.yml/badge.svg)](https://github.com/archlinux/archweb/actions/workflows/main.yml)
 
 To get a pretty version of this document, run
 
