@@ -15,8 +15,10 @@ def command():
 
 @pytest.fixture
 def feed(db):
-    return Feed(title='test', website='http://archlinux.org',
+    feed = Feed.objects.create(title='test', website='http://archlinux.org',
                 website_rss='http://archlinux.org/feed.rss')
+    yield feed
+    feed.delete()
 
 
 class MockParse:
