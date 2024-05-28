@@ -6,7 +6,6 @@ import datetime
 
 import django.db.models.deletion
 from django.db import migrations, models
-from django.utils.timezone import utc
 
 
 # Functions from the following migrations need manual copying.
@@ -145,7 +144,7 @@ class Migration(migrations.Migration):
                 ('available', models.BooleanField(default=True)),
                 ('info', models.TextField(blank=True, verbose_name='Public information')),
                 ('torrent_data', models.TextField(blank=True, help_text='base64-encoded torrent file')),
-                ('last_modified', models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0, tzinfo=utc), editable=False)),
+                ('last_modified', models.DateTimeField(default=datetime.datetime(2001, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), editable=False)),
             ],
             options={
                 'ordering': ('-release_date', '-version'),
