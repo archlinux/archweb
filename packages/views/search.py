@@ -54,7 +54,7 @@ class PackageSearchForm(forms.Form):
     maintainer = forms.ChoiceField(required=False)
     packager = forms.ChoiceField(required=False)
     flagged = forms.ChoiceField(
-        choices=[('', 'All')] + make_choice(['Flagged', 'Not Flagged']),
+        choices=[('', 'All'), *make_choice(['Flagged', 'Not Flagged'])],
         required=False)
 
     def __init__(self, *args, **kwargs):
