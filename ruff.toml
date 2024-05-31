@@ -20,5 +20,9 @@ select = [
     "YTT",     # flake8-2020
 ]
 
-# Never enforce `E501` (line length violations).
-ignore = ["E501", "E731", "B904", "RUF012"]
+ignore = [
+    "E501", # line lengt violation
+    "E731", # Do not assign a `lambda` expression, use a `def`
+    "B904", # Within an `except` clause, raise exceptions with `raise ... from err`
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+]
