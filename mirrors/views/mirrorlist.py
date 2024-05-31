@@ -39,15 +39,6 @@ class MirrorlistForm(forms.Form):
         code_list = [(code, countries.name(code)) for code in country_codes]
         return sorted(code_list, key=itemgetter(1))
 
-    def as_div(self):
-        "Returns this form rendered as HTML <divs>s."
-        return self._html_output(
-            normal_row=u'<div%(html_class_attr)s>%(label)s %(field)s%(help_text)s</div>',
-            error_row=u'%s',
-            row_ender='</div>',
-            help_text_html=u' <span class="helptext">%s</span>',
-            errors_on_separate_row=True)
-
 
 @csrf_exempt
 def generate_mirrorlist(request):
