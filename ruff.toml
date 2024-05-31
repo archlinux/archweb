@@ -11,6 +11,7 @@ select = [
     "ISC",     # flake8-implicit-str-concat
     "PIE",     # flake8-pie
     "PLE",     # pylint errors
+    "RSE",     # flake8-raise
     "T10",     # flake8-debugger
     "TCH",     # flake8-type-checking
     "UP032",   # f-string

@@ -104,7 +104,7 @@ class Command(BaseCommand):
 
         if latest and latest.publishdate >= published:
             logger.debug("feed: '%s' has no more new entries", url)
-            raise ItemOlderThenLatest()
+            raise ItemOlderThenLatest
 
         if not entry.link:
             logger.error("feed '%s' entry has no link, skipping", url)
