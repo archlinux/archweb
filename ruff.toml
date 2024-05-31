@@ -12,6 +12,7 @@ select = [
     "PIE",     # flake8-pie
     "PLE",     # pylint errors
     "RSE",     # flake8-raise
+    "RUF",     # ruff rules
     "T10",     # flake8-debugger
     "TCH",     # flake8-type-checking
     "UP032",   # f-string
@@ -20,4 +21,4 @@ select = [
 ]
 
 # Never enforce `E501` (line length violations).
-ignore = ["E501", "E731", "B904"]
+ignore = ["E501", "E731", "B904", "RUF012"]

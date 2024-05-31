@@ -23,7 +23,7 @@ class MirrorlistForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(MirrorlistForm, self).__init__(*args, **kwargs)
         fields = self.fields
-        fields['country'].choices = [('all', 'All')] + self.get_countries()
+        fields['country'].choices = [('all', 'All'), *self.get_countries()]
         fields['country'].initial = ['all']
         protos = [(p.protocol, p.protocol) for p in MirrorProtocol.objects.filter(is_download=True)]
         initial = MirrorProtocol.objects.filter(is_download=True, default=True)

@@ -261,8 +261,8 @@ TEMPLATES = [
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + list(MIDDLEWARE)
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', *list(MIDDLEWARE)]
 
-    INSTALLED_APPS = list(INSTALLED_APPS) + ['debug_toolbar']
+    INSTALLED_APPS = [*list(INSTALLED_APPS), 'debug_toolbar']
 
 # vim: set ts=4 sw=4 et:
