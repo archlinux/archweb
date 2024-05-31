@@ -1,3 +1,5 @@
+line-length = 118
+
 [lint]
 select = [
     "A",       # flake8-builtins
