@@ -219,7 +219,7 @@
             <h3 title="{{ pkg.pkgname }} has the following dependencies">
                 Dependencies ({{deps|length}})</h3>
             {% if deps %}<ul id="pkgdepslist">
-                {% for depend in deps %}{% include "packages/details_depend.html" %}{% endfor %}
+                {% include "packages/details_depend.html" %}
             </ul>{% endif %}
         </div>
         {% endwith %}
@@ -228,7 +228,7 @@
             <h3 title="Packages that require {{ pkg.pkgname }}">
                 Required By ({{rqdby|length}})</h3>
             {% if rqdby %}<ul id="pkgreqslist">
-                {% for req in rqdby %}{% include "packages/details_requiredby.html" %}{% endfor %}
+                {% include "packages/details_requiredby.html" %}
             </ul>{% endif %}
         </div>
         {% endwith %}

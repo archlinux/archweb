@@ -1,4 +1,6 @@
-{% load details_link %}<li>{% details_link req.pkg %}
+{% load details_link %}
+{% for req in rqdby %}
+<li>{% details_link req.pkg %}
 {% if req.name != pkg.pkgname %}<span class="virtual-dep"> (requires {{ req.name }})</span>
 {% endif %}{% if req.pkg.repo.testing %}<span class="testing-dep"> (testing)</span>
 {% endif %}{% if req.pkg.repo.staging %}<span class="staging-dep"> (staging)</span>
@@ -6,3 +8,4 @@
 {% endif %}{% if req.deptype == 'M' %}<span class="make-dep"> (make)</span>
 {% endif %}{% if req.deptype == 'C' %}<span class="check-dep"> (check)</span>
 {% endif %}</li>
+{% endfor %}

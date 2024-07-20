@@ -1,4 +1,6 @@
-{% load details_link %}<li>{% if depend.pkg == None %}
+{% load details_link %}
+{% for depend in deps %}
+<li>{% if depend.pkg == None %}
 {% if depend.providers %}{{ depend.dep.name }}{{ depend.dep.comparison|default:""}}{{ depend.dep.version|default:"" }} <span class="virtual-dep">({% for pkg in depend.providers %}{% details_link pkg %}{% if not forloop.last %}, {% endif %}{% endfor %})</span>
 {% else %}{{ depend.dep.name }}{{ depend.dep.comparison|default:""}}{{ depend.dep.version|default:"" }} <span class="virtual-dep">(virtual)</span>{% endif %}
 {% else %}
@@ -10,3 +12,4 @@
 {% if depend.dep.deptype == 'M' %} <span class="make-dep"> (make)</span>{% endif %}
 {% if depend.dep.deptype == 'C' %} <span class="check-dep"> (check)</span>{% endif %}
 {% if depend.dep.description %} - <span class="dep-desc">{{ depend.dep.description }}</span>{% endif %}</li>
+{% endfor %}
