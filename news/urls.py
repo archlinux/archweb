@@ -14,7 +14,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', NewsListView.as_view(), name='news-list'),
+    path('', cache_user_page(317)(NewsListView.as_view()), name='news-list'),
 
     path('preview/', preview),
     # old news URLs, permanent redirect view so we don't break all links
