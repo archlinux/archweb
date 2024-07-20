@@ -93,7 +93,7 @@ def feeds(request):
 def keys(request):
     profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
     users = User.objects.filter(
-            is_active=True, userprofile__id__in=profile_ids).order_by('first_name', 'last_name')
+            is_active=True, userprofile__id__in=profile_ids).order_by('first_name', 'last_name').select_related('userprofile')
     user_key_ids = frozenset(user.userprofile.pgp_key[-16:] for user in users
             if user.userprofile.pgp_key)
 
