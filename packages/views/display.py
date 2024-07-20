@@ -132,10 +132,11 @@ def details(request, name='', repo='', arch=''):
                 return empty_response()
 
             rbstatus = None
-            try:
-                rbstatus = RebuilderdStatus.objects.get(pkg=pkg)
-            except RebuilderdStatus.DoesNotExist:
-                pass
+            if request.user.is_authenticated:
+                try:
+                    rbstatus = RebuilderdStatus.objects.get(pkg=pkg)
+                except RebuilderdStatus.DoesNotExist:
+                    pass
             return render(request, 'packages/details.html', {'pkg': pkg, 'rbstatus': rbstatus,
                           'notreproducible': rbstatus.status == RebuilderdStatus.BAD if rbstatus else False})
         except Package.DoesNotExist:
