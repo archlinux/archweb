@@ -3,6 +3,7 @@ from urllib.parse import unquote, urlencode
 
 from django import template
 from django.conf import settings
+from django.utils.html import format_html
 
 from main.templatetags import pgp
 from main.utils import gitlab_project_name_to_path
@@ -18,9 +19,10 @@ def link_encode(url, query):
     return "%s?%s" % (url, data)
 
 
-@register.inclusion_tag('packages/details_link.html')
+@register.simple_tag
 def details_link(pkg):
-    return {'pkg': pkg}
+    link = '<a href="%s" title="View package details for %s">%s</a>'
+    return format_html(link % (pkg.get_absolute_url(), pkg.pkgname, pkg.pkgname))
 
 
 @register.simple_tag
