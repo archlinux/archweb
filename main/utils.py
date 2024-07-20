@@ -1,6 +1,7 @@
 import hashlib
 import pickle
 import re
+from functools import WRAPPER_ASSIGNMENTS, wraps
 
 import markdown
 from django.core.cache import cache
@@ -8,6 +9,7 @@ from django.db import connections, router
 from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from markdown.extensions import Extension
 from pgpdump.packet import SignaturePacket
 
@@ -60,6 +62,22 @@ def empty_response():
 
 # utility to make a pair of django choices
 make_choice = lambda l: [(str(m), str(m)) for m in l]   # noqa E741
+
+
+def cache_user_page(timeout):
+    '''Cache the page only for non-logged in users'''
+
+    def decorator(view_func):
+        @wraps(view_func, assigned=WRAPPER_ASSIGNMENTS)
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated:
+                return view_func(request, *args, **kwargs)
+            result = cache_page(
+                timeout,
+                key_prefix=(f"_auth_{request.user.is_authenticated}_"))
+            return result(view_func)(request, *args, **kwargs)
+        return _wrapped_view
+    return decorator
 
 
 def set_created_field(sender, **kwargs):
