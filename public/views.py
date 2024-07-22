@@ -157,10 +157,10 @@ def keys_json(request):
 
     not_expired = Q(expires__gt=datetime.now(timezone.utc)) | Q(expires__isnull=True)
     signatures = PGPSignature.objects.filter(not_expired, revoked__isnull=True)
-    edge_list = [{ 'signee': sig.signee, 'signer': sig.signer }
+    edge_list = [{'signee': sig.signee, 'signer': sig.signer}
             for sig in signatures]
 
-    data = { 'nodes': node_list, 'edges': edge_list }
+    data = {'nodes': node_list, 'edges': edge_list}
 
     to_json = json.dumps(data, ensure_ascii=False)
     return HttpResponse(to_json, content_type='application/json')
