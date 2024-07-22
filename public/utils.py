@@ -59,6 +59,7 @@ class RecentUpdate(object):
         return "RecentUpdate '%s %s' <%d packages>" % (
                 self.pkgbase, self.version, len(self.packages))
 
+
 def get_recent_updates(number=15, testing=True, staging=False):
     repos = Repo.objects.all()
     if not testing:

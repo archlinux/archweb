@@ -16,6 +16,7 @@ def release_populate_last_modified_forwards(apps, schema_editor):
     Release = apps.get_model('releng', 'Release')
     Release.objects.update(last_modified=models.F('created'))
 
+
 def release_populate_last_modified_backwards(apps, schema_editor):
     pass
 
