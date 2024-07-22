@@ -114,6 +114,12 @@ if settings.DEBUG_TOOLBAR:  # pragma: no cover
         path('__debug__/', include(debug_toolbar.urls)),
     ])
 
+# prometheus metrics
+if settings.PROMETHEUS_METRICS:  # pragma :no cover
+    urlpatterns.extend([
+        path('', include('django_prometheus.urls')),
+    ])
+
 
 # displays all archweb urls
 def show_urls(urllist=urlpatterns, depth=0):  # pragma: no cover

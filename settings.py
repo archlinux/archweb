@@ -6,6 +6,9 @@ from os import path
 DEBUG = False
 DEBUG_TOOLBAR = False
 
+# Export prometheus metrics
+PROMETHEUS_METRICS = False
+
 # Notification admins
 ADMINS = ()
 
@@ -264,5 +267,10 @@ if DEBUG_TOOLBAR:
     MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', *list(MIDDLEWARE)]
 
     INSTALLED_APPS = [*list(INSTALLED_APPS), 'debug_toolbar']
+
+if PROMETHEUS_METRICS:
+    MIDDLEWARE = ['django_prometheus.middleware.PrometheusBeforeMiddleware', *list(MIDDLEWARE), 'django_prometheus.middleware.PrometheusAfterMiddleware']
+
+    INSTALLED_APPS = [*list(INSTALLED_APPS), 'django_prometheus']
 
 # vim: set ts=4 sw=4 et:
