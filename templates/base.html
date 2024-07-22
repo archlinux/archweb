@@ -55,7 +55,11 @@
                     {% if user|in_groups:'Developers:Package Maintainers:Support Staff' %}
                     <li><a href="/devel/tier0mirror/" title="Your Tier 0 Mirror information">Tier0 mirror</a></li>
                     {% endif %}
-                    <li><a href="/logout/" title="Logout of the developer interface">Logout</a></li>
+                    <li>
+                        <form class="logout-form" method="post" action="/logout/">{% csrf_token %}
+                            <input type="submit" title="Logout of the developer interface" value="Logout"/>
+                        </form>
+                    </li>
                 </ul>
             {% endif %}
         </div>

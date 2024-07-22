@@ -1197,3 +1197,24 @@ ul.signoff-list {
 .pgp-key-ids {
     display: inline-block;
 }
+
+.logout-form {
+    display: inline-block;
+
+    /* style input as a normal anchor */
+    input {
+      background: none!important;
+      border: none;
+      padding: 0!important;
+      /*optional*/
+      font-family: arial, sans-serif;
+      font-size: 0.9em;
+      /*input has OS specific font-family*/
+      color: #07b;
+    }
+
+    input:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
