@@ -16,3 +16,4 @@ bleach==6.0.0
 requests==2.32.0
 xtarfile==0.1.0
 zstandard==0.17.0
+django-prometheus==2.3.1
