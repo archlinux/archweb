@@ -85,6 +85,9 @@ function collapseDependsList(list) {
     // enough items, or the link already exists.
     const limit = 20;
     const elem = document.querySelector(list);
+    if (!elem)
+	return;
+
     const linkid = elem.getAttribute('id') + 'link';
     const items = Array.from(elem.querySelectorAll('li')).slice(limit);
 
