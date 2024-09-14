@@ -25,6 +25,8 @@
     It is intended for new installations only; an existing Arch Linux system
     can always be updated with <code>pacman -Syu</code>.</p>
 
+    <p>Images for installing Arch can be downloaded via <a href="#bittorrent-download">BitTorrent</a> or right here in your browser from one of the <a href="#http-downloads">Arch HTTP(S) mirrors down below</a>.</p>
+
     <ul>
         {% if release.version %}<li><strong>Current Release:</strong> {{ release.version }}</li>{% endif %}
         {% if release.kernel_version %}<li><strong>Included Kernel:</strong> {{ release.kernel_version }}</li>{% endif %}
@@ -52,7 +54,7 @@
     to update your existing system. You may be looking for
     <a href="{% url 'mirrorlist' %}">an updated mirrorlist</a> instead.</p>
 
-    <h3>BitTorrent Download (recommended)</h3>
+    <h3 id="bittorrent-download">BitTorrent Download (recommended)</h3>
 
     <p>If you can spare the bytes, please leave the client open after your
     download is finished, so you can seed it back to others.
@@ -91,10 +93,10 @@
 
     <p>Official virtual machine images are available for download on our <a href="https://gitlab.archlinux.org/archlinux/arch-boxes/-/packages">GitLab instance</a>, more information is available in the <a href="https://gitlab.archlinux.org/archlinux/arch-boxes/">README</a>.</p>
 
-    <h3>HTTP Direct Downloads</h3>
+    <h3 id="http-downloads">HTTP Direct Downloads</h3>
 
     <p>In addition to the BitTorrent links above, install images can also be
-    downloaded via HTTP from the mirror sites listed below. Please
+    downloaded via HTTP from the <a href="#download-mirrors">mirror sites listed below</a>. Please
     ensure the download image matches the checksum from the <code>sha256sums.txt</code> or <code>b2sums.txt</code> file linked below.</p>
 
     <h4 id="checksums">Checksums and signatures</h4>
