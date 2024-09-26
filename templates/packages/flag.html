@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load package_extras %}
 {% load humanize %}
+{% load details_link %}
 
 {% block title %}Arch Linux - Flag Package - {{ package.pkgname }} {{ package.full_version }} ({{ package.arch.name }}){% endblock %}
 {% block head %}<meta name="robots" content="noindex"/>{% endblock %}
@@ -29,9 +30,9 @@
     with your additional text.</p>
 
     <p><strong>Note:</strong> Do <em>not</em> use this facility if the
-    package is broken! The package will be unflagged and the report will be ignored!
-    <a href="https://bugs.archlinux.org/" title="Arch Linux Bugtracker">Use the
-    bugtracker to file a bug</a> instead.</p>
+    package is broken! The package will be unflagged and the report will be ignored! File an issue on
+    <a href="{% bugs_list package %}" title="Bug tickets for {{ package }}">the package's GitLab repository</a>
+    instead.</p>
 
     <p>Please confirm your flag request for {{package.pkgname}}:</p>
 
