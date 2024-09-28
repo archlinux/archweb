@@ -182,19 +182,19 @@
             {% else %}{{ pkg.packager_str }}{% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Build Date:</th>
-            <td>{{ pkg.build_date|date:"DATETIME_FORMAT" }} UTC</td>
+            <td>{{ pkg.build_date|date:"Y-m-d H:i" }} UTC</td>
         </tr>{% if pkg.signature %}<tr>
             <th>Signed By:</th>
             <td>{% with signer=pkg.signer %}{% if signer %}{% pgp_key_link pkg.signature.key_id signer.get_full_name|safe %}{% else %}Unknown ({% pgp_key_link pkg.signature.key_id|safe %}){% endif %}{% endwith %}</td>
         </tr><tr>
             <th>Signature Date:</th>
-            <td>{{ pkg.signature.creation_time|date:"DATETIME_FORMAT" }} UTC</td>
+            <td>{{ pkg.signature.creation_time|date:"Y-m-d H:i" }} UTC</td>
         </tr>{% else %}<tr>
             <th>Signed By:</th>
             <td>Unsigned</td>
         </tr>{% endif %}<tr>
             <th>Last Updated:</th>
-            <td>{{ pkg.last_update|date:"DATETIME_FORMAT" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.last_update|naturaltime }})</span>{% endif %}</td>
+            <td>{{ pkg.last_update|date:"Y-m-d H:i" }} UTC{% if pkg.is_recent %} <span class="recent" title="Your mirror may not yet have this package version">({{ pkg.last_update|naturaltime }})</span>{% endif %}</td>
         </tr>
         {% if user.is_authenticated %}<tr>
             <th>Reproducible Status:</th>

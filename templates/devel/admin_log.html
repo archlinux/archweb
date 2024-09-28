@@ -30,7 +30,7 @@
     <tbody>
         {% for entry in admin_log %}
         <tr>
-            <th scope="row">{{ entry.action_time|date:"DATETIME_FORMAT" }}</th>
+            <th scope="row">{{ entry.action_time|date:"Y-m-d H:i" }}</th>
             {% if log_user %}
             <td>{{ entry.user.username }}{% if entry.user.get_full_name %} ({{ entry.user.get_full_name }}){% endif %}</td>
             {% else %}

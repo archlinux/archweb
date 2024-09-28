@@ -41,9 +41,6 @@ SITE_ID = 1
 DATE_FORMAT = 'Y-m-d'
 DATETIME_FORMAT = 'Y-m-d H:i'
 
-# Disable so our own DATE_FORMAT/DATETIME_FORMAT is used.
-USE_L10N = False
-
 # Login URL configuration
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
