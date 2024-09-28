@@ -38,7 +38,7 @@
 
     <ul>
         <li><strong>Comment:</strong> {{ torrent.comment }}</li>
-        <li><strong>Creation Date:</strong> {{ torrent.creation_date|date:"DATETIME_FORMAT" }} UTC</li>
+        <li><strong>Creation Date:</strong> {{ torrent.creation_date|date:"Y-m-d H:i" }} UTC</li>
         <li><strong>Created By:</strong> {{ torrent.created_by }}</li>
         <li><strong>Announce URL:</strong> {{ torrent.announce }}</li>
         <li><strong>File Name:</strong> {{ torrent.file_name }}</li>
