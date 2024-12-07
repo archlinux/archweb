@@ -52,7 +52,7 @@ def create_specification(package, log, finder):
     return spec
 
 
-def get_last_log(repo, pkgbase):
+def get_tag_info(repo, pkgbase, version):
     # Gitlab requires the path to the gitlab repo to be html encoded and project name encoded in a different special way
     pkgrepo = urllib.parse.quote_plus(f'{settings.GITLAB_PACKAGE_REPO}/') + gitlab_project_name_to_path(pkgbase)
     url = f'https://{settings.GITLAB_INSTANCE}/api/v4/projects/{pkgrepo}/repository/tags'
@@ -65,8 +65,12 @@ def get_last_log(repo, pkgbase):
         return None
 
     tags = r.json()
+
+    # filter out unrelated tags
+    tags = [tag for tag in tags if tag["name"] == version]
+
     if len(tags) == 0:
-        logger.error("No tags found for pkgbase %s (%s)", pkgbase, repo)
+        logger.error("No tags found for pkgbase %s (%s) version %s", pkgbase, repo, version)
         return None
 
     tag = tags[0]
@@ -89,7 +93,7 @@ def add_signoff_comments():
         if not group.default_spec:
             continue
 
-        log = get_last_log(group.repo, group.pkgbase)
+        log = get_tag_info(group.repo, group.pkgbase, group.version)
         if log is None:
             continue
 
