@@ -26,9 +26,9 @@ class RematchDeveloperTest(TransactionTestCase):
         self.package.delete()
 
     def test_basic(self):
-        with mock.patch('packages.management.commands.populate_signoffs.get_last_log') as get_last_log:
+        with mock.patch('packages.management.commands.populate_signoffs.get_tag_info') as get_tag_info:
             comment = 'upgpkg: 0.1-1: rebuild'
-            get_last_log.return_value = {'message': f'{comment}\n', 'author': 'foo@archlinux.org'}
+            get_tag_info.return_value = {'message': f'{comment}\n', 'author': 'foo@archlinux.org'}
             call_command('populate_signoffs')
 
             signoff_spec = SignoffSpecification.objects.first()
@@ -36,8 +36,8 @@ class RematchDeveloperTest(TransactionTestCase):
             assert signoff_spec.pkgbase == self.package.pkgbase
 
     def test_invalid(self):
-        with mock.patch('packages.management.commands.populate_signoffs.get_last_log') as get_last_log:
-            get_last_log.return_value = None
+        with mock.patch('packages.management.commands.populate_signoffs.get_tag_info') as get_tag_info:
+            get_tag_info.return_value = None
             call_command('populate_signoffs')
 
             assert SignoffSpecification.objects.count() == 0
