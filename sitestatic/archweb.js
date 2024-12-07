@@ -212,8 +212,14 @@ function filter_pkgs_list(filter_ele, tbody_ele) {
         rows = rows.has('.incomplete');
     }
     /* hide all rows, then show the set we care about */
-    all_rows.hide();
-    rows.show();
+    // note that we don't use .hide() from jQuery because it adds display:none
+    // which is very expensive to query in CSS ([style*="display: none"])
+    all_rows.each(function() {
+        $(this).attr('hidden', true);
+    });
+    rows.each(function() {
+        $(this).removeAttr('hidden');
+    });
     $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets', [false]);
@@ -330,8 +336,14 @@ function filter_signoffs() {
         rows = rows.has('td.signoff-no');
     }
     /* hide all rows, then show the set we care about */
-    all_rows.hide();
-    rows.show();
+    // note that we don't use .hide() from jQuery because it adds display:none
+    // which is very expensive to query in CSS ([style*="display: none"])
+    all_rows.each(function() {
+        $(this).attr('hidden', true);
+    });
+    rows.each(function() {
+        $(this).removeAttr('hidden');
+    });
     $('#filter-count').text(rows.length);
     /* make sure we update the odd/even styling from sorting */
     $('.results').trigger('applyWidgets', [false]);

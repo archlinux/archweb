@@ -754,6 +754,10 @@ table.results {
         text-align: center;
     }
 
+    .results [hidden] {
+        display: none;
+    }
+
 /* pkglist: layout */
 #pkglist-about {
     margin-top: 1.5em;
@@ -1056,12 +1060,12 @@ table td.country {
     background: #ffd;
 }
 
-.results tr:nth-child(even),
+.results tr:nth-child(even of :not([hidden])),
 #article-list tr:nth-child(even) {
     background: #e4eeff;
 }
 
-.results tr:nth-child(odd),
+.results tr:nth-child(odd of :not([hidden])),
 #article-list tr:nth-child(odd) {
     background: #fff;
 }
