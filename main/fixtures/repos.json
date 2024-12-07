@@ -12,6 +12,18 @@
         }
     }, 
     {
+        "pk": 15, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 33, 
+            "staging": true, 
+            "name": "Extra-Staging",
+            "bugs_project": 5, 
+            "svn_root": "packages",
+            "testing": false
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "main.repo", 
         "fields": {
@@ -117,6 +129,18 @@
             "bugs_project": 1, 
             "svn_root": "packages", 
             "testing": true
+        }
+    },
+    {
+        "pk": 16, 
+        "model": "main.repo", 
+        "fields": {
+            "bugs_category": 10, 
+            "staging": true, 
+            "name": "Core-Staging",
+            "bugs_project": 1, 
+            "svn_root": "packages", 
+            "testing": false
         }
     }
 ]
