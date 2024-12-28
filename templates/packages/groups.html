@@ -23,7 +23,7 @@
                 <td><a href="/groups/{{ grp.arch }}/{{ grp.name }}/"
                         title="Group details for {{ grp.name }}">{{ grp.name }}</a></td>
                 <td>{{ grp.count }}</td>
-                <td>{{ grp.last_update|date }}</td>
+                <td>{{ grp.last_update|date:"Y-m-d" }}</td>
             </tr>
             {% endfor %}
         </tbody>

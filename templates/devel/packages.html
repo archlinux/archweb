@@ -60,9 +60,9 @@
                 {% else %}
                 <td>{{ pkg.full_version }}</td>
                 {% endif %}
-                <td>{{ pkg.last_update|date }}</td>
-                <td>{{ pkg.build_date|date }}</td>
-                <td>{{ pkg.flag_date|date }}</td>
+                <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+                <td>{{ pkg.build_date|date:"Y-m-d" }}</td>
+                <td>{{ pkg.flag_date|date:"Y-m-d" }}</td>
                 {% for attr in column_attrs %}
                 <td>{{ pkg|attribute:attr }}</td>
                 {% endfor %}

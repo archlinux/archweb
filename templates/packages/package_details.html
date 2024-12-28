@@ -27,7 +27,7 @@
 		</li>
 		{% endif %}
                 {% if pkg.flag_date %}
-                <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date }}</span></li>
+                <li><span class="flagged">Flagged out-of-date on {{ pkg.flag_date|date:"Y-m-d" }}</span></li>
                 {% with tp=pkg.in_testing %}{% if tp %}
                 <li><span class="flagged">Version
                     <a href="{{ tp.get_absolute_url }}"
@@ -207,7 +207,7 @@
 	{% endif %}
         {% if user.is_authenticated %}{% with flag_request=pkg.flag_request %}{% if flag_request %}<tr>
             <th>Last Flag Request:</th>
-            <td class="wrap">From {{ flag_request.who }} on {{ flag_request.created|date }}:<br/>
+            <td class="wrap">From {{ flag_request.who }} on {{ flag_request.created|date:"Y-m-d" }}:<br/>
                 <div class="userdata">{{ flag_request.message|linebreaksbr|default:"{no message}" }}</div></td>
         </tr>{% endif %}{% endwith %}{% endif %}
     </table>

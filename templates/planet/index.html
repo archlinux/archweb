@@ -24,7 +24,7 @@
         <a href="{{ entry.url }}"
             title="View full article: {{ entry.title }}">{{ entry.title }}</a>
     </h4>
-    <p class="timestamp">{{ entry.publishdate|date }}</p>
+    <p class="timestamp">{{ entry.publishdate|date:"Y-m-d" }}</p>
     <div class="article-content">
         {{ entry.summary |safe }}
     </div>

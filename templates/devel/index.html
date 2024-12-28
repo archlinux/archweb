@@ -36,8 +36,8 @@
                         {% endif %}{% endwith %}</td>
                     <td>{{ pkg.repo.name }}</td>
                     <td>{{ pkg.arch.name }}</td>
-                    <td>{{ pkg.flag_date|date }}</td>
-                    <td>{{ pkg.last_update|date }}</td>
+                    <td>{{ pkg.flag_date|date:"Y-m-d" }}</td>
+                    <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
                 </tr>
             {% empty %}
                 <tr class="empty"><td colspan="7"><em>No flagged packages to display</em></td></tr>
@@ -68,7 +68,7 @@
                 <td>{{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
-                <td>{{ group.last_update|date }}</td>
+                <td>{{ group.last_update|date:"Y-m-d" }}</td>
                 {% if group.specification.known_bad %}
                 <td class="approval signoff-bad">Bad</td>
                 {% else %}
@@ -138,7 +138,7 @@
             <tr>
                 <td class="wrap"><a href="{{ todo.get_absolute_url }}"
                         title="View todo list: {{ todo.name }}">{{ todo.name }}</a></td>
-                <td>{{ todo.created|date }}</td>
+                <td>{{ todo.created|date:"Y-m-d" }}</td>
                 <td>{{ todo.creator.get_full_name }}</td>
                 <td>{{ todo.pkg_count }}</td>
                 <td>{{ todo.incomplete_count }}</td>

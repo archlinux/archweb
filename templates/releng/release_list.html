@@ -42,7 +42,7 @@
                     <a href="{{ item.magnet_uri }}"
                        title="Get magnet link for {{ item.version }}"><img width="12" height="12" src="{% static "magnet.png" %}" alt="Magnet"/></a>
                 {% endif %}</td>
-                <td>{{ item.release_date|date }}</td>
+                <td>{{ item.release_date|date:"Y-m-d" }}</td>
                 <td><a href="{{ item.get_absolute_url }}" title="Release details for {{ item.version }}">{{ item.version }}</a></td>
                 <td>{{ item.kernel_version|default:"" }}</td>
                 <td class="available-{{ item.available|yesno }}">{{ item.available|yesno|capfirst }}</td>
