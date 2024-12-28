@@ -56,7 +56,7 @@
                 <td>{{ group.target_repo }}</td>
                 <td>{{ group.packager|default:"Unknown" }}</td>
                 <td>{{ group.packages|length }}</td>
-                <td class="epoch-{{ group.last_update|date:'U' }}">{{ group.last_update|date }}</td>
+                <td class="epoch-{{ group.last_update|date:'U' }}">{{ group.last_update|date:"Y-m-d" }}</td>
                 {% if group.specification.known_bad %}
                 <td class="approval signoff-bad">Bad</td>
                 {% else %}

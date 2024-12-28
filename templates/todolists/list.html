@@ -37,7 +37,7 @@
             <tr>
                 <td class="wrap"><a href="{{ list.get_absolute_url }}"
                         title="View todo list: {{ list.name }}">{{ list.name }}</a></td>
-                <td>{{ list.created|date }}</td>
+                <td>{{ list.created|date:"Y-m-d" }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
                 <td>{{ list.pkg_count }}</td>
                 <td>{{ list.incomplete_count }}</td>

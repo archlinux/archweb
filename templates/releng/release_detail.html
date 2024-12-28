@@ -9,7 +9,7 @@
     <h2>{{ release.version }}</h2>
 
     <ul>
-        <li><strong>Release Date:</strong> {{ release.release_date|date }}</li>
+        <li><strong>Release Date:</strong> {{ release.release_date|date:"Y-m-d" }}</li>
         {% if release.kernel_version %}<li><strong>Kernel Version:</strong> {{ release.kernel_version }}</li>{% endif %}
         <li><strong>Available:</strong> {{ release.available|yesno|capfirst }}</li>
         {% if release.torrent_data %}

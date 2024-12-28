@@ -50,7 +50,7 @@
         <a href="{{ news.get_absolute_url }}"
             title="View full article: {{ news.title }}">{{ news.title }}</a>
     </h4>
-    <p class="timestamp">{{ news.postdate|date }}</p>
+    <p class="timestamp">{{ news.postdate|date:"Y-m-d" }}</p>
     <div class="article-content">
         {% if forloop.counter0 == 0 %}{{ news.html|truncatewords_html:300 }}
         {% else %}{{ news.html|truncatewords_html:100 }}{% endif %}
@@ -63,7 +63,7 @@
     </h3>
     <dl class="newslist">
     {% endif %}
-        <dt>{{ news.postdate|date }}</dt>
+        <dt>{{ news.postdate|date:"Y-m-d" }}</dt>
         <dd>
             <a href="{{ news.get_absolute_url }}"
                 title="View full article: {{ news.title }}">{{ news.title }}</a>

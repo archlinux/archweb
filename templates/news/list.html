@@ -33,7 +33,7 @@
         <tbody>
             {% for item in news_list %}
             <tr>
-                <td>{{ item.postdate|date }}</td>
+                <td>{{ item.postdate|date:"Y-m-d" }}</td>
                 <td class="wrap"><a href="{{ item.get_absolute_url }}"
                         title="View: {{ item.title }}">{{ item.title }}</a></td>
                 <td>{{ item.author.get_full_name }}</td>

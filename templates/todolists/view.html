@@ -23,7 +23,7 @@
         {% endif %}
     </ul>
 
-    <div class="todo-info">{{ list.created|date }} - {{ list.creator.get_full_name }}</div>
+    <div class="todo-info">{{ list.created|date:"Y-m-d" }} - {{ list.creator.get_full_name }}</div>
 
     <div class="todo-description">
         {{list.stripped_description|default:'(no description)'|urlize|linebreaks}}
