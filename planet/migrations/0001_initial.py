@@ -50,7 +50,8 @@ class Migration(migrations.Migration):
                 ('author', models.CharField(max_length=255)),
                 ('publishdate', models.DateTimeField(db_index=True, verbose_name='publish date')),
                 ('url', models.CharField(max_length=255, verbose_name='URL')),
-                ('feed', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='feed', to='planet.Feed')),
+                ('feed', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                           related_name='feed', to='planet.Feed')),
             ],
             options={
                 'verbose_name_plural': 'Feed Items',
