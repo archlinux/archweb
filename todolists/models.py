@@ -23,7 +23,8 @@ class Todolist(models.Model):
     description = models.TextField()
     creator = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_todolists")
     created = models.DateTimeField(db_index=True)
-    kind = models.SmallIntegerField(default=REBUILD, choices=KIND_CHOICES, help_text='(Rebuild for soname bumps, Task for independent tasks)')
+    kind = models.SmallIntegerField(default=REBUILD, choices=KIND_CHOICES,
+                                    help_text='(Rebuild for soname bumps, Task for independent tasks)')
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
 

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='todolist',
             name='kind',
-            field=models.SmallIntegerField(choices=[(0, 'Rebuild'), (1, 'Task')], default=0, help_text='(Rebuild for soname bumps, Task for independent tasks)'),
+            field=models.SmallIntegerField(choices=[(0, 'Rebuild'), (1, 'Task')], default=0,
+                                           help_text='(Rebuild for soname bumps, Task for independent tasks)'),
         ),
     ]
