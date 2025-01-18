@@ -38,7 +38,8 @@ class FlagForm(forms.Form):
         # make sure the message isn't garbage (only punctuation or whitespace)
         # or spam (using a simple denylist)
         # and ensure a certain minimum length
-        if re.match(r'^[^0-9A-Za-z]+$', data) or any(fd.keyword in data for fd in FlagDenylist.objects.all()) or len(data) < 3:
+        if re.match(r'^[^0-9A-Za-z]+$', data) or any(fd.keyword in data for fd in FlagDenylist.objects.all()) \
+           or len(data) < 3:
             raise forms.ValidationError("Enter a valid and useful out-of-date message.")
         return data
 

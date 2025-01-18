@@ -89,7 +89,9 @@ class Command(BaseCommand):
         for name in all_paths:
             manager.add_watch(name, mask)
 
-        handler = EventHandler(arch_paths=arch_path_map, filename_suffix='.links.tar.gz', callback_func=wrapper_read_links)
+        handler = EventHandler(arch_paths=arch_path_map,
+                               filename_suffix='.links.tar.gz',
+                               callback_func=wrapper_read_links)
         return pyinotify.Notifier(manager, handler)
 
 

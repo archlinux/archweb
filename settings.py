@@ -266,7 +266,9 @@ if DEBUG_TOOLBAR:
     INSTALLED_APPS = [*list(INSTALLED_APPS), 'debug_toolbar']
 
 if PROMETHEUS_METRICS:
-    MIDDLEWARE = ['django_prometheus.middleware.PrometheusBeforeMiddleware', *list(MIDDLEWARE), 'django_prometheus.middleware.PrometheusAfterMiddleware']
+    MIDDLEWARE = ['django_prometheus.middleware.PrometheusBeforeMiddleware',
+                  *list(MIDDLEWARE),
+                  'django_prometheus.middleware.PrometheusAfterMiddleware']
 
     INSTALLED_APPS = [*list(INSTALLED_APPS), 'django_prometheus']
 

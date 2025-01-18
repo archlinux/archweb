@@ -71,7 +71,8 @@ class Database(object):
                         retry = False
                     except OperationalError as exc:
                         retry_count += 1
-                        logger.error('Unable to update database \'%s\', retrying=%d', self.path, retry_count, exc_info=exc)
+                        logger.error('Unable to update database \'%s\', retrying=%d',
+                                     self.path, retry_count, exc_info=exc)
                         time.sleep(5)
 
                 if retry_count == self.retry_limit:

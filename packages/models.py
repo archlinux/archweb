@@ -253,7 +253,8 @@ class UpdateManager(models.Manager):
             if new_pkg:
                 update.action_flag = CHANGE
                 # ensure we should even be logging this
-                if old_pkg.pkgver == new_pkg.pkgver and old_pkg.pkgrel == new_pkg.pkgrel and old_pkg.epoch == new_pkg.epoch:
+                if old_pkg.pkgver == new_pkg.pkgver and old_pkg.pkgrel == new_pkg.pkgrel \
+                   and old_pkg.epoch == new_pkg.epoch:
                     # all relevant fields were the same; e.g. a force update
                     return
             else:
@@ -395,7 +396,8 @@ class RelatedToBase(models.Model):
         # actually satisfy the requirements
         if self.comparison and self.version:
             alpm = AlpmAPI()
-            pkgs = [pkg for pkg in pkgs if not alpm.available or alpm.compare_versions(pkg.full_version, self.comparison, self.version)]
+            pkgs = [pkg for pkg in pkgs if not alpm.available or alpm.compare_versions(pkg.full_version,
+                                                                                       self.comparison, self.version)]
         if len(pkgs) == 0:
             # couldn't find a package in the DB
             # it should be a virtual depend (or a removed package)

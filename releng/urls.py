@@ -9,8 +9,10 @@ from .views import ReleaseDetailView, ReleaseListView
 releases_patterns = [
     path('', ReleaseListView.as_view(), name='releng-release-list'),
     path('json/', views.releases_json, name='releng-release-list-json'),
-    re_path(r'^(?P<version>[-.\w]+)/$', cache_page(311)(ReleaseDetailView.as_view()), name='releng-release-detail'),
-    re_path(r'^(?P<version>[-.\w]+)/torrent/$', cache_page(311)(views.release_torrent), name='releng-release-torrent'),
+    re_path(r'^(?P<version>[-.\w]+)/$', cache_page(311)(ReleaseDetailView.as_view()),
+            name='releng-release-detail'),
+    re_path(r'^(?P<version>[-.\w]+)/torrent/$', cache_page(311)(views.release_torrent),
+            name='releng-release-torrent'),
 ]
 
 netboot_patterns = [

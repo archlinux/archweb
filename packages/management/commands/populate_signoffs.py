@@ -53,7 +53,8 @@ def create_specification(package, log, finder):
 
 
 def get_tag_info(repo, pkgbase, version):
-    # Gitlab requires the path to the gitlab repo to be html encoded and project name encoded in a different special way
+    # Gitlab requires the path to the gitlab repo to be html encoded and
+    # project name encoded in a different special way
     pkgrepo = urllib.parse.quote_plus(f'{settings.GITLAB_PACKAGE_REPO}/') + gitlab_project_name_to_path(pkgbase)
     url = f'https://{settings.GITLAB_INSTANCE}/api/v4/projects/{pkgrepo}/repository/tags'
 
@@ -112,7 +113,8 @@ def cleanup_signoff_comments():
     id_signoffs = [signoff.id for g in groups for signoff in g.signoffs]
     logger.info("Keeping %s signoffs", len(id_signoffs))
     # FakeSignoffSpecification's have no id
-    id_signoffspecs = [g.specification.id for g in groups if not isinstance(g.specification, FakeSignoffSpecification)]
+    id_signoffspecs = [g.specification.id for g in groups if not isinstance(g.specification,
+                                                                            FakeSignoffSpecification)]
     logger.info("Keeping %s signoffspecifications", len(id_signoffspecs))
 
     Signoff.objects.exclude(id__in=id_signoffs).delete()

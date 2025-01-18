@@ -35,7 +35,7 @@ def pgp_dev_key_link(key_id):
     key_id = pad_key_id(key_id)
     if not key_id:
         return "Unknown"
-    link_text = (''.join((f'<span>{key_id[i:i+4]}</span>' for i in range(0, len(key_id), 4))))
+    link_text = (''.join((f'<span>{key_id[i:i + 4]}</span>' for i in range(0, len(key_id), 4))))
     link_text = f'<div class="pgp-key-ids">{link_text}</div>'
     return pgp_key_link(key_id, link_text)
 
@@ -51,7 +51,9 @@ def pgp_key_link(key_id, link_text=None):
         return format_key(key_id)
     pgp_server_secure = getattr(settings, 'PGP_SERVER_SECURE', False)
     scheme = 'https' if pgp_server_secure else 'http'
-    url = '%s://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % (scheme, pgp_server, key_id)
+    url = '%s://%s/pks/lookup?op=vindex&amp;fingerprint=on&amp;exact=on&amp;search=0x%s' % (scheme,
+                                                                                            pgp_server,
+                                                                                            key_id)
     if link_text is None:
         link_text = '0x%s' % key_id[-8:]
     values = (url, format_key(key_id), link_text)
