@@ -5,6 +5,7 @@ from collections import defaultdict
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -21,10 +22,10 @@ from ..utils import get_wrong_permissions, multilib_differences
 @require_safe
 @cache_control(public=True, max_age=86400)
 def opensearch(request):
-    domain = "%s://%s" % (request.scheme, request.META.get('HTTP_HOST'))
+    current_site = Site.objects.get_current()
 
     return render(request, 'packages/opensearch.xml',
-                  {'domain': domain},
+                  {'domain': current_site.domain},
                   content_type='application/opensearchdescription+xml')
 
 
