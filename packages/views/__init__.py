@@ -140,8 +140,14 @@ def sonames(request):
         name = request.GET.get('name')
 
         if name:
-            sonames = Soname.objects.filter(name__startswith=name).values('pkg__pkgname', 'pkg__pkgver', 'pkg__pkgrel', 'pkg__epoch', 'pkg__repo__name')
-            packages = [{'pkgname': soname['pkg__pkgname'], 'pkgrel': soname['pkg__pkgrel'], 'pkgver': soname['pkg__pkgver'], 'epoch': soname['pkg__epoch'], 'repo': soname['pkg__repo__name'].lower()} for soname in sonames]
+            sonames = Soname.objects.filter(name__startswith=name).values('pkg__pkgname',
+                                                                          'pkg__pkgver',
+                                                                          'pkg__pkgrel',
+                                                                          'pkg__epoch',
+                                                                          'pkg__repo__name')
+            packages = [{'pkgname': soname['pkg__pkgname'], 'pkgrel': soname['pkg__pkgrel'],
+                         'pkgver': soname['pkg__pkgver'], 'epoch': soname['pkg__epoch'],
+                         'repo': soname['pkg__repo__name'].lower()} for soname in sonames]
         else:
             return HttpResponseBadRequest('name parameter is required')
 

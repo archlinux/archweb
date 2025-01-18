@@ -24,7 +24,6 @@ select = [
 ]
 
 ignore = [
-    "E501", # line lengt violation
     "E731", # Do not assign a `lambda` expression, use a `def`
     "B904", # Within an `except` clause, raise exceptions with `raise ... from err`
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
@@ -33,4 +32,9 @@ ignore = [
     "DJ006", # Do not use `exclude` with `ModelForm`, use `fields` instead
     "DJ008", # Model does not define `__str__` method
     "DJ012", # Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `get_absolute_url`
+]
+
+# Ignore Django migrations
+exclude = [
+    "*/migrations/*.py"
 ]

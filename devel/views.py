@@ -216,7 +216,9 @@ def tier0_mirror_auth(request):
     token = credentials[1]
 
     groups = Group.objects.filter(name__in=SELECTED_GROUPS)
-    user = User.objects.filter(username=username, is_active=True, groups__in=groups).select_related('userprofile').first()
+    user = User.objects.filter(username=username,
+                               is_active=True,
+                               groups__in=groups).select_related('userprofile').first()
     if not user:
         return unauthorized
 

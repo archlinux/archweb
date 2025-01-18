@@ -202,7 +202,8 @@ def non_existing_dependencies(packages):
 
 
 def non_reproducible_packages(packages):
-    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD, pkg__pkgname__in=packages.values('pkgname'))
+    statuses = RebuilderdStatus.objects.select_related().filter(status=RebuilderdStatus.BAD,
+                                                                pkg__pkgname__in=packages.values('pkgname'))
     return linkify_non_reproducible_packages(statuses)
 
 
@@ -227,7 +228,7 @@ def orphan_dependencies(packages):
     JOIN packages_packagerelation ppr ON pp.pkgbase = ppr.pkgbase
     JOIN (SELECT DISTINCT cp.pkgname FROM packages cp LEFT JOIN packages_packagerelation pr ON cp.pkgbase = pr.pkgbase WHERE pr.id IS NULL) child ON ppd.name = child.pkgname
     ORDER BY child.pkgname;
-    """
+    """  # noqa: E501
     cursor.execute(query)
 
     for row in cursor.fetchall():

@@ -54,10 +54,12 @@ class NewsCreateView(CreateView):
             if settings.MAILMAN_PASSWORD:
                 headers['Approved'] = settings.MAILMAN_PASSWORD
             template = loader.get_template('news/news_email_notification.txt')
+            author = newsitem.author.get_full_name()
+            from_ = f'"Arch Linux: Recent news updates: {author}" <{settings.ANNOUNCE_EMAIL}>'
             EmailMessage(
                 subject=f'[arch-announce] {newsitem.title}',
                 body=template.render(ctx),
-                from_email=f'"Arch Linux: Recent news updates: {newsitem.author.get_full_name()}" <{settings.ANNOUNCE_EMAIL}>',
+                from_email=from_,
                 to=[settings.ANNOUNCE_EMAIL],
                 headers=headers).send()
         return super(NewsCreateView, self).form_valid(form)
