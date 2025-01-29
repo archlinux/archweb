@@ -27,7 +27,7 @@ def test_mirrorurl_get_full_url(mirrorurl):
 
 def test_mirror_url_clean(mirrorurl):
     mirrorurl.clean()
-    # TOOD(jelle): this expects HOSTNAME to resolve, maybe mock
+    # TODO(jelle): this expects HOSTNAME to resolve, maybe mock
     assert mirrorurl.has_ipv4
     # requires ipv6 on host... mock?
     # assert mirrorurl.has_ipv6 == True
