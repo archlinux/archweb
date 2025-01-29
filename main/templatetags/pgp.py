@@ -10,7 +10,7 @@ def format_key(key_id):
     if len(key_id) in (8, 20):
         return '0x%s' % key_id
     elif len(key_id) == 40:
-        # normal display format is 5 groups of 4 hex chars seperated by spaces,
+        # normal display format is 5 groups of 4 hex chars separated by spaces,
         # double space, then 5 more groups of 4 hex chars
         split = tuple(key_id[i:i + 4] for i in range(0, 40, 4))
         return '%s\u00a0 %s' % (' '.join(split[0:5]), ' '.join(split[5:10]))

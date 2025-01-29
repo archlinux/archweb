@@ -131,7 +131,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 * reporead_inotify - Watches a templated patch for updates of *.files.tar.gz to update Arch databases with.
 * donor_import - Import a single donator from a mail passed to stdin
 * mirrorcheck - Poll every active mirror URLs to store the lastsnyc time and record network timing details.
-* mirrorresolv - Poll every active mirror URLs and determine wheteher they have IP4 and/or IPv6 addresses.
+* mirrorresolv - Poll every active mirror URLs and determine whether they have IP4 and/or IPv6 addresses.
 * populate_signoffs - retrieves the latest commit message of a signoff-eligible package.
 * update_planet - Import all feeds for users who have a valid website and website_rss in their user profile.
 * read_links - Reads a repo.links.db.tar.gz file and updates the Soname model.
