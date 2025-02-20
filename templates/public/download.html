@@ -132,10 +132,10 @@
     <pre><code>$ b2sum -c b2sums.txt</code></pre>
 
     To verify the PGP signature using Sequoia, first download the release signing key from WKD:
-    <pre><code>$ sq network wkd fetch {{ release.wkd_email }} -o release-key.pgp</code></pre>
+    <pre><code>$ sq network wkd search {{ release.wkd_email }} --output release-key.pgp</code></pre>
 
     With this signing key, verify the signature:
-    <pre><code>$ sq verify --signer-file release-key.pgp --detached archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
+    <pre><code>$ sq verify --signer-file release-key.pgp --signature-file archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
 
     Alternatively, using GnuPG, download the signing key from WKD:
     <pre><code>$ gpg --auto-key-locate clear,wkd -v --locate-external-key {{ release.wkd_email }}</code></pre>
