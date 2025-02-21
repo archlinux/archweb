@@ -137,10 +137,13 @@
     With this signing key, verify the signature:
     <pre><code>$ sq verify --signer-file release-key.pgp --signature-file archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
 
-    Alternatively, using GnuPG, download the signing key from WKD:
-    <pre><code>$ gpg --auto-key-locate clear,wkd -v --locate-external-key {{ release.wkd_email }}</code></pre>
-    Verify the signature:
-    <pre><code>$ gpg --keyserver-options auto-key-retrieve --verify archlinux-{{ release.version }}-x86_64.iso.sig archlinux-{{ release.version }}-x86_64.iso</code></pre>
+    Alternatively, verify the signature using GnuPG:
+    <pre><code>$ gpg --auto-key-retrieve --verify archlinux-{{ release.version }}-x86_64.iso.sig</code></pre>
+
+    And check that the output contains:
+    <pre><code>gpg: Good signature...
+...
+Primary key fingerprint: 3E80 CA1A 8B89 F69C BA57  D98A 76A5 EF90 5444 9A5C</pre><code>
 
     {% cache 600 download-mirrors %}
     <div id="download-mirrors">
