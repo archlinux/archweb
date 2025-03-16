@@ -184,12 +184,26 @@ def check_rsync_url(mirror_url, location, timeout):
         with open(os.devnull, 'w') as devnull:
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug("rsync cmd: %s", ' '.join(rsync_cmd))
+
             start = time.time()
-            proc = subprocess.Popen(rsync_cmd, stdout=devnull, stderr=subprocess.PIPE)
-            _, errdata = proc.communicate()
-            end = time.time()
-        log.duration = end - start
-        if proc.returncode != 0:
+            timeout_expired = False
+            # add an arbitrary 5-second buffer to ensure the process completes and to catch actual rsync timeouts.
+            rsync_subprocess_timeout = timeout + 5
+            try:
+                proc = subprocess.Popen(rsync_cmd, stdout=devnull, stderr=subprocess.PIPE)
+                _, errdata = proc.communicate(timeout=rsync_subprocess_timeout)
+
+                end = time.time()
+                log.duration = end - start
+            except subprocess.TimeoutExpired:
+                timeout_expired = True
+                proc.kill()
+                logger.debug("rsync command timeout error: %s, %s", url, errdata)
+                log.is_success = False
+                log.duration = None
+                log.error = f"rsync subprocess killed after {rsync_subprocess_timeout} seconds"
+
+        if proc.returncode != 0 and not timeout_expired:
             logger.debug("error: %s, %s", url, errdata)
             log.is_success = False
             log.error = errdata.strip().decode('utf-8')
@@ -197,7 +211,7 @@ def check_rsync_url(mirror_url, location, timeout):
             # don't record a duration as it is misleading
             if proc.returncode in (1, 30, 35):
                 log.duration = None
-        else:
+        elif not timeout_expired:
             logger.debug("success: %s, %.2f", url, log.duration)
             if os.path.exists(lastsync_path):
                 with open(lastsync_path, 'r') as lastsync:
