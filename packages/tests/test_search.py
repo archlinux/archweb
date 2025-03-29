@@ -67,7 +67,7 @@ def test_sort(client, package):
 def test_packages(client, package):
     response = client.get('/opensearch/packages/')
     assert response.status_code == 200
-    assert 'template="example.com/opensearch/packages/"' in response.content.decode()
+    assert 'template="http://example.com/opensearch/packages/"' in response.content.decode()
 
 
 def test_packages_suggest(client, package):
