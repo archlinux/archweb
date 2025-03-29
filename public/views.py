@@ -31,7 +31,7 @@ def index(request):
         'news_updates': News.objects.order_by('-postdate', '-id')[:15],
         'pkg_updates': updates,
         'staff_groups': StaffGroup.objects.all(),
-        'domain': current_site.domain,
+        'domain': f'{request.scheme}://{current_site.domain}',
     }
     return render(request, 'public/index.html', context)
 

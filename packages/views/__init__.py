@@ -25,7 +25,7 @@ def opensearch(request):
     current_site = Site.objects.get_current()
 
     return render(request, 'packages/opensearch.xml',
-                  {'domain': current_site.domain},
+                  {'domain': f'{request.scheme}://{current_site.domain}'},
                   content_type='application/opensearchdescription+xml')
 
 
