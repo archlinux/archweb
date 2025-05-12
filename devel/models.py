@@ -40,6 +40,9 @@ class UserProfile(models.Model):
     website = models.URLField(max_length=200, null=True, blank=True)
     website_rss = models.URLField(max_length=200, null=True, blank=True,
                                   help_text='RSS Feed of your website for planet.archlinux.org')
+    social = models.URLField(max_length=200, null=True, blank=True,
+                             verbose_name="Social account URL",
+                             help_text="Mastodon or Fediverse account URL")
     yob = models.IntegerField("Year of birth", null=True, blank=True,
                               validators=[MinValueValidator(1950), MaxValueValidator(2500)])
     country = CountryField(blank=True)

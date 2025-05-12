@@ -50,6 +50,11 @@
                             title="Visit the website for {{ dev.get_full_name }}">
                             {{ prof.website }}</a>{% endif %}</td>
                 </tr><tr>
+                    <th>Social:</th>
+                    <td>{% if prof.social %}<a itemprop="url" href="{{ prof.social }}"
+                            title="Visit social account for {{ dev.get_full_name }}" rel="me">
+                            {{ prof.social }}</a>{% endif %}</td>
+                </tr><tr>
                     <th>Occupation:</th>
                     <td>{{ prof.occupation }}</td>
                 </tr><tr>
