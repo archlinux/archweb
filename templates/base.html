@@ -5,32 +5,21 @@
     <meta charset="utf-8" />
     <meta name="theme-color" content="#08C" />
     <title>{% block title %}Arch Linux{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static "archlinux_common_style/navbar.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "archweb.css" %}" media="screen" />
-    <link rel="icon" type="image/png" href="{% static "favicon.png" %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static "favicon.png" %}" />
-    <link rel="apple-touch-icon" href="{% static "logos/apple-touch-icon-57x57.png" %}" />
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static "logos/apple-touch-icon-72x72.png" %}" />
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static "logos/apple-touch-icon-114x114.png" %}" />
-    <link rel="apple-touch-icon" sizes="144x144" href="{% static "logos/apple-touch-icon-144x144.png" %}" />
+    <link rel="icon" type="image/png" href="{% static "archlinux_common_style/favicon.png" %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static "archlinux_common_style/favicon.png" %}" />
+    <link rel="apple-touch-icon" href="{% static "archlinux_common_style/apple-touch-icon-57x57.png" %}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static "archlinux_common_style/apple-touch-icon-72x72.png" %}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static "archlinux_common_style/apple-touch-icon-114x114.png" %}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static "archlinux_common_style/apple-touch-icon-144x144.png" %}" />
     <link rel="search" type="application/opensearchdescription+xml" href="{% url 'opensearch-packages' as osp %}{{ osp }}" title="Arch Linux Packages" />
     {% block head %}{% endblock %}
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
-    <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
-        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
-        <div id="archnavbarmenu">
-            <ul id="archnavbarlist">
-                <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
-                <li id="anb-packages"><a href="/packages/" title="Arch Package Database">Packages</a></li>
-                <li id="anb-forums"><a href="https://bbs.archlinux.org/" title="Community forums">Forums</a></li>
-                <li id="anb-wiki"><a href="https://wiki.archlinux.org/" title="Community documentation">Wiki</a></li>
-                <li id="anb-gitlab"><a href="https://gitlab.archlinux.org/archlinux" title="GitLab">GitLab</a></li>
-                <li id="anb-security"><a href="https://security.archlinux.org/" title="Arch Linux Security Tracker">Security</a></li>
-                <li id="anb-aur"><a href="https://aur.archlinux.org/" title="Arch Linux User Repository">AUR</a></li>
-                <li id="anb-download"><a href="{% url 'page-download' as pdl %}{{ pdl }}" title="Get Arch Linux">Download</a></li>
-            </ul>
-        </div>
-    </div>
+    <header class="{% block navbarclass %}anb-home{% endblock %}">
+        {% include "archlinux_common_style/navbar-django.html" with anb_home_url="/" anb_packages_url="/packages/" anb_download_url="/download/" %}
+    </header>
     <div id="content">
         <div id="archdev-navbar">
             {% if user.is_authenticated %}
