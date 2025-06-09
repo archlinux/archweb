@@ -26,6 +26,10 @@
             <div><label for="id_repo_{{ repo_name|lower }}" title="Target Repository {{ repo_name }}">[{{ repo_name|lower }}]</label>
                 <input type="checkbox" name="repo_{{ repo_name|lower }}" id="id_repo_{{ repo_name|lower }}" class="repo_filter" value="{{ repo_name|lower }}" checked="checked"/></div>
             {% endfor %}
+            {% if user.is_authenticated %}
+            <div><label for="id_mine_only" title="Show only packages packaged by me">Only Mine</label>
+                <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
+            {% endif %}
             <div><label for="id_pending" title="Packages with not enough signoffs">Only Pending Approval</label>
                 <input type="checkbox" name="pending" id="id_pending" value="pending"/></div>
             <div><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
@@ -50,7 +54,8 @@
             </tr>
         </thead>
         <tbody id="tbody_signoffs">
-            {% for group in signoff_groups %}<tr class="{{ group.arch.name }} {{ group.target_repo|lower }}">
+            {% for group in signoff_groups %}
+            <tr class="{% if user == group.packager %} mine{% endif %} {{ group.arch.name }} {{ group.target_repo|lower }}">
                 <td>{% pkg_details_link group.package %} {{ group.version }}</td>
                 <td>{{ group.arch.name }}</td>
                 <td>{{ group.target_repo }}</td>
