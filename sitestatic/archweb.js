@@ -324,6 +324,10 @@ function filter_signoffs() {
     /* start with all rows, and then remove ones we shouldn't show */
     var rows = $('#tbody_signoffs').children(),
         all_rows = rows;
+    /* apply the filters, cheaper ones first */
+    if ($('#id_mine_only').is(':checked')) {
+        rows = rows.filter('.mine');
+    }
     /* apply arch and repo filters */
     $('#signoffs_filter .arch_filter').add(
             '#signoffs_filter .repo_filter').each(function() {
@@ -352,6 +356,7 @@ function filter_signoffs() {
 function filter_signoffs_reset() {
     $('#signoffs_filter .arch_filter').prop('checked', true);
     $('#signoffs_filter .repo_filter').prop('checked', true);
+    $('#id_mine_only').prop('checked', false);
     $('#id_pending').prop('checked', false);
     filter_signoffs();
 }
