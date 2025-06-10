@@ -13,7 +13,7 @@ django-csp==4.0
 ptpython==2.0.4
 feedparser==6.0.11
 bleach==6.0.0
-requests==2.32.3
+requests==2.32.4
 xtarfile==0.2.1
 zstandard==0.23.0
 django-prometheus==2.3.1
