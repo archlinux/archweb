@@ -2,6 +2,8 @@
 {% load static %}
 {% load package_extras %}
 {% load todolists %}
+{% load tz %}
+{% load humanize %}
 
 {% block title %}Arch Linux - Todo: {{ list.name }}{% endblock %}
 
@@ -103,7 +105,15 @@
                     <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
                     {% endif %}
                 </td>
-                <td>{{ pkg.user|default:"" }}</td>
+                <td>
+                  {% if pkg.user %}
+                  {% if user.is_authenticated %}
+                  {{ pkg.user }} <span title="{{ pkg.last_modified|timezone:user.userprofile.time_zone|date:"Y-m-d H:i T" }}">({{ pkg.last_modified|naturaltime }})</span>
+                  {% else %}
+                  {{ pkg.user }} <span title="{{ pkg.last_modified|date:"Y-m-d H:i T" }}">({{ pkg.last_modified|naturaltime }})</span>
+                  {% endif %}
+                  {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
