@@ -1,5 +1,5 @@
 from base64 import b64encode
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from bencode import bencode
@@ -24,7 +24,7 @@ def torrent_data():
     data = {
         'comment': 'comment',
         'created_by': 'Arch Linux',
-        'creation date': int(datetime.utcnow().timestamp()),
+        'creation date': int(datetime.now(timezone.utc).timestamp()),
         'info': {
             'name': 'arch.iso',
             'length': 1,
