@@ -38,7 +38,7 @@ packages, you will probably want the following:
 
 2. Activate the virtualenv.
 
-        source ./env/bin/activate
+        source ./venv/bin/activate
 
 2. Install dependencies through `pip`.
 
