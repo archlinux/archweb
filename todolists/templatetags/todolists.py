@@ -13,8 +13,9 @@ def todopkg_details_link(todopkg):
     pkg = todopkg.pkg
     if not pkg:
         return todopkg.pkgname
-    link = '<a href="%s" title="View package details for %s">%s</a>'
+    link = '<a href={url}s" title="View package details for {pkgname}">{pkgname}</a>'
     url = pkg_absolute_url(todopkg.repo, todopkg.arch, pkg.pkgname)
-    return format_html(link % (url, pkg.pkgname, pkg.pkgname))
+    return format_html(link, url=url, pkgname=pkg.pkgname)
+
 
 # vim: set ts=4 sw=4 et:

@@ -56,8 +56,10 @@ def pgp_key_link(key_id, link_text=None):
                                                                                             key_id)
     if link_text is None:
         link_text = '0x%s' % key_id[-8:]
-    values = (url, format_key(key_id), link_text)
-    return format_html('<a href="%s" title="PGP key search for %s">%s</a>' % values)
+    return format_html('<a href="{url}" title="PGP key search for {key}">{content}</a>',
+                       url=url,
+                       key=format_key(key_id),
+                       content=link_text)
 
 
 @register.simple_tag

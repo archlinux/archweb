@@ -9,24 +9,24 @@ register = template.Library()
 @register.simple_tag
 def jquery():
     version = '3.6.0'
-    filename = 'jquery-%s.min.js' % version
+    filename = f'jquery-{version}.min.js'
     link = staticfiles_storage.url(filename)
-    return mark_safe('<script type="text/javascript" src="%s"></script>' % link)
+    return mark_safe(f'<script type="text/javascript" src="{link}"></script>')
 
 
 @register.simple_tag
 def jquery_tablesorter():
     version = '2.31.0'
-    filename = 'jquery.tablesorter-%s.min.js' % version
+    filename = f'jquery.tablesorter-{version}.min.js'
     link = staticfiles_storage.url(filename)
-    return format_html('<script type="text/javascript" src="%s"></script>' % link)
+    return format_html('<script type="text/javascript" src="{link}"></script>', link=link)
 
 
 @register.simple_tag
 def d3js():
     version = '3.5.0'
-    filename = 'd3-%s.min.js' % version
+    filename = f'd3-{version}.min.js'
     link = staticfiles_storage.url(filename)
-    return format_html('<script type="text/javascript" src="%s"></script>' % link)
+    return format_html('<script type="text/javascript" src="{link}"></script>', link=link)
 
 # vim: set ts=4 sw=4 et:
