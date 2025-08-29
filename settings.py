@@ -272,4 +272,10 @@ if PROMETHEUS_METRICS:
 
     INSTALLED_APPS = [*list(INSTALLED_APPS), 'django_prometheus']
 
+# Assume all URLField will be HTTPS if not specified.
+# NOTE: this can be removed once we bump Django to 6.x
+# where `https` becomes the default.
+FORMS_URLFIELD_ASSUME_HTTPS = True
+
+
 # vim: set ts=4 sw=4 et:
