@@ -43,8 +43,8 @@ def pkg_details_link(pkg, link_title=None, honor_flagged=False):
     link_content = link_title
     if honor_flagged and pkg.flag_date:
         link_content = '<span class="flagged">%s</span>' % link_title
-    link = '<a href="%s" title="View package details for %s">%s</a>'
-    return format_html(link % (pkg.get_absolute_url(), pkg.pkgname, link_content))
+    link = '<a href="{link}" title="View package details for {pkgname}">{content}</a>'
+    return format_html(link, link=pkg.get_absolute_url(), pkgname=pkg.pkgname, content=link_content)
 
 
 # vim: set ts=4 sw=4 et:
