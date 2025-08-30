@@ -38,6 +38,9 @@ prod = [
     "pyinotify==0.9.6",
     "pymemcache==3.5.0",
 ]
+smtp = [
+    "aiosmtpd>=1.4.6",
+]
 
 [tool.ruff]
 line-length = 118
