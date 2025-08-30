@@ -31,9 +31,51 @@ dev = [
     "pytest>=8.4.1",
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
+    "ruff>=0.12.11",
 ]
 prod = [
     "pyasyncore==1.0.4",
     "pyinotify==0.9.6",
     "pymemcache==3.5.0",
+]
+
+[tool.ruff]
+line-length = 118
+exclude = [
+    "*/migrations/*.py",  # Ignore Django migrations
+    "src/cssmin/*"  # cssmin, not our code
+]
+
+[tool.ruff.lint]
+select = [
+    "A",       # flake8-builtins
+    "B",       # flake8-bugbear
+    "C4",      # flake8-comprehensions
+    "DJ",      # flake8-django
+    "E",       # pycodestyle
+    "F",       # pyflakes
+    "G",       # flake8-logging-format
+    "I",       # isort
+    "ICN",     # flake8-import-conventions
+    "ISC",     # flake8-implicit-str-concat
+    "PIE",     # flake8-pie
+    "PLE",     # pylint errors
+    "RSE",     # flake8-raise
+    "RUF",     # ruff rules
+    "T10",     # flake8-debugger
+    "TCH",     # flake8-type-checking
+    "UP032",   # f-string
+    "W",       # warnings (mostly whitespace)
+    "YTT",     # flake8-2020
+]
+
+ignore = [
+    "E731", # Do not assign a `lambda` expression, use a `def`
+    "B904", # Within an `except` clause, raise exceptions with `raise ... from err`
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+    # TODO: add these one by one
+    "DJ001", # Avoid using `null=True` on string-based fields such as `CharField`
+    "DJ006", # Do not use `exclude` with `ModelForm`, use `fields` instead
+    "DJ008", # Model does not define `__str__` method
+    "DJ012", # Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `get_absolute_url`
 ]
