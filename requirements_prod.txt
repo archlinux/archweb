@@ -1,4 +1,0 @@
--r requirements.txt
-pyinotify==0.9.6
-pymemcache==3.5.0
-pyasyncore==1.0.4
