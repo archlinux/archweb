@@ -18,15 +18,15 @@ test-pdb: test
 .PHONY: test lint coverage
 
 lint:
-	flake8 --extend-exclude "*/migrations/,local_settings.py" devel main mirrors news packages releng templates todolists visualize *.py
+	uv run flake8 --extend-exclude "*/migrations/,local_settings.py" devel main mirrors news packages releng templates todolists visualize *.py
 
 collectstatic:
-	python manage.py collectstatic --noinput
+	uv run python manage.py collectstatic --noinput
 
 test: test-py
 
 test-py coverage:
-	DJANGO_SETTINGS_MODULE=settings ${PYTEST} ${PYTEST_OPTIONS} ${PYTEST_COVERAGE_OPTIONS} ${PYTEST_INPUT}
+	DJANGO_SETTINGS_MODULE=settings uv run ${PYTEST} ${PYTEST_OPTIONS} ${PYTEST_COVERAGE_OPTIONS} ${PYTEST_INPUT}
 
 open-coverage: coverage
 	${BROWSER} htmlcov/index.html
