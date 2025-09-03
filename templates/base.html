@@ -17,7 +17,9 @@
 </head>
 <body class="{% if user.is_authenticated %}devmode {% endif %}{% block bodyclass %}{% endblock %}">
     <div id="archnavbar" class="{% block navbarclass %}anb-home{% endblock %}">
-        <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+        {% if not request.GET.uwu %}
+            <div id="archnavbarlogo"><h1><a href="/" title="Return to the main page">Arch Linux</a></h1></div>
+        {% endif %}
         <div id="archnavbarmenu">
             <ul id="archnavbarlist">
                 <li id="anb-home"><a href="/" title="Arch news, packages, projects and more">Home</a></li>
@@ -31,6 +33,9 @@
             </ul>
         </div>
     </div>
+    {% if request.GET.uwu %}
+         <div id="archnavbarlogo" class="uwu"><h1><a href="/?uwu=true" title="Return to the main page">Arch Linux</a></h1></div>
+    {% endif %}
     <div id="content">
         <div id="archdev-navbar">
             {% if user.is_authenticated %}
