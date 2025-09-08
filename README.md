@@ -119,6 +119,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 * update_planet - Import all feeds for users who have a valid website and website_rss in their user profile.
 * read_links - Reads a repo.links.db.tar.gz file and updates the Soname model.
 * read_links_inotify - Watches a templated patch for updates of *.links.tar.gz to update Arch databases with.
+* read_bumpbuddy_status - Imports the bumpbuddy out of date status.
 
 # Updating iPXE images
 
