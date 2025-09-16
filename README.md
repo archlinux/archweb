@@ -16,14 +16,15 @@ See AUTHORS file.
 
 # Dependencies
 
-- python
+- Python 3.13.0
+- UV
 - rsync (optional for mirrorcheck with rsync mirrors)
 
 # Python dependencies
 
-More detail in `requirements.txt` and `requirements_prod.txt`; it is best to
-use virtualenv and pip to handle these. But if you insist on (Arch Linux)
-packages, you will probably want the following:
+You can look at the packages `archweb` uses by looking at the `pyproject.toml` file;
+it is best to use `uv` to handle these. If you insist on (Archlinux) packages, you
+probably want the following:
 
 - python-django
 - python-psycopg2
@@ -32,45 +33,31 @@ packages, you will probably want the following:
 
 # Testing Installation
 
-1. Run `python -m venv env`.
-
-        cd /path/to/archweb && python -m venv ./env/
-
+1. Run `uv sync`.
 2. Activate the virtualenv.
-
-        source ./env/bin/activate
-
-2. Install dependencies through `pip`.
-
-        pip install -r requirements.txt
-
 3. Copy `local_settings.py.example` to `local_settings.py` and modify.
    Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
-
 4. Migrate changes.
 
-        ./manage.py migrate
-
+        uv run ./manage.py migrate
 5. Load the fixtures to pre populate some data. If you don't want some of the
    provided data, adjust the file glob accordingly.
 
-        ./manage.py loaddata main/fixtures/*.json
-        ./manage.py loaddata devel/fixtures/*.json
-        ./manage.py loaddata mirrors/fixtures/*.json
-        ./manage.py loaddata releng/fixtures/*.json
-
+        uv run ./manage.py loaddata main/fixtures/*.json
+        uv run ./manage.py loaddata devel/fixtures/*.json
+        uv run ./manage.py loaddata mirrors/fixtures/*.json
+        uv run ./manage.py loaddata releng/fixtures/*.json
 6. Use the following commands to start a service instance
 
-        ./manage.py runserver
-
+        uv ./manage.py runserver
 7. To optionally populate the database with real data:
 
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
-        ./manage.py reporead x86_64 core.db.tar.gz
+        uv run ./manage.py reporead x86_64 core.db.tar.gz
         # Package file listing
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
-        ./manage.py reporead --filesonly x86_64 core.files.tar.gz
+        uv run ./manage.py reporead --filesonly x86_64 core.files.tar.gz
 
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
@@ -87,24 +74,20 @@ For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
 To be able to create an account on your test environment an SMTP server is
 required. A simple debugging SMTP server can be setup using Python and `aiosmtpd`.
 
-Install `aiosmtpd`
+Install `smtp` group
 
-        pip install aiosmtpd
+        uv sync --group smtp
 
 Run the server
 
-        python -m aiosmtpd -n -l localhost:1025
+        uv run python -m aiosmtpd -n -l localhost:1025
 
 In local\_settings.py add entries to set EMAIL\_HOST to 'localhost' and EMAIL\_PORT to
 1025.
 
 # Running tests and coverage
 
-Install the test dependencies:
-
-        pip install -r requirements_test.txt
-
-To the unittests execute the following commands:
+To run unittests execute the following commands:
 
         make collectstatic
         make test

@@ -1,16 +1,15 @@
 image: "archlinux:latest"
 
 before_script:
-   - pacman -Syu --needed --noconfirm python-pip git
-   - pip install coverage flake8
-   - pip install -r requirements.txt
-   - python manage.py collectstatic --noinput
+   - pacman -Syu --needed --noconfirm git uv
+   - uv sync
+   - uv run python manage.py collectstatic --noinput
 
 lint:
   script:
-     - flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
+     - uv run flake8 --exclude "*/migrations/" devel main mirrors news packages releng templates todolists visualize *.py
 
 # TODO: https://docs.gitlab.com/ee/ci/junit_test_reports.html
 test:
   script:
-     - coverage run --rcfile .coveragerc manage.py test
+     - uv run coverage run --rcfile .coveragerc manage.py test
