@@ -1207,12 +1207,12 @@ ul.signoff-list {
 
     /* style input as a normal anchor */
     input {
-      background: none!important;
+      background: none !important;
       border: none;
-      padding: 0!important;
-      /*optional*/
+      padding: 0 0.5em !important;
+      /* optional */
       font-family: arial, sans-serif;
-      font-size: 0.9em;
+      font-size: 100%;
       /*input has OS specific font-family*/
       color: #07b;
     }
