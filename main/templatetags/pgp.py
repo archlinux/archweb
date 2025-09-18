@@ -59,7 +59,7 @@ def pgp_key_link(key_id, link_text=None):
     return format_html('<a href="{url}" title="PGP key search for {key}">{content}</a>',
                        url=url,
                        key=format_key(key_id),
-                       content=link_text)
+                       content=mark_safe(link_text))
 
 
 @register.simple_tag
