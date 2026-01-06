@@ -19,7 +19,6 @@ import codecs
 import email
 import logging
 import sys
-from argparse import FileType
 from email.header import decode_header
 
 from django.core.management.base import BaseCommand, CommandError
@@ -34,7 +33,7 @@ logger.setLevel(logging.WARNING)
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('input', nargs='?', type=FileType('r'), default=sys.stdin)
+        parser.add_argument('input', nargs='?', default=sys.stdin)
 
     def decode_subject(self, subject):
         subject = decode_header(subject)
