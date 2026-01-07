@@ -74,6 +74,9 @@ class UserProfile(models.Model):
             return '%s#%s' % (group.get_absolute_url(), user.username)
         return None
 
+    def __str__(self):
+        return f"{self.user}"
+
 
 class StaffGroup(models.Model):
     name = models.CharField(max_length=100)
