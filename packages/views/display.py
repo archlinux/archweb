@@ -113,7 +113,7 @@ def redirect_to_search(request, name, repo, arch):
     pkg_data = [
         ('arch', arch.lower()),
         ('repo', repo.lower()),
-        ('q',    name),
+        ('q', name),
     ]
     # only include non-blank values in the query we generate
     pkg_data = [(x, y.encode('utf-8')) for x, y in pkg_data if y]
