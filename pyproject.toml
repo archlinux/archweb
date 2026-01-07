@@ -80,6 +80,5 @@ ignore = [
     # TODO: add these one by one
     "DJ001", # Avoid using `null=True` on string-based fields such as `CharField`
     "DJ006", # Do not use `exclude` with `ModelForm`, use `fields` instead
-    "DJ008", # Model does not define `__str__` method
     "DJ012", # Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `get_absolute_url`
 ]
