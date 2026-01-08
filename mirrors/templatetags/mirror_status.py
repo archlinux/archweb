@@ -8,7 +8,7 @@ register = template.Library()
 @register.filter
 def duration(value):
     if not value or not isinstance(value, timedelta):
-        return u''
+        return ''
     # does not take microseconds into account
     total_secs = value.seconds + value.days * 24 * 3600
     mins = total_secs // 60
@@ -19,7 +19,7 @@ def duration(value):
 @register.filter
 def hours(value):
     if not value or not isinstance(value, timedelta):
-        return u''
+        return ''
     # does not take microseconds into account
     total_secs = value.seconds + value.days * 24 * 3600
     mins = total_secs // 60
@@ -32,7 +32,7 @@ def hours(value):
 @register.filter
 def percentage(value, arg=1):
     if not value or not isinstance(value, float):
-        return u''
+        return ''
     new_val = value * 100.0
     return '%.*f%%' % (arg, new_val)
 

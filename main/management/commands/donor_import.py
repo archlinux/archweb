@@ -56,13 +56,13 @@ class Command(BaseCommand):
 
         # Some submissions contain no alphabetic characters, skip them
         if all(not l.isalpha() for l in name):  # noqa: E741
-            return u''
+            return ''
 
         # Strip any numbers, they could be a bank account number
-        name = u''.join([l for l in name if not l.isdigit()])  # noqa: E741
+        name = ''.join([l for l in name if not l.isdigit()])  # noqa: E741
 
         # Normalize all capitalized names. (JOHN DOE)
-        name = u' '.join(l.capitalize() for l in name.split(u' '))  # noqa: E741
+        name = ' '.join(l.capitalize() for l in name.split(' '))  # noqa: E741
 
         # Trim excess spaces
         name = name.rstrip().lstrip()
@@ -80,23 +80,23 @@ class Command(BaseCommand):
 
         msg = email.message_from_file(options['input'])
         if not msg['subject']:
-            raise CommandError(u"Failed to read from STDIN")
+            raise CommandError("Failed to read from STDIN")
         subject = msg.get('subject', '')
         if 'utf-8' in subject:
             # Decode UTF-8 encoded subjects
             subject = self.decode_subject(subject)
 
         # Subject header can contain enters, replace them with a space
-        subject = subject.replace(u'\n', u' ')
+        subject = subject.replace('\n', ' ')
 
         name = self.parse_subject(subject)
         if not name:
-            logger.error(u'Unable to parse: %s', subject)
+            logger.error('Unable to parse: %s', subject)
             sys.exit(0)
 
         name = self.sanitize_name(name)
         if not name:
-            logger.error(u'Invalid name in subject: %s', subject)
+            logger.error('Invalid name in subject: %s', subject)
             sys.exit(0)
 
         try:
@@ -104,4 +104,4 @@ class Command(BaseCommand):
             if created:
                 logger.info('Adding donor: %s', name)
         except DBError as e:
-            logger.info(u'Error while adding donor: %s, %s', name, e)
+            logger.info('Error while adding donor: %s, %s', name, e)
