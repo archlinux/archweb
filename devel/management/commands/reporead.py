@@ -150,7 +150,7 @@ class RepoPackage:
         '''Very similar to the main.models.Package method.'''
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.ver, self.rel)
-        return '%s-%s' % (self.ver, self.rel)
+        return f'{self.ver}-{self.rel}'
 
 
 DEPEND_RE = re.compile(r"^(.+?)((>=|<=|=|>|<)(.+))?$")

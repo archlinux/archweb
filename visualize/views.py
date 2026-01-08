@@ -41,8 +41,8 @@ def arch_repo_data():
         values = {
             'arch': arch,
             'repo': repo,
-            'name': '%s (%s)' % (repo, arch),
-            'key': '%s:%s' % (repo, arch),
+            'name': f'{repo} ({arch})',
+            'key': f'{repo}:{arch}',
             'csize': row['csize'],
             'isize': row['isize'],
             'count': row['count'],

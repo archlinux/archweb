@@ -94,10 +94,10 @@ class SignoffSpecification(models.Model):
     def full_version(self):
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return '%s-%s' % (self.pkgver, self.pkgrel)
+        return f'{self.pkgver}-{self.pkgrel}'
 
     def __str__(self):
-        return '%s-%s' % (self.pkgbase, self.full_version)
+        return f'{self.pkgbase}-{self.full_version}'
 
 
 # Fake signoff specs for when we don't have persisted ones in the database.
@@ -165,7 +165,7 @@ class Signoff(models.Model):
     def full_version(self):
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return '%s-%s' % (self.pkgver, self.pkgrel)
+        return f'{self.pkgver}-{self.pkgrel}'
 
     def __str__(self):
         revoked = ''
@@ -211,7 +211,7 @@ class FlagRequest(models.Model):
             return ''
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return '%s-%s' % (self.pkgver, self.pkgrel)
+        return f'{self.pkgver}-{self.pkgrel}'
 
     def get_associated_packages(self):
         return Package.objects.normal().filter(
@@ -221,7 +221,7 @@ class FlagRequest(models.Model):
             'pkgname', 'repo__name', 'arch__name')
 
     def __str__(self):
-        return '%s from %s on %s' % (self.pkgbase, self.who(), self.created)
+        return f'{self.pkgbase} from {self.who()} on {self.created}'
 
 
 class FlagDenylist(models.Model):
@@ -319,7 +319,7 @@ class Update(models.Model):
             return None
         if self.old_epoch > 0:
             return '%d:%s-%s' % (self.old_epoch, self.old_pkgver, self.old_pkgrel)
-        return '%s-%s' % (self.old_pkgver, self.old_pkgrel)
+        return f'{self.old_pkgver}-{self.old_pkgrel}'
 
     @property
     def new_version(self):
@@ -327,7 +327,7 @@ class Update(models.Model):
             return None
         if self.new_epoch > 0:
             return '%d:%s-%s' % (self.new_epoch, self.new_pkgver, self.new_pkgrel)
-        return '%s-%s' % (self.new_pkgver, self.new_pkgrel)
+        return f'{self.new_pkgver}-{self.new_pkgrel}'
 
     def elsewhere(self):
         return Package.objects.normal().filter(pkgname=self.pkgname, arch=self.arch)
@@ -357,7 +357,7 @@ class PackageGroup(models.Model):
     name = models.CharField(max_length=255, db_index=True)
 
     def __str__(self):
-        return "%s: %s" % (self.name, self.pkg)
+        return f"{self.name}: {self.pkg}"
 
     class Meta:
         ordering = ('name',)
@@ -454,7 +454,7 @@ class RelatedToBase(models.Model):
 
     def __str__(self):
         if self.version:
-            return '%s%s%s' % (self.name, self.comparison, self.version)
+            return f'{self.name}{self.comparison}{self.version}'
         return self.name
 
     class Meta:
@@ -479,7 +479,7 @@ class Depend(RelatedToBase):
         '''For depends, we may also have a description and a modifier.'''
         to_str = super(Depend, self).__str__()
         if self.description:
-            return '%s: %s' % (to_str, self.description)
+            return f'{to_str}: {self.description}'
         return to_str
 
 

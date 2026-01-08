@@ -161,7 +161,7 @@ class PackageFeed(Feed):
         return item.last_update
 
     def item_title(self, item):
-        return '%s %s %s' % (item.pkgname, item.full_version, item.arch.name)
+        return f'{item.pkgname} {item.full_version} {item.arch.name}'
 
     def item_description(self, item):
         return item.pkgdesc
@@ -293,7 +293,7 @@ class PackageUpdatesFeed(Feed):
         return item.created
 
     def item_title(self, item):
-        return '%s %s' % (item.pkgname, item.arch.name)
+        return f'{item.pkgname} {item.arch.name}'
 
     def item_description(self, item):
         return item.pkgname

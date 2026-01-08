@@ -70,7 +70,7 @@ class UserProfile(models.Model):
         user = self.user
         group = StaffGroup.objects.filter(group=user.groups.all().first()).get()
         if group:
-            return '%s#%s' % (group.get_absolute_url(), user.username)
+            return f'{group.get_absolute_url()}#{user.username}'
         return None
 
     def __str__(self):
@@ -115,7 +115,7 @@ class MasterKey(models.Model):
         get_latest_by = 'created'
 
     def __str__(self):
-        return '%s, created %s' % (self.owner.get_full_name(), self.created)
+        return f'{self.owner.get_full_name()}, created {self.created}'
 
 
 class DeveloperKey(models.Model):
@@ -146,7 +146,7 @@ class PGPSignature(models.Model):
         verbose_name = 'PGP signature'
 
     def __str__(self):
-        return '%s → %s' % (self.signer, self.signee)
+        return f'{self.signer} → {self.signee}'
 
 
 def create_feed_model(sender, **kwargs):

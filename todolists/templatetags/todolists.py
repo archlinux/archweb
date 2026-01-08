@@ -5,7 +5,7 @@ register = template.Library()
 
 
 def pkg_absolute_url(repo, arch, pkgname):
-    return '/packages/%s/%s/%s/' % (repo.name.lower(), arch.name, pkgname)
+    return f'/packages/{repo.name.lower()}/{arch.name}/{pkgname}/'
 
 
 @register.simple_tag

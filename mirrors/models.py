@@ -50,7 +50,7 @@ class Mirror(models.Model):
 
     def get_full_url(self, proto='https'):
         domain = Site.objects.get_current().domain
-        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+        return f'{proto}://{domain}{self.get_absolute_url()}'
 
 
 class MirrorProtocol(models.Model):
@@ -118,7 +118,7 @@ class MirrorUrl(models.Model):
 
     def get_full_url(self, proto='https'):
         domain = Site.objects.get_current().domain
-        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+        return f'{proto}://{domain}{self.get_absolute_url()}'
 
 
 class MirrorRsync(models.Model):
@@ -183,7 +183,7 @@ class MirrorLog(models.Model):
         return self.check_time - self.last_sync
 
     def __str__(self):
-        return "Check of %s at %s" % (self.url.url, self.check_time)
+        return f"Check of {self.url.url} at {self.check_time}"
 
     class Meta:
         verbose_name = 'mirror check log'
