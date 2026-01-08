@@ -103,7 +103,7 @@ class MirrorUrl(models.Model):
             protocol = urlparse(self.url).scheme
             self.protocol = MirrorProtocol.objects.get(protocol=protocol)
         except Exception as e:
-            raise ValidationError(e)
+            raise ValidationError(e) from e
         try:
             families = self.address_families()
             self.has_ipv4 = socket.AF_INET in families

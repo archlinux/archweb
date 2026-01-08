@@ -44,12 +44,12 @@ class Command(BaseCommand):
         try:
             user = User.objects.get(username=options['user'])
         except User.DoesNotExist:
-            raise CommandError(u"Failed to find User '{}'".format(options['user']))
+            raise CommandError("Failed to find User '{}'".format(options["user"])) from None
 
         try:
             profile = UserProfile.objects.get(user=user)
         except UserProfile.DoesNotExist:
-            raise CommandError(u"Failed to find UserProfile")
+            raise CommandError("Failed to find UserProfile") from None
 
         # Set user inactive
         user.is_active = False

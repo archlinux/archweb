@@ -601,7 +601,7 @@ def locate_arch(arch):
     try:
         return Arch.objects.get(name=arch)
     except Arch.DoesNotExist:
-        raise CommandError('Specified architecture %s is not currently known.' % arch)
+        raise CommandError("Specified architecture %s is not currently known." % arch) from None
 
 
 def read_repo(primary_arch, repo_file, options):
