@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 populate_signoffs command
 

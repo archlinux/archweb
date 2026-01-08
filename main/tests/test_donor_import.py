@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from email.header import Header
 from email.message import Message
 from io import StringIO
