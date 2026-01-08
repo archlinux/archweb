@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import zoneinfo
 
 from django.contrib.auth.models import Group, User

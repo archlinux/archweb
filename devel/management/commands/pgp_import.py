@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 pgp_import command
 

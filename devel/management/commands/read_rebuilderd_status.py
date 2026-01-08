@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 read_rebuilderd_status command
 
