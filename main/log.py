@@ -29,7 +29,7 @@ class LimitedSizeDict(OrderedDict):
             self.popitem(last=False)
 
 
-class RateLimitFilter(object):
+class RateLimitFilter:
     def __init__(self, name='', rate=10, prefix='error_rate', max_keys=100):
         # delayed import otherwise we have a circular dep when setting up
         # the logging config: settings -> logging -> cache -> settings

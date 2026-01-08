@@ -60,7 +60,7 @@ def ignore_does_not_exist(func):
     return new_func
 
 
-class UserFinder(object):
+class UserFinder:
     def __init__(self):
         self.cache = {}
         self.username_cache = {}

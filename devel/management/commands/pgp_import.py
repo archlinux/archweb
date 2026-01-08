@@ -74,7 +74,7 @@ def call_gpg(keyring, *args):
     return outdata.decode("utf-8")
 
 
-class KeyData(object):
+class KeyData:
     def __init__(self, key, created, expires):
         self.key = key
         self.created = get_datetime(created)
@@ -171,7 +171,7 @@ def import_keys(keyring):
     logger.info("created %d, updated %d keys", created_ct, updated_ct)
 
 
-class SignatureData(object):
+class SignatureData:
     def __init__(self, signer, signee, created):
         self.signer = signer
         self.signee = signee
