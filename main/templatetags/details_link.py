@@ -16,7 +16,7 @@ def link_encode(url, query):
     # doesn't barf at the data we pass it
     query = {k: str(v).encode('utf-8') for k, v in query.items()}
     data = urlencode(query)
-    return "%s?%s" % (url, data)
+    return f"{url}?{data}"
 
 
 @register.simple_tag

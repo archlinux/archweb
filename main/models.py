@@ -125,7 +125,7 @@ class Package(models.Model):
     def full_version(self):
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
-        return '%s-%s' % (self.pkgver, self.pkgrel)
+        return f'{self.pkgver}-{self.pkgrel}'
 
     def get_absolute_url(self):
         return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
@@ -481,7 +481,7 @@ class RebuilderdStatus(models.Model):
         return self.REBUILDERD_STATUSES[self.status][1]
 
     def __str__(self):
-        return "pkg=%s, status=%s" % (self.pkg, self.status_str)
+        return f"pkg={self.pkg}, status={self.status_str}"
 
 
 class Soname(models.Model):

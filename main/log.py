@@ -55,7 +55,7 @@ class RateLimitFilter:
             use_cache = False
 
         if use_cache:
-            cache_key = '%s_%s' % (self.prefix, key)
+            cache_key = f'{self.prefix}_{key}'
             duplicate = (cache.get(cache_key) == 1)
             cache.set(cache_key, 1, self.rate)
         else:

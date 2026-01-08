@@ -44,7 +44,7 @@ class Todolist(models.Model):
     def get_full_url(self, proto='https'):
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
-        return '%s://%s%s' % (proto, domain, self.get_absolute_url())
+        return f'{proto}://{domain}{self.get_absolute_url()}'
 
     def packages(self):
         if not hasattr(self, '_packages'):
