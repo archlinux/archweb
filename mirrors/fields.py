@@ -12,7 +12,7 @@ class IPNetworkFormField(forms.Field):
         try:
             value = IP(value)
         except ValueError as e:
-            raise ValidationError(str(e))
+            raise ValidationError(str(e)) from e
         return value
 
 

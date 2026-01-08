@@ -148,7 +148,7 @@ def details(request, name='', repo='', arch=''):
                 if ret:
                     return ret
             # we've tried everything at this point, nothing to see
-            raise Http404
+            raise Http404 from None
     else:
         return redirect_to_search(request, name, repo, arch)
 

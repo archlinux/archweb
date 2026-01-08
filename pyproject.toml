@@ -75,7 +75,6 @@ select = [
 
 ignore = [
     "E731", # Do not assign a `lambda` expression, use a `def`
-    "B904", # Within an `except` clause, raise exceptions with `raise ... from err`
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
     # TODO: add these one by one
     "DJ001", # Avoid using `null=True` on string-based fields such as `CharField`
