@@ -89,7 +89,7 @@ class Command(BaseCommand):
         return read_repo(arch, filename, options)
 
 
-class RepoPackage(object):
+class RepoPackage:
     """An interim 'container' object for holding Arch package data."""
     bare = ('name', 'base', 'arch', 'filename',
             'md5sum', 'sha256sum', 'url', 'packager')

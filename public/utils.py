@@ -5,7 +5,7 @@ from main.models import Arch, Package, Repo
 from main.utils import PackageStandin, groupby_preserve_order
 
 
-class RecentUpdate(object):
+class RecentUpdate:
     def __init__(self, packages):
         if len(packages) == 0:
             raise Exception

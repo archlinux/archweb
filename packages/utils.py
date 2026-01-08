@@ -98,7 +98,7 @@ def get_split_packages_info():
     return split_pkgs
 
 
-class Difference(object):
+class Difference:
     def __init__(self, pkgname, repo, pkg_a, pkg_b):
         self.pkgname = pkgname
         self.repo = repo
@@ -247,7 +247,7 @@ def approved_by_signoffs(signoffs, spec):
     return False
 
 
-class PackageSignoffGroup(object):
+class PackageSignoffGroup:
     '''Encompasses all packages in testing with the same pkgbase.'''
     def __init__(self, packages):
         if len(packages) == 0:

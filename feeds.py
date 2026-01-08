@@ -17,7 +17,7 @@ from planet.models import FeedItem
 from releng.models import Release
 
 
-class BatchWritesWrapper(object):
+class BatchWritesWrapper:
     def __init__(self, outfile):
         self.outfile = outfile
         self.buf = []

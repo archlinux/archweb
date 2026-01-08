@@ -245,7 +245,7 @@ def mirror_url_worker(work, output, location, timeout):
             return 0
 
 
-class MirrorCheckPool(object):
+class MirrorCheckPool:
     def __init__(self, urls, location, timeout=10, num_threads=10):
         self.tasks = Queue()
         self.logs = deque()

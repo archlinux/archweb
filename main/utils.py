@@ -165,7 +165,7 @@ def gitlab_project_name_to_path(name: str) -> str:
     return name
 
 
-class PackageStandin(object):
+class PackageStandin:
     '''Resembles a Package object, and has a few of the same fields, but is
     really a link to a pkgbase that has no package with matching pkgname.'''
 
@@ -180,7 +180,7 @@ class PackageStandin(object):
         return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
 
-class DependStandin(object):
+class DependStandin:
     '''Resembles a Depend object, and has a few of the same fields, but is
     really a link to a base package rather than a single package.'''
 

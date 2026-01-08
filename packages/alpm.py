@@ -28,7 +28,7 @@ def load_alpm(name=None):  # pragma: no cover
 ALPM = load_alpm()
 
 
-class AlpmAPI(object):
+class AlpmAPI:
     OPERATOR_MAP = {
         '=':  operator.eq,
         '==': operator.eq,

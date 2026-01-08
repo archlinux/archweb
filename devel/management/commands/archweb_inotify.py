@@ -11,7 +11,7 @@ logger = logging.getLogger("command")
 logger.setLevel(logging.WARNING)
 
 
-class Database(object):
+class Database:
     '''A object representing a pacman database on the filesystem. It stores
     various bits of metadata and state representing the file path, when we last
     updated, how long our delay is before performing the update, whether we are

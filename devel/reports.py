@@ -44,7 +44,7 @@ def linkify_non_reproducible_packages(statuses):
     return pkgs
 
 
-class DeveloperReport(object):
+class DeveloperReport:
     def __init__(self,
                  slug,
                  name,
