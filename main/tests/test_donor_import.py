@@ -29,7 +29,7 @@ def test_parse_name():
 
 
 def test_decode_subject():
-    text = u'メイル'
+    text = 'メイル'
     subject = Header(text, 'utf-8')
     assert command.decode_subject(subject) == text
 
