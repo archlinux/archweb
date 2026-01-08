@@ -46,6 +46,7 @@ smtp = [
 line-length = 118
 exclude = [
     "*/migrations/*.py",  # Ignore Django migrations
+    "archlinux_common_style/*",  # git submodule
 ]
 
 [tool.ruff.lint]
