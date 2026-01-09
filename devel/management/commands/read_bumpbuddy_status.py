@@ -9,6 +9,7 @@ Usage: ./manage.py read_bumpbuddy_status
 
 
 import logging
+from urllib.parse import quote as urlquote
 
 import requests
 from django.conf import settings
@@ -17,6 +18,7 @@ from django.core.management.base import BaseCommand
 from django.utils.timezone import now
 
 from main.models import Package
+from main.utils import gitlab_project_name_to_path
 from packages.alpm import AlpmAPI
 from packages.models import FlagRequest
 
@@ -63,11 +65,16 @@ class Command(BaseCommand):
         current_time = now()
         # Compatibility for old json output without issue
         if 'issue' in pkgdata:
-            issue_url = f"{settings.GITLAB_PACKAGES_REPO}/{pkgbase}/-/issues/{pkgdata['issue']}"
+            scm_pkgbase = urlquote(gitlab_project_name_to_path(pkgbase))
+            issue_url = f"{settings.GITLAB_PACKAGES_REPO}/{scm_pkgbase}/-/issues/{pkgdata['issue']}"
             message = f"New version {pkgdata['upstream_version']} is available: {issue_url}"
         else:
             message = f"New version {pkgdata['upstream_version']} is available."
-        packages.update(flag_date=current_time)
+
+        for pkg in ood_packages:
+            pkg.flag_date = current_time
+            pkg.save()
+
         flag_request = FlagRequest(created=current_time,
                                    user_email="bumpbuddy@archlinux.org",
                                    message=message,
@@ -114,9 +121,6 @@ class Command(BaseCommand):
 
         flagged_packages = []
         for pkgdata in req.json().values():
-            if not pkgdata['out_of_date']:
-                continue
-
             package = self.process_package(pkgdata)
             if package is not None:
                 flagged_packages.append(package)
