@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.staticfiles',
     'django_countries',
-    'django_extensions',
 
     'main',
     'mirrors',
