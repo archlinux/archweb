@@ -30,7 +30,7 @@
 <script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
 document.addEventListener("DOMContentLoaded", function() {
-    var orderings = {
+    const orderings = {
         "repo": { url: "{% url 'visualize-byrepo' %}", color_attr: "repo" },
         "arch": { url: "{% url 'visualize-byarch' %}", color_attr: "arch" },
     };
