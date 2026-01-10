@@ -37,6 +37,9 @@ prod = [
     "pyinotify==0.9.6",
     "pymemcache==4.0.0",
 ]
+postgres = [
+    "psycopg2==2.9.11",
+]
 smtp = [
     "aiosmtpd>=1.4.6",
 ]
