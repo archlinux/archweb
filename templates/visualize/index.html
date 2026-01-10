@@ -29,7 +29,7 @@
 {% load cdn %}{% jquery %}{% d3js %}
 <script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
-$(document).ready(function() {
+document.addEventListener("DOMContentLoaded", function() {
     var orderings = {
         "repo": { url: "{% url 'visualize-byrepo' %}", color_attr: "repo" },
         "arch": { url: "{% url 'visualize-byarch' %}", color_attr: "arch" },
