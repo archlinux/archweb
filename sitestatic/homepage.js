@@ -33,8 +33,8 @@
   function setListLocation() {
     if (!list) return;
     const rects = input.getClientRects()[0];
-    list.style.top = (rects.top + rects.height) + "px";
-    list.style.left = rects.left + "px";
+    list.style.top = `${rects.top + rects.height}px`;
+    list.style.left = `${rects.left}px`;
   }
 
   function loadData(data) {
@@ -53,8 +53,8 @@
 
     for (let i = 0; i < pkgs.length; i++) {
       const item = document.createElement("li");
-      const text = pkgs[i].replace(letter, '<b>' + letter + '</b>');
-      item.innerHTML = '<a href="#">' + text + '</a>';
+      const text = pkgs[i].replace(letter, `<b>${letter}</b>`);
+      item.innerHTML = `<a href="#">${text}</a>`;
       item.setAttribute('data-value', pkgs[i]);
       fragment.appendChild(item);
     }
@@ -64,7 +64,7 @@
   }
 
   function fetchData(letter) {
-    fetch('/opensearch/packages/suggest?q=' + letter).then(function(response) {
+    fetch(`/opensearch/packages/suggest?q=${letter}`).then(function(response) {
       return response.json();
     }).then(function(data) {
       loadData(data);
