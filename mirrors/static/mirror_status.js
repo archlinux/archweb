@@ -164,7 +164,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
         resize_timeout = null;
         draw_graph('#' + chart_id, cached_data);
     };
-    jQuery(window).resize(function() {
+    window.addEventListener('resize', function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
