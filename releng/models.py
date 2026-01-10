@@ -59,7 +59,7 @@ class Release(models.Model):
         metadata = self.torrent()
         if metadata and 'info_hash' in metadata:
             query.insert(0, ('xt', "urn:btih:%s" % metadata['info_hash']))
-        return "magnet:?%s" % '&'.join(['%s=%s' % (k, v) for k, v in query])
+        return "magnet:?%s" % '&'.join([f'{k}={v}' for k, v in query])
 
     def info_html(self):
         return mark_safe(parse_markdown(self.info))

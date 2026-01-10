@@ -64,7 +64,7 @@ class PackageGroupsSitemap(Sitemap):
         return None
 
     def location(self, obj):
-        return '/groups/%s/%s/' % (obj['arch'], obj['name'])
+        return '/groups/{}/{}/'.format(obj['arch'], obj['name'])
 
 
 class SplitPackagesSitemap(Sitemap):

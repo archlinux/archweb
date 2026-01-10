@@ -538,9 +538,7 @@ def parse_info(pkgname, filename, iofile):
         elif blockname:
             store[blockname].append(line)
         else:
-            raise Exception("%s: Read package info outside a block while reading from %s: %s" % (pkgname,
-                                                                                                 filename,
-                                                                                                 line))
+            raise Exception(f"{pkgname}: Read package info outside a block while reading from {filename}: {line}")
     return store
 
 
