@@ -33,7 +33,7 @@ dev = [
     "django-debug-toolbar==6.1.0",
 ]
 prod = [
-    "pyasyncore==1.0.4",
+    "pyasyncore==1.0.5",
     "pyinotify==0.9.6",
     "pymemcache==3.5.0",
 ]
