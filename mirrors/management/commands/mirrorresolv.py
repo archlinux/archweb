@@ -55,7 +55,7 @@ def resolve_mirrors():
                 logger.debug("gaierror resolving %s: %s", mirrorurl.hostname, e)
             else:
                 logger.warning("gaierror resolving %s: %s", mirrorurl.hostname, e)
-        except socket.error as e:
+        except OSError as e:
             logger.warning("error resolving %s: %s", mirrorurl.hostname, e)
 
 # vim: set ts=4 sw=4 et:

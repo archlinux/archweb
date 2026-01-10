@@ -149,11 +149,11 @@ def check_mirror_url(mirror_url, location, timeout):
         log.is_success = False
         log.error = str(e)
         logger.debug("failed: %s, %s", url, log.error)
-    except socket.timeout:
+    except TimeoutError:
         log.is_success = False
         log.error = "Connection timed out."
         logger.debug("failed: %s, %s", url, log.error)
-    except socket.error as e:
+    except OSError as e:
         log.is_success = False
         log.error = str(e)
         logger.debug("failed: %s, %s", url, log.error)

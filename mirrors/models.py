@@ -108,7 +108,7 @@ class MirrorUrl(models.Model):
             families = self.address_families()
             self.has_ipv4 = socket.AF_INET in families
             self.has_ipv6 = socket.AF_INET6 in families
-        except socket.error:
+        except OSError:
             # We don't fail in this case; we'll just set both to False
             self.has_ipv4 = False
             self.has_ipv6 = False
