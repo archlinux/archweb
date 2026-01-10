@@ -94,14 +94,14 @@
         e.preventDefault();
         break;
       case 38: // up
-        if (elem && elem.previousElementSibling) {
+        if (elem?.previousElementSibling) {
           elem.className = "";
           elem.previousElementSibling.className = "active";
         }
         e.preventDefault();
         break;
       case 40: // down
-        if (elem && elem.nextElementSibling) {
+        if (elem?.nextElementSibling) {
           elem.className = "";
           elem.nextElementSibling.className = "active";
         } else if (!elem && list.childElementCount !== 0) {
