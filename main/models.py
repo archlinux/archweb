@@ -442,7 +442,7 @@ class PackageFile(models.Model):
     filename = models.CharField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
-        return "%s%s" % (self.directory, self.filename or '')
+        return "{}{}".format(self.directory, self.filename or '')
 
     class Meta:
         db_table = 'package_files'

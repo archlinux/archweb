@@ -22,7 +22,7 @@ def arch_repo_data():
     repos = Repo.objects.values_list('name', flat=True)
 
     def build_map(name, arch, repo):
-        key = '%s:%s' % (repo or '', arch or '')
+        key = '{}:{}'.format(repo or '', arch or '')
         return {
             'key': key,
             'name': name,

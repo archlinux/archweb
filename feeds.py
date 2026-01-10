@@ -153,9 +153,9 @@ class PackageFeed(Feed):
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.last_update
-        return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
-                                   date.strftime('%Y-%m-%d'), item.get_absolute_url(),
-                                   date.strftime('%Y%m%d%H%M'))
+        return 'tag:{},{}:{}{}'.format(Site.objects.get_current().domain,
+                                       date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                                       date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
         return item.last_update
@@ -285,9 +285,9 @@ class PackageUpdatesFeed(Feed):
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.created
-        return 'tag:%s,%s:%s%s' % (Site.objects.get_current().domain,
-                                   date.strftime('%Y-%m-%d'), item.get_absolute_url(),
-                                   date.strftime('%Y%m%d%H%M'))
+        return 'tag:{},{}:{}{}'.format(Site.objects.get_current().domain,
+                                       date.strftime('%Y-%m-%d'), item.get_absolute_url(),
+                                       date.strftime('%Y%m%d%H%M'))
 
     def item_pubdate(self, item):
         return item.created
@@ -376,15 +376,15 @@ class ReleaseFeed(Feed):
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.release_date
-        return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
-                                 date.strftime('%Y-%m-%d'), item.get_absolute_url())
+        return 'tag:{},{}:{}'.format(Site.objects.get_current().domain,
+                                     date.strftime('%Y-%m-%d'), item.get_absolute_url())
 
     def item_enclosure_url(self, item):
         domain = Site.objects.get_current().domain
         proto = 'https'
         # Use archweb internal link, as the rsync job might not have been
         # running and RSS torrent clients do not retry failed urls often.
-        return "%s://%s/%s" % (proto, domain, reverse('releng-release-torrent', args=[item.version]))
+        return "{}://{}/{}".format(proto, domain, reverse('releng-release-torrent', args=[item.version]))
 
     def item_enclosure_length(self, item):
         if item.torrent_data:
@@ -429,8 +429,8 @@ class PlanetFeed(Feed):
     def item_guid(self, item):
         # http://diveintomark.org/archives/2004/05/28/howto-atom-id
         date = item.publishdate
-        return 'tag:%s,%s:%s' % (Site.objects.get_current().domain,
-                                 date.strftime('%Y-%m-%d'), item.url)
+        return 'tag:{},{}:{}'.format(Site.objects.get_current().domain,
+                                     date.strftime('%Y-%m-%d'), item.url)
 
     def item_author_name(self, item):
         return item.author
