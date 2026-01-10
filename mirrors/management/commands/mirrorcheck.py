@@ -188,6 +188,7 @@ def check_rsync_url(mirror_url, location, timeout):
             timeout_expired = False
             # add an arbitrary 5-second buffer to ensure the process completes and to catch actual rsync timeouts.
             rsync_subprocess_timeout = timeout + 5
+            errdata = None
             try:
                 proc = subprocess.Popen(rsync_cmd, stdout=devnull, stderr=subprocess.PIPE)
                 _, errdata = proc.communicate(timeout=rsync_subprocess_timeout)
