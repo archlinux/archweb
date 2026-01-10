@@ -139,7 +139,7 @@ function packages_treemap(chart_id, orderings, default_order) {
             .data(treemap.size([jq_div.width(), jq_div.height()]), key_func)
             .call(cell);
     };
-    jQuery(window).resize(function() {
+    window.addEventListener('resize', function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
@@ -293,7 +293,8 @@ function developer_keys(chart_id, data_url) {
         resize_timeout = null;
         force.size([jq_div.width(), jq_div.height()]);
     };
-    jQuery(window).resize(function() {
+
+    window.addEventListener('resize', function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
