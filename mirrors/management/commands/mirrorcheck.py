@@ -213,7 +213,7 @@ def check_rsync_url(mirror_url, location, timeout):
         elif not timeout_expired:
             logger.debug("success: %s, %.2f", url, log.duration)
             if os.path.exists(lastsync_path):
-                with open(lastsync_path, 'r') as lastsync:
+                with open(lastsync_path) as lastsync:
                     parse_lastsync(log, lastsync.read())
             else:
                 parse_lastsync(log, None)
