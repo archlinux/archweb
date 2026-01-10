@@ -80,11 +80,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .style("stroke", function(d) { return color(d.url); });
 
         urls.selectAll("circle")
-            .data(function(u) {
-                return jQuery.map(u.logs, function(l, i) {
-                    return {url: u.url, check_time: l.check_time, duration: l.duration};
-                });
-            })
+            .data(u => u.logs.map(l => { return { url: u.url, check_time: l.check_time, duration: l.duration }; }))
             .enter()
             .append("circle")
             .attr("class", "url-dot")
@@ -96,7 +92,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
 
         /* add a legend for good measure */
-        var active = jQuery.map(data, function(item, i) { return item.url; });
+        var active = data.map(item => item.url);
         var legend = svg.selectAll(".legend")
             .data(active)
             .enter().append("g")
@@ -118,29 +114,34 @@ function mirror_status(container_id, check_loc, log_data, color) {
     };
 
     var filter_data = function(json, location_id) {
-        return jQuery.map(json.urls, function(url, i) {
-            var logs = jQuery.map(url.logs, function(log, j) {
-                if (!log.is_success) {
-                    return null;
-                }
+        const data = [];
+        for (const url of json.urls) {
+            const logs = [];
+            for (const log of url.logs) {
+                if (!log.is_success)
+                  continue;
+
                 /* screen by location ID if we were given one */
                 if (location_id && log.location_id !== location_id) {
-                    return null;
+                    continue;
                 }
-                return {
+
+                logs.push({
                     duration: log.duration,
                     check_time: new Date(log.check_time)
-                };
-            });
-            /* don't return URLs without any log info */
-            if (logs.length === 0) {
-                return null;
-            }
-            return {
+                });
+            };
+
+            if (logs.length === 0)
+                continue;
+
+            data.push({
                 url: url.url,
                 logs: logs
-            };
-        });
+            });
+        }
+
+        return data;
     };
 
     var cached_data = filter_data(log_data, check_loc.id);

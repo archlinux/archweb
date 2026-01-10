@@ -181,8 +181,8 @@ function developer_keys(chart_id, data_url) {
             return d.source >= 0 && d.target >= 0;
         });
 
-        jQuery.map(json.nodes, function(d, i) { d.master_sigs = 0; d.other_sigs = 0; });
-        jQuery.map(edges, function(d, i) {
+        json.nodes.map(function(d, i) { d.master_sigs = 0; d.other_sigs = 0; });
+        edges.map(function(d, i) {
             /* only the target gets credit in either case, as it is their key that was signed */
             if (json.nodes[d.source].group === "master") {
                 json.nodes[d.target].master_sigs += 1;
@@ -190,7 +190,7 @@ function developer_keys(chart_id, data_url) {
                 json.nodes[d.target].other_sigs += 1;
             }
         });
-        jQuery.map(json.nodes, function(d, i) {
+        json.nodes.map(function(d, i) {
             if (d.group === "packager") {
                 d.approved = d.master_sigs >= 3;
             } else {
