@@ -45,7 +45,6 @@ smtp = [
 line-length = 118
 exclude = [
     "*/migrations/*.py",  # Ignore Django migrations
-    "src/cssmin/*"  # cssmin, not our code
 ]
 
 [tool.ruff.lint]

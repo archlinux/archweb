@@ -1,4 +1,3 @@
-import cssmin
 import jsmin
 from django.contrib.staticfiles.storage import ManifestStaticFilesStorage
 from django.core.files.base import ContentFile
@@ -13,7 +12,6 @@ class MinifiedStaticFilesStorage(ManifestStaticFilesStorage):
     are skipped as they are already assumed minified.
     """
     minifiers = (
-        ('.css', cssmin.cssmin),
         ('.js', jsmin.jsmin),
     )
 
