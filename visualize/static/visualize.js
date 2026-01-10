@@ -127,9 +127,9 @@ function packages_treemap(chart_id, orderings, default_order) {
         });
     };
 
-    jQuery.each(orderings, function(k, v) {
+    for (const [k, v] of Object.entries(orderings)) {
         make_group_button(k, v);
-    });
+    };
 
     /* adapt the chart size when the browser resizes */
     var resize_timeout = null;

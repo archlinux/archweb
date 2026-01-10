@@ -3,9 +3,10 @@ function draw_graphs(location_url, log_url, container_id) {
         .then(function(loc_data, log_data) {
             /* use the same color selection for a given URL in every graph */
             var color = d3.scale.category10();
-            jQuery.each(loc_data[0].locations, function(i, val) {
-                mirror_status(container_id, val, log_data[0], color);
-            });
+
+            for (const [_key, value] of Object.entries(loc_data[0].locations)) {
+                mirror_status(container_id, value, log_data[0], color);
+            }
         });
 }
 
