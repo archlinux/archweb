@@ -39,7 +39,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", `translate(${margin.left},${margin.top})`);
 
         x.domain([
                 d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.check_time; }); }),
@@ -53,7 +53,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
         /* build the axis lines... */
         svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", `translate(0,${height})`)
             .call(x_axis)
             .append("text")
             .attr("class", "label")
@@ -100,7 +100,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .attr("cy", function(d) { return y(d.duration); })
             .style("fill", function(d) { return color(d.url); })
             .append("title")
-            .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
+            .text(function(d) { return `${d.url}\n${d.duration.toFixed(3)} secs\n${d.check_time.toUTCString()}`; });
 
         /* add a legend for good measure */
         const active = data.map(item => item.url);
@@ -108,7 +108,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .data(active)
             .enter().append("g")
             .attr("class", "legend")
-            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+            .attr("transform", function(d, i) { return `translate(0,${i * 20})`; });
 
         legend.append("rect")
             .attr("x", width - 18)
@@ -162,7 +162,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
     }
 
     /* create the containers, defer the actual graph drawing */
-    const chart_id = 'status-chart-' + check_loc.id;
+    const chart_id = `status-chart-${check_loc.id}`;
     const container = document.querySelector(container_id);
     const fragment = document.createDocumentFragment();
     const title = document.createElement("h3");
@@ -170,7 +170,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
     span.setAttribute("class", `fam-flag fam-flag-${check_loc.country_code.toLowerCase()}`);
     span.setAttribute("title", check_loc.country);
     title.appendChild(span);
-    title.innerHTML = title.innerHTML + ` ${check_loc.country} (${check_loc.source_ip}), IPv${check_loc.ip_version}`
+    title.innerHTML = `${title.innerHTML} ${check_loc.country} (${check_loc.source_ip}), IPv${check_loc.ip_version}`
     fragment.appendChild(title);
     const chart_div = document.createElement("div");
     chart_div.setAttribute("id", chart_id);
@@ -181,14 +181,14 @@ function mirror_status(container_id, check_loc, log_data, color) {
     container.appendChild(fragment);
 
     setTimeout(function() {
-        draw_graph('#' + chart_id, cached_data);
+        draw_graph(`#${chart_id}`, cached_data);
     }, 0);
 
     /* then hook up a resize handler to redraw if necessary */
     var resize_timeout = null;
     const real_resize = function() {
         resize_timeout = null;
-        draw_graph('#' + chart_id, cached_data);
+        draw_graph(`#${chart_id}`, cached_data);
     };
     window.addEventListener('resize', function() {
         if (resize_timeout) {
