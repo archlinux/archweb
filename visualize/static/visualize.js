@@ -179,7 +179,7 @@ function developer_keys(chart_id, data_url) {
         };
 
         /* filter edges to only include those that we have two nodes for */
-        var edges = jQuery.grep(json.edges, function(d, i) {
+        var edges = json.edges.filter(function(d, i) {
             d.source = index_for_key(d.signer);
             d.target = index_for_key(d.signee);
             return d.source >= 0 && d.target >= 0;
