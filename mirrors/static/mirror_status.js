@@ -1,11 +1,20 @@
 function draw_graphs(location_url, log_url, container_id) {
-    jQuery.when(jQuery.getJSON(location_url), jQuery.getJSON(log_url))
-        .then(function(loc_data, log_data) {
+    const get_location = fetch(location_url).then(function(response) {
+      return response.json();
+    });
+    const get_log = fetch(log_url).then(function(response) {
+        return response.json();
+    });
+    Promise.allSettled([get_location, get_log])
+        .then(function(data) {
+            loc_data = data[0].value;
+            log_data = data[1].value;
+
             /* use the same color selection for a given URL in every graph */
             var color = d3.scale.category10();
 
-            for (const [_key, value] of Object.entries(loc_data[0].locations)) {
-                mirror_status(container_id, value, log_data[0], color);
+            for (const [_key, value] of Object.entries(loc_data.locations)) {
+                mirror_status(container_id, value, log_data, color);
             }
         });
 }
@@ -154,9 +163,23 @@ function mirror_status(container_id, check_loc, log_data, color) {
 
     /* create the containers, defer the actual graph drawing */
     const chart_id = 'status-chart-' + check_loc.id;
-    jQuery(container_id).append('<h3><span class="fam-flag fam-flag-' + check_loc.country_code.toLowerCase() + '" title="' + check_loc.country + '"></span> ' + check_loc.country + ' (' + check_loc.source_ip + '), IPv' + check_loc.ip_version + '</h3>');
-    jQuery(container_id).append('<div id="' + chart_id + '" class="visualize-mirror visualize-chart"></div>');
-    jQuery(container_id).append('<br/>');
+    const container = document.querySelector(container_id);
+    const fragment = document.createDocumentFragment();
+    const title = document.createElement("h3");
+    const span = document.createElement("span");
+    span.setAttribute("class", `fam-flag fam-flag-${check_loc.country_code.toLowerCase()}`);
+    span.setAttribute("title", check_loc.country);
+    title.appendChild(span);
+    title.innerHTML = title.innerHTML + ` ${check_loc.country} (${check_loc.source_ip}), IPv${check_loc.ip_version}`
+    fragment.appendChild(title);
+    const chart_div = document.createElement("div");
+    chart_div.setAttribute("id", chart_id);
+    chart_div.setAttribute("class", "visualize-mirror visualize-chart");
+    fragment.appendChild(chart_div);
+    const br = document.createElement("br");
+    fragment.appendChild(br);
+    container.appendChild(fragment);
+
     setTimeout(function() {
         draw_graph('#' + chart_id, cached_data);
     }, 0);
