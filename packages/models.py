@@ -109,7 +109,7 @@ FakeSignoffSpecification = namedtuple(
 
 
 def fake_signoff_spec(arch):
-    return FakeSignoffSpecification(arch.required_signoffs, True, False, '')
+    return FakeSignoffSpecification(required=arch.required_signoffs, enabled=True, known_bad=False, comments='')
 
 
 class SignoffManager(models.Manager):

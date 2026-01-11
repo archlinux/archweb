@@ -79,7 +79,7 @@ class NewUserForm(forms.ModelForm):
         return username
 
     def save(self, commit=True):
-        profile = super(NewUserForm, self).save(False)
+        profile = super(NewUserForm, self).save(commit=False)
         pwletters = ascii_letters + digits
         password = ''.join([random.choice(pwletters) for _ in range(8)])
         user = User.objects.create_user(

@@ -403,7 +403,7 @@ def db_update(archname, reponame, pkgs, force=False, repo_dir=None):
     Parses a list of packages and updates the packages database accordingly.
     """
     logger.info('Updating %s (%s)', reponame, archname)
-    dbpkgs = update_common(archname, reponame, pkgs, True)
+    dbpkgs = update_common(archname, reponame, pkgs, sanity_check=True)
     repository = Repo.objects.get(name__iexact=reponame)
     architecture = Arch.objects.get(name=archname)
 
@@ -498,7 +498,7 @@ def filesonly_update(archname, reponame, pkgs, force=False):
     Parses a list of packages and updates the packages database accordingly.
     """
     logger.info('Updating files for %s (%s)', reponame, archname)
-    dbpkgs = update_common(archname, reponame, pkgs, False)
+    dbpkgs = update_common(archname, reponame, pkgs, sanity_check=False)
     dbdict = {dbpkg.pkgname: dbpkg for dbpkg in dbpkgs}
     dbset = set(dbdict.keys())
 
