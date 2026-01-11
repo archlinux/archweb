@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block script_block %}
-{% load cdn %}{% jquery %}{% d3js %}
+{% load cdn %}{% d3js %}
 <script type="text/javascript" src="{% static "visualize.js" %}"></script>
 <script type="text/javascript" nonce={{ CSP_NONCE }}>
 document.addEventListener("DOMContentLoaded", function() {
