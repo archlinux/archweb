@@ -20,7 +20,7 @@ class BuildQueryStringNode(template.Node):
                 qs['sort'] = ['-' + self.sortfield]
         else:
             qs['sort'] = [self.sortfield]
-        return urlencode(qs, True).replace('&', '&amp;')
+        return urlencode(qs, doseq=True).replace('&', '&amp;')
 
 
 @register.tag(name='buildsortqs')

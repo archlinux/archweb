@@ -19,7 +19,7 @@ def test_adopt_package(developer_client, package):
     assert response.status_code == 200
     assert len(PackageRelation.objects.all()) == 1
 
-    response = request(developer_client, pkg.id, False)
+    response = request(developer_client, pkg.id, adopt=False)
     assert response.status_code == 200
     assert len(PackageRelation.objects.all()) == 0
 
