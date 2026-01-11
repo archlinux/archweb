@@ -11,7 +11,7 @@ function draw_graphs(location_url, log_url, container_id) {
             log_data = data[1].value;
 
             /* use the same color selection for a given URL in every graph */
-            var color = d3.scale.category10();
+            const color = d3.scale.category10();
 
             for (const [_key, value] of Object.entries(loc_data.locations)) {
                 mirror_status(container_id, value, log_data, color);
@@ -21,7 +21,7 @@ function draw_graphs(location_url, log_url, container_id) {
 
 function mirror_status(container_id, check_loc, log_data, color) {
 
-    var draw_graph = function(chart_id, data) {
+    const draw_graph = function(chart_id, data) {
         const div = document.querySelector(chart_id);
         const margin = {top: 20, right: 20, bottom: 30, left: 40};
         const rects = div.getBoundingClientRect();
