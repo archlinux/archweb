@@ -15,8 +15,8 @@ function format_filesize(size, decimals) {
 }
 
 function packages_treemap(chart_id, orderings, default_order) {
-    var jq_div = jQuery(chart_id),
-        color = d3.scale.category20();
+    const div = document.querySelector(chart_id);
+    const color = d3.scale.category20();
     var key_func = function(d) { return d.key; };
     var value_package_count = function(d) { return d.count; },
         value_flagged_count = function(d) { return d.flagged; },
@@ -27,8 +27,9 @@ function packages_treemap(chart_id, orderings, default_order) {
     value_package_count.is_size = value_flagged_count.is_size = false;
     value_compressed_size.is_size = value_installed_size.is_size = true;
 
+    const rects = div.getBoundingClientRect();
     var treemap = d3.layout.treemap()
-        .size([jq_div.width(), jq_div.height()])
+        .size([rects.width, rects.height])
         /*.sticky(true)*/
         .value(value_package_count)
         .sort(function(a, b) { return a.key < b.key; })
@@ -46,7 +47,7 @@ function packages_treemap(chart_id, orderings, default_order) {
         return "<span>" + d.name + ": " + value + "</span>";
     };
 
-    var d3_div = d3.select(jq_div.get(0));
+    var d3_div = d3.select(div);
 
     var prop_px = function(prop, offset) {
         return function(d) {
@@ -71,8 +72,9 @@ function packages_treemap(chart_id, orderings, default_order) {
             var nodes = d3_div.data([json]).selectAll("div")
                 .data(treemap.nodes, key_func);
             /* start out new nodes in the center of the picture area */
-            var w_center = jq_div.width() / 2,
-                h_center = jq_div.height() / 2;
+            const rects = div.getBoundingClientRect();
+            const w_center = rects.width / 2;
+            const h_center = rects.height / 2;
             nodes.enter().append("div")
                 .attr("class", "treemap-cell")
                 .attr("title", function(d) { return d.name; })
@@ -127,19 +129,20 @@ function packages_treemap(chart_id, orderings, default_order) {
         });
     };
 
-    jQuery.each(orderings, function(k, v) {
+    for (const [k, v] of Object.entries(orderings)) {
         make_group_button(k, v);
-    });
+    };
 
     /* adapt the chart size when the browser resizes */
     var resize_timeout = null;
     var real_resize = function() {
         resize_timeout = null;
+        const rects = div.getBoundingClientRect();
         d3_div.selectAll("div")
-            .data(treemap.size([jq_div.width(), jq_div.height()]), key_func)
+            .data(treemap.size([rects.width, rects.height]), key_func)
             .call(cell);
     };
-    jQuery(window).resize(function() {
+    window.addEventListener('resize', function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
@@ -148,14 +151,15 @@ function packages_treemap(chart_id, orderings, default_order) {
 }
 
 function developer_keys(chart_id, data_url) {
-    var jq_div = jQuery(chart_id),
-        r = 10;
+    const div = document.querySelector(chart_id);
+    const r = 10;
+    const rect = div.getBoundingClientRect();
 
     var force = d3.layout.force()
         .friction(0.5)
         .gravity(0.1)
         .charge(-500)
-        .size([jq_div.width(), jq_div.height()]);
+        .size([rect.width, rect.height]);
 
     var svg = d3.select(chart_id)
         .append("svg");
@@ -175,14 +179,14 @@ function developer_keys(chart_id, data_url) {
         };
 
         /* filter edges to only include those that we have two nodes for */
-        var edges = jQuery.grep(json.edges, function(d, i) {
+        var edges = json.edges.filter(function(d, i) {
             d.source = index_for_key(d.signer);
             d.target = index_for_key(d.signee);
             return d.source >= 0 && d.target >= 0;
         });
 
-        jQuery.map(json.nodes, function(d, i) { d.master_sigs = 0; d.other_sigs = 0; });
-        jQuery.map(edges, function(d, i) {
+        json.nodes.map(function(d, i) { d.master_sigs = 0; d.other_sigs = 0; });
+        edges.map(function(d, i) {
             /* only the target gets credit in either case, as it is their key that was signed */
             if (json.nodes[d.source].group === "master") {
                 json.nodes[d.target].master_sigs += 1;
@@ -190,7 +194,7 @@ function developer_keys(chart_id, data_url) {
                 json.nodes[d.target].other_sigs += 1;
             }
         });
-        jQuery.map(json.nodes, function(d, i) {
+        json.nodes.map(function(d, i) {
             if (d.group === "packager") {
                 d.approved = d.master_sigs >= 3;
             } else {
@@ -267,11 +271,10 @@ function developer_keys(chart_id, data_url) {
         };
 
         var tick = function() {
-            var offset = r * 2,
-                w = jq_div.width(),
-                h = jq_div.height();
-            node.attr("cx", function(d) { return (d.x = Math.max(offset, Math.min(w - offset, d.x))); })
-                .attr("cy", function(d) { return (d.y = Math.max(offset, Math.min(h - offset, d.y))); });
+            const offset = r * 2;
+            const rects = div.getBoundingClientRect();
+            node.attr("cx", function(d) { return (d.x = Math.max(offset, Math.min(rects.width - offset, d.x))); })
+                .attr("cy", function(d) { return (d.y = Math.max(offset, Math.min(rects.height - offset, d.y))); });
 
             link.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
@@ -291,9 +294,11 @@ function developer_keys(chart_id, data_url) {
     var resize_timeout = null;
     var real_resize = function() {
         resize_timeout = null;
-        force.size([jq_div.width(), jq_div.height()]);
+        const rect = div.getBoundingClientRect();
+        force.size([rect.width, rect.height]);
     };
-    jQuery(window).resize(function() {
+
+    window.addEventListener('resize', function() {
         if (resize_timeout) {
             clearTimeout(resize_timeout);
         }
