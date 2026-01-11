@@ -13,10 +13,11 @@ function draw_graphs(location_url, log_url, container_id) {
 function mirror_status(container_id, check_loc, log_data, color) {
 
     var draw_graph = function(chart_id, data) {
-        const jq_div = jQuery(chart_id);
+        const div = document.querySelector(chart_id);
         const margin = {top: 20, right: 20, bottom: 30, left: 40};
-        const width = jq_div.width() - margin.left - margin.right;
-        const height = jq_div.height() - margin.top - margin.bottom;
+        const rects = div.getBoundingClientRect();
+        const width = rects.width - margin.left - margin.right;
+        const height = rects.height - margin.top - margin.bottom;
 
         const x = d3.time.scale.utc().range([0, width]);
         const y = d3.scale.linear().range([height, 0]);
