@@ -13,19 +13,19 @@ function draw_graphs(location_url, log_url, container_id) {
 function mirror_status(container_id, check_loc, log_data, color) {
 
     var draw_graph = function(chart_id, data) {
-        var jq_div = jQuery(chart_id);
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = jq_div.width() - margin.left - margin.right,
-            height = jq_div.height() - margin.top - margin.bottom;
+        const jq_div = jQuery(chart_id);
+        const margin = {top: 20, right: 20, bottom: 30, left: 40};
+        const width = jq_div.width() - margin.left - margin.right;
+        const height = jq_div.height() - margin.top - margin.bottom;
 
-        var x = d3.time.scale.utc().range([0, width]),
-            y = d3.scale.linear().range([height, 0]),
-            x_axis = d3.svg.axis().scale(x).orient("bottom"),
-            y_axis = d3.svg.axis().scale(y).orient("left");
+        const x = d3.time.scale.utc().range([0, width]);
+        const y = d3.scale.linear().range([height, 0]);
+        const x_axis = d3.svg.axis().scale(x).orient("bottom");
+        const y_axis = d3.svg.axis().scale(y).orient("left");
 
         /* remove any existing graph first if we are redrawing after resize */
         d3.select(chart_id).select("svg").remove();
-        var svg = d3.select(chart_id).append("svg")
+        const svg = d3.select(chart_id).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -63,13 +63,13 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .style("text-anchor", "end")
             .text("Duration (seconds)");
 
-        var line = d3.svg.line()
+        const line = d3.svg.line()
             .interpolate("basis")
             .x(function(d) { return x(d.check_time); })
             .y(function(d) { return y(d.duration); });
 
         /* ...then the points and lines between them. */
-        var urls = svg.selectAll(".url")
+        const urls = svg.selectAll(".url")
             .data(data)
             .enter()
             .append("g")
@@ -93,8 +93,8 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .text(function(d) { return d.url + "\n" + d.duration.toFixed(3) + " secs\n" + d.check_time.toUTCString(); });
 
         /* add a legend for good measure */
-        var active = data.map(item => item.url);
-        var legend = svg.selectAll(".legend")
+        const active = data.map(item => item.url);
+        const legend = svg.selectAll(".legend")
             .data(active)
             .enter().append("g")
             .attr("class", "legend")
@@ -114,7 +114,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .text(function(d) { return d; });
     };
 
-    var filter_data = function(json, location_id) {
+    const filter_data = function(json, location_id) {
         const data = [];
         for (const url of json.urls) {
             const logs = [];
@@ -145,14 +145,14 @@ function mirror_status(container_id, check_loc, log_data, color) {
         return data;
     };
 
-    var cached_data = filter_data(log_data, check_loc.id);
+    const cached_data = filter_data(log_data, check_loc.id);
     /* we had a check location with no log data handed to us, skip graphing */
     if (cached_data.length === 0) {
         return;
     }
 
     /* create the containers, defer the actual graph drawing */
-    var chart_id = 'status-chart-' + check_loc.id;
+    const chart_id = 'status-chart-' + check_loc.id;
     jQuery(container_id).append('<h3><span class="fam-flag fam-flag-' + check_loc.country_code.toLowerCase() + '" title="' + check_loc.country + '"></span> ' + check_loc.country + ' (' + check_loc.source_ip + '), IPv' + check_loc.ip_version + '</h3>');
     jQuery(container_id).append('<div id="' + chart_id + '" class="visualize-mirror visualize-chart"></div>');
     jQuery(container_id).append('<br/>');
@@ -162,7 +162,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
 
     /* then hook up a resize handler to redraw if necessary */
     var resize_timeout = null;
-    var real_resize = function() {
+    const real_resize = function() {
         resize_timeout = null;
         draw_graph('#' + chart_id, cached_data);
     };
