@@ -12,9 +12,11 @@
  * to help prevent other stylesheets from interfering.
  */
 
+
+
 /* container for the entire bar */
 #archnavbar { min-height: 40px !important; padding: 10px 15px !important; background: #333 !important; border-bottom: 5px #08c solid !important; }
-#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
+#archnavbarlogo { float: left; margin: 0; padding: 0 !important; height: 40px !important; width: 190px !important; background: url('archnavbar/archlogo.png') no-repeat !important; }
 @media (-webkit-min-device-pixel-ratio: 1.2), (min--moz-device-pixel-ratio: 1.2), (-o-min-device-pixel-ratio: 2/1) {
 	#archnavbarlogo { float: left !important; margin: 0 !important; padding: 0 !important; height: 40px !important; width: 190px !important; background: url(archnavbar/archlogo.svg) no-repeat !important;background-size:100% !important;
 	}
@@ -27,8 +29,8 @@
 #archnavbarlogo a { display: block !important; height: 40px !important; width: 190px !important; }
 
 /* display the list inline, float it to the right and style it */
-#archnavbarlist { display: block !important; list-style: none !important; margin: 0 !important; padding: 0 !important; font-size: 0px !important; text-align: right !important; }
-#archnavbarlist li { display: inline-block !important; font-size: 14px !important; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px !important; }
+#archnavbarlist { display: block !important; list-style: none !important; margin: 0; padding: 0 !important; font-size: 0px !important; text-align: right; }
+#archnavbarlist li { display: inline-block !important; font-size: 14px; font-family: sans-serif !important; line-height: 14px !important; padding: 14px 15px 0px; }
 
 /* style the links */
 #archnavbarlist li a { color: #999; font-weight: bold !important; text-decoration: none !important; }
@@ -45,7 +47,6 @@
 
 /* general styling */
 body {
-    min-width: 650px;
     background: #f6f9fc;
     color: #222;
     font: normal 100% sans-serif;
@@ -200,6 +201,57 @@ h5 {
     width: 300px;
     margin-left: -300px;
 }
+
+
+
+/****** John *******/
+@media only screen and (max-width: 670px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  #archnavbar {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  #archnavbarlogo {
+    float: none;
+    margin: 0 auto;
+  }
+
+  #archnavbarmenu {
+    margin: 0 auto;
+  }
+
+  #archnavbarlist {
+    text-align: center;
+  }
+
+  #archnavbarlist li {
+    padding: 5px;
+    font-size: 12px;
+  }
+  
+  #content-left-wrapper {
+    width: 100%; /* req to keep content above sidebar in source code */
+  }
+
+  #content-left {
+    width: 100%;
+  }
+
+  #content-right {
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/****** John *******/
+
+
+
 
 div.box {
     margin-bottom: 1.5em;
