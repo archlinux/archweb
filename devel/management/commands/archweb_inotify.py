@@ -78,7 +78,14 @@ class Database:
                 if retry_count == self.retry_limit:
                     logger.error('Unable to update database, exceeded maximum retries')
 
-            process = multiprocessing.Process(target=run)
+            # Python 3.14 changed the non-macOS POSIX default to forkserver
+            # but the code in this module does not work with it
+            # See https://github.com/python/cpython/issues/125714
+            if multiprocessing.get_start_method() == 'forkserver':
+                _mp_context = multiprocessing.get_context(method='fork')
+            else:
+                _mp_context = multiprocessing.get_context()
+            process = _mp_context.Process(target=run)
             process.start()
             process.join()
         finally:
