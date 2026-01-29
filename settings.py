@@ -226,6 +226,9 @@ RSS_FEED_LIMIT = 25
 # Rebuilderd API endpoint
 REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
 
+# Bumpbuddy json endpoint
+BUMPBUDDY_URL = "https://bumpbuddy.archlinux.org/data.json"
+
 # Protected TIER0 Mirror
 TIER0_MIRROR_DOMAIN = 'repos.archlinux.org'
 # TIER0_MIRROR_SECRET = ''
