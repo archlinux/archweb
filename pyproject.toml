@@ -7,7 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "bencode-py==4.0.0",
     "bleach==6.3.0",
-    "django==5.2.9",
+    "django==5.2.11",
     "django-countries==8.2.0",
     "django-csp==4.0",
     "django-prometheus==2.4.1",
