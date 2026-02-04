@@ -28,7 +28,7 @@ dev = [
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
     "ruff>=0.12.11",
-    "django-debug-toolbar==6.1.0",
+    "django-debug-toolbar==6.2.0",
 ]
 prod = [
     "pyasyncore==1.0.5",
