@@ -3,12 +3,15 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="theme-color" content="#08C" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0088cc" />
     <title>{% block title %}Arch Linux{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static "archlinux_common_style/navbar.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "archweb.css" %}" media="screen" />
     <link rel="icon" type="image/png" href="{% static "archlinux_common_style/favicon.png" %}" />
-    <link rel="shortcut icon" type="image/png" href="{% static "archlinux_common_style/favicon.png" %}" />
     <link rel="apple-touch-icon" href="{% static "archlinux_common_style/apple-touch-icon-57x57.png" %}" />
     <link rel="apple-touch-icon" sizes="72x72" href="{% static "archlinux_common_style/apple-touch-icon-72x72.png" %}" />
     <link rel="apple-touch-icon" sizes="114x114" href="{% static "archlinux_common_style/apple-touch-icon-114x114.png" %}" />
@@ -20,7 +23,7 @@
     <header class="{% block navbarclass %}anb-home{% endblock %}">
         {% include "archlinux_common_style/navbar-django.html" with anb_home_url="/" anb_packages_url="/packages/" anb_download_url="/download/" %}
     </header>
-    <div id="content">
+    <main id="content">
         <div id="archdev-navbar">
             {% if user.is_authenticated %}
                 <ul>
@@ -69,8 +72,8 @@
                 {% block content_right %}{% endblock %}
             </div>
         {% endblock %}
-        <div id="footer">
-            <p>Copyright © 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
+        <footer id="footer">
+            <p>Copyright &copy; 2002-{% now "Y" %} <a href="mailto:jvinet@zeroflux.org"
                 title="Contact Judd Vinet">Judd Vinet</a>, <a href="mailto:aaron@archlinux.org"
                 title="Contact Aaron Griffin">Aaron Griffin</a> and
                 <a href="mailto:anthraxx@archlinux.org" title="Contact Levente Polyák">Levente Polyák</a>.</p>
@@ -79,13 +82,13 @@
             <a href="https://terms.archlinux.org/docs/trademark-policy/"
                 title="Arch Linux Trademark Policy">trademarks</a>. Some rights reserved.</p>
 
-            <p>The registered trademark Linux® is used pursuant to a sublicense from LMI,
+            <p>The registered trademark Linux&reg; is used pursuant to a sublicense from LMI,
             the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide basis.</p>
-        </div>
-    </div>
+        </footer>
+    </main>
     <script type="application/ld+json">
     {
-       "@context": "http://schema.org",
+       "@context": "https://schema.org",
        "@type": "WebSite",
        "url": "{{ domain }}/",
        "potentialAction": {
