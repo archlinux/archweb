@@ -69,7 +69,7 @@ requires-dist = [
     { name = "ipy", specifier = "==1.1" },
     { name = "jsmin", specifier = "==3.0.1" },
     { name = "markdown", specifier = "==3.10.2" },
-    { name = "parse", specifier = "==1.21.0" },
+    { name = "parse", specifier = "==1.21.1" },
     { name = "pgpdump", specifier = "==1.5" },
     { name = "requests", specifier = "==2.32.5" },
     { name = "sqlparse", specifier = "==0.5.5" },
@@ -393,11 +393,11 @@ wheels = [
 
 [[package]]
 name = "parse"
-version = "1.21.0"
+version = "1.21.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ba/76/2770399accc7b922c288533a88a10e9baa50a1aec76789a8c255a9c6c060/parse-1.21.0.tar.gz", hash = "sha256:937725d51330ffec9c7a26fdb5623baa135d8ba8ed78817ea9523538844e3ce4", size = 29649, upload-time = "2026-02-05T18:33:41.085Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/18/0bea374e5ec3c8ba15365570002187f3fef9d7265ffbc2f649529878cc80/parse-1.21.1.tar.gz", hash = "sha256:825e1a88e9d9fb481b8d2ca709c6195558b6eaa97c559ad3a9a20aa2d12815a3", size = 29105, upload-time = "2026-02-19T02:20:07.645Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3e/b6/3fee2205ce1333eaa85fdf8500de4e412bbc112d77c9b0045cc8d5a6fcec/parse-1.21.0-py2.py3-none-any.whl", hash = "sha256:6d81f7bae0ab25fd72818375c4a9c71c8705256bfc42e8725be609cf8b904aed", size = 20277, upload-time = "2026-02-05T18:33:39.673Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/13/114daf766c33aec6c5a3954e7ea653f8a7ade9602c5c5a2228281698c490/parse-1.21.1-py2.py3-none-any.whl", hash = "sha256:55339ca698019815df3b8e8b550e5933933527e623b0cdf1ca2f404da35ffb47", size = 19693, upload-time = "2026-02-19T02:20:06.575Z" },
 ]
 
 [[package]]
