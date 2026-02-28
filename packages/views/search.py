@@ -233,6 +233,7 @@ def search_json(request):
 
             paginator = Paginator(packages, limit)
             container['num_pages'] = paginator.num_pages
+            container['count'] = paginator.count
 
             page = form.cleaned_data.get('page')
             try:
