@@ -60,6 +60,15 @@ def test_second_page(client, package):
     assert len(data['results']) == 1
 
 
+def test_total_count(client, package):
+    response = client.get('/packages/search/json/?limit=3')
+    assert response.status_code == 200
+    data = response.json()
+    assert data['count'] == 5
+    assert data['num_pages'] == 2
+    assert len(data['results']) == 3
+
+
 def test_invalid_parameter(client, db):
     response = client.get('/packages/search/json/?page=garbage')
     assert response.status_code == 400
