@@ -15,7 +15,7 @@
     <h2>A simple, lightweight distribution</h2>
 
     <p>You've reached the website for <strong>Arch Linux</strong>, a
-    lightweight and flexible Linux® distribution that tries to Keep It
+    lightweight and flexible Linux&reg; distribution that tries to Keep It
     Simple.</p>
 
     <p>Currently we have official packages optimized for the x86-64
@@ -33,7 +33,7 @@
     if you want to learn more about Arch.</p>
 
     <p class="readmore"><a href="{% url 'page-about' %}"
-        title="Learn more about Arch Linux">Learn more...</a></p>
+        title="Learn more about Arch Linux">Learn more</a></p>
 </div>
 
 <div id="news">
@@ -79,8 +79,8 @@
 <div id="pkgsearch" class="widget">
     <form id="pkgsearch-form" method="get" action="/packages/">
         <fieldset>
-            <label for="pkgsearch-field">Package Search:</label>
-            <input id="pkgsearch-field" type="text" name="q" size="18" maxlength="200" autocomplete="off" />
+            <label for="pkgsearch-field">Package Search</label>
+            <input id="pkgsearch-field" type="text" name="q" maxlength="200" autocomplete="off" placeholder="Search packages..." />
         </fieldset>
     </form>
 </div>
@@ -197,13 +197,11 @@
 
 <div class="widget">
     <a href="https://www.hetzner.com" title="Dedicated Root Server, VPS &amp; Hosting - Hetzner Online GmbH">
-        <img src="{% static "hetzner_logo.png" %}"
-            title="" alt="Hetzner logo"/>
+        <img src="{% static "hetzner_logo.png" %}" alt="Hetzner - hosting sponsor"/>
     </a>
 
     <a href="https://icons8.com/" title="Icons8">
-        <img src="{% static "icons8_logo.png" %}"
-            title="" alt="Icons8 logo"/>
+        <img src="{% static "icons8_logo.png" %}" alt="Icons8 - icon resources sponsor"/>
     </a>
 </div>
 {% endcache %}
