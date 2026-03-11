@@ -106,19 +106,42 @@
         left: auto !important;
         width: 40px !important;
         height: 40px !important;
-        line-height: 40px !important;
-        text-align: right !important;
-        color: #fff !important;
-        font-size: 32px !important; 
         cursor: pointer !important;
         z-index: 1001 !important;
-        font-weight: 300 !important; 
     }
-    #anb-label::before {
-        content: "☰";
+    #anb-label span,
+    #anb-label span::before,
+    #anb-label span::after {
+        display: block !important;
+        position: absolute !important;
+        width: 25px !important;
+        height: 2px !important;
+        background: #fff !important;
+        transition: all 0.2s ease-in-out !important;
     }
     #anb-label span {
-        display: none !important;
+        top: 19px !important;
+        right: 7px !important;
+    }
+    #anb-label span::before {
+        content: "" !important;
+        top: -8px !important;
+    }
+    #anb-label span::after {
+        content: "" !important;
+        top: 8px !important;
+    }
+
+    #anb-toggle:checked ~ #anb-label span {
+        background: transparent !important;
+    }
+    #anb-toggle:checked ~ #anb-label span::before {
+        top: 0 !important;
+        transform: rotate(45deg) !important;
+    }
+    #anb-toggle:checked ~ #anb-label span::after {
+        top: 0 !important;
+        transform: rotate(-45deg) !important;
     }
 
     /* Dropdown Toggle: Displays #archnavbarmenu when checkbox is checked */
