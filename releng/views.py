@@ -45,7 +45,7 @@ class ReleaseJSONEncoder(DjangoJSONEncoder):
         if isinstance(obj, Release):
             data = {attr: getattr(obj, attr) or None
                     for attr in self.release_attributes}
-            data['pgp_fingerprint'] = obj.pgp_key or None
+            data['pgp_fingerprint'] = obj.pgp_key
             data['available'] = obj.available
             data['iso_url'] = '/' + obj.iso_url()
             data['magnet_uri'] = obj.magnet_uri()
