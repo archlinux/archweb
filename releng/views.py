@@ -38,12 +38,14 @@ def release_torrent(request, version):
 
 class ReleaseJSONEncoder(DjangoJSONEncoder):
     release_attributes = ('release_date', 'version', 'kernel_version',
-                          'created', 'md5_sum', 'sha1_sum', 'sha256_sum', 'b2_sum')
+                          'created', 'md5_sum', 'sha1_sum', 'sha256_sum', 'b2_sum',
+                          'wkd_email')
 
     def default(self, obj):
         if isinstance(obj, Release):
             data = {attr: getattr(obj, attr) or None
                     for attr in self.release_attributes}
+            data['pgp_fingerprint'] = obj.pgp_key or None
             data['available'] = obj.available
             data['iso_url'] = '/' + obj.iso_url()
             data['magnet_uri'] = obj.magnet_uri()
