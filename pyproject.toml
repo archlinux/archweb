@@ -17,7 +17,7 @@ dependencies = [
     "markdown==3.10.2",
     "parse==1.21.1",
     "pgpdump==1.5",
-    "requests==2.32.5",
+    "requests==2.33.0",
     "sqlparse==0.5.5",
 ]
 
