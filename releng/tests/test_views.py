@@ -7,12 +7,17 @@ def test_release_json(client, release, torrent_data):
     assert data['version'] == 1
     release_data = data['releases'][0]
     assert release_data['version'] == version
+    assert release_data['pgp_fingerprint'] == release.pgp_key
+    assert release_data['wkd_email'] == release.wkd_email
 
     # Test with torrent data
     release.torrent_data = torrent_data
     release.save()
     response = client.get('/releng/releases/json/')
     assert response.status_code == 200
+    release_data = response.json()['releases'][0]
+    assert release_data['pgp_fingerprint'] == release.pgp_key
+    assert release_data['wkd_email'] == release.wkd_email
 
 
 def test_json(db, client):
@@ -21,6 +26,23 @@ def test_json(db, client):
 
     data = response.json()
     assert data['releases'] == []
+
+
+def test_release_json_null_pgp_fingerprint_and_wkd_email(client, db):
+    from datetime import datetime
+
+    from releng.models import Release
+
+    Release.objects.create(
+        release_date=datetime.now(),
+        version='9.9.9',
+        kernel_version='1.0',
+    )
+    response = client.get('/releng/releases/json/')
+    assert response.status_code == 200
+    release_data = response.json()['releases'][0]
+    assert release_data['pgp_fingerprint'] is None
+    assert release_data['wkd_email'] is None
 
 
 def test_netboot_page(db, client):
