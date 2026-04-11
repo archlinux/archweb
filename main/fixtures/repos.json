@@ -7,7 +7,6 @@
             "staging": false, 
             "name": "Extra-Testing",
             "bugs_project": 5, 
-            "svn_root": "packages",
             "testing": true
         }
     }, 
@@ -19,7 +18,6 @@
             "staging": true, 
             "name": "Extra-Staging",
             "bugs_project": 5, 
-            "svn_root": "packages",
             "testing": false
         }
     }, 
@@ -31,7 +29,6 @@
             "staging": false, 
             "name": "Core", 
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }, 
@@ -43,7 +40,6 @@
             "staging": false, 
             "name": "Extra", 
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }, 
@@ -55,7 +51,6 @@
             "staging": true, 
             "name": "Gnome-Unstable", 
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }, 
@@ -67,7 +62,6 @@
             "staging": true, 
             "name": "KDE-Unstable", 
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }, 
@@ -79,7 +73,6 @@
             "staging": false, 
             "name": "Multilib", 
             "bugs_project": 5, 
-            "svn_root": "community", 
             "testing": false
         }
     }, 
@@ -91,7 +84,6 @@
             "staging": true, 
             "name": "Multilib-Staging", 
             "bugs_project": 5, 
-            "svn_root": "community", 
             "testing": false
         }
     }, 
@@ -103,7 +95,6 @@
             "staging": false, 
             "name": "Multilib-Testing", 
             "bugs_project": 5, 
-            "svn_root": "community", 
             "testing": true
         }
     }, 
@@ -115,7 +106,6 @@
             "staging": true, 
             "name": "Staging", 
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }, 
@@ -127,7 +117,6 @@
             "staging": false, 
             "name": "Core-Testing",
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": true
         }
     },
@@ -139,7 +128,6 @@
             "staging": true, 
             "name": "Core-Staging",
             "bugs_project": 1, 
-            "svn_root": "packages", 
             "testing": false
         }
     }
