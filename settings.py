@@ -181,10 +181,6 @@ LOGGING = {
 PGP_SERVER = 'keyserver.ubuntu.com'
 PGP_SERVER_SECURE = True
 
-# URL for SVN access for fetching commit messages (note absence of packages or
-# community bit on the end, repo.svn_root is appended)
-SVN_BASE_URL = 'svn://svn.archlinux.org/'
-
 GITLAB_PACKAGES_REPO = 'https://gitlab.archlinux.org/archlinux/packaging/packages'
 GITLAB_PACKAGE_REPO = 'archlinux/packaging/packages'
 GITLAB_INSTANCE = 'gitlab.archlinux.org'

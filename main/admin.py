@@ -17,7 +17,7 @@ class ArchAdmin(admin.ModelAdmin):
 
 
 class RepoAdmin(admin.ModelAdmin):
-    list_display = ('name', 'testing', 'staging', 'bugs_project', 'bugs_category', 'svn_root')
+    list_display = ('name', 'testing', 'staging', 'bugs_project', 'bugs_category')
     list_filter = ('testing', 'staging')
     search_fields = ('name',)
 
