@@ -34,24 +34,28 @@ probably want the following:
 # Testing Installation
 
 1. Run `uv sync`.
-2. Activate the virtualenv.
-3. Copy `local_settings.py.example` to `local_settings.py` and modify.
+2. Initialize git submodules:
+
+        git submodule update --init --recursive
+
+3. Activate the virtualenv.
+4. Copy `local_settings.py.example` to `local_settings.py` and modify.
    Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
-4. Migrate changes.
+5. Migrate changes.
 
         uv run ./manage.py migrate
-5. Load the fixtures to pre populate some data. If you don't want some of the
+6. Load the fixtures to pre populate some data. If you don't want some of the
    provided data, adjust the file glob accordingly.
 
         uv run ./manage.py loaddata main/fixtures/*.json
         uv run ./manage.py loaddata devel/fixtures/*.json
         uv run ./manage.py loaddata mirrors/fixtures/*.json
         uv run ./manage.py loaddata releng/fixtures/*.json
-6. Use the following commands to start a service instance
+7. Use the following commands to start a service instance
 
         uv run ./manage.py runserver
-7. To optionally populate the database with real data:
+8. To optionally populate the database with real data:
 
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
         uv run ./manage.py reporead x86_64 core.db.tar.gz
@@ -62,7 +66,7 @@ probably want the following:
 Alter architecture and repo to get x86\_64 and packages from other repos if
 needed.
 
-8. Database Updates for Added/Removed packages
+9. Database Updates for Added/Removed packages
 
         sqlite3 archweb.db < packages/sql/update.sqlite3.sql
 
