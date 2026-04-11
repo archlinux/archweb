@@ -265,6 +265,27 @@ def change_profile(request):
                    'profile_form': profile_form})
 
 
+def get_report_packages(report, username):
+    packages = Package.objects.normal()
+    if report.slug in ('uncompressed-man', 'uncompressed-info'):
+        packages = report.packages(packages, username)
+    else:
+        packages = report.packages(packages)
+
+    return packages
+
+
+@login_required
+def report_pkgbases(request, report_name: str, username: str | None = None) -> HttpResponse:
+    report = {report.slug: report for report in available_reports()}.get(report_name, None)
+    if report is None:
+        raise Http404
+
+    packages = get_report_packages(report, username)
+    pkgbases = sorted({pkg.pkgbase for pkg in packages})
+    return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
+
+
 @login_required
 def report(request, report_name, username=None):
     available = {report.slug: report for report in available_reports()}
@@ -283,11 +304,7 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    if report.slug == 'uncompressed-man' or report.slug == 'uncompressed-info':
-        packages = report.packages(packages, username)
-    else:
-        packages = report.packages(packages)
-
+    packages = get_report_packages(report, username)
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
