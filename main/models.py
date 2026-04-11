@@ -177,7 +177,8 @@ class Package(models.Model):
         if self._maintainers is None:
             self._maintainers = User.objects.filter(
                 package_relations__pkgbase=self.pkgbase,
-                package_relations__type=PackageRelation.MAINTAINER)
+                package_relations__type=PackageRelation.MAINTAINER,
+            ).distinct()
         return self._maintainers
 
     @maintainers.setter
