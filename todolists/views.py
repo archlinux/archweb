@@ -5,13 +5,13 @@ from django import forms
 from django.core.mail import send_mail
 from django.db import transaction
 from django.http import HttpResponse
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import loader
 from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView, ListView
 
-from main.models import Package, Repo
+from main.models import Package
 from main.utils import find_unique_slug
 from packages.utils import PackageJSONEncoder, attach_maintainers
 
@@ -59,8 +59,6 @@ def flag(request, slug, pkg_id):
 
 def view(request, slug):
     todolist = get_object_or_404(Todolist, slug=slug)
-    svn_roots = Repo.objects.values_list(
-        'svn_root', flat=True).order_by().distinct()
     # we don't hold onto the result, but the objects are the same here,
     # so accessing maintainers in the template is now cheap
     attach_maintainers(todolist.packages())
@@ -69,20 +67,18 @@ def view(request, slug):
     repos = {tp.repo for tp in todolist.packages()}
     context = {
         'list': todolist,
-        'svn_roots': svn_roots,
         'arches': sorted(arches),
         'repos': sorted(repos),
     }
     return render(request, 'todolists/view.html', context)
 
 
-def list_pkgbases(request, slug, svn_root):
+def list_pkgbases(request, slug):
     '''Used to make bulk moves of packages a lot easier.'''
     todolist = get_object_or_404(Todolist, slug=slug)
-    repos = get_list_or_404(Repo, svn_root=svn_root)
     pkgbases = TodolistPackage.objects.values_list(
         'pkgbase', flat=True).filter(
-        todolist=todolist, repo__in=repos, removed__isnull=True).order_by(
+        todolist=todolist, removed__isnull=True).order_by(
         'pkgbase').distinct()
     return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
