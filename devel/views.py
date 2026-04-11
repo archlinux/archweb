@@ -266,6 +266,22 @@ def change_profile(request):
 
 
 @login_required
+def report_pkgbases(request, report_name: str, username: str | None = None) -> HttpResponse:
+    report = {report.slug: report for report in available_reports()}.get(report_name, None)
+    if report is None:
+        raise Http404
+
+    packages = Package.objects.normal()
+    if report.slug in ('uncompressed-man', 'uncompressed-info'):
+        packages = report.packages(packages, username)
+    else:
+        packages = report.packages(packages)
+
+    pkgbases = sorted({pkg.pkgbase for pkg in packages})
+    return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
+
+
+@login_required
 def report(request, report_name, username=None):
     available = {report.slug: report for report in available_reports()}
     report = available.get(report_name, None)
