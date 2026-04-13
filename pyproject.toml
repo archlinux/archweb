@@ -24,7 +24,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "flake8>=7.3.0",
-    "pytest>=8.4.1",
+    "pytest>=9.0.3",
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
     "ruff>=0.12.11",
