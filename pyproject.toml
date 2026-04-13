@@ -27,7 +27,7 @@ dev = [
     "pytest>=9.0.3",
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
-    "ruff>=0.12.11",
+    "ruff>=0.15.10",
     "django-debug-toolbar==6.3.0",
 ]
 prod = [
