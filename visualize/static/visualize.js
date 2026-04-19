@@ -16,8 +16,8 @@ function format_filesize(size, decimals) {
 
 function packages_treemap(chart_id, orderings, default_order) {
     const div = document.querySelector(chart_id);
-    const color = d3.scale.category20();
-    var key_func = function(d) { return d.key; };
+    const color = d3.scaleOrdinal(d3.schemePaired);
+    var key_func = function(d) { return d.data.key; };
     var value_package_count = function(d) { return d.count; },
         value_flagged_count = function(d) { return d.flagged; },
         value_compressed_size = function(d) { return d.csize; },
@@ -28,23 +28,21 @@ function packages_treemap(chart_id, orderings, default_order) {
     value_compressed_size.is_size = value_installed_size.is_size = true;
 
     const rects = div.getBoundingClientRect();
-    var treemap = d3.layout.treemap()
+    var current_value_func = value_package_count;
+
+    var treemap = d3.treemap()
         .size([rects.width, rects.height])
-        /*.sticky(true)*/
-        .value(value_package_count)
-        .sort(function(a, b) { return a.key < b.key; })
-        .children(function(d) { return d.data; });
+        .paddingInner(0);
 
     var cell_html = function(d) {
         if (d.children) {
             return "";
         }
-        var valuefunc = treemap.value();
-        var value = valuefunc(d);
-        if (valuefunc.is_size && value !== undefined) {
+        var value = current_value_func(d.data);
+        if (current_value_func.is_size && value !== undefined) {
             value = format_filesize(value);
         }
-        return "<span>" + d.name + ": " + value + "</span>";
+        return "<span>" + d.data.name + ": " + value + "</span>";
     };
 
     var d3_div = d3.select(div);
@@ -61,48 +59,70 @@ function packages_treemap(chart_id, orderings, default_order) {
         };
     };
 
-    var cell = function() {
-        /* the -1 offset comes from the border width we use in the CSS */
-        this.style("left", prop_px("x", 0)).style("top", prop_px("y", 0))
-            .style("width", prop_px("dx", -1)).style("height", prop_px("dy", -1));
+    var cell = function(selection) {
+        /* d3 v4 treemap uses x0, y0, x1, y1 instead of x, y, dx, dy */
+        selection
+            .style("left", function(d) { return d.x0 + "px"; })
+            .style("top", function(d) { return d.y0 + "px"; })
+            .style("width", function(d) { return Math.max(0, d.x1 - d.x0 - 1) + "px"; })
+            .style("height", function(d) { return Math.max(0, d.y1 - d.y0 - 1) + "px"; });
+    };
+
+    var current_root = null;
+
+    var compute_nodes = function(json) {
+        var root = d3.hierarchy(json, function(d) { return d.data; })
+            .sum(function(d) { return current_value_func(d) || 0; })
+            .sort(function(a, b) { return a.data.key < b.data.key ? 1 : -1; });
+        treemap(root);
+        current_root = root;
+        return root.descendants();
     };
 
     var fetch_for_ordering = function(order) {
-        d3.json(order.url, function(json) {
-            var nodes = d3_div.data([json]).selectAll("div")
-                .data(treemap.nodes, key_func);
+        d3.json(order.url).then(function(json) {
+            var nodes = compute_nodes(json);
+            var divs = d3_div.selectAll("div.treemap-cell")
+                .data(nodes, function(d) { return d.data.key; });
             /* start out new nodes in the center of the picture area */
             const rects = div.getBoundingClientRect();
             const w_center = rects.width / 2;
             const h_center = rects.height / 2;
-            nodes.enter().append("div")
+            divs.enter().append("div")
                 .attr("class", "treemap-cell")
-                .attr("title", function(d) { return d.name; })
+                .attr("title", function(d) { return d.data.name; })
                 .style("left", w_center + "px").style("top", h_center + "px")
                 .style("width", "0px").style("height", "0px")
                 .style("display", function(d) { return d.children ? "none" : null; })
-                .html(cell_html);
-            nodes.transition().duration(1500)
+                .html(cell_html)
+              .merge(divs)
+                .transition().duration(1500)
                 .style("background-color", function(d) {
-                    return d.children ? null : color(d[order.color_attr]);
+                    return d.children ? null : color(d.data[order.color_attr]);
                 })
                 .call(cell);
-            nodes.exit().transition().duration(1500).remove();
+            divs.exit().transition().duration(1500).remove();
         });
     };
 
     /* start the callback for the default order */
-    fetch_for_ordering(orderings[default_order]);
+    var current_order = orderings[default_order];
+    fetch_for_ordering(current_order);
 
     var make_scale_button = function(name, valuefunc) {
         var button_id = chart_id + "-" + name;
         /* upon button click, attach new value function and redraw all boxes
          * accordingly */
         d3.select(button_id).on("click", function() {
-            d3_div.selectAll("div")
-                .data(treemap.value(valuefunc), key_func)
-                .html(cell_html)
-                .transition().duration(1500).call(cell);
+            current_value_func = valuefunc;
+            if (current_root) {
+                current_root.sum(function(d) { return current_value_func(d) || 0; });
+                treemap(current_root);
+                d3_div.selectAll("div.treemap-cell")
+                    .data(current_root.descendants(), function(d) { return d.data.key; })
+                    .html(cell_html)
+                    .transition().duration(1500).call(cell);
+            }
 
             /* drop off the '#' sign to convert id to a class prefix */
             d3.selectAll("." + chart_id.substring(1) + "-scaleby")
@@ -120,6 +140,7 @@ function packages_treemap(chart_id, orderings, default_order) {
     var make_group_button = function(name, order) {
         var button_id = chart_id + "-" + name;
         d3.select(button_id).on("click", function() {
+            current_order = order;
             fetch_for_ordering(order);
 
             /* drop off the '#' sign to convert id to a class prefix */
@@ -138,9 +159,13 @@ function packages_treemap(chart_id, orderings, default_order) {
     var real_resize = function() {
         resize_timeout = null;
         const rects = div.getBoundingClientRect();
-        d3_div.selectAll("div")
-            .data(treemap.size([rects.width, rects.height]), key_func)
-            .call(cell);
+        treemap.size([rects.width, rects.height]);
+        if (current_root) {
+            treemap(current_root);
+            d3_div.selectAll("div.treemap-cell")
+                .data(current_root.descendants(), function(d) { return d.data.key; })
+                .call(cell);
+        }
     };
     window.addEventListener('resize', function() {
         if (resize_timeout) {
@@ -155,17 +180,16 @@ function developer_keys(chart_id, data_url) {
     const r = 10;
     const rect = div.getBoundingClientRect();
 
-    var force = d3.layout.force()
-        .friction(0.5)
-        .gravity(0.1)
-        .charge(-500)
-        .size([rect.width, rect.height]);
+    var simulation = d3.forceSimulation()
+        .force("charge", d3.forceManyBody().strength(-500))
+        .force("center", d3.forceCenter(rect.width / 2, rect.height / 2))
+        .velocityDecay(0.5);
 
     var svg = d3.select(chart_id)
         .append("svg");
 
-    d3.json(data_url, function(json) {
-        var fill = d3.scale.category20();
+    d3.json(data_url).then(function(json) {
+        var fill = d3.scaleOrdinal(d3.schemePaired);
 
         var index_for_key = function(key) {
             var i;
@@ -209,7 +233,7 @@ function developer_keys(chart_id, data_url) {
             .style("stroke", "#888");
 
         /* anyone with more than 7 - 1 == 6 signatures gets the top value */
-        var stroke_color_scale = d3.scale.log().domain([1, 7]).range(["white", "green"]).clamp(true);
+        var stroke_color_scale = d3.scaleLog().domain([1, 7]).range(["white", "green"]).clamp(true);
 
         var node = svg.selectAll("circle")
             .data(json.nodes)
@@ -235,16 +259,30 @@ function developer_keys(chart_id, data_url) {
                 }
             })
             .style("stroke-width", "1.5px")
-            .call(force.drag);
+            .call(d3.drag()
+                .on("start", function(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                })
+                .on("drag", function(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                })
+                .on("end", function(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                }));
         node.append("title").text(function(d) { return d.name; });
 
-        var nodeover = function(d, i) {
+        var nodeover = function(event, d) {
             d3.select(this).transition().duration(500).style("stroke-width", "3px");
-            link.filter(function(d_link, i) {
+            link.filter(function(d_link) {
                 return d_link.source === d || d_link.target === d;
             }).transition().duration(500).style("stroke", "#800");
         };
-        var nodeout = function(d, i) {
+        var nodeout = function(event, d) {
             d3.select(this).transition().duration(500).style("stroke-width", "1.5px");
             link.transition().duration(500).style("stroke", "#888");
         };
@@ -282,12 +320,10 @@ function developer_keys(chart_id, data_url) {
                 .attr("y2", function(d) { return d.target.y; });
         };
 
-        force.nodes(json.nodes)
-            .links(edges)
-            .linkDistance(distance)
-            .linkStrength(strength)
-            .on("tick", tick)
-            .start();
+        simulation
+            .nodes(json.nodes)
+            .force("link", d3.forceLink(edges).distance(distance).strength(strength))
+            .on("tick", tick);
     });
 
     /* adapt the chart size when the browser resizes */
@@ -295,7 +331,8 @@ function developer_keys(chart_id, data_url) {
     var real_resize = function() {
         resize_timeout = null;
         const rect = div.getBoundingClientRect();
-        force.size([rect.width, rect.height]);
+        simulation.force("center", d3.forceCenter(rect.width / 2, rect.height / 2));
+        simulation.alpha(0.3).restart();
     };
 
     window.addEventListener('resize', function() {
