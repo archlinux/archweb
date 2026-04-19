@@ -375,32 +375,3 @@ function filter_signoffs_load() {
         $('#signoffs_filter input[name="' + v['name'] + '"]').prop('checked', true);
     });
 }
-
-function collapseNotes(elements) {
-    // Remove any trailing <br/> tags from the note contents
-    $(elements).children('br').filter(':last-child').filter(function(i, e) { return !e.nextSibling; }).remove();
-
-    var maxElements = 8;
-    $(elements).each(function(idx, ele) {
-        ele = $(ele);
-        // Hide everything past a given limit. Don't do anything if we don't
-        // have enough items, or the link already exists.
-        var contents = ele.contents();
-        if (contents.length <= maxElements || ele.find('a.morelink').length > 0) {
-            return;
-        }
-        contents.slice(maxElements).wrapAll('<div class="hide"/>');
-        ele.append('<br class="morelink-spacer"/><a class="morelink" href="#">Show More…</a>');
-
-        // add link and wire it up to show the hidden items
-        ele.find('a.morelink').click(function(event) {
-            event.preventDefault();
-            $(this).remove();
-            ele.find('br.morelink-spacer').remove();
-            // move the div contents back and delete the empty div
-            var hidden = ele.find('div.hide');
-            hidden.contents().appendTo(ele);
-            hidden.remove();
-        });
-    });
-}
