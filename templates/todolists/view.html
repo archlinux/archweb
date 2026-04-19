@@ -133,6 +133,20 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function() {
+    function todolist_flag() {
+        // TODO: fix usage of this
+        var link = this;
+        $.getJSON(link.href, function(data) {
+            $(link).text(data.status).removeClass(
+                'complete inprogress incomplete').addClass(
+                data.css_class.toLowerCase());
+            /* let tablesorter know the cell value has changed */
+            $('.results').trigger('updateCell', [$(link).closest('td')[0], false, null]);
+        });
+
+        return false;
+    }
+
     $('a.status-link').click(todolist_flag);
     var filter_func = function() {
         filter_pkgs_list('#todolist_filter', '#dev-todo-pkglist tbody');

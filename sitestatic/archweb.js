@@ -178,20 +178,6 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
   };
 })(jQuery);
 
-/* todolists/view.html */
-function todolist_flag() {
-    // TODO: fix usage of this
-    var link = this;
-    $.getJSON(link.href, function(data) {
-        $(link).text(data.status).removeClass(
-            'complete inprogress incomplete').addClass(
-            data.css_class.toLowerCase());
-        /* let tablesorter know the cell value has changed */
-        $('.results').trigger('updateCell', [$(link).closest('td')[0], false, null]);
-    });
-    return false;
-}
-
 function filter_pkgs_list(filter_ele, tbody_ele) {
     /* start with all rows, and then remove ones we shouldn't show */
     var rows = $(tbody_ele).children(),
