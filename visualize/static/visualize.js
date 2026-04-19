@@ -16,7 +16,7 @@ function format_filesize(size, decimals) {
 
 function packages_treemap(chart_id, orderings, default_order) {
     const div = document.querySelector(chart_id);
-    const color = d3.scaleOrdinal(d3.schemeCategory20);
+    const color = d3.scaleOrdinal(d3.schemePaired);
     var key_func = function(d) { return d.data.key; };
     var value_package_count = function(d) { return d.count; },
         value_flagged_count = function(d) { return d.flagged; },
@@ -80,7 +80,7 @@ function packages_treemap(chart_id, orderings, default_order) {
     };
 
     var fetch_for_ordering = function(order) {
-        d3.json(order.url, function(json) {
+        d3.json(order.url).then(function(json) {
             var nodes = compute_nodes(json);
             var divs = d3_div.selectAll("div.treemap-cell")
                 .data(nodes, function(d) { return d.data.key; });
@@ -188,8 +188,8 @@ function developer_keys(chart_id, data_url) {
     var svg = d3.select(chart_id)
         .append("svg");
 
-    d3.json(data_url, function(json) {
-        var fill = d3.scaleOrdinal(d3.schemeCategory20);
+    d3.json(data_url).then(function(json) {
+        var fill = d3.scaleOrdinal(d3.schemePaired);
 
         var index_for_key = function(key) {
             var i;
@@ -260,29 +260,29 @@ function developer_keys(chart_id, data_url) {
             })
             .style("stroke-width", "1.5px")
             .call(d3.drag()
-                .on("start", function(d) {
-                    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+                .on("start", function(event, d) {
+                    if (!event.active) simulation.alphaTarget(0.3).restart();
                     d.fx = d.x;
                     d.fy = d.y;
                 })
-                .on("drag", function(d) {
-                    d.fx = d3.event.x;
-                    d.fy = d3.event.y;
+                .on("drag", function(event, d) {
+                    d.fx = event.x;
+                    d.fy = event.y;
                 })
-                .on("end", function(d) {
-                    if (!d3.event.active) simulation.alphaTarget(0);
+                .on("end", function(event, d) {
+                    if (!event.active) simulation.alphaTarget(0);
                     d.fx = null;
                     d.fy = null;
                 }));
         node.append("title").text(function(d) { return d.name; });
 
-        var nodeover = function(d, i) {
+        var nodeover = function(event, d) {
             d3.select(this).transition().duration(500).style("stroke-width", "3px");
-            link.filter(function(d_link, i) {
+            link.filter(function(d_link) {
                 return d_link.source === d || d_link.target === d;
             }).transition().duration(500).style("stroke", "#800");
         };
-        var nodeout = function(d, i) {
+        var nodeout = function(event, d) {
             d3.select(this).transition().duration(500).style("stroke-width", "1.5px");
             link.transition().duration(500).style("stroke", "#888");
         };
