@@ -36,7 +36,7 @@ prod = [
     "pymemcache==4.0.0",
 ]
 postgres = [
-    "psycopg2==2.9.11",
+    "psycopg2==2.9.12",
 ]
 smtp = [
     "aiosmtpd>=1.4.6",
