@@ -1,17 +1,21 @@
-from django.template import Context, Template
+from django.template import engines
+from django.utils.safestring import mark_safe
+
+from main.templatetags.htmltruncate import truncatewords_html_preserve_pre
 
 
-def test_news_preview_filter_chain_preserves_multiline_pre():
-    html = (
-        "<p>Intro</p>"
-        "<pre><code>line one\nline two\nline three</code></pre>"
-        "<p>Outro</p>"
+def test_truncatewords_html_preserve_pre_keeps_pre_newlines():
+    html = mark_safe(
+        '<p>Intro</p><pre><code>line one\nline two\nline three</code></pre>'
     )
-    template = Template("{{ html|linebreaks|truncatewords_html:100 }}")
-    rendered = template.render(Context({"html": html}))
+    out = truncatewords_html_preserve_pre(html, 50)
+    assert 'line one\nline two' in out
+    assert 'line one line two line three' not in out
 
-    assert "line one<br>line two<br>line three" in rendered
-    assert "line one line two line three" not in rendered
+    engine = engines['django']
+    t = engine.from_string('{{ x|truncatewords_html_preserve_pre:50 }}')
+    rendered = t.render({'x': html})
+    assert 'line one\nline two' in rendered
 
 
 def test_index(client, arches, repos, package, groups, staff_groups):
