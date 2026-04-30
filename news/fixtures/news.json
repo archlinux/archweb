@@ -1,0 +1,108 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 32001,
+    "fields": {
+      "password": "!",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "fixture_news_author",
+      "first_name": "Fixture",
+      "last_name": "NewsAuthor",
+      "email": "fixture-news-author@example.invalid",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-06-01T12:00:00Z"
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 1,
+    "fields": {
+      "slug": "local-development-refresh",
+      "author": 32001,
+      "postdate": "2026-04-28T14:30:00Z",
+      "last_modified": "2026-04-28T14:30:00Z",
+      "title": "Local development workflow and fixture data",
+      "guid": "tag:archlinux.org,2026-04-28:/news/local-development-refresh/",
+      "content": "## Local development refresh\n\nWe refreshed the recommended workflow for contributors running **archweb** on their\nown machines. The steps below are split across several short paragraphs so you\ncan see how line breaks render on the home page teaser and on the full article.\n\nFirst, sync dependencies and apply migrations in a clean tree.\n\nSecond, load the bundled fixtures so package search, mirrors, and related pages\nhave something to render without pulling live data.\n\nTypical commands:\n\n    uv sync\n    uv run ./manage.py migrate\n    uv run ./manage.py loaddata main/fixtures/*.json\n\nIf you only need a subset, adjust the glob. When something goes wrong, check the\ntraceback and the Django logs before opening an issue.\n\nShell helpers (same idea, different shell features):\n\n    #!/usr/bin/env bash\n    set -euo pipefail\n    export DJANGO_SETTINGS_MODULE=settings\n    uv run ./manage.py check\n\nThat is all for this announcement.",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 2,
+    "fields": {
+      "slug": "linux-rebuild-core-april",
+      "author": 32001,
+      "postdate": "2026-04-20T09:15:00Z",
+      "last_modified": "2026-04-20T09:15:00Z",
+      "title": "[core] linux rebuild (no ABI change)",
+      "guid": "tag:archlinux.org,2026-04-20:/news/linux-rebuild-core-april/",
+      "content": "### linux package rebuild\n\nA routine rebuild landed in [core] with no ABI changes expected.\n\nHighlights from the maintainer notes:\n\n    # pacman -Syu\n    # reboot if you replaced the running kernel\n\nNothing else is required unless you use out-of-tree modules.",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 3,
+    "fields": {
+      "slug": "wiki-mirror-rotation",
+      "author": 32001,
+      "postdate": "2026-04-10T16:00:00Z",
+      "last_modified": "2026-04-10T16:00:00Z",
+      "title": "Wiki mirror rotation completed",
+      "guid": "tag:archlinux.org,2026-04-10:/news/wiki-mirror-rotation/",
+      "content": "Wiki mirrors were rotated. No user action is needed.\n\nExample session you might run locally (one indented code block, multiple lines):\n\n    # Step 1: response headers\n    curl -I https://wiki.archlinux.org/\n    # Step 2: status code only (body discarded)\n    curl -sL -o /dev/null -w 'status=%{http_code}\\n' https://wiki.archlinux.org/\n    # Step 3: quick timing summary\n    curl -sL -o /dev/null -w 'namelookup=%{time_namelookup}s connect=%{time_connect}s total=%{time_total}s\\n' \\\n        https://wiki.archlinux.org/\n    echo 'Connectivity check complete'\n\nThe response should be **HTTP/2** or **HTTP/1.1** with a normal status code.",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 4,
+    "fields": {
+      "slug": "schedule-illustrative",
+      "author": 32001,
+      "postdate": "2026-03-22T11:45:00Z",
+      "last_modified": "2026-03-22T11:45:00Z",
+      "title": "Illustrative maintenance schedule",
+      "guid": "tag:archlinux.org,2026-03-22:/news/schedule-illustrative/",
+      "content": "Upcoming schedule (all dates are illustrative for this fixture):\n\n- Monday: sync databases\n- Tuesday: run the full test suite\n\nInline check:\n\n    pytest -q\n\nEnd of list demo.",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 5,
+    "fields": {
+      "slug": "python-snippet-formatting",
+      "author": 32001,
+      "postdate": "2026-02-05T08:00:00Z",
+      "last_modified": "2026-02-05T08:00:00Z",
+      "title": "Python snippet for preview formatting",
+      "guid": "tag:archlinux.org,2026-02-05:/news/python-snippet-formatting/",
+      "content": "Small **Python** snippet for formatting checks:\n\n    def greet(name: str) -> str:\n        message = f\"Hello, {name}\"\n        return message\n\n    if __name__ == \"__main__\":\n        print(greet(\"Arch\"))",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  },
+  {
+    "model": "news.news",
+    "pk": 6,
+    "fields": {
+      "slug": "plain-paragraph-linebreaks",
+      "author": 32001,
+      "postdate": "2026-01-15T10:00:00Z",
+      "last_modified": "2026-01-15T10:00:00Z",
+      "title": "Plain text line breaks in one paragraph",
+      "guid": "tag:archlinux.org,2026-01-15:/news/plain-paragraph-linebreaks/",
+      "content": "Plain paragraph fixture with soft line breaks in the source\nfile: this sentence continues after a single newline inside the paragraph in\nMarkdown, which usually joins lines into one HTML paragraph when you view the\nfull article.",
+      "safe_mode": true,
+      "send_announce": false
+    }
+  }
+]
