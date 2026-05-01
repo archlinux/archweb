@@ -25,8 +25,7 @@ urlpatterns = [
             permission_required('todolists.delete_todolist')(DeleteTodolist.as_view())),
     re_path(r'^(?P<slug>[-\w]+)/flag/(?P<pkg_id>\d+)/$',
             permission_required('todolists.change_todolistpackage')(flag)),
-    re_path(r'^(?P<slug>[-\w]+)/pkgbases/(?P<svn_root>[a-z]+)/$',
-            list_pkgbases),
+    re_path(r'^(?P<slug>[-\w]+)/pkgbases/$', list_pkgbases),
 ]
 
 # vim: set ts=4 sw=4 et:
