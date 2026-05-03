@@ -181,10 +181,6 @@ LOGGING = {
 PGP_SERVER = 'keyserver.ubuntu.com'
 PGP_SERVER_SECURE = True
 
-# URL for SVN access for fetching commit messages (note absence of packages or
-# community bit on the end, repo.svn_root is appended)
-SVN_BASE_URL = 'svn://svn.archlinux.org/'
-
 GITLAB_PACKAGES_REPO = 'https://gitlab.archlinux.org/archlinux/packaging/packages'
 GITLAB_PACKAGE_REPO = 'archlinux/packaging/packages'
 GITLAB_INSTANCE = 'gitlab.archlinux.org'
@@ -225,6 +221,9 @@ RSS_FEED_LIMIT = 25
 
 # Rebuilderd API endpoint
 REBUILDERD_URL = 'https://reproducible.archlinux.org/api/v0/pkgs/list'
+
+# Bumpbuddy json endpoint
+BUMPBUDDY_URL = "https://bumpbuddy.archlinux.org/data.json"
 
 # Protected TIER0 Mirror
 TIER0_MIRROR_DOMAIN = 'repos.archlinux.org'
