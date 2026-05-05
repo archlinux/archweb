@@ -1,0 +1,236 @@
+/**
+ * Archweb Mobile Responsive Overrides
+ *
+ * This stylesheet provides minimalist mobile responsiveness for archweb.
+ * It is included after all other CSS to allow for surgical overrides.
+ *
+ * Design Constraints:
+ * 1. ZERO impact on desktop views (>= 850px).
+ * 2. Pure CSS implementation for the mobile menu (Checkbox Hack).
+ * 3. Coordination with archlinux_common_style without modifying the submodule.
+ */
+
+/* Hide mobile-only interactive elements on desktop to prevent layout shifts */
+#anb-toggle, #anb-label {
+    display: none;
+}
+
+@media (max-width: 849px) {
+    /* Global Reset: Remove fixed min-widths and ensure fluid containers */
+    body {
+        min-width: 0;
+        padding: 0;
+    }
+
+    /* Main Content Container: Uniform spacing and flex-column layout for stacking */
+    #content {
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        margin-top: 1.5em; /* Standardized vertical gap across all templates */
+    }
+
+    /* 
+     * Layout Reordering:
+     * Uses 'display: contents' on wrapper divs to allow children to participate 
+     * directly in the #content flexbox, enabling precise reordering via 'order'.
+     */
+    #content-left-wrapper,
+    #content-left,
+    #content-right {
+        display: contents;
+        float: none;
+        width: auto;
+        margin: 0;
+    }
+
+    /* Homepage Element Sequence: Intro -> Search -> Updates -> News */
+    #intro { 
+        order: 1; 
+        margin-top: 0; 
+    }
+    #pkgsearch { 
+        order: 2; 
+        position: static; 
+    }
+    #pkg-updates { 
+        order: 3; 
+    }
+    #news { 
+        order: 4; 
+    }
+    #nav-sidebar { order: 5; }
+    .widget { order: 6; }
+    #footer { order: 7; }
+
+    header {
+        position: relative;
+        margin-bottom: 0;
+    }
+
+    /* Suppress empty developer navbar margins to prevent excessive whitespace */
+    #archdev-navbar {
+        margin: 0;
+        display: none; 
+    }
+
+    /* News Feed: Clear floats and restore logical horizontal flow for headers/icons */
+    #news h3 {
+        float: left;
+        display: block;
+        width: auto;
+        margin-bottom: 0.5em;
+    }
+    #news .rss-icon {
+        float: right;
+        display: block;
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    #news h4 {
+        clear: both;
+    }
+
+    /**
+     * Mobile Navigation (Hamburger Menu)
+     * Implementation: Uses a simple "☰" character to avoid external assets.
+     * Positioning: Anchored to the far right of the relative header wrapper.
+     */
+    #anb-label {
+        display: block;
+        position: absolute;
+        top: 10px; 
+        right: 15px;
+        left: auto;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        z-index: 1001;
+    }
+    #anb-label span,
+    #anb-label span::before,
+    #anb-label span::after {
+        display: block;
+        position: absolute;
+        width: 25px;
+        height: 2px;
+        background: #fff;
+        transition: all 0.2s ease-in-out;
+    }
+    #anb-label span {
+        top: 19px;
+        right: 7px;
+    }
+    #anb-label span::before {
+        content: "";
+        top: -8px;
+    }
+    #anb-label span::after {
+        content: "";
+        top: 8px;
+    }
+
+    #anb-toggle:checked ~ #anb-label span {
+        background: transparent;
+    }
+    #anb-toggle:checked ~ #anb-label span::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+    #anb-toggle:checked ~ #anb-label span::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
+
+    /* Dropdown Toggle: Displays #archnavbarmenu when checkbox is checked */
+    #archnavbarmenu {
+        display: none;
+        width: 100%;
+        background: #333;
+        clear: both;
+        padding-top: 10px;
+    }
+
+    #anb-toggle:checked ~ #archnavbar #archnavbarmenu {
+        display: block;
+    }
+
+    #archnavbar {
+        position: relative;
+        padding: 10px 15px;
+        height: auto;
+        text-align: left;
+    }
+
+    /* Transform horizontal list to vertical stacked items */
+    #archnavbarlist {
+        text-align: left;
+    }
+
+    #archnavbarlist li {
+        display: block;
+        padding: 10px 0;
+        border-bottom: 1px solid #444;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #archnavbarlist li:last-child {
+        border-bottom: none;
+    }
+
+    /* Input Fields: Ensure full-width fluid behavior on small screens */
+    input[type=text], input[type=password], textarea {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #sys-message {
+        width: 90%;
+        box-sizing: border-box;
+    }
+
+    /* Tables: Enable horizontal scrolling for overflow-prone data grids */
+    table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    /**
+     * Package Search Autocomplete
+     * Override: homepage.js calculates coordinates relative to the viewport.
+     * Here we force absolute positioning relative to the form container.
+     */
+    #pkgsearch-form {
+        position: relative; 
+        display: block;
+    }
+    #pkgsearch fieldset {
+        margin: 0;
+        padding: 0;
+    }
+    #pkgsearch input {
+        float: none;
+        width: 100%;
+        margin-top: 0.5em;
+        box-sizing: border-box;
+    }
+
+    /* Force dropdown visibility and alignment directly under the search input */
+    .pkgsearch-typeahead {
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        box-sizing: border-box;
+        position: absolute;
+        display: none; 
+        margin-top: 0;
+        background: #f6f9fc;
+        border: 1px solid #09c;
+        z-index: 2000;
+        text-align: left;
+    }
+}
