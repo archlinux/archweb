@@ -16,7 +16,7 @@ from main.utils import find_unique_slug
 from packages.utils import PackageJSONEncoder, attach_maintainers
 
 from .models import Todolist, TodolistPackage
-from .utils import attach_staging, get_annotated_todolists
+from .utils import attach_staging, attach_testing, get_annotated_todolists
 
 
 class TodoListForm(forms.ModelForm):
@@ -65,6 +65,7 @@ def view(request, slug):
     # so accessing maintainers in the template is now cheap
     attach_maintainers(todolist.packages())
     attach_staging(todolist.packages(), todolist.pk)
+    attach_testing(todolist.packages(), todolist.pk)
     arches = {tp.arch for tp in todolist.packages()}
     repos = {tp.repo for tp in todolist.packages()}
     context = {
