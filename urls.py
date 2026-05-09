@@ -101,6 +101,11 @@ urlpatterns.extend([
          name='news-sitemap'),
 ])
 
+# REST API (Django Ninja)
+from api.router import api  # noqa: E402
+
+urlpatterns += [path('api/', api.urls)]
+
 # Authentication
 urlpatterns.extend([
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
