@@ -45,9 +45,6 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-# Set django's User stuff to use our profile model
-AUTH_PROFILE_MODULE = 'devel.UserProfile'
-
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
