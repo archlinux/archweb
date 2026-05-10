@@ -94,9 +94,6 @@ SECURE_REFERRER_POLICY = 'strict-origin'
 # X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# X-XSS-Protection, enables cross-site scripting filter in most browsers
-SECURE_BROWSER_XSS_FILTER = True
-
 # CSP Settings
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'",)
