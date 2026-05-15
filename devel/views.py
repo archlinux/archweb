@@ -25,6 +25,7 @@ from django.utils.timezone import now
 from django.views.decorators.cache import cache_control, never_cache
 
 from main.models import Arch, Package, Repo
+from main.utils import groupby_preserve_order
 from news.models import News
 from packages.models import FlagRequest, PackageRelation, Signoff
 from packages.utils import get_signoff_groups
@@ -46,8 +47,13 @@ def index(request):
         inner_q = PackageRelation.objects.none()
     inner_q = inner_q.values('pkgbase')
 
-    flagged = Package.objects.normal().filter(
+    # select all flagged packages by pkgname
+    flagged_all = Package.objects.normal().filter(
         flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
+
+    # group flagged packages by pkgbase
+    same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
+    flagged = groupby_preserve_order(flagged_all, same_pkgbase_key)
 
     todopkgs = TodolistPackage.objects.select_related(
         'todolist', 'pkg', 'arch', 'repo').exclude(

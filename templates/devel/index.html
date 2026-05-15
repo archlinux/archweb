@@ -26,19 +26,26 @@
             </tr>
         </thead>
         <tbody>
-            {% for pkg in flagged %}
-                <tr>
-                    <td>{% pkg_details_link pkg %}</td>
-                    <td>{{ pkg.full_version }}</td>
-                    <td>{% with pkg.in_testing as tp %}{% if tp %}
-                        <a href="{{ tp.get_absolute_url }}"
-                            title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
-                        {% endif %}{% endwith %}</td>
-                    <td>{{ pkg.repo.name }}</td>
-                    <td>{{ pkg.arch.name }}</td>
-                    <td>{{ pkg.flag_date|date:"Y-m-d" }}</td>
-                    <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
-                </tr>
+            {% for splitpkg in flagged %}
+                {% with splitpkg|first as pkg %}
+                    <tr>
+                        <td>
+                            {% pkg_details_link splitpkg.0 %}
+                            {% if splitpkg|length > 1 %}
+                                ({{ splitpkg|length }} split packages)
+                            {% endif %}
+                        </td>
+                        <td>{{ pkg.full_version }}</td>
+                        <td>{% with pkg.in_testing as tp %}{% if tp %}
+                            <a href="{{ tp.get_absolute_url }}"
+                                title="Testing package details for {{ tp.pkgname }}">{{ tp.full_version }}</a>
+                            {% endif %}{% endwith %}</td>
+                        <td>{{ pkg.repo.name }}</td>
+                        <td>{{ pkg.arch.name }}</td>
+                        <td>{{ pkg.flag_date|date:"Y-m-d" }}</td>
+                        <td>{{ pkg.last_update|date:"Y-m-d" }}</td>
+                    </tr>
+                {% endwith %}
             {% empty %}
                 <tr class="empty"><td colspan="7"><em>No flagged packages to display</em></td></tr>
             {% endfor %}
