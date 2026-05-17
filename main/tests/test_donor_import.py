@@ -42,9 +42,9 @@ def test_invalid_args(monkeypatch):
 
 
 def test_invalid_path():
-    with pytest.raises(CommandError) as e:
+    with pytest.raises(FileNotFoundError) as e:
         call_command('donor_import', '/tmp/non-existant')
-    assert 'argument input: can\'t open' in str(e.value)
+    assert 'No such file or directory' in str(e.value)
 
 
 def test_maildir(db, monkeypatch):

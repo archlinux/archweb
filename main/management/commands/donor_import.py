@@ -18,7 +18,6 @@ import codecs
 import email
 import logging
 import sys
-from argparse import FileType
 from email.header import decode_header
 
 from django.core.management.base import BaseCommand, CommandError
@@ -33,7 +32,7 @@ logger.setLevel(logging.WARNING)
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('input', nargs='?', type=FileType('r'), default=sys.stdin)
+        parser.add_argument('input', nargs='?', default=None, help='Input file (default: stdin)')
 
     def decode_subject(self, subject):
         subject = decode_header(subject)
@@ -78,7 +77,12 @@ class Command(BaseCommand):
         elif v >= 2:
             logger.level = logging.DEBUG
 
-        msg = email.message_from_file(options['input'])
+        input_path = options['input']
+        if input_path is not None:
+            with open(input_path, 'r') as f:
+                msg = email.message_from_file(f)
+        else:
+            msg = email.message_from_file(sys.stdin)
         if not msg['subject']:
             raise CommandError("Failed to read from STDIN")
         subject = msg.get('subject', '')
