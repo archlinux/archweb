@@ -33,7 +33,7 @@ class MirrorStatusJSONEncoder(DjangoJSONEncoder):
             return data
         if isinstance(obj, MirrorProtocol):
             return str(obj)
-        return super(MirrorStatusJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
@@ -43,7 +43,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
 
     def default(self, obj):
         if isinstance(obj, MirrorUrl):
-            data = super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
+            data = super().default(obj)
             cutoff = now() - DEFAULT_CUTOFF
             data['logs'] = list(obj.logs.filter(
                 check_time__gte=cutoff).order_by('check_time'))
@@ -52,7 +52,7 @@ class ExtendedMirrorStatusJSONEncoder(MirrorStatusJSONEncoder):
             data = {attr: getattr(obj, attr) for attr in self.log_attributes}
             data['error'] = obj.error or None
             return data
-        return super(ExtendedMirrorStatusJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 class LocationJSONEncoder(DjangoJSONEncoder):
@@ -68,7 +68,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
                 'country_code': obj.country.code,
                 'ip_version': obj.ip_version,
             }
-        return super(LocationJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 @cache_control(max_age=311)

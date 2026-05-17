@@ -29,7 +29,7 @@ class FlagForm(forms.Form):
         # we remove the 'email' field if this form is being shown to a
         # logged-in user, e.g., a developer.
         auth = kwargs.pop('authenticated', False)
-        super(FlagForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if auth:
             del self.fields['email']
 

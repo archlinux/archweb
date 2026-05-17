@@ -21,7 +21,7 @@ class MirrorlistForm(forms.Form):
     use_mirror_status = forms.BooleanField(required=False)
 
     def __init__(self, *args, **kwargs):
-        super(MirrorlistForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         fields = self.fields
         fields['country'].choices = [('all', 'All'), *self.get_countries()]
         fields['country'].initial = ['all']

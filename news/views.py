@@ -62,7 +62,7 @@ class NewsCreateView(CreateView):
                 from_email=from_,
                 to=[settings.ANNOUNCE_EMAIL],
                 headers=headers).send()
-        return super(NewsCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class NewsEditView(UpdateView):

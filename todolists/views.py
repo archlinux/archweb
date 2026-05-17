@@ -241,7 +241,7 @@ class TodoListJSONEncoder(PackageJSONEncoder):
                 'kind': obj.kind_str
             }
 
-        return super(TodoListJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 def view_json(request, slug):
