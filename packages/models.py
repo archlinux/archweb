@@ -227,8 +227,8 @@ class FlagRequest(models.Model):
 class FlagDenylist(models.Model):
     keyword = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"{self.keyword}"
+    def __str__(self) -> str:
+        return str(self.keyword)
 
 
 class UpdateManager(models.Manager):
