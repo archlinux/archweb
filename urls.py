@@ -115,7 +115,7 @@ if settings.DEBUG_TOOLBAR:  # pragma: no cover
     ])
 
 # prometheus metrics
-if settings.PROMETHEUS_METRICS:  # pragma :no cover
+if settings.PROMETHEUS_METRICS:  # pragma: no cover
     urlpatterns.extend([
         path('', include('django_prometheus.urls')),
     ])
