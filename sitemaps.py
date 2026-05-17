@@ -81,7 +81,7 @@ class SplitPackagesSitemap(Sitemap):
         return None
 
     def location(self, obj):
-        return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/obj['pkgbase']/"
+        return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/{obj['pkgbase']}/"
 
 
 class NewsSitemap(Sitemap):
