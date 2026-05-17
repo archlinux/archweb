@@ -28,7 +28,7 @@ class GroupSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         show_staging = kwargs.pop('show_staging', False)
-        super(GroupSearchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         repos = Repo.objects.all()
 
@@ -59,7 +59,7 @@ class PackageSearchForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         show_staging = kwargs.pop('show_staging', False)
-        super(PackageSearchForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         repos = Repo.objects.all()
         if not show_staging:
             repos = repos.filter(staging=False)
@@ -153,7 +153,7 @@ class SearchListView(ListView):
             return empty_response()
         self.form = PackageSearchForm(data=request.GET,
                                       show_staging=self.request.user.is_authenticated)
-        return super(SearchListView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         packages = Package.objects.normal()
@@ -170,7 +170,7 @@ class SearchListView(ListView):
         return Package.objects.none()
 
     def get_context_data(self, **kwargs):
-        context = super(SearchListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         query_params = self.request.GET.copy()
         query_params.pop('page', None)
         context['current_query'] = query_params.urlencode()

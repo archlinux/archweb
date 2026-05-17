@@ -466,6 +466,6 @@ class PackageJSONEncoder(DjangoJSONEncoder):
             for attr in self.todolistpackage_attributes:
                 data[attr] = getattr(obj, attr)
             return data
-        return super(PackageJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 # vim: set ts=4 sw=4 et:

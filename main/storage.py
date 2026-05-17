@@ -16,8 +16,7 @@ class MinifiedStaticFilesStorage(ManifestStaticFilesStorage):
     )
 
     def post_process(self, paths, dry_run=False, **options):
-        for original_path, processed_path, processed in super(
-                MinifiedStaticFilesStorage, self).post_process(
+        for original_path, processed_path, processed in super().post_process(
                 paths, dry_run, **options):
             for ext, func in self.minifiers:
                 if '.min' in original_path:

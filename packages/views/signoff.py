@@ -198,7 +198,7 @@ class SignoffJSONEncoder(DjangoJSONEncoder):
             return obj.username
         elif isinstance(obj, set):
             return list(obj)
-        return super(SignoffJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 @permission_required('packages.change_signoff')

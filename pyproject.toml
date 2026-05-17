@@ -69,6 +69,7 @@ select = [
     "T10",     # flake8-debugger
     "TCH",     # flake8-type-checking
     "UP032",   # f-string
+    "UP008",   # super-call-with-parameters
     "W",       # warnings (mostly whitespace)
     "YTT",     # flake8-2020
 ]

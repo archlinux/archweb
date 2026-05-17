@@ -9,7 +9,7 @@ register = template.Library()
 class BuildQueryStringNode(template.Node):
     def __init__(self, sortfield):
         self.sortfield = sortfield
-        super(BuildQueryStringNode, self).__init__()
+        super().__init__()
 
     def render(self, context):
         qs = parse_qs(context['current_query'])

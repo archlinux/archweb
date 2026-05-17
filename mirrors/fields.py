@@ -21,7 +21,7 @@ class IPNetworkField(models.Field):
 
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 44
-        super(IPNetworkField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return "IPAddressField"
@@ -40,7 +40,7 @@ class IPNetworkField(models.Field):
     def formfield(self, **kwargs):
         defaults = {'form_class': IPNetworkFormField}
         defaults.update(kwargs)
-        return super(IPNetworkField, self).formfield(**defaults)
+        return super().formfield(**defaults)
 
     def from_db_value(self, value, expression, connection):
         return self.to_python(value)

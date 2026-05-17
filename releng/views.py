@@ -56,7 +56,7 @@ class ReleaseJSONEncoder(DjangoJSONEncoder):
                 torrent_data.pop('url_list', None)
             data['torrent'] = torrent_data
             return data
-        return super(ReleaseJSONEncoder, self).default(obj)
+        return super().default(obj)
 
 
 def releases_json(request):

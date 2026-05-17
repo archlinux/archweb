@@ -60,7 +60,7 @@ class NewUserForm(forms.ModelForm):
         exclude = ('picture', 'user')
 
     def __init__(self, *args, **kwargs):
-        super(NewUserForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Hack ourself so certain fields appear first
         old = self.fields
         self.fields = OrderedDict()
@@ -79,7 +79,7 @@ class NewUserForm(forms.ModelForm):
         return username
 
     def save(self, commit=True):
-        profile = super(NewUserForm, self).save(commit=False)
+        profile = super().save(commit=False)
         pwletters = ascii_letters + digits
         password = ''.join([random.choice(pwletters) for _ in range(8)])
         user = User.objects.create_user(
