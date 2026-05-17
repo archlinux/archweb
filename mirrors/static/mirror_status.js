@@ -11,7 +11,7 @@ function draw_graphs(location_url, log_url, container_id) {
             log_data = data[1].value;
 
             /* use the same color selection for a given URL in every graph */
-            const color = d3.scale.category10();
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
 
             for (const [_key, value] of Object.entries(loc_data.locations)) {
                 mirror_status(container_id, value, log_data, color);
@@ -28,10 +28,10 @@ function mirror_status(container_id, check_loc, log_data, color) {
         const width = rects.width - margin.left - margin.right;
         const height = rects.height - margin.top - margin.bottom;
 
-        const x = d3.time.scale.utc().range([0, width]);
-        const y = d3.scale.linear().range([height, 0]);
-        const x_axis = d3.svg.axis().scale(x).orient("bottom");
-        const y_axis = d3.svg.axis().scale(y).orient("left");
+        const x = d3.scaleUtc().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        const x_axis = d3.axisBottom(x);
+        const y_axis = d3.axisLeft(y);
 
         /* remove any existing graph first if we are redrawing after resize */
         d3.select(chart_id).select("svg").remove();
@@ -44,7 +44,7 @@ function mirror_status(container_id, check_loc, log_data, color) {
         x.domain([
                 d3.min(data, function(c) { return d3.min(c.logs, function(v) { return v.check_time; }); }),
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.check_time; }); })
-        ]).nice(d3.time.hour);
+        ]).nice(d3.timeHour);
         y.domain([
                 0,
                 d3.max(data, function(c) { return d3.max(c.logs, function(v) { return v.duration; }); })
@@ -73,8 +73,8 @@ function mirror_status(container_id, check_loc, log_data, color) {
             .style("text-anchor", "end")
             .text("Duration (seconds)");
 
-        const line = d3.svg.line()
-            .interpolate("basis")
+        const line = d3.line()
+            .curve(d3.curveBasis)
             .x(function(d) { return x(d.check_time); })
             .y(function(d) { return y(d.duration); });
 
