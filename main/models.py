@@ -122,7 +122,7 @@ class Package(models.Model):
     @property
     def full_version(self):
         if self.epoch > 0:
-            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+            return f'{self.epoch}:{self.pkgver}-{self.pkgrel}'
         return f'{self.pkgver}-{self.pkgrel}'
 
     def get_absolute_url(self):
