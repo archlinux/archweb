@@ -1,0 +1,158 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "username": "developer",
+            "first_name": "Test",
+            "last_name": "Developer",
+            "email": "developer@archlinux.org",
+            "password": "pbkdf2_sha256$1000000$5mOVHaWggfkqKGsKsVpWH8$kS2tNunBSv+rrDohZXeuP9L/kX8oDe09vzab+m3WQXo=",
+            "is_staff": true,
+            "is_active": true,
+            "is_superuser": true,
+            "date_joined": "2024-01-01T00:00:00Z",
+            "last_login": null,
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "main.package",
+        "pk": 6,
+        "fields": {
+            "repo": 3,
+            "arch": 3,
+            "pkgname": "linux",
+            "pkgbase": "linux",
+            "pkgver": "6.9.1",
+            "pkgrel": "2",
+            "epoch": 0,
+            "pkgdesc": "The Linux kernel and modules",
+            "url": "https://www.kernel.org/",
+            "filename": "linux-6.9.1-2-x86_64.pkg.tar.zst",
+            "compressed_size": 72000000,
+            "installed_size": 91000000,
+            "build_date": "2024-05-20T10:00:00Z",
+            "last_update": "2024-05-20T10:00:00Z",
+            "files_last_update": null,
+            "created": "2024-05-20T10:00:00Z",
+            "packager_str": "Test Developer <developer@archlinux.org>",
+            "packager": null,
+            "signature_bytes": null,
+            "flag_date": null
+        }
+    },
+    {
+        "model": "main.package",
+        "pk": 7,
+        "fields": {
+            "repo": 16,
+            "arch": 3,
+            "pkgname": "systemd",
+            "pkgbase": "systemd",
+            "pkgver": "256.1",
+            "pkgrel": "1",
+            "epoch": 0,
+            "pkgdesc": "system and service manager",
+            "url": "https://www.github.com/systemd/systemd",
+            "filename": "systemd-256.1-1-x86_64.pkg.tar.zst",
+            "compressed_size": 4100000,
+            "installed_size": 19000000,
+            "build_date": "2024-05-22T08:00:00Z",
+            "last_update": "2024-05-22T08:00:00Z",
+            "files_last_update": null,
+            "created": "2024-05-22T08:00:00Z",
+            "packager_str": "Test Developer <developer@archlinux.org>",
+            "packager": null,
+            "signature_bytes": null,
+            "flag_date": null
+        }
+    },
+    {
+        "model": "todolists.todolist",
+        "pk": 1,
+        "fields": {
+            "slug": "glibc-2-40-rebuild",
+            "name": "glibc 2.40 rebuild",
+            "description": "Rebuild of packages affected by the glibc 2.40 soname bump.",
+            "creator": 1,
+            "created": "2024-05-20T09:00:00Z",
+            "kind": 0,
+            "last_modified": "2024-05-22T08:00:00Z",
+            "raw": "linux\ncoreutils\npacman\nsystemd"
+        }
+    },
+    {
+        "model": "todolists.todolistpackage",
+        "pk": 1,
+        "fields": {
+            "todolist": 1,
+            "pkg": 1,
+            "pkgname": "linux",
+            "pkgbase": "linux",
+            "arch": 3,
+            "repo": 1,
+            "created": "2024-05-20T09:00:00Z",
+            "last_modified": "2024-05-20T09:00:00Z",
+            "removed": null,
+            "status": 0,
+            "user": null,
+            "comments": null
+        }
+    },
+    {
+        "model": "todolists.todolistpackage",
+        "pk": 2,
+        "fields": {
+            "todolist": 1,
+            "pkg": 2,
+            "pkgname": "coreutils",
+            "pkgbase": "coreutils",
+            "arch": 3,
+            "repo": 1,
+            "created": "2024-05-20T09:00:00Z",
+            "last_modified": "2024-05-21T14:30:00Z",
+            "removed": null,
+            "status": 1,
+            "user": 1,
+            "comments": null
+        }
+    },
+    {
+        "model": "todolists.todolistpackage",
+        "pk": 3,
+        "fields": {
+            "todolist": 1,
+            "pkg": 4,
+            "pkgname": "pacman",
+            "pkgbase": "pacman",
+            "arch": 3,
+            "repo": 1,
+            "created": "2024-05-20T09:00:00Z",
+            "last_modified": "2024-05-22T10:00:00Z",
+            "removed": null,
+            "status": 2,
+            "user": 1,
+            "comments": null
+        }
+    },
+    {
+        "model": "todolists.todolistpackage",
+        "pk": 4,
+        "fields": {
+            "todolist": 1,
+            "pkg": 5,
+            "pkgname": "systemd",
+            "pkgbase": "systemd",
+            "arch": 3,
+            "repo": 1,
+            "created": "2024-05-20T09:00:00Z",
+            "last_modified": "2024-05-20T09:00:00Z",
+            "removed": null,
+            "status": 0,
+            "user": null,
+            "comments": null
+        }
+    }
+]
