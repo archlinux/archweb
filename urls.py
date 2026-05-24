@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps import views as sitemap_views
-from django.urls import include, path, re_path
+from django.urls import URLPattern, URLResolver, include, path, re_path
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 
@@ -34,7 +34,7 @@ our_sitemaps = {
 
 news_sitemaps = {'news': sitemaps.RecentNewsSitemap}
 
-urlpatterns = []
+urlpatterns: list[URLPattern | URLResolver] = []
 
 # Public pages
 urlpatterns.extend([
