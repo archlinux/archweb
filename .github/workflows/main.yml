@@ -30,6 +30,9 @@ jobs:
     - name: Lint with flake8
       run: |
         make lint
+    - name: Run mypy
+      run: |
+        uv run mypy . 
     - name: Run collectstatic
       run: |
         make collectstatic
