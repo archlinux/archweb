@@ -36,7 +36,7 @@ def mock_parse(monkeypatch):
 
 class Result(dict):
     status = 200
-    entries = []
+    entries: list[FeedItem] = []
 
     def get(self, value):
         return getattr(self, value)
