@@ -24,12 +24,17 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "django-debug-toolbar==6.3.0",
+    "django-stubs[compatible-mypy]>=5.2.0",
     "flake8>=7.3.0",
+    "mypy>=1.15.0",
     "pytest>=9.0.3",
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
     "ruff>=0.15.17",
-    "django-debug-toolbar==6.3.0",
+    "types-bleach>=6.0.0",
+    "types-Markdown>=3.6.0",
+    "types-requests>=2.32.0",
 ]
 prod = [
     "pyasyncore==1.0.5",
@@ -84,6 +89,18 @@ ignore = [
     "DJ012", # Order of model's inner classes, methods, and fields does not follow the Django Style Guide: `Meta` class should come before `get_absolute_url`
     "FBT002", # default-value-positional-argument
 ]
+
+[tool.mypy]
+python_version = "3.14"
+plugins = ["mypy_django_plugin.main"]
+exclude = [
+    "migrations/",
+    "archlinux_common_style/",
+]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "settings"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "settings"
