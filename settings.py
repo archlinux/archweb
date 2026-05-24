@@ -47,7 +47,7 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,7 +57,7 @@ MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'csp.middleware.CSPMiddleware',
-)
+]
 
 # Base of the URL hierarchy
 ROOT_URLCONF = 'urls'
@@ -111,7 +111,7 @@ CONTENT_SECURITY_POLICY = {
 # Use new test runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'django.contrib.humanize',
@@ -136,7 +136,7 @@ INSTALLED_APPS = (
     'releng',
     'visualize',
     'api',
-)
+]
 
 # Logging configuration for not getting overspammed
 LOGGING = {
@@ -270,16 +270,16 @@ TEMPLATES = [
 
 # Enable the debug toolbar if requested
 if DEBUG_TOOLBAR:
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', *list(MIDDLEWARE)]
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware', *MIDDLEWARE]
 
-    INSTALLED_APPS = [*list(INSTALLED_APPS), 'debug_toolbar']
+    INSTALLED_APPS = [*INSTALLED_APPS, 'debug_toolbar']
 
 if PROMETHEUS_METRICS:
     MIDDLEWARE = ['django_prometheus.middleware.PrometheusBeforeMiddleware',
-                  *list(MIDDLEWARE),
+                  *MIDDLEWARE,
                   'django_prometheus.middleware.PrometheusAfterMiddleware']
 
-    INSTALLED_APPS = [*list(INSTALLED_APPS), 'django_prometheus']
+    INSTALLED_APPS = [*INSTALLED_APPS, 'django_prometheus']
 
 # Assume all URLField will be HTTPS if not specified.
 # NOTE: this can be removed once we bump Django to 6.x
