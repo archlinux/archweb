@@ -55,6 +55,14 @@ def index(request):
     same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
     flagged = groupby_preserve_order(flagged_all, same_pkgbase_key)
 
+    # try to find the best representative package for a group of split packages
+    # (the template shows the first package in group, which should be the
+    # package with pkgname == pkgbase)
+    for group in flagged:
+        if len(group) > 1:
+            # key[0] is False when pkgname == pkgbase, so it is sorted first
+            group.sort(key=lambda p: (p.pkgname != p.pkgbase, p.pkgname))
+
     todopkgs = TodolistPackage.objects.select_related(
         'todolist', 'pkg', 'arch', 'repo').exclude(
             status=TodolistPackage.COMPLETE).filter(removed__isnull=True)
