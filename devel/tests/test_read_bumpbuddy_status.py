@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 
 import pytest
 from django.utils.timezone import now
@@ -6,9 +5,6 @@ from django.utils.timezone import now
 from devel.management.commands.read_bumpbuddy_status import Command as BumpBuddyCommand
 from main.models import Arch, Package, Repo
 from packages.alpm import AlpmAPI
-
-if TYPE_CHECKING:
-    from packages.models import FlagRequest
 
 alpm = AlpmAPI()
 
@@ -62,7 +58,7 @@ def test_outofdate(command, package):
 
 @pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
 def test_already_flagged(command, package):
-    request: FlagRequest = command.process_package({
+    request = command.process_package({
         'pkgbase': 'systemd',
         'local_version': 100,
         'upstream_version': 101,
