@@ -10,7 +10,7 @@ dependencies = [
     "django==5.2.14",
     "django-countries==8.2.0",
     "django-csp==4.0",
-    "django-prometheus==2.4.1",
+    "django-prometheus==2.5.0",
     "feedparser==6.0.12",
     "ipy==1.1",
     "jsmin==3.0.1",
