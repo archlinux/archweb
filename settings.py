@@ -2,6 +2,8 @@
 import sys
 from os import path
 
+from csp.constants import NONCE, SELF
+
 # Set the debug values
 DEBUG = False
 DEBUG_TOOLBAR = False
@@ -95,13 +97,16 @@ SECURE_REFERRER_POLICY = 'strict-origin'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CSP Settings
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_INCLUDE_NONCE_IN = ['script-src']
-CSP_IMG_SRC = ("'self'", 'data:',)
-CSP_BASE_URI = ("'none'",)
-CSP_FORM_ACTION = ("'self'",)
-CSP_FRAME_ANCESTORS = ("'none'",)
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "script-src": [SELF, NONCE],
+        "img-src": [SELF, "data:"],
+        "base-uri": ["'none'"],
+        "form-action": [SELF],
+        "frame-ancestors": ["'none'"],
+    }
+}
 
 # Use new test runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
