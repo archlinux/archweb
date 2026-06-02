@@ -44,7 +44,6 @@ class PkgData(TypedDict):
 class Command(BaseCommand):
     def process_package(self, pkgdata: PkgData) -> FlagRequest | None:
         pkgbase = pkgdata['pkgbase']
-        version = pkgdata['local_version']
         upstream_version = pkgdata['upstream_version']
         logger.debug("Import new out of date package '%s'", pkgbase)
 
@@ -53,26 +52,26 @@ class Command(BaseCommand):
 
         if len(found_packages) == 0:
             logger.error("no matching packages found for pkgbase='%s'", pkgbase)
-            return
+            return None
 
         # already flagged
         not_flagged_packages = [pkg for pkg in found_packages if pkg.flag_date is None]
         if len(not_flagged_packages) == 0:
-            return
+            return None
 
         ood_packages = [pkg for pkg in not_flagged_packages if alpm.vercmp(upstream_version, pkg.pkgver) > 0]
         if len(ood_packages) == 0:
             logger.debug("package is not out of date for pkgbase='%s'", pkgbase)
-            return
+            return None
 
         pkg = ood_packages[0]
 
         # find a common version if there is one available to store
         versions = {(pkg.pkgver, pkg.pkgrel, pkg.epoch) for pkg in ood_packages}
         if len(versions) == 1:
-            version = versions.pop()
+            pkg_version = versions.pop()
         else:
-            version = ('', '', 0)
+            pkg_version = ('', '', 0)
 
         current_time = now()
         # Compatibility for old json output without issue
@@ -93,9 +92,9 @@ class Command(BaseCommand):
                                    ip_address="0.0.0.0",
                                    pkgbase=pkg.pkgbase,
                                    repo=pkg.repo,
-                                   pkgver=version[0],
-                                   pkgrel=version[1],
-                                   epoch=version[2],
+                                   pkgver=pkg_version[0],
+                                   pkgrel=pkg_version[1],
+                                   epoch=pkg_version[2],
                                    num_packages=len(ood_packages))
 
         return flag_request
