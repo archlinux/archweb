@@ -52,6 +52,7 @@ probably want the following:
         uv run ./manage.py loaddata devel/fixtures/*.json
         uv run ./manage.py loaddata mirrors/fixtures/*.json
         uv run ./manage.py loaddata releng/fixtures/*.json
+        uv run ./manage.py loaddata news/fixtures/*.json
 7. Use the following commands to start a service instance
 
         uv run ./manage.py runserver

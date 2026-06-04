@@ -253,6 +253,7 @@ TEMPLATES = [
                 'csp.context_processors.nonce',
                 'main.context_processors.mastodon_link',
             ],
+            'builtins': ['main.templatetags.htmltruncate'],
             "loaders": [
                 (
                     "django.template.loaders.cached.Loader",
