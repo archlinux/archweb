@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
+from api.deprecation import deprecated_json_endpoint
 from main.models import Package
 from mirrors.models import MirrorUrl
 
@@ -59,6 +60,7 @@ class ReleaseJSONEncoder(DjangoJSONEncoder):
         return super().default(obj)
 
 
+@deprecated_json_endpoint('/api/v1/releng/releases/')
 def releases_json(request):
     releases = Release.objects.all()
     try:
