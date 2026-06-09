@@ -31,6 +31,7 @@
             {% if user.is_authenticated %}
                 <ul>
                     <li><a href="{% url 'devel-index' %}" title="Developer Dashboard">Dashboard</a></li>
+                    <li><a href="https://manual.archlinux.page/">Developer Manual</a></li>
                     <li><a href="https://wiki.archlinux.org/title/DeveloperWiki"
                         title="Developer Wiki">DevWiki</a></li>
                     <li><a href="{% url 'news-list' as newsl %}{{ newsl }}" title="Manage news articles">News</a></li>

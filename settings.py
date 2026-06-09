@@ -2,6 +2,8 @@
 import sys
 from os import path
 
+from csp.constants import NONCE, SELF
+
 # Set the debug values
 DEBUG = False
 DEBUG_TOOLBAR = False
@@ -44,9 +46,6 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 # Login URL configuration
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-
-# Set django's User stuff to use our profile model
-AUTH_PROFILE_MODULE = 'devel.UserProfile'
 
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
@@ -97,17 +96,17 @@ SECURE_REFERRER_POLICY = 'strict-origin'
 # X-Content-Type-Options, stops browsers from trying to MIME-sniff the content type
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# X-XSS-Protection, enables cross-site scripting filter in most browsers
-SECURE_BROWSER_XSS_FILTER = True
-
 # CSP Settings
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'",)
-CSP_INCLUDE_NONCE_IN = ['script-src']
-CSP_IMG_SRC = ("'self'", 'data:',)
-CSP_BASE_URI = ("'none'",)
-CSP_FORM_ACTION = ("'self'",)
-CSP_FRAME_ANCESTORS = ("'none'",)
+CONTENT_SECURITY_POLICY = {
+    "DIRECTIVES": {
+        "default-src": [SELF],
+        "script-src": [SELF, NONCE],
+        "img-src": [SELF, "data:"],
+        "base-uri": ["'none'"],
+        "form-action": [SELF],
+        "frame-ancestors": ["'none'"],
+    }
+}
 
 # Use new test runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'

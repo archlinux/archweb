@@ -227,8 +227,8 @@ class FlagRequest(models.Model):
 class FlagDenylist(models.Model):
     keyword = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"{self.keyword}"
+    def __str__(self) -> str:
+        return str(self.keyword)
 
 
 class UpdateManager(models.Manager):
@@ -477,7 +477,7 @@ class Depend(RelatedToBase):
 
     def __str__(self):
         '''For depends, we may also have a description and a modifier.'''
-        to_str = super(Depend, self).__str__()
+        to_str = super().__str__()
         if self.description:
             return f'{to_str}: {self.description}'
         return to_str

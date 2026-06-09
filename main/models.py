@@ -74,8 +74,6 @@ class Repo(models.Model):
         default=1, help_text="Flyspray project ID for this repository.")
     bugs_category = models.SmallIntegerField(
         default=2, help_text="Flyspray category ID for this repository.")
-    svn_root = models.CharField(
-        max_length=64, help_text="SVN root (e.g. path) for this repository.")
 
     def __str__(self):
         return self.name
@@ -124,7 +122,7 @@ class Package(models.Model):
     @property
     def full_version(self):
         if self.epoch > 0:
-            return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
+            return f'{self.epoch}:{self.pkgver}-{self.pkgrel}'
         return f'{self.pkgver}-{self.pkgrel}'
 
     def get_absolute_url(self):

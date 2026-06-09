@@ -43,7 +43,7 @@ class FasterRssFeed(Rss201rev2Feed):
         '>' closing tags and over 1600 write calls in our package feed.
         '''
         wrapper = BatchWritesWrapper(outfile)
-        super(FasterRssFeed, self).write(wrapper, encoding)
+        super().write(wrapper, encoding)
         wrapper.flush()
 
 
@@ -61,7 +61,7 @@ class PackageFeed(Feed):
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(last_modified_func=package_last_modified)
-        return wrapper(super(PackageFeed, self).__call__)(request, *args, **kwargs)
+        return wrapper(super().__call__)(request, *args, **kwargs)
 
     __name__ = 'package_feed'
 
@@ -183,7 +183,7 @@ class PackageUpdatesFeed(Feed):
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(last_modified_func=removal_last_modified)
-        return wrapper(super(PackageUpdatesFeed, self).__call__)(request, *args, **kwargs)
+        return wrapper(super().__call__)(request, *args, **kwargs)
 
     __name__ = 'packages_updates_feed'
 
@@ -318,7 +318,7 @@ class NewsFeed(Feed):
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(last_modified_func=news_last_modified)
-        return wrapper(super(NewsFeed, self).__call__)(request, *args, **kwargs)
+        return wrapper(super().__call__)(request, *args, **kwargs)
 
     __name__ = 'news_feed'
 
@@ -405,7 +405,7 @@ class PlanetFeed(Feed):
 
     def __call__(self, request, *args, **kwargs):
         wrapper = condition(last_modified_func=planet_last_modified)
-        return wrapper(super(PlanetFeed, self).__call__)(request, *args, **kwargs)
+        return wrapper(super().__call__)(request, *args, **kwargs)
 
     __name__ = 'planet_feed'
 

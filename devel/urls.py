@@ -12,6 +12,9 @@ urlpatterns = [
     path('stats/', views.stats, name='devel-stats'),
     path('newuser/', views.new_user_form),
     path('profile/', views.change_profile),
+    re_path(r'^reports/(?P<report_name>.*)/(?P<username>.*)/pkgbases/$',
+            views.report_pkgbases),
+    re_path(r'^reports/(?P<report_name>.*)/pkgbases/$', views.report_pkgbases),
     re_path(r'^reports/(?P<report_name>.*)/(?P<username>.*)/$', views.report),
     re_path(r'^reports/(?P<report_name>.*)/$', views.report),
 ]

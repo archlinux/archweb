@@ -81,7 +81,7 @@ class SplitPackagesSitemap(Sitemap):
         return None
 
     def location(self, obj):
-        return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/obj['pkgbase']/"
+        return f"/packages/{obj['repo'].name.lower()}/{obj['arch']}/{obj['pkgbase']}/"
 
 
 class NewsSitemap(Sitemap):
@@ -116,7 +116,7 @@ class RecentNewsSitemap(NewsSitemap):
     def items(self):
         now = datetime.now(timezone.utc)
         cutoff = now - timedelta(days=30)
-        return super(RecentNewsSitemap, self).items().filter(postdate__gte=cutoff)
+        return super().items().filter(postdate__gte=cutoff)
 
 
 class ReleasesSitemap(Sitemap):

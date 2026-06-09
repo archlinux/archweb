@@ -12,14 +12,14 @@ class LimitedSizeDict(OrderedDict):
             self.size_limit = None
         if self.size_limit and self.size_limit < 0:
             raise Exception('Invalid size specified')
-        super(LimitedSizeDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.check_item_limits()
 
     def __setitem__(self, key, value):
         # delete and add to ensure it ends up at the end of the linked list
         if key in self:
-            super(LimitedSizeDict, self).__delitem__(key)
-        super(LimitedSizeDict, self).__setitem__(key, value)
+            super().__delitem__(key)
+        super().__setitem__(key, value)
         self.check_item_limits()
 
     def check_item_limits(self):

@@ -58,3 +58,18 @@ class DeveloperReport(TransactionTestCase):
     def test_reports_signature_time(self):
         response = self.client.get('/devel/reports/signature-time', follow=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_reports_pkgbases(self):
+        response = self.client.get('/devel/reports/old/pkgbases/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'text/plain')
+
+    def test_reports_pkgbases_with_username(self):
+        response = self.client.get(
+            f'/devel/reports/uncompressed-man/{self.user.username}/pkgbases/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'text/plain')
+
+    def test_reports_pkgbases_invalid_report(self):
+        response = self.client.get('/devel/reports/nonexistent/pkgbases/')
+        self.assertEqual(response.status_code, 404)

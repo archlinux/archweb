@@ -40,8 +40,11 @@ probably want the following:
 
 3. Activate the virtualenv.
 4. Copy `local_settings.py.example` to `local_settings.py` and modify.
-   Make sure to uncomment the appropriate database section (either sqlite or
+   - Make sure to uncomment the appropriate database section (either sqlite or
    PostgreSQL).
+   - set `DEBUG = True` or keep it set to `False` and set `ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']`
+   - if you keep `DEBUG = False`, make static assets available with `uv run ./manage.py collectstatic --noinput`
+
 5. Migrate changes.
 
         uv run ./manage.py migrate

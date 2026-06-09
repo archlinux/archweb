@@ -25,6 +25,7 @@ from django.utils.timezone import now
 from django.views.decorators.cache import cache_control, never_cache
 
 from main.models import Arch, Package, Repo
+from main.utils import groupby_preserve_order
 from news.models import News
 from packages.models import FlagRequest, PackageRelation, Signoff
 from packages.utils import get_signoff_groups
@@ -46,8 +47,21 @@ def index(request):
         inner_q = PackageRelation.objects.none()
     inner_q = inner_q.values('pkgbase')
 
-    flagged = Package.objects.normal().filter(
+    # select all flagged packages by pkgname
+    flagged_all = Package.objects.normal().filter(
         flag_date__isnull=False, pkgbase__in=inner_q).order_by('pkgname')
+
+    # group flagged packages by pkgbase
+    same_pkgbase_key = lambda x: (x.repo.name, x.arch.name, x.pkgbase)
+    flagged = groupby_preserve_order(flagged_all, same_pkgbase_key)
+
+    # try to find the best representative package for a group of split packages
+    # (the template shows the first package in group, which should be the
+    # package with pkgname == pkgbase)
+    for group in flagged:
+        if len(group) > 1:
+            # key[0] is False when pkgname == pkgbase, so it is sorted first
+            group.sort(key=lambda p: (p.pkgname != p.pkgbase, p.pkgname))
 
     todopkgs = TodolistPackage.objects.select_related(
         'todolist', 'pkg', 'arch', 'repo').exclude(
@@ -265,6 +279,27 @@ def change_profile(request):
                    'profile_form': profile_form})
 
 
+def get_report_packages(report, username):
+    packages = Package.objects.normal()
+    if report.slug in ('uncompressed-man', 'uncompressed-info'):
+        packages = report.packages(packages, username)
+    else:
+        packages = report.packages(packages)
+
+    return packages
+
+
+@login_required
+def report_pkgbases(request, report_name: str, username: str | None = None) -> HttpResponse:
+    report = {report.slug: report for report in available_reports()}.get(report_name, None)
+    if report is None:
+        raise Http404
+
+    packages = get_report_packages(report, username)
+    pkgbases = sorted({pkg.pkgbase for pkg in packages})
+    return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
+
+
 @login_required
 def report(request, report_name, username=None):
     available = {report.slug: report for report in available_reports()}
@@ -283,11 +318,7 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    if report.slug == 'uncompressed-man' or report.slug == 'uncompressed-info':
-        packages = report.packages(packages, username)
-    else:
-        packages = report.packages(packages)
-
+    packages = get_report_packages(report, username)
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {

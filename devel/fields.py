@@ -4,14 +4,14 @@ from django.db import models
 
 class PGPKeyField(models.CharField):
     def __init__(self, *args, **kwargs):
-        super(PGPKeyField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.validators.append(
             RegexValidator(r'^[0-9A-F]{40}$', "Ensure this value consists of 40 hex characters.", 'hex_char'))
 
     def to_python(self, value):
         if value == '' or value is None:
             return None
-        value = super(PGPKeyField, self).to_python(value)
+        value = super().to_python(value)
         # remove all spaces
         value = value.replace(' ', '')
         # prune prefixes, either 0x or 2048R/ type
