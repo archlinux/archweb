@@ -39,21 +39,34 @@ def get_annotated_todolists(incomplete_only=False):
     return lists
 
 
+def _attach_repo_version(packages, list_id, kind):
+    '''Look for related packages in repos flagged by kind and attach them.
+
+    kind is a Repo boolean field name used as repo__{kind}=True. Only
+    'staging' and 'testing' are used; they set package.staging or
+    package.testing for the todolist templates.
+    '''
+    pkgnames = TodolistPackage.objects.filter(
+        todolist_id=list_id).values('pkgname')
+    related_pkgs = Package.objects.normal().filter(
+        **{f'repo__{kind}': True},
+        pkgname__in=pkgnames,
+    )
+    lookup = {(p.pkgname, p.arch): p for p in related_pkgs}
+
+    for package in packages:
+        setattr(package, kind, lookup.get((package.pkgname, package.arch)))
+
+
 def attach_staging(packages, list_id):
     '''Look for any staging version of the packages provided and attach them
     to the 'staging' attribute on each package if found.'''
-    pkgnames = TodolistPackage.objects.filter(
-        todolist_id=list_id).values('pkgname')
-    staging_pkgs = Package.objects.normal().filter(repo__staging=True,
-                                                   pkgname__in=pkgnames)
-    # now build a lookup dict to attach to the correct package
-    lookup = {(p.pkgname, p.arch): p for p in staging_pkgs}
+    _attach_repo_version(packages, list_id, 'staging')
 
-    annotated = []
-    for package in packages:
-        in_staging = lookup.get((package.pkgname, package.arch), None)
-        package.staging = in_staging
 
-    return annotated
+def attach_testing(packages, list_id):
+    '''Look for any testing version of the packages provided and attach them
+    to the 'testing' attribute on each package if found.'''
+    _attach_repo_version(packages, list_id, 'testing')
 
 # vim: set ts=4 sw=4 et:
