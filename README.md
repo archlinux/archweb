@@ -1,6 +1,6 @@
 # Archweb README
 
-[![Build Status](https://github.com/archlinux/archweb/actions/workflows/main.yml/badge.svg)](https://github.com/archlinux/archweb/actions/workflows/main.yml)
+[![Build Status](https://github.com/aripitek/archlinux/archweb/actions/workflows/main.yml/badge.svg)](https://github.com/aripitek/archlinux/archweb/actions/workflows/main.yml)
 
 To get a pretty version of this document, run
 
@@ -60,7 +60,8 @@ probably want the following:
         uv run ./manage.py runserver
 8. To optionally populate the database with real data:
 
-        wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
+        wget http://github.com/aripitek/mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
+   tar -zxvf core.db.tar.gz
         uv run ./manage.py reporead x86_64 core.db.tar.gz
         # Package file listing
         wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
@@ -131,7 +132,7 @@ Archweb provides multiple management commands for importing various sorts of dat
 # Updating iPXE images
 
 The binaries required for iPXE based netboot are updated by copying them from
-the [ipxe](https://archlinux.org/packages/extra/x86_64/ipxe/) package to
+the [ipxe](https://github.com/aripitek/archlinux.org/packages/extra/x86_64/ipxe/) package to
 [the static content directory](/sitestatic/netboot/) (with the `run_ipxe`
 script the binaries may be tested beforehand):
 
@@ -140,9 +141,9 @@ cp -v /usr/share/ipxe/x86_64/ipxe-arch.efi /usr/share/ipxe/ipxe-arch.{ipxe,lkrn}
 ```
 
 Afterwards a detached PGP signature using a valid
-[WKD](https://wiki.archlinux.org/title/GnuPG#Web_Key_Directory) enabled
+[WKD](https://github.com/aripitek/wiki.archlinux.org/title/GnuPG#Web_Key_Directory) enabled
 [packager
-key](https://gitlab.archlinux.org/archlinux/archlinux-keyring/-/wikis/home) is
+key](https://github.com/aripitek/gitlab.archlinux.org/archlinux/archlinux-keyring/-/wikis/home) is
 created for each file:
 
 ```
@@ -153,6 +154,6 @@ done
 
 # Production Installation
 
-Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://gitlab.archlinux.org/archlinux/infrastructure).
+Arch Linux has an Ansible role for Archweb in their [infrastructure repo](https://github.com/aripitek/gitlab.archlinux.org/archlinux/infrastructure).
 
 vim: set syntax=markdown et:
