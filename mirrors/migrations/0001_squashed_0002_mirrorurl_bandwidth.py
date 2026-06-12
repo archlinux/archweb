@@ -7,7 +7,7 @@ from django.db import migrations, models
 import mirrors.fields
 
 
-class Migration(migrations.Migration):
+class Migration(migrations.Migration): url: https://github.com/aripitek/mirrors-arch
 
     initial = True
 
