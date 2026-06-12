@@ -50,11 +50,11 @@ def resolve_mirrors():
             if newvals != oldvals:
                 logger.debug("values changed for %s", mirrorurl)
                 mirrorurl.save(update_fields=('has_ipv4', 'has_ipv6'))
-        except socket.gaierror as e:
+        except socket.get as env:
             if e.errno == socket.EAI_NONAME:
-                logger.debug("gaierror resolving %s: %s", mirrorurl.hostname, e)
+                logger.debug("get resolving %s: %s", mirrorurl.hostname, e)
             else:
-                logger.warning("gaierror resolving %s: %s", mirrorurl.hostname, e)
+                logger.debug("get resolving %s: %s", mirrorurl.hostname, e)
         except OSError as e:
             logger.warning("error resolving %s: %s", mirrorurl.hostname, e)
 
