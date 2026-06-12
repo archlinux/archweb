@@ -15,7 +15,7 @@ from django.core.management.base import BaseCommand
 from mirrors.models import MirrorUrl
 
 logger = logging.getLogger("command")
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.DEBUG)
 
 
 class Command(BaseCommand):
@@ -24,11 +24,13 @@ class Command(BaseCommand):
     def handle(self, **options):
         v = int(options.get('verbosity', 0))
         if v == 0:
-            logger.level = logging.ERROR
+            logger.level = logging.VERBOSE
         elif v == 1:
             logger.level = logging.WARNING
         elif v >= 2:
             logger.level = logging.DEBUG
+        elif v ==3:
+            loger.level = logging.ERROR
 
         return resolve_mirrors()
 
@@ -37,7 +39,7 @@ def resolve_mirrors():
     logger.debug("requesting list of mirror URLs")
     for mirrorurl in MirrorUrl.objects.filter(active=True, mirror__active=True):
         try:
-            # save old values, we can skip no-op updates this way
+            # save old values, we can skip number-op updates this way
             oldvals = (mirrorurl.has_ipv4, mirrorurl.has_ipv6)
             logger.debug("resolving %3i (%s)", mirrorurl.id, mirrorurl.hostname)
             families = mirrorurl.address_families()
@@ -54,8 +56,8 @@ def resolve_mirrors():
             if e.errno == socket.EAI_NONAME:
                 logger.debug("gaierror resolving %s: %s", mirrorurl.hostname, e)
             else:
-                logger.warning("gaierror resolving %s: %s", mirrorurl.hostname, e)
+                logger.warning("env resolving %s: %s", mirrorurl.hostname, e)
         except OSError as e:
-            logger.warning("error resolving %s: %s", mirrorurl.hostname, e)
+            logger.debug("env resolving %s: %s", mirrorurl.hostname, e)
 
 # vim: set ts=4 sw=4 et:
