@@ -1,3 +1,89 @@
+from datetime import datetime, timezone
+
+import pytest
+
+from main.models import Arch, Package, Repo
+from packages.alpm import AlpmAPI
+
+alpm = AlpmAPI()
+
+
+@pytest.fixture
+def gnome_backgrounds_packages(db, arches, repos):
+    extra = Repo.objects.get(name__iexact='extra')
+    multilib = Repo.objects.get(name__iexact='multilib')
+    arch = Arch.objects.get(name='x86_64')
+    created = datetime.now(tz=timezone.utc)
+
+    def create(repo, pkgname, pkgver):
+        return Package.objects.create(
+            arch=arch,
+            repo=repo,
+            pkgname=pkgname,
+            pkgbase='gnome-backgrounds',
+            pkgver=pkgver,
+            pkgrel='1',
+            pkgdesc='test',
+            compressed_size=1,
+            installed_size=1,
+            last_update=created,
+            created=created,
+        )
+
+    return {
+        'older': create(extra, 'gnome-backgrounds', '48.2.1'),
+        'newer': create(multilib, 'gnome-backgrounds', '49.0'),
+        'split': create(extra, 'gnome-backgrounds-extra', '48.2.1'),
+    }
+
+
+def _flag_data():
+    return {
+        'website': '',
+        'email': 'nobody@archlinux.org',
+        'message': 'new upstream release',
+    }
+
+
+@pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
+def test_flag_older_does_not_flag_newer(client, gnome_backgrounds_packages, mailoutbox):
+    older = gnome_backgrounds_packages['older']
+    newer = gnome_backgrounds_packages['newer']
+    split = gnome_backgrounds_packages['split']
+
+    response = client.post(
+        f'/packages/{older.repo.name.lower()}/{older.arch.name}/{older.pkgname}/flag/',
+        _flag_data(),
+        follow=True,
+    )
+    assert response.status_code == 200
+
+    older.refresh_from_db()
+    newer.refresh_from_db()
+    split.refresh_from_db()
+    assert older.flag_date is not None
+    assert split.flag_date is not None
+    assert newer.flag_date is None
+
+
+@pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
+def test_flag_newer_flags_older(client, gnome_backgrounds_packages, mailoutbox):
+    older = gnome_backgrounds_packages['older']
+    newer = gnome_backgrounds_packages['newer']
+
+    response = client.post(
+        f'/packages/{newer.repo.name.lower()}/{newer.arch.name}/{newer.pkgname}/flag/',
+        _flag_data(),
+        follow=True,
+    )
+    assert response.status_code == 200
+
+    older.refresh_from_db()
+    newer.refresh_from_db()
+    assert older.flag_date is not None
+    assert newer.flag_date is not None
+
+
 def test_flag_package(client, package, mailoutbox):
     data = {
         'website': '',

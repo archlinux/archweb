@@ -214,11 +214,24 @@ class FlagRequest(models.Model):
         return f'{self.pkgver}-{self.pkgrel}'
 
     def get_associated_packages(self):
-        return Package.objects.normal().filter(
+        packages = Package.objects.normal().filter(
             pkgbase=self.pkgbase,
             repo__testing=self.repo.testing,
-            repo__staging=self.repo.staging).order_by(
-            'pkgname', 'repo__name', 'arch__name')
+            repo__staging=self.repo.staging,
+        ).order_by('pkgname', 'repo__name', 'arch__name')
+        if self.pkgver == '' and self.pkgrel == '':
+            return packages
+
+        alpm = AlpmAPI()
+        if alpm.available:
+            ref = self.full_version
+            peer_ids = [
+                pkg.id for pkg in packages
+                if alpm.vercmp(pkg.full_version, ref) <= 0
+            ]
+            return Package.objects.normal().filter(id__in=peer_ids).order_by(
+                'pkgname', 'repo__name', 'arch__name')
+        return packages.filter(pkgver=self.pkgver, epoch=self.epoch)
 
     def __str__(self):
         return f'{self.pkgbase} from {self.who()} on {self.created}'
