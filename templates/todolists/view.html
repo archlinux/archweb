@@ -72,6 +72,7 @@
                 <th>Name</th>
                 <th>Current Version</th>
                 <th>Staging Version</th>
+                <th>Testing Version</th>
                 <th>Maintainers</th>
                 <th>Status</th>
                 <th>Last Touched By</th>
@@ -92,6 +93,9 @@
                 {% endif %}
                 {% with staging=pkg.staging %}
                 <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
+                {% endwith %}
+                {% with testing=pkg.testing %}
+                <td>{% if testing %}{% pkg_details_link testing testing.full_version %}{% endif %}</td>
                 {% endwith %}
                 <td>{{ pkg.maintainers|join:', ' }}</td>
                 <td>
