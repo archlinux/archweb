@@ -57,11 +57,7 @@ def flag(request, name, repo, arch):
         # already flagged. do nothing.
         return render(request, 'packages/flagged.html', {'pkg': pkg})
     # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.normal().filter(
-        pkgbase=pkg.pkgbase, flag_date__isnull=True,
-        repo__testing=pkg.repo.testing,
-        repo__staging=pkg.repo.staging).order_by(
-        'pkgname', 'repo__name', 'arch__name')
+    pkgs = pkg.flag_peers(unflagged_only=True)
 
     authenticated = request.user.is_authenticated
 
@@ -142,11 +138,7 @@ def flag(request, name, repo, arch):
 def flag_confirmed(request, name, repo, arch):
     pkg = get_object_or_404(Package,
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    pkgs = Package.objects.normal().filter(
-        pkgbase=pkg.pkgbase, flag_date=pkg.flag_date,
-        repo__testing=pkg.repo.testing,
-        repo__staging=pkg.repo.staging).order_by(
-        'pkgname', 'repo__name', 'arch__name')
+    pkgs = pkg.flag_peers(flag_date=pkg.flag_date)
 
     context = {'package': pkg, 'packages': pkgs}
 
@@ -166,10 +158,7 @@ def unflag(request, name, repo, arch):
 def unflag_all(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    # find all packages from (hopefully) the same PKGBUILD
-    pkgs = Package.objects.filter(pkgbase=pkg.pkgbase,
-                                  repo__testing=pkg.repo.testing, repo__staging=pkg.repo.staging)
-    pkgs.update(flag_date=None)
+    pkg.flag_peers().update(flag_date=None)
     return redirect(pkg)
 
 # vim: set ts=4 sw=4 et:
