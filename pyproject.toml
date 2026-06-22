@@ -24,7 +24,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar==6.3.0",
+    "django-debug-toolbar==7.0.0",
     "django-stubs[compatible-mypy]>=5.2.0",
     "flake8>=7.3.0",
     "mypy>=1.15.0",
