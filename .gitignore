@@ -22,3 +22,5 @@ htmlcov
 
 # coverage
 .coverage
+
+.devcontainer
