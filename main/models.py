@@ -373,6 +373,35 @@ class Package(models.Model):
             repo__staging=self.repo.staging,
             pkgbase=self.pkgbase).exclude(id=self.id)
 
+    def flag_peers(self, *, unflagged_only=False, flag_date=None):
+        """
+        Return packages marked out-of-date together with this one.
+
+        Includes split packages (same pkgbase) in repositories with matching
+        testing/staging flags whose version is not newer than this package, as
+        well as older pkgbase versions in those repositories.
+        """
+        qs = Package.objects.normal().filter(
+            pkgbase=self.pkgbase,
+            repo__testing=self.repo.testing,
+            repo__staging=self.repo.staging,
+        )
+        if unflagged_only:
+            qs = qs.filter(flag_date__isnull=True)
+        elif flag_date is not None:
+            qs = qs.filter(flag_date=flag_date)
+        qs = qs.order_by('pkgname', 'repo__name', 'arch__name')
+
+        alpm = AlpmAPI()
+        if alpm.available:
+            peer_ids = [
+                peer.id for peer in qs
+                if alpm.vercmp(peer.full_version, self.full_version) <= 0
+            ]
+            return Package.objects.normal().filter(id__in=peer_ids).order_by(
+                'pkgname', 'repo__name', 'arch__name')
+        return qs.filter(pkgver=self.pkgver, epoch=self.epoch)
+
     def flag_request(self):
         if self.flag_date is None:
             return None
