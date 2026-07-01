@@ -279,14 +279,10 @@ def change_profile(request):
                    'profile_form': profile_form})
 
 
-def get_report_packages(report, username):
-    packages = Package.objects.normal()
+def get_report_packages(report, packages, username):
     if report.slug in ('uncompressed-man', 'uncompressed-info'):
-        packages = report.packages(packages, username)
-    else:
-        packages = report.packages(packages)
-
-    return packages
+        return report.packages(packages, username)
+    return report.packages(packages)
 
 
 @login_required
@@ -295,7 +291,14 @@ def report_pkgbases(request, report_name: str, username: str | None = None) -> H
     if report is None:
         raise Http404
 
-    packages = get_report_packages(report, username)
+    packages = Package.objects.normal()
+    if username:
+        user = get_object_or_404(User, username=username, is_active=True)
+        maintained = PackageRelation.objects.filter(
+            user=user, type=PackageRelation.MAINTAINER).values('pkgbase')
+        packages = packages.filter(pkgbase__in=maintained)
+
+    packages = get_report_packages(report, packages, username)
     pkgbases = sorted({pkg.pkgbase for pkg in packages})
     return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
@@ -318,7 +321,7 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    packages = get_report_packages(report, username)
+    packages = get_report_packages(report, packages, username)
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
