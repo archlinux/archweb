@@ -9,8 +9,6 @@ package_patterns = [
     path('json/', display.details_json),
     path('files/', display.files),
     path('files/json/', display.files_json),
-    path('flag/', flag.flag),
-    path('flag/done/', flag.flag_confirmed, name='package-flag-confirmed'),
     path('unflag/', flag.unflag),
     path('unflag/all/', flag.unflag_all),
     path('signoff/', signoff.signoff_package),
@@ -23,7 +21,6 @@ package_patterns = [
 ]
 
 urlpatterns = [
-    path('flaghelp/', flag.flaghelp),
     path('signoffs/', signoff.signoffs, name='package-signoffs'),
     path('signoffs/json/', signoff.signoffs_json, name='package-signoffs-json'),
     path('update/', views.update),
