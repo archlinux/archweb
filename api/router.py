@@ -1,6 +1,6 @@
 from ninja import NinjaAPI
 
-from api.routes import mirrors, releng
+from api.routes import mirrors, packages, public, releng, todolists
 
 api = NinjaAPI(
     version="1",
@@ -12,3 +12,6 @@ api = NinjaAPI(
 
 api.add_router("/v1/releng/", releng.router)
 api.add_router("/v1/mirrors/", mirrors.router)
+api.add_router("/v1/master-keys/", public.router)
+api.add_router("/v1/packages/", packages.router)
+api.add_router("/v1/todo/", todolists.router)
