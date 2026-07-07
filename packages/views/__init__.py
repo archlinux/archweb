@@ -1,10 +1,8 @@
 import hashlib
 import json
-from collections import defaultdict
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.db.models import Q
@@ -13,6 +11,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_POST, require_safe
 
+from api.deprecation import deprecated_json_endpoint
 from main.models import Package, Soname
 from packages.models import PackageRelation
 
@@ -160,33 +159,12 @@ def sonames(request):
 
 
 @cache_control(public=True, max_age=300)
+@deprecated_json_endpoint('/api/v1/packages/pkgbase-maintainer')
 def pkgbase_mapping(request):
-    if request.method == 'GET':
-        pkgbases = Package.objects.all().values('pkgbase')
-        rels = PackageRelation.objects.filter(type=PackageRelation.MAINTAINER,
-                                              pkgbase__in=pkgbases).values_list(
-                                                  'pkgbase', 'user_id').order_by().distinct()
-
-        # get all the user objects we will need
-        user_ids = {rel[1] for rel in rels}
-        users = User.objects.in_bulk(user_ids)
-
-        # now build a pkgbase -> [maintainers...] map
-        maintainers = defaultdict(list)
-        for rel in rels:
-            user = users[rel[1]]
-            maintainers[rel[0]].append(user.username)
-
-        pkgbase_maintainer_mapping = {}
-        for pkgbase in pkgbases:
-            pkgbase = pkgbase['pkgbase']
-            if pkgbase in pkgbase_maintainer_mapping:
-                continue
-            pkgbase_maintainer_mapping[pkgbase] = maintainers[pkgbase]
-
-        to_json = json.dumps(pkgbase_maintainer_mapping, ensure_ascii=False)
-        return HttpResponse(to_json, content_type='application/json')
-    else:
+    if request.method != 'GET':
         return HttpResponseBadRequest('only GET is allowed')
+    from api.routes.packages import pkgbase_maintainer
+    to_json = json.dumps(pkgbase_maintainer(request), ensure_ascii=False)
+    return HttpResponse(to_json, content_type='application/json')
 
 # vim: set ts=4 sw=4 et:
