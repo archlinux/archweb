@@ -34,7 +34,7 @@ dev = [
     "ruff>=0.15.20",
     "types-bleach>=6.0.0",
     "types-Markdown>=3.6.0",
-    "types-requests>=2.32.0",
+    "types-requests>=2.33.0.20260712",
 ]
 prod = [
     "pyasyncore==1.0.5",
