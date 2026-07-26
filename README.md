@@ -60,14 +60,19 @@ probably want the following:
         uv run ./manage.py runserver
 8. To optionally populate the database with real data:
 
-        wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.db.tar.gz
+8. Populate the database with real data (optional)
+   You can optionally populate your database with real package data from an Arch Linux mirror:
+
+        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.db.tar.gz &&
         uv run ./manage.py reporead x86_64 core.db.tar.gz
         # Package file listing
-        wget http://mirrors.kernel.org/archlinux/core/os/x86_64/core.files.tar.gz
+        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.files.tar.gz &&
         uv run ./manage.py reporead --filesonly x86_64 core.files.tar.gz
 
-Alter architecture and repo to get x86\_64 and packages from other repos if
-needed.
+    Customization notes: Modify the URL path and architecture argument (x86_64) if you need a different architecture or 
+    repository (e.g., extra). If the default mirror experiences downtime or slow speeds, you can swap the base URL
+    with another mirror. Find a complete, up-to-date list of active mirrors at the
+    [Arch Linux Mirror Status](https://archlinux.org/mirrors/status/) page.
 
 9. Database Updates for Added/Removed packages
 
