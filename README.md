@@ -48,25 +48,24 @@ probably want the following:
 5. Migrate changes.
 
         uv run ./manage.py migrate
-6. Load the fixtures to pre populate some data. If you don't want some of the
+6. Load the fixtures to pre-populate some data. If you don't want some of the
    provided data, adjust the file glob accordingly.
 
         uv run ./manage.py loaddata main/fixtures/*.json
         uv run ./manage.py loaddata devel/fixtures/*.json
         uv run ./manage.py loaddata mirrors/fixtures/*.json
         uv run ./manage.py loaddata releng/fixtures/*.json
-7. Use the following commands to start a service instance
+7. Use the following commands to start a service instance:
 
         uv run ./manage.py runserver
-8. To optionally populate the database with real data:
 
 8. Populate the database with real data (optional)
    You can optionally populate your database with real package data from an Arch Linux mirror:
 
-        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.db.tar.gz &&
+        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.db.tar.gz
         uv run ./manage.py reporead x86_64 core.db.tar.gz
         # Package file listing
-        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.files.tar.gz &&
+        wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.files.tar.gz
         uv run ./manage.py reporead --filesonly x86_64 core.files.tar.gz
 
     Customization notes: Modify the URL path and architecture argument (x86_64) if you need a different architecture or 
@@ -78,7 +77,7 @@ probably want the following:
 
         sqlite3 archweb.db < packages/sql/update.sqlite3.sql
 
-For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
+   For PostgreSQL use packages/sql/update.postgresql_psycopg2.sql
 
 
 # Testing SMTP server
