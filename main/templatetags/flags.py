@@ -1,11 +1,12 @@
 from django import template
 from django.utils.html import format_html
+from django_countries.fields import Country
 
 register = template.Library()
 
 
 @register.simple_tag
-def country_flag(country):
+def country_flag(country: Country) -> str:
     if not country:
         return ''
     return format_html(
