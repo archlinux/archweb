@@ -7,7 +7,7 @@ register = template.Library()
 
 
 @register.simple_tag
-def jquery():
+def jquery() -> str:
     version = '3.6.0'
     filename = f'jquery-{version}.min.js'
     link = staticfiles_storage.url(filename)
@@ -15,7 +15,7 @@ def jquery():
 
 
 @register.simple_tag
-def jquery_tablesorter():
+def jquery_tablesorter() -> str:
     version = '2.31.0'
     filename = f'jquery.tablesorter-{version}.min.js'
     link = staticfiles_storage.url(filename)
@@ -23,7 +23,7 @@ def jquery_tablesorter():
 
 
 @register.simple_tag
-def d3js():
+def d3js() -> str:
     version = '3.5.0'
     filename = f'd3-{version}.min.js'
     link = staticfiles_storage.url(filename)
