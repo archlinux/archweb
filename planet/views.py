@@ -1,3 +1,4 @@
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.cache import cache_control
 
@@ -5,7 +6,7 @@ from planet.models import Feed, FeedItem, Planet
 
 
 @cache_control(max_age=307)
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     context = {
         'official_feeds': Feed.objects.all(),
         'planets': Planet.objects.all(),
