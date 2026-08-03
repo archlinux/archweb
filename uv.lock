@@ -78,7 +78,7 @@ smtp = [
 
 [package.metadata]
 requires-dist = [
-    { name = "bencode-py", specifier = "==4.0.0" },
+    { name = "bencode-py", specifier = "==4.1.0" },
     { name = "bleach", specifier = "==6.4.0" },
     { name = "django", specifier = "==5.2.14" },
     { name = "django-countries", specifier = "==8.2.0" },
@@ -186,11 +186,11 @@ wheels = [
 
 [[package]]
 name = "bencode-py"
-version = "4.0.0"
+version = "4.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e8/6f/1fc1f714edc73a9a42af816da2bda82bbcadf1d7f6e6cae854e7087f579b/bencode.py-4.0.0.tar.gz", hash = "sha256:2a24ccda1725a51a650893d0b63260138359eaa299bb6e7a09961350a2a6e05c", size = 19842, upload-time = "2020-06-12T04:34:05.734Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/e9/97a84f30337c38f1572baa299eaeacc3ca090c6d383da9839edad166fef4/bencode_py-4.1.0.tar.gz", hash = "sha256:f93372b45dc370fe4024f9230128f1f9fbc0fe30c3d41f1c3a7d02fe6c899813", size = 14969, upload-time = "2026-07-07T10:06:18.564Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/9f/eabbc8c8a16db698d9c4bd24953763df2594b054237b89afe1ec56d3965e/bencode.py-4.0.0-py2.py3-none-any.whl", hash = "sha256:99c06a55764e85ffe81622fdf9ee78bd737bad3ea61d119784a54bb28860d962", size = 18975, upload-time = "2020-06-12T04:34:03.759Z" },
+    { url = "https://files.pythonhosted.org/packages/5e/fa/34e8fc47e05801820f3f2ef13c8c9b873e6268c9b69ca7f69335f3300ef6/bencode_py-4.1.0-py3-none-any.whl", hash = "sha256:eec5d11eda36f008351cafa5d8ee51e2e14c9f2aa34df8e31f40e73ae78235a4", size = 18724, upload-time = "2026-07-07T10:06:17.66Z" },
 ]
 
 [[package]]
