@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.views.decorators.cache import never_cache
 from django.views.generic import DeleteView, ListView
 
+from api.deprecation import deprecated_json_endpoint
 from main.models import Package
 from main.utils import find_unique_slug
 from packages.utils import PackageJSONEncoder, attach_maintainers
@@ -244,6 +245,7 @@ class TodoListJSONEncoder(PackageJSONEncoder):
         return super().default(obj)
 
 
+@deprecated_json_endpoint('/api/v1/todo/{slug}/')
 def view_json(request, slug):
     todolist = get_object_or_404(Todolist, slug=slug)
     to_json = json.dumps(todolist, ensure_ascii=False, cls=TodoListJSONEncoder)

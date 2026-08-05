@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.timezone import now
 
+from api.deprecation import deprecated_json_endpoint
 from main.models import Arch, Package, PackageFile, RebuilderdStatus, Repo, Soname
 from main.utils import empty_response
 from mirrors.utils import get_mirror_url_for_download
@@ -211,13 +212,15 @@ def sonames(request, name, repo, arch):
     return render(request, template, context)
 
 
+@deprecated_json_endpoint('/api/v1/packages/{repo}/{arch}/{name}/sonames/')
 def sonames_json(request, name, repo, arch):
-    pkg = get_object_or_404(Package.objects.normal(), pkgname=name, repo__name__iexact=repo, arch__name=arch)
-    sonames = list(Soname.objects.filter(pkg=pkg).values_list('name', flat=True))
-    to_json = json.dumps(sonames, ensure_ascii=False)
+    from api.routes.packages import sonames as sonames_api
+    data = sonames_api(request, repo=repo, arch=arch, name=name)
+    to_json = json.dumps(data, ensure_ascii=False)
     return HttpResponse(to_json, content_type='application/json')
 
 
+@deprecated_json_endpoint('/api/v1/packages/{repo}/{arch}/{name}/')
 def details_json(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
@@ -225,6 +228,7 @@ def details_json(request, name, repo, arch):
     return HttpResponse(to_json, content_type='application/json')
 
 
+@deprecated_json_endpoint('/api/v1/packages/{repo}/{arch}/{name}/files/')
 def files_json(request, name, repo, arch):
     pkg = get_object_or_404(Package.objects.normal(),
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
