@@ -136,7 +136,7 @@ the [ipxe](https://archlinux.org/packages/extra/x86_64/ipxe/) package to
 script the binaries may be tested beforehand):
 
 ```
-cp -v /usr/share/ipxe/x86_64/ipxe-arch.efi /usr/share/ipxe/ipxe-arch.{ipxe,lkrn} sitestatic/releng
+cp -v /usr/share/ipxe/x86_64/ipxe-arch.efi /usr/share/ipxe/ipxe-arch.{pxe,lkrn} sitestatic/netboot
 ```
 
 Afterwards a detached PGP signature using a valid
