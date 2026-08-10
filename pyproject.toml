@@ -14,7 +14,7 @@ dependencies = [
     "feedparser==6.0.14",
     "ipy==1.1",
     "jsmin==3.0.1",
-    "markdown==3.10.2",
+    "markdown==3.10.3",
     "parse==1.22.1",
     "pgpdump==1.5",
     "requests==2.34.2",
