@@ -53,8 +53,21 @@
 
     for (let i = 0; i < pkgs.length; i++) {
       const item = document.createElement("li");
-      const text = pkgs[i].replace(letter, `<b>${letter}</b>`);
-      item.innerHTML = `<a href="#">${text}</a>`;
+      const anchor = document.createElement("a");
+      anchor.href = "#";
+
+      const matchIndex = pkgs[i].indexOf(letter);
+      if (matchIndex !== -1) {
+        anchor.appendChild(document.createTextNode(pkgs[i].slice(0, matchIndex)));
+        const bold = document.createElement("b");
+        bold.textContent = pkgs[i].slice(matchIndex, matchIndex + letter.length);
+        anchor.appendChild(bold);
+        anchor.appendChild(document.createTextNode(pkgs[i].slice(matchIndex + letter.length)));
+      } else {
+        anchor.textContent = pkgs[i];
+      }
+
+      item.appendChild(anchor);
       item.setAttribute('data-value', pkgs[i]);
       fragment.appendChild(item);
     }
