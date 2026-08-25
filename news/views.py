@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -82,6 +83,7 @@ def view_redirect(request, object_id):
     return redirect(newsitem, permanent=True)
 
 
+@login_required
 @require_POST
 def preview(request):
     data = request.POST.get('data', '')
