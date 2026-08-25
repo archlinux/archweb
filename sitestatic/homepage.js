@@ -51,24 +51,24 @@
     ul.style.display = "block";
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < pkgs.length; i++) {
+    for (const pkgname of pkgs) {
       const item = document.createElement("li");
       const anchor = document.createElement("a");
       anchor.href = "#";
 
-      const matchIndex = pkgs[i].indexOf(letter);
+      const matchIndex = pkgname.indexOf(letter);
       if (matchIndex !== -1) {
-        anchor.appendChild(document.createTextNode(pkgs[i].slice(0, matchIndex)));
+        anchor.appendChild(document.createTextNode(pkgname.slice(0, matchIndex)));
         const bold = document.createElement("b");
-        bold.textContent = pkgs[i].slice(matchIndex, matchIndex + letter.length);
+        bold.textContent = pkgname.slice(matchIndex, matchIndex + letter.length);
         anchor.appendChild(bold);
-        anchor.appendChild(document.createTextNode(pkgs[i].slice(matchIndex + letter.length)));
+        anchor.appendChild(document.createTextNode(pkgname.slice(matchIndex + letter.length)));
       } else {
-        anchor.textContent = pkgs[i];
+        anchor.textContent = pkgname;
       }
 
       item.appendChild(anchor);
-      item.setAttribute('data-value', pkgs[i]);
+      item.setAttribute('data-value', pkgname);
       fragment.appendChild(item);
     }
 
