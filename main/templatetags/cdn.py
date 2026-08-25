@@ -1,7 +1,6 @@
 from django import template
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -11,7 +10,7 @@ def jquery() -> str:
     version = '3.6.0'
     filename = f'jquery-{version}.min.js'
     link = staticfiles_storage.url(filename)
-    return mark_safe(f'<script type="text/javascript" src="{link}"></script>')
+    return format_html('<script type="text/javascript" src="{link}"></script>', link=link)
 
 
 @register.simple_tag
