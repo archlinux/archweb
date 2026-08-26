@@ -1,4 +1,5 @@
 import base64
+import hmac
 import operator
 import time
 from datetime import timedelta
@@ -235,7 +236,7 @@ def tier0_mirror_auth(request):
     if not user:
         return unauthorized
 
-    if user and token == user.userprofile.repos_auth_token:
+    if user and hmac.compare_digest(token, user.userprofile.repos_auth_token):
         return HttpResponse('Authorized')
     else:
         return unauthorized
