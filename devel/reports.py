@@ -21,7 +21,8 @@ class Linkify:
         self.desc = desc
 
     def __str__(self):
-        return format_html('<a href="{}" title="{}">{}</a>', self.href, self.title, self.desc)
+        return format_html('<a href="{href}" title="{title}">{desc}</a>',
+                           href=self.href, title=self.title, desc=self.desc)
 
 
 def linkify_non_reproducible_packages(statuses):
