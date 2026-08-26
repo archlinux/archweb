@@ -143,9 +143,8 @@ def clock(request):
     latest_signoff = dict(Signoff.objects.filter(
         user__is_active=True).values_list('user').order_by().annotate(
             last_signoff=Max('created')))
-    # The extra() bit ensures we can use our 'user_id IS NOT NULL' index
     latest_flagreq = dict(FlagRequest.objects.filter(
-        user__is_active=True).extra(where=['user_id IS NOT NULL']).values_list(
+        user__is_active=True, user_id__isnull=False).values_list(
             'user_id').order_by().annotate(last_flagrequest=Max('created')))
     latest_log = dict(LogEntry.objects.filter(
         user__is_active=True).values_list('user').order_by().annotate(
