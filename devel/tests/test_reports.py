@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TransactionTestCase
 
+from devel.reports import Linkify
 from packages.models import PackageRelation
 
 
@@ -98,3 +99,12 @@ class DeveloperReport(TransactionTestCase):
             f'/devel/reports/old/{self.user.username}/pkgbases/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content.decode().strip(), 'linux')
+
+
+def test_linkify_escapes_html():
+    link = Linkify(href='"><script>alert(1)</script>', title='<img onerror=alert(1)>', desc='<b>xss</b>')
+    result = str(link)
+    assert '<script>' not in result
+    assert '<img' not in result
+    assert '<b>' not in result
+    assert '&lt;script&gt;' in result
