@@ -1,137 +1,155 @@
+import pytest
 from django.contrib.auth.models import User
-from django.test import TestCase
 
 from devel.models import UserProfile
 from devel.utils import UserFinder
 
 
-class DevelTest(TestCase):
-    def test_index(self):
-        response = self.client.get('/devel/')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.has_header('Location'), True)
-        self.assertEqual(response['location'],
-                         '/login/?next=/devel/')
-
-    def test_profile(self):
-        response = self.client.get('/devel/profile/')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.has_header('Location'), True)
-        self.assertEqual(response['location'],
-                         '/login/?next=/devel/profile/')
-
-    def test_newuser(self):
-        response = self.client.get('/devel/newuser/')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.has_header('Location'), True)
-        self.assertEqual(response['location'],
-                         '/login/?next=/devel/newuser/')
-
-    def test_mirrors(self):
-        response = self.client.get('/mirrors/')
-        self.assertEqual(response.status_code, 200)
-
-    def test_admin_log(self):
-        User.objects.create_superuser('admin', 'admin@archlinux.org', 'admin')
-        response = self.client.post('/login/', {'username': 'admin', 'password': 'admin'})
-        response = self.client.get('/devel/admin_log', follow=True)
-        self.assertEqual(response.status_code, 200)
+def test_index(client):
+    response = client.get('/devel/')
+    assert response.status_code == 302
+    assert response.has_header('Location')
+    assert response['location'] == '/login/?next=/devel/'
 
 
-class FindUserTest(TestCase):
+def test_profile(client):
+    response = client.get('/devel/profile/')
+    assert response.status_code == 302
+    assert response.has_header('Location')
+    assert response['location'] == '/login/?next=/devel/profile/'
 
-    def setUp(self):
-        self.finder = UserFinder()
 
-        self.user1 = User.objects.create(
-            username="joeuser", first_name="Joe", last_name="User", email="user1@example.com")
-        self.user2 = User.objects.create(
-            username="john", first_name="John", last_name="", email="user2@example.com")
-        self.user3 = User.objects.create(
-            username="bjones", first_name="Bob", last_name="Jones", email="user3@example.com")
+def test_newuser(client):
+    response = client.get('/devel/newuser/')
+    assert response.status_code == 302
+    assert response.has_header('Location')
+    assert response['location'] == '/login/?next=/devel/newuser/'
 
-        for user in (self.user1, self.user2, self.user3):
-            email_addr = "%s@awesome.com" % user.username
-            UserProfile.objects.create(user=user, public_email=email_addr)
 
-        self.user4 = User.objects.create(
-            username="tim1", first_name="Tim", last_name="One", email="tim@example.com")
-        self.user5 = User.objects.create(
-            username="tim2", first_name="Tim", last_name="Two", email="timtwo@example.com")
+def test_mirrors(db, client):
+    response = client.get('/mirrors/')
+    assert response.status_code == 200
 
-    def test_not_matching(self):
-        self.assertIsNone(self.finder.find(None))
-        self.assertIsNone(self.finder.find(""))
-        self.assertIsNone(self.finder.find("Bogus"))
-        self.assertIsNone(self.finder.find("Bogus <invalid"))
-        self.assertIsNone(self.finder.find("Bogus User <bogus@example.com>"))
-        self.assertIsNone(self.finder.find("<bogus@example.com>"))
-        self.assertIsNone(self.finder.find("bogus@example.com"))
-        self.assertIsNone(self.finder.find("Unknown Packager"))
 
-    def test_by_email(self):
-        self.assertEqual(
-            self.user1, self.finder.find("XXX YYY <user1@example.com>"))
-        self.assertEqual(
-            self.user2, self.finder.find("YYY ZZZ <user2@example.com>"))
+def test_admin_log(db, client):
+    User.objects.create_superuser('admin', 'admin@archlinux.org', 'admin')
+    response = client.post('/login/', {'username': 'admin', 'password': 'admin'})
+    response = client.get('/devel/admin_log', follow=True)
+    assert response.status_code == 200
 
-    def test_by_profile_email(self):
-        self.assertEqual(
-            self.user1, self.finder.find("XXX <joeuser@awesome.com>"))
-        self.assertEqual(
-            self.user2, self.finder.find("YYY <john@awesome.com>"))
-        self.assertEqual(
-            self.user3, self.finder.find("ZZZ <bjones@awesome.com>"))
 
-    def test_by_name(self):
-        self.assertEqual(
-            self.user1, self.finder.find("Joe User <joe@differentdomain.com>"))
-        self.assertEqual(
-            self.user1, self.finder.find("Joe User"))
-        self.assertEqual(
-            self.user2, self.finder.find("John <john@differentdomain.com>"))
-        self.assertEqual(
-            self.user2, self.finder.find("John"))
-        self.assertEqual(
-            self.user3, self.finder.find("Bob Jones <bjones AT Arch Linux DOT org>"))
+@pytest.fixture
+def finder():
+    return UserFinder()
 
-    def test_by_invalid(self):
-        self.assertEqual(
-            self.user1, self.finder.find("Joe User <user1@example.com"))
-        self.assertEqual(
-            self.user1, self.finder.find("Joe 'nickname' User <user1@example.com"))
-        self.assertEqual(
-            self.user1, self.finder.find("Joe \"nickname\" User <user1@example.com"))
-        self.assertEqual(
-            self.user1, self.finder.find("Joe User <joe@differentdomain.com"))
 
-    def test_cache(self):
-        # simply look two of them up, but then do it repeatedly
-        for _ in range(5):
-            self.assertEqual(
-                self.user1, self.finder.find("XXX YYY <user1@example.com>"))
-            self.assertEqual(
-                self.user3, self.finder.find("Bob Jones <bjones AT Arch Linux DOT org>"))
+@pytest.fixture
+def users(transactional_db):
+    users = []
+    user_profiles = []
 
-    def test_ambiguous(self):
-        self.assertEqual(
-            self.user4, self.finder.find("Tim One <tim@anotherdomain.com>"))
-        self.assertEqual(
-            self.user5, self.finder.find("Tim Two <tim@anotherdomain.com>"))
-        self.assertIsNone(self.finder.find("Tim <tim@anotherdomain.com>"))
+    user1 = User.objects.create(
+        username="joeuser", first_name="Joe", last_name="User", email="user1@example.com")
+    users.append(user1)
+    user2 = User.objects.create(
+        username="john", first_name="John", last_name="", email="user2@example.com")
+    users.append(user2)
+    user3 = User.objects.create(
+        username="bjones", first_name="Bob", last_name="Jones", email="user3@example.com")
+    users.append(user3)
 
-    def test_find_by_username(self):
-        self.assertEqual(self.finder.find_by_username(None), None)
-        self.assertEqual(self.finder.find_by_username('noone'), None)
-        self.assertEqual(self.finder.find_by_username(self.user1.username), self.user1)
-        # Test cache
-        self.assertEqual(self.finder.find_by_username(self.user1.username), self.user1)
+    for user in (user1, user2, user3):
+        email_addr = "%s@awesome.com" % user.username
+        user_profiles.append(UserProfile.objects.create(user=user, public_email=email_addr))
 
-    def test_find_by_email(self):
-        self.assertEqual(self.finder.find_by_email(None), None)
-        self.assertEqual(self.finder.find_by_email('bar@bar.com'), None)
-        self.assertEqual(self.finder.find_by_email(self.user1.email), self.user1)
-        # Test cache
-        self.assertEqual(self.finder.find_by_email(self.user1.email), self.user1)
+    user4 = User.objects.create(
+        username="tim1", first_name="Tim", last_name="One", email="tim@example.com")
+    users.append(user4)
+    user5 = User.objects.create(
+        username="tim2", first_name="Tim", last_name="Two", email="timtwo@example.com")
+    users.append(user5)
+
+    yield users
+
+    for user_profile in user_profiles:
+        user_profile.delete()
+
+    for user in users:
+        user.delete()
+
+
+def test_not_matching(finder, users):
+    assert finder.find(None) is None
+    assert finder.find("") is None
+    assert finder.find("Bogus") is None
+    assert finder.find("Bogus <invalid") is None
+    assert finder.find("Bogus User <bogus@example.com>") is None
+    assert finder.find("<bogus@example.com>") is None
+    assert finder.find("bogus@example.com") is None
+    assert finder.find("Unknown Packager") is None
+
+
+def test_by_email(finder, users):
+    user1, user2, *_ = users
+    assert finder.find("XXX YYY <user1@example.com>") == user1
+    assert finder.find("YYY ZZZ <user2@example.com>") == user2
+
+
+def test_by_profile_email(finder, users):
+    user1, user2, user3, *_ = users
+    assert finder.find("XXX <joeuser@awesome.com>") == user1
+    assert finder.find("YYY <john@awesome.com>") == user2
+    assert finder.find("ZZZ <bjones@awesome.com>") == user3
+
+
+def test_by_name(finder, users):
+    user1, user2, user3, *_ = users
+    assert finder.find("Joe User <joe@differentdomain.com>") == user1
+    assert finder.find("Joe User") == user1
+    assert finder.find("John <john@differentdomain.com>") == user2
+    assert finder.find("John") == user2
+    assert finder.find("Bob Jones <bjones AT Arch Linux DOT org>") == user3
+
+
+def test_by_invalid(finder, users):
+    user1, *_ = users
+    assert finder.find("Joe User <user1@example.com") == user1
+    assert finder.find("Joe 'nickname' User <user1@example.com") == user1
+    assert finder.find("Joe \"nickname\" User <user1@example.com") == user1
+    assert finder.find("Joe User <joe@differentdomain.com") == user1
+
+
+def test_cache(finder, users):
+    user1, _user2, user3, *_ = users
+
+    # simply look two of them up, but then do it repeatedly
+    for _ in range(5):
+        assert finder.find("XXX YYY <user1@example.com>") == user1
+        assert finder.find("Bob Jones <bjones AT Arch Linux DOT org>") == user3
+
+
+def test_ambiguous(finder, users):
+    _user1, _user2, _user3, user4, user5 = users
+    assert finder.find("Tim One <tim@anotherdomain.com>") == user4
+    assert finder.find("Tim Two <tim@anotherdomain.com>") == user5
+    assert finder.find("Tim <tim@anotherdomain.com>") is None
+
+
+def test_find_by_username(finder, users):
+    user1, *_ = users
+    assert finder.find_by_username(None) is None
+    assert finder.find_by_username('noone') is None
+    assert finder.find_by_username(user1.username) == user1
+    # Test cache
+    assert finder.find_by_username(user1.username) == user1
+
+
+def test_find_by_email(finder, users):
+    user1, *_ = users
+    assert finder.find_by_email(None) is None
+    assert finder.find_by_email('bar@bar.com') is None
+    assert finder.find_by_email(user1.email) == user1
+    # Test cache
+    assert finder.find_by_email(user1.email) == user1
 
 # vim: set ts=4 sw=4 et:
