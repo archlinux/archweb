@@ -1,4 +1,5 @@
 import base64
+import hmac
 import operator
 import time
 from datetime import timedelta
@@ -143,9 +144,8 @@ def clock(request):
     latest_signoff = dict(Signoff.objects.filter(
         user__is_active=True).values_list('user').order_by().annotate(
             last_signoff=Max('created')))
-    # The extra() bit ensures we can use our 'user_id IS NOT NULL' index
     latest_flagreq = dict(FlagRequest.objects.filter(
-        user__is_active=True).extra(where=['user_id IS NOT NULL']).values_list(
+        user__is_active=True, user_id__isnull=False).values_list(
             'user_id').order_by().annotate(last_flagrequest=Max('created')))
     latest_log = dict(LogEntry.objects.filter(
         user__is_active=True).values_list('user').order_by().annotate(
@@ -236,7 +236,7 @@ def tier0_mirror_auth(request):
     if not user:
         return unauthorized
 
-    if user and token == user.userprofile.repos_auth_token:
+    if user and hmac.compare_digest(token, user.userprofile.repos_auth_token):
         return HttpResponse('Authorized')
     else:
         return unauthorized
@@ -279,14 +279,10 @@ def change_profile(request):
                    'profile_form': profile_form})
 
 
-def get_report_packages(report, username):
-    packages = Package.objects.normal()
+def get_report_packages(report, packages, username):
     if report.slug in ('uncompressed-man', 'uncompressed-info'):
-        packages = report.packages(packages, username)
-    else:
-        packages = report.packages(packages)
-
-    return packages
+        return report.packages(packages, username)
+    return report.packages(packages)
 
 
 @login_required
@@ -295,7 +291,14 @@ def report_pkgbases(request, report_name: str, username: str | None = None) -> H
     if report is None:
         raise Http404
 
-    packages = get_report_packages(report, username)
+    packages = Package.objects.normal()
+    if username:
+        user = get_object_or_404(User, username=username, is_active=True)
+        maintained = PackageRelation.objects.filter(
+            user=user, type=PackageRelation.MAINTAINER).values('pkgbase')
+        packages = packages.filter(pkgbase__in=maintained)
+
+    packages = get_report_packages(report, packages, username)
     pkgbases = sorted({pkg.pkgbase for pkg in packages})
     return HttpResponse('\n'.join(pkgbases), content_type='text/plain')
 
@@ -318,7 +321,7 @@ def report(request, report_name, username=None):
     maints = User.objects.filter(id__in=PackageRelation.objects.filter(
         type=PackageRelation.MAINTAINER).values('user'))
 
-    packages = get_report_packages(report, username)
+    packages = get_report_packages(report, packages, username)
     arches = {pkg.arch for pkg in packages}
     repos = {pkg.repo for pkg in packages}
     context = {
