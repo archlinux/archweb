@@ -150,7 +150,7 @@ def mismatched_signature(packages):
     for package in packages:
         bad = False
         sig = package.signature
-        dev_key = known_keys.get(sig.key_id, None)
+        dev_key = known_keys.get(sig.key_id)
         if dev_key:
             package.sig_by = dev_key.owner
             if dev_key.owner_id != package.packager_id:
