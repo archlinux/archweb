@@ -49,7 +49,7 @@ class RecentUpdate:
             by_arch = defaultdict(list)
             for package in self.others:
                 by_arch[package.arch].append(package)
-            for _, packages in by_arch.items():
+            for packages in by_arch.values():
                 if len(packages) == 1:
                     yield packages[0]
                 else:
