@@ -51,11 +51,24 @@
     ul.style.display = "block";
     const fragment = document.createDocumentFragment();
 
-    for (let i = 0; i < pkgs.length; i++) {
+    for (const pkgname of pkgs) {
       const item = document.createElement("li");
-      const text = pkgs[i].replace(letter, `<b>${letter}</b>`);
-      item.innerHTML = `<a href="#">${text}</a>`;
-      item.setAttribute('data-value', pkgs[i]);
+      const anchor = document.createElement("a");
+      anchor.href = "#";
+
+      const matchIndex = pkgname.indexOf(letter);
+      if (matchIndex !== -1) {
+        anchor.appendChild(document.createTextNode(pkgname.slice(0, matchIndex)));
+        const bold = document.createElement("b");
+        bold.textContent = pkgname.slice(matchIndex, matchIndex + letter.length);
+        anchor.appendChild(bold);
+        anchor.appendChild(document.createTextNode(pkgname.slice(matchIndex + letter.length)));
+      } else {
+        anchor.textContent = pkgname;
+      }
+
+      item.appendChild(anchor);
+      item.setAttribute('data-value', pkgname);
       fragment.appendChild(item);
     }
 

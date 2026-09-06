@@ -5,36 +5,36 @@ description = "Arch Linux website code"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "bencode-py==4.0.0",
+    "bencode-py==4.1.0",
     "bleach==6.4.0",
-    "django==5.2.14",
+    "django==5.2.17",
     "django-countries==8.2.0",
     "django-csp==4.0",
     "django-prometheus==2.5.0",
-    "feedparser==6.0.12",
+    "feedparser==6.0.14",
     "ipy==1.1",
     "jsmin==3.0.1",
-    "markdown==3.10.2",
+    "markdown==3.10.3",
     "parse==1.22.1",
     "pgpdump==1.5",
     "requests==2.34.2",
-    "sqlparse==0.5.5",
+    "sqlparse==0.6.0",
     "django-ninja==1.6.2",
 ]
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar==6.3.0",
+    "django-debug-toolbar==7.1.0",
     "django-stubs[compatible-mypy]>=5.2.0",
     "flake8>=7.3.0",
     "mypy>=1.15.0",
-    "pytest>=9.0.3",
+    "pytest>=9.1.1",
     "pytest-cov>=6.2.1",
     "pytest-django>=4.11.1",
-    "ruff>=0.15.17",
+    "ruff>=0.15.21",
     "types-bleach>=6.0.0",
     "types-Markdown>=3.6.0",
-    "types-requests>=2.32.0",
+    "types-requests>=2.33.0.20260712",
 ]
 prod = [
     "pyasyncore==1.0.5",

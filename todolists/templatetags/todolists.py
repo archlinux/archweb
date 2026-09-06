@@ -1,15 +1,18 @@
 from django import template
 from django.utils.html import format_html
 
+from main.models import Arch, Repo
+from todolists.models import TodolistPackage
+
 register = template.Library()
 
 
-def pkg_absolute_url(repo, arch, pkgname):
+def pkg_absolute_url(repo: Repo, arch: Arch, pkgname: str) -> str:
     return f'/packages/{repo.name.lower()}/{arch.name}/{pkgname}/'
 
 
 @register.simple_tag
-def todopkg_details_link(todopkg):
+def todopkg_details_link(todopkg: TodolistPackage) -> str:
     pkg = todopkg.pkg
     if not pkg:
         return todopkg.pkgname
