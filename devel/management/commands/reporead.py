@@ -206,9 +206,8 @@ def create_multivalued(dbpkg, repopkg, db_attr, repo_attr):
     collection = getattr(dbpkg, db_attr)
     collection.all().delete()
     model = collection.model
-    new_items = []
-    for name in getattr(repopkg, repo_attr):
-        new_items.append(model(pkg=dbpkg, name=name))
+    new_items = [model(pkg=dbpkg, name=name) for name in getattr(repopkg, repo_attr)]
+
     if new_items:
         model.objects.bulk_create(new_items)
 
