@@ -1,43 +1,43 @@
+import pytest
 from django.contrib.auth.models import Group, User
-from django.test import TransactionTestCase
 
 from devel.models import UserProfile
 
 
-class DevelView(TransactionTestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json',
-                'main/fixtures/package.json']
+@pytest.fixture
+def devel_client(client, arches, repos, package):
+    password = 'test'
+    user = User.objects.create_superuser('admin',
+                                         'admin@archlinux.org',
+                                         password)
+    for name in ['Developers', 'Retired Developers']:
+        Group.objects.create(name=name)
+    user.groups.add(Group.objects.get(name='Developers'))
+    user.save()
+    profile = UserProfile.objects.create(user=user,
+                                         public_email=f"{user.username}@awesome.com")
+    client.post('/login/', {
+        'username': user.username,
+        'password': password
+    })
 
-    def setUp(self):
-        password = 'test'
-        self.user = User.objects.create_superuser('admin',
-                                                  'admin@archlinux.org',
-                                                  password)
-        for name in ['Developers', 'Retired Developers']:
-            Group.objects.create(name=name)
-        self.user.groups.add(Group.objects.get(name='Developers'))
-        self.user.save()
-        self.profile = UserProfile.objects.create(user=self.user,
-                                                  public_email=f"{self.user.username}@awesome.com")
-        self.client.post('/login/', {
-            'username': self.user.username,
-            'password': password
-        })
+    yield client
 
-    def tearDown(self):
-        self.profile.delete()
-        self.user.delete()
-        Group.objects.all().delete()
+    profile.delete()
+    user.delete()
+    Group.objects.all().delete()
 
-    def test_clock(self):
-        response = self.client.get('/devel/clock/')
-        self.assertEqual(response.status_code, 200)
 
-    def test_profile(self):
-        response = self.client.get('/devel/profile/')
-        self.assertEqual(response.status_code, 200)
-        # Test changing
+def test_clock(devel_client):
+    response = devel_client.get('/devel/clock/')
+    assert response.status_code == 200
 
-    def test_stats(self):
-        response = self.client.get('/devel/stats/')
-        self.assertEqual(response.status_code, 200)
+
+def test_profile(devel_client):
+    response = devel_client.get('/devel/profile/')
+    assert response.status_code == 200
+
+
+def test_stats(devel_client):
+    response = devel_client.get('/devel/stats/')
+    assert response.status_code == 200
