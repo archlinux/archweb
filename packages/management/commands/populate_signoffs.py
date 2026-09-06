@@ -28,7 +28,7 @@ class Command(BaseCommand):
 is signoff-eligible and does not have an existing comment attached"""
 
     def handle(self, **options):
-        v = int(options.get('verbosity', None))
+        v = int(options.get('verbosity'))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:

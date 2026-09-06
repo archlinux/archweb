@@ -142,7 +142,7 @@ def groupby_preserve_order(iterable, keyfunc):
     for item in iterable:
         key = keyfunc(item)
 
-        group = seen_keys.get(key, None)
+        group = seen_keys.get(key)
         if group is None:
             group = []
             seen_keys[key] = group

@@ -25,7 +25,7 @@ class Command(BaseCommand):
         if not os.path.exists(filename) or not os.path.isfile(filename):
             raise CommandError('Specified links database file does not exist.')
 
-        v = int(options.get('verbosity', None))
+        v = int(options.get('verbosity'))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:

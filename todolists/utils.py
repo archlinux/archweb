@@ -51,7 +51,7 @@ def attach_staging(packages, list_id):
 
     annotated = []
     for package in packages:
-        in_staging = lookup.get((package.pkgname, package.arch), None)
+        in_staging = lookup.get((package.pkgname, package.arch))
         package.staging = in_staging
 
     return annotated

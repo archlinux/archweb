@@ -28,7 +28,7 @@ class Command(BaseCommand):
         parser.add_argument('args', nargs='*', help='<arch> <filename>')
 
     def handle(self, *args, **options):
-        v = int(options.get('verbosity', None))
+        v = int(options.get('verbosity'))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:

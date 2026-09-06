@@ -26,7 +26,7 @@ class Command(BaseCommand):
     help = "Match and map objects in database to developer emails"
 
     def handle(self, **options):
-        v = int(options.get('verbosity', None))
+        v = int(options.get('verbosity'))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:
