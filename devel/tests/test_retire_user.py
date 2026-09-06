@@ -1,66 +1,75 @@
+import pytest
 from django.contrib.auth.models import Group, User
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.test import TransactionTestCase
 
 from devel.models import UserProfile
 from main.models import Repo
 
 
-class RetireUsertest(TransactionTestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
+@pytest.fixture
+def groups():
+    for name in ['Developers', 'Retired Developers']:
+        Group.objects.create(name=name)
 
-    def setUp(self):
-        self.username = 'joe'
-        self.user = User.objects.create(username=self.username, first_name="Joe",
-                                        last_name="User", email="user1@example.com")
 
-        self.profile = UserProfile.objects.create(user=self.user,
-                                                  public_email=f"{self.user.username}@awesome.com")
-        for name in ['Developers', 'Retired Developers']:
-            Group.objects.create(name=name)
+@pytest.fixture
+def test_user(arches, repos, groups):
+    username = 'joe'
+    user = User.objects.create(username=username, first_name="Joe",
+                               last_name="User", email="user1@example.com")
 
-    def tearDown(self):
-        self.profile.delete()
-        self.user.delete()
+    profile = UserProfile.objects.create(user=user,
+                                         public_email=f"{user.username}@awesome.com")
 
-    def test_invalid_args(self):
-        with self.assertRaises(CommandError) as e:
-            call_command('retire_user')
-        self.assertIn('missing argument user.', str(e.exception))
+    yield user
 
-    def test_user_not_found(self):
-        with self.assertRaises(CommandError) as e:
-            call_command('retire_user', 'user1')
-        self.assertIn("Failed to find User 'user1'", str(e.exception))
+    profile.delete()
+    user.delete()
 
-    def test_userprofile_missing(self):
-        user = User.objects.create(username='user2', first_name="Jane",
-                                   last_name="User2", email="user2@example.com")
 
-        with self.assertRaises(CommandError) as e:
-            call_command('retire_user', user.username)
-        self.assertIn("Failed to find UserProfile", str(e.exception))
-        user.delete()
+def test_invalid_args():
+    with pytest.raises(CommandError) as e:
+        call_command('retire_user')
+    assert 'missing argument user.' in str(e)
 
-    def test_user_inactive(self):
-        call_command('retire_user', self.username)
-        user = User.objects.get(username=self.username)
-        self.assertEqual(user.is_active, False)
 
-    def test_user_moved_groups(self):
-        self.user.groups.add(Group.objects.get(name='Developers'))
-        self.user.save()
+def test_user_not_found(db):
+    with pytest.raises(CommandError) as e:
+        call_command('retire_user', 'user1')
+    assert "Failed to find User 'user1'" in str(e)
 
-        call_command('retire_user', self.username)
-        user = User.objects.get(username=self.username)
-        groups = [Group.objects.get(name='Retired Developers')]
-        self.assertEqual(list(user.groups.all()), groups)
 
-    def test_user_repos(self):
-        self.profile.allowed_repos.add(Repo.objects.get(name='Core'))
-        self.profile.save()
+def test_userprofile_missing(db):
+    user = User.objects.create(username='user2', first_name="Jane",
+                               last_name="User2", email="user2@example.com")
 
-        call_command('retire_user', self.username)
-        profile = UserProfile.objects.get(user=self.user)
-        self.assertEqual(len(profile.allowed_repos.all()), 0)
+    with pytest.raises(CommandError) as e:
+        call_command('retire_user', user.username)
+    assert "Failed to find UserProfile" in str(e)
+    user.delete()
+
+
+def test_user_inactive(test_user):
+    call_command('retire_user', test_user.username)
+    user = User.objects.get(username=test_user.username)
+    assert not user.is_active
+
+
+def test_user_moved_groups(test_user):
+    test_user.groups.add(Group.objects.get(name='Developers'))
+    test_user.save()
+
+    call_command('retire_user', test_user.username)
+    user = User.objects.get(username=test_user.username)
+    groups = [Group.objects.get(name='Retired Developers')]
+    assert list(user.groups.all()) == groups
+
+
+def test_user_repos(test_user):
+    test_user.userprofile.allowed_repos.add(Repo.objects.get(name='Core'))
+    test_user.userprofile.save()
+
+    call_command('retire_user', test_user.username)
+    profile = UserProfile.objects.get(user=test_user)
+    assert len(profile.allowed_repos.all()) == 0
