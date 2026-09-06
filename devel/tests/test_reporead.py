@@ -2,19 +2,19 @@ import tarfile
 from datetime import datetime, timezone
 from unittest.mock import patch
 
+import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
-from django.test import TransactionTestCase
 
 from main.models import Arch, Package, Repo
 from packages.models import FlagRequest
 
 
-# Django's TestCase is wrapped in transaction, therefore use TransactionTestCase
-class RepoReadTest(TransactionTestCase):
-    fixtures = ['main/fixtures/arches.json', 'main/fixtures/repos.json']
+@pytest.fixture
+def create_pkg(arches, repos):
+    packages = []
 
-    def create_pkg(self, repo=None, pkgver='4.10.1', pkgrel='1'):
+    def _create_pkg(repo=None, pkgver='4.10.1', pkgrel='1'):
         if not repo:
             repo = Repo.objects.get(name__iexact='core')
 
@@ -26,67 +26,78 @@ class RepoReadTest(TransactionTestCase):
                                       compressed_size=10, installed_size=20,
                                       last_update=now, created=now)
 
-    def test_invalid_args(self):
-        with self.assertRaises(CommandError) as e:
-            call_command('reporead')
-        self.assertIn('missing arch and file.', str(e.exception))
+    yield _create_pkg
 
-        with self.assertRaises(CommandError) as e:
-            call_command('reporead', 'x86_64')
-        self.assertIn('Package database file is required.', str(e.exception))
+    for pkg in packages:
+        pkg.delete()
 
-        with self.assertRaises(CommandError) as e:
-            call_command('reporead', 'x86_64', 'nothing.db.tar.gz')
-        self.assertIn('Specified package database file does not exist.', str(e.exception))
 
-    def test_invalid_arch(self):
-        with self.assertRaises(CommandError) as e:
-            call_command('reporead', 'armv64', 'devel/fixtures/core.db.tar.gz')
-        self.assertEqual('Specified architecture armv64 is not currently known.', str(e.exception))
+def test_invalid_arch(arches):
+    with pytest.raises(CommandError) as exc_info:
+        call_command('reporead', 'armv64', 'devel/fixtures/core.db.tar.gz')
+    assert exc_info.value.args[0] == 'Specified architecture armv64 is not currently known.'
 
-    def test_read_packages(self):
-        with patch('devel.management.commands.reporead.logger') as logger:
-            call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
-        logger.info.assert_called()
 
-        # Verify contents
-        with tarfile.open('devel/fixtures/core.db.tar.gz') as tar:
-            files = [name.replace('core.db/', '') for name in tar.getnames()
-                     if name != 'core.db' and 'desc' not in name]
+def test_invalid_args(arches):
+    with pytest.raises(CommandError) as exc_info:
+        call_command('reporead')
+    assert 'missing arch and file' in str(exc_info)
 
-        packages = Package.objects.all()
-        import_packages = [f"{pkg.pkgname}-{pkg.pkgver}-{pkg.pkgrel}" for pkg in packages]
-        self.assertCountEqual(files, import_packages)
+    with pytest.raises(CommandError) as exc_info:
+        call_command('reporead', 'x86_64')
+    assert 'Package database file is required' in str(exc_info)
 
-    def test_flagoutofdate(self):
-        pkg = self.create_pkg()
-        FlagRequest.objects.create(pkgbase=pkg.pkgbase, repo=pkg.repo,
-                                   pkgver=pkg.pkgver, epoch=pkg.epoch,
-                                   ip_address='1.1.1.1')
+    with pytest.raises(CommandError) as exc_info:
+        call_command('reporead', 'x86_64', 'nothing.db.tar.gz')
+    assert 'Specified package database file does not exist.' in str(exc_info)
 
-        with patch('devel.management.commands.reporead.logger') as logger:
-            call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
-        logger.info.assert_called()
 
-        self.assertEqual(len(FlagRequest.objects.all()), 0)
+def test_read_packages(transactional_db, arches, repos):
+    # TODO: use pytest-pacman for generating the database
+    with patch('devel.management.commands.reporead.logger') as logger:
+        call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
+    logger.info.assert_called()
 
-    def test_flagoutofdate_staging(self):
-        staging = Repo.objects.get(name__iexact='staging')
+    # Verify contents
+    with tarfile.open('devel/fixtures/core.db.tar.gz') as tar:
+        files = [name.replace('core.db/', '') for name in tar.getnames()
+                 if name != 'core.db' and 'desc' not in name]
 
-        pkg = self.create_pkg()
-        staging_pkg = self.create_pkg(repo=staging, pkgrel='2')
+    packages = Package.objects.all()
+    import_packages = [f"{pkg.pkgname}-{pkg.pkgver}-{pkg.pkgrel}" for pkg in packages]
+    assert len(files) == len(import_packages)
 
-        FlagRequest.objects.create(pkgbase=pkg.pkgbase, repo=pkg.repo,
-                                   pkgver=pkg.pkgver, epoch=pkg.epoch,
-                                   ip_address='1.1.1.1')
-        FlagRequest.objects.create(pkgbase=staging_pkg.pkgbase, repo=staging_pkg.repo,
-                                   pkgver=staging_pkg.pkgver, epoch=staging_pkg.epoch,
-                                   ip_address='1.1.1.1')
 
-        with patch('devel.management.commands.reporead.logger') as logger:
-            call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
-        logger.info.assert_called()
+def test_flagoutofdate(transactional_db, arches, repos, create_pkg):
+    pkg = create_pkg()
+    FlagRequest.objects.create(pkgbase=pkg.pkgbase, repo=pkg.repo,
+                               pkgver=pkg.pkgver, epoch=pkg.epoch,
+                               ip_address='1.1.1.1')
 
-        objects = FlagRequest.objects.all()
-        self.assertEqual(len(objects), 1)
-        self.assertEqual(objects[0].pkgver, staging_pkg.pkgver)
+    with patch('devel.management.commands.reporead.logger') as logger:
+        call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
+    logger.info.assert_called()
+
+    assert len(FlagRequest.objects.all()) == 0
+
+
+def test_flagoutofdate_staging(transactional_db, arches, repos, create_pkg):
+    staging = Repo.objects.get(name__iexact='staging')
+
+    pkg = create_pkg()
+    staging_pkg = create_pkg(repo=staging, pkgrel='2')
+
+    FlagRequest.objects.create(pkgbase=pkg.pkgbase, repo=pkg.repo,
+                               pkgver=pkg.pkgver, epoch=pkg.epoch,
+                               ip_address='1.1.1.1')
+    FlagRequest.objects.create(pkgbase=staging_pkg.pkgbase, repo=staging_pkg.repo,
+                               pkgver=staging_pkg.pkgver, epoch=staging_pkg.epoch,
+                               ip_address='1.1.1.1')
+
+    with patch('devel.management.commands.reporead.logger') as logger:
+        call_command('reporead', 'x86_64', 'devel/fixtures/core.db.tar.gz')
+    logger.info.assert_called()
+
+    objects = FlagRequest.objects.all()
+    assert len(objects) == 1
+    assert objects[0].pkgver == staging_pkg.pkgver
