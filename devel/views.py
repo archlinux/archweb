@@ -153,11 +153,11 @@ def clock(request):
 
     for dev in devs:
         dates = [
-            latest_news.get(dev.id, None),
-            latest_package.get(dev.id, None),
-            latest_signoff.get(dev.id, None),
-            latest_flagreq.get(dev.id, None),
-            latest_log.get(dev.id, None),
+            latest_news.get(dev.id),
+            latest_package.get(dev.id),
+            latest_signoff.get(dev.id),
+            latest_flagreq.get(dev.id),
+            latest_log.get(dev.id),
             dev.last_login,
         ]
         dates = [d for d in dates if d is not None]
@@ -287,7 +287,7 @@ def get_report_packages(report, packages, username):
 
 @login_required
 def report_pkgbases(request, report_name: str, username: str | None = None) -> HttpResponse:
-    report = {report.slug: report for report in available_reports()}.get(report_name, None)
+    report = {report.slug: report for report in available_reports()}.get(report_name)
     if report is None:
         raise Http404
 
@@ -306,7 +306,7 @@ def report_pkgbases(request, report_name: str, username: str | None = None) -> H
 @login_required
 def report(request, report_name, username=None):
     available = {report.slug: report for report in available_reports()}
-    report = available.get(report_name, None)
+    report = available.get(report_name)
     if report is None:
         raise Http404
 

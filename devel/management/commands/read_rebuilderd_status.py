@@ -30,7 +30,7 @@ class Command(BaseCommand):
     help = "Import reproducible status from rebuilderd."
 
     def handle(self, *args, **options):
-        v = int(options.get('verbosity', None))
+        v = int(options.get('verbosity'))
         if v == 0:
             logger.level = logging.ERROR
         elif v == 1:

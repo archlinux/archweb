@@ -127,7 +127,7 @@ def test_socket_error(urlopen, Request, mirrorurl):
 def test_checklocation_fail(db):
     with pytest.raises(CheckLocation.DoesNotExist) as e:
         call_command('mirrorcheck', '-l', '1')
-    assert 'CheckLocation matching query does not exist.' == str(e.value)
+    assert str(e.value) == 'CheckLocation matching query does not exist.'
 
 
 def test_checklocation_model(checklocation):

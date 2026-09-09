@@ -10,7 +10,7 @@ from planet.models import FEEDITEM_SUMMARY_LIMIT, Feed, FeedItem
 
 @pytest.fixture
 def command():
-    yield Command()
+    return Command()
 
 
 @pytest.fixture

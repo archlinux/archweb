@@ -65,7 +65,7 @@ def status_filter(original_urls):
     scores = {u.id: u.score for u in status_info['urls']}
     urls = []
     for u in original_urls:
-        u.score = scores.get(u.id, None)
+        u.score = scores.get(u.id)
         # also include mirrors that don't have an up to date score
         # (as opposed to those that have been set with no score)
         if (u.id not in scores) or (u.score and u.score < 100.0):

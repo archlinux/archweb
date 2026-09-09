@@ -64,7 +64,7 @@ class Command(BaseCommand):
         urls = MirrorUrl.objects.select_related('protocol').filter(
             active=True, mirror__active=True, mirror__public=True)
 
-        location = options.get('location', None)
+        location = options.get('location')
         if location:
             location = CheckLocation.objects.get(id=location)
             family = location.family

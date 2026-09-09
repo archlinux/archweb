@@ -50,4 +50,4 @@ def test_send_announce(db, admin_client):
 def test_preview(db, admin_client):
     response = admin_client.post('/news/preview/', {'data': '**body**'}, follow=True)
     assert response.status_code == 200
-    assert '<p><strong>body</strong></p>' == response.content.decode()
+    assert response.content.decode() == '<p><strong>body</strong></p>'
