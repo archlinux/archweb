@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from django.views.decorators.cache import cache_control
 
+from api.deprecation import deprecated_json_endpoint
+
 from ..models import CheckLocation, Mirror, MirrorLog, MirrorProtocol, MirrorUrl
 from ..utils import DEFAULT_CUTOFF, get_mirror_statuses
 
@@ -72,6 +74,7 @@ class LocationJSONEncoder(DjangoJSONEncoder):
 
 
 @cache_control(max_age=311)
+@deprecated_json_endpoint('/api/v1/mirrors/status/')
 def status_json(request, tier=None):
     if tier is not None:
         tier = int(tier)
@@ -87,6 +90,7 @@ def status_json(request, tier=None):
     return response
 
 
+@deprecated_json_endpoint('/api/v1/mirrors/{name}/')
 def mirror_details_json(request, name):
     authorized = request.user.is_authenticated
     mirror = get_object_or_404(Mirror, name=name)
@@ -107,6 +111,7 @@ def mirror_details_json(request, name):
     return response
 
 
+@deprecated_json_endpoint('/api/v1/mirrors/locations/')
 def locations_json(request):
     data = {}
     data['version'] = 1
