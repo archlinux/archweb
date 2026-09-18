@@ -187,7 +187,7 @@ def files(request, name, repo, arch):
                             pkgname=name, repo__name__iexact=repo, arch__name=arch)
     # files are inserted in sorted order, so preserve that
     fileslist = PackageFile.objects.filter(pkg=pkg).order_by('id')
-    dir_count = sum(1 for f in fileslist if f.is_directory)
+    dir_count = fileslist.filter(is_directory=True).count()
     files_count = len(fileslist) - dir_count
     context = {
         'pkg': pkg,
