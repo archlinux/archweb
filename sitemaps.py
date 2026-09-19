@@ -20,7 +20,7 @@ class PackagesSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_update
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def changefreq(self, obj):
@@ -49,7 +49,7 @@ class PackageFilesSitemap(PackagesSitemap):
     def lastmod(self, obj):
         return obj.files_last_update
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
 
@@ -63,7 +63,7 @@ class PackageGroupsSitemap(Sitemap):
     def lastmod(self, obj):
         return obj['last_update']
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def location(self, obj):
@@ -80,7 +80,7 @@ class SplitPackagesSitemap(Sitemap):
     def lastmod(self, obj):
         return obj['last_update']
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def location(self, obj):
@@ -99,7 +99,7 @@ class NewsSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_modified
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def priority(self, obj):
@@ -131,7 +131,7 @@ class ReleasesSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_modified
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def priority(self, obj):
@@ -153,7 +153,7 @@ class TodolistSitemap(Sitemap):
     def lastmod(self, obj):
         return obj.last_modified
 
-    def get_latest_lastmod(self):
+    def get_latest_lastmod(self) -> None:
         return None
 
     def changefreq(self, obj):
