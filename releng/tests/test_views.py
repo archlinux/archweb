@@ -1,4 +1,9 @@
-def test_release_json(client, release, torrent_data):
+from django.test import Client
+
+from releng.models import Release
+
+
+def test_release_json(client: Client, release: Release, torrent_data: str) -> None:
     version = release.version
     response = client.get('/releng/releases/json/')
     assert response.status_code == 200
@@ -20,7 +25,7 @@ def test_release_json(client, release, torrent_data):
     assert release_data['wkd_email'] == release.wkd_email
 
 
-def test_json(db, client):
+def test_json(db: None, client: Client) -> None:
     response = client.get('/releng/releases/json/')
     assert response.status_code == 200
 
@@ -28,7 +33,7 @@ def test_json(db, client):
     assert data['releases'] == []
 
 
-def test_release_json_null_pgp_fingerprint_and_wkd_email(client, db):
+def test_release_json_null_pgp_fingerprint_and_wkd_email(client: Client, db: None) -> None:
     from datetime import datetime
 
     from releng.models import Release
@@ -45,17 +50,17 @@ def test_release_json_null_pgp_fingerprint_and_wkd_email(client, db):
     assert release_data['wkd_email'] is None
 
 
-def test_netboot_page(db, client):
+def test_netboot_page(db: None, client: Client) -> None:
     response = client.get('/releng/netboot/')
     assert response.status_code == 200
 
 
-def test_netboot_config(db, client):
+def test_netboot_config(db: None, client: Client):
     response = client.get('/releng/netboot/archlinux.ipxe')
     assert response.status_code == 200
 
 
-def test_release_torrent(client, release, torrent_data):
+def test_release_torrent(client: Client, release: Release, torrent_data: str) -> None:
     response = client.get(f'/releng/releases/{release.version}/torrent/')
     assert response.status_code == 404
 
@@ -65,7 +70,7 @@ def test_release_torrent(client, release, torrent_data):
     assert response.status_code == 200
 
 
-def test_release_details(client, release):
+def test_release_details(client: Client, release: Release) -> None:
     response = client.get(f'/releng/releases/{release.version}/')
     assert response.status_code == 200
     assert release.version in response.content.decode()

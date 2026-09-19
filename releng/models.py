@@ -2,15 +2,29 @@ import binascii
 import hashlib
 from base64 import b64decode
 from datetime import datetime, timezone
+from typing import TypedDict
 
 from bencode import bdecode, bencode
 from django.db import models
 from django.db.models.signals import pre_save
 from django.urls import reverse
-from django.utils.safestring import mark_safe
+from django.utils.safestring import SafeText, mark_safe
 
 from devel.fields import PGPKeyField
 from main.utils import parse_markdown, set_created_field
+
+
+class TorrentMetadata(TypedDict):
+    comment: str | None
+    created_by: str | None
+    creation_date: datetime | None
+    announce: str | None
+    file_name: str | None
+    file_length: int | None
+    piece_count: float | None
+    piece_length: int | None
+    url_list: list[str] | None
+    info_hash: str | None
 
 
 class Release(models.Model):
@@ -34,25 +48,25 @@ class Release(models.Model):
         get_latest_by = 'release_date'
         ordering = ('-release_date', '-version')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.version
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse('releng-release-detail', args=[self.version])
 
-    def dir_path(self):
+    def dir_path(self) -> str:
         return "iso/%s/" % self.version
 
-    def iso_url(self):
+    def iso_url(self) -> str:
         return f"iso/{self.version}/archlinux-{self.version}-x86_64.iso"
 
-    def tarball_url(self):
+    def tarball_url(self) -> str:
         return f"iso/{self.version}/archlinux-bootstrap-{self.version}-x86_64.tar.zst"
 
-    def dir_url(self):
+    def dir_url(self) -> str:
         return "iso/%s" % (self.version)
 
-    def magnet_uri(self):
+    def magnet_uri(self) -> str:
         query = [
             ('dn', "archlinux-%s-x86_64.iso" % self.version),
         ]
@@ -61,10 +75,10 @@ class Release(models.Model):
             query.insert(0, ('xt', "urn:btih:%s" % metadata['info_hash']))
         return "magnet:?%s" % '&'.join([f'{k}={v}' for k, v in query])
 
-    def info_html(self):
+    def info_html(self) -> SafeText:
         return mark_safe(parse_markdown(self.info))
 
-    def torrent(self):
+    def torrent(self) -> TorrentMetadata | None:
         try:
             data = b64decode(self.torrent_data.encode('utf-8'))
         except (TypeError, binascii.Error):
@@ -74,7 +88,7 @@ class Release(models.Model):
         data = bdecode(data)
         # transform the data into a template-friendly dict
         info = data.get('info', {})
-        metadata = {
+        metadata: TorrentMetadata = {
             'comment': data.get('comment', None),
             'created_by': data.get('created by', None),
             'creation_date': None,
