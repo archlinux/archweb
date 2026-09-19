@@ -81,12 +81,12 @@ def releases_json(request: HttpRequest) -> HttpResponse:
 
 def netboot_config(request):
     releases = Release.objects.filter(available=True).values_list('version', flat=True).order_by('-release_date')
-    mirrorurls = MirrorUrl.objects.filter(protocol__protocol='http',
-                                          active=True,
-                                          mirror__public=True,
-                                          mirror__active=True,
-                                          mirror__isos=True)
-    mirrorurls = sorted(mirrorurls, key=lambda x: x.mirror.name)
+    mirrorurls_qs = MirrorUrl.objects.filter(protocol__protocol='http',
+                                             active=True,
+                                             mirror__public=True,
+                                             mirror__active=True,
+                                             mirror__isos=True)
+    mirrorurls = sorted(mirrorurls_qs, key=lambda x: x.mirror.name)
     mirrorurls = sorted(mirrorurls, key=lambda x: x.country.name)
     context = {
         'releases': releases,
