@@ -3,7 +3,7 @@ from base64 import b64decode
 
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
@@ -25,7 +25,7 @@ class ReleaseDetailView(DetailView):
     slug_url_kwarg = 'version'
 
 
-def release_torrent(request, version):
+def release_torrent(request: HttpRequest, version: str) -> HttpResponse:
     release = get_object_or_404(Release, version=version)
     if not release.torrent_data:
         raise Http404
@@ -61,7 +61,7 @@ class ReleaseJSONEncoder(DjangoJSONEncoder):
 
 
 @deprecated_json_endpoint('/api/v1/releng/releases/')
-def releases_json(request):
+def releases_json(request: HttpRequest) -> HttpResponse:
     releases = Release.objects.all()
     try:
         latest_version = Release.objects.filter(available=True).values_list(
@@ -95,10 +95,10 @@ def netboot_config(request):
     return render(request, "releng/archlinux.ipxe", context, content_type='text/plain')
 
 
-def netboot_info(request):
+def netboot_info(request: HttpRequest) -> HttpResponse:
     ipxepkg = None
-    ipxepkgs = Package.objects.filter(pkgname='ipxe').all()
-    ipxepkgs = [pkg for pkg in ipxepkgs if not pkg.repo.testing and 'Staging' not in pkg.repo.name]
+    ipxepkgs_qs = Package.objects.filter(pkgname='ipxe').all()
+    ipxepkgs = [pkg for pkg in ipxepkgs_qs if not pkg.repo.testing and 'Staging' not in pkg.repo.name]
 
     if ipxepkgs:
         ipxepkg = ipxepkgs[0]
