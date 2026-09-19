@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.cache import cache_control, cache_page
 
+from api.deprecation import deprecated_json_endpoint
 from devel.models import DeveloperKey, MasterKey, PGPSignature, StaffGroup, UserProfile
 from main.models import Arch, Donor, Repo
 from mirrors.models import MirrorUrl
@@ -137,6 +138,7 @@ def keys(request):
 
 
 @cache_page(1789)
+@deprecated_json_endpoint('/api/v1/master-keys/')
 def keys_json(request):
     profile_ids = UserProfile.allowed_repos.through.objects.values('userprofile_id')
     users = User.objects.filter(
