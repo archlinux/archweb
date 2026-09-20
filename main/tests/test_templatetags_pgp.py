@@ -1,7 +1,7 @@
 from main.templatetags.pgp import format_key, pgp_fingerprint, pgp_key_link
 
 
-def test_format_key():
+def test_format_key() -> None:
     # 40 len case
     pgp_key = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
     pgp_key_len = len(pgp_key)
@@ -26,7 +26,7 @@ def test_format_key():
     assert pgp_key_len == len(format_key(pgp_key))
 
 
-def assert_pgp_key_link(pgp_key):
+def assert_pgp_key_link(pgp_key: str) -> None:
     output = pgp_key_link(int(pgp_key, 16))
     assert pgp_key[2:] in output
     assert "https" in output
@@ -64,7 +64,7 @@ def test_pgp_key_link(settings):
     assert "https" not in pgp_key_link(pgp_key)
 
 
-def test_pgp_fingerprint():
+def test_pgp_fingerprint() -> None:
     assert pgp_fingerprint(None) == ""
     keyid = '423423fD9004FB063E2C81117BFB1108D234DAFZ'
     fingerprint = pgp_fingerprint(keyid)

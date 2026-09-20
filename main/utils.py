@@ -52,7 +52,7 @@ def clear_cache_function(func, args, kwargs):
     cache.delete(key)
 
 
-def empty_response():
+def empty_response() -> HttpResponse:
     empty = HttpResponse('')
     # designating response as 'streaming' forces ConditionalGetMiddleware to
     # not add a 'Content-Length: 0' header

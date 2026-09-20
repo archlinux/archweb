@@ -12,7 +12,7 @@ from main.models import Donor
 command = Command()
 
 
-def test_parse_subject():
+def test_parse_subject() -> None:
     assert command.parse_subject('garbage') is None
 
     # Valid
@@ -21,14 +21,14 @@ def test_parse_subject():
     assert output == 'John Doe'
 
 
-def test_parse_name():
+def test_parse_name() -> None:
     assert command.sanitize_name('1244') == ''
     assert command.sanitize_name('John Doe') == 'John Doe'
     assert command.sanitize_name(' John Doe ') == 'John Doe'
     assert command.sanitize_name('John Doe 23') == 'John Doe'
 
 
-def test_decode_subject():
+def test_decode_subject() -> None:
     text = 'メイル'
     subject = Header(text, 'utf-8')
     assert command.decode_subject(subject) == text
@@ -41,7 +41,7 @@ def test_invalid_args(monkeypatch):
     assert 'Failed to read from STDIN' in str(e.value)
 
 
-def test_invalid_path():
+def test_invalid_path() -> None:
     with pytest.raises(FileNotFoundError) as e:
         call_command('donor_import', '/tmp/non-existant')
     assert 'No such file or directory' in str(e.value)

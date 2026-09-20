@@ -31,17 +31,17 @@ class Todolist(models.Model):
     class Meta:
         get_latest_by = 'created'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @property
-    def stripped_description(self):
+    def stripped_description(self) -> str:
         return self.description.strip()
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return '/todo/%s/' % self.slug
 
-    def get_full_url(self, proto='https'):
+    def get_full_url(self, proto='https') -> str:
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
         return f'{proto}://{domain}{self.get_absolute_url()}'
@@ -87,14 +87,14 @@ class TodolistPackage(models.Model):
         unique_together = (('todolist', 'pkgname', 'arch'),)
         get_latest_by = 'created'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.pkgname
 
     def status_css_class(self):
         return self.get_status_display().lower().replace('-', '')
 
     @property
-    def status_str(self):
+    def status_str(self) -> str:
         return self.STATUS_CHOICES[self.status][1]
 
 

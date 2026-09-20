@@ -6,7 +6,7 @@ alpm = AlpmAPI()
 
 
 @pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
-def test_version():
+def test_version() -> None:
     version = alpm.version()
     assert version
     version = version.split(b'.')
@@ -15,13 +15,13 @@ def test_version():
 
 
 @pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
-def test_vercmp():
+def test_vercmp() -> None:
     assert alpm.vercmp("1.0", "1.0") == 0
     assert alpm.vercmp("1.1", "1.0") == 1
 
 
 @pytest.mark.skipif(not alpm.available, reason="ALPM is unavailable")
-def test_compare_versions():
+def test_compare_versions() -> None:
     assert alpm.compare_versions("1.0", "<=", "2.0")
     assert alpm.compare_versions("1.0", "<", "2.0")
     assert not alpm.compare_versions("1.0", ">=", "2.0")
@@ -34,7 +34,7 @@ def test_compare_versions():
     assert not alpm.compare_versions("1.0", "!=", "1.0")
 
 
-def test_behavior_when_unavailable():
+def test_behavior_when_unavailable() -> None:
     mock_alpm = AlpmAPI()
     mock_alpm.available = False
 

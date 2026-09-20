@@ -82,7 +82,7 @@ def get_tag_info(repo, pkgbase, version):
     return log
 
 
-def add_signoff_comments():
+def add_signoff_comments() -> None:
     logger.info("getting all signoff groups")
     groups = get_signoff_groups()
     logger.info("%d signoff groups found", len(groups))
@@ -105,7 +105,7 @@ def add_signoff_comments():
             logger.exception("error getting Git commits for %s", group.pkgbase)
 
 
-def cleanup_signoff_comments():
+def cleanup_signoff_comments() -> None:
     logger.info("getting all signoff groups")
     groups = get_signoff_groups()
 

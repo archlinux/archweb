@@ -313,7 +313,7 @@ class PackageSignoffGroup:
         return approved_by_signoffs(self.signoffs, self.specification)
 
     @property
-    def completed(self):
+    def completed(self) -> int:
         return sum(1 for s in self.signoffs if not s.revoked)
 
     @property

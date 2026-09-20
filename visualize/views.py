@@ -1,14 +1,14 @@
 import json
 
 from django.db.models import Count, Sum
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.cache import cache_page
 
 from main.models import Arch, Package, Repo
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     return render(request, 'visualize/index.html')
 
 
@@ -59,14 +59,14 @@ def arch_repo_data():
 
 
 @cache_page(1800)
-def by_arch(request):
+def by_arch(request: HttpRequest) -> HttpResponse:
     data = arch_repo_data()
     to_json = json.dumps(data['by_arch'], ensure_ascii=False)
     return HttpResponse(to_json, content_type='application/json')
 
 
 @cache_page(1800)
-def by_repo(request):
+def by_repo(request: HttpRequest) -> HttpResponse:
     data = arch_repo_data()
     to_json = json.dumps(data['by_repo'], ensure_ascii=False)
     return HttpResponse(to_json, content_type='application/json')
