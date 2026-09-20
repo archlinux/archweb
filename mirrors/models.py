@@ -1,5 +1,6 @@
 import socket
 from datetime import timedelta
+from typing import Literal
 from urllib.parse import urlparse
 
 from django.contrib.sites.models import Site
@@ -39,16 +40,16 @@ class Mirror(models.Model):
     class Meta:
         ordering = ('name',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def downstream(self):
         return Mirror.objects.filter(upstream=self).order_by('name')
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return '/mirrors/%s/' % self.name
 
-    def get_full_url(self, proto='https'):
+    def get_full_url(self, proto='https') -> str:
         domain = Site.objects.get_current().domain
         return f'{proto}://{domain}{self.get_absolute_url()}'
 
@@ -61,7 +62,7 @@ class MirrorProtocol(models.Model):
         default=True, help_text="Included by default when building mirror list?")
     created = models.DateTimeField(editable=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.protocol
 
     class Meta:
@@ -84,7 +85,7 @@ class MirrorUrl(models.Model):
     class Meta:
         verbose_name = 'mirror URL'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.url
 
     def address_families(self):
@@ -94,7 +95,7 @@ class MirrorUrl(models.Model):
         return families
 
     @property
-    def hostname(self):
+    def hostname(self) -> str | None:
         return urlparse(self.url).hostname
 
     def clean(self):
@@ -113,10 +114,10 @@ class MirrorUrl(models.Model):
             self.has_ipv4 = False
             self.has_ipv6 = False
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return '/mirrors/%s/%d/' % (self.mirror.name, self.pk)
 
-    def get_full_url(self, proto='https'):
+    def get_full_url(self, proto='https') -> str:
         domain = Site.objects.get_current().domain
         return f'{proto}://{domain}{self.get_absolute_url()}'
 
@@ -127,7 +128,7 @@ class MirrorRsync(models.Model):
     mirror = models.ForeignKey(Mirror, related_name="rsync_ips", on_delete=models.CASCADE)
     created = models.DateTimeField(editable=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.ip)
 
     class Meta:
@@ -145,7 +146,7 @@ class CheckLocation(models.Model):
     class Meta:
         ordering = ('hostname', 'source_ip')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.hostname
 
     @property
@@ -155,7 +156,7 @@ class CheckLocation(models.Model):
         return families[0]
 
     @property
-    def ip_version(self):
+    def ip_version(self) -> Literal[4, 6] | None:
         '''Returns integer '4' or '6'.'''
         if self.family == socket.AF_INET6:
             return 6
@@ -174,7 +175,7 @@ class MirrorLog(models.Model):
     error = models.TextField(blank=True, default='')
 
     @property
-    def delay(self):
+    def delay(self) -> timedelta | None:
         if self.last_sync is None:
             return None
         # sanity check, this shouldn't happen
@@ -182,7 +183,7 @@ class MirrorLog(models.Model):
             return timedelta()
         return self.check_time - self.last_sync
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Check of {self.url.url} at {self.check_time}"
 
     class Meta:

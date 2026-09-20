@@ -9,7 +9,7 @@ class Feed(models.Model):
     website = models.CharField(max_length=200, null=True, blank=True)
     website_rss = models.CharField(max_length=200, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     class Meta:
@@ -28,10 +28,10 @@ class FeedItem(models.Model):
     publishdate = models.DateTimeField("publish date", db_index=True)
     url = models.CharField('URL', max_length=255)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return self.url
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     class Meta:
@@ -49,7 +49,7 @@ class Planet(models.Model):
     name = models.CharField(max_length=255)
     website = models.CharField(max_length=200, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:

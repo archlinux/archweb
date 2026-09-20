@@ -88,7 +88,7 @@ class SplitPackagesSitemap(Sitemap):
 
 
 class NewsSitemap(Sitemap):
-    def __init__(self):
+    def __init__(self) -> None:
         now = datetime.now(timezone.utc)
         self.one_day_ago = now - timedelta(days=1)
         self.one_week_ago = now - timedelta(days=7)
@@ -143,7 +143,7 @@ class ReleasesSitemap(Sitemap):
 class TodolistSitemap(Sitemap):
     priority = "0.4"
 
-    def __init__(self):
+    def __init__(self) -> None:
         now = datetime.now(timezone.utc)
         self.two_weeks_ago = now - timedelta(days=14)
 

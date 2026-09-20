@@ -1,12 +1,15 @@
+from collections.abc import Generator
+
 import pytest
 from django.contrib.auth.models import User
+from django.test import Client
 
 from devel.reports import Linkify
 from packages.models import PackageRelation
 
 
 @pytest.fixture
-def devel_client(client, arches, repos, package):
+def devel_client(client: Client, arches: None, repos: None, package: None) -> Generator[Client]:
     password = 'test'
     user = User.objects.create_superuser('admin',
                                          'admin@archlinux.org',
@@ -21,57 +24,57 @@ def devel_client(client, arches, repos, package):
     user.delete()
 
 
-def test_overview(devel_client):
+def test_overview(devel_client: Client) -> None:
     response = devel_client.get('/devel/')
     assert response.status_code == 200
 
 
-def test_reports_old(devel_client):
+def test_reports_old(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/old', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_outofdate(devel_client):
+def test_reports_outofdate(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/long-out-of-date', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_big(devel_client):
+def test_reports_big(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/big', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_badcompression(devel_client):
+def test_reports_badcompression(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/badcompression', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_uncompressed_man(devel_client):
+def test_reports_uncompressed_man(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/uncompressed-man', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_uncompressed_info(devel_client):
+def test_reports_uncompressed_info(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/uncompressed-info', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_unneeded_orphans(devel_client):
+def test_reports_unneeded_orphans(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/unneeded-orphans', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_mismatched_signature(devel_client):
+def test_reports_mismatched_signature(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/mismatched-signature', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_signature_time(devel_client):
+def test_reports_signature_time(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/signature-time', follow=True)
     assert response.status_code == 200
 
 
-def test_reports_pkgbases(devel_client):
+def test_reports_pkgbases(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/old/pkgbases/')
     assert response.status_code == 200
     assert response['Content-Type'] == 'text/plain'
@@ -83,12 +86,12 @@ def test_reports_pkgbases_with_username(devel_client):
     assert response['Content-Type'] == 'text/plain'
 
 
-def test_reports_pkgbases_invalid_report(devel_client):
+def test_reports_pkgbases_invalid_report(devel_client: Client) -> None:
     response = devel_client.get('/devel/reports/nonexistent/pkgbases/')
     assert response.status_code == 404
 
 
-def test_report_filtered_by_maintainer(devel_client):
+def test_report_filtered_by_maintainer(devel_client: Client) -> None:
     user = User.objects.get(username='admin')
     PackageRelation.objects.create(
         pkgbase='linux',
@@ -104,7 +107,7 @@ def test_report_filtered_by_maintainer(devel_client):
     assert pkgbases == {'linux'}
 
 
-def test_report_pkgbases_filtered_by_maintainer(devel_client):
+def test_report_pkgbases_filtered_by_maintainer(devel_client: Client) -> None:
     user = User.objects.get(username='admin')
     PackageRelation.objects.create(
         pkgbase='linux',
@@ -118,7 +121,7 @@ def test_report_pkgbases_filtered_by_maintainer(devel_client):
     assert response.content.decode().strip() == 'linux'
 
 
-def test_linkify_escapes_html():
+def test_linkify_escapes_html() -> None:
     link = Linkify(href='"><script>alert(1)</script>', title='<img onerror=alert(1)>', desc='<b>xss</b>')
     result = str(link)
     assert '<script>' not in result
