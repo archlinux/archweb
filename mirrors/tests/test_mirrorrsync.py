@@ -26,6 +26,6 @@ def test_ipv4(mirror):
 
 
 def test_invalid(mirror):
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError) as e:  # noqa: PT011
         MirrorRsync.objects.create(ip="8.8.8.8.8", mirror=mirror)
     assert 'IPv4 Address with more than 4 bytes' in str(e)
