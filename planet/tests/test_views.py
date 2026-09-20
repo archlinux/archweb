@@ -1,19 +1,22 @@
 from datetime import datetime, timezone
 
 import feedparser
+import pytest
 from django.test import Client
 
 from planet.models import FeedItem
 
 
-def test_feed(db: None, client: Client) -> None:
+@pytest.mark.django_db
+def test_feed(client: Client) -> None:
     response = client.get('/feeds/planet/')
     assert response.status_code == 200
     feed = feedparser.parse(response.content)
     assert feed['feed']['title'] == 'Planet Arch Linux'
 
 
-def test_feed_item(db, client):
+@pytest.mark.django_db
+def test_feed_item(client):
     publishdate = datetime.now(timezone.utc)
     FeedItem.objects.create(publishdate=publishdate, title='A title', summary='A summary', author='John Doe')
 
@@ -26,6 +29,7 @@ def test_feed_item(db, client):
     assert feed_entry['author'] == 'John Doe'
 
 
-def test_planet(db: None, client: Client) -> None:
+@pytest.mark.django_db
+def test_planet(client: Client) -> None:
     response = client.get('/planet/')
     assert response.status_code == 200
