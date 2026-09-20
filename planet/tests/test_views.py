@@ -16,7 +16,7 @@ def test_feed(client: Client) -> None:
 
 
 @pytest.mark.django_db
-def test_feed_item(client):
+def test_feed_item(client: Client) -> None:
     publishdate = datetime.now(timezone.utc)
     FeedItem.objects.create(publishdate=publishdate, title='A title', summary='A summary', author='John Doe')
 
