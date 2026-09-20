@@ -70,6 +70,7 @@ select = [
     "ISC",     # flake8-implicit-str-concat
     "PIE",     # flake8-pie
     "PLE",     # pylint errors
+    "PT",      # flake8-pytest-style
     "RSE",     # flake8-raise
     "RUF",     # ruff rules
     "T10",     # flake8-debugger

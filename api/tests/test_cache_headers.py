@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.parametrize('url,expected', [
+@pytest.mark.parametrize(('url', 'expected'), [
     ('/api/v1/mirrors/status/', ['max-age=311']),
     ('/api/v1/mirrors/status/tier/1/', ['max-age=311']),
     ('/api/v1/mirrors/locations/', ['max-age=317']),
