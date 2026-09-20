@@ -50,7 +50,7 @@ class Arch(models.Model):
     required_signoffs = models.PositiveIntegerField(
         default=2, help_text="Number of signoffs required for packages of this architecture")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def __lt__(self, other):
@@ -75,7 +75,7 @@ class Repo(models.Model):
     bugs_category = models.SmallIntegerField(
         default=2, help_text="Flyspray category ID for this repository.")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     def __lt__(self, other):
@@ -116,11 +116,11 @@ class Package(models.Model):
         get_latest_by = 'last_update'
         unique_together = (('pkgname', 'repo', 'arch'),)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.pkgname
 
     @property
-    def full_version(self):
+    def full_version(self) -> str:
         if self.epoch > 0:
             return f'{self.epoch}:{self.pkgver}-{self.pkgrel}'
         return f'{self.pkgver}-{self.pkgrel}'
@@ -128,13 +128,13 @@ class Package(models.Model):
     def get_absolute_url(self):
         return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
-    def get_full_url(self, proto='https'):
+    def get_full_url(self, proto='https') -> str:
         '''get a URL suitable for things like email including the domain'''
         domain = Site.objects.get_current().domain
         return f'{proto}://{domain}{self.get_absolute_url()}'
 
     @property
-    def updated_mins_ago(self):
+    def updated_mins_ago(self) -> int:
         # Note: This uses the archweb metadata update time, not when the
         # package was actually pushed to any repo. We don't have that
         # easily available without adding more fields and scripts.
@@ -143,11 +143,11 @@ class Package(models.Model):
         return int((now - self.last_update).total_seconds()) // 60
 
     @property
-    def is_recent(self):
+    def is_recent(self) -> bool:
         return self.updated_mins_ago <= 90
 
     @property
-    def signature(self):
+    def signature(self) -> SignatureWrapper | None:
         if not self.signature_bytes:
             return None
         data = BinaryData(self.signature_bytes)
@@ -155,7 +155,7 @@ class Package(models.Model):
         return SignatureWrapper(packets[0])
 
     @property
-    def signer(self):
+    def signer(self) -> User | None:
         sig = self.signature
         if sig and sig.key_id:
             try:
@@ -439,7 +439,7 @@ class PackageFile(models.Model):
     directory = models.CharField(max_length=1024)
     filename = models.CharField(max_length=1024, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{}{}".format(self.directory, self.filename or '')
 
     class Meta:
@@ -475,10 +475,10 @@ class RebuilderdStatus(models.Model):
     build_id = models.IntegerField(null=True, blank=True)
 
     @property
-    def status_str(self):
+    def status_str(self) -> str:
         return self.REBUILDERD_STATUSES[self.status][1]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"pkg={self.pkg}, status={self.status_str}"
 
 
@@ -487,7 +487,7 @@ class Soname(models.Model):
     pkg = models.ForeignKey(Package, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"pkg={self.pkg}, name={self.name}"
 
 

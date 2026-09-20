@@ -29,7 +29,7 @@ class BatchWritesWrapper:
             self.outfile.write(b''.join(buf))
             self.buf = []
 
-    def flush(self):
+    def flush(self) -> None:
         self.outfile.write(b''.join(self.buf))
         self.outfile.flush()
 

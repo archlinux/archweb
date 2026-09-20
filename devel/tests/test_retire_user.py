@@ -28,19 +28,19 @@ def test_user(arches, repos, groups):
     user.delete()
 
 
-def test_invalid_args():
+def test_invalid_args() -> None:
     with pytest.raises(CommandError) as e:
         call_command('retire_user')
     assert 'missing argument user.' in str(e)
 
 
-def test_user_not_found(db):
+def test_user_not_found(db: None) -> None:
     with pytest.raises(CommandError) as e:
         call_command('retire_user', 'user1')
     assert "Failed to find User 'user1'" in str(e)
 
 
-def test_userprofile_missing(db):
+def test_userprofile_missing(db: None) -> None:
     user = User.objects.create(username='user2', first_name="Jane",
                                last_name="User2", email="user2@example.com")
 
@@ -50,13 +50,13 @@ def test_userprofile_missing(db):
     user.delete()
 
 
-def test_user_inactive(test_user):
+def test_user_inactive(test_user: User) -> None:
     call_command('retire_user', test_user.username)
     user = User.objects.get(username=test_user.username)
     assert not user.is_active
 
 
-def test_user_moved_groups(test_user):
+def test_user_moved_groups(test_user: User) -> None:
     test_user.groups.add(Group.objects.get(name='Developers'))
     test_user.save()
 

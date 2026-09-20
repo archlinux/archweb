@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
 from django.views.decorators.http import require_POST
@@ -78,14 +78,14 @@ class NewsDeleteView(DeleteView):
     success_url = "/news/"
 
 
-def view_redirect(request, object_id):
+def view_redirect(request: HttpRequest, object_id: int) -> HttpResponse:
     newsitem = get_object_or_404(News, pk=object_id)
     return redirect(newsitem, permanent=True)
 
 
 @login_required
 @require_POST
-def preview(request):
+def preview(request: HttpRequest) -> HttpResponse:
     data = request.POST.get('data', '')
     markup = parse_markdown(data)
     return HttpResponse(markup)

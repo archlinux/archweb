@@ -187,7 +187,7 @@ class UserFinder:
         self.pgp_cache[pgp_key] = user
         return user
 
-    def clear_cache(self):
+    def clear_cache(self) -> None:
         self.cache = {}
         self.username_cache = {}
         self.email_cache = {}
