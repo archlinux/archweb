@@ -22,7 +22,7 @@ class LimitedSizeDict(OrderedDict):
         super().__setitem__(key, value)
         self.check_item_limits()
 
-    def check_item_limits(self):
+    def check_item_limits(self) -> None:
         if self.size_limit is None:
             return
         while len(self) > self.size_limit:

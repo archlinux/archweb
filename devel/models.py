@@ -66,14 +66,14 @@ class UserProfile(models.Model):
         verbose_name = 'additional profile data'
         verbose_name_plural = 'additional profile data'
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str | None:
         user = self.user
         group = StaffGroup.objects.filter(group=user.groups.all().first()).get()
         if group:
             return f'{group.get_absolute_url()}#{user.username}'
         return None
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user}"
 
 
@@ -114,7 +114,7 @@ class MasterKey(models.Model):
         ordering = ('created',)
         get_latest_by = 'created'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.owner.get_full_name()}, created {self.created}'
 
 
@@ -145,7 +145,7 @@ class PGPSignature(models.Model):
         get_latest_by = 'created'
         verbose_name = 'PGP signature'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.signer} → {self.signee}'
 
 

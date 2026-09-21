@@ -3,7 +3,7 @@ from datetime import timedelta
 from mirrors.templatetags.mirror_status import duration, hours, percentage
 
 
-def test_duration():
+def test_duration() -> None:
     assert duration(None) == ''
 
     assert duration(timedelta(hours=5)) == '5:00'
@@ -12,7 +12,7 @@ def test_duration():
     assert duration(timedelta(microseconds=9999)) == '0:00'
 
 
-def test_hours():
+def test_hours() -> None:
     assert hours(None) == ''
 
     assert hours(timedelta(hours=5)) == '5 hours'
@@ -20,7 +20,7 @@ def test_hours():
     assert hours(timedelta(seconds=60 * 60)) == '1 hour'
 
 
-def test_percentage():
+def test_percentage() -> None:
     assert percentage(None) == ''
     assert percentage(10.0) == '1000.0%'
     assert percentage(10.0, 2) == '1000.00%'

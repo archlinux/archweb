@@ -18,7 +18,7 @@ SIG_DATA = [
 ]
 
 
-def test_pgp_import_error():
+def test_pgp_import_error() -> None:
     with pytest.raises(CommandError) as e:
         call_command('pgp_import')
     assert 'keyring_path' in str(e)

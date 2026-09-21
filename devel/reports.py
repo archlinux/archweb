@@ -20,7 +20,7 @@ class Linkify:
         self.title = title
         self.desc = desc
 
-    def __str__(self):
+    def __str__(self) -> str:
         return format_html('<a href="{href}" title="{title}">{desc}</a>',
                            href=self.href, title=self.title, desc=self.desc)
 

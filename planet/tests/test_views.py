@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 
 import feedparser
+from django.test import Client
 
 from planet.models import FeedItem
 
 
-def test_feed(db, client):
+def test_feed(db: None, client: Client) -> None:
     response = client.get('/feeds/planet/')
     assert response.status_code == 200
     feed = feedparser.parse(response.content)
@@ -25,6 +26,6 @@ def test_feed_item(db, client):
     assert feed_entry['author'] == 'John Doe'
 
 
-def test_planet(db, client):
+def test_planet(db: None, client: Client) -> None:
     response = client.get('/planet/')
     assert response.status_code == 200
