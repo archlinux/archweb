@@ -39,7 +39,7 @@ class AlpmAPI:
         '>=': operator.ge,
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.alpm = ALPM
         self.available = ALPM is not None
 
@@ -63,7 +63,7 @@ class AlpmAPI:
         return func(res, 0)
 
 
-def main():  # pragma: no cover
+def main() -> None:  # pragma: no cover
     api = AlpmAPI()
     print(api.version())
     print(api.vercmp(1, 2))

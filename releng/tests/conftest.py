@@ -1,4 +1,5 @@
 from base64 import b64encode
+from collections.abc import Generator
 from datetime import datetime, timezone
 
 import pytest
@@ -15,7 +16,7 @@ WKD_EMAIL = 'pierre@archlinux.de'
 
 
 @pytest.fixture
-def release(db):
+def release(db: None) -> Generator[Release, None, None]:
     release = Release.objects.create(
         release_date=datetime.now(),
         version=VERSION,
@@ -28,7 +29,7 @@ def release(db):
 
 
 @pytest.fixture
-def torrent_data():
+def torrent_data() -> str:
     data = {
         'comment': 'comment',
         'created_by': 'Arch Linux',

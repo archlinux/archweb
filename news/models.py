@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from django.db.models.signals import pre_save
-from django.utils.safestring import mark_safe
+from django.utils.safestring import SafeText, mark_safe
 from django.utils.timezone import now
 
 from main.utils import parse_markdown
@@ -20,13 +20,13 @@ class News(models.Model):
     safe_mode = models.BooleanField(default=True)
     send_announce = models.BooleanField(default=True)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return '/news/%s/' % self.slug
 
-    def html(self):
+    def html(self) -> SafeText:
         return mark_safe(parse_markdown(self.content, not self.safe_mode))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     class Meta:

@@ -91,12 +91,12 @@ class SignoffSpecification(models.Model):
     objects = SignoffSpecificationManager()
 
     @property
-    def full_version(self):
+    def full_version(self) -> str:
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
         return f'{self.pkgver}-{self.pkgrel}'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.pkgbase}-{self.full_version}'
 
 
@@ -162,12 +162,12 @@ class Signoff(models.Model):
                                                arch=self.arch, repo=self.repo)
 
     @property
-    def full_version(self):
+    def full_version(self) -> str:
         if self.epoch > 0:
             return '%d:%s-%s' % (self.epoch, self.pkgver, self.pkgrel)
         return f'{self.pkgver}-{self.pkgrel}'
 
-    def __str__(self):
+    def __str__(self) -> str:
         revoked = ''
         if self.revoked:
             revoked = ' (revoked)'
@@ -197,13 +197,13 @@ class FlagRequest(models.Model):
     class Meta:
         get_latest_by = 'created'
 
-    def who(self):
+    def who(self) -> str:
         if self.user:
             return self.user.get_full_name()
         return self.user_email
 
     @property
-    def full_version(self):
+    def full_version(self) -> str:
         # Difference here from other implementations at the moment: we need to
         # handle the case of pkgver and pkgrel being null as this table didn't
         # originally have version columns.
@@ -220,7 +220,7 @@ class FlagRequest(models.Model):
             repo__staging=self.repo.staging).order_by(
             'pkgname', 'repo__name', 'arch__name')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.pkgbase} from {self.who()} on {self.created}'
 
 
@@ -304,13 +304,13 @@ class Update(models.Model):
     class Meta:
         get_latest_by = 'created'
 
-    def is_addition(self):
+    def is_addition(self) -> bool:
         return self.action_flag == ADDITION
 
-    def is_change(self):
+    def is_change(self) -> bool:
         return self.action_flag == CHANGE
 
-    def is_deletion(self):
+    def is_deletion(self) -> bool:
         return self.action_flag == DELETION
 
     @property
@@ -341,10 +341,10 @@ class Update(models.Model):
             pkgs = pkgs.filter(arch__in=arches)
         return pkgs
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return f'/packages/{self.repo.name.lower()}/{self.arch.name}/{self.pkgname}/'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.get_action_flag_display()} of {self.pkgname} on {self.created}'
 
 
@@ -493,7 +493,7 @@ class Provision(RelatedToBase):
     # comparison must be '=' for provides
 
     @property
-    def comparison(self):
+    def comparison(self) -> str | None:
         if self.version is not None and self.version != '':
             return '='
         return None
