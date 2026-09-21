@@ -4,17 +4,17 @@ from functools import reduce
 
 from django import forms
 from django.contrib.auth.models import User
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from django.views.generic import ListView
 
+from api.deprecation import deprecated_json_endpoint
 from devel.models import UserProfile
 from main.models import Arch, Package, Repo
 from main.utils import empty_response, make_choice
 
 from ..models import PackageRelation
-from ..utils import PackageJSONEncoder, attach_maintainers
+from ..utils import PackageJSONEncoder
 
 
 class GroupSearchForm(forms.Form):
@@ -208,51 +208,10 @@ def group_search_json(request) -> HttpResponse:
     return HttpResponse(to_json, content_type='application/json')
 
 
+@deprecated_json_endpoint('/api/v1/packages/search/')
 def search_json(request):
-    limit = 250
-
-    container = {
-        'version': 2,
-        'limit': limit,
-        'valid': False,
-        'results': [],
-    }
-
-    if request.GET:
-        form = PackageSearchForm(data=request.GET,
-                                 show_staging=request.user.is_authenticated)
-        if form.is_valid():
-            form_limit = form.cleaned_data.get('limit', limit)
-            limit = min(limit, form_limit) if form_limit else limit
-            container['limit'] = limit
-
-            packages = Package.objects.select_related('arch', 'repo', 'packager')
-            if not request.user.is_authenticated:
-                packages = packages.filter(repo__staging=False)
-            packages = parse_form(form, packages)
-
-            paginator = Paginator(packages, limit)
-            container['num_pages'] = paginator.num_pages
-            container['count'] = paginator.count
-
-            page = form.cleaned_data.get('page')
-            try:
-                page = int(page) if page else 1
-            except ValueError:
-                return HttpResponseBadRequest('page parameter is not a number')
-            container['page'] = page
-            try:
-                packages = paginator.page(page)
-            except PageNotAnInteger:
-                packages = paginator.page(1)
-            except EmptyPage:
-                packages = paginator.page(paginator.num_pages)
-
-            attach_maintainers(packages)
-            container['results'] = packages
-            container['valid'] = True
-
-    to_json = json.dumps(container, ensure_ascii=False, cls=PackageJSONEncoder)
-    return HttpResponse(to_json, content_type='application/json')
+    # Delegate to the API v1 implementation.
+    from api.routes.packages import search
+    return search(request)
 
 # vim: set ts=4 sw=4 et:

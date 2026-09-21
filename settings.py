@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     'django_countries',
 
     'archlinux_common_style.django',
+    'ninja',
 
     'main',
     'mirrors',
