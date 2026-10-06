@@ -137,3 +137,35 @@ def test_groups_details(client, package):
 def test_stale_relations(developer_client):
     response = developer_client.get('/packages/stale_relations/')
     assert response.status_code == 200
+
+
+def test_packages_detail_rebuilderd_buildlog_link(developer_client, package):
+    from main.models import RebuilderdStatus
+    from packages.models import Package
+
+    pkg = Package.objects.get(pkgname='linux')
+    rb = RebuilderdStatus.objects.create(
+        pkg=pkg,
+        pkgname=pkg.pkgname,
+        pkgver=pkg.pkgver,
+        pkgrel=pkg.pkgrel,
+        epoch=pkg.epoch,
+        arch=pkg.arch,
+        repo=pkg.repo,
+        status=RebuilderdStatus.GOOD,
+        build_id=12345,
+    )
+
+    response = developer_client.get('/packages/core/x86_64/linux/')
+    assert response.status_code == 200
+    content = response.content.decode('utf-8')
+    assert 'https://reproducible.archlinux.org/api/v0/builds/12345/log' in content
+    assert 'Diffoscope' not in content
+
+    rb.status = RebuilderdStatus.BAD
+    rb.save()
+    response = developer_client.get('/packages/core/x86_64/linux/')
+    assert response.status_code == 200
+    content = response.content.decode('utf-8')
+    assert 'https://reproducible.archlinux.org/api/v0/builds/12345/log' in content
+    assert 'https://reproducible.archlinux.org/api/v0/builds/12345/diffoscope' in content
