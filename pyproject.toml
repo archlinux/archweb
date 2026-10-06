@@ -19,7 +19,7 @@ dependencies = [
     "pgpdump==1.5",
     "requests==2.34.2",
     "sqlparse==0.6.0",
-    "django-ninja==1.6.2",
+    "django-ninja==1.7.1",
 ]
 
 [dependency-groups]
