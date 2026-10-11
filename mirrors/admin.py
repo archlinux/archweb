@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from urllib.parse import urlparse, urlunsplit
 
 from django import forms
@@ -75,7 +75,7 @@ class MirrorAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         if '~~~' in obj.notes:
-            date = datetime.utcnow().strftime('%Y-%m-%d')
+            date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
             usertext = request.user.get_full_name()
             obj.notes = obj.notes.replace('~~~', f'{date} ({usertext})')
         obj.save()
