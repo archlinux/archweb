@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block script_block %}
-<script type="text/javascript" nonce="{{ CSP_NONCE }}">
+<script type="text/javascript" nonce="{{ csp_nonce }}">
 function ajaxifyFiles() {
     filelink.addEventListener("click", function(event) {
 	event.preventDefault();
