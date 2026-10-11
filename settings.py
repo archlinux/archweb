@@ -2,7 +2,7 @@
 import sys
 from os import path
 
-from csp.constants import NONCE, SELF
+from django.utils.csp import CSP
 
 # Set the debug values
 DEBUG = False
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    'csp.middleware.CSPMiddleware',
+    'django.middleware.csp.ContentSecurityPolicyMiddleware',
 ]
 
 # Base of the URL hierarchy
@@ -97,15 +97,13 @@ SECURE_REFERRER_POLICY = 'strict-origin'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # CSP Settings
-CONTENT_SECURITY_POLICY = {
-    "DIRECTIVES": {
-        "default-src": [SELF],
-        "script-src": [SELF, NONCE],
-        "img-src": [SELF, "data:"],
-        "base-uri": ["'none'"],
-        "form-action": [SELF],
-        "frame-ancestors": ["'none'"],
-    }
+SECURE_CSP = {
+    "default-src": [CSP.SELF],
+    "script-src": [CSP.SELF, CSP.NONCE],
+    "img-src": [CSP.SELF, "data:"],
+    "base-uri": [CSP.NONE],
+    "form-action": [CSP.SELF],
+    "frame-ancestors": [CSP.NONE],
 }
 
 # Use new test runner
@@ -252,7 +250,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.template.context_processors.debug',
                 'django.contrib.messages.context_processors.messages',
-                'csp.context_processors.nonce',
+                'django.template.context_processors.csp',
                 'main.context_processors.mastodon_link',
             ],
             "loaders": [
