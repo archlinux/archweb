@@ -86,7 +86,7 @@ requires-dist = [
     { name = "django-ninja", specifier = "==1.7.1" },
     { name = "django-prometheus", specifier = "==2.5.0" },
     { name = "feedparser", specifier = "==6.0.14" },
-    { name = "ipy", specifier = "==1.1" },
+    { name = "ipy", specifier = "==1.2" },
     { name = "jsmin", specifier = "==3.0.1" },
     { name = "markdown", specifier = "==3.10.3" },
     { name = "parse", specifier = "==1.22.2" },
@@ -540,9 +540,12 @@ wheels = [
 
 [[package]]
 name = "ipy"
-version = "1.1"
+version = "1.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/64/a4/9c0d88d95666ff1571d7baec6c5e26abc08051801feb6e6ddf40f6027e22/IPy-1.01.tar.gz", hash = "sha256:edeca741dea2d54aca568fa23740288c3fe86c0f3ea700344571e9ef14a7cc1a", size = 33641, upload-time = "2020-12-01T20:33:09.808Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d1/49/de558c2c8581f5860b9696467fb893c7141501daf00ea14bb01fefd360e1/ipy-1.2.tar.gz", hash = "sha256:c145e664e84642fac875a043fab1a0b50bd65297385dc438dbfe25f24e65ac61", size = 33918, upload-time = "2026-10-08T06:31:58.293Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b3/31/88ed3ccd8cd387e61dd4690b7f2141828a831e487353e9c200b31a7dfbcb/ipy-1.2-py3-none-any.whl", hash = "sha256:cbf616de8d5e6da3f74f759220faf99782ee59ea29474b6c64ba387307c6cf26", size = 19838, upload-time = "2026-10-08T06:31:57.003Z" },
+]
 
 [[package]]
 name = "jsmin"
