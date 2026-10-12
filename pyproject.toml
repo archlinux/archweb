@@ -12,7 +12,7 @@ dependencies = [
     "django-csp==4.0",
     "django-prometheus==2.5.0",
     "feedparser==6.0.14",
-    "ipy==1.1",
+    "ipy==1.2",
     "jsmin==3.0.1",
     "markdown==3.10.3",
     "parse==1.22.2",
