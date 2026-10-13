@@ -23,7 +23,7 @@
 {% endblock %}
 
 {% block script_block %}
-<script type="text/javascript" nonce={{ CSP_NONCE }} defer>
+<script type="text/javascript" nonce={{ csp_nonce }} defer>
   const copybutton = document.getElementById('copybutton');
   copybutton.addEventListener('click', function() {
     const text = document.getElementById('serverinfo').textContent;

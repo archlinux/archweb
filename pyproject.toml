@@ -9,7 +9,6 @@ dependencies = [
     "bleach==6.4.0",
     "django==6.0.9",
     "django-countries==9.1.0",
-    "django-csp==4.0",
     "django-prometheus==2.5.0",
     "feedparser==6.0.14",
     "ipy==1.2",

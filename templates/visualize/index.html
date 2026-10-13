@@ -28,7 +28,7 @@
 {% block script_block %}
 {% load cdn %}{% d3js %}
 <script type="text/javascript" src="{% static "visualize.js" %}"></script>
-<script type="text/javascript" nonce={{ CSP_NONCE }}>
+<script type="text/javascript" nonce={{ csp_nonce }}>
 document.addEventListener("DOMContentLoaded", function() {
     const orderings = {
         "repo": { url: "{% url 'visualize-byrepo' %}", color_attr: "repo" },
