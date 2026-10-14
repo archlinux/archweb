@@ -20,10 +20,10 @@
                     <a href="{% man_link pkg %}" title="List manpages in {{ pkg.pkgname }}">Manual Pages</a>
                 </li>
                 <li><a href="{% sec_link pkg %}" title="View security issues for {{ pkg.pkgname }}">Security Issues</a></li>
-        	{% if user.is_authenticated and notreproducible %}<tr>
+        	{% if user.is_authenticated and rbstatus and rbstatus.build_id %}
                 <li>
-		    <a href="{% rebuilderd_buildlog_link rbstatus %}" title="View build log for {{ pkg.pkgname }}">Build log</a> /
-		    <a href="{% rebuilderd_diffoscope_link rbstatus %}" title="View diffoscope result for {{ pkg.pkgname }}">Diffoscope</a>
+		    <a href="{% rebuilderd_buildlog_link rbstatus %}" title="View build log for {{ pkg.pkgname }}">Build log</a>{% if notreproducible %} /
+		    <a href="{% rebuilderd_diffoscope_link rbstatus %}" title="View diffoscope result for {{ pkg.pkgname }}">Diffoscope</a>{% endif %}
 		</li>
 		{% endif %}
                 {% if pkg.flag_date %}
