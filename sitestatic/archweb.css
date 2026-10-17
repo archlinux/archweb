@@ -48,12 +48,14 @@ pre {
     background: #dfd;
     padding: 0.5em;
     margin: 1em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
     pre code {
         display: block;
         background: none;
-        overflow: auto;
+        overflow: visible;
     }
 
 blockquote {
