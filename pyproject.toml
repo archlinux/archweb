@@ -14,7 +14,7 @@ dependencies = [
     "ipy==1.2",
     "jsmin==3.0.1",
     "markdown==3.11.2",
-    "parse==1.22.3",
+    "parse==1.22.4",
     "pgpdump==1.5",
     "requests==2.34.2",
     "sqlparse==0.6.0",
