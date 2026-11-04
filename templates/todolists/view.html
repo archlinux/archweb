@@ -102,7 +102,7 @@
                     <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
                     {% endif %}
                 </td>
-                <td>
+                <td{% if pkg.user %} class="epoch-{{ pkg.last_modified|date:'U' }}"{% endif %}>
                   {% if pkg.user %}
                   {% if user.is_authenticated %}
                   {{ pkg.user }} <span title="{{ pkg.last_modified|timezone:user.userprofile.time_zone|date:"Y-m-d H:i T" }}">({{ pkg.last_modified|naturaltime }})</span>
@@ -126,7 +126,7 @@ $(document).ready(function() {
     $(".results").tablesorter({
         widgets: ['zebra'],
         sortList: [[2,0], [0,0]],
-        headers: { 6: { sorter: 'todostatus' } }
+        headers: { 6: { sorter: 'todostatus' }, 7: { sorter: 'epochdate' } }
     });
 });
 $(document).ready(function() {
