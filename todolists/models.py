@@ -54,6 +54,13 @@ class Todolist(models.Model):
                 'pkgname', 'arch')
         return self._packages
 
+    def missing_package_names(self):
+        '''Names from the raw package list that did not end up in the list,
+        e.g. because they are not found in any repository.'''
+        present = {tp.pkgname for tp in self.packages()}
+        names = dict.fromkeys(s.strip() for s in self.raw.splitlines())
+        return [name for name in names if name and name not in present]
+
     @property
     def kind_str(self):
         '''Todo list kind as str'''

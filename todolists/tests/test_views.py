@@ -105,3 +105,19 @@ def test_add_view(developer_client):
 def test_edit_view(developer_client, todolist):
     response = developer_client.get(f'/todo/{todolist.slug}/edit/')
     assert response.status_code == 200
+
+
+def test_detail_missing_packages_warning(developer_client, todolist, todolistpackage):
+    todolist.raw = f'{todolistpackage.pkgname}\nnonexistent-pkg'
+    todolist.save()
+    response = developer_client.get(todolist.get_absolute_url())
+    content = response.content.decode()
+    assert 'todo-warning' in content
+    assert 'nonexistent-pkg' in content
+
+
+def test_detail_no_missing_packages_warning(developer_client, todolist, todolistpackage):
+    todolist.raw = todolistpackage.pkgname
+    todolist.save()
+    response = developer_client.get(todolist.get_absolute_url())
+    assert 'todo-warning' not in response.content.decode()

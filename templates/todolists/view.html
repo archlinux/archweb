@@ -31,6 +31,17 @@
         {{list.stripped_description|default:'(no description)'|urlize|linebreaks}}
     </div>
 
+    {% with missing=list.missing_package_names %}
+    {% if missing %}
+    <div class="todo-warning">
+        <strong>Warning:</strong> The following package name{{ missing|pluralize }}
+        {{ missing|length|pluralize:"was,were" }} not found in any stable repository and
+        {{ missing|length|pluralize:"is,are" }} not part of this list:
+        {{ missing|join:", " }}
+    </div>
+    {% endif %}
+    {% endwith %}
+
     <div class="todo-pkgbases">
         <p><a href="pkgbases/">List of pkgbase values</a></p>
     </div>

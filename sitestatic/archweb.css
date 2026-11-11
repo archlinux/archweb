@@ -1094,6 +1094,15 @@ ul.admin-actions {
     border-top: 1px dotted #bbb;
 }
 
+.todo-warning {
+    margin: 1em 0;
+    padding: 4px 6px;
+
+    color: #8a6d3b;
+    background: #fcf8e3;
+    border: 1px solid #faebcc;
+}
+
 .todo-list h4 {
     margin-top: 0;
     margin-bottom: 0.4em;

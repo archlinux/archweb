@@ -53,3 +53,13 @@ def test_todolist_complete(admin_user, todolist, todolistpackage, mailoutbox):
     todolistpackage.save()
     assert len(mailoutbox) == 1
     todopkg.delete()
+
+
+def test_missing_package_names(admin_user, todolist, todolistpackage):
+    todolist.raw = f'{todolistpackage.pkgname}\r\nnonexistent\n\n nonexistent \nother\n'
+    assert todolist.missing_package_names() == ['nonexistent', 'other']
+
+
+def test_missing_package_names_none(admin_user, todolist, todolistpackage):
+    todolist.raw = todolistpackage.pkgname
+    assert todolist.missing_package_names() == []
