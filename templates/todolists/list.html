@@ -40,10 +40,10 @@
                 <td>{{ list.created|date:"Y-m-d" }}</td>
                 <td>{{ list.creator.get_full_name }}</td>
                 <td>{{ list.pkg_count }}</td>
-                <td>{{ list.incomplete_count }}</td>
+                <td>{% if list.current_stage.per_package %}{{ list.incomplete_count }}{% endif %}</td>
                 <td>{{ list.kind_str }}</td>
-                <td>{% if list.incomplete_count == 0 %}<span class="complete">Complete</span>
-                    {% else %}<span class="incomplete">Incomplete</span>{% endif %}</td>
+                <td>{% if list.finished %}<span class="complete">Complete</span>
+                    {% else %}<span class="incomplete">{{ list.current_stage.name }}</span>{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

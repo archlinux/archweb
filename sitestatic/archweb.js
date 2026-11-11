@@ -188,6 +188,7 @@ function todolist_flag() {
             data.css_class.toLowerCase());
         /* let tablesorter know the cell value has changed */
         $('.results').trigger('updateCell', [$(link).closest('td')[0], false, null]);
+        $('#todo-advance').prop('disabled', $('a.status-link.incomplete').length > 0);
     });
     return false;
 }

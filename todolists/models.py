@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core.mail import EmailMessage
 from django.db import models
-from django.db.models.signals import post_save, pre_save
-from django.template import loader
+from django.db.models.signals import pre_save
 
 from main.models import Arch, Package, Repo
 from main.utils import set_created_field
+
+from .stages import STAGES
 
 
 class Todolist(models.Model):
@@ -18,6 +18,11 @@ class Todolist(models.Model):
         (TASK, 'Task'),
     )
 
+    DEFAULT_STAGES = {
+        REBUILD: ['draft', 'rebuild_staging', 'test_testing'],
+        TASK: ['draft', 'in_progress'],
+    }
+
     slug = models.SlugField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -27,6 +32,9 @@ class Todolist(models.Model):
                                     help_text='(Rebuild for soname bumps, Task for independent tasks)')
     last_modified = models.DateTimeField(editable=False)
     raw = models.TextField(blank=True)
+    stages = models.JSONField(default=list, editable=False)
+    # number of stages completed by the todo list as a whole
+    progress = models.PositiveSmallIntegerField(default=0, editable=False)
 
     class Meta:
         get_latest_by = 'created'
@@ -50,9 +58,40 @@ class Todolist(models.Model):
         if not hasattr(self, '_packages'):
             self._packages = self.todolistpackage_set.filter(
                 removed__isnull=True).select_related(
-                'pkg', 'repo', 'arch', 'user__userprofile').order_by(
+                'todolist', 'pkg', 'repo', 'arch', 'user__userprofile').order_by(
                 'pkgname', 'arch')
         return self._packages
+
+    @property
+    def stage_list(self):
+        return [STAGES[key] for key in self.stages]
+
+    @property
+    def finished(self) -> bool:
+        return self.progress >= len(self.stages)
+
+    @property
+    def current_stage(self):
+        if self.finished:
+            return None
+        return self.stage_list[self.progress]
+
+    def per_package_reached(self) -> bool:
+        '''Whether a stage asking for per-package completion has been reached.'''
+        return any(stage.per_package for stage in self.stage_list[:self.progress + 1])
+
+    def incomplete_packages(self):
+        '''Packages that have not completed the current stage.'''
+        return self.todolistpackage_set.filter(
+            removed__isnull=True, progress__lte=self.progress)
+
+    def can_advance(self) -> bool:
+        stage = self.current_stage
+        if stage is None:
+            return False
+        if not stage.per_package:
+            return True
+        return not self.incomplete_packages().exists()
 
     def missing_package_names(self):
         '''Names from the raw package list that did not end up in the list,
@@ -68,15 +107,6 @@ class Todolist(models.Model):
 
 
 class TodolistPackage(models.Model):
-    INCOMPLETE = 0
-    COMPLETE = 1
-    IN_PROGRESS = 2
-    STATUS_CHOICES = (
-        (INCOMPLETE, 'Incomplete'),
-        (COMPLETE, 'Complete'),
-        (IN_PROGRESS, 'In-progress'),
-    )
-
     todolist = models.ForeignKey(Todolist, on_delete=models.CASCADE)
     pkg = models.ForeignKey(Package, null=True, on_delete=models.SET_NULL)
     pkgname = models.CharField(max_length=255)
@@ -86,7 +116,8 @@ class TodolistPackage(models.Model):
     created = models.DateTimeField(editable=False)
     last_modified = models.DateTimeField(editable=False)
     removed = models.DateTimeField(null=True, blank=True)
-    status = models.SmallIntegerField(default=INCOMPLETE, choices=STATUS_CHOICES)
+    # number of todo list stages completed by this package
+    progress = models.PositiveSmallIntegerField(default=0)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     comments = models.TextField(null=True, blank=True)
 
@@ -97,36 +128,19 @@ class TodolistPackage(models.Model):
     def __str__(self) -> str:
         return self.pkgname
 
+    @property
+    def is_complete(self) -> bool:
+        return self.todolist.finished or self.progress > self.todolist.progress
+
     def status_css_class(self):
-        return self.get_status_display().lower().replace('-', '')
+        return self.status_str.lower()
 
     @property
     def status_str(self) -> str:
-        return self.STATUS_CHOICES[self.status][1]
-
-
-def check_todolist_complete(sender, instance, **kwargs):
-    if instance.status == instance.INCOMPLETE:
-        return
-
-    query = TodolistPackage.objects.filter(todolist=instance.todolist, status__exact=instance.INCOMPLETE)
-    if query.count() > 0:
-        return
-
-    # Send e-mail notification
-    subject = "The last package on the TODO list '%s' has been completed." % instance.todolist.name
-    tmpl = loader.get_template('todolists/complete_email_notification.txt')
-    toemail = [instance.todolist.creator.email]
-    ctx = {
-        'todolist': instance.todolist,
-    }
-    msg = EmailMessage(subject, tmpl.render(ctx), 'Arch Website Notification <nobody@archlinux.org>', toemail)
-    msg.send(fail_silently=True)
+        return 'Complete' if self.is_complete else 'Incomplete'
 
 
 pre_save.connect(set_created_field, sender=Todolist, dispatch_uid="todolists.models")
 pre_save.connect(set_created_field, sender=TodolistPackage, dispatch_uid="todolists.models")
-
-post_save.connect(check_todolist_complete, sender=TodolistPackage, dispatch_uid='todolist.models')
 
 # vim: set ts=4 sw=4 et:

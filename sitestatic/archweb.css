@@ -311,6 +311,19 @@ form.general-form textarea {
     width: 45%;
 }
 
+form.general-form div.form-field {
+    margin: .33em 0 1em;
+}
+
+form.general-form div.checkbox-list {
+    display: inline-block;
+    vertical-align: top;
+}
+
+    form.general-form div.checkbox-list label {
+        width: auto;
+    }
+
 /* archdev navbar */
 #archdev-navbar {
     margin: 1.5em 0;
@@ -1092,6 +1105,14 @@ ul.admin-actions {
 
 .todo-pkgbases {
     border-top: 1px dotted #bbb;
+}
+
+.todo-stages {
+    margin-bottom: 1em;
+}
+
+.todo-stages form {
+    display: inline;
 }
 
 .todo-warning {

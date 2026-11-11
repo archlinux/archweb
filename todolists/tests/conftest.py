@@ -15,7 +15,8 @@ def todolist(user, arches, repos, package):
                                        description=DESCRIPTION,
                                        slug=SLUG,
                                        creator=user,
-                                       raw=RAW)
+                                       raw=RAW,
+                                       stages=Todolist.DEFAULT_STAGES[Todolist.REBUILD])
     yield todolist
     todolist.delete()
 

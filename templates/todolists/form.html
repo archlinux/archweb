@@ -1,0 +1,19 @@
+{% extends "general_form.html" %}
+
+{% block script_block %}
+{% if default_stages %}
+{{ default_stages|json_script:"default-stages" }}
+<script type="text/javascript" nonce={{ csp_nonce }}>
+(function() {
+    var defaults = JSON.parse(document.getElementById('default-stages').textContent);
+    var kind = document.getElementById('id_kind');
+    kind.addEventListener('change', function() {
+        var stages = defaults[kind.value];
+        document.querySelectorAll('#id_stages input[type="checkbox"]').forEach(function(box) {
+            box.checked = stages.indexOf(box.value) !== -1;
+        });
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -31,16 +31,38 @@
         {{list.stripped_description|default:'(no description)'|urlize|linebreaks}}
     </div>
 
-    {% with missing=list.missing_package_names %}
-    {% if missing %}
-    <div class="todo-warning">
-        <strong>Warning:</strong> The following package name{{ missing|pluralize }}
-        {{ missing|length|pluralize:"was,were" }} not found in any stable repository and
-        {{ missing|length|pluralize:"is,are" }} not part of this list:
-        {{ missing|join:", " }}
+    <div class="todo-stages">
+        {% with stage=list.current_stage %}
+        {% if stage %}
+        <p><strong>Current stage: {{ stage.name }}</strong> &ndash; {{ stage.description }}</p>
+        {% else %}
+        <p><strong>This todo list is complete.</strong></p>
+        {% endif %}
+        {% with missing=list.missing_package_names %}
+        {% if missing %}
+        <div class="todo-warning">
+            <strong>Warning:</strong> The following package name{{ missing|pluralize }}
+            {{ missing|length|pluralize:"was,were" }} not found in any stable repository and
+            {{ missing|length|pluralize:"is,are" }} not part of this list:
+            {{ missing|join:", " }}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% if perms.todolists.change_todolist %}
+        {% if list.progress > 0 %}
+        <form method="post" action="/todo/{{ list.slug }}/back/">{% csrf_token %}
+            <input type="submit" value="Back to previous stage"/>
+        </form>
+        {% endif %}
+        {% if stage %}
+        <form method="post" action="/todo/{{ list.slug }}/advance/">{% csrf_token %}
+            <input type="submit" id="todo-advance" value="{{ stage.caption }}"
+                {% if not list.can_advance %}disabled="disabled"{% endif %}/>
+        </form>
+        {% endif %}
+        {% endif %}
+        {% endwith %}
     </div>
-    {% endif %}
-    {% endwith %}
 
     <div class="todo-pkgbases">
         <p><a href="pkgbases/">List of pkgbase values</a></p>
@@ -63,8 +85,10 @@
             <div><label for="id_mine_only" title="Show only packages maintained by me">Only Mine</label>
                 <input type="checkbox" name="mine_only" id="id_mine_only" value="mine_only"/></div>
             {% endif %}
+            {% if per_package %}
             <div><label for="id_incomplete" title="Packages not yet completed">Only Incomplete</label>
                 <input type="checkbox" name="incomplete" id="id_incomplete" value="incomplete"/></div>
+            {% endif %}
             <div ><label>&nbsp;</label><input title="Reset search criteria" type="button" id="criteria_reset" value="Reset"/></div>
             <div class="clear"></div>
             <div id="filter-info">
@@ -84,7 +108,7 @@
                 <th>Current Version</th>
                 <th>Staging Version</th>
                 <th>Maintainers</th>
-                <th>Status</th>
+                {% if per_package %}<th>Status</th>{% endif %}
                 <th>Last Touched By</th>
             </tr>
         </thead>
@@ -105,14 +129,16 @@
                 <td>{% if staging %}{% pkg_details_link staging staging.full_version %}{% endif %}</td>
                 {% endwith %}
                 <td>{{ pkg.maintainers|join:', ' }}</td>
+                {% if per_package %}
                 <td>
                     {% if perms.todolists.change_todolistpackage %}
                     <a href="/todo/{{ list.slug }}/flag/{{ pkg.id }}/"
-                        class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.get_status_display }}</a>
+                        class="status-link {{ pkg.status_css_class }}" title="Toggle completion status">{{ pkg.status_str }}</a>
                     {% else %}
-                    <span class="{{ pkg.status_css_class }}">{{ pkg.get_status_display }}</span>
+                    <span class="{{ pkg.status_css_class }}">{{ pkg.status_str }}</span>
                     {% endif %}
                 </td>
+                {% endif %}
                 <td>
                   {% if pkg.user %}
                   {% if user.is_authenticated %}
@@ -136,8 +162,8 @@
 $(document).ready(function() {
     $(".results").tablesorter({
         widgets: ['zebra'],
-        sortList: [[2,0], [0,0]],
-        headers: { 6: { sorter: 'todostatus' } }
+        sortList: [[2,0], [0,0]]{% if per_package %},
+        headers: { 6: { sorter: 'todostatus' } }{% endif %}
     });
 });
 $(document).ready(function() {

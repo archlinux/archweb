@@ -17,7 +17,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.cache.utils import make_template_fragment_key
 from django.db import transaction
-from django.db.models import Count, Max
+from django.db.models import Count, F, Max
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.utils.encoding import force_str
@@ -65,10 +65,13 @@ def index(request):
             group.sort(key=lambda p: (p.pkgname != p.pkgbase, p.pkgname))
 
     todopkgs = TodolistPackage.objects.select_related(
-        'todolist', 'pkg', 'arch', 'repo').exclude(
-            status=TodolistPackage.COMPLETE).filter(removed__isnull=True)
+        'todolist', 'pkg', 'arch', 'repo').filter(
+            removed__isnull=True, progress__lte=F('todolist__progress'))
     todopkgs = todopkgs.filter(pkgbase__in=inner_q).order_by('todolist__name',
                                                              'pkgname')
+    # only stages asking for per-package completion need action
+    todopkgs = [tp for tp in todopkgs
+                if tp.todolist.current_stage and tp.todolist.current_stage.per_package]
 
     todolists = get_annotated_todolists(incomplete_only=True)
 

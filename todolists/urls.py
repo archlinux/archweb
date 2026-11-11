@@ -5,6 +5,8 @@ from .views import (
     DeleteTodolist,
     TodolistListView,
     add,
+    advance,
+    back,
     edit,
     flag,
     list_pkgbases,
@@ -25,6 +27,10 @@ urlpatterns = [
             permission_required('todolists.delete_todolist')(DeleteTodolist.as_view())),
     re_path(r'^(?P<slug>[-\w]+)/flag/(?P<pkg_id>\d+)/$',
             permission_required('todolists.change_todolistpackage')(flag)),
+    re_path(r'^(?P<slug>[-\w]+)/advance/$',
+            permission_required('todolists.change_todolist')(advance)),
+    re_path(r'^(?P<slug>[-\w]+)/back/$',
+            permission_required('todolists.change_todolist')(back)),
     re_path(r'^(?P<slug>[-\w]+)/pkgbases/$', list_pkgbases),
 ]
 
