@@ -33,6 +33,43 @@ probably want the following:
 
 # Testing Installation
 
+## Docker (recommended)
+
+The provided `Dockerfile` builds an Arch Linux based development environment
+in a single container. It uses SQLite, sets `DEBUG = True`, runs the migrations,
+loads the fixtures and starts the development server.
+
+1. Build the image:
+
+        docker build -t archweb-dev .
+
+2. Start the container:
+
+        docker run --rm --name archweb -p 8000:8000 archweb-dev
+
+   Archweb is now available at <http://localhost:8000>.
+
+3. Create a superuser (optional). The fixtures do not contain any users, and
+   registering an account requires an SMTP server.
+
+        docker exec -e DJANGO_SUPERUSER_PASSWORD=admin archweb \
+          uv run ./manage.py createsuperuser --noinput --username admin --email admin@example.com
+
+4. Populate the database with real package data (optional):
+
+        docker exec archweb sh -c '
+          wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.db.tar.gz &&
+          uv run ./manage.py reporead x86_64 core.db.tar.gz &&
+          wget https://geo.mirror.pkgbuild.com/core/os/x86_64/core.files.tar.gz &&
+          uv run ./manage.py reporead --filesonly x86_64 core.files.tar.gz'
+
+   See step 8 of the local installation below for customization notes.
+
+All data is stored inside the container and is lost when the container is
+removed.
+
+## Local installation
+
 1. Run `uv sync`.
 2. Initialize git submodules:
 
