@@ -93,6 +93,25 @@ class Todolist(models.Model):
             return True
         return not self.incomplete_packages().exists()
 
+    def overlapping_rebuilds(self):
+        '''Other active rebuild todo lists sharing package bases with this
+        one, if this one is an active rebuild. Returns a list of (todolist,
+        pkgbases) tuples.'''
+        if self.kind != self.REBUILD or self.finished:
+            return []
+        pkgbases = self.todolistpackage_set.filter(
+            removed__isnull=True).values('pkgbase')
+        others = TodolistPackage.objects.filter(
+            removed__isnull=True, pkgbase__in=pkgbases,
+            todolist__kind=self.REBUILD).exclude(
+            todolist=self).select_related('todolist').order_by(
+            'todolist__created', 'pkgbase')
+        overlaps = {}
+        for todo_pkg in others:
+            if not todo_pkg.todolist.finished:
+                overlaps.setdefault(todo_pkg.todolist, set()).add(todo_pkg.pkgbase)
+        return [(todolist, sorted(pkgbases)) for todolist, pkgbases in overlaps.items()]
+
     def missing_package_names(self):
         '''Names from the raw package list that did not end up in the list,
         e.g. because they are not found in any repository.'''

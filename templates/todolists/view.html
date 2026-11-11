@@ -48,6 +48,14 @@
         </div>
         {% endif %}
         {% endwith %}
+        {% for other, pkgbases in list.overlapping_rebuilds %}
+        <div class="todo-warning">
+            <strong>Warning:</strong> The active rebuild
+            <a href="{{ other.get_absolute_url }}" title="View todo list: {{ other.name }}">{{ other.name }}</a>
+            ({{ other.current_stage.name }}) shares the following package base{{ pkgbases|pluralize }}
+            with this todo list: {{ pkgbases|join:", " }}
+        </div>
+        {% endfor %}
         {% if perms.todolists.change_todolist %}
         {% if list.progress > 0 %}
         <form method="post" action="/todo/{{ list.slug }}/back/">{% csrf_token %}

@@ -1,4 +1,20 @@
+import pytest
+
+from todolists.models import Todolist, TodolistPackage
 from todolists.tests.conftest import NAME
+
+
+@pytest.fixture
+def other_todolist(user, todolistpackage):
+    other = Todolist.objects.create(name='Other rebuild', description='Other rebuild',
+                                    slug='other-rebuild', creator=user,
+                                    stages=Todolist.DEFAULT_STAGES[Todolist.REBUILD])
+    TodolistPackage.objects.create(todolist=other, pkg=todolistpackage.pkg,
+                                   pkgname=todolistpackage.pkgname,
+                                   pkgbase=todolistpackage.pkgbase,
+                                   arch=todolistpackage.arch, repo=todolistpackage.repo)
+    yield other
+    other.delete()
 
 
 def test_stripped_description(todolist):
@@ -107,3 +123,34 @@ def test_missing_package_names(admin_user, todolist, todolistpackage):
 def test_missing_package_names_none(admin_user, todolist, todolistpackage):
     todolist.raw = todolistpackage.pkgname
     assert todolist.missing_package_names() == []
+
+
+def test_overlapping_rebuilds(todolist, todolistpackage, other_todolist):
+    assert todolist.overlapping_rebuilds() == [(other_todolist, [todolistpackage.pkgbase])]
+    assert other_todolist.overlapping_rebuilds() == [(todolist, [todolistpackage.pkgbase])]
+
+
+def test_overlapping_rebuilds_finished(todolist, todolistpackage, other_todolist):
+    other_todolist.progress = 3
+    other_todolist.save()
+    assert todolist.overlapping_rebuilds() == []
+    # finished lists do not show the warning themselves
+    assert other_todolist.overlapping_rebuilds() == []
+
+
+def test_overlapping_rebuilds_task(todolist, todolistpackage, other_todolist):
+    other_todolist.kind = Todolist.TASK
+    other_todolist.save()
+    assert todolist.overlapping_rebuilds() == []
+    assert other_todolist.overlapping_rebuilds() == []
+
+
+def test_overlapping_rebuilds_removed(todolist, todolistpackage, other_todolist):
+    todolistpackage.removed = todolistpackage.created
+    todolistpackage.save()
+    assert todolist.overlapping_rebuilds() == []
+    assert other_todolist.overlapping_rebuilds() == []
+
+
+def test_overlapping_rebuilds_none(todolist, todolistpackage):
+    assert todolist.overlapping_rebuilds() == []

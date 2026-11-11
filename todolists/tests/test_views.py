@@ -393,3 +393,18 @@ def test_dashboard_incomplete_packages(developer_client, todolist, todolistpacka
     todolistpackage.save()
     response = developer_client.get('/devel/')
     assert response.context['todopkgs'] == []
+
+
+def test_detail_overlapping_rebuild_warning(developer_client, user, todolist, todolistpackage):
+    other = Todolist.objects.create(name='Other rebuild', description='Other rebuild',
+                                    slug='other-rebuild', creator=user,
+                                    stages=Todolist.DEFAULT_STAGES[Todolist.REBUILD])
+    TodolistPackage.objects.create(todolist=other, pkg=todolistpackage.pkg,
+                                   pkgname=todolistpackage.pkgname,
+                                   pkgbase=todolistpackage.pkgbase,
+                                   arch=todolistpackage.arch, repo=todolistpackage.repo)
+    response = developer_client.get(todolist.get_absolute_url())
+    content = response.content.decode()
+    assert 'The active rebuild' in content
+    assert other.get_absolute_url() in content
+    other.delete()
