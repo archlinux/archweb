@@ -408,3 +408,8 @@ def test_detail_overlapping_rebuild_warning(developer_client, user, todolist, to
     assert 'The active rebuild' in content
     assert other.get_absolute_url() in content
     other.delete()
+
+
+def test_detail_user_without_profile(admin_client, todolist, todolistpackage):
+    response = admin_client.get(todolist.get_absolute_url())
+    assert response.status_code == 200
