@@ -1,0 +1,7 @@
+.git
+.venv
+local_settings.py
+*.db
+collected_static
+htmlcov
+**/__pycache__
