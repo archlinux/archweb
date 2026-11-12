@@ -1,4 +1,4 @@
-{% autoescape off %}The todo list "{{ todolist.name }}" is complete.
+{% autoescape off %}All packages on the todo list "{{ todolist.name }}" have completed the stage "{{ stage.name }}". Use "{{ stage.caption }}" on the todo list page to proceed.
 
 Todo list information:
 Name: {{ todolist.name }}

@@ -1,8 +1,11 @@
-{% autoescape off %}The todo list "{{ todolist.name }}" has had the following packages added to it for which you are a maintainer:
+{% autoescape off %}{% if stage %}The todo list "{{ todolist.name }}" has reached the stage "{{ stage.name }}". The following packages for which you are a maintainer need to be handled:{% else %}The todo list "{{ todolist.name }}" has had the following packages added to it for which you are a maintainer:{% endif %}
 
 {% for tpkg in todo_packages %}
 * {{ tpkg.repo.name|lower }}/{{ tpkg.pkgname }} ({{ tpkg.arch.name }}) - {{ tpkg.pkg.get_full_url }}{% endfor %}
-
+{% if stage %}
+Stage information:
+{{ stage.description|wordwrap:78 }}
+{% endif %}
 Todo list information:
 Name: {{ todolist.name }}
 URL: {{ todolist.get_full_url }}
