@@ -7,15 +7,16 @@ from .models import Todolist, TodolistPackage
 
 def todo_counts():
     sql = """
-SELECT todolist_id, count(*), SUM(CASE WHEN status = %s THEN 1 ELSE 0 END)
-    FROM todolists_todolistpackage
-    WHERE removed IS NULL
-    GROUP BY todolist_id
+SELECT tp.todolist_id, count(*), SUM(CASE WHEN tp.progress > t.progress THEN 1 ELSE 0 END)
+    FROM todolists_todolistpackage tp
+    JOIN todolists_todolist t ON t.id = tp.todolist_id
+    WHERE tp.removed IS NULL
+    GROUP BY tp.todolist_id
     """
     database = router.db_for_write(TodolistPackage)
     connection = connections[database]
     cursor = connection.cursor()
-    cursor.execute(sql, [TodolistPackage.COMPLETE])
+    cursor.execute(sql)
     results = cursor.fetchall()
     return {row[0]: (row[1], row[2]) for row in results}
 
@@ -29,13 +30,14 @@ def get_annotated_todolists(incomplete_only=False):
     for todolist in lists:
         counts = lookup.get(todolist.id, (0, 0))
         todolist.pkg_count = counts[0]
-        todolist.complete_count = counts[1]
-        todolist.incomplete_count = counts[0] - counts[1]
+        # all packages of a finished list are complete
+        todolist.complete_count = counts[0] if todolist.finished else counts[1]
+        todolist.incomplete_count = counts[0] - todolist.complete_count
 
     if incomplete_only:
-        lists = [lst for lst in lists if lst.incomplete_count > 0]
+        lists = [lst for lst in lists if not lst.finished]
     else:
-        lists = sorted(lists, key=lambda todolist: todolist.incomplete_count == 0)
+        lists = sorted(lists, key=lambda todolist: todolist.finished)
     return lists
 
 

@@ -148,7 +148,7 @@
                 <td>{{ todo.created|date:"Y-m-d" }}</td>
                 <td>{{ todo.creator.get_full_name }}</td>
                 <td>{{ todo.pkg_count }}</td>
-                <td>{{ todo.incomplete_count }}</td>
+                <td>{% if todo.current_stage.per_package %}{{ todo.incomplete_count }}{% endif %}</td>
                 <td>{{ todo.kind_str }}</td>
             </tr>
             {% empty %}
