@@ -68,7 +68,7 @@ if (typeof $ !== 'undefined' && typeof $.tablesorter !== 'undefined') {
         is: function(s) { return false; },
         format: function(s, t, c) {
             /* TODO: this assumes our magic class is the only one */
-            var epoch = $(c).attr('class');
+            var epoch = $(c).attr('class') || '';
             if (epoch.indexOf('epoch-') !== 0) {
                 return 0;
             }
